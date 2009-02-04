@@ -19,29 +19,29 @@
  *
  * Created on 28.12.2008
  */
-/* $Id: DatabaseStarter.java,v 1.1.2.2 2009-01-14 21:18:36 christianfoltin Exp $ */
+/* $Id: DatabaseStarter.java,v 1.1.2.3 2009-02-04 19:31:21 christianfoltin Exp $ */
 
 package plugins.collaboration.database;
 
 import java.io.File;
-import java.io.StringWriter;
+import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Vector;
 
-import javax.swing.JOptionPane;
-
-import plugins.collaboration.database.DatabaseBasics.FormDialog;
 import freemind.common.NumberProperty;
 import freemind.common.StringProperty;
+import freemind.extensions.PermanentNodeHook;
 import freemind.main.Tools;
+import freemind.main.XMLElement;
+import freemind.modes.MindMapNode;
+import freemind.modes.mindmapmode.MindMapController;
+import freemind.view.mindmapview.NodeView;
 
 /**
  * @author foltin
  * 
  */
-public class DatabaseStarter extends DatabaseBasics  {
+public class DatabaseStarter extends DatabaseBasics implements PermanentNodeHook {
 
 	/**
      *
@@ -49,90 +49,121 @@ public class DatabaseStarter extends DatabaseBasics  {
 
 	public void startupMapHook() {
 		super.startupMapHook();
-		mController = getMindMapController();
+		MindMapController controller = getMindMapController();
 		final StringProperty passwordProperty = new StringProperty(
 				"The password needed to connect", "Password");
 		final StringProperty passwordProperty2 = new StringProperty(
-				"Enter the password twice to make sure that it is correct.", "Password again");
-//		StringProperty bindProperty = new StringProperty(
-//				"IP address of the local machine, or 0.0.0.0 if ", "Host");
+				"Enter the password twice to make sure that it is correct.",
+				"Password again");
+		// StringProperty bindProperty = new StringProperty(
+		// "IP address of the local machine, or 0.0.0.0 if ", "Host");
 		final NumberProperty portProperty = getPortProperty();
 		Vector controls = new Vector();
 		controls.add(passwordProperty);
 		controls.add(passwordProperty2);
-//		controls.add(bindProperty);
+		// controls.add(bindProperty);
 		controls.add(portProperty);
-		FormDialog dialog = new FormDialog(mController);
-		dialog.setUp(controls, new FormDialogValidator(){
-
+		FormDialog dialog = new FormDialog(controller);
+		dialog.setUp(controls, new FormDialogValidator() {
 			public boolean isValid() {
-				return Tools.safeEquals(passwordProperty.getValue(), passwordProperty2.getValue());
-			}});
-		if(!dialog.isSuccess())
+				logger.info("Output valid?");
+				return Tools.safeEquals(passwordProperty.getValue(),
+						passwordProperty2.getValue());
+			}
+		});
+		if (!dialog.isSuccess())
 			return;
 		String password = passwordProperty.getValue();
 		setPortProperty(portProperty);
 		// start server:
 		logger.info("Start server...");
 		try {
-			final File tempDbFile = File.createTempFile("collaboration_database", ".hsqldb", new File(mController.getFrame().getFreemindDirectory()));
+			final File tempDbFile = File.createTempFile(
+					"collaboration_database", ".hsqldb", new File(controller
+							.getFrame().getFreemindDirectory()));
 			tempDbFile.deleteOnExit();
 			logger.info("Start server in directory " + tempDbFile);
 			Thread server = new Thread(new Runnable() {
-	
+
 				public void run() {
-					org.hsqldb.Server.main(new String[] { "-database.0",
-							"file:"+tempDbFile, "-dbname.0", "xdb", "-no_system_exit", "-port", portProperty.getValue()});
+					org.hsqldb.Server
+							.main(new String[] { "-database.0",
+									"file:" + tempDbFile, "-dbname.0", "xdb",
+									"-port", portProperty.getValue(),
+									"-no_system_exit", "true" });
 				}
 			});
 			server.start();
 			Thread.sleep(1000);
 			logger.info("Connect...");
 			Class.forName("org.hsqldb.jdbcDriver");
-			mConnection = DriverManager.getConnection(
-					"jdbc:hsqldb:hsql://localhost/xdb", "sa", "");
-			// create tables
-			logger.info("Create tables...");
-			createTables(password);
-			// register as listener:
-			mController.getActionFactory().registerFilter(this);
-			// send first action:
-			logger.info("Store map in database...");
-			StringWriter writer = new StringWriter();
-			mController.getMap().getXml(writer);
-			String expression = "INSERT INTO " + TABLE_XML_ACTIONS + "("
-					+ ROW_PK + "," + ROW_MAP + ") VALUES(" + mPrimaryKey
-					+ ", '" + escapeQuotations(writer.toString()) + "')";
-			insertIntoActionTable(expression);
+			String url = "jdbc:hsqldb:hsql://localhost:"
+					+ portProperty.getValue() + "/xdb";
+			logger.info("Connecting to " + url);
+			Connection connection = DriverManager.getConnection(url, "sa", "");
+			mUpdateThread = new UpdateThread(connection, controller);
+			mUpdateThread.setupTables(password);
 			logger.info("Starting update thread...");
-			mUpdateThread = new Thread(this);
 			mUpdateThread.start();
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
-			shutdown();
+			mUpdateThread.shutdown(true);
 			return;
 		}
 	}
 
-	protected void createTables(String pPassword) throws SQLException {
-		update("ALTER USER sa SET PASSWORD \"" + pPassword + "\"");
-		update("DROP TABLE " + TABLE_XML_ACTIONS + " IF EXISTS");
-		update("CREATE TABLE " + TABLE_XML_ACTIONS + " (" + ROW_PK
-				+ " IDENTITY, " + ROW_ACTION + " VARCHAR, " + ROW_UNDOACTION
-				+ " VARCHAR, " + ROW_MAP + " VARCHAR)");
+	
+
+	public void loadFrom(XMLElement pChild) {
+		// this plugin should not be saved.
 	}
 
-	public void shutdown() {
-		try {
-			if (mConnection != null) {
-				Statement st = mConnection.createStatement();
-				st.execute("SHUTDOWN");
-				mConnection.close();
-			}
-		} catch (Exception e) {
-			freemind.main.Resources.getInstance().logException(e);
+	public void save(XMLElement pXml) {
+		// this plugin should not be saved.
+		// nothing to do.
+	}
+
+	public void shutdownMapHook() {
+		mUpdateThread.deregisterFilter();
+		mUpdateThread.signalEndOfSession();
+		if (mUpdateThread != null) {
+			mUpdateThread.commitSuicide();
 		}
+		mUpdateThread.shutdown(true);
+		super.shutdownMapHook();
 	}
 
+	public void onAddChild(MindMapNode pAddedChildNode) {
+	}
+
+	public void onAddChildren(MindMapNode pAddedChild) {
+	}
+
+	public void onDeselectHook(NodeView pNodeView) {
+	}
+
+	public void onNewChild(MindMapNode pNewChildNode) {
+	}
+
+	public void onRemoveChild(MindMapNode pOldChildNode) {
+	}
+
+	public void onRemoveChildren(MindMapNode pOldChildNode, MindMapNode pOldDad) {
+	}
+
+	public void onSelectHook(NodeView pNodeView) {
+	}
+
+	public void onUpdateChildrenHook(MindMapNode pUpdatedNode) {
+	}
+
+	public void onUpdateNodeHook() {
+	}
+
+	public void onViewCreatedHook(NodeView pNodeView) {
+	}
+
+	public void onViewRemovedHook(NodeView pNodeView) {
+	}
 
 }

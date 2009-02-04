@@ -19,7 +19,7 @@
  *
  * Created on 28.12.2008
  */
-/* $Id: DatabaseBasics.java,v 1.1.2.3 2009-01-14 21:18:36 christianfoltin Exp $ */
+/* $Id: DatabaseBasics.java,v 1.1.2.4 2009-02-04 19:31:21 christianfoltin Exp $ */
 package plugins.collaboration.database;
 
 import java.awt.BorderLayout;
@@ -27,22 +27,18 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.StringReader;
-import java.lang.reflect.InvocationTargetException;
-import java.math.BigInteger;
-import java.sql.Connection;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
@@ -50,26 +46,17 @@ import com.jgoodies.forms.factories.ButtonBarFactory;
 import com.jgoodies.forms.layout.FormLayout;
 
 import freemind.common.NumberProperty;
+import freemind.common.PropertyBean;
 import freemind.common.PropertyControl;
-import freemind.common.StringProperty;
-import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Tools;
-import freemind.modes.MapAdapter;
-import freemind.modes.NodeAdapter;
+import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.MindMapMapModel;
-import freemind.modes.mindmapmode.MindMapNodeModel;
-import freemind.modes.mindmapmode.actions.xml.ActionFilter;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
-import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
+import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 
-public class DatabaseBasics extends MindMapHookAdapter implements ActionFilter,
-		Runnable {
+public class DatabaseBasics extends MindMapNodeHookAdapter  {
 
-	abstract class ResultHandler {
-		abstract void processResults(ResultSet rs);
-	}
-
+	public final static String SLAVE_HOOK_NAME = "plugins/collaboration/database/database_slave_plugin";
+	public final static String SLAVE_STARTER_NAME = "plugins/collaboration/database/database_slave_starter_plugin";
 	protected static final String ROW_PK = "PK";
 	protected static final String ROW_ACTION = "do_action";
 	protected static final String TABLE_XML_ACTIONS = "XmlActions";
@@ -77,12 +64,11 @@ public class DatabaseBasics extends MindMapHookAdapter implements ActionFilter,
 	protected static final String ROW_MAP = "map";
 	private static final String PORT_PROPERTY = "plugins.collaboration.database.port";
 	protected static java.util.logging.Logger logger = null;
-	protected Connection mConnection = null;
-	protected BigInteger mPrimaryKeyMutex = BigInteger.valueOf(0);
-	protected long mPrimaryKey = 1l;
-	protected MindMapController mController;
-	protected Thread mUpdateThread;
-	protected boolean mFilterEnabled = true;
+	protected UpdateThread mUpdateThread = null;
+
+	public interface ResultHandler {
+		void processResults(ResultSet rs);
+	}
 
 	public DatabaseBasics() {
 		super();
@@ -96,166 +82,15 @@ public class DatabaseBasics extends MindMapHookAdapter implements ActionFilter,
 		}
 	}
 
-	protected void insertIntoActionTable(String expression) throws SQLException {
-		synchronized (mPrimaryKeyMutex) {
-			update(expression);
-			mPrimaryKey++;
-		}
+	protected static void togglePermanentHook(MindMapController controller) {
+		MindMapNode rootNode = controller.getRootNode();
+		List selecteds = Arrays.asList(new MindMapNode[] { rootNode });
+		controller.addHook(rootNode, selecteds, SLAVE_HOOK_NAME);
 	}
-
-	public synchronized void query(String expression, ResultHandler pHandler)
-			throws SQLException {
-
-		Statement st = null;
-		ResultSet rs = null;
-
-		st = mConnection.createStatement();
-		rs = st.executeQuery(expression);
-
-		pHandler.processResults(rs);
-		st.close();
-	}
-
-	public synchronized boolean update(String expression) throws SQLException {
-		logger.info("Executing " + expression);
-		Statement st = null;
-		st = mConnection.createStatement(); // statements
-		int i = st.executeUpdate(expression); // run the query
-		if (i == -1) {
-			logger.severe("db error : " + expression);
-		}
-		st.close();
-		return i != -1;
-	}
-
-	public ActionPair filterAction(ActionPair pPair) {
-		if (pPair == null || !mFilterEnabled)
-			return pPair;
-		String doAction = mController.marshall(pPair.getDoAction());
-		String undoAction = mController.marshall(pPair.getUndoAction());
-		String expression = "INSERT INTO " + TABLE_XML_ACTIONS + "(" + ROW_PK
-				+ "," + ROW_ACTION + "," + ROW_UNDOACTION + ") VALUES("
-				+ mPrimaryKey + ", '" + escapeQuotations(doAction) + "', '"
-				+ escapeQuotations(undoAction) + "')";
-		try {
-			insertIntoActionTable(expression);
-		} catch (SQLException e) {
-			freemind.main.Resources.getInstance().logException(e);
-		}
-		return pPair;
-	}
-
-	protected String escapeQuotations(String pInput) {
-		return pInput.replaceAll("'", "''");
-	}
-
-	public void run() {
-		while (true) {
-			try {
-				logger.info("Looking for updates...");
-				synchronized (mPrimaryKeyMutex) {
-					String query = "SELECT * FROM " + TABLE_XML_ACTIONS
-							+ " WHERE " + ROW_PK + " >= " + mPrimaryKey;
-					logger.info("Looking for updates... Query");
-					query(query, new ResultHandler() {
-						void processResults(ResultSet pRs) {
-							try {
-								while (pRs.next()) {
-									long nextPk = pRs.getLong(ROW_PK);
-									mPrimaryKey = nextPk + 1;
-									String doAction = pRs.getString(ROW_ACTION);
-									String undoAction = pRs
-											.getString(ROW_UNDOACTION);
-									String map = pRs.getString(ROW_MAP);
-									logger
-											.info("Got the following from database: "
-													+ nextPk
-													+ ", "
-													+ doAction
-													+ ", "
-													+ undoAction
-													+ ", "
-													+ map);
-									if (doAction != null && undoAction != null) {
-										XmlAction xmlDoAction = mController
-												.unMarshall(doAction);
-										XmlAction xmlUndoAction = mController
-												.unMarshall(undoAction);
-										ActionPair pair = new ActionPair(
-												xmlDoAction, xmlUndoAction);
-										executeTransaction(pair);
-									} else if (map != null) {
-										logger.info("Restoring the map...");
-										MindMapController newModeController = (MindMapController) mController
-												.getMode()
-												.createModeController();
-										MapAdapter newModel = new MindMapMapModel(
-												mController.getFrame(),
-												newModeController);
-										HashMap IDToTarget = new HashMap();
-										StringReader reader = new StringReader(
-												map);
-										MindMapNodeModel rootNode = (MindMapNodeModel) newModeController
-												.createNodeTreeFromXml(reader,
-														IDToTarget);
-										reader.close();
-										newModel.setRoot(rootNode);
-										rootNode.setMap(newModel);
-										mController.newMap(newModel);
-										newModeController
-												.invokeHooksRecursively(
-														(NodeAdapter) rootNode,
-														newModel);
-										// deregister from old controller:
-										mController.getActionFactory()
-												.deregisterFilter(
-														DatabaseBasics.this);
-										mController = newModeController;
-										// register as listener, as I am a
-										// slave.
-										mController.getActionFactory()
-												.registerFilter(
-														DatabaseBasics.this);
-									}
-								}
-							} catch (Exception e) {
-								freemind.main.Resources.getInstance()
-										.logException(e);
-							}
-						}
-
-						private void executeTransaction(final ActionPair pair)
-								throws InterruptedException,
-								InvocationTargetException {
-							SwingUtilities.invokeLater(new Runnable() {
-								public void run() {
-									mFilterEnabled = false;
-									try {
-										mController.getActionFactory()
-												.startTransaction("update");
-										mController.getActionFactory()
-												.executeAction(pair);
-										mController.getActionFactory()
-												.endTransaction("update");
-									} finally {
-										mFilterEnabled = true;
-									}
-								}
-							});
-						}
-					});
-				}
-				logger.info("Looking for updates... Done.");
-				Thread.sleep(1000);
-			} catch (Exception e) {
-				freemind.main.Resources.getInstance().logException(e);
-			}
-		}
-
-	}
+	
 
 	protected void setPortProperty(final NumberProperty portProperty) {
-		mController.getFrame().setProperty(PORT_PROPERTY,
+		getMindMapController().getFrame().setProperty(PORT_PROPERTY,
 				portProperty.getValue());
 	}
 
@@ -264,7 +99,7 @@ public class DatabaseBasics extends MindMapHookAdapter implements ActionFilter,
 				"The port to open", "Port", 1024, 32767, 1);
 		// fill values:
 		portProperty.setValue(""
-				+ mController.getFrame().getIntProperty(PORT_PROPERTY, 9001));
+				+ getMindMapController().getFrame().getIntProperty(PORT_PROPERTY, 9001));
 		return portProperty;
 	}
 
@@ -274,9 +109,13 @@ public class DatabaseBasics extends MindMapHookAdapter implements ActionFilter,
 		 */
 		public abstract boolean isValid();
 	}
-	public static class FormDialog extends JDialog {
+
+	public static class FormDialog extends JDialog implements
+			PropertyChangeListener {
 		private final MindMapController mController2;
 		private boolean mSuccess = false;
+		private JButton mOkButton;
+		private FormDialogValidator mFormDialogValidator;
 
 		public boolean isSuccess() {
 			return mSuccess;
@@ -288,14 +127,16 @@ public class DatabaseBasics extends MindMapHookAdapter implements ActionFilter,
 		}
 
 		public void setUp(Vector controls) {
-			setUp(controls, new FormDialogValidator(){
+			setUp(controls, new FormDialogValidator() {
 
 				public boolean isValid() {
 					return true;
-				}});
+				}
+			});
 		}
-		
+
 		public void setUp(Vector controls, FormDialogValidator pValidator) {
+			mFormDialogValidator = pValidator;
 			setModal(true);
 			getContentPane().setLayout(new BorderLayout());
 			FormLayout formLayout = new FormLayout(
@@ -305,7 +146,8 @@ public class DatabaseBasics extends MindMapHookAdapter implements ActionFilter,
 			for (Iterator it = controls.iterator(); it.hasNext();) {
 				PropertyControl prop = (PropertyControl) it.next();
 				prop.layout(builder, mController2);
-				
+				PropertyBean bean = (PropertyBean) prop;
+				bean.addPropertyChangeListener(this);
 			}
 			getContentPane().add(builder.getPanel(), BorderLayout.CENTER);
 			JButton cancelButton = new JButton(getText("Cancel"));
@@ -316,8 +158,8 @@ public class DatabaseBasics extends MindMapHookAdapter implements ActionFilter,
 				}
 
 			});
-			JButton okButton = new JButton(getText("OK"));
-			okButton.addActionListener(new ActionListener() {
+			mOkButton = new JButton(getText("OK"));
+			mOkButton.addActionListener(new ActionListener() {
 
 				public void actionPerformed(ActionEvent arg0) {
 					mSuccess = true;
@@ -325,9 +167,9 @@ public class DatabaseBasics extends MindMapHookAdapter implements ActionFilter,
 				}
 
 			});
-			getRootPane().setDefaultButton(okButton);
+			getRootPane().setDefaultButton(mOkButton);
 			getContentPane().add(
-					ButtonBarFactory.buildOKCancelBar(cancelButton, okButton),
+					ButtonBarFactory.buildOKCancelBar(cancelButton, mOkButton),
 					BorderLayout.SOUTH);
 			setTitle("Enter Password Dialog");
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
@@ -343,14 +185,15 @@ public class DatabaseBasics extends MindMapHookAdapter implements ActionFilter,
 				}
 			};
 			Action actionSuccess = new AbstractAction() {
-				
+
 				public void actionPerformed(ActionEvent arg0) {
 					mSuccess = true;
 					closeWindow();
 				}
 			};
 			Tools.addEscapeActionToDialog(this, action);
-		    Tools.addKeyActionToDialog(this, actionSuccess, "RETURN", "ok_dialog");
+			Tools.addKeyActionToDialog(this, actionSuccess, "ENTER",
+					"ok_dialog");
 
 			pack();
 			setVisible(true);
@@ -365,6 +208,19 @@ public class DatabaseBasics extends MindMapHookAdapter implements ActionFilter,
 			return text;
 		}
 
+		public void propertyChange(PropertyChangeEvent pEvt) {
+			logger.info("Property change " + pEvt);
+			mOkButton.setEnabled(mFormDialogValidator.isValid());
+		}
+
+	}
+
+	public void setUpdateThread(UpdateThread pUpdateThread) {
+		mUpdateThread = pUpdateThread;
+	}
+
+	public UpdateThread getUpdateThread() {
+		return mUpdateThread;
 	}
 
 }

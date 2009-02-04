@@ -19,18 +19,32 @@
  *
  * Created on 25.08.2004
  */
-/* $Id: ActionFilter.java,v 1.1.2.1.2.2 2006-07-25 20:28:29 christianfoltin Exp $ */
+/* $Id: ActionFilter.java,v 1.1.2.1.2.3 2009-02-04 19:31:21 christianfoltin Exp $ */
 package freemind.modes.mindmapmode.actions.xml;
 
 /**
  * @author foltin
  *
- * TODO To change the template for this generated type comment go to
- * Window - Preferences - Java - Code Style - Code Templates
+ *	Filter serve for the intersection of commands to be executed.
+ *
+ *  The most useful scenario for these classes is the intersection
+ *  of the command flow, eg. for collaboration or for storage of
+ *  the map creation procedure ("map's story").  
+ *   
  */
 public interface ActionFilter {
 	/** Each filter receives the action pair and its result is taken as the
 	 * new action pair.
 	 */
 	ActionPair filterAction(ActionPair pair);
+	
+	/**
+	 * @author foltin
+	 * This is a marker interface. Final Action Filter
+	 * are always called last and *should* not alter the 
+	 * action pair.
+	 */
+	public interface FinalActionFilter extends ActionFilter {
+		
+	}
 }

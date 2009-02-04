@@ -19,13 +19,12 @@
  *
  * Created on 25.02.2006
  */
-/*$Id: StringProperty.java,v 1.1.2.4.2.1 2006-07-25 20:28:19 christianfoltin Exp $*/
+/*$Id: StringProperty.java,v 1.1.2.4.2.2 2009-02-04 19:31:21 christianfoltin Exp $*/
 package freemind.common;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -51,12 +50,12 @@ public class StringProperty extends PropertyBean implements
 //                firePropertyChangeEvent();
 //            }
 //        });
-        mTextField.addActionListener(new ActionListener(){
+        mTextField.addKeyListener(new KeyAdapter(){
 
-            public void actionPerformed(ActionEvent pE)
-            {
+			public void keyReleased(KeyEvent pE) {
                 firePropertyChangeEvent();
-            }});
+			}}
+);
 
 	}
 

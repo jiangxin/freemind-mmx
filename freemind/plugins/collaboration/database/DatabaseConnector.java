@@ -19,22 +19,26 @@
  *
  * Created on 28.12.2008
  */
-/* $Id: DatabaseConnector.java,v 1.1.2.2 2009-01-14 21:18:36 christianfoltin Exp $ */
+/* $Id: DatabaseConnector.java,v 1.1.2.3 2009-02-04 19:31:21 christianfoltin Exp $ */
 
 package plugins.collaboration.database;
 
+import java.sql.Connection;
 import java.sql.DriverManager;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Vector;
 
-import plugins.collaboration.database.DatabaseBasics.FormDialog;
 import freemind.common.NumberProperty;
 import freemind.common.StringProperty;
+import freemind.extensions.PermanentNodeHook;
+import freemind.modes.mindmapmode.MindMapController;
 
 /**
  * @author foltin
  * 
  */
-public class DatabaseConnector extends DatabaseBasics {
+public class DatabaseConnector extends DatabaseBasics  {
 
 	private static final String HOST_PROPERTY = "plugins.collaboration.database.host";
 
@@ -44,8 +48,17 @@ public class DatabaseConnector extends DatabaseBasics {
 
 	public void startupMapHook() {
 		super.startupMapHook();
-		mController = getMindMapController();
+		MindMapController controller = getMindMapController();
 		try {
+			DatabaseConnectionHook connectionHook = isConnected();
+			if (connectionHook!= null) {
+				// I'm already present, so remove me.
+				logger.info("Deregister filter, so that the hook isn't reported to the database.");
+				connectionHook.getUpdateThread().deregisterFilter();
+				logger.info("Shutting down the permanent hook.");
+				togglePermanentHook(controller);
+				return;
+			}
 			logger.info("Connect...");
 			Class.forName("org.hsqldb.jdbcDriver");
 			StringProperty passwordProperty = new StringProperty(
@@ -53,29 +66,43 @@ public class DatabaseConnector extends DatabaseBasics {
 			StringProperty hostProperty = new StringProperty(
 					"The host to connect to (IP or name possible)", "Host");
 			NumberProperty portProperty = getPortProperty();
-			hostProperty.setValue(mController.getFrame().getProperty(
+			hostProperty.setValue(controller.getFrame().getProperty(
 					HOST_PROPERTY));
 			Vector controls = new Vector();
 			controls.add(passwordProperty);
 			controls.add(hostProperty);
 			controls.add(portProperty);
-			FormDialog dialog = new FormDialog(mController);
+			FormDialog dialog = new FormDialog(controller);
 			dialog.setUp(controls);
 			if (!dialog.isSuccess())
 				return;
 			setPortProperty(portProperty);
-			mController.getFrame().setProperty(HOST_PROPERTY,
+			controller.getFrame().setProperty(HOST_PROPERTY,
 					hostProperty.getValue());
 			String password = passwordProperty.getValue();
-			mConnection = DriverManager.getConnection("jdbc:hsqldb:hsql://"
-					+ hostProperty.getValue() + "/xdb", "sa", password);
+			Connection connection = DriverManager.getConnection("jdbc:hsqldb:hsql://"
+					+ hostProperty.getValue() + ":" + portProperty.getValue() + "/xdb", "sa", password);
 			logger.info("Starting update thread...");
-			mUpdateThread = new Thread(this);
+			mUpdateThread = new UpdateThread(connection, controller);
 			mUpdateThread.start();
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
 			return;
 		}
 	}
+
+	private DatabaseConnectionHook isConnected() {
+		Collection activatedHooks = getMindMapController().getRootNode().getActivatedHooks();
+		for (Iterator it = activatedHooks.iterator(); it
+				.hasNext();) {
+			PermanentNodeHook hook = (PermanentNodeHook) it.next();
+			if (hook instanceof DatabaseConnectionHook) {
+				return (DatabaseConnectionHook) hook;
+			}
+		}
+		return null;
+	}
+	
+
 
 }

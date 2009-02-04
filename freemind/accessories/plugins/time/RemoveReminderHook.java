@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2005
  */
-/* $Id: RemoveReminderHook.java,v 1.1.2.1 2007-01-03 23:47:43 christianfoltin Exp $ */
+/* $Id: RemoveReminderHook.java,v 1.1.2.2 2009-02-04 19:31:21 christianfoltin Exp $ */
 package accessories.plugins.time;
 
 import java.util.Arrays;
@@ -48,6 +48,7 @@ public class RemoveReminderHook extends MindMapNodeHookAdapter {
 		ReminderHookBase hook = TimeManagementOrganizer.getHook(node);
 		if(hook != null) {
 			List selected = Arrays.asList(new MindMapNode[] { node });
+			// adding the hook the second time, it is removed.
 			getMindMapController().addHook(node, selected, TimeManagement.REMINDER_HOOK_NAME);
 		}
 	}

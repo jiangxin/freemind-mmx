@@ -19,18 +19,17 @@
  *
  * Created on 24.04.2004
  */
-/* $Id: ActionFactory.java,v 1.1.2.2.2.7 2008-05-04 15:05:13 christianfoltin Exp $ */
+/* $Id: ActionFactory.java,v 1.1.2.2.2.8 2009-02-04 19:31:21 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
 import java.util.Vector;
 
 import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.modes.mindmapmode.actions.xml.ActionFilter.FinalActionFilter;
 
 /**
  * @author foltin
@@ -42,10 +41,11 @@ public class ActionFactory {
 	/** This Vector denotes all handler of the action to be called for each action. */
 	private Vector registeredHandler;
 	/** This set denotes all filters for XmlActions.*/
-	private Set registeredFilters;
+	private Vector registeredFilters;
 	/** HashMap of Action class -> actor instance. */
 	private HashMap registeredActors;
 	private UndoActionHandler undoActionHandler;
+	private static java.util.logging.Logger logger = null;
 
 	/**
 	 *
@@ -53,8 +53,12 @@ public class ActionFactory {
 	public ActionFactory(Controller c) {
 		super();
 		this.controller = c;
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
 		registeredHandler = new Vector();
-		registeredFilters = new HashSet();
+		registeredFilters = new Vector();
 		registeredActors = new HashMap();
 	}
 
@@ -73,7 +77,14 @@ public class ActionFactory {
 	}
 
 	public void registerFilter(ActionFilter newFilter) {
-		registeredFilters.add(newFilter);
+		if (!registeredFilters.contains(newFilter)) {
+			if (newFilter instanceof FinalActionFilter) {
+				/* Insert as the last one here. */
+				registeredFilters.insertElementAt(newFilter, registeredFilters.size());
+			} else {
+				registeredFilters.add(newFilter);				
+			}
+		}
 	}
 
 	public void deregisterFilter(ActionFilter newFilter) {
