@@ -19,7 +19,7 @@
  *
  * Created on 28.12.2008
  */
-/* $Id: DatabaseConnector.java,v 1.1.2.3 2009-02-04 19:31:21 christianfoltin Exp $ */
+/* $Id: DatabaseConnector.java,v 1.1.2.4 2009-02-05 22:12:37 christianfoltin Exp $ */
 
 package plugins.collaboration.database;
 
@@ -87,6 +87,8 @@ public class DatabaseConnector extends DatabaseBasics  {
 			mUpdateThread.start();
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
+			// TODO: Need a better message here.
+			controller.getController().errorMessage(e.getLocalizedMessage());
 			return;
 		}
 	}

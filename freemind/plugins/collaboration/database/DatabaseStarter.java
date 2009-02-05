@@ -19,7 +19,7 @@
  *
  * Created on 28.12.2008
  */
-/* $Id: DatabaseStarter.java,v 1.1.2.3 2009-02-04 19:31:21 christianfoltin Exp $ */
+/* $Id: DatabaseStarter.java,v 1.1.2.4 2009-02-05 22:12:37 christianfoltin Exp $ */
 
 package plugins.collaboration.database;
 
@@ -42,6 +42,8 @@ import freemind.view.mindmapview.NodeView;
  * 
  */
 public class DatabaseStarter extends DatabaseBasics implements PermanentNodeHook {
+
+	private File mTempDbFile;
 
 	/**
      *
@@ -78,17 +80,17 @@ public class DatabaseStarter extends DatabaseBasics implements PermanentNodeHook
 		// start server:
 		logger.info("Start server...");
 		try {
-			final File tempDbFile = File.createTempFile(
+			mTempDbFile = File.createTempFile(
 					"collaboration_database", ".hsqldb", new File(controller
 							.getFrame().getFreemindDirectory()));
-			tempDbFile.deleteOnExit();
-			logger.info("Start server in directory " + tempDbFile);
+//			mTempDbFile.deleteOnExit();
+			logger.info("Start server in file " + mTempDbFile);
 			Thread server = new Thread(new Runnable() {
 
 				public void run() {
 					org.hsqldb.Server
 							.main(new String[] { "-database.0",
-									"file:" + tempDbFile, "-dbname.0", "xdb",
+									"file:" + mTempDbFile, "-dbname.0", "xdb",
 									"-port", portProperty.getValue(),
 									"-no_system_exit", "true" });
 				}
@@ -107,7 +109,11 @@ public class DatabaseStarter extends DatabaseBasics implements PermanentNodeHook
 			mUpdateThread.start();
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
-			mUpdateThread.shutdown(true);
+			// TODO: Need a better message here.
+			controller.getController().errorMessage(e.getLocalizedMessage());
+			if (mUpdateThread != null) {
+				mUpdateThread.shutdown(true);
+			}
 			return;
 		}
 	}
@@ -124,12 +130,17 @@ public class DatabaseStarter extends DatabaseBasics implements PermanentNodeHook
 	}
 
 	public void shutdownMapHook() {
-		mUpdateThread.deregisterFilter();
-		mUpdateThread.signalEndOfSession();
 		if (mUpdateThread != null) {
+			mUpdateThread.deregisterFilter();
+			mUpdateThread.signalEndOfSession();
 			mUpdateThread.commitSuicide();
+			mUpdateThread.shutdown(true);
+			// remove temporary files:
+			logger.info("Remove temporary database files.");
+			mTempDbFile.delete();
+			new File(mTempDbFile.getAbsoluteFile()+".script").delete();
+			new File(mTempDbFile.getAbsoluteFile()+".properties").delete();
 		}
-		mUpdateThread.shutdown(true);
 		super.shutdownMapHook();
 	}
 
