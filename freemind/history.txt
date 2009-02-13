@@ -4,6 +4,7 @@ Changes made in FreeMind 0.9.0 RC 2
 * Integrated: [ 2043424 ] Patched freemind.sh to accept OpenJDK as valid VM * http://sourceforge.net/tracker/?func=detail&atid=307118&aid=2043424&group_id=7118
 * Experimental external plugin: database collaboration added (not for delivery with 0.9.0)
 * Fixed html export in XHTML. Thanks to wolfgangradke, https://sourceforge.net/forum/message.php?msg_id=5991663
+* Integrated patch (thanks to the author):  [ 2126330 ] enabled Ctrl-Enter as Save keystroke again
 
 ===============================
 Changes made in FreeMind 0.9.0 RC 1
