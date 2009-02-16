@@ -5,6 +5,8 @@ Changes made in FreeMind 0.9.0 RC 2
 * Experimental external plugin: database collaboration added (not for delivery with 0.9.0)
 * Fixed html export in XHTML. Thanks to wolfgangradke, https://sourceforge.net/forum/message.php?msg_id=5991663
 * Integrated patch (thanks to the author):  [ 2126330 ] enabled Ctrl-Enter as Save keystroke again
+* Fixed ooo export of relative links (see https://sourceforge.net/forum/message.php?msg_id=6389369).
+
 
 ===============================
 Changes made in FreeMind 0.9.0 RC 1

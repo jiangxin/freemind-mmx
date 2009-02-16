@@ -2,7 +2,7 @@
 <plugin label="accessories/plugins/ExportWithXSLT">
 	<plugin_action documentation="%accessories/plugins/ExportWithXSLT.properties_documentation" name="%accessories/plugins/ExportWithXSLT.properties_name" base="freemind.extensions.ModeControllerHookAdapter" label="accessories/plugins/ExportWithXSLT.properties" class_name="accessories.plugins.ExportWithXSLT">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
-		<plugin_menu location="menu_bar/file/export/exportXslt"/>
+		<plugin_menu location="menu_bar/file/export/other/exportXslt"/>
 		<plugin_property name="file_type" value="user"/>
 	</plugin_action>
 	<plugin_action documentation="%accessories/plugins/ExportWithXSLT_HTML.properties_documentation" name="%accessories/plugins/ExportWithXSLT_HTML.properties_name" base="freemind.extensions.ModeControllerHookAdapter" label="accessories/plugins/ExportWithXSLT_HTML.properties" class_name="accessories.plugins.ExportWithXSLT">
@@ -58,7 +58,7 @@
 	</plugin_action>
 	<plugin_action documentation="%accessories/plugins/ExportWithXSLT_TASKSTJI.properties_documentation" name="%accessories/plugins/ExportWithXSLT_TASKSTJI.properties_name" base="freemind.extensions.ModeControllerHookAdapter" label="accessories/plugins/ExportWithXSLT_TASKSTJI.properties" class_name="accessories.plugins.ExportWithXSLT">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
-		<plugin_menu location="menu_bar/file/export/html/exportTASKSTJI"/>
+		<plugin_menu location="menu_bar/file/export/other/exportTASKSTJI"/>
 		<plugin_property name="file_type" value="tji"/>
         <plugin_property name="name_extension" value=".tasks"/>
 		<plugin_property name="file_description" value="%accessories/plugins/ExportWithXSLT_Applet.properties_tji"/>
@@ -70,7 +70,7 @@
 	</plugin_action>
         <plugin_action documentation="%accessories/plugins/ExportWithXSLT_RESOURCESTJI.properties_documentation" name="%accessories/plugins/ExportWithXSLT_RESOURCESTJI.properties_name" base="freemind.extensions.ModeControllerHookAdapter" label="accessories/plugins/ExportWithXSLT_RESOURCESTJI.properties" class_name="accessories.plugins.ExportWithXSLT">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
-		<plugin_menu location="menu_bar/file/export/html/exportRESOURCESTJI"/>
+		<plugin_menu location="menu_bar/file/export/other/exportRESOURCESTJI"/>
 		<plugin_property name="file_type" value="tji"/>
         <plugin_property name="name_extension" value=".resources"/>
 		<plugin_property name="file_description" value="%accessories/plugins/ExportWithXSLT_Applet.properties_tji"/>
@@ -82,7 +82,7 @@
 	</plugin_action>
     <plugin_action documentation="%accessories/plugins/ExportWithTWiki.properties_documentation" name="%accessories/plugins/ExportWithTWiki.properties_name" base="freemind.extensions.ModeControllerHookAdapter" label="accessories/plugins/ExportWithTWiki.properties" class_name="accessories.plugins.ExportWithXSLT">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
-		<plugin_menu location="menu_bar/file/export/html/exportTWiki"/>
+		<plugin_menu location="menu_bar/file/export/other/exportTWiki"/>
 		<plugin_property name="file_type" value="twi"/>
         <plugin_property name="name_extension" value=""/>
 		<plugin_property name="file_description" value="%accessories/plugins/ExportWithTWiki.properties"/>

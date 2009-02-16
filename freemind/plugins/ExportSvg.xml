@@ -28,7 +28,7 @@
 		label="plugins/ExportPdf.xml" 
 		class_name="plugins.svg.ExportPdf">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
-		<plugin_menu location="menu_bar/file/export/pdf_export"/>
+		<plugin_menu location="menu_bar/file/export/pdf/pdf_export"/>
 	</plugin_action>
 	<plugin_action 
 		documentation="%plugins/ExportSvg.xml_documentation" 
@@ -36,6 +36,6 @@
 		label="plugins/ExportSvg.xml" 
 		class_name="plugins.svg.ExportSvg">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
-		<plugin_menu location="menu_bar/file/export/svg_export"/>
+		<plugin_menu location="menu_bar/file/export/pdf/svg_export"/>
 	</plugin_action>
 </plugin>

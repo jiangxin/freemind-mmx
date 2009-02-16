@@ -61,8 +61,8 @@ import freemind.modes.ModeController;
 /**
  * @author foltin
  *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
+ * Exports the map using an XSLT script. The parameterization is described
+ * in the corresponding Export... .xml-file.
  */
 public class ExportWithXSLT extends ExportHook {
 	private static final String NAME_EXTENSION_PROPERTY = "name_extension";
@@ -78,14 +78,6 @@ public class ExportWithXSLT extends ExportHook {
             nameExtension = getResourceString(NAME_EXTENSION_PROPERTY);
         }        
         return chooseFile(getResourceString("file_type"), getTranslatableResourceString("file_description"), nameExtension);
-    }
-
-	private String getTranslatableResourceString(String resourceName) {
-        String returnValue = getResourceString(resourceName);
-        if(returnValue != null && returnValue.startsWith("%")) {
-            return getController().getText(returnValue.substring(1));
-        }
-        return returnValue;
     }
 
     /**

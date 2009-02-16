@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.40 2008-11-12 21:44:33 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.41 2009-02-16 21:27:16 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -165,7 +165,7 @@ public class Tools {
         // fc, 3.11.2004: bug fix for alpha release of FM
         if (string.startsWith("java.awt.Point")) {
             string = string.replaceAll(
-                    "java\\.awt\\.Point\\[x=([0-9]*),y=([0-9]*)\\]", "$1;$2");
+                    "java\\.awt\\.Point\\[x=(-*[0-9]*),y=(-*[0-9]*)\\]", "$1;$2");
         }
         List l = stringToList(string);
         ListIterator it = l.listIterator(0);

@@ -304,7 +304,19 @@
 		<text:p text:style-name="Standard">
 			<xsl:element name="text:a" namespace="text">
 				<xsl:attribute namespace="xlink" name="xlink:type">simple</xsl:attribute>
-				<xsl:attribute namespace="xlink" name="xlink:href"><xsl:value-of select="."/>
+				<xsl:attribute namespace="xlink" name="xlink:href">
+					<!-- Convert relative links, such that they start with "../". 
+					     This is due to the fact, that OOo calculates all relative links from the document itself! -->
+					<xsl:choose>
+						<xsl:when test="starts-with(.,'/') or contains(.,':')">
+							<!-- absolute link -->
+							<xsl:value-of select="."/>
+						</xsl:when>
+						<xsl:otherwise>
+							<!-- relative link, put "../" at the front -->
+							<xsl:text>../</xsl:text><xsl:value-of select="."/>
+						</xsl:otherwise>
+					</xsl:choose>
 				</xsl:attribute>
 				<xsl:value-of select="."/>
 			</xsl:element>

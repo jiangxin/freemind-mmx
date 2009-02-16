@@ -125,8 +125,12 @@ private int mModifiers;
 	for (index = 0; index < iconLabels.length; index++){
 		if (caller == iconLabels[index]) break;
 	}
-	return new Position(index%xDimension, index/xDimension);
+	return getPositionFromIndex(index);
   }
+
+private Position getPositionFromIndex(int index) {
+	return new Position(index%xDimension, index/xDimension);
+}
 	
   private void setSelectedPosition(Position position){
 	selected = position;
@@ -239,6 +243,7 @@ private int mModifiers;
 		int index = findIndexByKeyEvent(keyEvent);
 		if(index != -1){
 			result = index;
+			lastPosition = getPositionFromIndex(index);
 			mModifiers = keyEvent.getModifiers();
 			keyEvent.consume();
 			this.dispose();
