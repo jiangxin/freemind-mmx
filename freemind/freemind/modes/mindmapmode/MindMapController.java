@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.72 2008-11-12 21:44:34 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.73 2009-02-22 19:20:01 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -1090,6 +1090,13 @@ freemind.main.Resources.getInstance().logException(					e1);
             super(getText("export_to_html"));
             c = controller; }
         public void actionPerformed(ActionEvent e) {
+        	// from https://sourceforge.net/tracker2/?func=detail&atid=307118&aid=1789765&group_id=7118
+        	if (getMap().getFile() == null) {
+				JOptionPane.showMessageDialog(getFrame().getContentPane(),
+						getText("map_not_saved"), "FreeMind",
+						JOptionPane.WARNING_MESSAGE);
+				return;
+			}             	
             try {
                 File file = new File(c.getMindMapMapModel().getFile() + ".html");
                 saveHTML((MindMapNodeModel) c.getMindMapMapModel().getRoot(), file);
@@ -1108,6 +1115,12 @@ freemind.main.Resources.getInstance().logException(					e1);
             c = controller; 
         }
         public void actionPerformed(ActionEvent e) {
+        	if (getMap().getFile() == null) {
+        		JOptionPane.showMessageDialog(getFrame().getContentPane(),
+        				getText("map_not_saved"), "FreeMind",
+        				JOptionPane.WARNING_MESSAGE);
+        		return;
+        	}             	
             try {
                 File file = File.createTempFile("tmm", ".html");
                 saveHTML((MindMapNodeModel)getSelected(),file);
