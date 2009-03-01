@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.41 2009-02-16 21:27:16 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.42 2009-03-01 20:16:28 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -1086,14 +1086,16 @@ public class Tools {
         return new URL(input.toString().replaceFirst("#.*", ""));
     }
 
-	public static void copyStream(InputStream in, OutputStream out) throws IOException {
+	public static void copyStream(InputStream in, OutputStream out, boolean pCloseOutput) throws IOException {
 		byte[] buf = new byte[1024];
 		int len;
 		while ((len = in.read(buf)) > 0) {
 		    out.write(buf, 0, len);
 		}
 		in.close();
-		out.close();
+		if (pCloseOutput) {
+			out.close();
+		}
 	}
 
     public static void convertPointToAncestor(Component c, Point p, Component destination){

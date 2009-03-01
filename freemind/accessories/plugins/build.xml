@@ -25,13 +25,7 @@
 		</javac>
 	</target>
 
-	<target name="dist">
-		<copy todir="${build}"> 
-			<fileset dir="${src}">
-				<include name="${plugin.dir}/**"/>
-				<exclude name="**/*.java"/>
-			</fileset>
-		</copy>
+	<target name="jar">
 		<jar jarfile="${plugin.jar}" update="true">
 			<fileset dir="${build}">
 				<include name="${plugin.dir}/**"/>
@@ -39,6 +33,15 @@
 				<exclude name="**/build.xml"/>
 			</fileset>
 		</jar>
+	</target>
+	
+	<target name="dist">
+		<copy todir="${build}"> 
+			<fileset dir="${src}">
+				<include name="${plugin.dir}/**"/>
+				<exclude name="**/*.java"/>
+			</fileset>
+		</copy>
 		<!-- additional libs  -->
 		<mkdir dir="${dist}" />
 		<copy todir="${dist}" flatten="false"> 

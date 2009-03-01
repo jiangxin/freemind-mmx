@@ -19,7 +19,7 @@
  *
  * Created on 06.09.2006
  */
-/*$Id: TransformTest.java,v 1.1.2.2 2006-10-22 18:47:36 christianfoltin Exp $*/
+/*$Id: TransformTest.java,v 1.1.2.3 2009-03-01 20:16:29 christianfoltin Exp $*/
 package tests.freemind;
 
 import java.io.ByteArrayOutputStream;
@@ -44,6 +44,7 @@ public class TransformTest extends FreeMindTestBase {
 
 	private static final String TESTMAP_MM = "tests/freemind/testmap.mm";
 	private static final String EXPORT_WITH_XSLT_XML = "accessories/plugins/ExportWithXSLT.xml";
+	private static final String EXPORT_TO_OOO = "accessories/plugins/ExportToOoWriter.xml";
 
 	public TransformTest() throws IOException {
 	}
@@ -90,8 +91,11 @@ public class TransformTest extends FreeMindTestBase {
 
 	public void testExportOoo() throws Exception {
 		String mapFileToBeExported = TESTMAP_MM;
-		String destinationFileName = "/tmp/test_ooo.sxw";
-		Properties properties = new Properties();
+		String destinationFileName = "/tmp/test_ooo.odt";
+		Properties properties = getProperties(
+				EXPORT_TO_OOO,
+				"accessories/plugins/ExportToOoWriter.properties");
+
 		doExportWithOooPlugin(mapFileToBeExported, destinationFileName,
 				properties);
 	}
@@ -135,10 +139,11 @@ public class TransformTest extends FreeMindTestBase {
 		InputStream xmlSource = ClassLoader.getSystemResource(
 				mapFileToBeExported).openStream();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		Tools.copyStream(xmlSource, out);
+		Tools.copyStream(xmlSource, out, true);
 		ExportWithXSLT exportHook = new ExportWithXSLT();
-		exportHook.setController(new MindMapControllerMock(mFreeMindMain, out
-				.toString()));
+		MindMapControllerMock controller = new MindMapControllerMock(mFreeMindMain, out
+				.toString());
+		exportHook.setController(controller);
 
 		exportHook.setProperties(properties);
 		File destinationFile = new File(destinationFileName);
@@ -154,7 +159,7 @@ public class TransformTest extends FreeMindTestBase {
 		InputStream xmlSource = ClassLoader.getSystemResource(
 				mapFileToBeExported).openStream();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
-		Tools.copyStream(xmlSource, out);
+		Tools.copyStream(xmlSource, out, true);
 		ExportToOoWriter exportHook = new ExportToOoWriter();
 		exportHook.setController(new MindMapControllerMock(mFreeMindMain, out
 				.toString()));

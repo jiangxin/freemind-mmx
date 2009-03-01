@@ -34,7 +34,7 @@
 	xmlns:oooc="http://openoffice.org/2004/calc" xmlns:dom="http://www.w3.org/2001/xml-events"
 	xmlns:xforms="http://www.w3.org/2002/xforms" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<xsl:output method="xml" version="1.0" indent="yes"
+	<xsl:output method="xml" version="1.0" indent="no"
 		encoding="UTF-8" omit-xml-declaration="no" />
 	<xsl:strip-space elements="*" />
 
@@ -114,108 +114,45 @@
 					<style:graphic-properties draw:fill-color="#ffffff"
 						fo:min-height="13.609cm" />
 				</style:style>
-				<style:style style:name="P1" style:family="paragraph">
-					<style:paragraph-properties
-						fo:margin-left="0cm" fo:margin-right="0cm" fo:text-indent="0cm" />
-				</style:style>
-				<style:style style:name="P2" style:family="paragraph">
-					<style:paragraph-properties
-						fo:margin-left="0.6cm" fo:margin-right="0cm" fo:text-indent="-0.6cm" />
-				</style:style>
-				<style:style style:name="P3" style:family="paragraph">
+				<style:style style:name="Title1" style:family="paragraph">
 					<style:paragraph-properties
 						fo:margin-left="0cm" fo:margin-right="0cm" fo:text-align="start"
 						fo:text-indent="0cm" />
-				</style:style>
-				<style:style style:name="P4" style:family="paragraph">
-					<style:paragraph-properties
-						fo:text-align="start" />
-				</style:style>
-				<style:style style:name="P5" style:family="paragraph">
-					<style:paragraph-properties
-						fo:margin-left="1.2cm" fo:margin-right="0cm" fo:text-indent="-0.9cm" />
-				</style:style>
-				<style:style style:name="P6" style:family="paragraph">
-					<style:paragraph-properties
-						fo:margin-left="2.4cm" fo:margin-right="0cm" fo:text-indent="-0.8cm" />
-				</style:style>
-				<style:style style:name="P7" style:family="paragraph">
-					<style:paragraph-properties
-						fo:margin-left="0.6cm" fo:margin-right="0cm" fo:text-indent="-0.6cm" />
-					<style:text-properties fo:font-size="20pt" />
 				</style:style>
 				<style:style style:name="T1" style:family="text">
 					<style:text-properties fo:font-size="36pt"
 						style:font-size-asian="36pt" style:font-size-complex="36pt" />
 				</style:style>
+			    <style:style style:name="P1" style:family="paragraph">
+			      <style:paragraph-properties fo:margin-left="1.2cm" fo:margin-right="0cm" fo:text-indent="-0.9cm"/>
+			    </style:style>
+			    <style:style style:name="P2" style:family="paragraph">
+			      <style:paragraph-properties fo:margin-left="2.4cm" fo:margin-right="0cm" fo:text-indent="-0.8cm"/>
+			    </style:style>
+			    <style:style style:name="P3" style:family="paragraph">
+			      <style:paragraph-properties fo:margin-left="3.6cm" fo:margin-right="0cm" fo:text-indent="-0.6cm"/>
+			    </style:style>
+			    <style:style style:name="P4" style:family="paragraph">
+			      <style:paragraph-properties fo:margin-left="4.8cm" fo:margin-right="0cm" fo:text-indent="-0.6cm"/>
+			    </style:style>
+			    <style:style style:name="P5" style:family="paragraph">
+			      <style:paragraph-properties fo:margin-left="6cm" fo:margin-right="0cm" fo:text-indent="-0.6cm"/>
+			    </style:style>
+			    <style:style style:name="P6" style:family="paragraph">
+			      <style:paragraph-properties fo:margin-left="7.2cm" fo:margin-right="0cm" fo:text-indent="-0.6cm"/>
+			    </style:style>
+			    <style:style style:name="P7" style:family="paragraph">
+			      <style:paragraph-properties fo:margin-left="8.4cm" fo:margin-right="0cm" fo:text-indent="-0.6cm"/>
+			    </style:style>
+			    <style:style style:name="P8" style:family="paragraph">
+			      <style:paragraph-properties fo:margin-left="9.6cm" fo:margin-right="0cm" fo:text-indent="-0.6cm"/>
+			    </style:style>
+			    <style:style style:name="P9" style:family="paragraph">
+			      <style:paragraph-properties fo:margin-left="10.8cm" fo:margin-right="0cm" fo:text-indent="-0.6cm"/>
+			    </style:style>
 				<text:list-style style:name="L1">
 					<text:list-level-style-bullet
 						text:level="1" text:bullet-char="●">
-						<style:text-properties fo:font-family="StarSymbol"
-							style:use-window-font-color="true" fo:font-size="45%" />
-					</text:list-level-style-bullet>
-					<text:list-level-style-bullet
-						text:level="2" text:bullet-char="●">
-						<style:list-level-properties
-							text:space-before="0.6cm" text:min-label-width="0.6cm" />
-						<style:text-properties fo:font-family="StarSymbol"
-							style:use-window-font-color="true" fo:font-size="45%" />
-					</text:list-level-style-bullet>
-					<text:list-level-style-bullet
-						text:level="3" text:bullet-char="●">
-						<style:list-level-properties
-							text:space-before="1.2cm" text:min-label-width="0.6cm" />
-						<style:text-properties fo:font-family="StarSymbol"
-							style:use-window-font-color="true" fo:font-size="45%" />
-					</text:list-level-style-bullet>
-					<text:list-level-style-bullet
-						text:level="4" text:bullet-char="●">
-						<style:list-level-properties
-							text:space-before="1.8cm" text:min-label-width="0.6cm" />
-						<style:text-properties fo:font-family="StarSymbol"
-							style:use-window-font-color="true" fo:font-size="45%" />
-					</text:list-level-style-bullet>
-					<text:list-level-style-bullet
-						text:level="5" text:bullet-char="●">
-						<style:list-level-properties
-							text:space-before="2.4cm" text:min-label-width="0.6cm" />
-						<style:text-properties fo:font-family="StarSymbol"
-							style:use-window-font-color="true" fo:font-size="45%" />
-					</text:list-level-style-bullet>
-					<text:list-level-style-bullet
-						text:level="6" text:bullet-char="●">
-						<style:list-level-properties
-							text:space-before="3cm" text:min-label-width="0.6cm" />
-						<style:text-properties fo:font-family="StarSymbol"
-							style:use-window-font-color="true" fo:font-size="45%" />
-					</text:list-level-style-bullet>
-					<text:list-level-style-bullet
-						text:level="7" text:bullet-char="●">
-						<style:list-level-properties
-							text:space-before="3.6cm" text:min-label-width="0.6cm" />
-						<style:text-properties fo:font-family="StarSymbol"
-							style:use-window-font-color="true" fo:font-size="45%" />
-					</text:list-level-style-bullet>
-					<text:list-level-style-bullet
-						text:level="8" text:bullet-char="●">
-						<style:list-level-properties
-							text:space-before="4.2cm" text:min-label-width="0.6cm" />
-						<style:text-properties fo:font-family="StarSymbol"
-							style:use-window-font-color="true" fo:font-size="45%" />
-					</text:list-level-style-bullet>
-					<text:list-level-style-bullet
-						text:level="9" text:bullet-char="●">
-						<style:list-level-properties
-							text:space-before="4.8cm" text:min-label-width="0.6cm" />
-						<style:text-properties fo:font-family="StarSymbol"
-							style:use-window-font-color="true" fo:font-size="45%" />
-					</text:list-level-style-bullet>
-				</text:list-style>
-				<text:list-style style:name="L2">
-					<text:list-level-style-bullet
-						text:level="1" text:bullet-char="●">
-						<style:list-level-properties
-							text:space-before="0.3cm" text:min-label-width="0.9cm" />
 						<style:text-properties fo:font-family="StarSymbol"
 							style:use-window-font-color="true" fo:font-size="45%" />
 					</text:list-level-style-bullet>
@@ -347,7 +284,7 @@
 		<text:list text:style-name="L2">
 			<text:list-item>
 				<xsl:call-template name="output-nodecontent">
-					<xsl:with-param name="style">P5</xsl:with-param>
+					<xsl:with-param name="style">P1</xsl:with-param>
 				</xsl:call-template>
 			</text:list-item>
 		</text:list>
@@ -394,7 +331,6 @@
 				<xsl:with-param name="nodes" select="."></xsl:with-param>
 			</xsl:call-template>
 		</xsl:variable>
-		<xsl:message terminate="no"><xsl:value-of select="$depth"/></xsl:message>
 		<!--
 			If the current node has a note, then insert a special page for it.
 		-->
@@ -421,11 +357,10 @@
 						svg:height="3.256cm" svg:x="1.4cm" svg:y="0.962cm"
 						presentation:class="title" presentation:user-transformed="true">
 						<draw:text-box>
-							<text:p text:style-name="P3">
+							<text:p text:style-name="Title1">
 								<!-- Title of upper slide -->
 								<xsl:apply-templates select=".." mode="titleout" />
-								<text:line-break />
-								<text:span text:style-name="T1">
+								<text:line-break /><text:span text:style-name="T1">
 									<!-- Title of this slide with decreased font -->
 									<xsl:call-template name="output-nodecontent">
 										<xsl:with-param name="style"></xsl:with-param>
@@ -480,7 +415,7 @@
 		<xsl:param name="depth">0</xsl:param>
 		<xsl:variable name="text">
 			<xsl:call-template name="output-nodecontent">
-				<xsl:with-param name="style">P<xsl:value-of select="$depth+5"/></xsl:with-param>
+				<xsl:with-param name="style">P<xsl:value-of select="$depth+1"/></xsl:with-param>
 			</xsl:call-template>
 		</xsl:variable>
 		<text:list text:style-name="L2">

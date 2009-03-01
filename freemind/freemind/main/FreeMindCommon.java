@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.37 2008-07-09 20:01:03 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.38 2009-03-01 20:16:28 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -29,15 +29,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
-import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.Vector;
 import java.util.logging.Logger;
 
 

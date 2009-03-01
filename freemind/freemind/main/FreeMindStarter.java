@@ -19,7 +19,7 @@
  *
  * Created on 06.07.2006
  */
-/*$Id: FreeMindStarter.java,v 1.1.2.9 2008-08-05 20:29:18 christianfoltin Exp $*/
+/*$Id: FreeMindStarter.java,v 1.1.2.10 2009-03-01 20:16:28 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -162,7 +162,7 @@ public class FreeMindStarter {
 		return System.getProperty("user.home") + File.separator +  defaultPreferences.getProperty("properties_folder");
 	}
 
-	private Properties readDefaultPreferences() {
+	public static Properties readDefaultPreferences() {
 		String propsLoc = "freemind.properties";
 		URL defaultPropsURL = ClassLoader.getSystemResource(propsLoc);
 		Properties props = new Properties();

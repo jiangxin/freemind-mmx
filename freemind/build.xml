@@ -15,6 +15,7 @@
 	<property name="src" value="." />
 	<property name="src_base_for_post" value="../" />
 	<property name="build" value="../bin/classes" />
+	<property name="acc_build" value="accessories/plugins/build.xml" />
 	<property name="dist" value="../bin/dist" />
 	<property name="dist.lib" value="${dist}/lib" />
 	<property name="dist_macos_name" value="FreeMind_${ver}" />
@@ -131,7 +132,7 @@
 		<javac	srcdir="${src}" destdir="${build}" classpath="${classpath}"	debug="${debug}" source="1.3" target="1.1">
 			<include name="freemind/main/FreeMindStarter.java"/>
 		</javac>
-		<ant antfile="accessories/plugins/build.xml" target="build"/>
+		<ant antfile="${acc_build}" target="build"/>
 		<ant antfile="plugins/build.xml" target="build"/>
 	</target>
 
@@ -179,7 +180,7 @@
 			</fileset>
 		</copy>
 
-		<ant antfile="accessories/plugins/build.xml" target="dist"/>
+		<ant antfile="${acc_build}" target="dist"/>
 		<ant antfile="plugins/build.xml" target="dist"/>
 		<!-- Mac OS X -->
 		<condition property="isMacOs">
@@ -222,7 +223,7 @@
 		                    bundleid="freemind.main.FreeMind"
 		                    signature="FM"
 		                    jvmversion="1.4+"
-							vmoptions='-Xms512m -Xmx1024m -Dcom.apple.macos.useScreenMenuBar=true -Xdock:name="FreeMind" -Xdock:icon="FreeMindWindowIcon${icns_extension}.icns"'
+							vmoptions='-Xms64m -Xmx512m -Dcom.apple.macos.useScreenMenuBar=true -Xdock:name="FreeMind" -Xdock:icon="FreeMindWindowIcon${icns_extension}.icns"'
 		  				    >
 			<jarfileset dir="${dist}">
 				<include name="**/*.jar" />
@@ -310,7 +311,7 @@
 
 	<target name="post_macos">
 
-		<exec dir="." executable="bash" os="Mac OS X">
+		<exec dir="." executable="zsh" os="Mac OS X">
 			<arg value="./mkdmg.sh"/>
 			<arg path="${dist_macos_app}"/>
 		</exec>
@@ -342,6 +343,7 @@
 				<include name="**/freemind_version_updater.xslt"/>
 			</fileset>
 		</jar>
+		<ant antfile="${acc_build}" target="jar"/>
 	</target>
 
 	<target name="browser" depends="build">

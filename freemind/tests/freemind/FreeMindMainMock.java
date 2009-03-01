@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMainMock.java,v 1.1.2.14 2008-07-04 20:44:03 christianfoltin Exp $*/
+/*$Id: FreeMindMainMock.java,v 1.1.2.15 2009-03-01 20:16:28 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -31,24 +31,26 @@ import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
-import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 import freemind.controller.Controller;
 import freemind.controller.MenuBar;
 import freemind.main.FreeMindMain;
+import freemind.main.FreeMindStarter;
 import freemind.main.Resources;
-import freemind.main.FreeMindMain.VersionInformation;
 import freemind.view.mindmapview.MapView;
 
 /** */
 public class FreeMindMainMock implements FreeMindMain {
 
-    /**
+    private Properties mProperties;
+
+	/**
      * 
      */
     public FreeMindMainMock() {
         super();
+		mProperties = FreeMindStarter.readDefaultPreferences();
         Resources.createInstance(this);
 
     }
@@ -92,7 +94,7 @@ public class FreeMindMainMock implements FreeMindMain {
     }
 
     public String getResourceString(String key, String resource) {
-        return null;
+        return key;
     }
     
     public Container getContentPane() {
@@ -120,13 +122,11 @@ public class FreeMindMainMock implements FreeMindMain {
     }
 
     public Properties getProperties() {
-        return new Properties();
+        return mProperties;
     }
 
     public String getProperty(String key) {
-        HashMap predefinedProperties = new HashMap();
-        predefinedProperties.put("html_export_folding", "html_export_fold_currently_folded");
-        return (String) predefinedProperties.get(key);
+    	return mProperties.getProperty(key);
     }
 
     public void setProperty(String key, String value) {
