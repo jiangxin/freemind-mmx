@@ -223,7 +223,7 @@
 		                    bundleid="freemind.main.FreeMind"
 		                    signature="FM"
 		                    jvmversion="1.4+"
-							vmoptions='-Xms64m -Xmx512m -Dcom.apple.macos.useScreenMenuBar=true -Xdock:name="FreeMind" -Xdock:icon="FreeMindWindowIcon${icns_extension}.icns"'
+							vmoptions='-Xms64m -Xmx512m -Dapple.laf.useScreenMenuBar=true'
 		  				    >
 			<jarfileset dir="${dist}">
 				<include name="**/*.jar" />
