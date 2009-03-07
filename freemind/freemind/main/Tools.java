@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.42 2009-03-01 20:16:28 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.43 2009-03-07 19:22:46 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -719,15 +719,17 @@ public class Tools {
      */
     public static String toBase64(byte[] byteBuffer) {
         return new String(Base64Coding.encode64(byteBuffer));
-//        return new String(CommonsCodecBase64.encodeBase64(byteBuffer));
     }
-
+    
+    /** Method to be called from XSLT */
+    public static String toBase64(String text) {
+        return toBase64(text.getBytes());
+    }
     /**
      * @throws IOException
      */
     public static byte[] fromBase64(String base64String)  {
         return Base64Coding.decode64(base64String);
-//        return CommonsCodecBase64.decodeBase64(base64String.getBytes());
     }
 
     public static String compress(String message) {

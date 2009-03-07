@@ -20,7 +20,7 @@
  * 
  * Created on 25.02.2006
  */
-/* $Id: ThreeCheckBoxProperty.java,v 1.1.2.1.2.3 2007-08-07 20:09:24 christianfoltin Exp $ */
+/* $Id: ThreeCheckBoxProperty.java,v 1.1.2.1.2.4 2009-03-07 19:22:46 christianfoltin Exp $ */
 package freemind.common;
 
 import java.awt.event.ActionEvent;
@@ -55,11 +55,11 @@ public class ThreeCheckBoxProperty extends PropertyBean implements
 
     protected static final int FALSE_VALUE_INT = 1;
 
-    //FIXME: Choose different icon.
-    private static final ImageIcon PLUS_IMAGE = new ImageIcon(ClassLoader.getSystemResource("accessories/plugins/icons/edit_add.png"));
+    private static final ImageIcon PLUS_IMAGE = new ImageIcon(ClassLoader
+			.getSystemResource("images/edit_add.png"));
 
-    //FIXME: Choose different icon.
-    private static final ImageIcon MINUS_IMAGE = new ImageIcon(ClassLoader.getSystemResource("accessories/plugins/icons/edit_remove.png"));
+	private static final ImageIcon MINUS_IMAGE = new ImageIcon(ClassLoader
+			.getSystemResource("images/edit_remove.png"));
 
     private static final Icon NO_IMAGE = new BlindIcon(15);
 
@@ -138,7 +138,9 @@ public class ThreeCheckBoxProperty extends PropertyBean implements
 
     public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
         JLabel label = builder.append(pTranslator.getText(getLabel()), mButton);
-        label.setToolTipText(pTranslator.getText(getDescription()));
+        String tooltiptext = pTranslator.getText(getDescription());
+		label.setToolTipText(tooltiptext);
+        mButton.setToolTipText(tooltiptext);
     }
 
     public void setEnabled(boolean pEnabled) {

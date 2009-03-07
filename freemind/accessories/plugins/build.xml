@@ -26,6 +26,12 @@
 	</target>
 
 	<target name="jar">
+		<copy todir="${build}"> 
+			<fileset dir="${src}">
+				<include name="${plugin.dir}/**"/>
+				<exclude name="**/*.java"/>
+			</fileset>
+		</copy>
 		<jar jarfile="${plugin.jar}" update="true">
 			<fileset dir="${build}">
 				<include name="${plugin.dir}/**"/>
@@ -36,12 +42,6 @@
 	</target>
 	
 	<target name="dist">
-		<copy todir="${build}"> 
-			<fileset dir="${src}">
-				<include name="${plugin.dir}/**"/>
-				<exclude name="**/*.java"/>
-			</fileset>
-		</copy>
 		<!-- additional libs  -->
 		<mkdir dir="${dist}" />
 		<copy todir="${dist}" flatten="false"> 
