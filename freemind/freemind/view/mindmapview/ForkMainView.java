@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ForkMainView.java,v 1.1.4.11 2008-11-12 21:44:34 christianfoltin Exp $ */
+/* $Id: ForkMainView.java,v 1.1.4.12 2009-03-07 09:06:11 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -57,19 +57,15 @@ class ForkMainView extends MainView{
         super.paint(g);
     }
 
-    void paintFoldingMark(Graphics2D g, Point p) {
+    void paintFoldingMark(NodeView nodeView, Graphics2D g, Point p) {
         final int zoomedFoldingSymbolHalfWidth = getZoomedFoldingSymbolHalfWidth();
-        if(p.x == getX()){
+        if(nodeView.isLeft()){
             p.x -= zoomedFoldingSymbolHalfWidth;
         }
-        else if(p.x == getX() + getWidth() - 1){
+        else{
             p.x += zoomedFoldingSymbolHalfWidth;
         }
-        else {
-            System.err.println("unexpected folding mark location " + p);
-        }
-
-        super.paintFoldingMark(g, p);
+        super.paintFoldingMark(nodeView, g, p);
     }
     
     protected int getMainViewWidthWithFoldingMark( )

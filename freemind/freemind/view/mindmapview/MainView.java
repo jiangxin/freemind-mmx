@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.31 2009-01-01 21:33:48 christianfoltin Exp $ */
+/* $Id: MainView.java,v 1.1.4.32 2009-03-07 09:06:11 dpolivaev Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -330,7 +330,7 @@ public abstract class MainView extends JLabel{
             return getNodeView().getMap().getZoomed(icon.getIconWidth());
         }
         
-        void paintFoldingMark(Graphics2D g, Point p) {
+        void paintFoldingMark(NodeView nodeView, Graphics2D g, Point p) {
             final int zoomedFoldingSymbolHalfWidth = getZoomedFoldingSymbolHalfWidth();
             p.translate(-zoomedFoldingSymbolHalfWidth, - zoomedFoldingSymbolHalfWidth);
             final Color color = g.getColor();

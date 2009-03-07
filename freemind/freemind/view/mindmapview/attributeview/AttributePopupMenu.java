@@ -191,6 +191,7 @@ public class AttributePopupMenu extends JPopupMenu implements MouseListener {
             remove(--i);
         }
         if(component instanceof AttributeTable){
+        	oldTable = false;
             table = (AttributeTable)component;  
             row = table.rowAtPoint(point);
             if(table.getValueAt(row, 0).equals("")){
@@ -199,6 +200,7 @@ public class AttributePopupMenu extends JPopupMenu implements MouseListener {
             int selectedRow = table.getSelectedRow();
         }
         else if (component instanceof JTableHeader){
+        	oldTable = false;
             JTableHeader header = (JTableHeader)component;
             table = (AttributeTable)header.getTable();
             row = -1;
@@ -221,12 +223,18 @@ public class AttributePopupMenu extends JPopupMenu implements MouseListener {
     public void mouseExited(MouseEvent e) {
     }
 
+    private boolean oldTable;
     protected void firePopupMenuWillBecomeInvisible() {
         if(row != -1){
             table.removeRowSelectionInterval(row, row);
         }
+        oldTable = true;
         EventQueue.invokeLater(new Runnable(){
-            public void run() {
+
+			public void run() {
+            	if(! oldTable){
+            		return;
+            	}
                 final KeyboardFocusManager focusManager = java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager();
                 final Component focusOwner = SwingUtilities.getAncestorOfClass(AttributeTable.class, focusManager.getFocusOwner());
                 if(table != focusOwner
