@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.4.7.4.8 2008-08-05 20:29:15 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.4.7.4.9 2009-03-08 16:51:18 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -42,6 +42,7 @@ import javax.swing.JToolBar;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
+import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
 
@@ -64,10 +65,15 @@ public class StructuredMenuHolder {
     private static final String SEPARATOR_TEXT = "000";
     private static final String ORDER_NAME = "/order";
 	Map menuMap; 
+	private static java.util.logging.Logger logger = null;
 
 	private int mIndent;
 	private static ImageIcon sSelectedIcon;
     public StructuredMenuHolder() {
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
 		menuMap = new HashMap();
 		Vector order = new Vector();
 		menuMap.put(ORDER_NAME, order);
@@ -91,6 +97,7 @@ public class StructuredMenuHolder {
 		StructuredMenuItemHolder holder = new StructuredMenuItemHolder();
 		holder.setAction(item.getAction());
 		holder.setMenuItem(item);
+		adjustTooltips(holder);
 		addMenu(holder, tokens);
 		return item;
 	}
@@ -109,8 +116,27 @@ public class StructuredMenuHolder {
 		} else {
 			holder.setMenuItem(new JMenuItem(item));
 		}
+		adjustTooltips(holder);
 		addMenu(holder, tokens);
 		return holder.getMenuItem();
+	}
+
+	/**
+	 * Under Mac, no HTML is rendered for menus.
+	 * @param holder
+	 */
+	private void adjustTooltips(StructuredMenuItemHolder holder) {
+		if(Tools.isMacOsX()) {
+			// remove html tags from tooltips:
+			String toolTipText = holder
+					.getMenuItem().getToolTipText();
+			if (toolTipText != null) {
+				String toolTipTextWithoutTags = HtmlTools
+						.removeHtmlTagsFromString(toolTipText);
+				logger.info("Old tool tip: " + toolTipText+", New tool tip: " + toolTipTextWithoutTags);
+				holder.getMenuItem().setToolTipText(toolTipTextWithoutTags);
+			}
+		}
 	}
 
 	public void addCategory(String category) {
