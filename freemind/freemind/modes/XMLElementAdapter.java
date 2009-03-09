@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.20 2008-12-09 21:09:43 christianfoltin Exp $ */
+/* $Id: XMLElementAdapter.java,v 1.4.14.15.2.21 2009-03-09 18:45:05 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -57,8 +57,8 @@ public abstract class XMLElementAdapter extends XMLElement {
    private String iconName;
 
     // arrow link attributes:
-    protected Vector ArrowLinkAdapters;
-    protected HashMap /* id -> target */  IDToTarget;
+    protected Vector mArrowLinkAdapters;
+    protected HashMap /* id -> target */  mIDToTarget;
     public static final String XML_NODE_TEXT = "TEXT";
     public static final String XML_NODE = "node";
     public static final String XML_NODE_ATTRIBUTE = "attribute";
@@ -96,8 +96,8 @@ public abstract class XMLElementAdapter extends XMLElement {
     protected XMLElementAdapter(ModeController modeController, Vector ArrowLinkAdapters, HashMap IDToTarget) {
         this.mModeController = modeController;
         this.frame = modeController.getFrame();
-        this.ArrowLinkAdapters = ArrowLinkAdapters;
-        this.IDToTarget = IDToTarget;
+        this.mArrowLinkAdapters = ArrowLinkAdapters;
+        this.mIDToTarget = IDToTarget;
         if(logger==null) {
         	logger = frame.getLogger(this.getClass().getName());
         }
@@ -193,7 +193,7 @@ public abstract class XMLElementAdapter extends XMLElement {
             arrowLink.setSource(node);
             // annotate this link: (later processed by caller.).
             //System.out.println("arrowLink="+arrowLink);
-            ArrowLinkAdapters.add(arrowLink);
+            mArrowLinkAdapters.add(arrowLink);
          }
          else if (child.getName().equals("font")) {
              node.setFont((Font)child.getUserObject()); }
@@ -420,7 +420,7 @@ public abstract class XMLElementAdapter extends XMLElement {
 	 else if (name.equals("ID")) {
 	     // do not set label but annotate in list:
 	     //System.out.println("(sValue, node) = " + sValue + ", "+  node);
-	     IDToTarget.put(sValue, node);
+	     mIDToTarget.put(sValue, node);
 	 }
 	 else if (name.equals("VSHIFT")) {
 	 	node.setShiftY(Integer.parseInt(sValue));
@@ -485,38 +485,38 @@ public abstract class XMLElementAdapter extends XMLElement {
     /** Completes the links within the getMap(). They are registered in the registry.*/
     public void processUnfinishedLinks(MindMapLinkRegistry registry) {
         // add labels to the nodes:
-        setIDs(IDToTarget, registry);
+        setIDs(mIDToTarget, registry);
         // complete arrow links with right labels:
-        for(int i = 0; i < ArrowLinkAdapters.size(); ++i) {
-            ArrowLinkAdapter arrowLink = (ArrowLinkAdapter) ArrowLinkAdapters.get(i);
+        for(int i = 0; i < mArrowLinkAdapters.size(); ++i) {
+            ArrowLinkAdapter arrowLink = (ArrowLinkAdapter) mArrowLinkAdapters.get(i);
             String oldID = arrowLink.getDestinationLabel();
             NodeAdapter target = null;
             String newID = null;
             // find oldID in target list:
-            if(IDToTarget.containsKey(oldID)) {
+            if(mIDToTarget.containsKey(oldID)) {
                 // link present in the xml text
-                target = (NodeAdapter) IDToTarget.get(oldID);
+                target = (NodeAdapter) mIDToTarget.get(oldID);
                 newID = registry.getLabel(target);
             } else if(registry.getTargetForID(oldID) != null) {
                 // link is already present in the getMap() (paste).
                 target = (NodeAdapter) registry.getTargetForID(oldID);
                 if(target == null) {
                     // link target is in nowhere-land
-                    System.err.println("Found the label " + oldID + ", but not the corresponding node in the map. The link "+arrowLink+" is not restored.");
+                    logger.severe("Found the label " + oldID + ", but not the corresponding node in the map. The link "+arrowLink+" is not restored.");
                     continue;
                 }
                 newID = registry.getLabel(target);
                 if( ! newID.equals(oldID) ) {
-                    System.err.println("Servere internal error. Looked for id " + oldID + " but found "+newID + " in the node " + target+".");
+                    logger.severe("Servere internal error. Looked for id " + oldID + " but found "+newID + " in the node " + target+".");
                     continue;
                 }
             } else {
                 // link target is in nowhere-land
-                System.err.println("Cannot find the label " + oldID + " in the map. The link "+arrowLink+" is not restored.");
-                for (Iterator iterator = IDToTarget.keySet().iterator(); iterator
+                logger.severe("Cannot find the label " + oldID + " in the map. The link "+arrowLink+" is not restored.");
+                for (Iterator iterator = mIDToTarget.keySet().iterator(); iterator
 						.hasNext();) {
 					String id = (String) iterator.next();
-					System.err.println("Old-Id: " + id + " = new id: " + ((MindMapNode)IDToTarget.get(id)).getObjectId(mModeController));
+					logger.severe("Old-Id: " + id + " = new id: " + ((MindMapNode)mIDToTarget.get(id)).getObjectId(mModeController));
 				}
                 continue;
             }
@@ -546,6 +546,8 @@ public abstract class XMLElementAdapter extends XMLElement {
                 // repair link
                 link.setTarget(target);
                 link.setDestinationLabel(newId);
+                // register link
+                registry.registerLink(link);
             }
         }
     }
@@ -556,10 +558,10 @@ public abstract class XMLElementAdapter extends XMLElement {
     }
 
 	public HashMap getIDToTarget() {
-		return IDToTarget;
+		return mIDToTarget;
 	}
 
 	public void setIDToTarget(HashMap pToTarget) {
-		IDToTarget = pToTarget;
+		mIDToTarget = pToTarget;
 	}
 }

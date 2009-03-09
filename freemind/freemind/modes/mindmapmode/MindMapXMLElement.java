@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapXMLElement.java,v 1.13.18.2.2.3 2006-11-28 08:25:36 dpolivaev Exp $ */
+/* $Id: MindMapXMLElement.java,v 1.13.18.2.2.4 2009-03-09 18:45:05 christianfoltin Exp $ */
 
 
 package freemind.modes.mindmapmode;
@@ -64,7 +64,7 @@ public class MindMapXMLElement extends XMLElementAdapter {
     /** abstract method to create elements of my type (factory).*/
     protected XMLElement  createAnotherElement(){
     // We do not need to initialize the things of XMLElement.
-        return new MindMapXMLElement(mModeController, ArrowLinkAdapters, IDToTarget);
+        return new MindMapXMLElement(mModeController, mArrowLinkAdapters, mIDToTarget);
     }
     protected NodeAdapter createNodeAdapter(FreeMindMain     frame, String nodeClass){
         if (nodeClass==null) {

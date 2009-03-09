@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseXMLElement.java,v 1.6.18.2.2.1 2006-04-05 21:26:26 dpolivaev Exp $ */
+/* $Id: BrowseXMLElement.java,v 1.6.18.2.2.2 2009-03-09 18:45:05 christianfoltin Exp $ */
 
 
 package freemind.modes.browsemode;
@@ -52,7 +52,7 @@ public class BrowseXMLElement extends XMLElementAdapter {
     /** abstract method to create elements of my type (factory).*/
     protected XMLElement  createAnotherElement(){
     // We do not need to initialize the things of XMLElement.
-        return new BrowseXMLElement(mModeController, ArrowLinkAdapters, IDToTarget);
+        return new BrowseXMLElement(mModeController, mArrowLinkAdapters, mIDToTarget);
     }
     protected NodeAdapter createNodeAdapter(FreeMindMain     frame, String nodeClass){
     		if(nodeClass == ENCRYPTED_BROWSE_NODE){
