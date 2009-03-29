@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.43 2009-03-07 19:22:46 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.44 2009-03-29 19:37:23 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -27,6 +27,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
@@ -1314,6 +1315,20 @@ public class Tools {
 		String rootText = node.getPlainTextContent();
 	    rootText = rootText.replaceAll("[&:/\\\\\0%$#~\\?\\*]+", "");
 		return rootText;
+	}
+
+	public static void waitForEventQueue() {
+		try {
+			// wait until AWT thread starts
+			if (!EventQueue.isDispatchThread()) {
+				EventQueue.invokeAndWait(new Runnable() {
+					public void run() {
+					};
+				});
+			}
+		} catch (Exception e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
 	}
 
 }

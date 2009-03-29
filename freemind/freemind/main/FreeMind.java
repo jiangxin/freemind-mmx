@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.124 2009-03-07 19:22:46 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.125 2009-03-29 19:37:23 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -123,7 +123,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	private Logger logger = null;
 	
-	protected static final VersionInformation VERSION = new VersionInformation("0.9.0 RC 3");
+	protected static final VersionInformation VERSION = new VersionInformation("0.9.0 RC 4");
 	
 	public static final String XML_VERSION = "0.9.0";
 
@@ -150,6 +150,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	public static final String RESOURCES_SAVE_FOLDING_STATE = "resources_save_folding_state";
 
 	public static final String RESOURCES_SIGNED_SCRIPT_ARE_TRUSTED = "resources_signed_script_are_trusted";
+
+	public static final String RESOURCES_USE_DEFAULT_FONT_FOR_NOTES_TOO = "resources_use_default_font_for_notes_too";
+
+	public static final String RESOURCES_USE_MARGIN_TOP_ZERO_FOR_NOTES = "resources_use_margin_top_zero_for_notes";
 
 	// public static final String defaultPropsURL = "freemind.properties";
 	// public static Properties defaultProps;
@@ -350,7 +354,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	}
 
 	public URL getResource(String name) {
-		return ClassLoader.getSystemResource(name);
+		return this.getClass().getClassLoader().getResource(name);
 	}
 
 	public String getProperty(String key) {
@@ -710,17 +714,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		}
 		feedBack.setMaximumValue(9);
 		frame.init(feedBack);
-		try {
-			// wait until AWT thread starts
-			if (!EventQueue.isDispatchThread()) {
-				EventQueue.invokeAndWait(new Runnable() {
-					public void run() {
-					};
-				});
-			}
-		} catch (Exception e) {
-			freemind.main.Resources.getInstance().logException(e);
-		}
+		Tools.waitForEventQueue();
 
 		
 		final IFreeMindSplash splash2 = splash;
@@ -741,6 +735,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			}
 		});
 	}
+
 
 	private void setScreenBounds() {
 		// Create the MenuBar

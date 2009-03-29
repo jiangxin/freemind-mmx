@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.57 2008-12-22 20:52:21 dpolivaev Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.58 2009-03-29 19:37:23 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -339,29 +339,30 @@ public class MapView extends JPanel implements Printable, Autoscroll{
      */
     public void centerNode( final NodeView node ) {
         JViewport viewPort = (JViewport)getParent();
-        if(! (isValid())){        	
-        // Dimitry: workaround: the window size could be changed 
-        // twice for maximized windows.
-        // Run centerNode afterwards anyway.
-        	class CenterNodeRunnable implements Runnable{
-                private int counter;
-				public CenterNodeRunnable() {
-					this.counter = 1;
-				}
-
-				public void run() {
-					if(counter-- == 0) {
-						centerNode(node) ;
-					}
-					else{
-						EventQueue.invokeLater(this);
-					}
-                }
-            };
-            
-            EventQueue.invokeLater(new CenterNodeRunnable());
-            return;
-        }
+        // this causes an endless loop for a command line with at least two maps.
+//        if(! (isValid())){        	
+//        // Dimitry: workaround: the window size could be changed 
+//        // twice for maximized windows.
+//        // Run centerNode afterwards anyway.
+//        	class CenterNodeRunnable implements Runnable{
+//                private int counter;
+//				public CenterNodeRunnable() {
+//					this.counter = 1;
+//				}
+//
+//				public void run() {
+//					if(counter-- == 0) {
+//					}
+//					else{
+//						EventQueue.invokeLater(this);
+//					}
+//                }
+//            };
+//            
+//            EventQueue.invokeLater(new CenterNodeRunnable());
+//            return;
+//        }
+        Tools.waitForEventQueue();
         Dimension d = viewPort.getExtentSize();
         JComponent content = node.getContent();
 		Rectangle rect = new Rectangle(content.getWidth()/2 - d.width/2,
@@ -1032,8 +1033,11 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         ArrowLinkViews = new Vector();
         collectLabels(rootView, labels);
         super.paintChildren(graphics);
-        paintLinks(rootView, (Graphics2D)graphics, labels, null);
-        paintSelecteds((Graphics2D)graphics);
+    	Graphics2D graphics2d = (Graphics2D)graphics;
+		Object renderingHint = getController().setEdgesRenderingHint(graphics2d);
+		paintLinks(rootView, graphics2d, labels, null);
+        Tools.restoreAntialiasing(graphics2d, renderingHint);
+        paintSelecteds(graphics2d);
     }
 
 

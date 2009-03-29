@@ -20,7 +20,7 @@
  * 
  * Created on 25.02.2006
  */
-/* $Id: ThreeCheckBoxProperty.java,v 1.1.2.1.2.4 2009-03-07 19:22:46 christianfoltin Exp $ */
+/* $Id: ThreeCheckBoxProperty.java,v 1.1.2.1.2.5 2009-03-29 19:37:23 christianfoltin Exp $ */
 package freemind.common;
 
 import java.awt.event.ActionEvent;
@@ -34,6 +34,7 @@ import javax.swing.JLabel;
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 
 import freemind.controller.BlindIcon;
+import freemind.main.Resources;
 
 public class ThreeCheckBoxProperty extends PropertyBean implements
         PropertyControl {
@@ -55,11 +56,12 @@ public class ThreeCheckBoxProperty extends PropertyBean implements
 
     protected static final int FALSE_VALUE_INT = 1;
 
-    private static final ImageIcon PLUS_IMAGE = new ImageIcon(ClassLoader
-			.getSystemResource("images/edit_add.png"));
+    private static final ImageIcon PLUS_IMAGE = new ImageIcon(
+    		Resources.getInstance().getResource("images/edit_add.png"));
 
-	private static final ImageIcon MINUS_IMAGE = new ImageIcon(ClassLoader
-			.getSystemResource("images/edit_remove.png"));
+	private static final ImageIcon MINUS_IMAGE = new ImageIcon(
+			Resources.getInstance().getResource("images/edit_remove.png"));
+	
 
     private static final Icon NO_IMAGE = new BlindIcon(15);
 

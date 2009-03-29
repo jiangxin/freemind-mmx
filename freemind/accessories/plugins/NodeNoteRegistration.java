@@ -19,15 +19,19 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.10 2008-07-19 09:09:25 dpolivaev Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.11 2009-03-29 19:37:23 christianfoltin Exp $*/
 
 package accessories.plugins;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -290,6 +294,36 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
     	SouthPanel southPanel = new SouthPanel();
     	southPanel.add(noteViewerComponent, BorderLayout.CENTER);
     	noteViewerComponent.setVisible(true);
+    	if("true".equals(controller.getFrame()
+    			.getProperty(FreeMind.RESOURCES_USE_DEFAULT_FONT_FOR_NOTES_TOO))) {
+	    	// set default font for notes:
+	    	Font defaultFont = controller.getController().getDefaultFont();
+	        String rule = "BODY {";
+	        rule += "font-family: "+defaultFont.getFamily()+";";
+	        rule += "font-size: "+defaultFont.getSize()+"pt;";
+	        rule += "}\n";
+	        if("true".equals(controller.getFrame()
+	        		.getProperty(FreeMind.RESOURCES_USE_MARGIN_TOP_ZERO_FOR_NOTES))) {
+		        /* this is used for paragraph spacing. I put it here, too, as
+		         * the tooltip display uses the same spacing. But it is to be discussed.
+		         * fc, 23.3.2009.
+		         */
+		        rule += "p {";
+		        rule += "margin-top:0;";            
+		        rule += "}\n";
+	        }
+	        noteViewerComponent.getDocument().getStyleSheet().addRule(rule);
+	        // done setting default font.
+    	}
+    	noteViewerComponent.setOpenHyperlinkHandler(new ActionListener(){
+
+			public void actionPerformed(ActionEvent pE) {
+				try {
+					getMindMapController().getFrame().openDocument(new URL(pE.getActionCommand()));
+				} catch (Exception e) {
+					freemind.main.Resources.getInstance().logException(e);
+				}
+			}});
     	mSplitPane = controller.getFrame().insertComponentIntoSplitPane(
     			southPanel);
     	southPanel.revalidate();

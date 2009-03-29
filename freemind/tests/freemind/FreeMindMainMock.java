@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindMainMock.java,v 1.1.2.15 2009-03-01 20:16:28 christianfoltin Exp $*/
+/*$Id: FreeMindMainMock.java,v 1.1.2.16 2009-03-29 19:37:23 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -50,7 +50,7 @@ public class FreeMindMainMock implements FreeMindMain {
      */
     public FreeMindMainMock() {
         super();
-		mProperties = FreeMindStarter.readDefaultPreferences();
+		mProperties = new FreeMindStarter().readDefaultPreferences();
         Resources.createInstance(this);
 
     }

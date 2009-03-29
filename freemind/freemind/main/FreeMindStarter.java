@@ -19,13 +19,12 @@
  *
  * Created on 06.07.2006
  */
-/*$Id: FreeMindStarter.java,v 1.1.2.10 2009-03-01 20:16:28 christianfoltin Exp $*/
+/*$Id: FreeMindStarter.java,v 1.1.2.11 2009-03-29 19:37:23 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Locale;
@@ -64,6 +63,7 @@ public class FreeMindStarter {
 			mainMethod.invoke(null, new Object[]{args, defaultPreferences, userPreferences, starter.getUserPreferencesFile(defaultPreferences)});
 		
 		} catch (Exception e) {
+			e.printStackTrace();
 			JOptionPane.showMessageDialog(null, "freemind.main.FreeMind can't be started", "Startup problem", JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
@@ -162,13 +162,12 @@ public class FreeMindStarter {
 		return System.getProperty("user.home") + File.separator +  defaultPreferences.getProperty("properties_folder");
 	}
 
-	public static Properties readDefaultPreferences() {
+	public Properties readDefaultPreferences() {
 		String propsLoc = "freemind.properties";
-		URL defaultPropsURL = ClassLoader.getSystemResource(propsLoc);
+		URL defaultPropsURL = this.getClass().getClassLoader().getResource(propsLoc);
 		Properties props = new Properties();
 		try {
-			InputStream in = null;
-			in = defaultPropsURL.openStream();
+			InputStream in = defaultPropsURL.openStream();
 			props.load(in);
 			in.close();
 		} catch (Exception ex) {

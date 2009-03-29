@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.59 2008-10-18 20:09:43 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.60 2009-03-29 19:37:23 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -841,7 +841,7 @@ public class Controller  implements MapModuleChangeObserver {
 
     private void quit() {
         String currentMapRestorable = (getModel()!=null) ? getModel().getRestoreable() : null;
-        while (getMapModuleManager().getMapModules().size() > 0) {
+        while (getMapModuleManager().getMapModuleVector().size() > 0) {
 				if (getMapModule() != null) {
 					boolean closingNotCancelled = getMapModuleManager().close(
 							false);

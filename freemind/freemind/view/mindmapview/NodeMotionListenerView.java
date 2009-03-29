@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: NodeMotionListenerView.java,v 1.1.4.4.4.8 2008-03-14 21:15:25 christianfoltin Exp $*/
+/*$Id: NodeMotionListenerView.java,v 1.1.4.4.4.9 2009-03-29 19:37:23 christianfoltin Exp $*/
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -30,8 +30,10 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 
+import freemind.controller.Controller;
 import freemind.main.FreeMindMain;
 import freemind.main.Resources;
+import freemind.main.Tools;
 
 /**
  * @author Dimitri
@@ -60,6 +62,9 @@ public class NodeMotionListenerView extends JComponent {
 		super.paintComponent(g);
 		if(isMouseEntered()){
 		    Graphics2D g2 = (Graphics2D )g;
+		    Controller controller = movedView.getMap().getController();
+		    // set antialiasing.
+			Object renderingHint = controller.setEdgesRenderingHint(g2);
             Color color = g2.getColor();
             if(movedView.getModel().getHGap() <= 0){
                 g2.setColor(Color.RED);
@@ -70,6 +75,7 @@ public class NodeMotionListenerView extends JComponent {
                 g.drawOval(0, 0, getWidth()-1, getHeight()-1);
             }
             g2.setColor(color);
+            Tools.restoreAntialiasing(g2, renderingHint);
 		}
 	}
 	public boolean isMouseEntered() {
