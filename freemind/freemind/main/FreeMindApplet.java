@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMindApplet.java,v 1.18.14.13.2.24 2008-08-15 10:01:24 dpolivaev Exp $*/
+/*$Id: FreeMindApplet.java,v 1.18.14.13.2.25 2009-04-19 19:44:01 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -274,15 +274,7 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
         SwingUtilities.updateComponentTreeUI(this); // Propagate LookAndFeel to JComponents
 
        	// wait until AWT thread starts
-		if (! EventQueue.isDispatchThread()){
-			try {
-                EventQueue.invokeAndWait(new Runnable() {public void run(){};});
-            } catch (InterruptedException e) {
-                freemind.main.Resources.getInstance().logException(e);
-            } catch (InvocationTargetException e) {
-                freemind.main.Resources.getInstance().logException(e);
-            }
-		}
+        Tools.waitForEventQueue();
     	c.createNewMode(getProperty("initial_mode"));
         String initialMapName = getProperty("browsemode_initial_map");
         if (initialMapName != null && initialMapName.startsWith(".")) {
