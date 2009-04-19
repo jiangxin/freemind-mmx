@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.40 2009-02-13 21:19:16 christianfoltin Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.41 2009-04-19 19:42:50 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -125,7 +125,7 @@ public class EditNodeWYSIWYG extends EditNodeBase {
          * @see freemind.view.mindmapview.EditNodeBase.Dialog#close()
          */
         protected void submit() {
-            htmlEditorPanel.getDocument().getStyleSheet().removeStyle("body");
+            removeBodyStyle();
             if (htmlEditorPanel.needsSaving()) {
                 getBase().getEditControl().ok(HtmlTools.unescapeHTMLUnicodeEntity
                         (htmlEditorPanel.getDocumentText())); }
@@ -134,11 +134,14 @@ public class EditNodeWYSIWYG extends EditNodeBase {
             }
             super.submit();
         }
+		private void removeBodyStyle() {
+			htmlEditorPanel.getDocument().getStyleSheet().removeStyle("body");
+		}
         /* (non-Javadoc)
          * @see freemind.view.mindmapview.EditNodeBase.Dialog#split()
          */
         protected void split() {
-            htmlEditorPanel.getDocument().getStyleSheet().removeStyle("body");
+            removeBodyStyle();
             getBase().getEditControl().split(HtmlTools.unescapeHTMLUnicodeEntity
                     (htmlEditorPanel.getDocumentText()),
                     htmlEditorPanel.getCaretPosition());
@@ -149,7 +152,7 @@ public class EditNodeWYSIWYG extends EditNodeBase {
          * @see freemind.view.mindmapview.EditNodeBase.Dialog#close()
          */
         protected void cancel() {
-            htmlEditorPanel.getDocument().getStyleSheet().removeStyle("body");
+            removeBodyStyle();
             getBase().getEditControl().cancel();
             super.cancel();
         }
