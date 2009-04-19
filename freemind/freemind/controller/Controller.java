@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.60 2009-03-29 19:37:23 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.61 2009-04-19 19:45:11 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -511,8 +511,8 @@ public class Controller  implements MapModuleChangeObserver {
         if (newMapModule != null) {
             getFrame().setView(newMapModule.getView());
             setAllActions(true);
-            if (getView().getSelected() == null) {
-                moveToRoot();
+            if ((getView().getSelected() == null)) {
+            	moveToRoot();
             }
             lastOpened.mapOpened(newMapModule);
             ((MainToolBar) getToolbar()).setZoomComboBox(newMapModule.getView()
