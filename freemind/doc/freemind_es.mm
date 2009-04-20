@@ -350,7 +350,7 @@
 </node>
 <node COLOR="#006699" CREATED="1124560950701" FOLDED="true" ID="Freemind_Link_179286322" MODIFIED="1170402191875" TEXT="Ejecutables">
 <font NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950701" FOLDED="true" ID="Freemind_Link_801065485" LINK="C:\WINNT\regedit.exe" MODIFIED="1124560950701" TEXT="C:\WINNT\regedit.exe">
+<node CREATED="1124560950701" FOLDED="true" ID="Freemind_Link_801065485" LINK="%SystemRoot%\regedit.exe" MODIFIED="1124560950701" TEXT="%SystemRoot%\regedit.exe">
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#006600" CREATED="1124560950701" MODIFIED="1124560950701" TEXT="You see that the node is executable by icon.">
 <font NAME="SansSerif" SIZE="12"/>

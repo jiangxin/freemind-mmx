@@ -388,7 +388,7 @@
 </node>
 <node COLOR="#006699" CREATED="1124560950701" ID="ID_1564121882" MODIFIED="1124560950701" TEXT="Executables">
 <font NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950701" ID="ID_156851888" LINK="C:\WINNT\regedit.exe" MODIFIED="1124560950701" TEXT="C:\WINNT\regedit.exe">
+<node CREATED="1124560950701" ID="ID_156851888" LINK="%SystemRoot%\regedit.exe" MODIFIED="1124560950701" TEXT="%SystemRoot%\regedit.exe">
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#006600" CREATED="1124560950701" ID="ID_888480331" MODIFIED="1124560950701" TEXT="You see that the node is executable by icon.">
 <font NAME="SansSerif" SIZE="12"/>

@@ -378,7 +378,7 @@
 </node>
 <node COLOR="#006699" CREATED="1124560950701" ID="ID_738829620" MODIFIED="1209145122154" TEXT="Bisa dieksekusi">
 <font NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950701" ID="ID_372784718" LINK="C:\WINNT\regedit.exe" MODIFIED="1124560950701" TEXT="C:\WINNT\regedit.exe">
+<node CREATED="1124560950701" ID="ID_372784718" LINK="%SystemRoot%\regedit.exe" MODIFIED="1124560950701" TEXT="%SystemRoot%\regedit.exe">
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#006600" CREATED="1124560950701" ID="ID_785322201" MODIFIED="1209145112239" TEXT="Yang bisa dieksekusi terlihat dari ikonnya.">
 <font NAME="SansSerif" SIZE="12"/>

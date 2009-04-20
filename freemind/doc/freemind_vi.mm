@@ -358,7 +358,7 @@
 </node>
 <node COLOR="#006699" CREATED="1124560950701" FOLDED="true" ID="Freemind_Link_774013517" MODIFIED="1212777689162" TEXT="C&#xe1;c ch&#x1b0;&#x1a1;ng tr&#xec;nh">
 <font NAME="Dialog" SIZE="12"/>
-<node CREATED="1124560950701" FOLDED="true" ID="Freemind_Link_26552136" LINK="C:\WINNT\regedit.exe" MODIFIED="1124560950701" TEXT="C:\WINNT\regedit.exe">
+<node CREATED="1124560950701" FOLDED="true" ID="Freemind_Link_26552136" LINK="%SystemRoot%\regedit.exe" MODIFIED="1124560950701" TEXT="%SystemRoot%\regedit.exe">
 <font NAME="Dialog" SIZE="12"/>
 <node COLOR="#006600" CREATED="1124560950701" ID="Freemind_Link_741962292" MODIFIED="1212777731703" TEXT="Nh&#x1eef;ng n&#xfa;t n&#xe0;o ta c&#xf3; th&#x1ec3; kh&#x1edf;i ch&#x1ea1;y &#x111;&#x1b0;&#x1ee3;c th&#xec; s&#x1ebd; c&#xf3; bi&#x1ec3;u t&#x1b0;&#x1ee3;ng b&#xea;n c&#x1ea1;nh">
 <font NAME="Dialog" SIZE="12"/>
