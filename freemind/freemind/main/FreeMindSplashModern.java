@@ -126,6 +126,7 @@ public class FreeMindSplashModern extends JFrame implements IFreeMindSplash {
         setDefaultLookAndFeelDecorated(false);
         setUndecorated(true);
         getRootPane().setWindowDecorationStyle(JRootPane.NONE); // Set no border
+        setAlwaysOnTop(true);
         
         ImageIcon splashImage = new ImageIcon(frame.getResource("images/Freemind_Splash_Butterfly_Modern.png"));
         JLabel splashImageLabel = new JLabel(splashImage) {

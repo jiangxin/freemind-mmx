@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeDialog.java,v 1.1.4.1.16.18 2009-01-07 21:20:38 christianfoltin Exp $*/
+/*$Id: EditNodeDialog.java,v 1.1.4.1.16.19 2009-05-05 17:52:08 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -48,6 +48,7 @@ import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
 import javax.swing.text.JTextComponent;
 
+import freemind.main.FreeMind;
 import freemind.main.Tools;
 import freemind.modes.ModeController;
 

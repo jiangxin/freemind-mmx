@@ -215,3 +215,33 @@ p + p {
  	margin-top: 0.5em !important;
 	display:block !important;
 }
+
+/* Thanks to erne100, https://sourceforge.net/tracker/?func=detail&atid=107118&aid=2747128&group_id=7118*/
+table {
+	border-collapse:collapse;
+	empty-cells:show;
+	border:thin black solid;
+}
+table td {
+	border:thin black solid;
+	padding-top:2px;
+	padding-bottom:2px;
+	padding-left:3px;
+	padding-right:3px;
+}
+
+/* Thanks to erne100, https://sourceforge.net/tracker/?func=detail&atid=107118&aid=2747000&group_id=7118*/
+ol {
+	margin-top:1px;
+    margin-bottom:1px;
+	margin-left:0px;
+	padding-left:3%;
+}
+
+ol li {
+	list-style:decimal;
+	font-family:sans-serif;
+	font-weight:normal;
+}
+
+

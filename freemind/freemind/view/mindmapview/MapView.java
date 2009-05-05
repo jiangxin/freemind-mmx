@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.58 2009-03-29 19:37:23 christianfoltin Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.59 2009-05-05 17:52:08 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -36,6 +36,8 @@ import java.awt.Stroke;
 import java.awt.dnd.Autoscroll;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DropTargetListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.geom.CubicCurve2D;
 import java.awt.print.PageFormat;
@@ -49,8 +51,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.swing.JComponent;
@@ -78,6 +78,33 @@ import freemind.preferences.FreemindPropertyListener;
  * (in analogy to class JTree).
  */
 public class MapView extends JPanel implements Printable, Autoscroll{
+	/**
+	 * Currently, this listener does nothing. 
+	 * But it should move the map according to the resize event,
+	 * such that the current map's center stays at the same location 
+	 * (seen relative).
+	 */
+	private final class ResizeListener extends ComponentAdapter {
+		Dimension mSize;
+
+		ResizeListener() {
+			mSize = getSize();
+        }
+
+		public void componentResized(ComponentEvent pE) {
+			logger.info("Component resized " +pE + " old size " + mSize + " new size " + getSize());
+			int deltaWidth = mSize.width - getWidth();
+			int deltaHeight = mSize.height - getHeight();
+	        JViewport mapViewport = (JViewport)getParent();
+	        Point viewPosition = mapViewport.getViewPosition();
+	        viewPosition.x += deltaWidth/2;
+	        viewPosition.y += deltaHeight/2;
+//	        mapViewport.setViewPosition(viewPosition);
+			mSize = getSize();
+			
+		}
+	}
+
 	static public class ScrollPane extends JScrollPane{
 		protected void validateTree() {
 			final Component view = getViewport().getView();
@@ -270,6 +297,8 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         // like in excel - write a letter means edit (PN)
         // on the other hand it doesn't allow key navigation (sdfe)
         disableMoveCursor = Resources.getInstance().getBoolProperty("disable_cursor_move_paper");
+        
+        addComponentListener(new ResizeListener());
     }
 
 	private void createPropertyChangeListener() {
@@ -339,35 +368,46 @@ public class MapView extends JPanel implements Printable, Autoscroll{
      */
     public void centerNode( final NodeView node ) {
         JViewport viewPort = (JViewport)getParent();
-        // this causes an endless loop for a command line with at least two maps.
-//        if(! (isValid())){        	
-//        // Dimitry: workaround: the window size could be changed 
-//        // twice for maximized windows.
-//        // Run centerNode afterwards anyway.
-//        	class CenterNodeRunnable implements Runnable{
-//                private int counter;
-//				public CenterNodeRunnable() {
-//					this.counter = 1;
-//				}
-//
-//				public void run() {
-//					if(counter-- == 0) {
-//					}
-//					else{
-//						EventQueue.invokeLater(this);
-//					}
-//                }
-//            };
-//            
-//            EventQueue.invokeLater(new CenterNodeRunnable());
-//            return;
-//        }
-        Tools.waitForEventQueue();
+        // FIXME: Correct the resize map behaviour.
+        if(false) {
+        	Tools.waitForEventQueue();
+        } else {
+	        if (!(isValid())) {
+				// Dimitry: workaround: the window size could be changed
+				// twice for maximized windows.
+				// Run centerNode afterwards anyway.
+				class CenterNodeRunnable implements Runnable {
+					private int counter;
+	
+					public CenterNodeRunnable() {
+						this.counter = 1;
+					}
+	
+					public void run() {
+						if (counter-- == 0) {
+							centerNode(node);
+						} else {
+							try {
+								// needs to wait here, because hidden tabs create this event infinitely.
+								Thread.sleep(100);
+							} catch (InterruptedException e) {
+								freemind.main.Resources.getInstance().logException(e);
+							}
+							EventQueue.invokeLater(this);
+						}
+					}
+				}
+	
+				EventQueue.invokeLater(new CenterNodeRunnable());
+				return;
+			}
+        }
         Dimension d = viewPort.getExtentSize();
         JComponent content = node.getContent();
 		Rectangle rect = new Rectangle(content.getWidth()/2 - d.width/2,
                                        content.getHeight()/2 - d.height/2,
 			d.width, d.height);
+		logger.info("Scroll to " + rect + ", pref size="+viewPort.getPreferredSize() + ", " + this.getPreferredSize());
 
 		// One call of scrollRectToVisible suffices
 		// after patching the FreeMind.java

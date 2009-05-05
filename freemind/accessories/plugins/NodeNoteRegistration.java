@@ -19,7 +19,7 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.11 2009-03-29 19:37:23 christianfoltin Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.12 2009-05-05 17:52:08 christianfoltin Exp $*/
 
 package accessories.plugins;
 
@@ -46,7 +46,9 @@ import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.Style;
 import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.StyleSheet;
 
 import com.lightdev.app.shtm.SHTMLPanel;
 import com.lightdev.app.shtm.TextResources;
@@ -164,14 +166,17 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
                 return;
             }
             boolean editorContentEmpty = true;
+//            // TODO: Save the style with the note.
+//			StyleSheet styleSheet = noteViewerComponent.getDocument()
+//					.getStyleSheet();
+//			styleSheet.removeStyle("body");
+//			styleSheet.removeStyle("p");
             String documentText = noteViewerComponent.getDocumentText();
-            // editorContentEmpty =
-            // HtmlTools.removeAllTagsFromString(documentText).matches("[\\s\\n]*");
+            // (?s) makes . matching newline as well.
+            documentText = documentText.replaceFirst("(?s)<style.*?</style>", "");
             editorContentEmpty = documentText.equals(NodeNote.EMPTY_EDITOR_STRING)
                     || documentText.equals(NodeNote.EMPTY_EDITOR_STRING_ALTERNATIVE);
-            // logger.info("Current document: '" +
-            // documentText.replaceAll("\n", "\\\\n") + "', empty="+
-            // editorContentEmpty);
+            logger.info("Current document: '" + documentText.replaceAll("\n", "\\\\n") + "', empty="+editorContentEmpty);
             controller.deregisterNodeSelectionListener(this);
             if (noteViewerComponent.needsSaving()) {
                 if (editorContentEmpty) {
