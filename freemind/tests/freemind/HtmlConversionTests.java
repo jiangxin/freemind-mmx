@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlConversionTests.java,v 1.1.2.13 2008-12-16 21:57:02 christianfoltin Exp $*/
+/*$Id: HtmlConversionTests.java,v 1.1.2.14 2009-05-15 21:11:50 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -25,6 +25,7 @@ import java.io.StringReader;
 import com.lightdev.app.shtm.SHTMLPanel;
 
 import freemind.main.HtmlTools;
+import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 
@@ -447,6 +448,11 @@ public class HtmlConversionTests extends FreeMindTestBase {
     	assertTrue(HtmlTools.isHtmlNode(input));
     	assertEquals(expectedOutput, HtmlTools.extractHtmlBody(input));
     }
+
+    public void testIllegalXmlChars() throws Exception {
+		assertEquals("Wrong chars are gone", "AB&#32;&#x20;", Tools
+				.replaceIllegalXmlChars("&#x1f;A&#0;&#31;&#x0001B;B&#x1;&#32;&#1;&#x20;"));
+	}
     
 }
 

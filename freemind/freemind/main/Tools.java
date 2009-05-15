@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.44 2009-03-29 19:37:23 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.45 2009-05-15 21:11:49 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -951,6 +951,9 @@ public class Tools {
 	        writer = new StringWriter();
 	        final Result result = new StreamResult(writer);
 	        
+	        String fileContents = getFile(file);
+	        fileContents = replaceIllegalXmlChars(fileContents);
+	        final StreamSource sr = new StreamSource(new StringReader(fileContents));
 	        // Dimitry: to avoid a memory leak and properly release resources after the XSLT transformation
 	        // everything should run in own thread. Only after the thread dies the resources are released.
 	        class TransformerRunnable implements Runnable{
@@ -962,7 +965,7 @@ public class Tools {
 	        		try {
 	        			trans = transFact.newTransformer(xsltSource);
 
-	        			trans.transform(new StreamSource(file), result);
+	        			trans.transform(sr, result);
 	        			successful = true;
 	        		} catch (Exception ex) {
 	        			freemind.main.Resources.getInstance().logException(ex);
@@ -994,6 +997,18 @@ public class Tools {
 	        return getActualReader(file);
 	    }
 	}
+
+	public static String replaceIllegalXmlChars(String fileContents) {
+		/* &#xb; is illegal, but sometimes occurs in 0.8.x maps.
+		 * Thus, we exclude all from 0 - 1f and replace them by nothing.
+		 * TODO: Which more are illegal?? */
+		fileContents = fileContents.replaceAll("&#x0*1?[0-9A-Fa-f];", "");
+		// decimal: 0-31
+		fileContents = fileContents.replaceAll("&#0*[1-2]?[0-9];", "");
+		fileContents = fileContents.replaceAll("&#0*3[0-1];", "");
+		return fileContents;
+	}
+	
 	/** Creates a default reader that just reads the given file.
 	 * @throws FileNotFoundException
 	 */

@@ -132,13 +132,13 @@ public class EditAction extends AbstractAction implements ActorXml {
         String text = node.getModel().toString();
         String htmlEditingOption = mMindMapController.getController().getProperty("html_editing_option");
 
-        boolean editDefinitivelyLong = node.getIsLong() || editLong;
         boolean isHtmlNode = HtmlTools.isHtmlNode(text);
+        boolean isLongNode = node.getIsLong();
 
         // do we need a decision if plain or HTML editing?
-        String useRichTextInNewLongNodes = "true";
+        String useRichTextInNewLongNodes = (isHtmlNode)?"true":"false";
         // if the node is not already html, we ask if rich text or plain text edit.
-        if(!isHtmlNode && editDefinitivelyLong) {
+		if(!isHtmlNode && ! isLongNode && editLong) {
         	// ask user:
     		int showResult = new OptionalDontShowMeAgainDialog(
 					mMindMapController.getFrame().getJFrame(),
@@ -154,7 +154,7 @@ public class EditAction extends AbstractAction implements ActorXml {
     		useRichTextInNewLongNodes = (showResult==JOptionPane.OK_OPTION)?"true":"false";
         }
 //        useRichTextInNewLongNodes = c.getController().getProperty("use_rich_text_in_new_long_nodes");
-        boolean editHtml = isHtmlNode  || (editDefinitivelyLong
+        boolean editHtml = isHtmlNode  || (editLong
 				&& Tools.safeEquals(useRichTextInNewLongNodes, "true"));
         boolean editInternalWysiwyg = editHtml && Tools.safeEquals(htmlEditingOption,"internal-wysiwyg");
         boolean editExternal =        editHtml && Tools.safeEquals(htmlEditingOption,"external");
@@ -206,7 +206,7 @@ public class EditAction extends AbstractAction implements ActorXml {
             // We come here before quitting the editor window.
             return; }
         
-        if (editDefinitivelyLong) {
+        if (isLongNode || editLong) {
             EditNodeDialog nodeEditDialog =
                 new EditNodeDialog(
                         node,

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.59 2009-05-05 17:52:08 christianfoltin Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.60 2009-05-15 21:11:49 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -201,7 +201,6 @@ public class MapView extends JPanel implements Printable, Autoscroll{
     private Color background = null;
 	private Rectangle boundingRectangle = null;
 	private boolean fitToPage = true;
-	private boolean isPreparedForPrinting = false;
 
     /** Used to identify a right click onto a link curve.*/
     private Vector/* of ArrowLinkViews*/ ArrowLinkViews;
@@ -229,6 +228,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
                 standardMapBackgroundColor = Tools.xmlToColor(stdcolor);
                 }
                 catch(Exception ex){
+                	freemind.main.Resources.getInstance().logException(ex);
                 	standardMapBackgroundColor = Color.WHITE;
                 }
                 try{
@@ -236,6 +236,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
                     standardNodeTextColor = Tools.xmlToColor(stdcolor);
                     }
                     catch(Exception ex){
+                    	freemind.main.Resources.getInstance().logException(ex);
                     	standardSelectColor = Color.WHITE;
                     }
             // initialize the selectedColor:
@@ -244,6 +245,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
             standardSelectColor = Tools.xmlToColor(stdcolor);
             }
             catch(Exception ex){
+            	freemind.main.Resources.getInstance().logException(ex);
             	standardSelectColor = Color.BLUE.darker();
             }
 
@@ -253,6 +255,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
             standardSelectRectangleColor = Tools.xmlToColor(stdtextcolor);
             }
             catch(Exception ex){
+            	freemind.main.Resources.getInstance().logException(ex);
             	standardSelectRectangleColor = Color.WHITE;
             }
             try{
@@ -260,16 +263,18 @@ public class MapView extends JPanel implements Printable, Autoscroll{
                 standardDrawRectangleForSelection = Tools.xmlToBoolean(drawCircle);
                 }
                 catch(Exception ex){
+                	freemind.main.Resources.getInstance().logException(ex);
                 	standardDrawRectangleForSelection = false;
                 }
                 
-                try{
-                    String printOnWhite = getController().getFrame().getProperty(FreeMind.RESOURCE_PRINT_ON_WHITE_BACKGROUND);
-                    printOnWhiteBackground = Tools.xmlToBoolean(printOnWhite);
-                    }
-                    catch(Exception ex){
-                    	standardDrawRectangleForSelection = false;
-                    }
+            try {
+				String printOnWhite = getController().getFrame().getProperty(
+						FreeMind.RESOURCE_PRINT_ON_WHITE_BACKGROUND);
+				printOnWhiteBackground = Tools.xmlToBoolean(printOnWhite);
+			} catch (Exception ex) {
+				freemind.main.Resources.getInstance().logException(ex);
+				printOnWhiteBackground = true;
+			}
                     
             createPropertyChangeListener();
             
@@ -353,7 +358,8 @@ public class MapView extends JPanel implements Printable, Autoscroll{
             try {
                 maxNodeWidth = Integer.parseInt(controller.getProperty("max_node_width")); }
             catch (NumberFormatException e) {
-                maxNodeWidth = Integer.parseInt(controller.getProperty("el__max_default_window_width")); }}
+            	freemind.main.Resources.getInstance().logException(e);
+            	maxNodeWidth = Integer.parseInt(controller.getProperty("el__max_default_window_width")); }}
         return maxNodeWidth; }
 
     //
@@ -1182,7 +1188,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 	  * to minimize calculation efforts
 	  */
 	public void preparePrinting() {
-		if (isPreparedForPrinting == false){
+		if (!isPrinting){
 			isPrinting = true;
 			/* repaint for printing:*/
 			if(NEED_PREF_SIZE_BUG_FIX){
@@ -1198,7 +1204,8 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 			}
 			boundingRectangle = getInnerBounds();
 		    fitToPage = Resources.getInstance().getBoolProperty("fit_to_page");
-			isPreparedForPrinting = true;
+		} else {
+			logger.warning("Called preparePrinting although isPrinting is true.");
 		}
 	}
 
@@ -1217,7 +1224,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 	  * to minimize calculation efforts
 	  */
 	public void endPrinting() {
-		if (isPreparedForPrinting == true){
+		if (isPrinting){
 			isPrinting = false;
 			if(printOnWhiteBackground){
 				setBackground(background);
@@ -1230,8 +1237,9 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 			else{
 				repaintSelecteds();
 			}
+		} else {
+			logger.warning("Called endPrinting although isPrinting is false.");
 		}
-		isPreparedForPrinting = false;
 	}
 
 	 public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
@@ -1248,7 +1256,9 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         double userZoomFactor = 1;
         try {
             userZoomFactor = Double.parseDouble(controller.getProperty("user_zoom")); }
-        catch (Exception e) {}
+        catch (Exception e) {
+//        	freemind.main.Resources.getInstance().logException(e);
+        }
         userZoomFactor = Math.max(0,userZoomFactor);
         userZoomFactor = Math.min(2,userZoomFactor);
 
@@ -1260,46 +1270,50 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 
         Graphics2D graphics2D = (Graphics2D)graphics;
 
-		preparePrinting();
-        double zoomFactor = 1;
-        if (fitToPage) {
-            double zoomFactorX = pageFormat.getImageableWidth()/boundingRectangle.getWidth();
-            double zoomFactorY = pageFormat.getImageableHeight()/boundingRectangle.getHeight();
-            zoomFactor = Math.min (zoomFactorX, zoomFactorY); }
-        else {
-            zoomFactor = userZoomFactor;
-
-            int nrPagesInWidth = (int)Math.ceil(zoomFactor * boundingRectangle.getWidth() /
-                                                pageFormat.getImageableWidth());
-            int nrPagesInHeight = (int)Math.ceil(zoomFactor *boundingRectangle.getHeight() /
-                                                 pageFormat.getImageableHeight());
-            if (pageIndex >= nrPagesInWidth * nrPagesInHeight) {
-                return Printable.NO_SUCH_PAGE; }
-            int yPageCoord = (int)Math.floor(pageIndex / nrPagesInWidth);
-            int xPageCoord = pageIndex - yPageCoord * nrPagesInWidth;
-
-            graphics2D.translate(- pageFormat.getImageableWidth() * xPageCoord,
-                                 - pageFormat.getImageableHeight() * yPageCoord); }
-
-        graphics2D.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-        graphics2D.scale(zoomFactor, zoomFactor);
-        graphics2D.translate(-boundingRectangle.getX(), -boundingRectangle.getY());
-
-
-        print(graphics2D);
-		endPrinting();
+        try {
+	        preparePrinting();
+	
+			double zoomFactor = 1;
+	        if (fitToPage) {
+	            double zoomFactorX = pageFormat.getImageableWidth()/boundingRectangle.getWidth();
+	            double zoomFactorY = pageFormat.getImageableHeight()/boundingRectangle.getHeight();
+	            zoomFactor = Math.min (zoomFactorX, zoomFactorY); }
+	        else {
+	            zoomFactor = userZoomFactor;
+	
+	            int nrPagesInWidth = (int)Math.ceil(zoomFactor * boundingRectangle.getWidth() /
+	                                                pageFormat.getImageableWidth());
+	            int nrPagesInHeight = (int)Math.ceil(zoomFactor *boundingRectangle.getHeight() /
+	                                                 pageFormat.getImageableHeight());
+	            if (pageIndex >= nrPagesInWidth * nrPagesInHeight) {
+	                return Printable.NO_SUCH_PAGE; }
+	            int yPageCoord = (int)Math.floor(pageIndex / nrPagesInWidth);
+	            int xPageCoord = pageIndex - yPageCoord * nrPagesInWidth;
+	
+	            graphics2D.translate(- pageFormat.getImageableWidth() * xPageCoord,
+	                                 - pageFormat.getImageableHeight() * yPageCoord); }
+	
+	        graphics2D.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+	        graphics2D.scale(zoomFactor, zoomFactor);
+	        graphics2D.translate(-boundingRectangle.getX(), -boundingRectangle.getY());
+	
+	
+	        print(graphics2D);
+        } finally {
+        	endPrinting();
+        }
         return Printable.PAGE_EXISTS;
     }
 
-    public void print(Graphics g) {
-		try{
-			preparePrinting();
-			super.print(g);
-		}
-		finally{
-			endPrinting();
-		}
-	}
+//    public void print(Graphics g) {
+//		try{
+//			preparePrinting();
+//			super.print(g);
+//		}
+//		finally{
+//			endPrinting();
+//		}
+//	}
 
 	/** For nodes, they can ask, whether or not the width must be bigger to prevent the "..." at the output. (Bug of java).*/
     public boolean isCurrentlyPrinting() { return isPrinting;};

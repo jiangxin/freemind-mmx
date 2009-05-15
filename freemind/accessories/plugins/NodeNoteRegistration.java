@@ -19,7 +19,7 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.12 2009-05-05 17:52:08 christianfoltin Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.13 2009-05-15 21:11:49 christianfoltin Exp $*/
 
 package accessories.plugins;
 
@@ -176,7 +176,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
             documentText = documentText.replaceFirst("(?s)<style.*?</style>", "");
             editorContentEmpty = documentText.equals(NodeNote.EMPTY_EDITOR_STRING)
                     || documentText.equals(NodeNote.EMPTY_EDITOR_STRING_ALTERNATIVE);
-            logger.info("Current document: '" + documentText.replaceAll("\n", "\\\\n") + "', empty="+editorContentEmpty);
+            logger.fine("Current document: '" + documentText.replaceAll("\n", "\\\\n") + "', empty="+editorContentEmpty);
             controller.deregisterNodeSelectionListener(this);
             if (noteViewerComponent.needsSaving()) {
                 if (editorContentEmpty) {
