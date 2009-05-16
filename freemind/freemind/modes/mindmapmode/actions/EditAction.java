@@ -169,6 +169,7 @@ public class EditAction extends AbstractAction implements ActorXml {
                 public void cancel() {
                     mMindMapController.setBlocked(false);                                        
                     mCurrentEditDialog = null;
+                    mMindMapController.getController().obtainFocusForSelected(); 
                 }
                 public void ok(String newText) {
                     setHtmlText(node, newText);                    
@@ -176,7 +177,6 @@ public class EditAction extends AbstractAction implements ActorXml {
                     }
                 public void split(String newText, int position) {
                     mMindMapController.splitNode(node.getModel(), position, newText);
-                    mMindMapController.getController().obtainFocusForSelected(); 
                     cancel();                    
                     }}); // focus fix 
             mCurrentEditDialog = editNodeWYSIWYG;
@@ -191,6 +191,7 @@ public class EditAction extends AbstractAction implements ActorXml {
                 public void cancel() {
                     mMindMapController.setBlocked(false);                    
                     mCurrentEditDialog = null;
+                    mMindMapController.getController().obtainFocusForSelected(); 
                 }
                 public void ok(String newText) {
                     setHtmlText(node, newText);                    
@@ -198,7 +199,6 @@ public class EditAction extends AbstractAction implements ActorXml {
                 }
                 public void split(String newText, int position) {
                     mMindMapController.splitNode(node.getModel(), position, newText);
-                    mMindMapController.getController().obtainFocusForSelected(); 
                     cancel();                    
                     }}); // focus fix 
             mCurrentEditDialog = editNodeExternalApplication;
@@ -218,6 +218,7 @@ public class EditAction extends AbstractAction implements ActorXml {
                             public void cancel() {
                                 mMindMapController.setBlocked(false);
                                 mCurrentEditDialog = null;
+                                mMindMapController.getController().obtainFocusForSelected(); // focus fix
                             }
                             
                             public void ok(String newText) {
@@ -227,7 +228,6 @@ public class EditAction extends AbstractAction implements ActorXml {
                             
                             public void split(String newText, int position) {
                                 mMindMapController.splitNode(node.getModel(), position, newText);
-                                mMindMapController.getController().obtainFocusForSelected(); // focus fix
                                 cancel();
                             }
                         });
