@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.60 2009-05-15 21:11:49 christianfoltin Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.61 2009-05-18 19:47:57 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -375,38 +375,35 @@ public class MapView extends JPanel implements Printable, Autoscroll{
     public void centerNode( final NodeView node ) {
         JViewport viewPort = (JViewport)getParent();
         // FIXME: Correct the resize map behaviour.
-        if(false) {
-        	Tools.waitForEventQueue();
-        } else {
-	        if (!(isValid())) {
-				// Dimitry: workaround: the window size could be changed
-				// twice for maximized windows.
-				// Run centerNode afterwards anyway.
-				class CenterNodeRunnable implements Runnable {
-					private int counter;
-	
-					public CenterNodeRunnable() {
-						this.counter = 1;
-					}
-	
-					public void run() {
-						if (counter-- == 0) {
-							centerNode(node);
-						} else {
-							try {
-								// needs to wait here, because hidden tabs create this event infinitely.
-								Thread.sleep(100);
-							} catch (InterruptedException e) {
-								freemind.main.Resources.getInstance().logException(e);
-							}
-							EventQueue.invokeLater(this);
+    	Tools.waitForEventQueue();
+        if (!(isValid())) {
+			// Dimitry: workaround: the window size could be changed
+			// twice for maximized windows.
+			// Run centerNode afterwards anyway.
+			class CenterNodeRunnable implements Runnable {
+				private int counter;
+
+				public CenterNodeRunnable() {
+					this.counter = 1;
+				}
+
+				public void run() {
+					if (counter-- == 0) {
+						centerNode(node);
+					} else {
+						try {
+							// needs to wait here, because hidden tabs create this event infinitely.
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							freemind.main.Resources.getInstance().logException(e);
 						}
+						EventQueue.invokeLater(this);
 					}
 				}
-	
-				EventQueue.invokeLater(new CenterNodeRunnable());
-				return;
 			}
+
+			EventQueue.invokeLater(new CenterNodeRunnable());
+			return;
         }
         Dimension d = viewPort.getExtentSize();
         JComponent content = node.getContent();

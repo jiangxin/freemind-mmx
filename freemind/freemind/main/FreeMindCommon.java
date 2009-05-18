@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/*$Id: FreeMindCommon.java,v 1.1.2.2.2.38 2009-03-01 20:16:28 christianfoltin Exp $*/
+/*$Id: FreeMindCommon.java,v 1.1.2.2.2.39 2009-05-18 19:47:57 christianfoltin Exp $*/
 package freemind.main;
 
 import java.io.File;
@@ -174,6 +174,8 @@ public class FreeMindCommon {
     public static final String ON_START_IF_NOT_SPECIFIED = "onStartIfNotSpecified";
     public static final String LOAD_LAST_MAP = "loadLastMap";
     public static final String SAVE_ONLY_INTRISICALLY_NEEDED_IDS = "save_only_intrisically_needed_ids";
+
+	public static final String LOAD_NEW_MAP = "load_new_map_when_no_other_is_specified";
 
 	private static Logger logger = null;
 

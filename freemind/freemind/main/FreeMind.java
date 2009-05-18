@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.126 2009-05-05 17:52:08 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.127 2009-05-18 19:47:57 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -981,7 +981,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				}
 			}
 		}
-		if(!fileLoaded){
+		if (!fileLoaded
+				&& Tools.isPreferenceTrue(getProperty(FreeMindCommon.LOAD_NEW_MAP))) {
 			/* nothing loaded so far. Perhaps, we should display a new map...
 			 * According to 
 			 * Summary: On first start FreeMind should show new map to newbies

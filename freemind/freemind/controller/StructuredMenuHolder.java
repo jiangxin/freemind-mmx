@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.4.7.4.9 2009-03-08 16:51:18 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.4.7.4.10 2009-05-18 19:47:57 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -133,7 +133,7 @@ public class StructuredMenuHolder {
 			if (toolTipText != null) {
 				String toolTipTextWithoutTags = HtmlTools
 						.removeHtmlTagsFromString(toolTipText);
-				logger.info("Old tool tip: " + toolTipText+", New tool tip: " + toolTipTextWithoutTags);
+				logger.finest("Old tool tip: " + toolTipText+", New tool tip: " + toolTipTextWithoutTags);
 				holder.getMenuItem().setToolTipText(toolTipTextWithoutTags);
 			}
 		}
