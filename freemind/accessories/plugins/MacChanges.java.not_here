@@ -19,7 +19,7 @@
  *
  * Created on 25.08.2004
  */
-/*$Id: MacChanges.java.not_here,v 1.1.4.6.2.8 2009-05-18 19:47:57 christianfoltin Exp $*/
+/*$Id: MacChanges.java.not_here,v 1.1.4.6.2.9 2009-05-19 18:28:12 christianfoltin Exp $*/
 package accessories.plugins;
 
 import java.io.File;
@@ -103,9 +103,10 @@ public class MacChanges extends ApplicationAdapter  {
 			if(mIsStartupPhase) {
 				// restore at startup:
 				logger.info("Later loading " + event.getFilename());
-				mFrame.setProperty(FreeMindCommon.ON_START_IF_NOT_SPECIFIED, event.getFilename());
+				mFrame.setProperty(FreeMindCommon.ON_START_IF_NOT_SPECIFIED, 
+						freemind.modes.mindmapmode.MindMapMapModel.RESTORE_MODE_MIND_MAP + event.getFilename());
 			} else {
-				logger.info("Directly loading " + event.getFilename());
+				logger.info("Direct loading " + event.getFilename());
 				mFrame.getController().getModeController().load(
 							Tools.fileToUrl(new File(event.getFilename())));
 			}

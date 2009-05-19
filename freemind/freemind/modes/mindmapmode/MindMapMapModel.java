@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.32 2008-12-09 21:09:43 christianfoltin Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.33 2009-05-19 18:28:12 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -70,7 +70,8 @@ import freemind.modes.NodeAdapter;
 
 public class MindMapMapModel extends MapAdapter  {
 
-    private static final String FREEMIND_VERSION_UPDATER_XSLT = "freemind/modes/mindmapmode/freemind_version_updater.xslt";
+    public static final String RESTORE_MODE_MIND_MAP = "MindMap:";
+	private static final String FREEMIND_VERSION_UPDATER_XSLT = "freemind/modes/mindmapmode/freemind_version_updater.xslt";
 	LockManager lockManager;
     private MindMapLinkRegistry linkRegistry;
     private Timer timerForAutomaticSaving;
@@ -115,7 +116,7 @@ public class MindMapMapModel extends MapAdapter  {
     }
 
     public String getRestoreable() {
-       return getFile()==null ? null : "MindMap:"+getFile().getAbsolutePath(); }
+       return getFile()==null ? null : RESTORE_MODE_MIND_MAP+getFile().getAbsolutePath(); }
 
     public void changeNode(MindMapNode node, String newText) {
        if (node.toString().startsWith("<html>")) {
