@@ -19,12 +19,13 @@
  *
  * Created on 23.06.2004
  */
-/*$Id: XmlBindingTools.java,v 1.1.2.2.2.4 2007-08-28 21:27:41 dpolivaev Exp $*/
+/*$Id: XmlBindingTools.java,v 1.1.2.2.2.5 2009-05-20 19:19:11 christianfoltin Exp $*/
 
 package freemind.common;
 
 import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.Toolkit;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -41,6 +42,7 @@ import org.jibx.runtime.JiBXException;
 import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.main.Resources;
 
 /**
  * @author foltin
@@ -109,7 +111,19 @@ public class XmlBindingTools {
 		if (marshalled != null) {
 			WindowConfigurationStorage storage = (WindowConfigurationStorage) unMarshall(marshalled);
 			if (storage != null) {
-				dialog.setLocation(storage.getX(), storage.getY());
+				// Check that location is on current screen.
+				Dimension screenSize;
+				if(Resources.getInstance().getBoolProperty("place_dialogs_on_first_screen")) {
+					Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
+					screenSize = defaultToolkit.getScreenSize();
+				} else {
+					screenSize = new Dimension();
+					screenSize.height = Integer.MAX_VALUE;
+					screenSize.width = Integer.MAX_VALUE;
+				}
+				int delta = 20;
+				dialog.setLocation(Math.min(storage.getX(), screenSize.width-delta),
+						Math.min(storage.getY(), screenSize.height-delta));
 				dialog.setSize(new Dimension(storage.getWidth(), storage.getHeight()));
 				return storage;
 			}

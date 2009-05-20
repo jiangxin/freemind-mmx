@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.45 2009-05-15 21:11:49 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.46 2009-05-20 19:19:11 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -858,8 +858,8 @@ public class Tools {
 		final int dh = dialog.getHeight();
 		
 		final Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
-		final Insets screenInsets = defaultToolkit.getScreenInsets(dialog.getGraphicsConfiguration());
 		final Dimension screenSize = defaultToolkit.getScreenSize();
+		final Insets screenInsets = defaultToolkit.getScreenInsets(dialog.getGraphicsConfiguration());
 		
 		final int minX = Math.max(parentLocation.x, screenInsets.left);
 		final int minY = Math.max(parentLocation.y, screenInsets.top);
