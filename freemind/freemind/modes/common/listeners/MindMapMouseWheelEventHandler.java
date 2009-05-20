@@ -19,7 +19,7 @@
  *
  * Created on 09.11.2005
  */
-/* $Id: MindMapMouseWheelEventHandler.java,v 1.1.2.4 2008-06-12 06:11:13 dpolivaev Exp $ */
+/* $Id: MindMapMouseWheelEventHandler.java,v 1.1.2.5 2009-05-20 20:26:24 christianfoltin Exp $ */
 package freemind.modes.common.listeners;
 
 import java.awt.event.InputEvent;
@@ -52,11 +52,16 @@ public class MindMapMouseWheelEventHandler implements MouseWheelListener {
        = InputEvent.CTRL_MASK;
       // |=   oldX >=0 iff we are in the drag
 
+    private static java.util.logging.Logger logger = null;
 	/**
 	 *
 	 */
 	public MindMapMouseWheelEventHandler(ControllerAdapter controller) {
 		super();
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
 		Controller.addPropertyChangeListener(new FreemindPropertyListener(){
 
            public void propertyChanged(String propertyName, String newValue, String oldValue) {
@@ -65,6 +70,7 @@ public class MindMapMouseWheelEventHandler implements MouseWheelListener {
                }
            }});
 		SCROLL_SKIPS=controller.getFrame().getIntProperty(FreeMind.RESOURCES_WHEEL_VELOCITY, 8);
+		logger.info("Setting SCROLL_SKIPS to " + SCROLL_SKIPS);
 	}
 
 	/*

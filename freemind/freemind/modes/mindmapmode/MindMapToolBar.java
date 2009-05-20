@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: MindMapToolBar.java,v 1.12.18.1.12.3 2007-07-07 21:29:48 dpolivaev Exp $*/
+/*$Id: MindMapToolBar.java,v 1.12.18.1.12.4 2009-05-20 20:26:24 christianfoltin Exp $*/
 
 package freemind.modes.mindmapmode;
 
@@ -59,6 +59,7 @@ public class MindMapToolBar extends FreeMindToolBar {
 		iconToolBarScrollPane = new JAutoScrollBarPane(iconToolBar);
         iconToolBar.setOrientation(JToolBar.VERTICAL);
         iconToolBar.setRollover(true);
+        iconToolBarScrollPane.getVerticalScrollBar().setUnitIncrement(100);
 		fontsListener = new ItemListener(){
         	        public void itemStateChanged(ItemEvent e) {
         	            if (e.getStateChange() != ItemEvent.SELECTED) {
