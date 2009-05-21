@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.54 2009-05-15 21:11:49 christianfoltin Exp $ */
+/* $Id: OptionPanel.java,v 1.1.2.25.2.55 2009-05-21 17:42:43 christianfoltin Exp $ */
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;
@@ -211,8 +211,10 @@ public class OptionPanel implements TextTranslator {
 		if(selectedPanel != null && tabActionMap.containsKey(selectedPanel)){
 			((ChangeTabAction) tabActionMap.get(selectedPanel)).actionPerformed(null);
 		}
+		JScrollPane rightScrollPane = new JScrollPane(rightStack);
+		rightScrollPane.getVerticalScrollBar().setUnitIncrement(100);
 		JSplitPane centralPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-				leftBuilder.getPanel(), new JScrollPane(rightStack));
+				leftBuilder.getPanel(), rightScrollPane);
 		frame.getContentPane().add(centralPanel, BorderLayout.CENTER);
 		JButton cancelButton = new JButton(getText("Cancel"));
 		cancelButton.addActionListener(new ActionListener() {

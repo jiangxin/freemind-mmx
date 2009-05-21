@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.73 2009-02-22 19:20:01 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.74 2009-05-21 17:42:43 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -1926,6 +1926,10 @@ freemind.main.Resources.getInstance().logException(					e1);
         NodeView newlySelectedNodeView = ((MainView) e.getComponent()).getNodeView();
         //MindMapNode newlySelectedNode = newlySelectedNodeView.getModel();
         boolean extend = e.isControlDown();
+        // Fixes Cannot select multiple single nodes * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1675829&group_id=7118
+        if(Tools.isMacOsX()) {
+        	extend = e.isMetaDown();
+        }
         boolean range = e.isShiftDown();
         boolean branch = e.isAltGraphDown() || e.isAltDown(); /* windows alt, linux altgraph .... */
         boolean retValue = false;
