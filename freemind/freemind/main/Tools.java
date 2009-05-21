@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.46 2009-05-20 19:19:11 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.47 2009-05-21 19:17:15 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -1346,5 +1346,17 @@ public class Tools {
 		}
 	}
 
+	/**
+	 * Logs the stacktrace via a dummy exception.
+	 */
+	public static void printStackTrace() {
+	    try {
+			throw new IllegalArgumentException("HERE");
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			freemind.main.Resources.getInstance().logException(e1);
+		}
+	}
+	
 }
 

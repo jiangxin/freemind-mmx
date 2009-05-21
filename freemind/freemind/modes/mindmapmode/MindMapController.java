@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.74 2009-05-21 17:42:43 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.75 2009-05-21 19:17:15 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -1171,7 +1171,7 @@ freemind.main.Resources.getInstance().logException(					e1);
                freemind.main.Resources.getInstance().logException(ex);
                return; }
             try {
-               MindMapNodeModel node = getMindMapMapModel().loadTree(new File(absolute.getFile()));
+            	MindMapNodeModel node = getMindMapMapModel().loadTree(Tools.urlToFile(absolute));
                paste(node, selected);
 			   invokeHooksRecursively(node, getMindMapMapModel());
             }
@@ -1199,7 +1199,7 @@ freemind.main.Resources.getInstance().logException(					e1);
                JOptionPane.showMessageDialog(getView(),"Couldn't create valid URL.");
                return; }
             try {
-               MindMapNodeModel node = getMindMapMapModel().loadTree(new File(absolute.getFile()));
+               MindMapNodeModel node = getMindMapMapModel().loadTree(Tools.urlToFile(absolute));
                for (ListIterator i = node.childrenUnfolded();i.hasNext();) {
                   	MindMapNodeModel importNode = (MindMapNodeModel)i.next();
 					paste(importNode, selected);
@@ -1928,7 +1928,7 @@ freemind.main.Resources.getInstance().logException(					e1);
         boolean extend = e.isControlDown();
         // Fixes Cannot select multiple single nodes * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1675829&group_id=7118
         if(Tools.isMacOsX()) {
-        	extend = e.isMetaDown();
+        	extend |= e.isMetaDown();
         }
         boolean range = e.isShiftDown();
         boolean branch = e.isAltGraphDown() || e.isAltDown(); /* windows alt, linux altgraph .... */
@@ -1971,6 +1971,7 @@ freemind.main.Resources.getInstance().logException(					e1);
             link = (link != null ? link : " ");
             getController().getFrame().out(link);
         }
+        logger.fine("MouseEvent: extend:"+extend+", range:"+range+", branch:"+branch+", event:"+e+", retValue:"+retValue);
         return retValue;
     }
 
