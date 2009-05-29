@@ -19,7 +19,7 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.13 2009-05-15 21:11:49 christianfoltin Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.14 2009-05-29 20:48:46 christianfoltin Exp $*/
 
 package accessories.plugins;
 
@@ -171,6 +171,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
 //					.getStyleSheet();
 //			styleSheet.removeStyle("body");
 //			styleSheet.removeStyle("p");
+            int caretPosition = noteViewerComponent.getCaretPosition();
             String documentText = noteViewerComponent.getDocumentText();
             // (?s) makes . matching newline as well.
             documentText = documentText.replaceFirst("(?s)<style.*?</style>", "");
@@ -187,7 +188,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
                 mLastContentEmpty = editorContentEmpty;
             }
             controller.registerNodeSelectionListener(this);
-
+            noteViewerComponent.getEditorPane().setCaretPosition(caretPosition);
         }
 
         public void onCreateNodeHook(MindMapNode node) {

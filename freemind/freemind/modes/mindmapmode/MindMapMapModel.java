@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.33 2009-05-19 18:28:12 christianfoltin Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.34 2009-05-29 20:48:46 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -469,7 +469,7 @@ freemind.main.Resources.getInstance().logException(			e);
 		    }
 		}
 		timerForAutomaticSaving = new Timer();
-		timerForAutomaticSaving.schedule(new doAutomaticSave(MindMapMapModel.this, numberOfTempFiles, filesShouldBeDeletedAfterShutdown, dirToStore), delay, delay);
+		timerForAutomaticSaving.schedule(new DoAutomaticSave(MindMapMapModel.this, numberOfTempFiles, filesShouldBeDeletedAfterShutdown, dirToStore), delay, delay);
 	}
 
 
@@ -577,7 +577,7 @@ freemind.main.Resources.getInstance().logException(			e);
         public synchronized void run() {}
     }
 
-    static private class doAutomaticSave  extends TimerTask {
+    static private class DoAutomaticSave  extends TimerTask {
         private MindMapMapModel model;
         private Vector tempFileStack;
         private int numberOfFiles;
@@ -586,7 +586,7 @@ freemind.main.Resources.getInstance().logException(			e);
         /** This value is compared with the result of getNumberOfChangesSinceLastSave(). If the values coincide, no further automatic
             saving is performed until the value changes again.*/
         private int changeState;
-        doAutomaticSave(MindMapMapModel model, int numberOfTempFiles, boolean filesShouldBeDeletedAfterShutdown, File pathToStore) {
+        DoAutomaticSave(MindMapMapModel model, int numberOfTempFiles, boolean filesShouldBeDeletedAfterShutdown, File pathToStore) {
             this.model = model;
             tempFileStack = new Vector();
             numberOfFiles = ((numberOfTempFiles > 0)? numberOfTempFiles: 1);
