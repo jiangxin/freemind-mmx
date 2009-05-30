@@ -19,7 +19,7 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.14 2009-05-29 20:48:46 christianfoltin Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.15 2009-05-30 18:19:55 christianfoltin Exp $*/
 
 package accessories.plugins;
 
@@ -73,6 +73,23 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 import freemind.view.mindmapview.NodeView;
 
 public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuItemSelectedListener {
+	public static final class SimplyHtmlResources implements TextResources {
+		public String getString(String pKey) {
+			// no splash for SimplyHtml.
+			if(Tools.safeEquals("show_splash_screen", pKey)) {
+				return "false";
+			}
+			pKey = "simplyhtml." + pKey;
+			String resourceString = Resources.getInstance().getResourceString(pKey, null);
+			if(resourceString == null){
+				resourceString = Resources.getInstance().getProperty(pKey);
+			}
+			return resourceString;
+		}
+	}
+
+
+
 	private static class SouthPanel extends JPanel {
 		public SouthPanel() {
 			super(new BorderLayout());
@@ -406,16 +423,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
 
     public static SHTMLPanel getHtmlEditorPanel() {
         if (htmlEditorPanel == null) {
-            SHTMLPanel.setResources(new TextResources(){
-                public String getString(String pKey) {
-                	pKey = "simplyhtml." + pKey;
-                	String resourceString = Resources.getInstance().getResourceString(pKey, null);
-                	if(resourceString == null){
-                		resourceString = Resources.getInstance().getProperty(pKey);
-                	}
-                	return resourceString;
-                }                        
-            });
+            SHTMLPanel.setResources(new SimplyHtmlResources());
             htmlEditorPanel = SHTMLPanel.createSHTMLPanel();
             htmlEditorPanel.setMinimumSize(new Dimension(100, 100));
         }
