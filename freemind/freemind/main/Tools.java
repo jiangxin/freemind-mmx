@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.47 2009-05-21 19:17:15 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.48 2009-06-02 17:35:49 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -40,11 +40,14 @@ import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PushbackInputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -953,6 +956,9 @@ public class Tools {
 	        
 	        String fileContents = getFile(file);
 	        fileContents = replaceIllegalXmlChars(fileContents);
+	        if (fileContents.length() > 10) {
+	        	logger.info("File start: " + fileContents.substring(0, 9));
+	        }
 	        final StreamSource sr = new StreamSource(new StringReader(fileContents));
 	        // Dimitry: to avoid a memory leak and properly release resources after the XSLT transformation
 	        // everything should run in own thread. Only after the thread dies the resources are released.
@@ -999,6 +1005,16 @@ public class Tools {
 	}
 
 	public static String replaceIllegalXmlChars(String fileContents) {
+		/* Map does not load with RC4 * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=2797009&group_id=7118*/
+		byte[] bytes = fileContents.getBytes();
+		if (bytes.length >= 3 && bytes[0] == (byte) 0xEF
+				&& bytes[1] == (byte) 0xBB && bytes[2] == (byte) 0xBF) {
+			try {
+				fileContents = new String(bytes, 3 , bytes.length-3, "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+		}
 		/* &#xb; is illegal, but sometimes occurs in 0.8.x maps.
 		 * Thus, we exclude all from 0 - 1f and replace them by nothing.
 		 * TODO: Which more are illegal?? */
@@ -1016,7 +1032,6 @@ public class Tools {
 	    return new BufferedReader(new FileReader(file));
 	}
 
-	
 	/**
 	 * In case of trouble, the method returns null.
 	 * @param pInputFile the file to read.
@@ -1026,8 +1041,8 @@ public class Tools {
         StringBuffer lines = new StringBuffer();
         BufferedReader bufferedReader = null;
         try {
-			bufferedReader = new BufferedReader(new FileReader(
-					pInputFile));
+			bufferedReader = new BufferedReader(new InputStreamReader(
+					new FileInputStream(pInputFile)));
 			final String endLine = System.getProperty("line.separator");
 			String line;
 			while ((line = bufferedReader.readLine()) != null) {
@@ -1350,12 +1365,8 @@ public class Tools {
 	 * Logs the stacktrace via a dummy exception.
 	 */
 	public static void printStackTrace() {
-	    try {
-			throw new IllegalArgumentException("HERE");
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			freemind.main.Resources.getInstance().logException(e1);
-		}
+		freemind.main.Resources.getInstance().logException(
+				new IllegalArgumentException("HERE"));
 	}
 	
 }
