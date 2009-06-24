@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.128 2009-05-29 20:48:46 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.129 2009-06-24 20:40:19 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -24,7 +24,6 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -33,6 +32,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -205,6 +205,18 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			info.append(VERSION);
 			info.append("; freemind_xml_version = ");
 			info.append(XML_VERSION);
+			try {
+				String propsLoc = "version.properties";
+				URL versionUrl = this.getClass().getClassLoader().getResource(propsLoc);
+				Properties buildNumberPros = new Properties();
+				InputStream stream = versionUrl.openStream();
+				buildNumberPros.load(stream);
+				info.append("\nBuild: "
+						+ buildNumberPros.getProperty("build.number")+"\n");
+				stream.close();
+			} catch(Exception e){
+				info.append("Problems reading build number file: " +e);
+			}
 			info.append("\njava_version = ");
 			info.append(System.getProperty("java.version"));
 			info.append("; os_name = ");

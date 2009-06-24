@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeDialog.java,v 1.1.4.1.16.19 2009-05-05 17:52:08 christianfoltin Exp $*/
+/*$Id: EditNodeDialog.java,v 1.1.4.1.16.20 2009-06-24 20:40:19 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -222,8 +222,9 @@ public class EditNodeDialog extends EditNodeBase {
                 }
             });
             
-            final Font nodeFont = getNode().getTextFont();
-            textArea.setFont(nodeFont);
+            Font font = getNode().getTextFont();
+            font = Tools.updateFontSize(font, getView().getZoom(), font.getSize()); 
+			textArea.setFont(font);
             
             final Color nodeTextColor = getNode().getTextColor();
 			textArea.setForeground(nodeTextColor);

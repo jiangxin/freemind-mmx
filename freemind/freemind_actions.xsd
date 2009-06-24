@@ -1055,7 +1055,6 @@
        </xs:choice>
 	</xs:group>
 
-
 	<xs:element name="menu_structure">
 		<xs:complexType>
 	      <xs:sequence>

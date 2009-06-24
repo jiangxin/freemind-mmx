@@ -10,8 +10,9 @@
       	<tokenfilter><replaceregex pattern=" " replace="_" flags="g"/></tokenfilter>
       </filterchain>
     </loadfile>
-
-	<property name="freemind.installer_year" value="2008"/>
+	
+	<property name="freemind.buildnumber.file" value="version.properties"/>
+	<property name="freemind.installer_year" value="2009"/>
 	<property name="src" value="." />
 	<property name="src_base_for_post" value="../" />
 	<property name="build" value="../bin/classes" />
@@ -56,6 +57,17 @@
 	              targetfile="${jibxjar}"/>
 	  </target>
 
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: init                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="init">
+		<buildnumber file="${freemind.buildnumber.file}"/>
+		<loadproperties srcfile="${freemind.buildnumber.file}"></loadproperties>
+		<property name="version" value="${ver}_${build.number}"/>
+		<echo>FreeMind Version = ${ver}, build ${build.number}.</echo>
+    </target>
+
+	
 	<!-- =================================
           target: gen
          ================================= -->
@@ -63,14 +75,17 @@
 		<mkdir dir="binding" />
 		<mkdir dir="binding/src" />
 		<mkdir dir="binding/classes" />
-		<java fork="true" classname="org.jibx.xsd2jibx.Generate" classpath="${jibxlibs}:${jibxhome}/xsd2jibx.jar:${jibxhome}/commons-logging-1.0.4.jar:${jibxhome}/jaxme-js-0.3.jar:${jibxhome}/log4j-1.2.8.jar:lib/commons-lang-2.0.jar" failonerror="true">
+<!-- 		<java fork="true" classname="org.jibx.xsd2jibx.Generate" classpath="${jibxlibs}:${jibxhome}/xsd2jibx.jar:${jibxhome}/commons-logging-1.0.4.jar:${jibxhome}/jaxme-js-0.3.jar:${jibxhome}/log4j-1.2.8.jar:lib/commons-lang-2.0.jar" failonerror="true">
 			<arg line="-n freemind.controller.actions.generated.instance" />
 			<arg line="-d binding/src" />
 			<arg file="freemind_actions.xsd" />
-		</java>
+		</java> -->
+		<java fork="true" jar="lib/compileXsd.jar"></java>
 		<javac srcdir="binding/src" destdir="binding/classes" source="${java_source_version}" target="${java_target_version}" debug="on" />
-		<xslt style="binding.xslt" in="binding/src/freemind/controller/actions/generated/instance/binding.xml" out="binding_new.xml" />
-		<move file="binding_new.xml" tofile="binding/src/freemind/controller/actions/generated/instance/binding.xml" overwrite="true" />
+<!--
+ 		<xslt style="binding.xslt" in="binding/src/freemind/controller/actions/generated/instance/binding.xml" out="binding_new.xml" />
+		<move file="binding_new.xml" tofile="binding/src/freemind/controller/actions/generated/instance/binding.xml" overwrite="true" /> 
+		-->
 		<echo message="Running binding compiler..." />
 		<bind verbose="false" load="true">
 			<bindingfileset dir="binding/src">
@@ -98,8 +113,7 @@
 
 	<!-- end generator part -->
 
-	<target name="build" depends="gen">
-	  <echo>FreeMind Version = ${ver}.</echo>
+	<target name="build" depends="init,gen">
 		<!-- Perform Mac Changes as a plugin. -->
 		<exec dir="${src}/accessories/plugins" executable="ln" os="Mac OS X">
 			<arg value="-s"/>
@@ -218,7 +232,7 @@
 		                    mainclass="freemind.main.FreeMindStarter"
 		                    icon="${src}/images/FreeMindWindowIcon${icns_extension}.icns"
 		                    version="${ver}"
-		                    infostring="FreeMind ${ver} application (c) ${freemind.installer_year}"
+		                    infostring="FreeMind ${ver} (build: ${build.number}) application (c) ${freemind.installer_year}"
 							shortname="FreeMind"
 		                    bundleid="freemind.main.FreeMind"
 		                    signature="FM"
@@ -336,6 +350,7 @@
 				<include name="images/*"/>
 				<include name="images/icons/*.png"/>
 				<include name="freemind.properties"/>
+				<include name="version.properties"/>
 				<include name="patterns.xml"/>
 				<include name="patterns_updater.xslt"/>
 				<include name="Resources*"/>

@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.41 2009-04-19 19:42:50 christianfoltin Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.42 2009-06-24 20:40:19 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -187,7 +187,8 @@ public class EditNodeWYSIWYG extends EditNodeBase {
             htmlEditorWindow.setBase(this);
             final SHTMLPanel htmlEditorPanel = ((HTMLDialog)htmlEditorWindow).getHtmlEditorPanel();
             String rule = "BODY {";
-            final Font font = node.getTextFont();
+            Font font = node.getTextFont();
+//            font = Tools.updateFontSize(font, this.getView().getZoom(), font.getSize()); 
             final Color nodeTextBackground = node.getTextBackground();
             rule += "font-family: "+font.getFamily()+";";
             rule += "font-size: "+font.getSize()+"pt;";

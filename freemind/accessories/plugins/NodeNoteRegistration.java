@@ -19,7 +19,7 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.16 2009-06-02 17:35:49 christianfoltin Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.17 2009-06-24 20:40:19 christianfoltin Exp $*/
 
 package accessories.plugins;
 
@@ -210,8 +210,8 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
             }
             controller.registerNodeSelectionListener(this);
             editorPane.setCaretPosition(caretPosition);
-            editorPane.setSelectionStart(selectionStart);
             editorPane.setSelectionEnd(selectionEnd);
+            editorPane.setSelectionStart(selectionStart);
         }
 
         public void onCreateNodeHook(MindMapNode node) {

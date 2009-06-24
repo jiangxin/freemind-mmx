@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.48 2009-06-02 17:35:49 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.49 2009-06-24 20:40:19 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -28,6 +28,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
@@ -1368,6 +1369,27 @@ public class Tools {
 		freemind.main.Resources.getInstance().logException(
 				new IllegalArgumentException("HERE"));
 	}
+
 	
+    /**
+     * Adapts the font size inside of a component to the zoom
+     * @param c component
+     * @param zoom zoom factor
+     * @param normalFontSize "unzoomed" normal font size.
+     * @return a copy of the input font (if the size was effectively changed) 
+     * with the correct scale.
+     */
+    public static Font updateFontSize(Font font, float zoom, int normalFontSize) {
+        if (font != null) {
+            float oldFontSize = font.getSize2D();
+            float newFontSize = normalFontSize * zoom;
+            if(oldFontSize != newFontSize)
+            {
+                font = font.deriveFont(newFontSize);
+            }
+        }
+        return font;
+    }
+
 }
 
