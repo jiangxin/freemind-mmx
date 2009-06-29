@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlConversionTests.java,v 1.1.2.14 2009-05-15 21:11:50 christianfoltin Exp $*/
+/*$Id: HtmlConversionTests.java,v 1.1.2.15 2009-06-29 17:22:31 christianfoltin Exp $*/
 
 package tests.freemind;
 
@@ -451,7 +451,7 @@ public class HtmlConversionTests extends FreeMindTestBase {
 
     public void testIllegalXmlChars() throws Exception {
 		assertEquals("Wrong chars are gone", "AB&#32;&#x20;", Tools
-				.replaceIllegalXmlChars("&#x1f;A&#0;&#31;&#x0001B;B&#x1;&#32;&#1;&#x20;"));
+				.replaceUtf8AndIllegalXmlChars("&#x1f;A&#0;&#31;&#x0001B;B&#x1;&#32;&#1;&#x20;"));
 	}
     
 }

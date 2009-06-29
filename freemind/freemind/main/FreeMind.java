@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.129 2009-06-24 20:40:19 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.130 2009-06-29 17:22:30 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -726,18 +726,17 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		}
 		feedBack.setMaximumValue(9);
 		frame.init(feedBack);
-		Tools.waitForEventQueue();
 
 		feedBack.increase("FreeMind.progress.startCreateController");
 		ModeController ctrl = frame.createModeController(args);
 		
-		frame.setVisible(true);
-		Tools.waitForEventQueue();
 		feedBack.increase("FreeMind.progress.loadMaps");
 		// This could be improved.
 		frame.loadMaps(args, ctrl);
 		
+		Tools.waitForEventQueue();
 		feedBack.increase("FreeMind.progress.endStartup");
+		frame.setVisible(true);
 		if (splash != null) {
 			splash.setVisible(false);
 		}

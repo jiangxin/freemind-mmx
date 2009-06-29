@@ -19,8 +19,8 @@
 */
 /* XMLElement.java
  *
- * $Revision: 1.7.18.4.2.6 $
- * $Date: 2007-12-18 21:47:08 $
+ * $Revision: 1.7.18.4.2.7 $
+ * $Date: 2009-06-29 17:22:30 $
  * $Name:  $
  *
  * This file is part of NanoXML 2 Lite.
@@ -125,7 +125,7 @@ import java.util.regex.Pattern;
  *
  * @author Marc De Scheemaecker
  *         &lt;<A href="mailto:cyberelf@mac.com">cyberelf@mac.com</A>&gt;
- * @version $Name:  $, $Revision: 1.7.18.4.2.6 $
+ * @version $Name:  $, $Revision: 1.7.18.4.2.7 $
  */
 public class XMLElement
 {
@@ -2270,7 +2270,11 @@ public class XMLElement
                     break;
                 default:
                     int unicode = (int) ch;
-                    if ((unicode < 32) || (unicode > 126)) {
+                    if(unicode < 32) {
+                    	/* do nothing as these characters
+                    	 * are illegal in output XML.
+                    	 */
+                    } else if (unicode > 126) {
                         writer.write('&'); writer.write('#');
                         writer.write('x');
                         writer.write(Integer.toString(unicode, 16));

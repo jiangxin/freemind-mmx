@@ -19,11 +19,12 @@
  *
  * Created on 24.04.2004
  */
-/* $Id: PrintActionHandler.java,v 1.1.2.1.2.3 2007-08-12 08:14:15 dpolivaev Exp $ */
+/* $Id: PrintActionHandler.java,v 1.1.2.1.2.4 2009-06-29 17:22:30 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
 
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.main.Tools;
 import freemind.modes.mindmapmode.MindMapController;
 
 /**
@@ -69,11 +70,7 @@ public class PrintActionHandler implements ActionHandler {
 	public void executeAction(XmlAction action) {
 		String s = c.marshall(action);
 		logger.info(s);
-//        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-//        for (int i = 0; i < stackTrace.length; i++) {
-//            StackTraceElement element = stackTrace[i];
-//            logger.info(element.toString());
-//        }
+//		Tools.printStackTrace();
 	}
 
 }

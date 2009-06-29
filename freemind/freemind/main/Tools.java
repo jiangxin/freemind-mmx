@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.49 2009-06-24 20:40:19 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.50 2009-06-29 17:22:30 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -956,7 +956,7 @@ public class Tools {
 	        final Result result = new StreamResult(writer);
 	        
 	        String fileContents = getFile(file);
-	        fileContents = replaceIllegalXmlChars(fileContents);
+	        fileContents = replaceUtf8AndIllegalXmlChars(fileContents);
 	        if (fileContents.length() > 10) {
 	        	logger.info("File start: " + fileContents.substring(0, 9));
 	        }
@@ -1005,7 +1005,7 @@ public class Tools {
 	    }
 	}
 
-	public static String replaceIllegalXmlChars(String fileContents) {
+	public static String replaceUtf8AndIllegalXmlChars(String fileContents) {
 		/* Map does not load with RC4 * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=2797009&group_id=7118*/
 		byte[] bytes = fileContents.getBytes();
 		if (bytes.length >= 3 && bytes[0] == (byte) 0xEF
@@ -1016,16 +1016,9 @@ public class Tools {
 				freemind.main.Resources.getInstance().logException(e);
 			}
 		}
-		/* &#xb; is illegal, but sometimes occurs in 0.8.x maps.
-		 * Thus, we exclude all from 0 - 1f and replace them by nothing.
-		 * TODO: Which more are illegal?? */
-		fileContents = fileContents.replaceAll("&#x0*1?[0-9A-Fa-f];", "");
-		// decimal: 0-31
-		fileContents = fileContents.replaceAll("&#0*[1-2]?[0-9];", "");
-		fileContents = fileContents.replaceAll("&#0*3[0-1];", "");
-		return fileContents;
+		return HtmlTools.replaceIllegalXmlCharacters(fileContents);
 	}
-	
+
 	/** Creates a default reader that just reads the given file.
 	 * @throws FileNotFoundException
 	 */
@@ -1390,6 +1383,26 @@ public class Tools {
         }
         return font;
     }
+
+	public static String compareText(String pText1, String pText2) {
+		if(pText1 == null || pText2 == null){
+			return "One of the Strings is null " + pText1 + ", " + pText2;
+		}
+		StringBuffer b = new StringBuffer();
+		if(pText1.length() > pText2.length()) {
+			b.append("First string is longer :" + pText1.substring(pText2.length()) + "\n");
+		}
+		if(pText1.length() < pText2.length()) {
+			b.append("Second string is longer :" + pText2.substring(pText1.length()) + "\n");
+		}
+		for (int i = 0; i < Math.min(pText1.length(), pText2.length()); i++) {
+			if(pText1.charAt(i) != pText2.charAt(i)) {
+				b.append("Difference at " + i + ": " + pText1.charAt(i) + "!=" + pText2.charAt(i) + "\n");
+			}
+			
+		}
+		return b.toString();
+	}
 
 }
 

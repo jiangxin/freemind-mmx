@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlTools.java,v 1.1.2.20 2008-12-16 21:57:01 christianfoltin Exp $*/
+/*$Id: HtmlTools.java,v 1.1.2.21 2009-06-29 17:22:30 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -342,7 +342,16 @@ public class HtmlTools {
 		return result.toString();
 	}
 
+    
+    /** Converts ''&amp;#xff;'' for example in "normal" characters.
+     * Thereby it removes illegal characters that will cause problems
+     * later on like &amp;#xb;.
+     * @param text input
+     * @return the converted output.
+     */
     public static String unescapeHTMLUnicodeEntity(String text) {
+    	// remove &#xb; for example.
+    	text = replaceIllegalXmlCharacters(text);
 		StringBuffer result = new StringBuffer(text.length());
 		StringBuffer entity = new StringBuffer();
 		boolean readingEntity = false;
@@ -524,6 +533,17 @@ public class HtmlTools {
         }
         return false;
     }
+
+	public static String replaceIllegalXmlCharacters(String fileContents) {
+		/* &#xb; is illegal, but sometimes occurs in 0.8.x maps.
+		 * Thus, we exclude all from 0 - 1f and replace them by nothing.
+		 * TODO: Which more are illegal?? */
+		fileContents = fileContents.replaceAll("&#x0*1?[0-9A-Fa-f];", "");
+		// decimal: 0-31
+		fileContents = fileContents.replaceAll("&#0*[1-2]?[0-9];", "");
+		fileContents = fileContents.replaceAll("&#0*3[0-1];", "");
+		return fileContents;
+	}
 
 	public static String extractHtmlBody(String output) {
 		if(output.startsWith("<html")) {
