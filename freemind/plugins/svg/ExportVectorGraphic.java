@@ -19,7 +19,7 @@
  *
  * Created on 10.11.2004
  */
-/* $Id: ExportVectorGraphic.java,v 1.1.4.3.2.10 2008-05-05 19:44:21 christianfoltin Exp $ */
+/* $Id: ExportVectorGraphic.java,v 1.1.4.3.2.11 2009-07-04 20:38:27 christianfoltin Exp $ */
 package plugins.svg;
 
 //import java.awt.BasicStroke;
@@ -75,15 +75,20 @@ public class ExportVectorGraphic extends ExportHook{
 		// This prevents the "null incompatible with text-specific antialiasing enable key" error
 		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_DEFAULT);
-		view.preparePrinting();
-		Rectangle innerBounds = view.getInnerBounds();
-		g2d.setSVGCanvasSize(new Dimension(innerBounds.width, innerBounds.height));
-		g2d.translate(-innerBounds.x, -innerBounds.y);
-		//
-		// Generate SVG content
-		//
-		view.print(g2d);
-//		g2d.setColor(Color.BLACK);
+		try {
+			view.preparePrinting();
+			Rectangle innerBounds = view.getInnerBounds();
+			g2d.setSVGCanvasSize(new Dimension(innerBounds.width,
+					innerBounds.height));
+			g2d.translate(-innerBounds.x, -innerBounds.y);
+			//
+			// Generate SVG content
+			//
+			view.print(g2d);
+		} finally {
+			view.endPrinting();
+		}
+		//		g2d.setColor(Color.BLACK);
 //		g2d.setStroke(new BasicStroke(3));
 //		g2d.drawRect(innerBounds.x, innerBounds.y, innerBounds.width - 2, innerBounds.height - 2);
 		return g2d;

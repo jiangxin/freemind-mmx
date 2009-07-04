@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MainView.java,v 1.1.4.32 2009-03-07 09:06:11 dpolivaev Exp $ */
+/* $Id: MainView.java,v 1.1.4.33 2009-07-04 20:38:27 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.Color;
@@ -27,6 +27,8 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.geom.AffineTransform;
 
@@ -49,6 +51,7 @@ import freemind.modes.MindMapNode;
 public abstract class MainView extends JLabel{
     static Dimension minimumSize = new Dimension(0, 0);
     static Dimension maximumSize = new Dimension(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    private static java.util.logging.Logger logger = null;
         private static final int MIN_HOR_NODE_SIZE = 10;
         
         int getZoomedFoldingSymbolHalfWidth(){
@@ -56,6 +59,10 @@ public abstract class MainView extends JLabel{
         }
         
         MainView(){
+			if (logger == null) {
+				logger = freemind.main.Resources.getInstance().getLogger(
+						this.getClass().getName());
+			}
             isPainting = false;
             setAlignmentX(NodeView.CENTER_ALIGNMENT);
             setHorizontalAlignment(CENTER);

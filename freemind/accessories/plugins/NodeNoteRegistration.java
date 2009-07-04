@@ -19,7 +19,7 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.17 2009-06-24 20:40:19 christianfoltin Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.18 2009-07-04 20:38:27 christianfoltin Exp $*/
 
 package accessories.plugins;
 
@@ -273,7 +273,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
                         .intValue());
                 sPositionToRecover = null;
             }
-            controller.getView().getSelected().requestFocus();
+            controller.getController().obtainFocusForSelected();
         }
     };
     public void register() {

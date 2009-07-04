@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.130 2009-06-29 17:22:30 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.131 2009-07-04 20:38:27 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -194,6 +194,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public FreeMind(Properties pDefaultPreferences, Properties pUserPreferences, File pAutoPropertiesFile) {
 		super("FreeMind");
+		// Focus fix
 		System.setSecurityManager(new FreeMindSecurityManager());
 		defProps = pDefaultPreferences;
 		props = pUserPreferences;
@@ -1126,5 +1127,4 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			getRootPane().revalidate();
 		}
 	}
-	
 }

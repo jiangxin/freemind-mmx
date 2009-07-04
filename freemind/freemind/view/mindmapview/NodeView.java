@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.68 2009-03-07 09:06:11 dpolivaev Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.69 2009-07-04 20:38:27 christianfoltin Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -271,7 +271,8 @@ public class NodeView extends JComponent implements TreeModelListener{
 
 
    public void requestFocus(){
-      mainView. requestFocus();
+      /*boolean requestResult = */mainView. requestFocusInWindow();
+//      logger.info("Request Focus for ("+requestResult+") for " + mainView);
    }
    public boolean focused(){
      return mainView.hasFocus();  

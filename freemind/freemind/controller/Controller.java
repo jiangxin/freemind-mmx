@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.61 2009-04-19 19:45:11 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.62 2009-07-04 20:38:27 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -29,6 +29,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
 import java.awt.Insets;
+import java.awt.KeyboardFocusManager;
 import java.awt.RenderingHints;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -41,6 +42,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.PrinterJob;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.Serializable;
 import java.net.MalformedURLException;
@@ -196,6 +199,27 @@ public class Controller  implements MapModuleChangeObserver {
         if(logger == null) {
             logger = frame.getLogger(this.getClass().getName());
         }
+        /** 
+         * Arranges the keyboard focus especially after 
+         * opening FreeMind.
+         * */
+        KeyboardFocusManager focusManager =
+            KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        focusManager.addPropertyChangeListener(
+            new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent e) {
+                    String prop = e.getPropertyName();
+                    if ("focusOwner".equals(prop)) {
+                        Component comp = (Component)e.getNewValue();
+//                        logger.info("Focus change for " + comp);
+                        if (comp instanceof FreeMindMain) {
+							obtainFocusForSelected();
+						}
+                    }
+                }
+            }
+        );
+
 
         localDocumentationLinkConverter = new DefaultLocalLinkConverter();
 
@@ -550,7 +574,6 @@ public class Controller  implements MapModuleChangeObserver {
         menuBar.updateMenus(newModeController);
         menuBar.revalidate();
         menuBar.repaint();
-
     }
 
 	public void numberOfOpenMapInformation(int number) {
@@ -721,19 +744,16 @@ public class Controller  implements MapModuleChangeObserver {
        JOptionPane.showMessageDialog(component, message.toString(), "FreeMind", JOptionPane.ERROR_MESSAGE); }
 
     public void obtainFocusForSelected() {
-    	logger.finest("obtainFocusForSelected");
-        SwingUtilities.invokeLater( new Runnable() {
-                public void run () {
-                    if (getView() != null) { // is null if the last map was closed.
-                        getView().getSelected().requestFocus();
-                    } else {
-                        // fc, 6.1.2004: bug fix, that open and quit are not working if no map is present.
-                        // to avoid this, the menu bar gets the focus, and everything seems to be all right!!
-                        // but I cannot avoid thinking of this change to be a bad hack ....
-                        getFrame().getFreeMindMenuBar().requestFocus();
-                    }
-                }
-            });
+//    	logger.finest("obtainFocusForSelected");
+    	if (getView() != null) { // is null if the last map was closed.
+//    		logger.info("Requesting Focus for " + getView().getSelected());
+    		getView().getSelected().requestFocus();
+    	} else {
+    		// fc, 6.1.2004: bug fix, that open and quit are not working if no map is present.
+    		// to avoid this, the menu bar gets the focus, and everything seems to be all right!!
+    		// but I cannot avoid thinking of this change to be a bad hack ....
+    		getFrame().getFreeMindMenuBar().requestFocus();
+    	}
     }
 
     //
