@@ -9,8 +9,9 @@ Changes made in FreeMind 0.9.0 RC 5
 * Long node editor uses zoomed fonts (the rich type editor are still unzoomed).
 * Fixed problems with &#xb; in node text.
 * Fixed some "Center node" problems
-* Fixed: Node marker disapears after exporting * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=2813905&group_id=7118
+* Fixed: Node marker disappears after exporting * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=2813905&group_id=7118
 * Fixed some focus problems.
+* Integrated (thanks to the author): Typos in help Mind Map * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=2805776&group_id=7118
 
 ===============================
 Changes made in FreeMind 0.9.0 RC 4

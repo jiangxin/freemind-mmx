@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.62 2009-07-04 20:38:27 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.63 2009-07-14 19:42:55 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -974,9 +974,12 @@ public class Controller  implements MapModuleChangeObserver {
 
             if (!isDlg || printerJob.printDialog()) {
                 try {
+                	frame.setWaitingCursor(true);
                     printerJob.print();
                 } catch (Exception ex) {
                     freemind.main.Resources.getInstance().logException(ex);
+                } finally {
+                	frame.setWaitingCursor(false);
                 }
             }
         }

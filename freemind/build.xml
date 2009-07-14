@@ -570,7 +570,7 @@
     </target>
 	
 	<!-- =================================
-          target: installers, for Chris' computes
+          target: installers, for Chris' computers
          ================================= -->
     <target name="installers_chris" depends="" description="--> Creates all installers. This is a task that only works on Chris laptops. But it should be informative to others who want to build the installers">
     	<property name="cvsRoot" value=":pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind"/>
