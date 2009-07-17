@@ -74,13 +74,25 @@
 	<target name="gen" depends="xmlbind.checkStatusOfGeneration" description="--> Generates the JixB binding jar." unless="xmlbind.isUpToDate">
 		<mkdir dir="binding" />
 		<mkdir dir="binding/src" />
+		<mkdir dir="binding/run" />
 		<mkdir dir="binding/classes" />
 <!-- 		<java fork="true" classname="org.jibx.xsd2jibx.Generate" classpath="${jibxlibs}:${jibxhome}/xsd2jibx.jar:${jibxhome}/commons-logging-1.0.4.jar:${jibxhome}/jaxme-js-0.3.jar:${jibxhome}/log4j-1.2.8.jar:lib/commons-lang-2.0.jar" failonerror="true">
 			<arg line="-n freemind.controller.actions.generated.instance" />
 			<arg line="-d binding/src" />
 			<arg file="freemind_actions.xsd" />
 		</java> -->
-		<java fork="true" jar="lib/compileXsd.jar"></java>
+		<javac destdir="binding/run" 
+			srcdir="${src}"
+			classpath="${classpath}"
+			debug="${debug}"
+    	   source="${java_source_version}"
+	       target="${java_target_version}"
+			>
+			<include name="de/foltin/**" />
+		</javac>
+		<java fork="true" classpath="binding/run" classname="de.foltin.CompileXsdStart"></java>
+		<delete dir="binding/run"  quiet="true"/>
+<!-- 		<java fork="true" jar="lib/compileXsd.jar"></java> -->
 		<javac srcdir="binding/src" destdir="binding/classes" source="${java_source_version}" target="${java_target_version}" debug="on" />
 <!--
  		<xslt style="binding.xslt" in="binding/src/freemind/controller/actions/generated/instance/binding.xml" out="binding_new.xml" />
