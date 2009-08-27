@@ -1,4 +1,9 @@
 ===============================
+Changes made in FreeMind 0.9.0 RC 6
+===============================
+* Fixed: Plain text Long node gets corrupted (loses newlines) on drag * http://sourceforge.net/tracker/?func=detail&aid=2844139&group_id=7118&atid=107118
+
+===============================
 Changes made in FreeMind 0.9.0 RC 5
 ===============================
 * Fixed caret position during automatic save in notes window. (see https://sourceforge.net/forum/message.php?msg_id=7413407).
