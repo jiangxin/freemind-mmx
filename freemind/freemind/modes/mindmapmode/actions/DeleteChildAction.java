@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/* $Id: DeleteChildAction.java,v 1.1.2.2.2.11 2008-06-24 19:54:00 christianfoltin Exp $ */
+/* $Id: DeleteChildAction.java,v 1.1.2.2.2.12 2009-09-23 19:21:49 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions;
 
@@ -62,8 +62,11 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
     	// ask user if not root is selected:
     	for (Iterator iterator = mMindMapController.getSelecteds().iterator(); iterator.hasNext();) {
 			MindMapNode node = (MindMapNode) iterator.next();
-			if(node.isRoot())
+			if(node.isRoot()) {
+	    		mMindMapController.getController().errorMessage(
+	    				mMindMapController.getFrame().getResourceString("cannot_delete_root"));
 				return;
+			}
 		}
 		int showResult = new OptionalDontShowMeAgainDialog(mMindMapController
 				.getFrame().getJFrame(), mMindMapController.getSelectedView(),

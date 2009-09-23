@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.56 2009-03-29 19:37:23 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.57 2009-09-23 19:21:49 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -679,29 +679,36 @@ public abstract class ControllerAdapter implements ModeController {
      * Save as; return false is the action was cancelled
      */
     public boolean saveAs() {
+    	File f;
         JFileChooser chooser = getFileChooser();
         if (getMapsParentFile() == null) {
             chooser.setSelectedFile(new File(getFileNameProposal() + freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION));
         }
         chooser.setDialogTitle(getText("save_as"));
-        int returnVal = chooser.showSaveDialog(getView());
-        if (returnVal != JFileChooser.APPROVE_OPTION) {// not ok pressed
-        	return false; }
-
-        // |= Pressed O.K.
-        File f = chooser.getSelectedFile();
-        lastCurrentDir = f.getParentFile();
-        //Force the extension to be .mm
-        String ext = Tools.getExtension(f.getName());
-        if(!ext.equals(freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION_WITHOUT_DOT)) {
-           f = new File(f.getParent(),f.getName()+freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION); }
-
-        if (f.exists()) { // If file exists, ask before overwriting.
-			int overwriteMap = JOptionPane.showConfirmDialog
-			   (getView(), getText("map_already_exists"), "FreeMind", JOptionPane.YES_NO_OPTION );
-			if (overwriteMap != JOptionPane.YES_OPTION) {
-			   return false; }}
-
+        boolean repeatSaveAsQuestion;
+        do {
+        	repeatSaveAsQuestion = false;
+	        int returnVal = chooser.showSaveDialog(getView());
+	        if (returnVal != JFileChooser.APPROVE_OPTION) {// not ok pressed
+	        	return false; }
+	
+	        // |= Pressed O.K.
+			f = chooser.getSelectedFile();
+	        lastCurrentDir = f.getParentFile();
+	        //Force the extension to be .mm
+	        String ext = Tools.getExtension(f.getName());
+	        if(!ext.equals(freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION_WITHOUT_DOT)) {
+	           f = new File(f.getParent(),f.getName()+freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION); }
+	
+	        if (f.exists()) { // If file exists, ask before overwriting.
+				int overwriteMap = JOptionPane.showConfirmDialog
+				   (getView(), getText("map_already_exists"), "FreeMind", JOptionPane.YES_NO_OPTION );
+				if (overwriteMap != JOptionPane.YES_OPTION) {
+					// repeat the save as dialog.
+					repeatSaveAsQuestion = true;
+				}
+	        }
+        } while(repeatSaveAsQuestion);
 		try { // We have to lock the file of the map even when it does not exist yet
 		   String lockingUser = getModel().tryToLock(f);
 		   if (lockingUser != null) {
@@ -741,6 +748,8 @@ public abstract class ControllerAdapter implements ModeController {
      * Return false if user has canceled.
      */
     public boolean close(boolean force, MapModuleManager mapModuleManager) {
+    	// remove old messages.
+    	getFrame().out("");
         if (!force && !getModel().isSaved()) {
             String text = getText("save_unsaved")+"\n"+mapModuleManager.getMapModule().toString();
             String title = Tools.removeMnemonic(getText("save"));
@@ -961,7 +970,9 @@ public abstract class ControllerAdapter implements ModeController {
             if (success) {
 				getFrame().out(getText("saved")); // perhaps... (PN)
 			} else {
-				getController().errorMessage("Saving failed.");
+				String message = "Saving failed.";
+				getFrame().out(message); 
+				getController().errorMessage(message);
 			}
 			getController().setTitle(); // Possible update of read-only
         }

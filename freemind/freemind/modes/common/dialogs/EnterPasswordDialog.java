@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: EnterPasswordDialog.java,v 1.1.2.1.2.3 2008-04-17 19:32:28 christianfoltin Exp $ */
+/* $Id: EnterPasswordDialog.java,v 1.1.2.1.2.4 2009-09-23 19:21:49 christianfoltin Exp $ */
 
 package freemind.modes.common.dialogs;
 
@@ -35,6 +35,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
 import freemind.common.TextTranslator;
+import freemind.main.Tools;
 
 /** */
 public class EnterPasswordDialog extends JDialog {
@@ -102,6 +103,10 @@ public class EnterPasswordDialog extends JDialog {
             }
 
         });
+        Tools.addEscapeActionToDialog(this, new AbstractAction(){
+			public void actionPerformed(ActionEvent pE) {
+				cancelPressed();
+			}});
 
     }
 
@@ -176,10 +181,12 @@ public class EnterPasswordDialog extends JDialog {
             gridBagConstraints1.gridx = 0;
             gridBagConstraints1.gridy = 1;
             gridBagConstraints1.fill = java.awt.GridBagConstraints.HORIZONTAL;
+            gridBagConstraints1.insets = new java.awt.Insets(0, 5, 0, 0);
             jLabel.setText(mTranslator
                     .getText("accessories/plugins/EncryptNode.properties_2")); //$NON-NLS-1$
             gridBagConstraints2.gridx = 0;
             gridBagConstraints2.gridy = 2;
+            gridBagConstraints2.insets = new java.awt.Insets(0, 5, 0, 0);
             gridBagConstraints2.fill = java.awt.GridBagConstraints.HORIZONTAL;
             jLabel1.setText(mTranslator
                     .getText("accessories/plugins/EncryptNode.properties_3")); //$NON-NLS-1$
@@ -196,7 +203,7 @@ public class EnterPasswordDialog extends JDialog {
             gridBagConstraints5.gridwidth = 2;
             gridBagConstraints5.fill = java.awt.GridBagConstraints.HORIZONTAL;
             gridBagConstraints5.anchor = java.awt.GridBagConstraints.CENTER;
-            gridBagConstraints5.insets = new java.awt.Insets(0, 0, 20, 0);
+            gridBagConstraints5.insets = new java.awt.Insets(0, 5, 20, 0);
             jLabel2.setText(mTranslator
                     .getText("accessories/plugins/EncryptNode.properties_4")); //$NON-NLS-1$
             jLabel2.setToolTipText(mTranslator

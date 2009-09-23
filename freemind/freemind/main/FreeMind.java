@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.132 2009-08-27 20:04:10 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.133 2009-09-23 19:21:48 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -436,6 +436,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	}
 
 	public void out(String msg) {
+    	// TODO: Automatically remove old messages after a certain time.
 		if (status != null) {
 			status.setText(msg);
 			// logger.info(msg);
