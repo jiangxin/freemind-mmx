@@ -1,6 +1,18 @@
 <map version="0.9.0">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
-<node COLOR="#993300" CREATED="1124560950701" ID="ID_911274459" MODIFIED="1225863316593">
+<attribute_registry>
+<attribute_name NAME="CHECKPOINT_LIST" RESTRICTED="true">
+<attribute_value VALUE="[174156662,0,/home/foltin/java/freemind/0_9_0/freemind/doc/.CHECKPOINT/CHECKPOINT_freemind3888192519106551893.mm]"/>
+<attribute_value VALUE="[846848357,174156662,/home/foltin/java/freemind/0_9_0/freemind/doc/.CHECKPOINT/CHECKPOINT_freemind7807431841752386277.mm]"/>
+</attribute_name>
+<attribute_name NAME="LATEST_VERSION" RESTRICTED="true">
+<attribute_value VALUE="846848357"/>
+</attribute_name>
+<attribute_name NAME="VERSION" RESTRICTED="true">
+<attribute_value VALUE="846848357"/>
+</attribute_name>
+</attribute_registry>
+<node COLOR="#993300" CREATED="1124560950701" ID="ID_911274459" MODIFIED="1255776196712">
 <richcontent TYPE="NODE"><html>
   <head>
     
@@ -11,16 +23,16 @@
     </p>
   </body>
 </html></richcontent>
-<font BOLD="true" NAME="Dialog" SIZE="18"/>
+<font NAME="Dialog" SIZE="18"/>
 <node CREATED="1124560950701" ID="ID_91518160" LINK="http://freemind.sourceforge.net" MODIFIED="1124560950701" POSITION="left" TEXT="Home page of FreeMind">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node COLOR="#006699" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_1091417446" MODIFIED="1225862921794" POSITION="left" TEXT="Table of key mappings">
+<node COLOR="#006699" CREATED="1124560950701" ID="_Freemind_Link_1091417446" MODIFIED="1256021501484" POSITION="left" TEXT="Table of key mappings">
 <node CREATED="1124560950701" ID="ID_1069493165" MODIFIED="1225862919412" TEXT="File commands:New map      - Ctrl+NOpen map     - Ctrl+OSave map     - Ctrl+SSave as      - Ctrl+Shift+SPrint        - Ctrl+PClose        - Ctrl+WQuit         - Ctrl+QPrevious map - Alt+Shift+LEFTNext Map     - Alt+Shift+RIGHTExport file to HTML          - Ctrl+EExport branch to HTML        - Ctrl+HExport branch to new MM file - Alt+Shift+AOpen first file in history   - Ctrl+Shift+WEdit commands:Find        - Ctrl+FFind next   - Ctrl+GCut         - Ctrl+XCopy        - Ctrl+CCopy single - Ctrl+Shift+CPaste       - Ctrl+VMode commands:MindMap mode - Alt+1Browse mode  - Alt+2 File mode    - Alt+3Node formatting commands:Italicize                 - Ctrl+IBold                      - Ctrl+BCloud                     - Ctrl+Shift+BChange node color         - Alt+Shift+FBlend node color          - Alt+Shift+BChange node edge color    - Alt+Shift+EIncrease node font size   - Ctrl+&apos;+&apos;decrease node font size   - Ctrl+&apos;-&apos;Node navigation commands:Go to root  - ESCAPEMove up     - UPMove down   - DOWNMove left   - LEFTMove right  - RIGHTFollow link - Ctrl+ENTERZoom out    - Alt+UPZoom in     - Alt+DOWNNode movement commands:Move node up              - Ctrl+UPMove node down            - Ctrl+DOWNMove node left            - Ctrl+LEFTMove node right           - Ctrl+RIGHTNew node commands:Add sibling node   - ENTERAdd child node     - INSERTAdd sibling before - Shift+ENTERAdd new parent     - Shift+INSERTNode editing commands:Edit selected node        - F2Edit long node            - Alt+ENTERJoin nodes                - Ctrl+JToggle folded             - SPACEToggle children folded    - Ctrl+SPACESet link by filechooser   - Ctrl+Shift+KSet link by text entry    - Ctrl+KSet image by filechooser  - Alt+K">
-<font NAME="Courier New" SIZE="12"/>
+<font NAME="Dialog" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#006633" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_904501221" MODIFIED="1225953439623" POSITION="left" TEXT="Installation">
+<node COLOR="#006633" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_904501221" MODIFIED="1256021501399" POSITION="left" TEXT="Installation2">
 <node COLOR="#006699" CREATED="1124560950701" ID="_Freemind_Link_1911559485" MODIFIED="1225953424235" TEXT="Links">
 <node CREATED="1124560950701" ID="ID_1620747952" LINK="http://java.sun.com/javase/downloads/index.jsp" MODIFIED="1225953435738" TEXT="Download the Java Runtime Environment (at least J2RE1.4)">
 <edge WIDTH="thin"/>
@@ -322,10 +334,10 @@
 <node CREATED="1124560950701" ID="ID_1446015570" MODIFIED="1124560950701" TEXT="Different font families may be used">
 <font NAME="SansSerif" SIZE="12"/>
 <node CREATED="1124560950701" ID="ID_1736318824" MODIFIED="1124560950701" TEXT="This">
-<font NAME="Times New Roman" SIZE="16"/>
+<font NAME="Dialog" SIZE="16"/>
 </node>
 <node CREATED="1124560950701" ID="_Freemind_Link_1568731425" MODIFIED="1124560950701" TEXT="Or that">
-<font NAME="Verdana" SIZE="12"/>
+<font NAME="Dialog" SIZE="12"/>
 </node>
 <node CREATED="1124560950701" ID="ID_1827160206" MODIFIED="1124560950701" TEXT="Or that one">
 <font NAME="Dialog" SIZE="21"/>
