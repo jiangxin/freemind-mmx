@@ -26,6 +26,7 @@ import java.net.MalformedURLException;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 
+import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
@@ -47,48 +48,58 @@ public class ImportFolderStructureAction extends AbstractAction {
         chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
         chooser.setDialogTitle(controller
                 .getText("select_folder_for_importing"));
-        int returnVal = chooser.showOpenDialog(controller.getFrame()
+        FreeMindMain frame = getFrame();
+		int returnVal = chooser.showOpenDialog(frame
                 .getContentPane());
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File folder = chooser.getSelectedFile();
-            controller.getFrame().out("Importing folder structure ...");
+            frame.out("Importing folder structure ...");
             //getFrame().repaint(); // Refresh the frame, namely hide dialog
             // and show status
             //getView().updateUI();
             // Problem: the frame should be refreshed here, but I don't know how
             // to do it
             try {
+            	frame.setWaitingCursor(true);
                 importFolderStructure(folder, controller.getSelected(),/* redisplay= */
                 true);
             } catch (Exception ex) {
                 freemind.main.Resources.getInstance().logException(ex);
             }
-            controller.getFrame().out("Folder structure imported.");
+            frame.setWaitingCursor(false);
+            frame.out("Folder structure imported.");
         }
     }
+
+	private FreeMindMain getFrame() {
+		return controller.getFrame();
+	}
 
     public void importFolderStructure(File folder, MindMapNode target,
             boolean redisplay) throws MalformedURLException {
         logger.warning("Entering folder: "+folder);
 
         if (folder.isDirectory()) {
+        	getFrame().out(folder.getName());
             File[] list = folder.listFiles();
-            // Go recursively to subfolders
-            for (int i = 0; i < list.length; i++) {
-                if (list[i].isDirectory()) {
-                    // Insert a new node
-
-                    MindMapNode node = addNode(target, list[i].getName(), Tools.fileToUrl(list[i]).toString());
-                    importFolderStructure(list[i], node, false);
-                }
-            }
-
-            // For each file: add it
-            for (int i = 0; i < list.length; i++) {
-                if (!list[i].isDirectory()) {
-                    addNode(target, list[i].getName(), Tools.fileToUrl(list[i]).toString());
-                }
-            }
+            if (list != null) {
+				// Go recursively to subfolders
+				for (int i = 0; i < list.length; i++) {
+					if (list[i].isDirectory()) {
+						// Insert a new node
+						MindMapNode node = addNode(target, list[i].getName(),
+								Tools.fileToUrl(list[i]).toString());
+						importFolderStructure(list[i], node, false);
+					}
+				}
+				// For each file: add it
+				for (int i = 0; i < list.length; i++) {
+					if (!list[i].isDirectory()) {
+						addNode(target, list[i].getName(), Tools.fileToUrl(
+								list[i]).toString());
+					}
+				}
+			}
         }
         controller.setFolded(target, true);
         

@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/* $Id: ActionFactory.java,v 1.1.2.2.2.8 2009-02-04 19:31:21 christianfoltin Exp $ */
+/* $Id: ActionFactory.java,v 1.1.2.2.2.9 2009-10-29 19:40:27 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode.actions.xml;
 
@@ -112,12 +112,18 @@ public class ActionFactory {
 	public boolean executeAction(ActionPair pair) {
 	    if(pair == null)
 	        return false;
+	    controller.getFrame().setWaitingCursor(true);
 	    boolean returnValue = true;
 	    ActionPair filteredPair = pair;
 		// first filter:
 		for (Iterator i = registeredFilters.iterator(); i.hasNext();) {
 			ActionFilter filter = (ActionFilter) i.next();
-			filteredPair = filter.filterAction(filteredPair);
+			try {
+				filteredPair = filter.filterAction(filteredPair);
+			} catch (Exception e) {
+				freemind.main.Resources.getInstance().logException(e);
+				returnValue = false;
+			}
 		}
 		
 		// register for undo
@@ -142,6 +148,7 @@ public class ActionFactory {
                 // to break or not to break. this is the question here...
             }
 		}
+		controller.getFrame().setWaitingCursor(false);
 		return returnValue;
 	}
 
