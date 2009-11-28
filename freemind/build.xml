@@ -320,7 +320,7 @@
 
 
 
-	<target name="post_macos">
+	<target name="post_macos" if="isMacOs">
 
 		<exec dir="." executable="zsh" os="Mac OS X">
 			<arg value="./mkdmg.sh"/>
