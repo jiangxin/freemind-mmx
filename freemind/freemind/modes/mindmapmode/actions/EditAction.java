@@ -298,7 +298,7 @@ public class EditAction extends AbstractAction implements ActorXml {
 	}
 	public void stopEditing() {
 	       if(mCurrentEditDialog != null) {
-       		// there was presvious editing.
+       		// there was previous editing.
        		mCurrentEditDialog.closeEdit();
        		mCurrentEditDialog = null;
        }
