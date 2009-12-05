@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapView.java,v 1.30.16.16.2.61 2009-05-18 19:47:57 christianfoltin Exp $ */
+/* $Id: MapView.java,v 1.30.16.16.2.62 2009-12-05 23:21:32 christianfoltin Exp $ */
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;
@@ -92,7 +92,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         }
 
 		public void componentResized(ComponentEvent pE) {
-			logger.info("Component resized " +pE + " old size " + mSize + " new size " + getSize());
+			logger.fine("Component resized " +pE + " old size " + mSize + " new size " + getSize());
 			int deltaWidth = mSize.width - getWidth();
 			int deltaHeight = mSize.height - getHeight();
 	        JViewport mapViewport = (JViewport)getParent();
@@ -410,7 +410,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 		Rectangle rect = new Rectangle(content.getWidth()/2 - d.width/2,
                                        content.getHeight()/2 - d.height/2,
 			d.width, d.height);
-		logger.info("Scroll to " + rect + ", pref size="+viewPort.getPreferredSize() + ", " + this.getPreferredSize());
+		logger.fine("Scroll to " + rect + ", pref size="+viewPort.getPreferredSize() + ", " + this.getPreferredSize());
 
 		// One call of scrollRectToVisible suffices
 		// after patching the FreeMind.java
@@ -939,10 +939,10 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         for(Iterator it = pointNodePairs.iterator();it.hasNext();) {
             selectedNodes.add( ((Pair)it.next()).getSecond() ); }
 
-//        logger.info("Cutting #" + selectedNodes.size());
+//        logger.fine("Cutting #" + selectedNodes.size());
 //        for (Iterator it = selectedNodes.iterator(); it.hasNext();) {
 //        	MindMapNode node = (MindMapNode) it.next();
-//        	logger.info("Cutting " + node);
+//        	logger.fine("Cutting " + node);
 //        }
         return selectedNodes;
     }
@@ -1063,7 +1063,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 			long localTime = System.currentTimeMillis()-startMilli;
 			mPaintingAmount++;
 			mPaintingTime += localTime;
-			logger.info("End paint in "+localTime+ ". Mean time:" + (mPaintingTime/mPaintingAmount));
+			logger.fine("End paint in "+localTime+ ". Mean time:" + (mPaintingTime/mPaintingAmount));
         }
 
     public void paintChildren(Graphics graphics) {
@@ -1138,7 +1138,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         if(LinkAlreadyVisited == null)
             LinkAlreadyVisited = new HashSet();
         // references first
-//        logger.info("Searching for links of " + source.getModel().toString());
+//        logger.fine("Searching for links of " + source.getModel().toString());
         // paint own labels:
         Vector vec = getModel().getLinkRegistry().getAllLinks(source.getModel());
         for(int i = 0; i< vec.size(); ++i) {

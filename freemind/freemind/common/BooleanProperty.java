@@ -20,7 +20,7 @@
  * 
  * Created on 25.02.2006
  */
-/* $Id: BooleanProperty.java,v 1.1.2.3.2.2 2007-08-05 20:33:12 christianfoltin Exp $ */
+/* $Id: BooleanProperty.java,v 1.1.2.3.2.3 2009-12-05 23:21:32 christianfoltin Exp $ */
 package freemind.common;
 
 import java.awt.event.ItemEvent;
@@ -80,8 +80,8 @@ public class BooleanProperty extends PropertyBean implements PropertyControl
                 || !(value.toLowerCase().equals(mTrueValue) || value.toLowerCase()
                         .equals(mFalseValue)))
         {
-            throw new IllegalArgumentException("Cannot set a boolean to "
-                    + value);
+            throw new IllegalArgumentException("Cannot set a boolean to '"
+                    + value + "', allowed are " + mTrueValue + " and " + mFalseValue + ".");
         }
         mCheckBox.setSelected(value.toLowerCase().equals(mTrueValue));
     }
