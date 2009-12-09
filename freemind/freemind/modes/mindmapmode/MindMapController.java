@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.76 2009-06-29 17:22:30 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.77 2009-12-09 21:57:39 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -430,7 +430,8 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         // the executor must be the first here, because it is executed last then.
         getActionFactory().registerHandler(new ModeControllerActionHandler(getActionFactory()));
         getActionFactory().registerUndoHandler(new UndoActionHandler(this, undo, redo));
-        //debug:        getActionFactory().registerHandler(new freemind.modes.mindmapmode.actions.xml.PrintActionHandler(this));
+        //debug:        
+        getActionFactory().registerHandler(new freemind.modes.mindmapmode.actions.xml.PrintActionHandler(this));
 
         cut = new CutAction(this);
         paste = new PasteAction(this);
@@ -2130,8 +2131,8 @@ freemind.main.Resources.getInstance().logException(					e1);
 
 	public void setNoteText(MindMapNode node, String text) {
         String oldNoteText = node.getNoteText();
-//        logger.info("Old Note Text:'" + oldNoteText + ", new:'" + text + "'.");
-//        logger.info(Tools.compareText(oldNoteText, text));
+        logger.info("Old Note Text:'" + oldNoteText + ", new:'" + text + "'.");
+        logger.info(Tools.compareText(oldNoteText, text));
         if(Tools.safeEquals(text, oldNoteText)) {
             // they are equal.
             return;

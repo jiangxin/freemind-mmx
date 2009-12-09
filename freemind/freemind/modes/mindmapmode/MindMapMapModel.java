@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.34 2009-05-29 20:48:46 christianfoltin Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.35 2009-12-09 21:57:39 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -382,14 +382,15 @@ public class MindMapMapModel extends MapAdapter  {
         if (reader == null) {
             int showResult = new OptionalDontShowMeAgainDialog(mModeController
 					.getFrame().getJFrame(), mModeController.getSelectedView(),
-					"really_convert_to_current_version", "confirmation", mModeController,
+					"really_convert_to_current_version2", "confirmation", mModeController,
 					new OptionalDontShowMeAgainDialog.StandardPropertyHandler(
 							mModeController.getController(),
 							FreeMind.RESOURCES_CONVERT_TO_CURRENT_VERSION),
 					OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED)
 					.show().getResult();
 			if(showResult != JOptionPane.OK_OPTION) {
-				reader = Tools.getActualReader(file);
+//				reader = Tools.getActualReader(file);
+				throw new IllegalArgumentException("We should not open the file " + file);
 			} else {
 				reader = Tools.getUpdateReader(file, FREEMIND_VERSION_UPDATER_XSLT, getFrame());
 			}

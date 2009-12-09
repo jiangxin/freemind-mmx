@@ -19,7 +19,7 @@
  *
  * Created on 31.07.2007
  */
-/*$Id: OptionalDontShowMeAgainDialog.java,v 1.1.2.5 2008-03-30 20:34:45 christianfoltin Exp $*/
+/*$Id: OptionalDontShowMeAgainDialog.java,v 1.1.2.6 2009-12-09 21:57:39 christianfoltin Exp $*/
 
 package freemind.common;
 
@@ -150,9 +150,9 @@ public class OptionalDontShowMeAgainDialog {
 		});
 		mDialog.getContentPane().setLayout(new GridBagLayout());
 		mDialog.getContentPane().add(new JLabel(mTextTranslator.getText(mMessageId)),
-				new GridBagConstraints(1, 0, 1, 1, 1.0, 1.0,
+				new GridBagConstraints(1, 0, 1, 1, 10.0, 4.0,
 						GridBagConstraints.WEST, GridBagConstraints.BOTH,
-						new Insets(5, 5, 0, 0), 0, 0));
+						new Insets(5, 5, 0, 0), 0, 10));
 		//TODO: Replace by usual java question mark.
 		ImageIcon questionMark = new ImageIcon(Resources.getInstance().getResource("images/icons/help.png"));
 		mDialog.getContentPane().add(new JLabel(questionMark), new GridBagConstraints(0, 0, 1, 2, 1.0,
