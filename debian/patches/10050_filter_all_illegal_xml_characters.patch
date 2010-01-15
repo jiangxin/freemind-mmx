@@ -1,0 +1,38 @@
+diff -r 618ee1b1d5ae freemind/modes/NodeAdapter.java
+--- a/freemind/modes/NodeAdapter.java	Mon Feb 16 01:25:13 2009 +0800
++++ b/freemind/modes/NodeAdapter.java	Mon Feb 16 01:27:00 2009 +0800
+@@ -210,7 +210,7 @@
+ 
+     /** \0 is not allowed: */
+     private String makeValidXml(String pXmlNoteText) {
+-        return pXmlNoteText.replaceAll("\0", "").replaceAll("&#0;", "");
++        return pXmlNoteText.replaceAll("[\0-\u0008]|\u000B|\u000C|[\u000E-\u001F]|[\uD800-\uDFFF]|\uFFFE|\uFFFF", "").replaceAll("&#0;", "");
+     }
+     /* ************************************************************
+      * ********     Notes                                   *******
+@@ -1006,7 +1006,7 @@
+     	// OSSXP.COM: not save TEXT attributes in .mmx file
+     	if( node.isInWhiteAttlist("TEXT"))
+     	{
+-        String text = this.toString().replace('\0', ' ');
++        String text = this.makeValidXml(this.toString());
+         if(!HtmlTools.isHtmlNode(text)) {
+             node.setAttribute(XMLElementAdapter.XML_NODE_TEXT,text);
+         } else {
+@@ -1014,14 +1014,14 @@
+             XMLElement htmlElement = new XMLElement();
+             htmlElement.setName(XMLElementAdapter.XML_NODE_XHTML_CONTENT_TAG);
+             htmlElement.setAttribute(XMLElementAdapter.XML_NODE_XHTML_TYPE_TAG, XMLElementAdapter.XML_NODE_XHTML_TYPE_NODE);
+-            htmlElement.setEncodedContent(getXmlText().replace('\0', ' '));
++            htmlElement.setEncodedContent(this.makeValidXml(getXmlText()));
+             node.addChild(htmlElement);
+         }
+         if(getXmlNoteText()!= null){
+ 	        	XMLElement htmlElement = new XMLElement();
+ 	        	htmlElement.setName(XMLElementAdapter.XML_NODE_XHTML_CONTENT_TAG);
+ 	        	htmlElement.setAttribute(XMLElementAdapter.XML_NODE_XHTML_TYPE_TAG, XMLElementAdapter.XML_NODE_XHTML_TYPE_NOTE);
+-	        	htmlElement.setEncodedContent(getXmlNoteText().replace('\0', ' '));
++	        	htmlElement.setEncodedContent(this.makeValidXml(getXmlNoteText()));
+ 	        	node.addChild(htmlElement);
+         	
+         }

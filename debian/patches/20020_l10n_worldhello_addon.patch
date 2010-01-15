@@ -1,0 +1,44 @@
+diff -r 2f75493a5464 Resources_en.properties
+--- a/Resources_en.properties	Thu Feb 19 20:18:16 2009 +0800
++++ b/Resources_en.properties	Thu Feb 19 20:18:25 2009 +0800
+@@ -1368,6 +1368,18 @@
+ #changed:
+ OptionPanel.remind_use_rich_text_in_new_long_nodes=Use formatting for all nodes
+ 
++# new, worldhello, 25.5.2008:
++OptionPanel.wh_extension=MMX Hack
++OptionPanel.separator.wh_mm_aux_file=MindMap auxiliary file
++OptionPanel.wh_save_extra_attrs_in_aux_file.tooltip=If selected, save the following attributes in .filename.mmx file.
++OptionPanel.wh_save_extra_attrs_in_aux_file=Enable auxiliary file feature
++OptionPanel.wh_separate_attr_folded=Save attribute 'FOLDED' in aux file
++OptionPanel.wh_separate_attr_created=Save attribute 'CREATED' in aux file
++OptionPanel.wh_separate_attr_modified=Save attribute 'MODIFIED' in aux file
++OptionPanel.separator.wh_nonascii_in_utf8=Character Encoding
++OptionPanel.wh_nonascii_in_utf8.tooltip=If selected, save characters > 126 in utf8 format instead of &#HEX;
++OptionPanel.wh_nonascii_in_utf8=Save non-ascii characters in UTF-8
++
+ # new, fc, 21.5.2008:
+ icon_freemind_butterfly = FreeMind
+ icon_full-8 = Priority 8
+diff -r 2f75493a5464 Resources_zh_CN.properties
+--- a/Resources_zh_CN.properties	Thu Feb 19 20:18:16 2009 +0800
++++ b/Resources_zh_CN.properties	Thu Feb 19 20:18:25 2009 +0800
+@@ -1376,6 +1376,18 @@
+ # new, fc, 25.5.2008:
+ node_is_write_protected=\u76ee\u6807\u8282\u70b9\u88ab\u5199\u4fdd\u62a4\u3002
+ 
++# new, worldhello, 25.5.2008:
++OptionPanel.wh_extension=MMX Hack
++OptionPanel.separator.wh_mm_aux_file=\u9644\u52a0\u7684\u8f85\u52a9\u6587\u4ef6
++OptionPanel.wh_save_extra_attrs_in_aux_file.tooltip=\u5982\u679c\u542f\u7528\uff0c\u4e0b\u5217\u5c5e\u6027\u5c06\u4e0d\u518d\u4fdd\u5b58\u5728 MindMap \u6587\u4ef6\u4e2d\uff0c\u800c\u662f\u4fdd\u5b58\u4e8e\u9644\u52a0\u7684 .mmx \u6587\u4ef6\u4e2d\u3002
++OptionPanel.wh_save_extra_attrs_in_aux_file=\u542f\u7528\u9644\u52a0\u6587\u4ef6\u529f\u80fd
++OptionPanel.wh_separate_attr_folded=\u4fdd\u5b58\u5c5e\u6027 'FOLDED' \u4e8e\u9644\u52a0\u6587\u4ef6
++OptionPanel.wh_separate_attr_created=\u4fdd\u5b58\u5c5e\u6027 'CREATED' \u4e8e\u9644\u52a0\u6587\u4ef6
++OptionPanel.wh_separate_attr_modified=\u4fdd\u5b58\u5c5e\u6027 'MODIFIED' \u4e8e\u9644\u52a0\u6587\u4ef6
++OptionPanel.separator.wh_nonascii_in_utf8=\u5b57\u7b26\u7f16\u7801
++OptionPanel.wh_nonascii_in_utf8.tooltip=\u5982\u679c\u542f\u7528\uff0c\u5c06\u4e2d\u6587\u5b57\u7b26\u4ee5 UTF8 \u683c\u5f0f\u4fdd\u5b58\uff0c\u5426\u5219\u4ee5 &#HEX; \u683c\u5f0f\u7f16\u7801\u3002
++OptionPanel.wh_nonascii_in_utf8=\u5c06\u4e2d\u6587\u5b57\u7b26\u4fdd\u5b58\u4e3aUTF8
++
+ # new, fc, 6.7.2008:
+ KeyDoc=Key Documentation PDF
+ # translate only, when you have an own translation of this doc.

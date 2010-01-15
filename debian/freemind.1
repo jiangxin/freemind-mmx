@@ -1,0 +1,84 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH FREEMIND 1 "February  9, 2004"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+freemind \- A Java Program for creating and viewing Mindmaps
+
+.SH SYNOPSIS
+.B freemind
+.I <no_options>
+
+.SH DESCRIPTION
+This manual page documents briefly the
+.B freemind
+command.
+This manual page was written for the Debian distribution
+because the original program does not have a manual page.
+Instead, it has documentation as a mindmap (see help menu).
+.PP
+.\" TeX users may be more comfortable with the \fB<whatever>\fP and
+.\" \fI<whatever>\fP escape sequences to invode bold face and italics, 
+.\" respectively.
+\fBfreemind\fP is a program that allows to create and view so-called
+Mind Maps, as well as export them to HTML.
+
+.SH OPTIONS
+This program does not have any option. Just start it!
+
+.SH ENVIRONMENT
+.IP \fBDEBUG\fP
+If this environment variable is set, freemind gives more information on how it
+finds its different elements.
+.IP \fBJAVACMD\fP
+Default value for the java virtual machine (the \fBjava\fP command).
+.IP \fBJAVA_BINDIR\fP
+If $\fBJAVACMD\fP is not set, the java virtual machine is searched under
+$\fBJAVA_BINDIR\fP\fI/java\fP.
+.IP \fBJAVA_HOME\fP
+If $\fBJAVACMD\fP and $\fBJAVA_BINDIR\fP are not set, the java virtual machine
+is searched under $\fBJAVA_HOME\fP\fI/bin/java\fP.
+.IP \fBPATH\fP
+If all $\fBJAVA\fP... environment variables fail, the java virtual machine
+command (\fBjava\fP) is searched in the $\fBPATH\fP (with \fBwhich\fP).
+.IP \fBCLASSPATH\fP
+.IP \fBADD_JARS\fP
+The $\fBCLASSPATH\fP variable also lets one specify additional jars,
+which is good, if you want to add a new Look&Feel jar (the motif one is so
+ugly...). Alternatively, the content of $\fBADD_JARS\fP will be prepended to
+$\fBCLASSPATH\fP.
+
+.SH FILES
+.IP \fI/etc/freemind/freemindrc\fP
+.IP \fI~/.freemind/freemindrc\fP
+.B freemind
+tries to read its environment variables from \fI/etc/freemind/freemindrc\fP
+and \fI~/.freemind/freemindrc\fP, so that specific settings are possible at
+machine and user level.
+.IP \fI/usr/bin/java\fP
+If all searches through environment variables fail, the java virtual machine
+is expected to be \fI/usr/bin/java\fP;
+if not, \fBfreemind\fP exits with an error.
+
+.SH SEE ALSO
+The online documentation under
+.UR http://freemind.sf.net/
+.I http://freemind.sf.net/
+.UE
+
+.SH AUTHOR
+This manual page was written by Eric Lavarde <deb@zorglub.s.bawue.de>,
+for the Debian project (but may be used by others).

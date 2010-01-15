@@ -1,0 +1,60 @@
+diff -r 6c15dfa5edd1 freemind/controller/Controller.java
+--- a/freemind/controller/Controller.java	Mon Feb 16 01:24:34 2009 +0800
++++ b/freemind/controller/Controller.java	Mon Feb 16 01:24:46 2009 +0800
+@@ -1158,7 +1158,9 @@
+         public void actionPerformed(ActionEvent e) {
+            JOptionPane.showMessageDialog(getFrame().getViewport(), controller
+ 					.getResourceString("about_text")
+-					+ getFrame().getFreemindVersion(), controller
++					+ getFrame().getFreemindVersion()
++					+ " "
++					+ FreeMind.HACKEDVERSION, controller
+ 					.getResourceString("about"),
+ 					JOptionPane.INFORMATION_MESSAGE);
+         }
+diff -r 6c15dfa5edd1 freemind/main/FreeMind.java
+--- a/freemind/main/FreeMind.java	Mon Feb 16 01:24:34 2009 +0800
++++ b/freemind/main/FreeMind.java	Mon Feb 16 01:24:46 2009 +0800
+@@ -125,6 +125,9 @@
+ 	
+ 	protected static final VersionInformation VERSION = new VersionInformation("0.9.0 RC 1");
+ 	
++	// OSSXP.COM: set oem version.
++	public static final String HACKEDVERSION = "(MMX Hack <REVISION>, from ossxp.com)";
++
+ 	public static final String XML_VERSION = "0.9.0";
+ 
+ 	public static final String RESOURCES_REMIND_USE_RICH_TEXT_IN_NEW_LONG_NODES = "remind_use_rich_text_in_new_long_nodes";
+diff -r 6c15dfa5edd1 freemind/main/FreeMindSplash.java
+--- a/freemind/main/FreeMindSplash.java	Mon Feb 16 01:24:34 2009 +0800
++++ b/freemind/main/FreeMindSplash.java	Mon Feb 16 01:24:46 2009 +0800
+@@ -143,6 +143,8 @@
+                 g2.setFont(versionTextFont);
+                 // Determine width of string to center it
+                 String freemindVersion = frame.getFreemindVersion().toString();
++                // OSSXP.COM: Splash screen, show oem version.
++                freemindVersion += " " + FreeMind.HACKEDVERSION;
+                 if (mWidth == null) {
+                     mWidth = new Integer(g2.getFontMetrics().stringWidth(freemindVersion));
+                 }
+diff -r 6c15dfa5edd1 freemind/main/FreeMindSplashModern.java
+--- a/freemind/main/FreeMindSplashModern.java	Mon Feb 16 01:24:34 2009 +0800
++++ b/freemind/main/FreeMindSplashModern.java	Mon Feb 16 01:24:46 2009 +0800
+@@ -151,6 +151,10 @@
+                 int xCoordinate = (int)(getSize().getWidth()/2-mWidth.intValue()/2);
+                 g2.setColor(new Color(0x4d,0x63,0xb4));
+                 g2.drawString(freemindVersion, xCoordinate , yCoordinate);
++                // OSSXP.COM: Splash screen, show oem version.
++                yCoordinate += (int)(g2.getFontMetrics().getHeight());
++                xCoordinate = (int)(getSize().getWidth()/2 - g2.getFontMetrics().stringWidth(FreeMind.HACKEDVERSION)/2);
++                g2.drawString(FreeMind.HACKEDVERSION, xCoordinate , yCoordinate);
+                 // Draw progress bar
+                 String progressString = (String)getClientProperty("progressString");
+                 if (progressString!=null) {
+@@ -205,4 +209,4 @@
+         return mIcon;
+     }
+ 
+-}
+\ No newline at end of file
++}

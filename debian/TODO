@@ -1,0 +1,4 @@
+- find a way to generate user documentation (there are some xsl files around
+to do this, or even http://freemind.gardennanny.com/ but all without proper
+license).
+- migrate FreeMind to a *free* java engine.

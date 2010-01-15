@@ -1,0 +1,40 @@
+diff -r 447ee0a8db2c build.xml
+--- a/build.xml	Mon Feb 16 01:30:46 2009 +0800
++++ b/build.xml	Mon Feb 16 01:30:48 2009 +0800
+@@ -125,6 +125,8 @@
+ 		     classpath problems of the plugins. -->
+ 			<exclude name="tests/**" />
+ 			<exclude name="plugins/**" />
++			<exclude name="debian/**" />
++			<exclude name=".pc/**" />
+ 		</javac>
+ 		<!-- Starter should work with java 1.1, too as it checks the java version.-->
+ 		<delete failonerror="false" file="${build}/freemind/main/FreeMindStarter.class"></delete>
+@@ -146,6 +148,7 @@
+ 		<copy todir="${dist}">
+ 			<fileset dir="${src}/windows-launcher">
+ 			  <include name="FreeMind.exe"/>
++			  <include name="FreeMind.vanilla.exe"/>
+ 			</fileset>
+ 		</copy>
+ 		<mkdir dir="${dist}/doc" />
+@@ -284,7 +287,7 @@
+ 		<tar tarfile="${post}/freemind-src.tar"
+ 			longfile="gnu"
+ 			basedir="${src_base_for_post}"
+-			includes="freemind/**,.classpath,.project" excludes="freemind/bin/**" />
++			includes="freemind/**,.classpath,.project" excludes="freemind/bin/**, freemind/.pc/**, freemind/debian/**" />
+ 		<gzip src="${post}/freemind-src.tar"
+ 			zipfile="${post}/freemind-src-${ver}.tar.gz" />
+ 		<delete>
+@@ -340,8 +343,8 @@
+ 				<include name="patterns_updater.xslt"/>
+ 				<include name="Resources*"/>
+ 				<include name="mindmap_menus.xml"/>
+-				<include name="**/freemind_version_updater.xslt"/>
+-				<include name="**/freemind_join_mm_mmx.xslt"/>
++				<include name="freemind/**/freemind_version_updater.xslt"/>
++				<include name="freemind/**/freemind_join_mm_mmx.xslt"/>
+ 			</fileset>
+ 		</jar>
+ 	</target>

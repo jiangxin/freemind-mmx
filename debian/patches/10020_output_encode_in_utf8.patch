@@ -1,0 +1,201 @@
+diff -r 49fd2454c340 accessories/freemind2flash.xsl
+--- a/accessories/freemind2flash.xsl	Wed Feb 25 17:41:17 2009 +0800
++++ b/accessories/freemind2flash.xsl	Wed Feb 25 18:17:58 2009 +0800
+@@ -1,4 +1,4 @@
+-<?xml version="1.0" encoding="iso-8859-1"?>
++<?xml version="1.0" encoding="utf-8"?>
+ <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
+                 version="1.0">
+ 
+@@ -44,7 +44,7 @@
+   <xsl:template match="/">
+     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+       <head>
+-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
++<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ 		<title><xsl:call-template name="output-title" /></title>
+         <xsl:element name="script">
+             <xsl:attribute name="type">text/javascript</xsl:attribute>
+diff -r 49fd2454c340 accessories/plugins/ExportWithXSLT.java
+--- a/accessories/plugins/ExportWithXSLT.java	Wed Feb 25 17:41:17 2009 +0800
++++ b/accessories/plugins/ExportWithXSLT.java	Wed Feb 25 18:17:58 2009 +0800
+@@ -52,6 +52,7 @@
+ import accessories.plugins.util.html.ClickableImageCreator;
+ import accessories.plugins.util.xslt.ExportDialog;
+ import freemind.extensions.ExportHook;
++import freemind.main.FreeMind;
+ import freemind.main.Resources;
+ import freemind.main.Tools;
+ import freemind.modes.MindIcon;
+@@ -183,7 +184,7 @@
+     {
+         boolean success = true;
+ //      Generating output Stream            
+-        BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(pDirectoryName+File.separator + "map.mm") ) );
++        BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(pDirectoryName+File.separator + "map.mm"), FreeMind.DEFAULT_CHARSET ) );
+         getController().getMap().getFilteredXml(fileout);
+         return success;
+     }
+diff -r 49fd2454c340 freemind/main/FreeMind.java
+--- a/freemind/main/FreeMind.java	Wed Feb 25 17:41:17 2009 +0800
++++ b/freemind/main/FreeMind.java	Wed Feb 25 18:17:58 2009 +0800
+@@ -128,6 +128,9 @@
+ 	// OSSXP.COM: set oem version.
+ 	public static final String HACKEDVERSION = "(MMX Hack <REVISION>, from ossxp.com)";
+ 
++	// OSSXP.COM: set output character set to utf-8.
++	public static final String DEFAULT_CHARSET = "UTF-8";
++
+ 	public static final String XML_VERSION = "0.9.0";
+ 
+ 	public static final String RESOURCES_REMIND_USE_RICH_TEXT_IN_NEW_LONG_NODES = "remind_use_rich_text_in_new_long_nodes";
+diff -r 49fd2454c340 freemind/main/HtmlTools.java
+--- a/freemind/main/HtmlTools.java	Wed Feb 25 17:41:17 2009 +0800
++++ b/freemind/main/HtmlTools.java	Wed Feb 25 18:17:58 2009 +0800
+@@ -332,7 +332,7 @@
+ 		for (int i = 0; i < text.length(); ++i) {
+ 			myChar = text.charAt(i);
+ 			intValue = (int) text.charAt(i);
+-			if (intValue < 32 || intValue > 126) {
++			if (intValue < 32 || !Resources.getInstance().getBoolProperty("wh_nonascii_in_utf8") && intValue > 126) {
+ 				result.append("&#x").append(Integer.toString(intValue, 16))
+ 						.append(';');
+ 			} else {
+diff -r 49fd2454c340 freemind/main/XMLElement.java
+--- a/freemind/main/XMLElement.java	Wed Feb 25 17:41:17 2009 +0800
++++ b/freemind/main/XMLElement.java	Wed Feb 25 18:17:58 2009 +0800
+@@ -2118,7 +2118,8 @@
+     {
+         try {
+             ByteArrayOutputStream out = new ByteArrayOutputStream();
+-            OutputStreamWriter writer = new OutputStreamWriter(out);
++            // OSSXP.COM: Encode output to default_charset(UTF-8). 
++            OutputStreamWriter writer = new OutputStreamWriter(out, FreeMind.DEFAULT_CHARSET);
+             this.write(writer);
+             writer.flush();
+             return new String(out.toByteArray());
+@@ -2270,7 +2271,8 @@
+                     break;
+                 default:
+                     int unicode = (int) ch;
+-                    if ((unicode < 32) || (unicode > 126)) {
++                    // OSSXP.COM: do not convert Chinese characters into &#blahblah;
++                    if (!Resources.getInstance().getBoolProperty("wh_nonascii_in_utf8") && unicode > 126 || unicode < 32) {
+                         writer.write('&'); writer.write('#');
+                         writer.write('x');
+                         writer.write(Integer.toString(unicode, 16));
+diff -r 49fd2454c340 freemind/modes/StylePattern.java
+--- a/freemind/modes/StylePattern.java	Wed Feb 25 17:41:17 2009 +0800
++++ b/freemind/modes/StylePattern.java	Wed Feb 25 18:17:58 2009 +0800
+@@ -504,7 +504,7 @@
+ 
+ 
+             //Generating output Stream
+-            BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
++            BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) ); // in comments
+             pattern.write(fileout);
+ 
+             fileout.close();
+diff -r 49fd2454c340 freemind/modes/mindmapmode/MindMapController.java
+--- a/freemind/modes/mindmapmode/MindMapController.java	Wed Feb 25 17:41:17 2009 +0800
++++ b/freemind/modes/mindmapmode/MindMapController.java	Wed Feb 25 18:17:58 2009 +0800
+@@ -114,6 +114,7 @@
+ import freemind.extensions.HookFactory.RegistrationContainer;
+ import freemind.main.ExampleFileFilter;
+ import freemind.main.FixedHTMLWriter;
++import freemind.main.FreeMind;
+ import freemind.main.HtmlTools;
+ import freemind.main.Resources;
+ import freemind.main.Tools;
+@@ -1729,7 +1730,7 @@
+ 
+     static public void saveHTML(MindMapNodeModel rootNodeOfBranch, File file) throws IOException {
+         BufferedWriter fileout = new BufferedWriter(new OutputStreamWriter(
+-                new FileOutputStream(file)));
++                new FileOutputStream(file), FreeMind.DEFAULT_CHARSET));
+         MindMapHTMLWriter htmlWriter = new MindMapHTMLWriter(
+                 fileout);
+         htmlWriter.saveHTML(rootNodeOfBranch);      
+diff -r 49fd2454c340 freemind/modes/mindmapmode/MindMapHTMLWriter.java
+--- a/freemind/modes/mindmapmode/MindMapHTMLWriter.java	Wed Feb 25 17:41:17 2009 +0800
++++ b/freemind/modes/mindmapmode/MindMapHTMLWriter.java	Wed Feb 25 18:17:58 2009 +0800
+@@ -92,7 +92,7 @@
+         for (int i = 0; i < len; ++i) {
+             myChar = text.charAt(i);
+             intValue = (int) text.charAt(i);
+-            if (intValue >= 128) {
++            if (!Resources.getInstance().getBoolProperty("wh_nonascii_in_utf8") && intValue >= 128) {
+                 result.append(convertSpecialChar(myChar));
+             }
+             else {
+@@ -690,4 +690,4 @@
+         return Resources.getInstance().getProperty(key);
+     }
+ 
+-}
+\ No newline at end of file
++}
+diff -r 49fd2454c340 freemind/modes/mindmapmode/MindMapMapModel.java
+--- a/freemind/modes/mindmapmode/MindMapMapModel.java	Wed Feb 25 17:41:17 2009 +0800
++++ b/freemind/modes/mindmapmode/MindMapMapModel.java	Wed Feb 25 18:17:58 2009 +0800
+@@ -171,7 +171,7 @@
+    public boolean saveTXT(MindMapNodeModel rootNodeOfBranch, File file) {
+         // Returns success of the operation.
+         try {
+-            BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
++            BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file), FreeMind.DEFAULT_CHARSET ) );
+             rootNodeOfBranch.saveTXT(fileout,/*depth=*/0);
+             fileout.close();
+             return true;
+@@ -252,7 +252,8 @@
+         	if(timerForAutomaticSaving != null) {
+         		timerForAutomaticSaving.cancel();
+         	}
+-            BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
++            // OSSXP.COM: save file using default character set.
++            BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file), FreeMind.DEFAULT_CHARSET ) );
+             getXml(fileout);
+ 
+             if(!isInternal) {
+@@ -280,6 +281,8 @@
+ 	 * @throws IOException
+ 	 */
+ 	private void getXml(Writer fileout, boolean saveInvisible) throws IOException {
++		// OSSXP.COM: write xml declare.
++		fileout.write("<?xml version=\"1.0\" encoding=\"" + FreeMind.DEFAULT_CHARSET + "\"?>\n");
+ 		fileout.write("<map ");
+ 		fileout.write("version=\""+FreeMind.XML_VERSION+"\"");
+ 		fileout.write(">\n");
+@@ -361,9 +364,30 @@
+ 
+     MindMapNodeModel loadTree(File file) throws XMLParseException, IOException {
+         int versionInfoLength;
+-		versionInfoLength = EXPECTED_START_STRINGS[0].length();
++        versionInfoLength = 0;
+         // reading the start of the file:
+-        StringBuffer buffer = readFileStart(file, versionInfoLength);
++        // OSSXP.COM: 
++        //     because we add a xml declare, the mm file now begin with "<xml", 
++        //     so direct match mmap version will failed.
++        //     search "<map" and store matched line into buffer.
++        BufferedReader in=null;
++        String buffer = null;
++        try {
++        	// get the file start into the memory:
++        	in = new BufferedReader(new FileReader(file));
++        	while ((buffer = in.readLine()) != null) {
++        		// buffer contains line start with "<map", stop matching.
++        		if (buffer.substring(0,4).equals("<map"))
++        		{
++        			break;
++        		}
++        	}
++        	in.close();
++        } catch (Exception e) {
++        	e.printStackTrace();
++        	buffer = "";
++        }
++        
+         // the resulting file is accessed by the reader:
+         Reader reader = null;
+         for(int i = 0; i < EXPECTED_START_STRINGS.length; i++){

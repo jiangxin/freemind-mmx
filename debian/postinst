@@ -1,0 +1,17 @@
+#! /bin/sh
+# GOsa postinst script
+
+# We exit unless the package is being configured
+case "$1" in
+        abort*upgrade)         exit 0;;
+        abort*remove)          exit 0;;
+        abort*deconfigure)     exit 0;;
+        configure) ;;
+        *)                     exit 0;
+esac
+
+update-alternatives --install /usr/bin/freemind freemind /opt/freemind/freemind.vanilla.sh 30
+update-alternatives --install /usr/bin/freemind freemind /opt/freemind/freemind.sh 50
+update-alternatives --set freemind /opt/freemind/freemind.sh
+
+exit 0

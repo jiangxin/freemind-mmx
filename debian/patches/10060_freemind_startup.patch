@@ -1,0 +1,32 @@
+diff -r 4142f9cab05a freemind.sh
+--- a/freemind.sh	Mon Feb 16 01:27:00 2009 +0800
++++ b/freemind.sh	Mon Feb 16 01:27:24 2009 +0800
+@@ -136,6 +136,7 @@
+ #--------- Put the environment together --------------------------------
+ 
+ _source /etc/freemind/freemindrc
++_source /opt/freemind/conf/freemindrc
+ _source ~/.freemind/freemindrc
+ 
+ findjava
+@@ -177,7 +178,10 @@
+ 	exit 1
+ fi
+ 
+-if [ ! -f ~/.freemind/patterns.xml ] && [ -f /etc/freemind/patterns.xml ]
++PATTERNS_XML=/opt/freemind/conf/patterns.xml
++[ -f $PATTERNS_XML ] || PATTERNS_XML=/etc/freemind/patterns.xml
++
++if [ ! -f ~/.freemind/patterns.xml ] && [ -f $PATTERNS_XML ]
+ then
+ 	if [ ! -d ~/.freemind ]
+ 	then
+@@ -185,7 +189,7 @@
+ 		mkdir -p ~/.freemind
+ 	fi
+ 	_debug "Copying patterns.xml to ~/.freemind."
+-	cp /etc/freemind/patterns.xml ~/.freemind/patterns.xml
++	cp $PATTERNS_XML ~/.freemind/patterns.xml
+ fi
+ 
+ #--------- Call (at last) FreeMind -------------------------------------

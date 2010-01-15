@@ -1,0 +1,356 @@
+diff -r 9a4b9c543e29 Resources_zh_CN.properties
+--- a/Resources_zh_CN.properties	Thu Feb 19 15:47:18 2009 +0800
++++ b/Resources_zh_CN.properties	Thu Feb 19 18:25:31 2009 +0800
+@@ -1,10 +1,6 @@
+-#!
+-#! created/edited by Popeye version 0.54 (popeye.sourceforge.net)
+-#! encoding:ISO-8859-1
+-# simplified-chinese version updated by zhb, leijp
+ about = \u5173\u4e8e
++
+ add=\u6dfb\u52a0
+-
+ about_text = FreeMind - \u514d\u8d39\u7684\u601d\u7ef4\u5bfc\u56fe\u548c\u77e5\u8bc6\u521b\u5efa\u8f6f\u4ef6\nCopyright \u00a9 2000-2008 Joerg Mueller, Daniel Polansky, Christian Foltin, Dimitry Polivaev, and others.\nThis program is free software, licenced under GNU General Public Licence.\n\nHome: http://freemind.sourceforge.net/\nVersion:
+ antialias_all = \u5e73\u6ed1\u5168\u90e8
+ antialias_edges =\u5e73\u6ed1\u8fde\u7ebf
+@@ -40,6 +36,7 @@
+ enter_base_url = \u5c06\u7c98\u8d34\u76f8\u5bf9\u94fe\u63a5\u3002\u8bf7\u8f93\u5165\u57fa\u7840 URL \u3002
+ enter_confirms = Enter \u786e\u8ba4
+ error = \u9519\u8bef
++#export_branch = Branch...
+ export_branch_to_html = \u5bfc\u51fa\u8282\u70b9\u4e3a HTML
+ export_to_html = \u5bfc\u51fa\u4e3aHTML
+ extension_menu = \u6837\u5f0f
+@@ -49,7 +46,6 @@
+ find_what = \u67e5\u627e
+ find_next = \u67e5\u627e\u4e0b\u4e00\u4e2a
+ fold = \u6298\u53e0
+-# fc, 12.6.2005: correction, please remove the other translation of "follow_link" above
+ follow_link = \u6253\u5f00\u8d85\u94fe\u63a5:
+ font = \u5b57\u4f53
+ fork =\u53c9\u72b6
+@@ -113,8 +109,6 @@
+ mindmaps_desc = \u601d\u7ef4\u5bfc\u56fe (*.mm)
+ mindmaps_filter_desc = \u8fc7\u6ee4\u5668 (*.mmfilter)
+ mode_na = \u6a21\u5f0f\u4e0d\u53ef\u7528
+-mode_status = \u6a21\u5f0f\u5207\u6362\u4e3a {0} \u6a21\u5f0f
+-mode_title =\u601d\u7ef4\u5bfc\u56fe - {0} \u6a21\u5f0f
+ modes = \u6a21\u5f0f
+ move_to_root = \u8f6c\u5230\u6839\u8282\u70b9
+ new = \u65b0\u5efa
+@@ -171,8 +165,10 @@
+ sharp_linear = \u6e10\u7a84\u76f4\u7ebf
+ split = \u5206\u5272
+ style = \u98ce\u683c
++#toggle_bold_branch = \u5207\u6362\u7c97\u4f53
+ toggle_children_folded = \u5c55\u5f00/\u6298\u53e0\u5b50\u8282\u70b9
+ toggle_folded = \u5c55\u5f00/\u6298\u53e0\u8282\u70b9
++#toggle_italic_branch = \u5207\u6362\u659c\u4f53
+ underline = \u4e0b\u5212\u7ebf
+ unfold = \u5c55\u5f00
+ url_error = URL \u683c\u5f0f\u9519\u8bef!
+@@ -216,8 +212,8 @@
+ menu_extras = \u5de5\u5177
+ menu_insert = \u63d2\u5165
+ menu_attributes = \u5c5e\u6027
++# Beware: "Edge Width " and "Edge Style " must end with space.
+ edge_style = \u8fde\u7ebf\u98ce\u683c
+-# Beware: "Edge Width " and "Edge Style " must end with space.
+ edge_width = \u8fde\u7ebf\u5bbd\u5ea6
+ menu_file_import = \u5bfc\u5165
+ menu_file_export = \u5bfc\u51fa
+@@ -372,6 +368,8 @@
+ plugins/TimeList.xml_documentation=\u663e\u793a\u6240\u6709\u65e5\u7a0b\u53ca\u76f8\u5e94\u8282\u70b9.
+ plugins/TimeList.xml_name=\u663e\u793a\u65e5\u7a0b\u5b89\u6392 ...
+ remove_node_background_color = \u5220\u9664\u8282\u70b9\u80cc\u666f\u989c\u8272
++#plugins/NodeList.xml_documentation=\u663e\u793a\u6240\u6709\u8282\u70b9\u7684\u521b\u5efa/\u5220\u9664\u65e5\u671f\u3002
++#plugins/NodeList.xml_name=\u663e\u793a\u8111\u56fe\u5386\u53f2 ...
+ plugins/TimeList.xml_Modified=\u4fee\u6539
+ plugins/TimeList.xml_Created=\u521b\u5efa
+ plugins/TimeList.xml_Date=\u65e5\u671f
+@@ -430,6 +428,7 @@
+ attributes_import_tooltip=\u4ece\u52a0\u8f7d\u7684\u5176\u4ed6\u5bfc\u56fe\u4e2d\u5bfc\u5165\u5c5e\u6027
+ attributes_assign_dialog=\u6307\u5b9a\u5c5e\u6027(&g)...
+ attributes_visible=\u9009\u5b9a\u53ef\u89c1
++attributes_visible_tooltip=\u9009\u62e9\u89c6\u56fe->\u5c5e\u6027->\u663e\u793a\u9009\u62e9\u7684\u5c5e\u6027
+ attributes_visible_tooltip=\u9009\u5b9a\u53ef\u89c1
+ attributes_refresh=\u5237\u65b0
+ attribute_replace=\u66ff\u6362\u4e3a
+@@ -737,6 +736,8 @@
+ OptionPanel.antialias_none=\u4e0d\u5e73\u6ed1
+ OptionPanel.cs=\u6377\u514b\u8bed
+ OptionPanel.nb=\u632a\u5a01\u8bed(\u4f2f\u514b\u6885\u5c14)
++# fc, 12.6.2005: correction, please remove the other translation of "follow_link" above
++follow_link = \u6253\u5f00\u8d85\u94fe\u63a5
+ OptionPanel.ColorProperty.ResetColor=\u91cd\u8bbe\u989c\u8272
+ # fc, 16.6.2005:
+ OptionPanel.keystroke_option_dialog=\u9996\u9009\u9879
+@@ -833,6 +834,7 @@
+ accessories/plugins/ManagePatterns.not_found=\u6a21\u5f0f\u6587\u4ef6\u4e0d\u80fd\u88ab\u52a0\u8f7d.
+ accessories/plugins/ManagePatterns.properties_documentation=\u5728\u7f16\u8f91\u5668\u4e2d\u4fee\u6539 patterns.xml \u5b9a\u4e49\u7684\u6a21\u5f0f. \u7ed3\u679c\u81ea\u52a8\u4fdd\u5b58.
+ accessories/plugins/ManagePatterns.properties_name=\u7ba1\u7406\u6a21\u5f0f...
++# fc, 14.3.06:
+ PatternDialog.nodefontbold=\u7c97\u4f53
+ PatternDialog.nodefontitalic=\u659c\u4f53
+ PatternDialog.separator.NodeFont=\u8282\u70b9\u5b57\u4f53
+@@ -955,6 +957,7 @@
+ #
+ # resource bundle with strings for application SimplyHTML
+ # - English Language (default) -
++
+ # edit menu definition
+ simplyhtml.editLabel=\u7f16\u8f91
+ 
+@@ -987,6 +990,9 @@
+ simplyhtml.fontBoldImage=resources/bold.gif
+ simplyhtml.fontBoldSelectedIcon=resources/bold_on.gif
+ simplyhtml.fontBoldTip=\u5207\u6362\u7c97\u4f53 \u5f00/\u5173
++simplyhtml.fontColorTip=\u6587\u672c\u989c\u8272
++simplyhtml.fontColorLabel=\u6587\u672c\u989c\u8272
++simplyhtml.fontColorImage=resources/fontColor.gif
+ simplyhtml.fontItalicLabel=\u659c\u4f53
+ simplyhtml.fontItalicImage=resources/italic.gif
+ simplyhtml.fontItalicSelectedIcon=resources/italic_on.gif
+@@ -1012,6 +1018,7 @@
+ simplyhtml.paraAlignRightTip=\u8bbe\u7f6e\u6bb5\u843d\u53f3\u5bf9\u9f50
+ 
+ # table menu definition
++
+ # table menu items
+ simplyhtml.tableLabel=\u8868\u683c
+ simplyhtml.nextTableCellLabel=\u4e0b\u4e00\u4e2a\u5355\u5143\u683c
+@@ -1194,6 +1201,7 @@
+ OptionalDontShowMeAgainDialog.rememberMyDescision=\u8bb0\u4f4f\u6211\u7684\u51b3\u5b9a(&R).
+ OptionalDontShowMeAgainDialog.cancel=\u5426(&N)
+ OptionalDontShowMeAgainDialog.ok=\u662f(&Y)
++OptionPanel.gl=\u683c\u9675\u5170\u8bed
+ OptionPanel.separator.resources_notifications=\u786e\u8ba4
+ OptionPanel.delete_nodes_without_question=\u65e0\u9700\u786e\u8ba4\u5373\u5220\u9664\u8282\u70b9?
+ OptionPanel.delete_nodes_without_question.tooltip=\u5982\u679c\u52fe\u9009\u6b64\u590d\u9009\u6846\uff0c\u5c06\u65e0\u9700\u786e\u8ba4\u5373\u5220\u9664\u8282\u70b9. \u8fd9\u53ef\u80fd\u5bfc\u81f4\u65e0\u610f\u4e2d\u4e22\u5931\u4fe1\u606f.
+@@ -1232,6 +1240,8 @@
+ OptionPanel.separator.root_node_appearance=\u6839\u8282\u70b9\u5916\u89c2
+ OptionPanel.use_common_out_point_for_root_node=\u4ece\u6839\u8282\u70b9\u5f00\u59cb\u8fde\u7ebf
+ OptionPanel.use_common_out_point_for_root_node.tooltip=\u4ece\u6839\u8282\u70b9\u5f00\u59cb\u8fde\u7ebf
++
++#fc, 9.11.07:
+ ManagePatternsPopupDialog.apply=\u5e94\u7528
+ PatternDialog.setscript=\u6539\u53d8?
+ PatternDialog.setscript.tooltip=\u811a\u672c\u80fd\u591f\u5173\u8054\u5230\u6837\u5f0f.
+@@ -1266,6 +1276,8 @@
+ OptionPanel.separator.save=\u4fdd\u5b58
+ OptionPanel.save_only_intrisically_needed_ids=\u53ea\u4fdd\u5b58\u5df2\u4f7f\u7528\u7684\u8282\u70b9 ID
+ OptionPanel.save_only_intrisically_needed_ids.tooltip=\u5982\u679c\u52fe\u9009\u6b64\u590d\u9009\u6846, \u5ffd\u7565\u5bfc\u56fe\u4e2d\u672a\u4f7f\u7528\u7684\u8282\u70b9 ID. \u6ce8\u610f, \u4e0d\u80fd\u94fe\u63a5\u5e76\u6307\u5b9a\u8282\u70b9\u5230\u4e00\u4e2a\u6ca1\u6709\u8282\u70b9 ID\u7684\u5916\u90e8\u5bfc\u56fe\u4e2d.
++
++# fc, 10.3.2008:
+ OptionPanel.plugins/scripting/tab_name=\u811a\u672c
+ OptionPanel.separator.plugins/scripting/separatorPropertyName=\u6743\u9650
+ OptionPanel.resources_execute_scripts_without_file_restriction=\u5141\u8bb8\u6587\u4ef6\u64cd\u4f5c(\u4e0d\u63a8\u8350)
+@@ -1276,42 +1288,63 @@
+ OptionPanel.resources_execute_scripts_without_exec_restriction.tooltip=<html><body>\u5982\u679c\u4f60\u7684Groovy\u811a\u672c\u9700\u8981\u6267\u884c\u5176\u5b83\u7279\u6b8a\u7684\u5e94\u7528\u7a0b\u5e8f(\u5982\u6d4f\u89c8\u5668)\u800c\u4e0d\u8fdb\u884c\u8be2\u95ee(!),<br>\u5c31\u5fc5\u987b\u5141\u8bb8\u6b64\u9009\u9879. <br>\u4f46\u8bf7\u5c0f\u5fc3\u4f7f\u7528\uff0c\u56e0\u4e3a\u6076\u610f\u811a\u672c\u53ef\u80fd\u635f\u5bb3\u4f60\u7684\u8ba1\u7b97\u673a!</body></html>
+ plugins/ScriptEditor.FORBIDDEN_ACTION=FreeMind groovy\u811a\u672c\u53d7\u9650. \u4e0b\u9762\u7684 {0,choice,0#File|1#Network|2#Exec} \u64cd\u4f5c\u88ab\u7981\u6b62: {1,choice,0#Accept|1#Connect|2#Listen|3#Multicast|4#SetFactory|5#Exec|6#Link|7#Delete|8#Read|9#Write}. \u4f60\u53ef\u4ee5\u5728\u7a0b\u5e8f\u8bbe\u7f6e\u4e2d\u66f4\u6539\u6b64\u9009\u9879.
+ 
+-#fc, 9.11.07:
++
++# changed, fc, 11.3.2008: 
+ plugins/ScriptEditor.cancel=\u653e\u5f03\u4fee\u6539\u9000\u51fa(&D)
+ plugins/ScriptEditor.exit=\u4fdd\u5b58\u9000\u51fa(&S)
++
++# changed, fc, 26.3.2008:
+ plugins/TimeManagement.xml_closeButton=\u5173\u95ed
++
++# changed, fc, 7.4.2008:
+ PatternDialog.nodebackgroundcolor.tooltip=\u672a\u9009\u4e2d\u8282\u70b9\u7684\u80cc\u666f\u989c\u8272
+ PatternDialog.nodecolor.tooltip=\u672a\u9009\u4e2d\u8282\u70b9\u7684\u524d\u666f\u989c\u8272
+ PatternDialog.nodestyle.tooltip=<html>\u6b64\u6837\u5f0f\u63cf\u8ff0\u4e86\u8282\u70b9\u7684\u5916\u8fb9\u5f62\u5f0f. <br>\u53ef\u80fd\u7684\u503c\u6709:<br><table border="1"><tr><td>\u53c9\u5f62: </td><td> \u65e0\u73af\u7ed5\u6846,</td></tr><tr><td>\u6c14\u6ce1\u6846: </td><td>\u5e26\u73af\u7ed5\u6846\u7684\u8282\u70b9,</td></tr><tr><td>\u540c\u7236\u8282\u70b9: </td><td>\u4ece\u7236\u8282\u70b9\u7ee7\u627f\u6837\u5f0f<br>\u6216\u7528\u6839\u8282\u70b9\u7684\u7f3a\u7701\u6837\u5f0f,</td></tr><tr><td>\u7ec4\u5408: </td><td>\u5f53\u8282\u70b9\u6298\u53e0\u65f6\u4f7f\u7528\u6c14\u6ce1\u6846\uff0c\u5c55\u5f00\u65f6\u4f7f\u7528\u53c9\u5f62.</td></tr></table></html>
+ PatternDialog.nodetext.tooltip=\u5728\u6b64\u5b9a\u4e49\u8282\u70b9\u6587\u672c\uff0c\u5f53\u6b64\u6a21\u5f0f\u5e94\u7528\u65f6\uff0c\u4ee5\u524d\u7684\u6587\u672c\u5c06\u88ab\u4e22\u5f03
+ PatternDialog.nodefontname=\u8282\u70b9\u5b57\u4f53\u540d\u79f0
+ PatternDialog.nodefontsize=\u8282\u70b9\u5b57\u4f53\u5927\u5c0f
+-# fc, 14.3.06:
+ PatternDialog.nodefontname.tooltip=\u5b57\u4f53\u540d\u79f0
+ PatternDialog.nodefontsize.tooltip=\u5b57\u4f53\u5927\u5c0f
+ PatternDialog.nodefontbold.tooltip=\u52a0\u7c97
+ PatternDialog.nodefontitalic.tooltip=\u659c\u4f53\u5316
++
++# new, fc, 8.4.2008:
+ PatternDialog.separator.ScriptingControl=\u811a\u672c
++
++# new, fc, 10.4.2008:
+ OptionPanel.resources_don_t_show_note_icons=\u4e0d\u663e\u793a\u6ce8\u89e3\u56fe\u6807
++
++#new, fc, 11.4.2008:
+ FreeMind=FreeMind\u7f51\u7ad9\u9996\u9875
++
++# new, fc, 12.4.2008:
+ really_remove_notes=\u771f\u7684\u8981\u79fb\u9664\u6ce8\u89e3\u5417\uff1f
+ OptionPanel.resources_remove_notes_without_question=\u4e0d\u63d0\u95ee\u5c31\u79fb\u9664\u6ce8\u89e3\u5417\uff1f
+ OptionPanel.remove_notes_without_question.tooltip=\u5982\u679c\u52fe\u9009\u6b64\u590d\u9009\u6846\uff0c\u5c5e\u4e8e\u9009\u4e2d\u8282\u70b9\u7684\u6ce8\u89e3\u5c06\u4e0d\u8fdb\u884c\u786e\u8ba4\u5c31\u79fb\u9664\u6389\u3002\u8fd9\u53ef\u80fd\u5bfc\u81f4\u65e0\u610f\u4e2d\u4e22\u5931\u4fe1\u606f.
+ OptionPanel.resources_save_folding_state=\u603b\u662f\u4fdd\u5b58\u6298\u53e0\u72b6\u6001\u7684\u6539\u53d8
+ OptionPanel.resources_save_folding_state.tooltip=\u5982\u679c\u52fe\u9009\u6b64\u590d\u9009\u6846\uff0c\u6bcf\u4e2a\u6298\u53e0\u52a8\u4f5c\u90fd\u4f1a\u4f7f\u56fe\u53d8\u810f\u5e76\u8981\u6c42\u8fdb\u884c\u4fdd\u5b58
++     
++# new, fc, 17.4.2008:
+ plugins/ScriptEditor.sign=\u811a\u672c\u7b7e\u540d...
++
++# new, fc, 18.4.2008:
+ OptionPanel.resources_script_user_key_name_for_signing=\u811a\u672c\u7b7e\u540d\u7528\u7684\u53ef\u9009\u7528\u6237\u5bc6\u94a5\u522b\u540d
+ OptionPanel.resources_script_user_key_name_for_signing.tooltip=<html>\u5982\u679c\u60f3\u5bf9\u811a\u672c\u7b7e\u540d\uff0c\u8bf7\u5728\u6b64\u8f93\u5165\u5bc6\u94a5\u7684\u522b\u540d. <br>\u5bc6\u94a5\u9884\u60f3\u5b58\u5728\u4e8e\u7f3a\u7701\u7684keystore\u4e2d. <br>\u5bc6\u94a5\u7684\u5bc6\u7801\u5fc5\u987b\u4e0ekeystore\u7684\u5bc6\u7801\u4e00\u81f4(\u7f3a\u7701\u5982\u6b64).</html>
+ OptionPanel.resources_signed_script_are_trusted=\u4fe1\u4efb\u5df2\u7b7e\u540d\u811a\u672c(\u63a8\u8350)
+ OptionPanel.resources_signed_script_are_trusted.tooltip=\u5982\u679c\u811a\u672c\u7531\u4e00\u4e2a\u4fe1\u4efb\u65b9(\u5982\uff1aFreeMind\u4f5c\u8005\u6216\u4f60\u672c\u4eba)\u7b7e\u540d\uff0c\u5b83\u6267\u884c\u8d77\u6765\u5c31\u4e0d\u53d7\u9650\u5236
++
++# changed, fc, 24.4.2008:
++# this is still the old "export_branch", but as many users didn't find this feature, we 
++# have to describe it better. Moreover, it is put into the node context menu.
+ export_branch_new =\u5c06\u5206\u652f\u7684\u8282\u70b9\u53e6\u5b58\u4e3a\u65b0\u7684\u601d\u7ef4\u5bfc\u56fe...
++
++# new, fc, 28.4.2008:
+ icon_yes =\u91cd\u8981
+ icon_folder =\u6587\u4ef6\u5939
+ icon_up =\u4e0a
+ icon_down =\u4e0b
+ icon_smiley-neutral =\u6ca1\u5174\u8da3
+ icon_smiley-oh =\u60ca\u8bb6
+-icon_smiley-sad =\u4f24\u5fc3
+ icon_smiley-angry =\u751f\u6c14
+ icon_encrypted =\u52a0\u9501
+ icon_decrypted =\u89e3\u5bc6
+@@ -1329,84 +1362,62 @@
+ icon_edit =\u7cbe\u70bc
+ icon_stop-sign =\u505c\u6b62
+ icon_closed =\u7981\u5165
++# changed:
+ icon_flag =\u7ea2\u65d7
++
++#changed:
+ OptionPanel.remind_use_rich_text_in_new_long_nodes=\u5bf9\u6240\u6709\u8282\u70b9\u4f7f\u7528\u683c\u5f0f
+-mode_status=\u6a21\u5f0f\u66f4\u6539\u4e3a {0} \u6a21\u5f0f
+-toggle_bold_branch = \u5207\u6362\u52a0\u7c97
+-toggle_italic_branch = \u5207\u6362\u659c\u4f53
+-undo=\u64a4\u9500
+-redo=\u91cd\u505a
+-delete_child=\u5220\u9664\u5b50\u8282\u70b9
+-most_recent_files=\u6700\u8fd1\u7684\u6587\u4ef6
+-menu_view=\u89c6\u56fe
+-menu_navigate=\u5bfc\u822a
+-menu_format=\u683c\u5f0f
+-menu_extras=\u5de5\u5177
+-menu_insert=\u63d2\u5165
+-import_linked_branch_no_link=\u9009\u5b9a\u7684\u8282\u70b9\u4e0d\u5141\u8bb8\u5bfc\u5165\u94fe\u63a5
+-add_link=\u5728\u9009\u5b9a\u7684\u4e24\u4e2a\u8282\u70b9\u4e0a\u589e\u52a0\u94fe\u63a5\u7ebf
+-less_than_two_selected_nodes=\u81f3\u5c11\u9009\u62e9\u4e24\u4e2a\u8282\u70b9
+-choose_node_background_color=\u9009\u62e9\u8282\u70b9\u80cc\u666f\u8272:
+-choose_node_color=\u9009\u62e9\u8282\u70b9\u8272:
+-choose_background_color=\u9009\u62e9\u80cc\u666f\u8272:
+-choose_cloud_color=\u9009\u62e9\u4e91\u56fe\u989c\u8272:
+-change_arrows_in_arrow_link=\u66f4\u6539\u8fde\u63a5\u7bad\u5934
+-add_local_link=\u66f4\u6539\u8fde\u63a5\u7bad\u5934
+-link_not_available_any_more=\u94fe\u63a5\u4e0d\u53ef\u7528
+-error_creating_directory=\u521b\u5efa\u76ee\u5f55\u51fa\u9519
+-export_svg_text=\u5bfc\u51fa\u4e3aSVG\u6587\u4ef6
+-export_pdf_text=\u5bfc\u51fa\u4e3aPDF\u6587\u4ef6
+-goto_link_node_action=\u8df3\u8f6c\u5230\u94fe\u63a5\u8282\u70b9
+-undefined_error=\u672a\u5b9a\u4e49\u9519\u8bef
+-cannot_add_parent_diff_parents=\u8981\u4f7f\u7528\u6b64\u51fd\u6570\uff0c\u6240\u6709\u8282\u70b9\u5fc5\u987b\u5177\u6709\u76f8\u540c\u7684\u7236\u8282\u70b9
+-cannot_add_parent_to_root=\u4e0d\u80fd\u4e3a\u6839\u8282\u70b9\u589e\u52a0\u7236\u8282\u70b9
+-no_format_copy_before_format_paste=\u5fc5\u987b\u5148\u590d\u5236\u540e\u624d\u80fd\u7c98\u8d34\u683c\u5f0f
+-accessories/plugins/AutomaticLayout.properties_documentation=<html>\u4fee\u6b63\u5bfc\u56fe\u7684\u5e03\u5c40. <br>\u8bf7\u5bf9\u56fe\u7684\u6839\u8282\u70b9\u5e94\u7528\u6b64\u52a8\u4f5c\u5e76\u8bd5\u7740\u5728\u4e0d\u540c\u5c42\u6b21\u63d2\u5165\u4e00\u4e9b\u65b0\u8282\u70b9.<br> \u7b2c\u4e00\u7ea7\u4e3a\u9ed1\u8272\uff0c\u7b2c\u4e8c\u7ea7\u4e3a\u84dd\u8272, \u7b49\u7b49.</html>
+-accessories/plugins/AutomaticLayout.properties_name=\u81ea\u52a8\u5e03\u5c40
+-accessories/plugins/BlinkingNodeHook.properties_documentation=<html>\u6b64Java\u63d2\u4ef6\u4ec5\u4f9b\u6f14\u793a. \u4f46\u8bf7\u5c0f\u5fc3\uff0c\u4e0d\u8981\u5c06\u5176\u4e0e\u592a\u591a\u8282\u70b9\u76f8\u5173\u8054, <strong>\u4e0d\u8981\u5bf9\u540c\u4e00\u8282\u70b9\u4e24\u6b21\u4f7f\u7528\u6216\u4e0e\u5176\u4ed6\u63d2\u4ef6\u540c\u65f6\u4f7f\u7528</strong></html>
+-accessories/plugins/BlinkingNodeHook.properties_name=\u8282\u70b9\u95ea\u70c1
+-accessories/plugins/CreationModificationPlugin.properties_name=\u663e\u793a\u4fee\u6539\u65f6\u95f4
+-accessories/plugins/ExportToImage_PNG.properties_documentation=\u5c06\u5f53\u524d\u6587\u4ef6\u5939\u4e2d\u7684\u56fe\u5bfc\u51fa\u4e3a\u4e00\u4e2aPNG\u56fe\u7247
+-accessories/plugins/ExportToImage_PNG.properties_name=\u5bfc\u51fa\u4e3aPNG\u6587\u4ef6...
+-accessories/plugins/ExportToImage_JPEG.properties_documentation=\u5c06\u5f53\u524d\u6587\u4ef6\u5939\u4e2d\u7684\u56fe\u5bfc\u51fa\u4e3a\u4e00\u4e2aJPEG\u56fe\u7247
+-accessories/plugins/ExportToImage_JPEG.properties_name=\u5bfc\u51fa\u4e3aJPEG\u6587\u4ef6
+-accessories/plugins/ExportWithXSLT.properties_documentation=\u8fd9\u662f\u4e00\u4e2a\u4f7f\u7528XSLT\u811a\u672c\u7684\u7edf\u4e00\u5bfc\u51fa\u65b9\u6cd5
+-accessories/plugins/ExportWithXSLT.properties_name=\u5bfc\u51fa\u4e3aXSLT\u6587\u4ef6
+-accessories/plugins/ExportWithXSLT_HTML.properties_name=\u5bfc\u51faXHTML\u6587\u4ef6(JavaScript \u7248\u672c)...
+-accessories/plugins/ExportWithXSLT_HTML3.properties_name=\u5bfc\u51faXHTML\u6587\u4ef6(\u53ef\u70b9\u51fb\u7684map\u56fe\u7247\u7248\u672c)...
+-accessories/plugins/FitToPage.properties_documentation=\u8fd9\u662f\u4e00\u4e2a\u7b80\u5355\u7684Java\u7c7b\uff0c\u7528\u6765\u6d4b\u8bd5map hook\u53ef\u80fd\u6027
+-accessories/plugins/FitToPage.properties_name=\u9002\u5408\u9875\u9762
+-accessories/plugins/FormatCopy.properties_documentation=<html>\u590d\u5236\u8282\u70b9\u7684\u683c\u5f0f.</html>
+-accessories/plugins/FormatCopy.properties_name=\u590d\u5236
+-accessories/plugins/FormatPaste.properties_documentation=<html>\u7c98\u8d34\u8282\u70b9\u7684\u683c\u5f0f.</html>
+-accessories/plugins/FormatPaste.properties_name=\u7c98\u8d34
+-accessories/plugins/FormularEditor.properties_documentation=<html>\u4e3a\u5f53\u524d\u8282\u70b9\u5173\u8054\u4e00\u4e2a\u7b80\u5355\u7684\u516c\u5f0f\u7f16\u8f91\u5668.</html>
+-accessories/plugins/IconSelectionPlugin.properties_documentation=<html>\u8fd9\u662f\u4e00\u4e2a\u7528\u4e8e\u56fe\u6807\u9009\u62e9\u7684java\u63d2\u4ef6.</html>
+-accessories/plugins/IconSelectionPlugin.properties_name=\u9009\u62e9\u56fe\u6807...
+-accessories/plugins/NewParentNode.properties_documentation=<html>\u6240\u6709\u9009\u4e2d\u9879\u88ab\u53d1\u9001\u5230\u4e00\u4e2a\u65b0\u7236\u8282\u70b9\u4e0b.</html>
+-accessories/plugins/NewParentNode.properties_name=\u65b0\u589e\u7236\u8282\u70b9
+-accessories/plugins/NodeNote.properties_documentation=<html>\u4e3a\u5f53\u524d\u8282\u70b9\u5173\u8054\u4e00\u4e2a\u7b80\u5355\u7684\u6ce8\u89e3\u7f16\u8f91\u5668.</html>
+-accessories/plugins/NodeNote.properties_name=\u6ce8\u89e3
+-accessories/plugins/PMCalculation.properties_documentation=<html>\u8ba1\u7b97\u4e0d\u540c\u4efb\u52a1\u7684\u7ed3\u679c.</html>
+-accessories/plugins/PMCalculation.properties_name=PM\u8ba1\u7b97
+-accessories/plugins/RevisionPlugin.properties_documentation=<html>\u6807\u8bb0\u6bcf\u4e2a\u4fee\u6539\u8fc7\u7684\u8282\u70b9\u7684\u80cc\u666f\u8272.</html>
+-accessories/plugins/RevisionPlugin.properties_name=\u4ee5\u989c\u8272(\u9ec4\u80cc\u666f\u8272)\u6807\u51fa\u4fee\u6539\u8fc7\u7684\u8282\u70b9
+-accessories/plugins/UnfoldAll.properties_documentation=<html>\u5c55\u5f00\u9009\u5b9a\u8282\u70b9\u53ca\u5176\u6240\u6709\u5b50\u8282\u70b9.</html>
+-accessories/plugins/UnfoldAll.properties_name=\u5c55\u5f00\u6240\u6709\u8282\u70b9
+-accessories/plugins/FoldAll.properties_documentation=<html>\u6298\u53e0\u9009\u5b9a\u8282\u70b9\u53ca\u5176\u6240\u6709\u5b50\u8282\u70b9.</html>
+-accessories/plugins/FoldAll.properties_name=\u6298\u53e0\u6240\u6709\u8282\u70b9
+-accessories/plugins/UnfoldOneLevel.properties_documentation=<html>\u5c06\u9009\u5b9a\u8282\u70b9\u5c55\u5f00\u4e00\u5c42.</html>
+-accessories/plugins/UnfoldOneLevel.properties_name=\u5c55\u5f00\u4e00\u5c42
+-accessories/plugins/FoldOneLevel.properties_documentation=<html>\u5c06\u9009\u5b9a\u8282\u70b9\u6298\u53e0\u4e00\u5c42.</html>
+-accessories/plugins/FoldOneLevel.properties_name=\u6298\u53e0\u4e00\u5c42
+-plugins/FreemindHelp.xml_documentation=Freemind\u5e2e\u52a9
+-plugins/FreemindHelp.xml_name=\u5728\u7ebf\u6587\u6863...
+-plugins/ExportPdf.xml_documentation=\u5bfc\u51fa\u4e3aPDF\u6587\u4ef6
+-plugins/ExportPdf.xml_name=\u5bfc\u51fa\u4e3aPDF\u6587\u4ef6...
+-plugins/ExportSvg.xml_documentation=\u5bfc\u51fa\u4e3aSVG
+-plugins/ExportSvg.xml_name=\u5bfc\u51fa\u4e3aSVG...
+-export_branch = \u5bfc\u51fa\u8282\u70b9\u4e3a ...
+-OptionPanel.no=\u632a\u5a01\u8bed
+-accessories/plugins/FormularEditor.properties_name=\u516c\u5f0f\u7f16\u8f91\u5668
+-icon_full-8= \u4f18\u5148\u7ea7 8
+-icon_full-9= \u4f18\u5148\u7ea7 9
++
++# new, fc, 21.5.2008:
++icon_freemind_butterfly = FreeMind
++icon_full-8 = \u4f18\u5148\u7ea7 8
++icon_full-9 = \u4f18\u5148\u7ea7 9
++
++# new, fc, 25.5.2008:
++node_is_write_protected=\u76ee\u6807\u8282\u70b9\u88ab\u5199\u4fdd\u62a4\u3002
++
++# new, fc, 6.7.2008:
++KeyDoc=Key Documentation PDF
++# translate only, when you have an own translation of this doc.
++pdfKeyDocLocation=./doc/FM_Key_Mappings_Quick_Guide.pdf
++
++icon_info=\u4fe1\u606f
++icon_full-0=\u4f18\u5148\u7ea7 0
++icon_prepare=\u9ec4\u8272\u4fe1\u53f7\u706f
++icon_go=\u7eff\u8272\u4fe1\u53f7\u706f
++icon_list=\u5217\u8868
++icon_launch=\u8fd0\u884c
++icon_family=\u5bb6\u5ead
++icon_female1=\u5973\u58eb1
++icon_female2=\u5973\u58eb2
++icon_male1=\u7537\u58eb1
++icon_male2=\u7537\u58eb2
++icon_fema=\u5973\u58eb
++icon_group=\u56e2\u961f
++
++OptionPanel.separator.icon_properties=\u56fe\u6807
++OptionPanel.icons.list=\u663e\u793a\u7684\u6807\u51c6\u56fe\u6807\u5217\u8868
++OptionPanel.icon_order_description=\u8fd9\u91cc\uff0c\u60a8\u53ef\u4ee5\u4e3a\u56fe\u6807\u6392\u5e8f\u6216\u8005\u7981\u7528\u6807\u51c6\u7684\u56fe\u6807\u3002\u56fe\u6807\u9700\u4ee5 ';' \u5206\u9694\u3002
++
++# new, fc, 16.7.2008:
++OptionPanel.sk=Sk
++OptionPanel.el=El
++OptionPanel.et=Et
++OptionPanel.id=Id
++OptionPanel.uk_UA=Uk UA
++OptionPanel.vi=Vi
++
++# new, fc, 22.7.2008
++select_icon=\u9009\u62e9\u4e00\u4e2a\u56fe\u6807
++mode_MindMap=\u8111\u56fe\u6a21\u5f0f
++mode_Browse=\u6d4f\u89c8\u5668\u6a21\u5f0f
++mode_File=\u6587\u4ef6\u6a21\u5f0f
++# changed
++mode_status = \u6a21\u5f0f\u5207\u6362\u4e3a {0}
++mode_title =FreeMind - {0}
++
++# new, fc, 25.8.2008
++OptionPanel.defaultfontsize.tooltip=\u65b0\u8282\u70b9\u7f3a\u7701\u7684\u5b57\u4f53\u5927\u5c0f\u3002
++
++# new, fc, 20.12.2008
++OptionPanel.ro=Ro

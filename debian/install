@@ -1,0 +1,7 @@
+../bin/dist/patterns.xml   opt/freemind/conf
+../bin/dist/accessories/*  opt/freemind/accessories
+accessories/plugins/flash/* opt/freemind/accessories/plugins/flash
+../bin/dist/browser/*      opt/freemind/browser
+../bin/dist/doc/*          opt/freemind/doc
+../bin/dist/lib/*          opt/freemind/lib
+../bin/dist/plugins/*      opt/freemind/plugins

@@ -1,0 +1,7 @@
+# Example watch control file for uscan
+# Rename this file to "watch" and then you can run the "uscan" command
+# to check for upstream updates and more.
+# Site		Directory		Pattern			Version	Script
+version=3
+opts="uversionmangle=s/_/./g" \
+  http://sf.net/freemind/freemind-src-(.*)\.(?:tar.gz|tgz|zip)

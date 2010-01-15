@@ -1,0 +1,46 @@
+diff -r 6911f5b56631 freemind.properties
+--- a/freemind.properties	Thu Feb 19 13:57:35 2009 +0800
++++ b/freemind.properties	Thu Feb 19 15:47:06 2009 +0800
+@@ -512,3 +512,10 @@
+ # fc, 28.4.2008: used and displayed icons as a list with divider ';':
+ icons.list=idea;help;yes;messagebox_warning;stop-sign;closed;info;button_ok;button_cancel;full-1;full-2;full-3;full-4;full-5;full-6;full-7;full-8;full-9;full-0;stop;prepare;go;back;forward;up;down;attach;ksmiletris;smiley-neutral;smiley-oh;smiley-angry;smily_bad;clanbomber;desktop_new;gohome;folder;korn;Mail;kmail;list;edit;kaddressbook;knotify;password;pencil;wizard;xmag;bell;bookmark;penguin;licq;freemind_butterfly;broken-line;calendar;clock;hourglass;launch;flag-black;flag-blue;flag-green;flag-orange;flag-pink;flag;flag-yellow;family;female1;female2;male1;male2;fema;group
+ # not added: encrypted;decrypted;redo;
++
++# worldhello, 25.5.2008:
++wh_nonascii_in_utf8=true
++wh_save_extra_attrs_in_aux_file=true
++wh_separate_attr_folded=true
++wh_separate_attr_created=true
++wh_separate_attr_modified=true
+diff -r 6911f5b56631 freemind/preferences/layout/OptionPanel.java
+--- a/freemind/preferences/layout/OptionPanel.java	Thu Feb 19 13:57:35 2009 +0800
++++ b/freemind/preferences/layout/OptionPanel.java	Thu Feb 19 15:47:06 2009 +0800
+@@ -1152,6 +1152,28 @@
+         controls.add(new NumberProperty("undo_levels.tooltip", "undo_levels", 2,1000,1));
+ 
+ 		/***********************************************************************
++		 * WorldHello ****************************************************************
++		 */
++		controls.add(new NewTabProperty("wh_extension"));
++		controls.add(new SeparatorProperty("wh_nonascii_in_utf8"));
++		controls.add(new BooleanProperty(
++				"wh_nonascii_in_utf8.tooltip",
++				"wh_nonascii_in_utf8")); // true
++		controls.add(new SeparatorProperty("wh_mm_aux_file"));
++		controls.add(new BooleanProperty(
++				"wh_save_extra_attrs_in_aux_file.tooltip",
++				"wh_save_extra_attrs_in_aux_file")); // true
++		controls.add(new BooleanProperty(
++				"wh_separate_attr_folded",
++				"wh_separate_attr_folded")); // true
++		controls.add(new BooleanProperty(
++				"wh_separate_attr_created",
++				"wh_separate_attr_created")); // true
++		controls.add(new BooleanProperty(
++				"wh_separate_attr_modified",
++				"wh_separate_attr_modified")); // true
++
++		/***********************************************************************
+ 		 * Browser/external apps
+ 		 * ****************************************************************
+ 		 */

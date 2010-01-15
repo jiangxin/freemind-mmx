@@ -1,0 +1,3 @@
+?package(ossxp-freemind):needs="X11" section="Apps/Text"\
+  title="FreeMind" command="/usr/bin/freemind" \
+  icon="/usr/share/pixmaps/ossxp-freemind.xpm"

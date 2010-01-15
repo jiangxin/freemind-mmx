@@ -1,0 +1,180 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# Sample debian/rules that uses debhelper.
+# GNU copyright 1997 to 1999 by Joey Hess.
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+include /usr/share/quilt/quilt.make
+
+ANT = ant
+#docdir=file:/usr/share/doc/freemind -Dpropfolder=.freemind -Dbrowser_other=sensible-browser
+
+CFLAGS = -Wall -g
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+	INSTALL_PROGRAM += -s
+endif
+
+configure: configure-stamp
+configure-stamp:
+	dh_testdir
+	# Add here commands to configure the package.
+	touch configure-stamp
+
+
+build: configure build-stamp build-hacked-stamp
+
+build-stamp: configure-stamp
+	dh_testdir
+
+	# Add here commands to compile the package.
+	cd $(CURDIR) && $(ANT) dist
+	mv $(CURDIR)/../bin/dist/lib/freemind.jar $(CURDIR)/../bin/dist/lib/freemind.vanilla.jar
+
+	touch build-stamp
+
+eol-format-stamp:
+	for i in \
+		build.xml \
+		freemind.properties \
+		freemind.bat \
+		freemind/controller/Controller.java \
+		freemind/main/FreeMind.java \
+		freemind/main/FreeMindSplash.java \
+		freemind/main/FreeMindSplashModern.java \
+		freemind/main/Tools.java \
+		freemind/main/XMLElement.java \
+		freemind/modes/mindmapmode/MindMapMapModel.java \
+		freemind/modes/MindMapNode.java \
+		freemind/modes/NodeAdapter.java \
+		freemind.sh \
+		MANIFEST.MF \
+		Resources_zh_CN.properties \
+		; do \
+	    dos2unix $$i; sed -i -e 's/\r$$//g' -e 's/\r/\n/g' $$i ; \
+	done
+	# fix NO EOL of file: freemind.properties
+	echo >> freemind.properties
+
+	touch eol-format-stamp
+
+build-hacked-stamp: build-stamp eol-format-stamp patch oemrevpatch
+	dh_testdir
+
+	cp -Rf $(CURDIR)/debian/freemind/* $(CURDIR)/
+	cd $(CURDIR) && $(ANT) -Dlight_bulb=yes dist
+	# cd $(CURDIR) && $(ANT) $(ANTFLAGS) doc
+
+	# create freemind.vanilla.sh here, it is also patched.
+	cp $(CURDIR)/../bin/dist/freemind.sh $(CURDIR)/../bin/dist/freemind.vanilla.sh
+	sed -i -e 's/freemind.jar/freemind.vanilla.jar/g' $(CURDIR)/../bin/dist/freemind.vanilla.sh
+
+	touch build-hacked-stamp
+
+clean: oemrevunpatch unpatch
+	dh_testdir
+	dh_testroot
+	-rm -f build-stamp build-hacked-stamp configure-stamp eol-format-stamp \
+		debian/files debian/ossxp-freemind.debhelper.log \
+		debian/ossxp-freemind.postinst.debhelper \
+		debian/ossxp-freemind.postrm.debhelper
+	-rm -rf debian/ossxp-freemind
+
+	# Add here commands to clean up after the build process.
+	cd $(CURDIR) && $(ANT) clean
+
+	dh_clean 
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k 
+	dh_installdirs
+
+	# Add here commands to install the package into debian/freemind.
+	# $(MAKE) install DESTDIR=$(CURDIR)/debian/freemind
+	install -m 755 $(CURDIR)/../bin/dist/freemind.sh $(CURDIR)/../bin/dist/freemind.vanilla.sh $(CURDIR)/debian/ossxp-freemind/opt/freemind/
+
+	echo "#export PATH=$$PATH:/usr/lib/jdk1.6.0/bin" >  $(CURDIR)/debian/ossxp-freemind/opt/freemind/conf/freemindrc
+	echo "#export JAVA_HOME=/usr/lib/jdk1.6.0/"     >> $(CURDIR)/debian/ossxp-freemind/opt/freemind/conf/freemindrc
+
+	convert $(CURDIR)/images/FreeMindWindowIcon.png $(CURDIR)/debian/ossxp-freemind/usr/share/pixmaps/ossxp-freemind.xpm
+
+
+	for pkg in `awk '/^Package:/ { print $$2 }' $(CURDIR)/debian/control`; do \
+		find $(CURDIR)/debian/$$pkg/ \( -name .svn -o -name "*~" \) -exec rm -rf {} + ; \
+		mkdir -p $(CURDIR)/debian/$$pkg/usr/share/lintian/overrides/; \
+		echo "dir-or-file-in-opt"  >> $(CURDIR)/debian/$$pkg/usr/share/lintian/overrides/$$pkg ; \
+		echo "file-in-unusual-dir" >> $(CURDIR)/debian/$$pkg/usr/share/lintian/overrides/$$pkg ; \
+		mkdir -p $(CURDIR)/debian/$$pkg/usr/share/linda/overrides/; \
+		echo "Tag: file-in-opt"    >> $(CURDIR)/debian/$$pkg/usr/share/linda/overrides/$$pkg ; \
+	done
+
+# Build architecture-independent files here.
+binary-indep: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs 
+	dh_installdocs
+#	dh_installexamples
+	dh_install
+	dh_installmenu
+#	dh_installdebconf
+#	dh_installlogrotate
+#	dh_installemacsen
+#	dh_installpam
+	dh_installmime
+#	dh_installinit
+#	dh_installcron
+#	dh_installinfo
+	dh_installman
+	dh_link
+#	dh_strip
+	dh_compress -X.mm
+	dh_fixperms
+#	dh_perl
+#	dh_python
+#	dh_makeshlibs
+	dh_installdeb
+#	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+# Build architecture-dependent files here.
+binary-arch: build install
+# We have nothing to do by default.
+
+OEMREV=`head -1 $(CURDIR)/debian/changelog | sed -e "s/.*(.*-\([^-~+]*\).*).*/\1/"`
+oemrevpatch:
+	echo "OEM Revision Patch"
+	@sed -ie "/public static final String HACKEDVERSION/ s/<REVISION>/r$(OEMREV)/" \
+	    $(CURDIR)/freemind/main/FreeMind.java
+
+oemrevunpatch:
+	echo "OEM Revision Unpatch"
+	@sed -ie "/public static final String HACKEDVERSION/ s/r$(OEMREV)/<REVISION>/" \
+	    $(CURDIR)/freemind/main/FreeMind.java
+
+binary: binary-indep binary-arch windows
+
+windows: post
+post:
+	cd $(CURDIR) && $(ANT) post
+
+debian/patches/: debian/patches
+debian/patches:
+debian/patches:
+	rsync -av --exclude=.hg* --exclude=locale --exclude=status \
+		--delete ../freemind-ossxp/.hg/patches/ debian/patches/
+
+.PHONY: build clean binary-indep binary-arch binary install configure debian/patches windows post
+
+# vim: noet

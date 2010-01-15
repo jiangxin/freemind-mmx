@@ -1,0 +1,13 @@
+10010_show_custom_version_number.patch
+10020_output_encode_in_utf8.patch
+10025_unescape_unicode_entities.patch
+10030_split_mm_into_two_files.patch
+10040_join_mm_with_mmx.patch
+10050_filter_all_illegal_xml_characters.patch
+10060_freemind_startup.patch
+10070_freemind_default_settings.patch
+10080_worldhello_extension_settings.patch
+10085_build_xml_ver_token.patch
+10090_debian_in_freemind_side_effect_workaround.patch
+20010_l10n_zh_CN.patch
+20020_l10n_worldhello_addon.patch

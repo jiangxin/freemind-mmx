@@ -1,0 +1,259 @@
+diff -r e4a92f133383 MANIFEST.MF
+--- a/MANIFEST.MF	Mon Feb 16 01:25:06 2009 +0800
++++ b/MANIFEST.MF	Mon Feb 16 01:25:13 2009 +0800
+@@ -9,5 +9,6 @@
+   bindings.jar
+                           SimplyHTML/gnu-regexp-1.1.4.jar
+   SimplyHTML/SimplyHTML.jar
++  saxon.jar
+ Created-By: Joerg Mueller
+ 
+diff -r e4a92f133383 build.xml
+--- a/build.xml	Mon Feb 16 01:25:06 2009 +0800
++++ b/build.xml	Mon Feb 16 01:25:13 2009 +0800
+@@ -47,7 +47,7 @@
+ 		<classpath path="${jibxlibs}"/>
+ 	</taskdef>
+ 
+-	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:lib/commons-lang-2.0.jar:lib/forms-1.0.5.jar:lib/SimplyHTML/SimplyHTML.jar"/>
++	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:lib/commons-lang-2.0.jar:lib/forms-1.0.5.jar:lib/SimplyHTML/SimplyHTML.jar:lib/saxon.jar"/>
+ 
+ 	  <target name="xmlbind.checkStatusOfGeneration">
+ 	    <uptodate property="xmlbind.isUpToDate"
+@@ -170,6 +170,7 @@
+ 				<include name="commons-lang-2.0.jar"/>
+ 				<include name="forms-1.0.5.jar"/>
+ 				<include name="bindings.jar"/>
++				<include name="saxon.jar"/>
+ 				<include name="jibx/jibx-run.jar"/>
+ 				<include name="jibx/xpp3.jar"/>
+ 				<include name="SimplyHTML/gnu-regexp-1.1.4.jar"/>
+@@ -340,6 +341,7 @@
+ 				<include name="Resources*"/>
+ 				<include name="mindmap_menus.xml"/>
+ 				<include name="**/freemind_version_updater.xslt"/>
++				<include name="**/freemind_join_mm_mmx.xslt"/>
+ 			</fileset>
+ 		</jar>
+ 	</target>
+diff -r e4a92f133383 freemind.bat
+--- a/freemind.bat	Mon Feb 16 01:25:06 2009 +0800
++++ b/freemind.bat	Mon Feb 16 01:25:13 2009 +0800
+@@ -1,2 +1,2 @@
+ @echo off
+-java -cp lib\freemind.jar;lib\commons-lang-2.0.jar;lib\forms-1.0.5.jar;lib\jibx\jibx-run.jar;lib\jibx\xpp3.jar;lib\bindings.jar freemind.main.FreeMindStarter
++java -cp lib\freemind.jar;lib\commons-lang-2.0.jar;lib\forms-1.0.5.jar;lib\jibx\jibx-run.jar;lib\jibx\xpp3.jar;lib\bindings.jar;lib\saxon.jar freemind.main.FreeMindStarter
+diff -r e4a92f133383 freemind.sh
+--- a/freemind.sh	Mon Feb 16 01:25:06 2009 +0800
++++ b/freemind.sh	Mon Feb 16 01:25:13 2009 +0800
+@@ -199,6 +199,7 @@
+ ${freedir}/lib/bindings.jar:\
+ ${freedir}/lib/commons-lang-2.0.jar:\
+ ${freedir}/lib/forms-1.0.5.jar:\
++${freedir}/lib/saxon.jar:\
+ ${freedir}"
+ if [ "${JAVA_TYPE}" = "sun" ]
+ then
+diff -r e4a92f133383 freemind/main/Tools.java
+--- a/freemind/main/Tools.java	Mon Feb 16 01:25:06 2009 +0800
++++ b/freemind/main/Tools.java	Mon Feb 16 01:25:13 2009 +0800
+@@ -90,6 +90,12 @@
+ import freemind.modes.MindMapNode;
+ import freemind.view.mindmapview.NodeView;
+ 
++//OSSXP.COM: classes for .mm and .mmx join.
++import javax.xml.parsers.DocumentBuilder;
++import javax.xml.parsers.DocumentBuilderFactory;
++import javax.xml.transform.dom.DOMSource;
++import org.w3c.dom.Document;
++
+ /**
+  * @author foltin
+  *
+@@ -988,13 +994,121 @@
+ 		    return new StringReader(writer.getBuffer().toString());
+ 	    }
+ 	    else{
+-	        return getActualReader(file);
++	        // OSSXP.COM
++	        return getActualReader(file, frame);
+ 	    }
+ 	}
+-	/** Creates a default reader that just reads the given file.
+-	 * @throws FileNotFoundException
++	/*
++	 * OSSXP.COM: hacked FreeMind saved two seperate files, .mm and .mmx file.
++	 * Join them in runtime using XSLT TransformerFactory.
++	 * TODO: Improvement needed. the joining stage may very slow, so disable it.
++
+ 	 */
+-	public static Reader getActualReader(File file) throws FileNotFoundException {
++	public static Reader getActualReader(File file, FreeMindMain frame) throws IOException {
++	    if (!Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file"))
++	    {
++	    	return getActualReaderXml(file);
++	    }
++	    // load .mmx file...
++	    String ext = Tools.getExtension(file.getName());
++	    String mmxFileName = "";
++
++	    // OSSXP.COM: can disable join .mm with .mmx here.
++	    // if(true) return getActualReaderXml(file);
++	    
++	    if(!ext.equals("mm")) 
++	    {
++	    	mmxFileName = "." + file.getName()+".mmx";
++	    }
++	    else 
++	    {
++	    	mmxFileName = "." + Tools.removeExtension(file.getName()) + ".mmx";
++	    }
++	    File mmxfile = new File(file.getParent(), mmxFileName);
++	    
++	    if (!mmxfile.exists())
++	    {
++	    	return getActualReaderXml(file);
++	    }
++
++	    URL updaterUrl = null;
++	    InputStream inputStream = null;
++	    Source xsltSource = null;
++	    StringWriter buffwriter = null;
++	    Result result = null;
++	    TransformerFactory tf = null;
++	    Transformer transformer = null;
++	    String mmxFileFullName = mmxfile.toURI().toString();
++	    try {
++	        // try to convert map with xslt:
++	    	updaterUrl = frame.getResource(
++	                "freemind/modes/mindmapmode/freemind_join_mm_mmx.xslt");
++	        if (updaterUrl == null) {
++	            throw new IllegalArgumentException(
++	                    "freemind_join_mm_mmx.xslt not found.");
++	        }
++	        inputStream = updaterUrl.openStream();
++	        xsltSource = new StreamSource(inputStream);
++	        // get output:
++	        buffwriter = new StringWriter();
++	        result = new StreamResult(buffwriter);
++	        /* OSSXP.COM: create an instance of TransformerFactory.
++	         * the default xslt engine (com.sun.org.apache.xalan.internal.xsltc.trax...) 
++	         * may not support 'key()' in freemind_join_mm_mmx.xslt. 
++	         * Use saxon implement. */
++	        System.setProperty("javax.xml.transform.TransformerFactory", 
++	        		"com.icl.saxon.TransformerFactoryImpl");
++	        tf = TransformerFactory.newInstance();
++	        transformer = tf.newTransformer(xsltSource);
++	        transformer.setParameter("mmx_file", mmxFileFullName);
++	        transformer.transform(new StreamSource(file), result);
++
++	    } catch (Exception ex) {
++	        ex.printStackTrace();
++	        // exception: we take the file itself:
++	        return getActualReaderXml(file);
++	    } finally {
++	        if (inputStream != null) {
++	            inputStream.close();
++	        }
++	        if (buffwriter != null) {
++	            buffwriter.close();
++	        }
++	        inputStream = null;
++	        xsltSource = null;
++	        updaterUrl = null;
++	        result = null;
++	        transformer = null;
++	        tf = null;
++	    }
++	    return new StringReader(buffwriter.getBuffer().toString());
++	}
++
++	/* 
++	 * OSSXP.COM: In this hacked version, .mm file is a true XML file.
++	 * load XML file using DOM.
++	 */
++	private static Reader getActualReaderXml(File file) throws IOException {
++	    try
++	    {
++	        TransformerFactory tf = TransformerFactory.newInstance();
++	        Transformer transformer = tf.newTransformer();
++	        DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
++	        DocumentBuilder domBuilder = domFactory.newDocumentBuilder();
++
++	        Document doc = domBuilder.parse(file);
++	        Source src = new DOMSource(doc);
++	        StringWriter buffwriter = new StringWriter();
++	        StreamResult result = new StreamResult(buffwriter);
++	        transformer.transform(src, result);
++
++	        return new StringReader(buffwriter.toString());
++	    }
++	    catch(Exception exp)
++	    {
++	    	exp.printStackTrace();
++	    }
++
+ 	    return new BufferedReader(new FileReader(file));
+ 	}
+ 
+diff -r e4a92f133383 freemind/modes/mindmapmode/MindMapMapModel.java
+--- a/freemind/modes/mindmapmode/MindMapMapModel.java	Mon Feb 16 01:25:06 2009 +0800
++++ b/freemind/modes/mindmapmode/MindMapMapModel.java	Mon Feb 16 01:25:13 2009 +0800
+@@ -438,7 +438,7 @@
+         	}
+             if (mapStart.startsWith(EXPECTED_START_STRINGS[i])) {
+                 // actual version:
+-                reader = Tools.getActualReader(file);
++                reader = Tools.getActualReader(file, getFrame());
+                 break;
+             }
+         }
+@@ -452,7 +452,7 @@
+ 					OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED)
+ 					.show().getResult();
+ 			if(showResult != JOptionPane.OK_OPTION) {
+-				reader = Tools.getActualReader(file);
++				reader = Tools.getActualReader(file, getFrame());
+ 			} else {
+ 				reader = Tools.getUpdateReader(file, FREEMIND_VERSION_UPDATER_XSLT, getFrame());
+ 			}
+diff -r e4a92f133383 freemind/modes/mindmapmode/freemind_join_mm_mmx.xslt
+--- /dev/null	Thu Jan 01 00:00:00 1970 +0000
++++ b/freemind/modes/mindmapmode/freemind_join_mm_mmx.xslt	Mon Feb 16 01:25:13 2009 +0800
+@@ -0,0 +1,36 @@
++<xsl:stylesheet version="1.0"
++   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
++<!-- Usage:
++   xsltproc -stringparam mmx_file mindmap.mmx <this_xslt> mindmap.mm
++-->
++   <xsl:output method="xml" version="1.0" encoding="utf-8"
++       indent="no" />
++
++   <xsl:param name="mmx_file" />
++   <xsl:variable name="indexfile" select="document($mmx_file)" />
++
++   <xsl:key name="node-by-id" match="node" use="@ID"/>
++
++   <xsl:template match="map">
++       <map>
++           <xsl:copy-of select="@*" />
++           <xsl:apply-templates />
++       </map>
++   </xsl:template>
++
++   <xsl:template match="node">
++       <xsl:variable name="id" select="@ID" />
++       <xsl:copy>
++           <xsl:copy-of select="@*" />
++           <xsl:for-each select="$indexfile">
++               <xsl:copy-of select="key('node-by-id', $id)/@*" />
++           </xsl:for-each>
++           <xsl:apply-templates />
++       </xsl:copy>
++   </xsl:template>
++
++   <xsl:template match="*">
++     <xsl:copy-of select="."/>
++   </xsl:template>
++
++</xsl:stylesheet>

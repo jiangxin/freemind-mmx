@@ -1,0 +1,23 @@
+Source: ossxp-freemind
+Section: contrib/text
+Priority: optional
+Maintainer: Jiang Xin <worldhello.net@gmail.com>
+Build-Depends-Indep: debhelper (>= 4.0.0), ant | eclipse, java-gcj-compat | java-virtual-machine | java2-compiler, imagemagick
+Standards-Version: 3.6.1.0
+
+Package: ossxp-freemind
+Architecture: all
+Depends: java-gcj-compat | java-virtual-machine, java-gcj-compat | java1-runtime | java2-runtime, libxerces2-java
+Recommends: mozilla-browser | www-browser
+Description: A Java Program for creating and viewing Mindmaps
+ Taking the Concept-Mapping approach to Human-Computer Interface design.
+ A mind mapper, and at the same time an easy-to-operate hierarchical editor
+ with strong emphasis on folding. These two are not really two different
+ things, just two different descriptions of a single application. Often used
+ for knowledge and content management.
+ .
+ Home: http://freemind.sourceforge.net/
+ (and http://freemind.sourceforge.net/wiki/index.php/FreeMind_on_Linux)
+ .
+ Have Fun!
+

@@ -1,0 +1,1 @@
+application/x-freemind; /usr/bin/freemind '%s'; test=test -n "$DISPLAY"; description="FreeMind MindMap file"; textualnewlines; nametemplate=%s.mm
