@@ -61,7 +61,7 @@ eol-format-stamp:
 	    dos2unix $$i; sed -i -e 's/\r$$//g' -e 's/\r/\n/g' $$i ; \
 	done
 	# fix NO EOL of file: freemind.properties
-	echo >> freemind.properties
+	#echo >> freemind.properties
 
 	touch eol-format-stamp
 
