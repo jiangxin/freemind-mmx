@@ -1,16 +1,35 @@
-diff -r e4a92f133383 MANIFEST.MF
---- a/MANIFEST.MF	Mon Feb 16 01:25:06 2009 +0800
-+++ b/MANIFEST.MF	Mon Feb 16 01:25:13 2009 +0800
-@@ -9,5 +9,6 @@
+From: Jiang Xin <jiangxin@moon.ossxp.com>
+Subject: [PATCH] t/load_mm_with_mmx_file
+
+When load mindmap, join <filename>.mm file with .<filename>.mmx.
+
+Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
+
+---
+ MANIFEST.MF                                        |    1 +
+ build.xml                                          |    4 +-
+ freemind.bat                                       |    2 +-
+ freemind.sh                                        |    1 +
+ freemind/main/Tools.java                           |  122 +++++++++++++++++++-
+ freemind/modes/mindmapmode/MindMapMapModel.java    |    4 +-
+ .../modes/mindmapmode/freemind_join_mm_mmx.xslt    |   36 ++++++
+ 7 files changed, 162 insertions(+), 8 deletions(-)
+
+diff --git a/MANIFEST.MF b/MANIFEST.MF
+index e6db851..1f7a44f 100644
+--- a/MANIFEST.MF
++++ b/MANIFEST.MF
+@@ -9,5 +9,6 @@ Class-Path: freemind.jar
    bindings.jar
                            SimplyHTML/gnu-regexp-1.1.4.jar
    SimplyHTML/SimplyHTML.jar
 +  saxon.jar
  Created-By: Joerg Mueller
  
-diff -r e4a92f133383 build.xml
---- a/build.xml	Mon Feb 16 01:25:06 2009 +0800
-+++ b/build.xml	Mon Feb 16 01:25:13 2009 +0800
+diff --git a/build.xml b/build.xml
+index 425949e..1676066 100644
+--- a/build.xml
++++ b/build.xml
 @@ -47,7 +47,7 @@
  		<classpath path="${jibxlibs}"/>
  	</taskdef>
@@ -36,17 +55,19 @@ diff -r e4a92f133383 build.xml
  			</fileset>
  		</jar>
  	</target>
-diff -r e4a92f133383 freemind.bat
---- a/freemind.bat	Mon Feb 16 01:25:06 2009 +0800
-+++ b/freemind.bat	Mon Feb 16 01:25:13 2009 +0800
+diff --git a/freemind.bat b/freemind.bat
+index d10bb7d..7171493 100644
+--- a/freemind.bat
++++ b/freemind.bat
 @@ -1,2 +1,2 @@
  @echo off
 -java -cp lib\freemind.jar;lib\commons-lang-2.0.jar;lib\forms-1.0.5.jar;lib\jibx\jibx-run.jar;lib\jibx\xpp3.jar;lib\bindings.jar freemind.main.FreeMindStarter
 +java -cp lib\freemind.jar;lib\commons-lang-2.0.jar;lib\forms-1.0.5.jar;lib\jibx\jibx-run.jar;lib\jibx\xpp3.jar;lib\bindings.jar;lib\saxon.jar freemind.main.FreeMindStarter
-diff -r e4a92f133383 freemind.sh
---- a/freemind.sh	Mon Feb 16 01:25:06 2009 +0800
-+++ b/freemind.sh	Mon Feb 16 01:25:13 2009 +0800
-@@ -199,6 +199,7 @@
+diff --git a/freemind.sh b/freemind.sh
+index 2e5bc7e..6b609a2 100644
+--- a/freemind.sh
++++ b/freemind.sh
+@@ -199,6 +199,7 @@ ${freedir}/lib/jibx/xpp3.jar:\
  ${freedir}/lib/bindings.jar:\
  ${freedir}/lib/commons-lang-2.0.jar:\
  ${freedir}/lib/forms-1.0.5.jar:\
@@ -54,10 +75,11 @@ diff -r e4a92f133383 freemind.sh
  ${freedir}"
  if [ "${JAVA_TYPE}" = "sun" ]
  then
-diff -r e4a92f133383 freemind/main/Tools.java
---- a/freemind/main/Tools.java	Mon Feb 16 01:25:06 2009 +0800
-+++ b/freemind/main/Tools.java	Mon Feb 16 01:25:13 2009 +0800
-@@ -90,6 +90,12 @@
+diff --git a/freemind/main/Tools.java b/freemind/main/Tools.java
+index a062302..144df7f 100644
+--- a/freemind/main/Tools.java
++++ b/freemind/main/Tools.java
+@@ -90,6 +90,12 @@ import javax.xml.transform.stream.StreamSource;
  import freemind.modes.MindMapNode;
  import freemind.view.mindmapview.NodeView;
  
@@ -70,7 +92,7 @@ diff -r e4a92f133383 freemind/main/Tools.java
  /**
   * @author foltin
   *
-@@ -988,13 +994,121 @@
+@@ -988,13 +994,121 @@ public class Tools {
  		    return new StringReader(writer.getBuffer().toString());
  	    }
  	    else{
@@ -196,10 +218,11 @@ diff -r e4a92f133383 freemind/main/Tools.java
  	    return new BufferedReader(new FileReader(file));
  	}
  
-diff -r e4a92f133383 freemind/modes/mindmapmode/MindMapMapModel.java
---- a/freemind/modes/mindmapmode/MindMapMapModel.java	Mon Feb 16 01:25:06 2009 +0800
-+++ b/freemind/modes/mindmapmode/MindMapMapModel.java	Mon Feb 16 01:25:13 2009 +0800
-@@ -438,7 +438,7 @@
+diff --git a/freemind/modes/mindmapmode/MindMapMapModel.java b/freemind/modes/mindmapmode/MindMapMapModel.java
+index 414afbe..7adcc5b 100644
+--- a/freemind/modes/mindmapmode/MindMapMapModel.java
++++ b/freemind/modes/mindmapmode/MindMapMapModel.java
+@@ -374,7 +374,7 @@ public class MindMapMapModel extends MapAdapter  {
          	}
              if (mapStart.startsWith(EXPECTED_START_STRINGS[i])) {
                  // actual version:
@@ -208,7 +231,7 @@ diff -r e4a92f133383 freemind/modes/mindmapmode/MindMapMapModel.java
                  break;
              }
          }
-@@ -452,7 +452,7 @@
+@@ -388,7 +388,7 @@ public class MindMapMapModel extends MapAdapter  {
  					OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED)
  					.show().getResult();
  			if(showResult != JOptionPane.OK_OPTION) {
@@ -217,9 +240,11 @@ diff -r e4a92f133383 freemind/modes/mindmapmode/MindMapMapModel.java
  			} else {
  				reader = Tools.getUpdateReader(file, FREEMIND_VERSION_UPDATER_XSLT, getFrame());
  			}
-diff -r e4a92f133383 freemind/modes/mindmapmode/freemind_join_mm_mmx.xslt
---- /dev/null	Thu Jan 01 00:00:00 1970 +0000
-+++ b/freemind/modes/mindmapmode/freemind_join_mm_mmx.xslt	Mon Feb 16 01:25:13 2009 +0800
+diff --git a/freemind/modes/mindmapmode/freemind_join_mm_mmx.xslt b/freemind/modes/mindmapmode/freemind_join_mm_mmx.xslt
+new file mode 100644
+index 0000000..bee253b
+--- /dev/null
++++ b/freemind/modes/mindmapmode/freemind_join_mm_mmx.xslt
 @@ -0,0 +1,36 @@
 +<xsl:stylesheet version="1.0"
 +   xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
@@ -257,3 +282,5 @@ diff -r e4a92f133383 freemind/modes/mindmapmode/freemind_join_mm_mmx.xslt
 +   </xsl:template>
 +
 +</xsl:stylesheet>
+-- 
+tg: (194c458..) t/load_mm_with_mmx_file (depends on: master)

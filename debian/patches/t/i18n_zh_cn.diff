@@ -1,19 +1,31 @@
-diff -r 9a4b9c543e29 Resources_zh_CN.properties
---- a/Resources_zh_CN.properties	Thu Feb 19 15:47:18 2009 +0800
-+++ b/Resources_zh_CN.properties	Thu Feb 19 18:25:31 2009 +0800
+From: Jiang Xin <jiangxin@moon.ossxp.com>
+Subject: [PATCH] t/i18n_zh_cn
+
+<patch description>
+
+Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
+
+---
+ Resources_zh_CN.properties |  193 +++++++++++++++++++++++---------------------
+ 1 files changed, 102 insertions(+), 91 deletions(-)
+
+diff --git a/Resources_zh_CN.properties b/Resources_zh_CN.properties
+index 2e6e5ec..103c96b 100644
+--- a/Resources_zh_CN.properties
++++ b/Resources_zh_CN.properties
 @@ -1,10 +1,6 @@
 -#!
 -#! created/edited by Popeye version 0.54 (popeye.sourceforge.net)
 -#! encoding:ISO-8859-1
 -# simplified-chinese version updated by zhb, leijp
  about = \u5173\u4e8e
-+
- add=\u6dfb\u52a0
--
+-add=\u6dfb\u52a0
+ 
++add=\u6dfb\u52a0
  about_text = FreeMind - \u514d\u8d39\u7684\u601d\u7ef4\u5bfc\u56fe\u548c\u77e5\u8bc6\u521b\u5efa\u8f6f\u4ef6\nCopyright \u00a9 2000-2008 Joerg Mueller, Daniel Polansky, Christian Foltin, Dimitry Polivaev, and others.\nThis program is free software, licenced under GNU General Public Licence.\n\nHome: http://freemind.sourceforge.net/\nVersion:
  antialias_all = \u5e73\u6ed1\u5168\u90e8
  antialias_edges =\u5e73\u6ed1\u8fde\u7ebf
-@@ -40,6 +36,7 @@
+@@ -40,6 +36,7 @@ edit_long_node = \u7f16\u8f91\u957f\u8282\u70b9...
  enter_base_url = \u5c06\u7c98\u8d34\u76f8\u5bf9\u94fe\u63a5\u3002\u8bf7\u8f93\u5165\u57fa\u7840 URL \u3002
  enter_confirms = Enter \u786e\u8ba4
  error = \u9519\u8bef
@@ -21,7 +33,7 @@ diff -r 9a4b9c543e29 Resources_zh_CN.properties
  export_branch_to_html = \u5bfc\u51fa\u8282\u70b9\u4e3a HTML
  export_to_html = \u5bfc\u51fa\u4e3aHTML
  extension_menu = \u6837\u5f0f
-@@ -49,7 +46,6 @@
+@@ -49,7 +46,6 @@ find = \u67e5\u627e ...
  find_what = \u67e5\u627e
  find_next = \u67e5\u627e\u4e0b\u4e00\u4e2a
  fold = \u6298\u53e0
@@ -29,7 +41,7 @@ diff -r 9a4b9c543e29 Resources_zh_CN.properties
  follow_link = \u6253\u5f00\u8d85\u94fe\u63a5:
  font = \u5b57\u4f53
  fork =\u53c9\u72b6
-@@ -113,8 +109,6 @@
+@@ -113,8 +109,6 @@ mindmaps = \u601d\u7ef4\u5bfc\u56fe
  mindmaps_desc = \u601d\u7ef4\u5bfc\u56fe (*.mm)
  mindmaps_filter_desc = \u8fc7\u6ee4\u5668 (*.mmfilter)
  mode_na = \u6a21\u5f0f\u4e0d\u53ef\u7528
@@ -38,7 +50,7 @@ diff -r 9a4b9c543e29 Resources_zh_CN.properties
  modes = \u6a21\u5f0f
  move_to_root = \u8f6c\u5230\u6839\u8282\u70b9
  new = \u65b0\u5efa
-@@ -171,8 +165,10 @@
+@@ -171,8 +165,10 @@ sharp_bezier = \u6e10\u7a84\u8d1d\u585e\u5c14\u66f2\u7ebf
  sharp_linear = \u6e10\u7a84\u76f4\u7ebf
  split = \u5206\u5272
  style = \u98ce\u683c
@@ -49,17 +61,17 @@ diff -r 9a4b9c543e29 Resources_zh_CN.properties
  underline = \u4e0b\u5212\u7ebf
  unfold = \u5c55\u5f00
  url_error = URL \u683c\u5f0f\u9519\u8bef!
-@@ -216,8 +212,8 @@
+@@ -216,8 +212,8 @@ menu_format = \u683c\u5f0f
  menu_extras = \u5de5\u5177
  menu_insert = \u63d2\u5165
  menu_attributes = \u5c5e\u6027
-+# Beware: "Edge Width " and "Edge Style " must end with space.
- edge_style = \u8fde\u7ebf\u98ce\u683c
--# Beware: "Edge Width " and "Edge Style " must end with space.
+-edge_style = \u8fde\u7ebf\u98ce\u683c
+ # Beware: "Edge Width " and "Edge Style " must end with space.
++edge_style = \u8fde\u7ebf\u98ce\u683c
  edge_width = \u8fde\u7ebf\u5bbd\u5ea6
  menu_file_import = \u5bfc\u5165
  menu_file_export = \u5bfc\u51fa
-@@ -372,6 +368,8 @@
+@@ -372,6 +368,8 @@ plugins/TimeManagement.xml_todayButton=\u4eca\u5929
  plugins/TimeList.xml_documentation=\u663e\u793a\u6240\u6709\u65e5\u7a0b\u53ca\u76f8\u5e94\u8282\u70b9.
  plugins/TimeList.xml_name=\u663e\u793a\u65e5\u7a0b\u5b89\u6392 ...
  remove_node_background_color = \u5220\u9664\u8282\u70b9\u80cc\u666f\u989c\u8272
@@ -68,7 +80,7 @@ diff -r 9a4b9c543e29 Resources_zh_CN.properties
  plugins/TimeList.xml_Modified=\u4fee\u6539
  plugins/TimeList.xml_Created=\u521b\u5efa
  plugins/TimeList.xml_Date=\u65e5\u671f
-@@ -430,6 +428,7 @@
+@@ -430,6 +428,7 @@ attributes_import=\u5bfc\u5165
  attributes_import_tooltip=\u4ece\u52a0\u8f7d\u7684\u5176\u4ed6\u5bfc\u56fe\u4e2d\u5bfc\u5165\u5c5e\u6027
  attributes_assign_dialog=\u6307\u5b9a\u5c5e\u6027(&g)...
  attributes_visible=\u9009\u5b9a\u53ef\u89c1
@@ -76,7 +88,7 @@ diff -r 9a4b9c543e29 Resources_zh_CN.properties
  attributes_visible_tooltip=\u9009\u5b9a\u53ef\u89c1
  attributes_refresh=\u5237\u65b0
  attribute_replace=\u66ff\u6362\u4e3a
-@@ -737,6 +736,8 @@
+@@ -737,6 +736,8 @@ OptionPanel.antialias_all=\u5e73\u6ed1\u5168\u90e8
  OptionPanel.antialias_none=\u4e0d\u5e73\u6ed1
  OptionPanel.cs=\u6377\u514b\u8bed
  OptionPanel.nb=\u632a\u5a01\u8bed(\u4f2f\u514b\u6885\u5c14)
@@ -85,7 +97,7 @@ diff -r 9a4b9c543e29 Resources_zh_CN.properties
  OptionPanel.ColorProperty.ResetColor=\u91cd\u8bbe\u989c\u8272
  # fc, 16.6.2005:
  OptionPanel.keystroke_option_dialog=\u9996\u9009\u9879
-@@ -833,6 +834,7 @@
+@@ -833,6 +834,7 @@ accessories/plugins/ManagePatterns.dialog.title=\u7ba1\u7406\u6a21\u5f0f...
  accessories/plugins/ManagePatterns.not_found=\u6a21\u5f0f\u6587\u4ef6\u4e0d\u80fd\u88ab\u52a0\u8f7d.
  accessories/plugins/ManagePatterns.properties_documentation=\u5728\u7f16\u8f91\u5668\u4e2d\u4fee\u6539 patterns.xml \u5b9a\u4e49\u7684\u6a21\u5f0f. \u7ed3\u679c\u81ea\u52a8\u4fdd\u5b58.
  accessories/plugins/ManagePatterns.properties_name=\u7ba1\u7406\u6a21\u5f0f...
@@ -93,7 +105,7 @@ diff -r 9a4b9c543e29 Resources_zh_CN.properties
  PatternDialog.nodefontbold=\u7c97\u4f53
  PatternDialog.nodefontitalic=\u659c\u4f53
  PatternDialog.separator.NodeFont=\u8282\u70b9\u5b57\u4f53
-@@ -955,6 +957,7 @@
+@@ -955,6 +957,7 @@ plugins/ScriptEditor/window.Result=\u7ed3\u679c:
  #
  # resource bundle with strings for application SimplyHTML
  # - English Language (default) -
@@ -101,7 +113,7 @@ diff -r 9a4b9c543e29 Resources_zh_CN.properties
  # edit menu definition
  simplyhtml.editLabel=\u7f16\u8f91
  
-@@ -987,6 +990,9 @@
+@@ -987,6 +990,9 @@ simplyhtml.fontBoldLabel=\u7c97\u4f53
  simplyhtml.fontBoldImage=resources/bold.gif
  simplyhtml.fontBoldSelectedIcon=resources/bold_on.gif
  simplyhtml.fontBoldTip=\u5207\u6362\u7c97\u4f53 \u5f00/\u5173
@@ -111,7 +123,7 @@ diff -r 9a4b9c543e29 Resources_zh_CN.properties
  simplyhtml.fontItalicLabel=\u659c\u4f53
  simplyhtml.fontItalicImage=resources/italic.gif
  simplyhtml.fontItalicSelectedIcon=resources/italic_on.gif
-@@ -1012,6 +1018,7 @@
+@@ -1012,6 +1018,7 @@ simplyhtml.paraAlignRightLabel=\u53f3\u5bf9\u9f50
  simplyhtml.paraAlignRightTip=\u8bbe\u7f6e\u6bb5\u843d\u53f3\u5bf9\u9f50
  
  # table menu definition
@@ -119,7 +131,7 @@ diff -r 9a4b9c543e29 Resources_zh_CN.properties
  # table menu items
  simplyhtml.tableLabel=\u8868\u683c
  simplyhtml.nextTableCellLabel=\u4e0b\u4e00\u4e2a\u5355\u5143\u683c
-@@ -1194,6 +1201,7 @@
+@@ -1194,6 +1201,7 @@ OptionalDontShowMeAgainDialog.dontShowAgain=\u4e0d\u7528\u518d\u8be2\u95ee\u6211
  OptionalDontShowMeAgainDialog.rememberMyDescision=\u8bb0\u4f4f\u6211\u7684\u51b3\u5b9a(&R).
  OptionalDontShowMeAgainDialog.cancel=\u5426(&N)
  OptionalDontShowMeAgainDialog.ok=\u662f(&Y)
@@ -127,7 +139,7 @@ diff -r 9a4b9c543e29 Resources_zh_CN.properties
  OptionPanel.separator.resources_notifications=\u786e\u8ba4
  OptionPanel.delete_nodes_without_question=\u65e0\u9700\u786e\u8ba4\u5373\u5220\u9664\u8282\u70b9?
  OptionPanel.delete_nodes_without_question.tooltip=\u5982\u679c\u52fe\u9009\u6b64\u590d\u9009\u6846\uff0c\u5c06\u65e0\u9700\u786e\u8ba4\u5373\u5220\u9664\u8282\u70b9. \u8fd9\u53ef\u80fd\u5bfc\u81f4\u65e0\u610f\u4e2d\u4e22\u5931\u4fe1\u606f.
-@@ -1232,6 +1240,8 @@
+@@ -1232,6 +1240,8 @@ OptionPanel.resources_convert_to_current_version.tooltip=<html>\u53ea\u4e3a\u65e
  OptionPanel.separator.root_node_appearance=\u6839\u8282\u70b9\u5916\u89c2
  OptionPanel.use_common_out_point_for_root_node=\u4ece\u6839\u8282\u70b9\u5f00\u59cb\u8fde\u7ebf
  OptionPanel.use_common_out_point_for_root_node.tooltip=\u4ece\u6839\u8282\u70b9\u5f00\u59cb\u8fde\u7ebf
@@ -136,7 +148,7 @@ diff -r 9a4b9c543e29 Resources_zh_CN.properties
  ManagePatternsPopupDialog.apply=\u5e94\u7528
  PatternDialog.setscript=\u6539\u53d8?
  PatternDialog.setscript.tooltip=\u811a\u672c\u80fd\u591f\u5173\u8054\u5230\u6837\u5f0f.
-@@ -1266,6 +1276,8 @@
+@@ -1266,6 +1276,8 @@ plugins/ScriptEditor.new_script=\u65b0\u811a\u672c
  OptionPanel.separator.save=\u4fdd\u5b58
  OptionPanel.save_only_intrisically_needed_ids=\u53ea\u4fdd\u5b58\u5df2\u4f7f\u7528\u7684\u8282\u70b9 ID
  OptionPanel.save_only_intrisically_needed_ids.tooltip=\u5982\u679c\u52fe\u9009\u6b64\u590d\u9009\u6846, \u5ffd\u7565\u5bfc\u56fe\u4e2d\u672a\u4f7f\u7528\u7684\u8282\u70b9 ID. \u6ce8\u610f, \u4e0d\u80fd\u94fe\u63a5\u5e76\u6307\u5b9a\u8282\u70b9\u5230\u4e00\u4e2a\u6ca1\u6709\u8282\u70b9 ID\u7684\u5916\u90e8\u5bfc\u56fe\u4e2d.
@@ -145,7 +157,7 @@ diff -r 9a4b9c543e29 Resources_zh_CN.properties
  OptionPanel.plugins/scripting/tab_name=\u811a\u672c
  OptionPanel.separator.plugins/scripting/separatorPropertyName=\u6743\u9650
  OptionPanel.resources_execute_scripts_without_file_restriction=\u5141\u8bb8\u6587\u4ef6\u64cd\u4f5c(\u4e0d\u63a8\u8350)
-@@ -1276,42 +1288,63 @@
+@@ -1276,42 +1288,63 @@ OptionPanel.resources_execute_scripts_without_exec_restriction=\u5141\u8bb8\u626
  OptionPanel.resources_execute_scripts_without_exec_restriction.tooltip=<html><body>\u5982\u679c\u4f60\u7684Groovy\u811a\u672c\u9700\u8981\u6267\u884c\u5176\u5b83\u7279\u6b8a\u7684\u5e94\u7528\u7a0b\u5e8f(\u5982\u6d4f\u89c8\u5668)\u800c\u4e0d\u8fdb\u884c\u8be2\u95ee(!),<br>\u5c31\u5fc5\u987b\u5141\u8bb8\u6b64\u9009\u9879. <br>\u4f46\u8bf7\u5c0f\u5fc3\u4f7f\u7528\uff0c\u56e0\u4e3a\u6076\u610f\u811a\u672c\u53ef\u80fd\u635f\u5bb3\u4f60\u7684\u8ba1\u7b97\u673a!</body></html>
  plugins/ScriptEditor.FORBIDDEN_ACTION=FreeMind groovy\u811a\u672c\u53d7\u9650. \u4e0b\u9762\u7684 {0,choice,0#File|1#Network|2#Exec} \u64cd\u4f5c\u88ab\u7981\u6b62: {1,choice,0#Accept|1#Connect|2#Listen|3#Multicast|4#SetFactory|5#Exec|6#Link|7#Delete|8#Read|9#Write}. \u4f60\u53ef\u4ee5\u5728\u7a0b\u5e8f\u8bbe\u7f6e\u4e2d\u66f4\u6539\u6b64\u9009\u9879.
  
@@ -212,7 +224,7 @@ diff -r 9a4b9c543e29 Resources_zh_CN.properties
  icon_smiley-angry =\u751f\u6c14
  icon_encrypted =\u52a0\u9501
  icon_decrypted =\u89e3\u5bc6
-@@ -1329,84 +1362,62 @@
+@@ -1329,84 +1362,62 @@ icon_kmail =\u7535\u90ae
  icon_edit =\u7cbe\u70bc
  icon_stop-sign =\u505c\u6b62
  icon_closed =\u7981\u5165
@@ -354,3 +366,5 @@ diff -r 9a4b9c543e29 Resources_zh_CN.properties
 +
 +# new, fc, 20.12.2008
 +OptionPanel.ro=Ro
+-- 
+tg: (194c458..) t/i18n_zh_cn (depends on: master)

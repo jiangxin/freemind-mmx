@@ -1,13 +1,12 @@
-10010_show_custom_version_number.patch
-10020_output_encode_in_utf8.patch
-10025_unescape_unicode_entities.patch
-10030_split_mm_into_two_files.patch
-10040_join_mm_with_mmx.patch
-10050_filter_all_illegal_xml_characters.patch
-10060_freemind_startup.patch
-10070_freemind_default_settings.patch
-10080_worldhello_extension_settings.patch
-10085_build_xml_ver_token.patch
-10090_debian_in_freemind_side_effect_workaround.patch
-20010_l10n_zh_CN.patch
-20020_l10n_worldhello_addon.patch
+t/custom_settings.diff -p1
+t/extensions_setting_dialog.diff -p1
+t/filter_all_illegal_xml_chars.diff -p1
+t/i18n_zh_cn.diff -p1
+t/i18n_addon.diff -p1
+t/load_mm_with_mmx_file.diff -p1
+t/linux_dist_build.diff -p1
+t/ossxp_deployment.diff -p1
+t/output_encode_in_utf8.diff -p1
+t/show_custom_version_number.diff -p1
+t/split_output_to_extra_mmx_file.diff -p1
+t/unescape_unicode_as_entities.diff -p1

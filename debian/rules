@@ -172,7 +172,9 @@ post:
 debian/patches/: debian/patches
 debian/patches:
 debian/patches:
-	rsync -av --exclude=.hg* --exclude=locale --exclude=status \
+	tg export --all --quilt debian/patches.new
+	cp -a debian/patches.new/* debian/patches && rm -rf debian/patches.new
+	cd debian && git status || true
 		--delete ../freemind-ossxp/.hg/patches/ debian/patches/
 
 .PHONY: build clean binary-indep binary-arch binary install configure debian/patches windows post

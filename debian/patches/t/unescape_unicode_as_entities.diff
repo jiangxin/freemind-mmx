@@ -1,7 +1,19 @@
-diff -r ad30e1ec65d9 freemind/main/HtmlTools.java
---- a/freemind/main/HtmlTools.java	Mon Feb 16 01:24:55 2009 +0800
-+++ b/freemind/main/HtmlTools.java	Mon Feb 16 01:25:01 2009 +0800
-@@ -23,6 +23,7 @@
+From: Jiang Xin <jiangxin@moon.ossxp.com>
+Subject: [PATCH] t/unescape_unicode_as_entities
+
+Do not escape utf8 characters as entities.
+
+Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
+
+---
+ freemind/main/HtmlTools.java |  109 ++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 109 insertions(+), 0 deletions(-)
+
+diff --git a/freemind/main/HtmlTools.java b/freemind/main/HtmlTools.java
+index d4d1dfe..695a726 100644
+--- a/freemind/main/HtmlTools.java
++++ b/freemind/main/HtmlTools.java
+@@ -23,6 +23,7 @@ package freemind.main;
  import java.io.IOException;
  import java.io.StringReader;
  import java.io.StringWriter;
@@ -9,7 +21,7 @@ diff -r ad30e1ec65d9 freemind/main/HtmlTools.java
  import java.util.ArrayList;
  import java.util.Iterator;
  import java.util.Locale;
-@@ -77,6 +78,9 @@
+@@ -77,6 +78,9 @@ public class HtmlTools {
          try {
              XHTMLWriter.html2xhtml(reader, writer);
              String resultXml = writer.toString();
@@ -19,7 +31,7 @@ diff -r ad30e1ec65d9 freemind/main/HtmlTools.java
              // for safety:
              if(!isWellformedXml(resultXml)) {
                  return toXMLEscapedText(htmlText);
-@@ -547,5 +551,110 @@
+@@ -547,5 +551,110 @@ public class HtmlTools {
  		return output;
  	}
      
@@ -130,3 +142,5 @@ diff -r ad30e1ec65d9 freemind/main/HtmlTools.java
 +    }
  
  }
+-- 
+tg: (194c458..) t/unescape_unicode_as_entities (depends on: master)

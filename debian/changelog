@@ -1,3 +1,9 @@
+ossxp-freemind (0.9.0~rc1-0.17.git~mmx) unstable; urgency=low
+
+  * Maintain patches using git + topgit.
+
+ -- Jiang Xin <worldhello.net@gmail.com>  Fri, 15 Jan 2010 11:10:48 +0800
+
 ossxp-freemind (0.9.0~rc1-0.17~mmx) unstable; urgency=low
 
   * Fixed #18: Mindmap saved in utf-8 when export as flash.

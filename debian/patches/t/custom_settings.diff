@@ -1,7 +1,20 @@
-diff -r 7881ecdb5acf freemind.properties
---- a/freemind.properties	Mon Feb 16 01:27:24 2009 +0800
-+++ b/freemind.properties	Mon Feb 16 01:30:42 2009 +0800
-@@ -308,7 +308,7 @@
+From: Jiang Xin <jiangxin@moon.ossxp.com>
+Subject: [PATCH] t/custom_settings
+
+<patch description>
+
+Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
+
+---
+ freemind.properties                          |    4 ++--
+ freemind/preferences/layout/OptionPanel.java |    2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/freemind.properties b/freemind.properties
+index 3e3c04a..7c4d144 100644
+--- a/freemind.properties
++++ b/freemind.properties
+@@ -308,7 +308,7 @@ selection_method = selection_method_delayed
  # time between two consecutive automatic saving actions (in msec):
  # ==============================================================
  # To disable automatic saving set this number to 2000000000.
@@ -10,7 +23,7 @@ diff -r 7881ecdb5acf freemind.properties
  #
  # If the files should be deleted automatically on a normal shutdown of Freemind set the following variable to true
  delete_automatic_saves_at_exit=true
-@@ -503,7 +503,7 @@
+@@ -503,7 +503,7 @@ resources_execute_scripts_without_exec_restriction=false
  #fc, 10.4.2008:
  resources_don_t_show_note_icons=false
  resources_remove_notes_without_question=
@@ -19,10 +32,11 @@ diff -r 7881ecdb5acf freemind.properties
  
  # fc, 18.4.2008: Empty means, that the freemind default key is used.
  resources_script_user_key_name_for_signing=
-diff -r 7881ecdb5acf freemind/preferences/layout/OptionPanel.java
---- a/freemind/preferences/layout/OptionPanel.java	Mon Feb 16 01:27:24 2009 +0800
-+++ b/freemind/preferences/layout/OptionPanel.java	Mon Feb 16 01:30:42 2009 +0800
-@@ -532,7 +532,7 @@
+diff --git a/freemind/preferences/layout/OptionPanel.java b/freemind/preferences/layout/OptionPanel.java
+index ab8c08e..c3815f0 100644
+--- a/freemind/preferences/layout/OptionPanel.java
++++ b/freemind/preferences/layout/OptionPanel.java
+@@ -532,7 +532,7 @@ public class OptionPanel implements TextTranslator {
  		
  		controls.add(new BooleanProperty(
  				"resources_save_folding_state.tooltip",
@@ -31,3 +45,5 @@ diff -r 7881ecdb5acf freemind/preferences/layout/OptionPanel.java
  		controls.add(new BooleanProperty(
  				"save_only_intrisically_needed_ids.tooltip",
  				FreeMindCommon.SAVE_ONLY_INTRISICALLY_NEEDED_IDS)); // false
+-- 
+tg: (194c458..) t/custom_settings (depends on: master)

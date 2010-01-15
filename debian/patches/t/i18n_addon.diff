@@ -1,7 +1,20 @@
-diff -r 2f75493a5464 Resources_en.properties
---- a/Resources_en.properties	Thu Feb 19 20:18:16 2009 +0800
-+++ b/Resources_en.properties	Thu Feb 19 20:18:25 2009 +0800
-@@ -1368,6 +1368,18 @@
+From: Jiang Xin <jiangxin@moon.ossxp.com>
+Subject: [PATCH] t/i18n_addon
+
+<patch description>
+
+Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
+
+---
+ Resources_en.properties    |   12 ++++++++++++
+ Resources_zh_CN.properties |   12 ++++++++++++
+ 2 files changed, 24 insertions(+), 0 deletions(-)
+
+diff --git a/Resources_en.properties b/Resources_en.properties
+index d2ec086..94a57aa 100644
+--- a/Resources_en.properties
++++ b/Resources_en.properties
+@@ -1368,6 +1368,18 @@ icon_flag = Red Flag
  #changed:
  OptionPanel.remind_use_rich_text_in_new_long_nodes=Use formatting for all nodes
  
@@ -20,10 +33,11 @@ diff -r 2f75493a5464 Resources_en.properties
  # new, fc, 21.5.2008:
  icon_freemind_butterfly = FreeMind
  icon_full-8 = Priority 8
-diff -r 2f75493a5464 Resources_zh_CN.properties
---- a/Resources_zh_CN.properties	Thu Feb 19 20:18:16 2009 +0800
-+++ b/Resources_zh_CN.properties	Thu Feb 19 20:18:25 2009 +0800
-@@ -1376,6 +1376,18 @@
+diff --git a/Resources_zh_CN.properties b/Resources_zh_CN.properties
+index 103c96b..414e5e0 100644
+--- a/Resources_zh_CN.properties
++++ b/Resources_zh_CN.properties
+@@ -1376,6 +1376,18 @@ icon_full-9 = \u4f18\u5148\u7ea7 9
  # new, fc, 25.5.2008:
  node_is_write_protected=\u76ee\u6807\u8282\u70b9\u88ab\u5199\u4fdd\u62a4\u3002
  
@@ -42,3 +56,5 @@ diff -r 2f75493a5464 Resources_zh_CN.properties
  # new, fc, 6.7.2008:
  KeyDoc=Key Documentation PDF
  # translate only, when you have an own translation of this doc.
+-- 
+tg: (4bc7478..) t/i18n_addon (depends on: t/i18n_zh_cn)

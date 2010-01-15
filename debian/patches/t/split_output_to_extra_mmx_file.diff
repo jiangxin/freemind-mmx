@@ -1,7 +1,22 @@
-diff -r 962e66fc663a freemind/main/XMLElement.java
---- a/freemind/main/XMLElement.java	Mon Feb 16 01:25:01 2009 +0800
-+++ b/freemind/main/XMLElement.java	Mon Feb 16 01:25:06 2009 +0800
-@@ -291,7 +291,75 @@
+From: Jiang Xin <jiangxin@moon.ossxp.com>
+Subject: [PATCH] t/split_output_to_extra_mmx_file
+
+When save mindmap file, some fields save to a extra file, named .<filename>.mmx
+
+Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
+
+---
+ freemind/main/XMLElement.java                   |   88 +++++++++++++++++++-
+ freemind/modes/MindMapNode.java                 |    1 +
+ freemind/modes/NodeAdapter.java                 |  106 +++++++++++++++++++++--
+ freemind/modes/mindmapmode/MindMapMapModel.java |   54 ++++++++++--
+ 4 files changed, 232 insertions(+), 17 deletions(-)
+
+diff --git a/freemind/main/XMLElement.java b/freemind/main/XMLElement.java
+index f93aa45..26c6a04 100644
+--- a/freemind/main/XMLElement.java
++++ b/freemind/main/XMLElement.java
+@@ -291,7 +291,75 @@ public class XMLElement
       */
      private int parserLineNr;
  
@@ -77,7 +92,7 @@ diff -r 962e66fc663a freemind/main/XMLElement.java
      /**
       * Creates and initializes a new XML element.
       * Calling the construction is equivalent to:
-@@ -506,6 +574,11 @@
+@@ -506,6 +574,11 @@ public class XMLElement
          this.children = new Vector();
          this.entities = entities;
          this.lineNr = 0;
@@ -89,7 +104,7 @@ diff -r 962e66fc663a freemind/main/XMLElement.java
          Enumeration enumerator = this.entities.keys();
          while (enumerator.hasMoreElements()) {
              Object key = enumerator.nextElement();
-@@ -2183,9 +2256,22 @@
+@@ -2183,9 +2256,22 @@ public class XMLElement
          if (! this.attributes.isEmpty()) {
              Iterator enumerator = this.attributes.keySet().iterator();
              while (enumerator.hasNext()) {
@@ -113,10 +128,11 @@ diff -r 962e66fc663a freemind/main/XMLElement.java
                  writer.write(key);
                  writer.write('='); writer.write('"');
                  this.writeEncoded(writer, value);
-diff -r 962e66fc663a freemind/modes/MindMapNode.java
---- a/freemind/modes/MindMapNode.java	Mon Feb 16 01:25:01 2009 +0800
-+++ b/freemind/modes/MindMapNode.java	Mon Feb 16 01:25:06 2009 +0800
-@@ -250,6 +250,7 @@
+diff --git a/freemind/modes/MindMapNode.java b/freemind/modes/MindMapNode.java
+index 100d17e..b8e6000 100644
+--- a/freemind/modes/MindMapNode.java
++++ b/freemind/modes/MindMapNode.java
+@@ -250,6 +250,7 @@ public interface MindMapNode extends MutableTreeNode {
       * @param saveChildren if true, the save recurses to all of the nodes children.
       */
      public XMLElement save(Writer writer, MindMapLinkRegistry registry, boolean saveHidden, boolean saveChildren) throws IOException;
@@ -124,10 +140,11 @@ diff -r 962e66fc663a freemind/modes/MindMapNode.java
  
      // fc, 10.2.2005:
      /** State icons are icons that are not saved. They indicate that
-diff -r 962e66fc663a freemind/modes/NodeAdapter.java
---- a/freemind/modes/NodeAdapter.java	Mon Feb 16 01:25:01 2009 +0800
-+++ b/freemind/modes/NodeAdapter.java	Mon Feb 16 01:25:06 2009 +0800
-@@ -56,6 +56,7 @@
+diff --git a/freemind/modes/NodeAdapter.java b/freemind/modes/NodeAdapter.java
+index cfef28b..2a9c535 100644
+--- a/freemind/modes/NodeAdapter.java
++++ b/freemind/modes/NodeAdapter.java
+@@ -56,6 +56,7 @@ import freemind.main.FreeMind;
  import freemind.main.FreeMindCommon;
  import freemind.main.FreeMindMain;
  import freemind.main.HtmlTools;
@@ -135,7 +152,7 @@ diff -r 962e66fc663a freemind/modes/NodeAdapter.java
  import freemind.main.Tools;
  import freemind.main.XMLElement;
  import freemind.modes.attributes.Attribute;
-@@ -957,11 +958,43 @@
+@@ -957,11 +958,43 @@ freemind.main.Resources.getInstance().logException(			e);
  	    return controller.getNodeID(this);
  	}
  
@@ -180,17 +197,19 @@ diff -r 962e66fc663a freemind/modes/NodeAdapter.java
  //    	if (!isNodeClassToBeSaved()) {
      	node.setName(XMLElementAdapter.XML_NODE);
  //        } else {
-@@ -970,6 +1003,9 @@
+@@ -970,7 +1003,10 @@ freemind.main.Resources.getInstance().logException(			e);
  //        }
  
          /** fc, 12.6.2005: XML must not contain any zero characters. */
+-        String text = this.toString().replace('\0', ' ');
 +    	// OSSXP.COM: not save TEXT attributes in .mmx file
 +    	if( node.isInWhiteAttlist("TEXT"))
 +    	{
-         String text = this.toString().replace('\0', ' ');
++        String text = this.makeValidXml(this.toString());
          if(!HtmlTools.isHtmlNode(text)) {
              node.setAttribute(XMLElementAdapter.XML_NODE_TEXT,text);
-@@ -989,6 +1025,7 @@
+         } else {
+@@ -989,6 +1025,7 @@ freemind.main.Resources.getInstance().logException(			e);
  	        	node.addChild(htmlElement);
          	
          }
@@ -198,7 +217,7 @@ diff -r 962e66fc663a freemind/modes/NodeAdapter.java
      	// save additional info:
      	if (getAdditionalInfo() != null) {
              node.setAttribute(XMLElementAdapter.XML_NODE_ENCRYPTED_CONTENT,
-@@ -996,15 +1033,26 @@
+@@ -996,15 +1033,26 @@ freemind.main.Resources.getInstance().logException(			e);
          }
      	//	((MindMapEdgeModel)getEdge()).save(doc,node);
  
@@ -226,7 +245,7 @@ diff -r 962e66fc663a freemind/modes/NodeAdapter.java
          Vector linkVector = registry.getAllLinksFromMe(this); /* Puh... */
          for(int i = 0; i < linkVector.size(); ++i) {
              if(linkVector.get(i) instanceof ArrowLinkAdapter) {
-@@ -1012,10 +1060,30 @@
+@@ -1012,10 +1060,30 @@ freemind.main.Resources.getInstance().logException(			e);
                  node.addChild(arrowLinkElement);
              }
          }
@@ -260,7 +279,7 @@ diff -r 962e66fc663a freemind/modes/NodeAdapter.java
          // fc, 17.12.2003: Remove the left/right bug.
          //                       VVV  save if and only if parent is root.
      	if (!(isRoot()) && (getParentNode().isRoot())) {
-@@ -1069,6 +1137,9 @@
+@@ -1069,6 +1137,9 @@ freemind.main.Resources.getInstance().logException(			e);
  									.getLastModifiedAt()));
  	}
      	//font
@@ -270,7 +289,7 @@ diff -r 962e66fc663a freemind/modes/NodeAdapter.java
      	if (font!=null) {
      	    XMLElement fontElement = new XMLElement();
      	    fontElement.setName("font");
-@@ -1084,25 +1155,38 @@
+@@ -1084,25 +1155,38 @@ freemind.main.Resources.getInstance().logException(			e);
      	    if (isUnderlined()) {
                     fontElement.setAttribute("UNDERLINE","true"); }
      	    node.addChild(fontElement); }
@@ -310,7 +329,7 @@ diff -r 962e66fc663a freemind/modes/NodeAdapter.java
              node.writeClosingTag(writer);
          } else {
              node.write(writer);
-@@ -1114,13 +1198,17 @@
+@@ -1114,13 +1198,17 @@ freemind.main.Resources.getInstance().logException(			e);
  		return map.getModeController();
  	}
  
@@ -330,10 +349,11 @@ diff -r 962e66fc663a freemind/modes/NodeAdapter.java
          }
      }
  
-diff -r 962e66fc663a freemind/modes/mindmapmode/MindMapMapModel.java
---- a/freemind/modes/mindmapmode/MindMapMapModel.java	Mon Feb 16 01:25:01 2009 +0800
-+++ b/freemind/modes/mindmapmode/MindMapMapModel.java	Mon Feb 16 01:25:06 2009 +0800
-@@ -254,7 +254,26 @@
+diff --git a/freemind/modes/mindmapmode/MindMapMapModel.java b/freemind/modes/mindmapmode/MindMapMapModel.java
+index c77fdca..66548b9 100644
+--- a/freemind/modes/mindmapmode/MindMapMapModel.java
++++ b/freemind/modes/mindmapmode/MindMapMapModel.java
+@@ -254,7 +254,26 @@ public class MindMapMapModel extends MapAdapter  {
          	}
              // OSSXP.COM: save file using default character set.
              BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file), FreeMind.DEFAULT_CHARSET ) );
@@ -361,7 +381,7 @@ diff -r 962e66fc663a freemind/modes/mindmapmode/MindMapMapModel.java
  
              if(!isInternal) {
                  setFile(file);
-@@ -279,25 +298,46 @@
+@@ -279,25 +298,46 @@ public class MindMapMapModel extends MapAdapter  {
  
      /** writes the content of the map to a writer.
  	 * @throws IOException
@@ -414,3 +434,5 @@ diff -r 962e66fc663a freemind/modes/mindmapmode/MindMapMapModel.java
      }
  
  	/**
+-- 
+tg: (b09ff3f..) t/split_output_to_extra_mmx_file (depends on: t/output_encode_in_utf8)

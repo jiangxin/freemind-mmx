@@ -1,7 +1,19 @@
-diff -r 4142f9cab05a freemind.sh
---- a/freemind.sh	Mon Feb 16 01:27:00 2009 +0800
-+++ b/freemind.sh	Mon Feb 16 01:27:24 2009 +0800
-@@ -136,6 +136,7 @@
+From: Jiang Xin <jiangxin@moon.ossxp.com>
+Subject: [PATCH] t/ossxp_deployment
+
+Deployment freemind in /opt/freemind
+
+Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
+
+---
+ freemind.sh |    8 ++++++--
+ 1 files changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/freemind.sh b/freemind.sh
+index 2e5bc7e..a9f15c3 100644
+--- a/freemind.sh
++++ b/freemind.sh
+@@ -136,6 +136,7 @@ output_debug_info() {
  #--------- Put the environment together --------------------------------
  
  _source /etc/freemind/freemindrc
@@ -9,7 +21,7 @@ diff -r 4142f9cab05a freemind.sh
  _source ~/.freemind/freemindrc
  
  findjava
-@@ -177,7 +178,10 @@
+@@ -177,7 +178,10 @@ then
  	exit 1
  fi
  
@@ -21,7 +33,7 @@ diff -r 4142f9cab05a freemind.sh
  then
  	if [ ! -d ~/.freemind ]
  	then
-@@ -185,7 +189,7 @@
+@@ -185,7 +189,7 @@ then
  		mkdir -p ~/.freemind
  	fi
  	_debug "Copying patterns.xml to ~/.freemind."
@@ -30,3 +42,5 @@ diff -r 4142f9cab05a freemind.sh
  fi
  
  #--------- Call (at last) FreeMind -------------------------------------
+-- 
+tg: (194c458..) t/ossxp_deployment (depends on: master)

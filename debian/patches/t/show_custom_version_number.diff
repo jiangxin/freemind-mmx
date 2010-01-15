@@ -1,0 +1,94 @@
+From: Jiang Xin <jiangxin@moon.ossxp.com>
+Subject: [PATCH] t/show_custom_version_number
+
+Show worldhello hacked version number on splash screen and about dialog.
+
+Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
+
+---
+ build.xml                               |    2 +-
+ freemind/controller/Controller.java     |    4 +++-
+ freemind/main/FreeMind.java             |    3 +++
+ freemind/main/FreeMindSplash.java       |    2 ++
+ freemind/main/FreeMindSplashModern.java |    6 +++++-
+ 5 files changed, 14 insertions(+), 3 deletions(-)
+
+diff --git a/build.xml b/build.xml
+index 425949e..d008698 100644
+--- a/build.xml
++++ b/build.xml
+@@ -4,7 +4,7 @@
+       <filterchain>
+         <tokenfilter>
+           <filetokenizer/>
+-          <replaceregex pattern='.*new VersionInformation\("(.*?)".*' replace="\1" flags="s" />
++          <replaceregex pattern='.*new VersionInformation\("(.*?)".*HACKEDVERSION.*Hack [rv]?(.*?),.*' replace="\1-\2_mmx" flags="s" />
+         </tokenfilter>
+       	<!-- Replace spaces by underscores. -->
+       	<tokenfilter><replaceregex pattern=" " replace="_" flags="g"/></tokenfilter>
+diff --git a/freemind/controller/Controller.java b/freemind/controller/Controller.java
+index 75517c8..a83c05f 100644
+--- a/freemind/controller/Controller.java
++++ b/freemind/controller/Controller.java
+@@ -1158,7 +1158,9 @@ public class Controller  implements MapModuleChangeObserver {
+         public void actionPerformed(ActionEvent e) {
+            JOptionPane.showMessageDialog(getFrame().getViewport(), controller
+ 					.getResourceString("about_text")
+-					+ getFrame().getFreemindVersion(), controller
++					+ getFrame().getFreemindVersion()
++					+ " "
++					+ FreeMind.HACKEDVERSION, controller
+ 					.getResourceString("about"),
+ 					JOptionPane.INFORMATION_MESSAGE);
+         }
+diff --git a/freemind/main/FreeMind.java b/freemind/main/FreeMind.java
+index c3ca2e7..a1f7507 100644
+--- a/freemind/main/FreeMind.java
++++ b/freemind/main/FreeMind.java
+@@ -125,6 +125,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
+ 	
+ 	protected static final VersionInformation VERSION = new VersionInformation("0.9.0 RC 1");
+ 	
++	// OSSXP.COM: set oem version.
++	public static final String HACKEDVERSION = "(MMX Hack <REVISION>, from ossxp.com)";
++
+ 	public static final String XML_VERSION = "0.9.0";
+ 
+ 	public static final String RESOURCES_REMIND_USE_RICH_TEXT_IN_NEW_LONG_NODES = "remind_use_rich_text_in_new_long_nodes";
+diff --git a/freemind/main/FreeMindSplash.java b/freemind/main/FreeMindSplash.java
+index d6ab1d2..20dab28 100644
+--- a/freemind/main/FreeMindSplash.java
++++ b/freemind/main/FreeMindSplash.java
+@@ -143,6 +143,8 @@ public class FreeMindSplash extends JFrame implements IFreeMindSplash {
+                 g2.setFont(versionTextFont);
+                 // Determine width of string to center it
+                 String freemindVersion = frame.getFreemindVersion().toString();
++                // OSSXP.COM: Splash screen, show oem version.
++                freemindVersion += " " + FreeMind.HACKEDVERSION;
+                 if (mWidth == null) {
+                     mWidth = new Integer(g2.getFontMetrics().stringWidth(freemindVersion));
+                 }
+diff --git a/freemind/main/FreeMindSplashModern.java b/freemind/main/FreeMindSplashModern.java
+index 4721588..37f786e 100644
+--- a/freemind/main/FreeMindSplashModern.java
++++ b/freemind/main/FreeMindSplashModern.java
+@@ -151,6 +151,10 @@ public class FreeMindSplashModern extends JFrame implements IFreeMindSplash {
+                 int xCoordinate = (int)(getSize().getWidth()/2-mWidth.intValue()/2);
+                 g2.setColor(new Color(0x4d,0x63,0xb4));
+                 g2.drawString(freemindVersion, xCoordinate , yCoordinate);
++                // OSSXP.COM: Splash screen, show oem version.
++                yCoordinate += (int)(g2.getFontMetrics().getHeight());
++                xCoordinate = (int)(getSize().getWidth()/2 - g2.getFontMetrics().stringWidth(FreeMind.HACKEDVERSION)/2);
++                g2.drawString(FreeMind.HACKEDVERSION, xCoordinate , yCoordinate);
+                 // Draw progress bar
+                 String progressString = (String)getClientProperty("progressString");
+                 if (progressString!=null) {
+@@ -205,4 +209,4 @@ public class FreeMindSplashModern extends JFrame implements IFreeMindSplash {
+         return mIcon;
+     }
+ 
+-}
+\ No newline at end of file
++}
+-- 
+tg: (194c458..) t/show_custom_version_number (depends on: master)

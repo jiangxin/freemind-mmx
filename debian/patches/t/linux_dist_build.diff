@@ -1,6 +1,18 @@
-diff -r 447ee0a8db2c build.xml
---- a/build.xml	Mon Feb 16 01:30:46 2009 +0800
-+++ b/build.xml	Mon Feb 16 01:30:48 2009 +0800
+From: Jiang Xin <jiangxin@moon.ossxp.com>
+Subject: [PATCH] t/linux_dist_build
+
+Build as debian/ubuntu package, build file bugfix.
+
+Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
+
+---
+ build.xml |    9 ++++++---
+ 1 files changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/build.xml b/build.xml
+index 1676066..3190b73 100644
+--- a/build.xml
++++ b/build.xml
 @@ -125,6 +125,8 @@
  		     classpath problems of the plugins. -->
  			<exclude name="tests/**" />
@@ -38,3 +50,5 @@ diff -r 447ee0a8db2c build.xml
  			</fileset>
  		</jar>
  	</target>
+-- 
+tg: (33276f1..) t/linux_dist_build (depends on: t/load_mm_with_mmx_file)
