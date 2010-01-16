@@ -10,10 +10,10 @@ Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
  1 files changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/freemind.sh b/freemind.sh
-index 2e5bc7e..a9f15c3 100644
+index 5cd29ee..e58305b 100644
 --- a/freemind.sh
 +++ b/freemind.sh
-@@ -136,6 +136,7 @@ output_debug_info() {
+@@ -138,6 +138,7 @@ output_debug_info() {
  #--------- Put the environment together --------------------------------
  
  _source /etc/freemind/freemindrc
@@ -21,7 +21,7 @@ index 2e5bc7e..a9f15c3 100644
  _source ~/.freemind/freemindrc
  
  findjava
-@@ -177,7 +178,10 @@ then
+@@ -179,7 +180,10 @@ then
  	exit 1
  fi
  
@@ -33,7 +33,7 @@ index 2e5bc7e..a9f15c3 100644
  then
  	if [ ! -d ~/.freemind ]
  	then
-@@ -185,7 +189,7 @@ then
+@@ -187,7 +191,7 @@ then
  		mkdir -p ~/.freemind
  	fi
  	_debug "Copying patterns.xml to ~/.freemind."
@@ -43,4 +43,4 @@ index 2e5bc7e..a9f15c3 100644
  
  #--------- Call (at last) FreeMind -------------------------------------
 -- 
-tg: (194c458..) t/ossxp_deployment (depends on: master)
+tg: (918d0c3..) t/ossxp_deployment (depends on: master)

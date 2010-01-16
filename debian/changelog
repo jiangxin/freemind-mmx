@@ -1,3 +1,9 @@
+ossxp-freemind (0.9.0~rc6-0.17.git~mmx) unstable; urgency=low
+
+  * Upstream upgrade to 0.9.0_RC_6.
+
+ -- Jiang Xin <worldhello.net@gmail.com>  Sat, 16 Jan 2010 23:43:38 +0800
+
 ossxp-freemind (0.9.0~rc1-0.17.git~mmx) unstable; urgency=low
 
   * Maintain patches using git + topgit.

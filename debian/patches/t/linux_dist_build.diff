@@ -10,10 +10,10 @@ Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
  1 files changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/build.xml b/build.xml
-index 1676066..3190b73 100644
+index 3031a11..a8cdd32 100644
 --- a/build.xml
 +++ b/build.xml
-@@ -125,6 +125,8 @@
+@@ -152,6 +152,8 @@
  		     classpath problems of the plugins. -->
  			<exclude name="tests/**" />
  			<exclude name="plugins/**" />
@@ -22,7 +22,7 @@ index 1676066..3190b73 100644
  		</javac>
  		<!-- Starter should work with java 1.1, too as it checks the java version.-->
  		<delete failonerror="false" file="${build}/freemind/main/FreeMindStarter.class"></delete>
-@@ -146,6 +148,7 @@
+@@ -173,6 +175,7 @@
  		<copy todir="${dist}">
  			<fileset dir="${src}/windows-launcher">
  			  <include name="FreeMind.exe"/>
@@ -30,7 +30,7 @@ index 1676066..3190b73 100644
  			</fileset>
  		</copy>
  		<mkdir dir="${dist}/doc" />
-@@ -284,7 +287,7 @@
+@@ -296,7 +299,7 @@
  		<tar tarfile="${post}/freemind-src.tar"
  			longfile="gnu"
  			basedir="${src_base_for_post}"
@@ -39,7 +39,7 @@ index 1676066..3190b73 100644
  		<gzip src="${post}/freemind-src.tar"
  			zipfile="${post}/freemind-src-${ver}.tar.gz" />
  		<delete>
-@@ -340,8 +343,8 @@
+@@ -378,8 +381,8 @@
  				<include name="patterns_updater.xslt"/>
  				<include name="Resources*"/>
  				<include name="mindmap_menus.xml"/>
@@ -49,6 +49,6 @@ index 1676066..3190b73 100644
 +				<include name="freemind/**/freemind_join_mm_mmx.xslt"/>
  			</fileset>
  		</jar>
- 	</target>
+ 		<ant antfile="${acc_build}" target="jar"/>
 -- 
-tg: (33276f1..) t/linux_dist_build (depends on: t/load_mm_with_mmx_file)
+tg: (ce01559..) t/linux_dist_build (depends on: t/load_mm_with_mmx_file)

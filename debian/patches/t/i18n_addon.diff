@@ -11,10 +11,10 @@ Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
  2 files changed, 24 insertions(+), 0 deletions(-)
 
 diff --git a/Resources_en.properties b/Resources_en.properties
-index d2ec086..94a57aa 100644
+index 161e4bc..b72b7bf 100644
 --- a/Resources_en.properties
 +++ b/Resources_en.properties
-@@ -1368,6 +1368,18 @@ icon_flag = Red Flag
+@@ -1364,6 +1364,18 @@ icon_flag = Red Flag
  #changed:
  OptionPanel.remind_use_rich_text_in_new_long_nodes=Use formatting for all nodes
  
@@ -34,7 +34,7 @@ index d2ec086..94a57aa 100644
  icon_freemind_butterfly = FreeMind
  icon_full-8 = Priority 8
 diff --git a/Resources_zh_CN.properties b/Resources_zh_CN.properties
-index 103c96b..414e5e0 100644
+index 50c98b0..d1dd2b9 100644
 --- a/Resources_zh_CN.properties
 +++ b/Resources_zh_CN.properties
 @@ -1376,6 +1376,18 @@ icon_full-9 = \u4f18\u5148\u7ea7 9
@@ -54,7 +54,7 @@ index 103c96b..414e5e0 100644
 +OptionPanel.wh_nonascii_in_utf8=\u5c06\u4e2d\u6587\u5b57\u7b26\u4fdd\u5b58\u4e3aUTF8
 +
  # new, fc, 6.7.2008:
- KeyDoc=Key Documentation PDF
+ KeyDoc=PDF\u683c\u5f0f\u7684\u952e\u6620\u5c04\u6587\u6863
  # translate only, when you have an own translation of this doc.
 -- 
-tg: (4bc7478..) t/i18n_addon (depends on: t/i18n_zh_cn)
+tg: (ca51dbe..) t/i18n_addon (depends on: t/i18n_zh_cn)

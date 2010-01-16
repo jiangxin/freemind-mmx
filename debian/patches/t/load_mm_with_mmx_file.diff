@@ -10,10 +10,10 @@ Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
  build.xml                                          |    4 +-
  freemind.bat                                       |    2 +-
  freemind.sh                                        |    1 +
- freemind/main/Tools.java                           |  122 +++++++++++++++++++-
+ freemind/main/Tools.java                           |  121 +++++++++++++++++++-
  freemind/modes/mindmapmode/MindMapMapModel.java    |    4 +-
  .../modes/mindmapmode/freemind_join_mm_mmx.xslt    |   36 ++++++
- 7 files changed, 162 insertions(+), 8 deletions(-)
+ 7 files changed, 161 insertions(+), 8 deletions(-)
 
 diff --git a/MANIFEST.MF b/MANIFEST.MF
 index e6db851..1f7a44f 100644
@@ -27,10 +27,10 @@ index e6db851..1f7a44f 100644
  Created-By: Joerg Mueller
  
 diff --git a/build.xml b/build.xml
-index 425949e..1676066 100644
+index 27f19a5..3031a11 100644
 --- a/build.xml
 +++ b/build.xml
-@@ -47,7 +47,7 @@
+@@ -49,7 +49,7 @@
  		<classpath path="${jibxlibs}"/>
  	</taskdef>
  
@@ -39,7 +39,7 @@ index 425949e..1676066 100644
  
  	  <target name="xmlbind.checkStatusOfGeneration">
  	    <uptodate property="xmlbind.isUpToDate"
-@@ -170,6 +170,7 @@
+@@ -197,6 +197,7 @@
  				<include name="commons-lang-2.0.jar"/>
  				<include name="forms-1.0.5.jar"/>
  				<include name="bindings.jar"/>
@@ -47,14 +47,14 @@ index 425949e..1676066 100644
  				<include name="jibx/jibx-run.jar"/>
  				<include name="jibx/xpp3.jar"/>
  				<include name="SimplyHTML/gnu-regexp-1.1.4.jar"/>
-@@ -340,6 +341,7 @@
+@@ -378,6 +379,7 @@
  				<include name="Resources*"/>
  				<include name="mindmap_menus.xml"/>
  				<include name="**/freemind_version_updater.xslt"/>
 +				<include name="**/freemind_join_mm_mmx.xslt"/>
  			</fileset>
  		</jar>
- 	</target>
+ 		<ant antfile="${acc_build}" target="jar"/>
 diff --git a/freemind.bat b/freemind.bat
 index d10bb7d..7171493 100644
 --- a/freemind.bat
@@ -64,10 +64,10 @@ index d10bb7d..7171493 100644
 -java -cp lib\freemind.jar;lib\commons-lang-2.0.jar;lib\forms-1.0.5.jar;lib\jibx\jibx-run.jar;lib\jibx\xpp3.jar;lib\bindings.jar freemind.main.FreeMindStarter
 +java -cp lib\freemind.jar;lib\commons-lang-2.0.jar;lib\forms-1.0.5.jar;lib\jibx\jibx-run.jar;lib\jibx\xpp3.jar;lib\bindings.jar;lib\saxon.jar freemind.main.FreeMindStarter
 diff --git a/freemind.sh b/freemind.sh
-index 2e5bc7e..6b609a2 100644
+index 5cd29ee..16c4c52 100644
 --- a/freemind.sh
 +++ b/freemind.sh
-@@ -199,6 +199,7 @@ ${freedir}/lib/jibx/xpp3.jar:\
+@@ -201,6 +201,7 @@ ${freedir}/lib/jibx/xpp3.jar:\
  ${freedir}/lib/bindings.jar:\
  ${freedir}/lib/commons-lang-2.0.jar:\
  ${freedir}/lib/forms-1.0.5.jar:\
@@ -76,10 +76,10 @@ index 2e5bc7e..6b609a2 100644
  if [ "${JAVA_TYPE}" = "sun" ]
  then
 diff --git a/freemind/main/Tools.java b/freemind/main/Tools.java
-index a062302..144df7f 100644
+index bf805de..cf860e5 100644
 --- a/freemind/main/Tools.java
 +++ b/freemind/main/Tools.java
-@@ -90,6 +90,12 @@ import javax.xml.transform.stream.StreamSource;
+@@ -95,6 +95,12 @@ import javax.xml.transform.stream.StreamSource;
  import freemind.modes.MindMapNode;
  import freemind.view.mindmapview.NodeView;
  
@@ -92,7 +92,7 @@ index a062302..144df7f 100644
  /**
   * @author foltin
   *
-@@ -988,13 +994,121 @@ public class Tools {
+@@ -1001,7 +1007,8 @@ public class Tools {
  		    return new StringReader(writer.getBuffer().toString());
  	    }
  	    else{
@@ -101,15 +101,18 @@ index a062302..144df7f 100644
 +	        return getActualReader(file, frame);
  	    }
  	}
+ 
+@@ -1019,10 +1026,116 @@ public class Tools {
+ 		return HtmlTools.replaceIllegalXmlCharacters(fileContents);
+ 	}
+ 
 -	/** Creates a default reader that just reads the given file.
 -	 * @throws FileNotFoundException
 +	/*
 +	 * OSSXP.COM: hacked FreeMind saved two seperate files, .mm and .mmx file.
 +	 * Join them in runtime using XSLT TransformerFactory.
 +	 * TODO: Improvement needed. the joining stage may very slow, so disable it.
-+
- 	 */
--	public static Reader getActualReader(File file) throws FileNotFoundException {
++	 */
 +	public static Reader getActualReader(File file, FreeMindMain frame) throws IOException {
 +	    if (!Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file"))
 +	    {
@@ -193,7 +196,8 @@ index a062302..144df7f 100644
 +	/* 
 +	 * OSSXP.COM: In this hacked version, .mm file is a true XML file.
 +	 * load XML file using DOM.
-+	 */
+ 	 */
+-	public static Reader getActualReader(File file) throws FileNotFoundException {
 +	private static Reader getActualReaderXml(File file) throws IOException {
 +	    try
 +	    {
@@ -219,10 +223,10 @@ index a062302..144df7f 100644
  	}
  
 diff --git a/freemind/modes/mindmapmode/MindMapMapModel.java b/freemind/modes/mindmapmode/MindMapMapModel.java
-index 414afbe..7adcc5b 100644
+index 5143e71..a4f44e9 100644
 --- a/freemind/modes/mindmapmode/MindMapMapModel.java
 +++ b/freemind/modes/mindmapmode/MindMapMapModel.java
-@@ -374,7 +374,7 @@ public class MindMapMapModel extends MapAdapter  {
+@@ -375,7 +375,7 @@ public class MindMapMapModel extends MapAdapter  {
          	}
              if (mapStart.startsWith(EXPECTED_START_STRINGS[i])) {
                  // actual version:
@@ -231,7 +235,7 @@ index 414afbe..7adcc5b 100644
                  break;
              }
          }
-@@ -388,7 +388,7 @@ public class MindMapMapModel extends MapAdapter  {
+@@ -389,7 +389,7 @@ public class MindMapMapModel extends MapAdapter  {
  					OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED)
  					.show().getResult();
  			if(showResult != JOptionPane.OK_OPTION) {
@@ -283,4 +287,4 @@ index 0000000..bee253b
 +
 +</xsl:stylesheet>
 -- 
-tg: (194c458..) t/load_mm_with_mmx_file (depends on: master)
+tg: (918d0c3..) t/load_mm_with_mmx_file (depends on: master)

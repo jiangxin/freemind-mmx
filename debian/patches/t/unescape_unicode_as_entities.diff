@@ -10,7 +10,7 @@ Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
  1 files changed, 109 insertions(+), 0 deletions(-)
 
 diff --git a/freemind/main/HtmlTools.java b/freemind/main/HtmlTools.java
-index d4d1dfe..695a726 100644
+index c309a70..89cd08b 100644
 --- a/freemind/main/HtmlTools.java
 +++ b/freemind/main/HtmlTools.java
 @@ -23,6 +23,7 @@ package freemind.main;
@@ -31,7 +31,7 @@ index d4d1dfe..695a726 100644
              // for safety:
              if(!isWellformedXml(resultXml)) {
                  return toXMLEscapedText(htmlText);
-@@ -547,5 +551,110 @@ public class HtmlTools {
+@@ -567,5 +571,110 @@ public class HtmlTools {
  		return output;
  	}
      
@@ -143,4 +143,4 @@ index d4d1dfe..695a726 100644
  
  }
 -- 
-tg: (194c458..) t/unescape_unicode_as_entities (depends on: master)
+tg: (918d0c3..) t/unescape_unicode_as_entities (depends on: master)

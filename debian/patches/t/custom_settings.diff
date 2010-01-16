@@ -11,7 +11,7 @@ Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/freemind.properties b/freemind.properties
-index 3e3c04a..7c4d144 100644
+index 27cca21..9f5a242 100644
 --- a/freemind.properties
 +++ b/freemind.properties
 @@ -308,7 +308,7 @@ selection_method = selection_method_delayed
@@ -33,10 +33,10 @@ index 3e3c04a..7c4d144 100644
  # fc, 18.4.2008: Empty means, that the freemind default key is used.
  resources_script_user_key_name_for_signing=
 diff --git a/freemind/preferences/layout/OptionPanel.java b/freemind/preferences/layout/OptionPanel.java
-index ab8c08e..c3815f0 100644
+index bc119d8..d1ce8d5 100644
 --- a/freemind/preferences/layout/OptionPanel.java
 +++ b/freemind/preferences/layout/OptionPanel.java
-@@ -532,7 +532,7 @@ public class OptionPanel implements TextTranslator {
+@@ -534,7 +534,7 @@ public class OptionPanel implements TextTranslator {
  		
  		controls.add(new BooleanProperty(
  				"resources_save_folding_state.tooltip",
@@ -46,4 +46,4 @@ index ab8c08e..c3815f0 100644
  				"save_only_intrisically_needed_ids.tooltip",
  				FreeMindCommon.SAVE_ONLY_INTRISICALLY_NEEDED_IDS)); // false
 -- 
-tg: (194c458..) t/custom_settings (depends on: master)
+tg: (918d0c3..) t/custom_settings (depends on: master)

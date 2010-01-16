@@ -13,7 +13,7 @@ Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
  4 files changed, 232 insertions(+), 17 deletions(-)
 
 diff --git a/freemind/main/XMLElement.java b/freemind/main/XMLElement.java
-index f93aa45..26c6a04 100644
+index e610275..cc2a5e5 100644
 --- a/freemind/main/XMLElement.java
 +++ b/freemind/main/XMLElement.java
 @@ -291,7 +291,75 @@ public class XMLElement
@@ -350,10 +350,10 @@ index cfef28b..2a9c535 100644
      }
  
 diff --git a/freemind/modes/mindmapmode/MindMapMapModel.java b/freemind/modes/mindmapmode/MindMapMapModel.java
-index c77fdca..66548b9 100644
+index acf305f..bfd6153 100644
 --- a/freemind/modes/mindmapmode/MindMapMapModel.java
 +++ b/freemind/modes/mindmapmode/MindMapMapModel.java
-@@ -254,7 +254,26 @@ public class MindMapMapModel extends MapAdapter  {
+@@ -255,7 +255,26 @@ public class MindMapMapModel extends MapAdapter  {
          	}
              // OSSXP.COM: save file using default character set.
              BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file), FreeMind.DEFAULT_CHARSET ) );
@@ -381,7 +381,7 @@ index c77fdca..66548b9 100644
  
              if(!isInternal) {
                  setFile(file);
-@@ -279,25 +298,46 @@ public class MindMapMapModel extends MapAdapter  {
+@@ -280,25 +299,46 @@ public class MindMapMapModel extends MapAdapter  {
  
      /** writes the content of the map to a writer.
  	 * @throws IOException
@@ -435,4 +435,4 @@ index c77fdca..66548b9 100644
  
  	/**
 -- 
-tg: (b09ff3f..) t/split_output_to_extra_mmx_file (depends on: t/output_encode_in_utf8)
+tg: (bfc7932..) t/split_output_to_extra_mmx_file (depends on: t/output_encode_in_utf8)

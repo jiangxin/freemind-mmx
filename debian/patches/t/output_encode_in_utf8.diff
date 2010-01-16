@@ -10,12 +10,12 @@ Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
  accessories/plugins/ExportWithXSLT.java           |    3 +-
  freemind/main/FreeMind.java                       |    3 ++
  freemind/main/HtmlTools.java                      |    2 +-
- freemind/main/XMLElement.java                     |    6 ++-
+ freemind/main/XMLElement.java                     |    7 +++-
  freemind/modes/StylePattern.java                  |    2 +-
  freemind/modes/mindmapmode/MindMapController.java |    3 +-
  freemind/modes/mindmapmode/MindMapHTMLWriter.java |    4 +-
  freemind/modes/mindmapmode/MindMapMapModel.java   |   32 ++++++++++++++++++--
- 9 files changed, 45 insertions(+), 14 deletions(-)
+ 9 files changed, 46 insertions(+), 14 deletions(-)
 
 diff --git a/accessories/freemind2flash.xsl b/accessories/freemind2flash.xsl
 index 4d588a6..489bcad 100644
@@ -37,7 +37,7 @@ index 4d588a6..489bcad 100644
          <xsl:element name="script">
              <xsl:attribute name="type">text/javascript</xsl:attribute>
 diff --git a/accessories/plugins/ExportWithXSLT.java b/accessories/plugins/ExportWithXSLT.java
-index 98cafc1..0854586 100644
+index 850e3f8..d29c638 100644
 --- a/accessories/plugins/ExportWithXSLT.java
 +++ b/accessories/plugins/ExportWithXSLT.java
 @@ -52,6 +52,7 @@ import javax.xml.transform.stream.StreamSource;
@@ -48,7 +48,7 @@ index 98cafc1..0854586 100644
  import freemind.main.Resources;
  import freemind.main.Tools;
  import freemind.modes.MindIcon;
-@@ -183,7 +184,7 @@ public class ExportWithXSLT extends ExportHook {
+@@ -175,7 +176,7 @@ public class ExportWithXSLT extends ExportHook {
      {
          boolean success = true;
  //      Generating output Stream            
@@ -58,7 +58,7 @@ index 98cafc1..0854586 100644
          return success;
      }
 diff --git a/freemind/main/FreeMind.java b/freemind/main/FreeMind.java
-index c3ca2e7..4c8ed8a 100644
+index 4309d02..948b3f5 100644
 --- a/freemind/main/FreeMind.java
 +++ b/freemind/main/FreeMind.java
 @@ -81,6 +81,9 @@ import freemind.view.mindmapview.MapView;
@@ -72,7 +72,7 @@ index c3ca2e7..4c8ed8a 100644
  
  	private static final String SPLIT_PANE_LAST_POSITION = "split_pane_last_position";
 diff --git a/freemind/main/HtmlTools.java b/freemind/main/HtmlTools.java
-index d4d1dfe..9ff58d9 100644
+index c309a70..64b307f 100644
 --- a/freemind/main/HtmlTools.java
 +++ b/freemind/main/HtmlTools.java
 @@ -332,7 +332,7 @@ public class HtmlTools {
@@ -85,7 +85,7 @@ index d4d1dfe..9ff58d9 100644
  						.append(';');
  			} else {
 diff --git a/freemind/main/XMLElement.java b/freemind/main/XMLElement.java
-index 4dff2df..f93aa45 100644
+index 2174b5c..e610275 100644
 --- a/freemind/main/XMLElement.java
 +++ b/freemind/main/XMLElement.java
 @@ -2118,7 +2118,8 @@ public class XMLElement
@@ -98,13 +98,14 @@ index 4dff2df..f93aa45 100644
              this.write(writer);
              writer.flush();
              return new String(out.toByteArray());
-@@ -2270,7 +2271,8 @@ public class XMLElement
+@@ -2270,7 +2271,9 @@ public class XMLElement
                      break;
                  default:
                      int unicode = (int) ch;
--                    if ((unicode < 32) || (unicode > 126)) {
+-                    if((unicode < 32)||(unicode > 126)) {
 +                    // OSSXP.COM: do not convert Chinese characters into &#blahblah;
-+                    if (!Resources.getInstance().getBoolProperty("wh_nonascii_in_utf8") && unicode > 126 || unicode < 32) {
++                    if (!Resources.getInstance().getBoolProperty("wh_nonascii_in_utf8") && (unicode > 126) || (unicode < 32)) {
++
                          writer.write('&'); writer.write('#');
                          writer.write('x');
                          writer.write(Integer.toString(unicode, 16));
@@ -122,7 +123,7 @@ index c3644eb..7db2e30 100644
  
              fileout.close();
 diff --git a/freemind/modes/mindmapmode/MindMapController.java b/freemind/modes/mindmapmode/MindMapController.java
-index b5454fa..0e0ab35 100644
+index 014d7af..6bfe58c 100644
 --- a/freemind/modes/mindmapmode/MindMapController.java
 +++ b/freemind/modes/mindmapmode/MindMapController.java
 @@ -114,6 +114,7 @@ import freemind.extensions.UndoEventReceiver;
@@ -133,7 +134,7 @@ index b5454fa..0e0ab35 100644
  import freemind.main.HtmlTools;
  import freemind.main.Resources;
  import freemind.main.Tools;
-@@ -1729,7 +1730,7 @@ freemind.main.Resources.getInstance().logException(					e1);
+@@ -1742,7 +1743,7 @@ freemind.main.Resources.getInstance().logException(					e1);
  
      static public void saveHTML(MindMapNodeModel rootNodeOfBranch, File file) throws IOException {
          BufferedWriter fileout = new BufferedWriter(new OutputStreamWriter(
@@ -163,10 +164,10 @@ index 52276ea..f2d0616 100644
 \ No newline at end of file
 +}
 diff --git a/freemind/modes/mindmapmode/MindMapMapModel.java b/freemind/modes/mindmapmode/MindMapMapModel.java
-index 414afbe..c77fdca 100644
+index 5143e71..acf305f 100644
 --- a/freemind/modes/mindmapmode/MindMapMapModel.java
 +++ b/freemind/modes/mindmapmode/MindMapMapModel.java
-@@ -171,7 +171,7 @@ public class MindMapMapModel extends MapAdapter  {
+@@ -172,7 +172,7 @@ public class MindMapMapModel extends MapAdapter  {
     public boolean saveTXT(MindMapNodeModel rootNodeOfBranch, File file) {
          // Returns success of the operation.
          try {
@@ -175,7 +176,7 @@ index 414afbe..c77fdca 100644
              rootNodeOfBranch.saveTXT(fileout,/*depth=*/0);
              fileout.close();
              return true;
-@@ -252,7 +252,8 @@ public class MindMapMapModel extends MapAdapter  {
+@@ -253,7 +253,8 @@ public class MindMapMapModel extends MapAdapter  {
          	if(timerForAutomaticSaving != null) {
          		timerForAutomaticSaving.cancel();
          	}
@@ -185,7 +186,7 @@ index 414afbe..c77fdca 100644
              getXml(fileout);
  
              if(!isInternal) {
-@@ -280,6 +281,8 @@ public class MindMapMapModel extends MapAdapter  {
+@@ -281,6 +282,8 @@ public class MindMapMapModel extends MapAdapter  {
  	 * @throws IOException
  	 */
  	private void getXml(Writer fileout, boolean saveInvisible) throws IOException {
@@ -194,7 +195,7 @@ index 414afbe..c77fdca 100644
  		fileout.write("<map ");
  		fileout.write("version=\""+FreeMind.XML_VERSION+"\"");
  		fileout.write(">\n");
-@@ -361,9 +364,30 @@ public class MindMapMapModel extends MapAdapter  {
+@@ -362,9 +365,30 @@ public class MindMapMapModel extends MapAdapter  {
  
      MindMapNodeModel loadTree(File file) throws XMLParseException, IOException {
          int versionInfoLength;
@@ -228,4 +229,4 @@ index 414afbe..c77fdca 100644
          Reader reader = null;
          for(int i = 0; i < EXPECTED_START_STRINGS.length; i++){
 -- 
-tg: (194c458..) t/output_encode_in_utf8 (depends on: master)
+tg: (918d0c3..) t/output_encode_in_utf8 (depends on: master)

@@ -47,8 +47,6 @@ eol-format-stamp:
 		freemind.bat \
 		freemind/controller/Controller.java \
 		freemind/main/FreeMind.java \
-		freemind/main/FreeMindSplash.java \
-		freemind/main/FreeMindSplashModern.java \
 		freemind/main/Tools.java \
 		freemind/main/XMLElement.java \
 		freemind/modes/mindmapmode/MindMapMapModel.java \
@@ -56,7 +54,6 @@ eol-format-stamp:
 		freemind/modes/NodeAdapter.java \
 		freemind.sh \
 		MANIFEST.MF \
-		Resources_zh_CN.properties \
 		; do \
 	    dos2unix $$i; sed -i -e 's/\r$$//g' -e 's/\r/\n/g' $$i ; \
 	done
@@ -65,7 +62,8 @@ eol-format-stamp:
 
 	touch eol-format-stamp
 
-build-hacked-stamp: build-stamp eol-format-stamp patch oemrevpatch
+#build-hacked-stamp: build-stamp eol-format-stamp patch oemrevpatch
+build-hacked-stamp: build-stamp patch oemrevpatch
 	dh_testdir
 
 	cp -Rf $(CURDIR)/debian/freemind/* $(CURDIR)/
@@ -175,7 +173,6 @@ debian/patches:
 	tg export --all --quilt debian/patches.new
 	cp -a debian/patches.new/* debian/patches && rm -rf debian/patches.new
 	cd debian && git status || true
-		--delete ../freemind-ossxp/.hg/patches/ debian/patches/
 
 .PHONY: build clean binary-indep binary-arch binary install configure debian/patches windows post
 
