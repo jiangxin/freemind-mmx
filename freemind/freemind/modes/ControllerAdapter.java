@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ControllerAdapter.java,v 1.41.14.37.2.57 2009-09-23 19:21:49 christianfoltin Exp $ */
+/* $Id: ControllerAdapter.java,v 1.41.14.37.2.58 2010-01-25 20:17:59 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -345,10 +345,10 @@ public abstract class ControllerAdapter implements ModeController {
 	    final MapAdapter model = newModel(newModeController);
 		model.load(file);
 		newMap(model);
-        EventQueue.invokeLater(new Runnable(){
-      	   public void run() {
+//        EventQueue.invokeLater(new Runnable(){
+//      	   public void run() {
       		 model.setSaved(true);
-      	   }});
+//      	   }});
         return newModeController;
     }
 
@@ -362,10 +362,10 @@ public abstract class ControllerAdapter implements ModeController {
     	model.load(file);
     	logger.info("Start loading " + file);
         newMap(model);
-    	EventQueue.invokeLater(new Runnable(){
-    		public void run() {
+//    	EventQueue.invokeLater(new Runnable(){
+//    		public void run() {
     			model.setSaved(true);
-    		}});
+//    		}});
         logger.info("Finished loading " + file);
     	return newModeController;
     }

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.77 2009-12-09 21:57:39 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.78 2010-01-25 20:17:59 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -2131,12 +2131,12 @@ freemind.main.Resources.getInstance().logException(					e1);
 
 	public void setNoteText(MindMapNode node, String text) {
         String oldNoteText = node.getNoteText();
-        logger.info("Old Note Text:'" + oldNoteText + ", new:'" + text + "'.");
-        logger.info(Tools.compareText(oldNoteText, text));
         if(Tools.safeEquals(text, oldNoteText)) {
             // they are equal.
             return;
         }
+        logger.info("Old Note Text:'" + oldNoteText + ", new:'" + text + "'.");
+        logger.info(Tools.compareText(oldNoteText, text));
         EditNoteToNodeAction doAction = createEditNoteToNodeAction(node,
                 text);
         EditNoteToNodeAction undoAction = createEditNoteToNodeAction(node,

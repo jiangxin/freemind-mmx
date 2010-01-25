@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapAdapter.java,v 1.24.14.10.2.28 2008-08-29 03:10:01 christianfoltin Exp $ */
+/* $Id: MapAdapter.java,v 1.24.14.10.2.29 2010-01-25 20:17:59 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -161,7 +161,7 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
      * @param saved true if the file was saved recently. False otherwise.
      */
     public void setSaved(boolean saved) {
-        boolean setTitle = false;
+		boolean setTitle = false;
         if(saved) {
             changesPerformedSinceLastSave = 0;
             setTitle = true;

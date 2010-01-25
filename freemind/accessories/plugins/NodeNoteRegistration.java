@@ -19,48 +19,42 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.18 2009-07-04 20:38:27 christianfoltin Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.19 2010-01-25 20:17:59 christianfoltin Exp $*/
 
 package accessories.plugins;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.KeyStroke;
-import javax.swing.UIManager;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.Style;
 import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.StyleSheet;
 
 import com.lightdev.app.shtm.SHTMLPanel;
 import com.lightdev.app.shtm.TextResources;
 
-import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.actions.generated.instance.EditNoteToNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
+import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
@@ -107,14 +101,30 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
 
 
 	private final class NoteDocumentListener implements DocumentListener {
-        public void changedUpdate(DocumentEvent arg0) {
+        private MindMapNode mNode;
+
+		public void changedUpdate(DocumentEvent arg0) {
             docEvent();
         }
 
         private void docEvent() {
-            // make map dirty in order to enable automatic save on note
-            // change.
-            getMindMapController().getMap().setSaved(false);
+        	// test if not already marked as dirty:
+        	if(getMindMapController().getMap().isSaved()) {
+        		// now test, if different:
+                String documentText = normalizeString(getDocumentText());
+                String noteText = normalizeString(mNode.getNoteText());
+                if(noteText != null && documentText != null) {
+	    			logger.finest("Old doc =\n'" + noteText 
+	    					+ "', Current document: \n'" + documentText 
+	    					+ "'. Comparison: '" + Tools.compareText(noteText, documentText)+"'.");
+	    			if(!documentText.equals(noteText)){
+	    				logger.finest("Making map dirty.");
+	    				// make map dirty in order to enable automatic save on note
+	    				// change.
+	    				getMindMapController().getMap().setSaved(false);    				
+	    			}
+                }
+        	}
         }
 
         public void insertUpdate(DocumentEvent arg0) {
@@ -124,6 +134,10 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
         public void removeUpdate(DocumentEvent arg0) {
             docEvent();
         }
+
+		public void setNode(MindMapNode pNode) {
+			mNode = pNode;
+		}
     }
 
     // private NodeTextListener listener;
@@ -137,8 +151,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
         }
 
         public void onDeselectHook(NodeView node) {
-            // logger.info("onLooseFocuse for node " + node.toString() + "
-            // and noteViewerComponent=" + noteViewerComponent);
+//            logger.info("onDeselectHook for node " + node + " and noteViewerComponent=" + noteViewerComponent);
             noteViewerComponent.getDocument().removeDocumentListener(
                     mNoteDocumentListener);
             // store its content:
@@ -148,8 +161,9 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
         }
 
         public void onSelectHook(NodeView nodeView) {
+//        	logger.info("onSelectHook for node " + node + " and noteViewerComponent=" + noteViewerComponent);
             this.node = nodeView.getModel();
-            HTMLDocument document = noteViewerComponent.getDocument();
+            final HTMLDocument document = noteViewerComponent.getDocument();
             // remove listener to avoid unnecessary dirty events.
             document.removeDocumentListener(
                     mNoteDocumentListener);
@@ -172,8 +186,8 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
                 noteViewerComponent.setCurrentDocumentContent("");
                 mLastContentEmpty = true;
             }
-            document.addDocumentListener(
-                    mNoteDocumentListener);
+            mNoteDocumentListener.setNode(node);
+			document.addDocumentListener(mNoteDocumentListener);
         }
 
         public void onUpdateNodeHook(MindMapNode node) {
@@ -193,12 +207,12 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
             int caretPosition = editorPane.getCaretPosition();
 			int selectionStart = editorPane.getSelectionStart();
             int selectionEnd = editorPane.getSelectionEnd();
-            String documentText = noteViewerComponent.getDocumentText();
-            // (?s) makes . matching newline as well.
-            documentText = documentText.replaceFirst("(?s)<style.*?</style>", "");
+            String documentText = getDocumentText();
             editorContentEmpty = documentText.equals(NodeNote.EMPTY_EDITOR_STRING)
-                    || documentText.equals(NodeNote.EMPTY_EDITOR_STRING_ALTERNATIVE);
-            logger.fine("Current document: '" + documentText.replaceAll("\n", "\\\\n") + "', empty="+editorContentEmpty);
+                    || documentText.equals(NodeNote.EMPTY_EDITOR_STRING_ALTERNATIVE)
+                    || documentText.equals(NodeNote.EMPTY_EDITOR_STRING_ALTERNATIVE2);
+            String noteText = node.getNoteText();
+//			logger.info("Old doc =\n'" + ((noteText==null)?noteText:noteText.replaceAll("\n", "\\\\n")) + "', Current document: \n'" + documentText.replaceAll("\n", "\\\\n") + "', empty="+editorContentEmpty);
             controller.deregisterNodeSelectionListener(this);
             if (noteViewerComponent.needsSaving()) {
                 if (editorContentEmpty) {
@@ -442,5 +456,18 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
 
 	public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
 		return getSplitPane() != null;
+	}
+
+	private String getDocumentText() {
+		String documentText = noteViewerComponent.getDocumentText();
+		// (?s) makes . matching newline as well.
+		documentText = documentText.replaceFirst("(?s)<style.*?</style>", "");
+		return documentText;
+	}
+	
+	private String normalizeString(String input) {
+		if(input == null)
+			return null;
+		return input.replaceAll("\\s+", " ").replaceAll("  +", " ").trim();
 	}
 }

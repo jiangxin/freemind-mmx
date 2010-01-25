@@ -911,7 +911,7 @@
 <node CREATED="1124560950732" ID="ID_1271052771" MODIFIED="1124560950732" TEXT="To move to the central node, press Escape."/>
 <node CREATED="1124560950732" ID="_Freemind_Link_97763226" MODIFIED="1124560950732" TEXT="To position node freely, drag it by its invisible handle placed at the side of the node in the direction to the root, and move it."/>
 </node>
-<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_4727471" MODIFIED="1225993052381" POSITION="right" TEXT="Folding and unfolding">
+<node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_4727471" MODIFIED="1263972564089" POSITION="right" TEXT="Folding and unfolding">
 <node CREATED="1124560950732" ID="ID_1611086900" MODIFIED="1124560950732" TEXT="To fold a node, press space, or in node context menu use Toggle Folded."/>
 <node CREATED="1124560950732" ID="ID_1597782796" MODIFIED="1124560950732" TEXT="To unfold a node, press space, or in node context menu use Toggle Folded, or press arrow key in the direction of unfolding."/>
 <node CREATED="1124560950732" ID="ID_1910743768" MODIFIED="1124560950732" TEXT="To fold or unfold nodes in levels, hold Alt while using mousewheel, or press Alt + PageUp or Alt + PageDown. With large maps, use this function carefully; it may lead to memory problems."/>

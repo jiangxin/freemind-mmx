@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeNote.java,v 1.1.4.7.2.44 2008-04-10 20:49:20 dpolivaev Exp $ */
+/* $Id: NodeNote.java,v 1.1.4.7.2.45 2010-01-25 20:17:59 christianfoltin Exp $ */
 package accessories.plugins;
 
 import java.awt.EventQueue;
@@ -40,6 +40,7 @@ public class NodeNote extends MindMapNodeHookAdapter {
     public final static String EMPTY_EDITOR_STRING = "<html>\n  <head>\n\n  </head>\n  <body>\n    <p>\n      \n    </p>\n  </body>\n</html>\n";
 
     public final static String EMPTY_EDITOR_STRING_ALTERNATIVE = "<html>\n  <head>\n    \n  </head>\n  <body>\n    <p>\n      \n    </p>\n  </body>\n</html>\n";
+    public final static String EMPTY_EDITOR_STRING_ALTERNATIVE2 = "<html>\n  <head>\n    \n    \n  </head>\n  <body>\n    <p>\n      \n    </p>\n  </body>\n</html>\n";
 
     public void startupMapHook() {
         super.startupMapHook();
