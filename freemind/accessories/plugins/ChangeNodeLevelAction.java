@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ChangeNodeLevelAction.java,v 1.1.2.2.2.2 2007-04-21 15:11:20 dpolivaev Exp $ */
+/* $Id: ChangeNodeLevelAction.java,v 1.1.2.2.2.3 2010-02-22 21:18:53 christianfoltin Exp $ */
 
 /*
  * Created on 19.02.2006
@@ -96,11 +96,16 @@ public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
 
         // collect node ids:
         String selectedNodeId = selectedNode.getObjectId(getController());
+        // WORKAROUND: Make target of local hyperlinks for the case, that ids are not stored persistently.
+        getMap().getLinkRegistry().registerLocalHyperlinkId(selectedNodeId);
         Vector selectedNodesId = new Vector();
         for (Iterator iter = selectedNodes.iterator(); iter.hasNext();)
         {
             MindMapNode node = (MindMapNode) iter.next();
-            selectedNodesId.add(node.getObjectId(getController()));
+            String nodeId = node.getObjectId(getController());
+            // WORKAROUND: Make target of local hyperlinks for the case, that ids are not stored persistently.
+            getMap().getLinkRegistry().registerLocalHyperlinkId(nodeId);
+			selectedNodesId.add(nodeId);
         }
 
 		if (upwards) {

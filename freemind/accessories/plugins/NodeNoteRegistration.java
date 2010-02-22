@@ -19,7 +19,7 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.19 2010-01-25 20:17:59 christianfoltin Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.20 2010-02-22 21:18:53 christianfoltin Exp $*/
 
 package accessories.plugins;
 
@@ -113,16 +113,14 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
         		// now test, if different:
                 String documentText = normalizeString(getDocumentText());
                 String noteText = normalizeString(mNode.getNoteText());
-                if(noteText != null && documentText != null) {
-	    			logger.finest("Old doc =\n'" + noteText 
-	    					+ "', Current document: \n'" + documentText 
-	    					+ "'. Comparison: '" + Tools.compareText(noteText, documentText)+"'.");
-	    			if(!documentText.equals(noteText)){
-	    				logger.finest("Making map dirty.");
-	    				// make map dirty in order to enable automatic save on note
-	    				// change.
-	    				getMindMapController().getMap().setSaved(false);    				
-	    			}
+                logger.finest("Old doc =\n'" + noteText 
+                		+ "', Current document: \n'" + documentText 
+                		+ "'. Comparison: '" + Tools.compareText(noteText, documentText)+"'.");
+                if(!Tools.safeEquals(noteText, documentText)) {
+    				logger.finest("Making map dirty.");
+    				// make map dirty in order to enable automatic save on note
+    				// change.
+    				getMindMapController().getMap().setSaved(false);    				
                 }
         	}
         }
@@ -292,7 +290,6 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
     };
     public void register() {
         logger.fine("Registration of note handler.");
-        FreeMindMain frame = controller.getFrame();
         controller.getActionFactory().registerActor(this,
                 getDoActionClass());
         // moved to registration:

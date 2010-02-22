@@ -16,23 +16,25 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.134 2009-11-28 21:43:10 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.135 2010-02-22 21:18:53 christianfoltin Exp $*/
 
 package freemind.main;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -194,7 +196,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public FreeMind(Properties pDefaultPreferences, Properties pUserPreferences, File pAutoPropertiesFile) {
 		super("FreeMind");
-		// Focus fix
+		// Focus searcher
+//		FocusSearch search = new FocusSearch();
+//		search.start();
 		System.setSecurityManager(new FreeMindSecurityManager());
 		defProps = pDefaultPreferences;
 		props = pUserPreferences;
@@ -1128,4 +1132,50 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			getRootPane().revalidate();
 		}
 	}
+	
+	class FocusSearch extends Thread {
+		Component lastFocussedC = null;
+		FocusListener listener = new FocusListener() {
+
+			public void focusGained(FocusEvent pE) {
+				Tools.printStackTrace();
+			}
+
+			public void focusLost(FocusEvent pE) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		};
+		
+		public void run() {
+			super.run();
+			while (true) {
+				searchFocus(FreeMind.this);
+				try {
+					sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					freemind.main.Resources.getInstance().logException(e);
+				}
+			}
+		}
+
+		private void searchFocus(Component pComponent) {
+//			pComponent.removeFocusListener(listener);
+//			pComponent.addFocusListener(listener);
+			if(pComponent.hasFocus() && pComponent != lastFocussedC) {
+				logger.info("Fokus has " + pComponent);
+				lastFocussedC = pComponent;
+			}
+			if (pComponent instanceof Container) {
+				Container container = (Container) pComponent;
+				for (int i = 0; i < container.getComponents().length; i++) {
+					Component child = container.getComponents()[i];
+					searchFocus(child);
+				}
+			}
+		}
+	}
+	
 }

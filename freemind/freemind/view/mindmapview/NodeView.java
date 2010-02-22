@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.69 2009-07-04 20:38:27 christianfoltin Exp $ */
+/* $Id: NodeView.java,v 1.27.14.22.2.70 2010-02-22 21:18:53 christianfoltin Exp $ */
 
 package freemind.view.mindmapview;
 
@@ -72,6 +72,10 @@ import freemind.view.mindmapview.attributeview.AttributeView;
  * TreeCellRenderer).
  */
 public class NodeView extends JComponent implements TreeModelListener{
+	public void setFocusCycleRoot(boolean pFocusCycleRoot) {
+		// FIXME: On purpose removed. test this!
+	//	super.setFocusCycleRoot(pFocusCycleRoot);
+	}
     static private int FOLDING_SYMBOL_WIDTH = -1;
 
     protected MindMapNode model;
@@ -271,8 +275,11 @@ public class NodeView extends JComponent implements TreeModelListener{
 
 
    public void requestFocus(){
-      /*boolean requestResult = */mainView. requestFocusInWindow();
-//      logger.info("Request Focus for ("+requestResult+") for " + mainView);
+      boolean requestResult = mainView. requestFocusInWindow();
+      if(!requestResult) {
+    	  logger.finest("Using 'requestFocus' to request Focus for " + mainView);
+    	  mainView.requestFocus();
+      }
    }
    public boolean focused(){
      return mainView.hasFocus();  

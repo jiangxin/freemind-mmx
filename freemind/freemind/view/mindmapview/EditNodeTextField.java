@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/*$Id: EditNodeTextField.java,v 1.1.4.3.10.24 2008-04-10 20:49:21 dpolivaev Exp $*/
+/*$Id: EditNodeTextField.java,v 1.1.4.3.10.25 2010-02-22 21:18:53 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -154,13 +154,13 @@ public class EditNodeTextField extends EditNodeBase {
                 if(! textfield.isVisible() || eventSource.getValue() == CANCEL)
                     return;                
                 if (e == null) { // can be when called explicitly
+                	hideMe();
                     getEditControl().ok(textfield.getText());
-                    hideMe();
                     eventSource.setValue(CANCEL); // disallow real focus lost
                 } else {
                     // always confirm the text if not yet
+                	hideMe();
                     getEditControl().ok(textfield.getText());
-                    hideMe();
                 }
             }
 
@@ -180,15 +180,13 @@ public class EditNodeTextField extends EditNodeBase {
                         e.consume();
 
                         eventSource.setValue(CANCEL);
+                        hideMe();
                         // do not process loose of focus
                         if (commit) {
                             getEditControl().ok(textfield.getText());
                         } else {
                             getEditControl().cancel();
                         }
-                        hideMe();
-                        // hack: to keep the focus
-                        nodeView.requestFocus();
                         break;
 
                     case KeyEvent.VK_SPACE :

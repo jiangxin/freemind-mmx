@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.42 2009-06-24 20:40:19 christianfoltin Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.43 2010-02-22 21:18:53 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -25,27 +25,16 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.KeyboardFocusManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.net.MalformedURLException;
+import java.net.URL;
 
-import javax.swing.ActionMap;
-import javax.swing.InputMap;
 import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.html.HTMLDocument;
 
@@ -55,7 +44,6 @@ import freemind.main.FreeMindMain;
 import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.modes.ModeController;
-import freemind.view.mindmapview.EditNodeBase.EditDialog.CancelAction;
 
 /**
  * @author Daniel Polansky
@@ -107,6 +95,15 @@ public class EditNodeWYSIWYG extends EditNodeBase {
             buttonPane.add(splitButton);
             buttonPane.setMaximumSize(new Dimension(1000, 20));
             getContentPane().add(buttonPane, BorderLayout.SOUTH);
+        	htmlEditorPanel.setOpenHyperlinkHandler(new ActionListener(){
+
+    			public void actionPerformed(ActionEvent pE) {
+    				try {
+    					getBase().getController().getFrame().openDocument(new URL(pE.getActionCommand()));
+    				} catch (Exception e) {
+    					freemind.main.Resources.getInstance().logException(e);
+    				}
+    			}});
             
         }
         private SHTMLPanel createEditorPanel() throws Exception {

@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.50 2009-06-29 17:22:30 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.51 2010-02-22 21:18:53 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -423,6 +423,11 @@ public class Tools {
 
 
     
+    /**
+     * @param string1 input (or null)
+     * @param string2 input (or null)
+     * @return true, if equal (that means: same text or both null)
+     */
     public static boolean safeEquals(String string1, String string2) {
         return (string1 != null && string2 != null && string1.equals(string2))
                 || (string1 == null && string2 == null);

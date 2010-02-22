@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: Controller.java,v 1.40.14.21.2.63 2009-07-14 19:42:55 christianfoltin Exp $*/
+/*$Id: Controller.java,v 1.40.14.21.2.64 2010-02-22 21:18:53 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -541,10 +541,13 @@ public class Controller  implements MapModuleChangeObserver {
             lastOpened.mapOpened(newMapModule);
             ((MainToolBar) getToolbar()).setZoomComboBox(newMapModule.getView()
                     .getZoom());
-            obtainFocusForSelected();
+            // old
+//            obtainFocusForSelected();
             newModeController = newMapModule.getModeController();
             newModeController.startupController();
             newModeController.setVisible(true);
+            // old
+//            obtainFocusForSelected();
         } else {
             newModeController = newMode.getDefaultModeController();
             getFrame().setView(null);
@@ -574,6 +577,8 @@ public class Controller  implements MapModuleChangeObserver {
         menuBar.updateMenus(newModeController);
         menuBar.revalidate();
         menuBar.repaint();
+        // new
+        obtainFocusForSelected();
     }
 
 	public void numberOfOpenMapInformation(int number) {
@@ -746,12 +751,13 @@ public class Controller  implements MapModuleChangeObserver {
     public void obtainFocusForSelected() {
 //    	logger.finest("obtainFocusForSelected");
     	if (getView() != null) { // is null if the last map was closed.
-//    		logger.info("Requesting Focus for " + getView().getSelected());
+    		logger.info("Requesting Focus for " + getView().getSelected());
     		getView().getSelected().requestFocus();
     	} else {
     		// fc, 6.1.2004: bug fix, that open and quit are not working if no map is present.
     		// to avoid this, the menu bar gets the focus, and everything seems to be all right!!
     		// but I cannot avoid thinking of this change to be a bad hack ....
+    		logger.info("No view present. No focus!");
     		getFrame().getFreeMindMenuBar().requestFocus();
     	}
     }
