@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: FreeMind.java,v 1.32.14.28.2.135 2010-02-22 21:18:53 christianfoltin Exp $*/
+/*$Id: FreeMind.java,v 1.32.14.28.2.136 2010-02-25 21:41:48 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -34,6 +34,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowFocusListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -75,11 +76,13 @@ import freemind.controller.MapModuleManager;
 import freemind.controller.MenuBar;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.modes.MindMap;
+import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.preferences.FreemindPropertyListener;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
+import freemind.view.mindmapview.NodeView;
 
 public class FreeMind extends JFrame implements FreeMindMain {
 
@@ -734,7 +737,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		frame.init(feedBack);
 
 		feedBack.increase("FreeMind.progress.startCreateController");
-		ModeController ctrl = frame.createModeController(args);
+		final ModeController ctrl = frame.createModeController(args);
 		
 		feedBack.increase("FreeMind.progress.loadMaps");
 		// This could be improved.
@@ -742,6 +745,24 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		
 		Tools.waitForEventQueue();
 		feedBack.increase("FreeMind.progress.endStartup");
+		// focus fix after startup.
+		frame.addWindowFocusListener(new WindowFocusListener() {
+
+			public void windowLostFocus(WindowEvent e) {
+			}
+
+			public void windowGainedFocus(WindowEvent e) {
+				NodeView selectedView = ctrl.getSelectedView();
+				if (selectedView!=null) {
+					selectedView.requestFocus();
+					MindMapNode selected = ctrl.getSelected();
+					if (selected!=null) {
+						ctrl.centerNode(selected);
+					}
+				}
+				frame.removeWindowFocusListener(this);
+			}
+		});
 		frame.setVisible(true);
 		if (splash != null) {
 			splash.setVisible(false);
