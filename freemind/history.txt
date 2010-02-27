@@ -1,5 +1,5 @@
 ===============================
-Changes made in FreeMind 0.9.0
+Changes made in FreeMind 0.9.0 RC 7
 ===============================
 * Fixed: Some little bugs in Import Folder Action (null pointer and waiting cursor).
 * Fixed: .mm files association does not work on Windows * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=2847660&group_id=7118
@@ -7,7 +7,7 @@ Changes made in FreeMind 0.9.0
 * Fixed: Maps becomes dirty on map change (if notes window is open)
 * Updated HTML Editor Simply Html
 * Fixed: Selection wrong on move nodes left/right
-* Partially fixed: Initial focus when notes window open 
+* Fixed: Initial focus when notes window open 
 * Fixed: Focus when leave node editing with escape
 * Added: Open hyperlinks in nodes editor
 * New: Search&Replace replaces now all occurences. Thanks to OlegKandaurov (f0y) for the patch.
