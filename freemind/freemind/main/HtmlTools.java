@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlTools.java,v 1.1.2.21 2009-06-29 17:22:30 christianfoltin Exp $*/
+/*$Id: HtmlTools.java,v 1.1.2.22 2010-02-27 09:27:50 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -196,66 +196,45 @@ public class HtmlTools {
 //			IndexPair pair = (IndexPair) iter.next();
 //			System.out.println(text.substring(pair.originalStart, pair.originalEnd) + ", " + pair);
 //		}
-        
-        Matcher matcher = pattern.matcher(stringWithoutTags);
-        StringBuffer sbResult = new StringBuffer();
-        if(matcher.find()) {
-            /* now, take all from 0 to m.start() from original.
-             * append the replaced text, append all removed tags from the original
-             * that stays in between and append the rest.
-             */
-            int mStart = matcher.start();
-            int mEnd = matcher.end();
-            int state = 0;
-            for (Iterator iter = splittedStringList.iterator(); iter.hasNext();) {
+
+		/** For each pair which is not a tag we find concurrences and replace
+         * them, if pair is a tag then we just append
+         */
+		StringBuffer sbResult = new StringBuffer();
+		for (Iterator iter = splittedStringList.iterator(); iter.hasNext();) {
 				IndexPair pair = (IndexPair) iter.next();
-				switch(state){
-				case 0:
-					// before replacement start:
-					if(!pair.mIsTag && pair.replacedStart <= mStart && pair.replacedEnd > mStart) {
-						state = 1;
-						// only up to start:
-						sbResult.append(text.substring(pair.originalStart, pair.originalStart + mStart - pair.replacedStart));
-						// the replacement:
+
+				if (pair.mIsTag)
+					sbResult.append(text, pair.originalStart, pair.originalEnd);
+				else {
+
+					Matcher matcher = pattern.matcher(text.substring(pair.originalStart, pair.originalEnd));
+					int mStart = 0;
+					int mEnd = 0;
+					int mEndOld = 0;
+					int mStartOld = 0;
+
+					while (matcher.find()) {
+						mStart = matcher.start();
+						mEnd = matcher.end();
+
+						sbResult.append(text, pair.originalStart + mEndOld, pair.originalStart + mStart);
+                        /** If it's a first iteration then we append text between start and first
+                         * concurrence, and when it's not first iteration (mEndOld != 0) we append
+                         * text between two concurrences
+                         */
+
+						// sbResult.append(text, pair.originalStart + mStart, pair.originalStart + mEnd);
+						// original text
 						sbResult.append(replacement);
-						// no break as the next case eventually applies inmediately.
-					} else {
-						sbResult.append(text.substring(pair.originalStart, pair.originalEnd));
-						break;
+						mEndOld = mEnd;
+						mStartOld = mStart;
 					}
-				case 1:
-					// during replacement:
-					if(!pair.mIsTag && pair.replacedStart <= mEnd && pair.replacedEnd > mEnd) {
-						state = 2;
-						// only after the end:
-						sbResult.append(text.substring(pair.originalStart + mEnd - pair.replacedStart, pair.originalEnd));
-					} else {
-						// only tags:
-						if(pair.mIsTag)
-							sbResult.append(text.substring(pair.originalStart, pair.originalEnd));
-					}
-					break;
-				case 2:
-					// the rest:
-					sbResult.append(text.substring(pair.originalStart, pair.originalEnd));
-					break;
+					sbResult.append(text, pair.originalStart + mEndOld, pair.originalEnd);
+					// append tail
 				}
-			}
-//            //take all from 0 to m.start() from original.
-//            append(sbResult, input, splittedStringList, 0, mStart);
-//            //append the replaced text
-//            sbResult.append(sbReplacement.toString());
-//            //append all removed tags from the original that stays in between
-//            StringBuffer sbTemp = new StringBuffer();
-//            append(sbTemp, input, splittedStringList, mStart, mEnd);
-//            sbResult.append(sbTemp.toString().replaceAll(".*?(<[^>]+>)", "$1"));
-//            //append the rest.
-//            append(sbResult, input, splittedStringList, mEnd, stringWithoutTags.length());
-        } else {
-            // no change:
-            sbResult.append(text);
-        }
-//        System.out.println("Result:'"+sbResult.toString()+"'");
+		}
+//      System.out.println("Result:'"+sbResult.toString()+"'");
         return sbResult.toString();
     }
     

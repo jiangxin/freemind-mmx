@@ -19,7 +19,7 @@
  *
  * Created on 16.10.2004
  */
-/*$Id: ExportHook.java,v 1.1.4.7.2.11 2009-03-01 20:16:28 christianfoltin Exp $*/
+/*$Id: ExportHook.java,v 1.1.4.7.2.12 2010-02-27 09:27:50 christianfoltin Exp $*/
 
 package freemind.extensions;
 
@@ -149,6 +149,7 @@ public class ExportHook extends ModeControllerHookAdapter {
 		 g.clipRect(innerBounds.x, innerBounds.y, innerBounds.width, innerBounds.height);
 		 view.print(g);
 		 myImage = myImage.getSubimage(innerBounds.x, innerBounds.y, innerBounds.width, innerBounds.height);
+		 view.endPrinting();
 		 return myImage;
 //		NodeAdapter root = (NodeAdapter) getController().getMap().getRoot();
 //		Rectangle rect = view.getInnerBounds(root.getViewer());

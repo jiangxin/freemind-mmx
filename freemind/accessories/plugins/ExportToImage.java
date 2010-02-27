@@ -87,7 +87,7 @@ public class ExportToImage extends ExportHook {
 //			encoder.encode(image);
 			out.close();
 		} catch (IOException e1) {
-freemind.main.Resources.getInstance().logException(			e1);
+			freemind.main.Resources.getInstance().logException(e1);
 		}
 	    getController().getFrame().setWaitingCursor(false);
 		return true;
