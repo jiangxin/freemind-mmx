@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.51 2010-02-22 21:18:53 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.52 2010-04-06 19:25:46 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -100,7 +100,10 @@ import freemind.view.mindmapview.NodeView;
  *
  */
 public class Tools {
-
+	private static java.util.logging.Logger logger = null;
+	static {
+		logger = freemind.main.Resources.getInstance().getLogger("Tools");
+	}
     //public static final Set executableExtensions = new HashSet ({ "exe",
     // "com", "vbs" });
 
@@ -961,9 +964,12 @@ public class Tools {
 	        final Result result = new StreamResult(writer);
 	        
 	        String fileContents = getFile(file);
+	        if (fileContents.length() > 10) {
+	        	logger.info("File start before UTF8 replacement: '" + fileContents.substring(0, 9) + "'");
+	        }
 	        fileContents = replaceUtf8AndIllegalXmlChars(fileContents);
 	        if (fileContents.length() > 10) {
-	        	logger.info("File start: " + fileContents.substring(0, 9));
+	        	logger.info("File start after UTF8 replacement: '" + fileContents.substring(0, 9) + "'");
 	        }
 	        final StreamSource sr = new StreamSource(new StringReader(fileContents));
 	        // Dimitry: to avoid a memory leak and properly release resources after the XSLT transformation
@@ -1012,14 +1018,18 @@ public class Tools {
 
 	public static String replaceUtf8AndIllegalXmlChars(String fileContents) {
 		/* Map does not load with RC4 * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=2797009&group_id=7118*/
-		byte[] bytes = fileContents.getBytes();
-		if (bytes.length >= 3 && bytes[0] == (byte) 0xEF
-				&& bytes[1] == (byte) 0xBB && bytes[2] == (byte) 0xBF) {
-			try {
-				fileContents = new String(bytes, 3 , bytes.length-3, "UTF-8");
-			} catch (UnsupportedEncodingException e) {
-				freemind.main.Resources.getInstance().logException(e);
+		try {
+			byte[] bytes = fileContents.getBytes();
+			if (bytes.length >= 3 && bytes[0] == (byte) 0xEF
+					&& bytes[1] == (byte) 0xBB && bytes[2] == (byte) 0xBF) {
+					logger.info("Replacing the file by a UTF8 equivalent.");
+					fileContents = new String(bytes, 3 , bytes.length-3, "UTF-8");
+					// this would be a bad hacK:
+//			} else if(fileContents.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")) {
+//				fileContents = new String(bytes, "UTF-8");
 			}
+		} catch (UnsupportedEncodingException e) {
+			freemind.main.Resources.getInstance().logException(e);
 		}
 		return HtmlTools.replaceIllegalXmlCharacters(fileContents);
 	}

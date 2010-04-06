@@ -10,7 +10,7 @@
 	<target name="build">
 		<echo message="Built in Plugins build on path ${basedir}"/>
 		<mkdir dir="${build}" />
-		<javac	srcdir="${src}"
+		<javac includeantruntime="false" 	srcdir="${src}"
 			destdir="${build}"
 			debug="${debug}"
 		   source="${java_source_version}"

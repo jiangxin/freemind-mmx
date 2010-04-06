@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.43 2010-02-22 21:18:53 christianfoltin Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.44 2010-04-06 19:25:46 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -189,6 +189,8 @@ public class EditNodeWYSIWYG extends EditNodeBase {
             final Color nodeTextBackground = node.getTextBackground();
             rule += "font-family: "+font.getFamily()+";";
             rule += "font-size: "+font.getSize()+"pt;";
+// Daniel said:, but no effect:
+//            rule += "font-size: "+node.getFont().getSize()+"pt;";
             if (node.getModel().isItalic()) {
                 rule+="font-style: italic; "; }
             if (node.getModel().isBold()) {

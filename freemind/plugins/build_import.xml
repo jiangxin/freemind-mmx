@@ -1,13 +1,15 @@
-<project name="imported" basedir="." default="dist">
+<project name="imported" default="dist" basedir="">
 	<target name="build">
+		<echo level="verbose"
+			message="Plugin ${plugin.dir} (local: ${local.plugin.dir}) build on path ${src} (additional libs for classpath: ${additional.lib})"/>
 		<echo
-			message="Plugin ${plugin.dir} build on path ${src}"/>
+			message="Plugin ${plugin.dir}."/>
 		<mkdir dir="${build}"/>
-		<javac srcdir="${src}" destdir="${build}"
+		<javac includeantruntime="false"  srcdir="${src}" destdir="${build}"
 			debug="${debug}" source="${java_source_version}"
 			target="${java_target_version}">
 			<include name="${plugin.dir}/**" />
-			<classpath>
+			<classpath >
 				<path path="${classpath}"/>
 				<path path="${additional.lib}"/>
 			</classpath>
@@ -16,9 +18,13 @@
 	</target>
 
 	<target name="dist">
+		<echo level="verbose"
+			message="Plugin ${plugin.dir}, dist ${dist}, build on path ${src} to ${build}"/>
+		<echo
+			message="Plugin ${plugin.dir}"/>
 		<mkdir dir="${dist}/${plugin.dir}" />
 		<copy todir="${build}">
-			<fileset dir="${src}"
+			<fileset dir="${src}" 
 				includes = "${plugin.dir}/**"
 				excludes = "**/*.java,${additional.lib.pattern}">
 			</fileset>

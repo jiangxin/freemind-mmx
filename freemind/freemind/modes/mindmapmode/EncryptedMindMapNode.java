@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.15 2008-12-09 21:09:43 christianfoltin Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.16 2010-04-06 19:25:46 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -99,7 +99,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 	            String childXml = decryptXml(encryptedContent, password);
 	            String[] childs = childXml.split(ModeController.NODESEPARATOR);
 	            // and now? paste it:
-	            for (int i = childs.length-1; i >=0; i--) {
+	            for (int i = 0; i < childs.length; i++) {
 	                String string = childs[i];
 	                // if the encrypted node is empty, we skip the insert.
 	                if(string.length() == 0)
