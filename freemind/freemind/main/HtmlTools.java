@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlTools.java,v 1.1.2.22 2010-02-27 09:27:50 christianfoltin Exp $*/
+/*$Id: HtmlTools.java,v 1.1.2.23 2010-04-07 20:09:36 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -205,7 +205,7 @@ public class HtmlTools {
 				IndexPair pair = (IndexPair) iter.next();
 
 				if (pair.mIsTag)
-					sbResult.append(text, pair.originalStart, pair.originalEnd);
+					append(sbResult, text, pair.originalStart, pair.originalEnd);
 				else {
 
 					Matcher matcher = pattern.matcher(text.substring(pair.originalStart, pair.originalEnd));
@@ -218,7 +218,7 @@ public class HtmlTools {
 						mStart = matcher.start();
 						mEnd = matcher.end();
 
-						sbResult.append(text, pair.originalStart + mEndOld, pair.originalStart + mStart);
+						append(sbResult, text, pair.originalStart + mEndOld, pair.originalStart + mStart);
                         /** If it's a first iteration then we append text between start and first
                          * concurrence, and when it's not first iteration (mEndOld != 0) we append
                          * text between two concurrences
@@ -230,7 +230,7 @@ public class HtmlTools {
 						mEndOld = mEnd;
 						mStartOld = mStart;
 					}
-					sbResult.append(text, pair.originalStart + mEndOld, pair.originalEnd);
+					append(sbResult, text, pair.originalStart + mEndOld, pair.originalEnd);
 					// append tail
 				}
 		}
@@ -238,24 +238,15 @@ public class HtmlTools {
         return sbResult.toString();
     }
     
-    
-    private void append(StringBuffer pResult, String pInput,
-			ArrayList pListOfIndices, int pReducedStart, int pReducedEnd) {
-		if (pReducedStart == pReducedEnd) {
-			int minj = getMinimalOriginalPosition(pReducedStart, pListOfIndices);
-			int maxj = getMaximalOriginalPosition(pReducedStart, pListOfIndices);
-			pResult.append(pInput.substring(minj, maxj));
-			return;
-		}
-		for (int i = pReducedStart; i < pReducedEnd; ++i) {
-			int minj = getMinimalOriginalPosition(i, pListOfIndices);
-			int maxj = getMaximalOriginalPosition(i, pListOfIndices);
-			pResult.append(pInput.substring(minj, maxj));
-		}
-		// pResult.append(getChunk(pInput, pReducedEnd, pListOfIndices));
+    /**
+     * Need to program this, as the stringbuffer method 
+     * appears in java 1.5 first.
+     *  */
+    private void append(StringBuffer pSbResult, String pText, int pStart,
+			int pEnd) {
+    	pSbResult.append(pText.substring(pStart, pEnd));		
 	}
-
-
+    
     public int getMinimalOriginalPosition(int pI, ArrayList pListOfIndices)
     {
         for (Iterator iter = pListOfIndices.iterator(); iter.hasNext();)
