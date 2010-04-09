@@ -19,7 +19,7 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.21 2010-02-25 21:41:48 christianfoltin Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.22 2010-04-09 04:45:48 christianfoltin Exp $*/
 
 package accessories.plugins;
 
@@ -338,6 +338,14 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
     			.getProperty(FreeMind.RESOURCES_USE_DEFAULT_FONT_FOR_NOTES_TOO))) {
 	    	// set default font for notes:
 	    	Font defaultFont = controller.getController().getDefaultFont();
+	    	/* FIXME: This is a proposal of Dan, but it doesn't work
+	    	 * as expected. 
+	    	 * 
+	    	 * http://sourceforge.net/tracker/?func=detail&aid=2800933&group_id=7118&atid=107118
+	    	 */
+			defaultFont = Tools.updateFontSize(defaultFont, this
+					.getMindMapController().getView().getZoom(), defaultFont
+					.getSize());
 	        String rule = "BODY {";
 	        rule += "font-family: "+defaultFont.getFamily()+";";
 	        rule += "font-size: "+defaultFont.getSize()+"pt;";

@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.44 2010-04-06 19:25:46 christianfoltin Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.45 2010-04-09 04:45:48 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -185,7 +185,12 @@ public class EditNodeWYSIWYG extends EditNodeBase {
             final SHTMLPanel htmlEditorPanel = ((HTMLDialog)htmlEditorWindow).getHtmlEditorPanel();
             String rule = "BODY {";
             Font font = node.getTextFont();
-//            font = Tools.updateFontSize(font, this.getView().getZoom(), font.getSize()); 
+	    	/* FIXME: This is a proposal of Dan, but it doesn't work
+	    	 * as expected. 
+	    	 * 
+	    	 * http://sourceforge.net/tracker/?func=detail&aid=2800933&group_id=7118&atid=107118
+	    	 */
+            font = Tools.updateFontSize(font, this.getView().getZoom(), font.getSize()); 
             final Color nodeTextBackground = node.getTextBackground();
             rule += "font-family: "+font.getFamily()+";";
             rule += "font-size: "+font.getSize()+"pt;";
