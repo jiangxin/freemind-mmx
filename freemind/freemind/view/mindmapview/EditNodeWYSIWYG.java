@@ -17,7 +17,7 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  *
  */
-/*$Id: EditNodeWYSIWYG.java,v 1.1.4.45 2010-04-09 04:45:48 christianfoltin Exp $*/
+/*$Id: EditNodeWYSIWYG.java,v 1.1.4.46 2010-05-25 20:09:32 christianfoltin Exp $*/
 
 package freemind.view.mindmapview;
 
@@ -42,6 +42,7 @@ import com.lightdev.app.shtm.SHTMLPanel;
 
 import freemind.main.FreeMindMain;
 import freemind.main.HtmlTools;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.ModeController;
 
@@ -185,12 +186,15 @@ public class EditNodeWYSIWYG extends EditNodeBase {
             final SHTMLPanel htmlEditorPanel = ((HTMLDialog)htmlEditorWindow).getHtmlEditorPanel();
             String rule = "BODY {";
             Font font = node.getTextFont();
-	    	/* FIXME: This is a proposal of Dan, but it doesn't work
-	    	 * as expected. 
-	    	 * 
-	    	 * http://sourceforge.net/tracker/?func=detail&aid=2800933&group_id=7118&atid=107118
-	    	 */
-            font = Tools.updateFontSize(font, this.getView().getZoom(), font.getSize()); 
+	    	if (Resources.getInstance().getBoolProperty("experimental_font_sizing_for_long_node_editors")) {	
+		    	/* This is a proposal of Dan, but it doesn't work
+		    	 * as expected. 
+		    	 * 
+		    	 * http://sourceforge.net/tracker/?func=detail&aid=2800933&group_id=7118&atid=107118
+		    	 */
+				font = Tools.updateFontSize(font, this.getView().getZoom(),
+						font.getSize());
+	    	}
             final Color nodeTextBackground = node.getTextBackground();
             rule += "font-family: "+font.getFamily()+";";
             rule += "font-size: "+font.getSize()+"pt;";
