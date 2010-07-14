@@ -18,8 +18,8 @@
 					<array>
 						<string>MM</string>
 					</array>
-					<!--	<key>CFBundleTypeIconFile</key>
-								<string>129</string> -->
+					<key>CFBundleTypeIconFile</key>
+					<string>FreeMindWindowIconModern-MM.icns</string>
 					<key>CFBundleTypeName</key>
 					<string>Mindmap</string>
 					<key>CFBundleTypeExtensions</key>

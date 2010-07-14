@@ -1,10 +1,19 @@
 ===============================
+Changes made in FreeMind 0.9.0 RC 9
+===============================
+* Patched: [ freemind-Patches-2973897 ] 512px and 256px icons for Mac OS X https://sourceforge.net/tracker/?func=detail&atid=307118&aid=2973897&group_id=7118
+* Patched: [ freemind-Patches-2973914 ] Document icon for Mac OS X https://sourceforge.net/tracker/?func=detail&atid=307118&aid=2973914&group_id=7118
+* Patched: [ freemind-Patches-2973920 ] Enable document icon for Mac OS X https://sourceforge.net/tracker/?func=detail&atid=307118&aid=2973920&group_id=7118
+
+===============================
 Changes made in FreeMind 0.9.0 RC 8
 ===============================
 * Fixed: Crypted root's childnodes order error: http://sourceforge.net/tracker/index.php?func=detail&aid=2912427&group_id=7118&atid=107118
 * Fixed: Build with ant 1.8: https://sourceforge.net/tracker/?func=detail&atid=107118&aid=2972176&group_id=7118
 * Testing: Font-Size of wysiwyg-editors on zommed map. Available as "experimental_font_sizing_for_long_node_editors". 
   You have to set this property by hand in the auto.properties file.
+
+
 
 ===============================
 Changes made in FreeMind 0.9.0 RC 7
