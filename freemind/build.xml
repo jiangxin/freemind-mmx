@@ -675,8 +675,8 @@
 			</fileset>
 		</copy>
 <!--     	<antcall target="installers_chris_mac"></antcall> 
-    	<delete dir="${inst.dir}" failonerror="false"/>
 -->
+    	<delete dir="${inst.dir}" failonerror="false"/>
     </target>
 
 </project>
