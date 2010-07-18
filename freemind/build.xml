@@ -596,6 +596,10 @@
 			<arg value="/home/foltin/.wine/drive_c/Programme/Inno Setup 5/ISCC.exe"/>
 			<arg value="Freemind.iss"/>
     	</exec>
+    	<exec dir="${inst.windows.installer}" executable="wine" os="Mac OS X">
+			<arg value="/Users/foltin/.wine/drive_c/Programme/Inno Setup 5/ISCC.exe"/>
+			<arg value="Freemind.iss"/>
+    	</exec>
     </target>
 	
 	<!-- - - - - - - - - - - - - - - - - - 
@@ -625,6 +629,8 @@
 <!--    	<property name="branch" value="fm-0-8-1"/> -->
 	   	<property name="branch" value="fm_060405_integration"/> 
 
+<!--
+		-->
     	<mkdir dir="${inst.dest.dir}"/>
     	<delete dir="${inst.dir}" failonerror="false"/>
     	<mkdir dir="${inst.dir}"/>
@@ -646,7 +652,7 @@
 			    <include name="jre_installer.exe"/>
 			    <include name="jre/**"/>
 			</fileset>
-		</copy>
+		</copy> 
 <!--
     	<property name="freemind.version" value="0.8.1"/>
     	-->
@@ -668,8 +674,9 @@
 			    <include name="*.exe"/>
 			</fileset>
 		</copy>
-    	<antcall target="installers_chris_mac"></antcall>
+<!--     	<antcall target="installers_chris_mac"></antcall> 
     	<delete dir="${inst.dir}" failonerror="false"/>
+-->
     </target>
 
 </project>

@@ -37,14 +37,13 @@
 			</fileset>
 		</jar>
 		<!-- xml -->
+		<mkdir dir="${dist}" />
 		<mkdir dir="${dist}/plugins" />
-		<copy todir="${dist}">
-			<fileset dir="${src}">
-				<include name="${plugin.xml}"/>
-			</fileset>
+		<echo message="Copy ${plugin.xml} to ${dist}/plugins"/>
+		<copy  file="${plugin.xml}" todir="${dist}/plugins">
 		</copy>
 		<!-- additional libs  -->
-		<mkdir dir="${dist}" />
+		<echo message="Copy ${additional.lib.pattern}"/>
 		<copy todir="${dist}" flatten="false">
 			<fileset dir="${src}"
 				includes ="${additional.lib.pattern}">
