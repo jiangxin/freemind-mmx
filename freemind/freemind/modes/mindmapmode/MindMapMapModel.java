@@ -17,7 +17,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapMapModel.java,v 1.36.14.16.2.35 2009-12-09 21:57:39 christianfoltin Exp $ */
+/* $Id: MindMapMapModel.java,v 1.36.14.16.2.36 2010-09-11 20:13:46 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -33,6 +33,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
@@ -70,16 +71,18 @@ import freemind.modes.NodeAdapter;
 
 public class MindMapMapModel extends MapAdapter  {
 
-    public static final String RESTORE_MODE_MIND_MAP = "MindMap:";
+    public static final String MAP_INITIAL_START = "<map version=\"";
+	public static final String RESTORE_MODE_MIND_MAP = "MindMap:";
 	private static final String FREEMIND_VERSION_UPDATER_XSLT = "freemind/modes/mindmapmode/freemind_version_updater.xslt";
 	LockManager lockManager;
     private MindMapLinkRegistry linkRegistry;
     private Timer timerForAutomaticSaving;
     /** The current version and all other version that don't need 
      * XML update for sure. */
-    private static final String EXPECTED_START_STRINGS[] = {
-            "<map version=\"" + FreeMind.XML_VERSION + "\"",
-            "<map version=\"0.7.1\""};
+    public static final String EXPECTED_START_STRINGS[] = {
+            MAP_INITIAL_START + FreeMind.XML_VERSION + "\"",
+            MAP_INITIAL_START +
+            "0.7.1\""};
 
     //
     // Constructors
@@ -280,16 +283,23 @@ public class MindMapMapModel extends MapAdapter  {
     /** writes the content of the map to a writer.
 	 * @throws IOException
 	 */
-	private void getXml(Writer fileout, boolean saveInvisible) throws IOException {
+	public void getXml(Writer fileout, boolean saveInvisible) throws IOException {
+		getXml(fileout, saveInvisible, getRootNode());
+	}
+	/** writes the content of the map to a writer.
+	 * @throws IOException
+	 */
+	public void getXml(Writer fileout, boolean saveInvisible, MindMapNode pRootNode) throws IOException {
 		fileout.write("<map ");
 		fileout.write("version=\""+FreeMind.XML_VERSION+"\"");
 		fileout.write(">\n");
 		fileout.write("<!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->\n");
 		getRegistry().save(fileout);
-		(getRootNode()).save(fileout, this.getLinkRegistry(), saveInvisible, true);
+		pRootNode.save(fileout, this.getLinkRegistry(), saveInvisible, true);
 		fileout.write("</map>\n");
 		fileout.close();
 	}
+
     public void getXml(Writer fileout) throws IOException{
         getXml(fileout, true);
     }
@@ -359,12 +369,52 @@ public class MindMapMapModel extends MapAdapter  {
        /* cancel the timer, if map is closed. */
        timerForAutomaticSaving.cancel();
     }
+    MindMapNodeModel loadTree(final File pFile) throws XMLParseException, IOException {
+    	return loadTree(new FileReaderCreator(pFile));
+    }
+    
+    public static class StringReaderCreator implements ReaderCreator {
+    	
+    	private final String mString;
 
-    MindMapNodeModel loadTree(File file) throws XMLParseException, IOException {
+		public StringReaderCreator(String pString) {
+			mString = pString;
+    	}
+    	
+    	public Reader createReader() throws FileNotFoundException {
+    		return new StringReader(mString);
+    	}
+    	
+    	public String toString() {
+    		return mString;
+    	}
+    }
+    private static class FileReaderCreator implements ReaderCreator {
+		private final File mFile;
+
+		public FileReaderCreator(File pFile) {
+			mFile = pFile;
+		}
+
+		public Reader createReader() throws FileNotFoundException {
+			return new FileReader(mFile);
+		}
+
+		public String toString() {
+			return mFile.getName();
+		}
+	}
+	public interface ReaderCreator{
+    	Reader createReader() throws FileNotFoundException;
+    }
+	MindMapNodeModel loadTree(ReaderCreator pReaderCreator) throws XMLParseException, IOException {
+		return loadTree(pReaderCreator, true);
+	}
+    MindMapNodeModel loadTree(ReaderCreator pReaderCreator, boolean pAskUserBeforeUpdate) throws XMLParseException, IOException {
         int versionInfoLength;
 		versionInfoLength = EXPECTED_START_STRINGS[0].length();
         // reading the start of the file:
-        StringBuffer buffer = readFileStart(file, versionInfoLength);
+        StringBuffer buffer = readFileStart(pReaderCreator.createReader(), versionInfoLength);
         // the resulting file is accessed by the reader:
         Reader reader = null;
         for(int i = 0; i < EXPECTED_START_STRINGS.length; i++){
@@ -375,25 +425,25 @@ public class MindMapMapModel extends MapAdapter  {
         	}
             if (mapStart.startsWith(EXPECTED_START_STRINGS[i])) {
                 // actual version:
-                reader = Tools.getActualReader(file);
+                reader = Tools.getActualReader(pReaderCreator.createReader());
                 break;
             }
         }
         if (reader == null) {
-            int showResult = new OptionalDontShowMeAgainDialog(mModeController
-					.getFrame().getJFrame(), mModeController.getSelectedView(),
-					"really_convert_to_current_version2", "confirmation", mModeController,
-					new OptionalDontShowMeAgainDialog.StandardPropertyHandler(
-							mModeController.getController(),
-							FreeMind.RESOURCES_CONVERT_TO_CURRENT_VERSION),
-					OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED)
-					.show().getResult();
-			if(showResult != JOptionPane.OK_OPTION) {
-//				reader = Tools.getActualReader(file);
-				throw new IllegalArgumentException("We should not open the file " + file);
-			} else {
-				reader = Tools.getUpdateReader(file, FREEMIND_VERSION_UPDATER_XSLT, getFrame());
-			}
+        	if(pAskUserBeforeUpdate) {
+	            int showResult = new OptionalDontShowMeAgainDialog(mModeController
+						.getFrame().getJFrame(), mModeController.getSelectedView(),
+						"really_convert_to_current_version2", "confirmation", mModeController,
+						new OptionalDontShowMeAgainDialog.StandardPropertyHandler(
+								mModeController.getController(),
+								FreeMind.RESOURCES_CONVERT_TO_CURRENT_VERSION),
+						OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED)
+						.show().getResult();
+				if(showResult != JOptionPane.OK_OPTION) {
+					throw new IllegalArgumentException("We should not open the reader " + pReaderCreator);
+				}
+        	}
+			reader = Tools.getUpdateReader(pReaderCreator.createReader(), FREEMIND_VERSION_UPDATER_XSLT, getFrame());
         }
         try {
         	HashMap IDToTarget = new HashMap();
@@ -421,15 +471,14 @@ public class MindMapMapModel extends MapAdapter  {
     }
 
     /** Returns pMinimumLength bytes of the files content.
-     * @throws FileNotFoundException
-     * @throws IOException
+     * @return an empty string buffer, if something fails.
      */
-    private StringBuffer readFileStart(File file, int pMinimumLength) {
+    private StringBuffer readFileStart(Reader pReader, int pMinimumLength) {
     	BufferedReader in=null;
     	StringBuffer buffer = new StringBuffer();
         try {
 			// get the file start into the memory:
-			in = new BufferedReader(new FileReader(file));
+			in = new BufferedReader(pReader);
 			String str;
 			while ((str = in.readLine()) != null) {
 				buffer.append(str);
@@ -438,7 +487,7 @@ public class MindMapMapModel extends MapAdapter  {
 			}
 			in.close();
 		} catch (Exception e) {
-freemind.main.Resources.getInstance().logException(			e);
+			freemind.main.Resources.getInstance().logException(e);
 			return new StringBuffer();
 		}
 		return buffer;

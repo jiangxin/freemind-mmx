@@ -143,8 +143,9 @@
 					  </head>
 					  <body>
 						<p align="left">
-						<xsl:value-of 
-							select="hook[@NAME='accessories/plugins/NodeNote.properties']/text"/>
+						<xsl:call-template name="br-replace">
+							<xsl:with-param name="input" select="hook[@NAME='accessories/plugins/NodeNote.properties']/text"/>
+						</xsl:call-template>
 						</p>
 					  </body>
 					</html>
@@ -195,6 +196,24 @@
 			<xsl:otherwise>
 				<!-- There are no more occurences of the search string so 
 				just return the current input string -->
+				<xsl:value-of select="$input"/>
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
+
+	<xsl:template name="br-replace">
+		<xsl:param name="input"/>
+		<xsl:param name="search-string" select="'&#xa;'"/>
+		<xsl:choose>
+			<xsl:when test="contains($input,$search-string)">
+				<xsl:value-of select="substring-before($input,$search-string)"/>
+				<br/>
+				<xsl:call-template name="br-replace">
+					<xsl:with-param name="input" select="substring-after($input,$search-string)"/>
+					<xsl:with-param name="search-string" select="$search-string"/>
+				</xsl:call-template>
+			</xsl:when>
+			<xsl:otherwise>
 				<xsl:value-of select="$input"/>
 			</xsl:otherwise>
 		</xsl:choose>

@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.52 2010-04-06 19:25:46 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.53 2010-09-11 20:13:46 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -944,11 +944,11 @@ public class Tools {
 	 *  updates the version to the current.
 	 * @throws IOException
 	 */
-	public static Reader getUpdateReader(final File file, String xsltScript, FreeMindMain frame) throws IOException {
+	public static Reader getUpdateReader(Reader pReader, String xsltScript, FreeMindMain frame) throws IOException {
 	    StringWriter writer = null;
 	    InputStream inputStream = null;
 	    java.util.logging.Logger logger = frame.getLogger(Tools.class.getName());
-	    logger.info("Updating the file "+file.getName()+" to the current version.");
+	    logger.info("Updating the reader "+pReader+" to the current version.");
         boolean successful = false;
 	    try{
 	        // try to convert map with xslt:
@@ -963,7 +963,7 @@ public class Tools {
 	        writer = new StringWriter();
 	        final Result result = new StreamResult(writer);
 	        
-	        String fileContents = getFile(file);
+	        String fileContents = getFile(pReader);
 	        if (fileContents.length() > 10) {
 	        	logger.info("File start before UTF8 replacement: '" + fileContents.substring(0, 9) + "'");
 	        }
@@ -997,7 +997,7 @@ public class Tools {
 			Thread transformerThread = new Thread(transformer, "XSLT");
 			transformerThread.start();
 			transformerThread.join();
-	        logger.info("Updating the file "+file.getName()+" to the current version. Done." ); //+ writer.getBuffer().toString());
+	        logger.info("Updating the reader "+pReader+" to the current version. Done." ); //+ writer.getBuffer().toString());
 	        successful = transformer.isSuccessful();
 	    } catch(Exception ex) {
 	    } finally {
@@ -1012,7 +1012,7 @@ public class Tools {
 		    return new StringReader(writer.getBuffer().toString());
 	    }
 	    else{
-	        return getActualReader(file);
+	        return getActualReader(pReader);
 	    }
 	}
 
@@ -1037,8 +1037,8 @@ public class Tools {
 	/** Creates a default reader that just reads the given file.
 	 * @throws FileNotFoundException
 	 */
-	public static Reader getActualReader(File file) throws FileNotFoundException {
-	    return new BufferedReader(new FileReader(file));
+	public static Reader getActualReader(Reader pReader) throws FileNotFoundException {
+	    return new BufferedReader(pReader);
 	}
 
 	/**
@@ -1047,11 +1047,23 @@ public class Tools {
  	 * @return the complete content of the file. or null if an exception has occured.
 	 */
 	public static String getFile(File pInputFile) {
+		try {
+			return getFile(getReaderFromFile(pInputFile));
+		} catch (FileNotFoundException e) {
+			freemind.main.Resources.getInstance().logException(e);
+			return null;
+		}
+	}
+
+	public static Reader getReaderFromFile(File pInputFile)
+			throws FileNotFoundException {
+		return new FileReader(pInputFile);
+	}
+	public static String getFile(Reader pReader) {
         StringBuffer lines = new StringBuffer();
         BufferedReader bufferedReader = null;
         try {
-			bufferedReader = new BufferedReader(new InputStreamReader(
-					new FileInputStream(pInputFile)));
+			bufferedReader = new BufferedReader(pReader);
 			final String endLine = System.getProperty("line.separator");
 			String line;
 			while ((line = bufferedReader.readLine()) != null) {

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapController.java,v 1.35.14.21.2.78 2010-01-25 20:17:59 christianfoltin Exp $ */
+/* $Id: MindMapController.java,v 1.35.14.21.2.79 2010-09-11 20:13:46 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -539,14 +539,14 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 				// try xslt script:
 				boolean success = false;
 				try {
-					loadPatterns(Tools.getUpdateReader(patternsFile,
+					loadPatterns(Tools.getUpdateReader(Tools.getReaderFromFile(patternsFile),
 							"patterns_updater.xslt", getFrame()));
 					// save patterns directly:
 					StylePatternFactory.savePatterns(new FileWriter(
 							patternsFile), mPatternsList);
 					success = true;
 				} catch (Exception e) {
-freemind.main.Resources.getInstance().logException(					e);
+					freemind.main.Resources.getInstance().logException(e);
 				}
 				if (success) {
 					JOptionPane.showMessageDialog(null,

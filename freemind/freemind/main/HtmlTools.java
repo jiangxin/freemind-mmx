@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlTools.java,v 1.1.2.23 2010-04-07 20:09:36 christianfoltin Exp $*/
+/*$Id: HtmlTools.java,v 1.1.2.24 2010-09-11 20:13:46 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -505,6 +505,8 @@ public class HtmlTools {
     }
 
 	public static String replaceIllegalXmlCharacters(String fileContents) {
+		// replace &xa; by newline.
+		fileContents = fileContents.replaceAll("&#x0*[Aa];", "\n");
 		/* &#xb; is illegal, but sometimes occurs in 0.8.x maps.
 		 * Thus, we exclude all from 0 - 1f and replace them by nothing.
 		 * TODO: Which more are illegal?? */

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MindMapNode.java,v 1.15.18.14.2.20 2008-05-26 19:25:07 christianfoltin Exp $ */
+/* $Id: MindMapNode.java,v 1.15.18.14.2.21 2010-09-11 20:13:46 christianfoltin Exp $ */
 
 package freemind.modes;
 
@@ -238,6 +238,10 @@ public interface MindMapNode extends MutableTreeNode {
 	 * Currently, it is used for encrypted nodes to store the encrypted content.
 	 */
 	void setAdditionalInfo(String info);
+	/**
+	 * Is only used to store encrypted content of an encrypted mind map node. 
+	 * @see MindMapNode.setAdditionalInfo(String)
+	 */
 	public String getAdditionalInfo();
 
     /**

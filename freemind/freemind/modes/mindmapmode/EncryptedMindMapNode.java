@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.16 2010-04-06 19:25:46 christianfoltin Exp $ */
+/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.17 2010-09-11 20:13:46 christianfoltin Exp $ */
 
 package freemind.modes.mindmapmode;
 
@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Vector;
 
@@ -32,19 +31,26 @@ import javax.swing.ImageIcon;
 import javax.swing.tree.MutableTreeNode;
 
 import freemind.main.FreeMindMain;
-import freemind.main.Tools;
+import freemind.main.HtmlTools;
 import freemind.main.XMLElement;
 import freemind.main.Tools.SingleDesEncrypter;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapLinkRegistry;
-import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 
 public class EncryptedMindMapNode extends MindMapNodeModel {
 
+	/**
+	 * Is used to hide all children (when false)
+	 */
 	private boolean isAccessible = true;
 
+	/**
+	 * Is used to store the child nodes (when true).
+	 */
+	private boolean isStoringEncryptedContent = false;
+	
     /**
      * is only set to false by the load mechanism. 
      * If the node is generated or it is decrypted once, this is always true.
@@ -95,19 +101,26 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         setAccessible(true);
         if (!isDecrypted) {
         	try {
-            	HashMap IDToTarget = new HashMap();
 	            String childXml = decryptXml(encryptedContent, password);
-	            String[] childs = childXml.split(ModeController.NODESEPARATOR);
-	            // and now? paste it:
-	            for (int i = 0; i < childs.length; i++) {
-	                String string = childs[i];
-	                // if the encrypted node is empty, we skip the insert.
-	                if(string.length() == 0)
-	                	 continue;
-	                //FIXME: This code smells:
-	                ((MindMapController) getModeController()).paste.pasteXMLWithoutRedisplay(
-	                        string, this, false, false, false, IDToTarget);
-	
+	            // is it a map at all?
+	            if(childXml.startsWith(MindMapMapModel.MAP_INITIAL_START)){
+	            	MindMapNodeModel node = getNodeFromXml(childXml);
+	            	int index=0;
+					for (ListIterator i = node.childrenUnfolded(); i.hasNext();) {
+						MindMapNodeModel importNode = (MindMapNodeModel) i
+								.next();
+						((MindMapController)getModeController()).insertNodeInto(importNode,this,index++);
+					}
+	            } else {
+		            // old handling up to version 0.9.0_rc8:
+		            String[] childs = childXml.split(ModeController.NODESEPARATOR);
+		            // and now? paste it:
+		            for (int j = 0; j < childs.length; j++) {
+		            	String nodeContent = childs[j];
+		            	// make a 0.8.0 map out of it:
+		            	String mapContent = MindMapMapModel.MAP_INITIAL_START+"0.8.0\">"+nodeContent+"</map>";
+		            	paste(getNodeFromXml(mapContent));		            	
+		            }
 	            }
 	            isDecrypted = true;
         	} catch(Exception e){
@@ -119,6 +132,21 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         getMap().getRegistry().registrySubtree(this, false);
         return true;
     }
+
+	private void paste(MindMapNodeModel importNode) {
+		((MindMapController)getModeController()).paste(importNode, this);
+	}
+
+	private MindMapNodeModel getNodeFromXml(String childXml) throws IOException {
+		// the loadTree method performs an automatical version update.
+		MindMapNodeModel node = getMindMapMapModel()
+				.loadTree(new MindMapMapModel.StringReaderCreator(childXml), false);
+		return node;
+	}
+
+	private MindMapMapModel getMindMapMapModel() {
+		return ((MindMapMapModel) getMap());
+	}
 
     /**
      */
@@ -134,9 +162,16 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
         // new password:
         String decryptedNode = decryptXml(encryptedContent, givenPassword);
         // FIXME: Better test needed.
-        if (decryptedNode == null || decryptedNode.equals("") || !decryptedNode.startsWith("<node ")) {
-            logger.warning("Wrong password supplied (stored!=given).");
+        if (decryptedNode == null) {
+            logger.warning("Wrong password supplied (deciphered text is null).");
             return false;
+        }
+        if (!decryptedNode.startsWith("<node ")) {
+        	// not an encrpyted node in the old format (node,separator,node,...), we test for xml:
+        	if(!HtmlTools.getInstance().isWellformedXml(decryptedNode)) {
+	        	logger.warning("Wrong password supplied (malformed deciphered text).");
+	        	return false;
+        	}
         }
         this.password = givenPassword;
         return true;
@@ -244,6 +279,9 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
     }
 
     public String getAdditionalInfo() {
+    	if(isStoringEncryptedContent()) {
+    		return null;
+    	}
         return encryptedContent;
     }
 
@@ -253,18 +291,31 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 
     public XMLElement save(Writer writer, MindMapLinkRegistry registry, boolean saveHidden, boolean saveChildren)
             throws IOException {
+    	if(isStoringEncryptedContent()){
+    		return super.save(writer, registry, saveHidden, saveChildren);
+    	}
         if (isDecrypted) {
-            generateEncryptedContent(registry);
+        	if(!isAccessible()){
+				throw new IOException(
+						"Should store contents of encrypted node "
+								+ this.getText()
+								+ ", but it is not accessible.");
+        	}
+        	setStoringEncryptedContent(true);
+            try {
+				generateEncryptedContent(registry);
+			} finally {
+				setStoringEncryptedContent(false);
+			}
         }
         boolean oldIsVisible = isAccessible();
         setAccessible(false);
         XMLElement ret = null;
         try {
             ret = super.save(writer, registry, saveHidden, saveChildren);
-        } catch (Exception e) {
-            freemind.main.Resources.getInstance().logException(e);
+        } finally {
+        	setAccessible(oldIsVisible);
         }
-        setAccessible(oldIsVisible);
         return ret;
     }
 
@@ -273,13 +324,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
      */
     private void generateEncryptedContent(MindMapLinkRegistry registry) throws IOException {
         StringWriter sWriter = new StringWriter();
-        for (Iterator i = super.childrenUnfolded(); i.hasNext();) {
-            MindMapNode child = (MindMapNode) i.next();
-            child.save(sWriter, registry, true, true);
-            if (i.hasNext()) {
-                sWriter.write(ModeController.NODESEPARATOR);
-            }
-        }
+        getMindMapMapModel().getXml(sWriter, true, this);
         StringBuffer childXml = sWriter.getBuffer();
         encryptedContent = encryptXml(childXml);
     }
@@ -355,6 +400,14 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 
 	public boolean isWriteable() {
 		return isAccessible() && super.isWriteable();
+	}
+
+	public boolean isStoringEncryptedContent() {
+		return isStoringEncryptedContent;
+	}
+
+	public void setStoringEncryptedContent(boolean pIsStoringEncryptedContent) {
+		isStoringEncryptedContent = pIsStoringEncryptedContent;
 	}
 
 
