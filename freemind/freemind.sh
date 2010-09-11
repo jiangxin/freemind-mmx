@@ -157,10 +157,7 @@ then # if the script is a link and we have 'readlink' to follow it
 else
 	freefile="$0"
 fi
-# freepath=$(dirname "${freefile}")
-# see https://sourceforge.net/projects/freemind/forums/forum/22101/topic/3837542
-freepath=$(readlink --canonicalize "$0")
-freepath=$(dirname "${freepath}")
+freepath=$(dirname "${freefile}")
 freepath="${freepath%/bin}" # nothing happens if freemind is not installed
                             # under something/bin
 
