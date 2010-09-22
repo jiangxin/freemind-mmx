@@ -608,7 +608,7 @@
     <target name="installers_chris_mac">
     	<exec dir="." executable="ssh" os="Linux">
     		<arg value="foltin@mahler"/>
-    		<arg value="cd /tmp ; rm -rf fm_installers ; mkdir fm_installers ; cd fm_installers ; /sw/bin/cvs -d${cvsRoot} login ; /sw/bin/cvs -d${cvsRoot} co -P -r ${branch} freemind ; cd freemind ; ant post"/>
+    		<arg value="cd /tmp ; rm -rf fm_installers ; mkdir fm_installers ; cd fm_installers ; /usr/bin/cvs -d${cvsRoot} login ; /usr/bin/cvs -d${cvsRoot} co -P -r ${branch} freemind ; cd freemind ; ant post"/>
     	</exec>
     	<exec dir="." executable="scp" os="Linux">
     		<arg value="foltin@mahler:/tmp/fm_installers/post/*.dmg"/>
@@ -674,8 +674,7 @@
 			    <include name="*.exe"/>
 			</fileset>
 		</copy>
-<!--     	<antcall target="installers_chris_mac"></antcall> 
--->
+     	<antcall target="installers_chris_mac"></antcall> 
     	<delete dir="${inst.dir}" failonerror="false"/>
     </target>
 
