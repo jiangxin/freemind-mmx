@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlTools.java,v 1.1.2.25 2010-09-30 22:38:47 christianfoltin Exp $*/
+/*$Id: HtmlTools.java,v 1.1.2.26 2010-09-30 22:45:49 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -502,7 +502,6 @@ public class HtmlTools {
 
 		// This method uses the method isXMLValidCharacter, which makes use
 		// of http://www.w3.org/TR/2000/REC-xml-20001006#NT-Char.
-		logger.info("Start string: '" + text + "'");
 		StringBuffer result = new StringBuffer(text.length());
 		StringBuffer entity = new StringBuffer();
 		boolean readingEntity = false;
@@ -552,7 +551,6 @@ public class HtmlTools {
 		if (entity.length() > 0) {
 			result.append('&').append(entity).append(';');
 		}
-		logger.info("Result string: '" + result.toString() + "'");
 		return result.toString();
 	}
 
