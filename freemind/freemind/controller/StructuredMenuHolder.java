@@ -19,7 +19,7 @@
  *
  * Created on 21.05.2004
  */
-/*$Id: StructuredMenuHolder.java,v 1.1.4.7.4.10 2009-05-18 19:47:57 christianfoltin Exp $*/
+/*$Id: StructuredMenuHolder.java,v 1.1.4.7.4.11 2010-09-30 22:38:47 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -53,9 +53,6 @@ import freemind.main.Tools;
  */
 public class StructuredMenuHolder {
 
-//	 Logging: 
-	//private static java.util.logging.Logger logger = getFrame().getLogger(this.getClass().getName());
-	
 	public static final int ICON_SIZE = 16;
     private String mOutputString;
 	private static Icon blindIcon = new BlindIcon(ICON_SIZE);
@@ -535,9 +532,13 @@ public class StructuredMenuHolder {
     private static void setSelected(JMenuItem menuItem, boolean state) {
 		if (state) {
 			menuItem.setIcon(sSelectedIcon);
-		} else {
-			menuItem.setIcon((Icon) menuItem.getAction().getValue(
-					Action.SMALL_ICON));
+		} else {			
+			Icon normalIcon = (Icon) menuItem.getAction().getValue(
+					Action.SMALL_ICON);
+			if(normalIcon == null){
+				normalIcon = blindIcon;
+			}
+			menuItem.setIcon(normalIcon);
 		}
 	}
 

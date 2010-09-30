@@ -19,7 +19,7 @@
  *
  * Created on 26.05.2004
  */
-/*$Id: BlindIcon.java,v 1.1.4.1 2004-10-17 23:00:06 dpolivaev Exp $*/
+/*$Id: BlindIcon.java,v 1.1.4.1.16.1 2010-09-30 22:38:47 christianfoltin Exp $*/
 
 package freemind.controller;
 
@@ -58,7 +58,6 @@ public class BlindIcon implements Icon {
      * @see javax.swing.Icon#paintIcon(java.awt.Component, java.awt.Graphics, int, int)
      */
     public void paintIcon(Component arg0, Graphics arg1, int arg2, int arg3) {
-
     }
 
 }

@@ -51,7 +51,11 @@ import java.io.ByteArrayOutputStream;
  * 		Removed all but base64 coding.
  */
 public class Base64Coding  {
-
+	private static java.util.logging.Logger logger = null;
+	static {
+		logger = freemind.main.Resources.getInstance().getLogger("Base64Coding");
+	}
+ 
     /**
      * Helper method for decoding a Base64 string as an byte array.
      * Returns null on encoding error. This method does not allow any other
@@ -78,6 +82,7 @@ public class Base64Coding  {
             } else if (c[j] == '=') {
                 endchar = j;
             } else {
+            	logger.severe("Found illegal character in base64 coding: '" + c[j]+"'");
                 return null; // encoding exception
             }
         }

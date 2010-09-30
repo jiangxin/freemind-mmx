@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlTools.java,v 1.1.2.24 2010-09-11 20:13:46 christianfoltin Exp $*/
+/*$Id: HtmlTools.java,v 1.1.2.25 2010-09-30 22:38:47 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -320,48 +320,7 @@ public class HtmlTools {
      * @return the converted output.
      */
     public static String unescapeHTMLUnicodeEntity(String text) {
-    	// remove &#xb; for example.
-    	text = replaceIllegalXmlCharacters(text);
-		StringBuffer result = new StringBuffer(text.length());
-		StringBuffer entity = new StringBuffer();
-		boolean readingEntity = false;
-		char myChar;
-		for (int i = 0; i < text.length(); ++i) {
-			myChar = text.charAt(i);
-			if (readingEntity) {
-				if (myChar == ';') {
-					if (entity.charAt(0) == '#') {
-						try {
-							if (entity.charAt(1) == 'x') {
-								result.append((char) Integer.parseInt(entity
-										.substring(2), 16));
-							} else {
-								result.append((char) Integer.parseInt(entity
-										.substring(1), 10));
-							}
-						} catch (NumberFormatException e) {
-							result.append('&').append(entity).append(';');
-						}
-					} else {
-						result.append('&').append(entity).append(';');
-					}
-					entity.setLength(0);
-					readingEntity = false;
-				} else {
-					entity.append(myChar);
-				}
-			} else {
-				if (myChar == '&') {
-					readingEntity = true;
-				} else {
-					result.append(myChar);
-				}
-			}
-		}
-		if (entity.length() > 0) {
-			result.append('&').append(entity);
-		}
-		return result.toString();
+    	return removeInvalidXmlCharacters(text);
 	}
 
     /** Removes all tags (<..>) from a string if it starts with "<html>..." to make it compareable.
@@ -515,6 +474,86 @@ public class HtmlTools {
 		fileContents = fileContents.replaceAll("&#0*[1-2]?[0-9];", "");
 		fileContents = fileContents.replaceAll("&#0*3[0-1];", "");
 		return fileContents;
+	}
+
+	/**
+	 * Determines whether the character is valid in XML. Invalid characters
+	 * include most of the range x00-x1F, and more. 
+	 * @see http://www.w3.org/TR/2000/REC-xml-20001006#NT-Char.
+	 */
+	public static boolean isXMLValidCharacter(char character) {
+		// Order the tests in such a sequence that the most probable
+		// conditions are tested first.
+		return character >= 0x20 && character <= 0xD7FF || character == 0x9
+				|| character == 0xA || character == 0xD
+				|| character >= 0xE000 && character <= 0xFFFD
+				|| character >= 0x10000 && character <= 0x10FFFF;
+	}
+
+	public static String removeInvalidXmlCharacters(String text) {
+		// Precondition: The input text contains XML unicode entities rather
+		// than Java unicode text.
+
+		// The algorithm:
+		// Search the string for XML entities. For each XML entity inspect
+		// whether it is valid. If valid, append it. To be on the safe side,
+		// also inspect for no-entity unicode whether it is XML-valid, and
+		// pass on only XML-valid characters.
+
+		// This method uses the method isXMLValidCharacter, which makes use
+		// of http://www.w3.org/TR/2000/REC-xml-20001006#NT-Char.
+		logger.info("Start string: '" + text + "'");
+		StringBuffer result = new StringBuffer(text.length());
+		StringBuffer entity = new StringBuffer();
+		boolean readingEntity = false;
+		char myChar;
+		char entityChar;
+		for (int i = 0; i < text.length(); ++i) {
+			myChar = text.charAt(i);
+			if (readingEntity) {
+				if (myChar == ';') {
+					if (entity.charAt(0) == '#') {
+						try {
+							if (entity.charAt(1) == 'x') {
+								// Hexadecimal
+								entityChar = (char) Integer.parseInt(
+										entity.substring(2), 16);
+							} else {
+								// Decimal
+								entityChar = (char) Integer.parseInt(
+										entity.substring(1), 10);
+							}
+							if (isXMLValidCharacter(entityChar))
+								result.append('&').append(entity).append(';');
+						} catch (NumberFormatException e) {
+							result.append('&').append(entity).append(';');
+						}
+					} else {
+						result.append('&').append(entity).append(';');
+					}
+					entity.setLength(0);
+					readingEntity = false;
+				} else {
+					entity.append(myChar);
+				}
+			} else {
+				if (myChar == '&') {
+					readingEntity = true;
+				} else {
+					// The following test is superfluous under the assumption
+					// that the string only contains unicode in XML entities.
+					// Removing this test could significantly speed up this
+					// method; maybe.
+					if (isXMLValidCharacter(myChar))
+						result.append(myChar);
+				}
+			}
+		}
+		if (entity.length() > 0) {
+			result.append('&').append(entity).append(';');
+		}
+		logger.info("Result string: '" + result.toString() + "'");
+		return result.toString();
 	}
 
 	public static String extractHtmlBody(String output) {

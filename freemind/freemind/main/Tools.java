@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.53 2010-09-11 20:13:46 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.54 2010-09-30 22:38:47 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -697,6 +697,7 @@ public class Tools {
 	                salt = Tools.fromBase64(saltString);
 	            }
 	            // Decode base64 to get bytes
+	            str = str.replaceAll("\n", "");
 	            byte[] dec = Tools.fromBase64(str);
 				init(salt);
 
@@ -1031,7 +1032,7 @@ public class Tools {
 		} catch (UnsupportedEncodingException e) {
 			freemind.main.Resources.getInstance().logException(e);
 		}
-		return HtmlTools.replaceIllegalXmlCharacters(fileContents);
+		return HtmlTools.removeInvalidXmlCharacters(fileContents);
 	}
 
 	/** Creates a default reader that just reads the given file.
