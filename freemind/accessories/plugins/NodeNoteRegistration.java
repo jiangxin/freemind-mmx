@@ -19,7 +19,7 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.23 2010-05-25 20:09:32 christianfoltin Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.24 2010-10-02 20:40:59 christianfoltin Exp $*/
 
 package accessories.plugins;
 
@@ -113,7 +113,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
         		// now test, if different:
                 String documentText = normalizeString(getDocumentText());
                 String noteText = normalizeString(mNode.getNoteText());
-                logger.info("Old doc =\n'" + noteText 
+                logger.fine("Old doc =\n'" + noteText 
                 		+ "', Current document: \n'" + documentText 
                 		+ "'. Comparison: '" + Tools.compareText(noteText, documentText)+"'.");
                 if(!Tools.safeEquals(noteText, documentText)) {
