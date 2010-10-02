@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/*$Id: HtmlTools.java,v 1.1.2.26 2010-09-30 22:45:49 christianfoltin Exp $*/
+/*$Id: HtmlTools.java,v 1.1.2.27 2010-10-02 20:27:55 christianfoltin Exp $*/
 
 package freemind.main;
 
@@ -313,15 +313,66 @@ public class HtmlTools {
 	}
 
     
-    /** Converts ''&amp;#xff;'' for example in "normal" characters.
-     * Thereby it removes illegal characters that will cause problems
-     * later on like &amp;#xb;.
-     * @param text input
-     * @return the converted output.
-     */
-    public static String unescapeHTMLUnicodeEntity(String text) {
-    	return removeInvalidXmlCharacters(text);
+    
+	/**
+	 * Converts XML unicode entity-encoded characters into plain Java unicode
+	 * characters; for example, ''&amp;#xff;'' gets converted. Removes all
+	 * XML-invalid entity characters, such as &amp;#xb;.
+	 * 
+	 * @param text
+	 *            input
+	 * @return the converted output.
+	 */
+	public static String unescapeHTMLUnicodeEntity(String text) {
+		StringBuffer result = new StringBuffer(text.length());
+		StringBuffer entity = new StringBuffer();
+		boolean readingEntity = false;
+		char myChar;
+		char entityChar;
+		for (int i = 0; i < text.length(); ++i) {
+			myChar = text.charAt(i);
+			if (readingEntity) {
+				if (myChar == ';') {
+					if (entity.charAt(0) == '#') {
+						try {
+							if (entity.charAt(1) == 'x') {
+								// Hexadecimal
+								entityChar = (char) Integer.parseInt(
+										entity.substring(2), 16);
+							} else {
+								// Decimal
+								entityChar = (char) Integer.parseInt(
+										entity.substring(1), 10);
+							}
+							if (isXMLValidCharacter(entityChar))
+								result.append(entityChar);
+						} catch (NumberFormatException e) {
+							result.append('&').append(entity).append(';');
+						}
+					} else {
+						result.append('&').append(entity).append(';');
+					}
+					entity.setLength(0);
+					readingEntity = false;
+				} else {
+					if (isXMLValidCharacter(myChar))
+						entity.append(myChar);
+				}
+			} else {
+				if (myChar == '&') {
+					readingEntity = true;
+				} else {
+					if (isXMLValidCharacter(myChar))
+						result.append(myChar);
+				}
+			}
+		}
+		if (entity.length() > 0) {
+			result.append('&').append(entity).append(';');
+		}
+		return result.toString();
 	}
+
 
     /** Removes all tags (<..>) from a string if it starts with "<html>..." to make it compareable.
      */
