@@ -19,7 +19,7 @@
  *
  * Created on 11.09.2007
  */
-/*$Id: NodeNoteRegistration.java,v 1.1.2.24 2010-10-02 20:40:59 christianfoltin Exp $*/
+/*$Id: NodeNoteRegistration.java,v 1.1.2.25 2010-10-07 21:19:51 christianfoltin Exp $*/
 
 package accessories.plugins;
 
@@ -285,6 +285,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
                         .intValue());
                 sPositionToRecover = null;
             }
+            logger.info("Jumping back to map!");
             controller.getController().obtainFocusForSelected();
         }
     };

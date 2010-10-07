@@ -17,7 +17,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: Tools.java,v 1.17.18.9.2.54 2010-09-30 22:38:47 christianfoltin Exp $ */
+/* $Id: Tools.java,v 1.17.18.9.2.55 2010-10-07 21:19:51 christianfoltin Exp $ */
 
 package freemind.main;
 
@@ -697,7 +697,7 @@ public class Tools {
 	                salt = Tools.fromBase64(saltString);
 	            }
 	            // Decode base64 to get bytes
-	            str = str.replaceAll("\n", "");
+	            str = str.replaceAll("\\s", "");
 	            byte[] dec = Tools.fromBase64(str);
 				init(salt);
 

@@ -1,5 +1,16 @@
 <project name="freemind_plugins" default="dist" basedir=".">
 
+	<!-- Latex is not included, as
+		HotEqn is poorly integrated into FreeMind: it has no support in HTML
+		export functions, and it is unlikely to get one. It requires LaTeX
+		formulas to be appended to nodes, as it were, instead of being placed
+		in the middle of the long node text. No LaTeX formulas can be placed
+		into notes with HotEqn. As a further nuisance, HotEqn is licensed
+		under GNU GPL V3, incompatible with FreeMind's GNU GPL V2+ unless
+		FreeMind migrates to GNU GPL V3.
+	 -->
+	<property name="include_latex" value="false"/>
+
 	<macrodef name="callant">
 		<attribute name="task"/>
 		<sequential>
@@ -8,6 +19,7 @@
 				    <include name="build_*.xml"/>
 					<!-- The import script can't be executed. -->
 				    <exclude name="build_import.xml"/>
+				    <exclude name="build_latex.xml"  if="include_latex"/>
 					<!-- Jabber is outdated. -->
 				    <exclude name="build_jabber.xml"/>
 					<!-- This collaboration module is for post 0.9.0. -->
