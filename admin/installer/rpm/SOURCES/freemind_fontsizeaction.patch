@@ -1,0 +1,11 @@
+--- freemind/freemind/modes/actions/FontSizeAction.java	2004-10-18 01:00:10.000000000 +0200
++++ freemind/freemind/modes/actions/FontSizeAction.java	2005-11-08 14:02:45.000000000 +0100
+@@ -25,7 +25,7 @@
+ 
+ import javax.xml.bind.JAXBException;
+ 
+-import sun.java2d.loops.FontInfo;
++// import sun.java2d.loops.FontInfo; // NOT NEEDED
+ 
+ import freemind.controller.actions.ActionPair;
+ import freemind.controller.actions.NodeActorXml;

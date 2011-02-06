@@ -1,0 +1,31 @@
+--- freemind-0.7.9.rc3.orig/freemind/freemind.properties
++++ freemind-0.7.9.rc3/freemind/freemind.properties
+@@ -76,8 +76,8 @@
+ #Set Links either relative or absolute 
+ links = relative
+ #The URL of the documentation mindmap (.mm)
+-docmapurl = ./doc/freemind.mm
+-docmapurl_since_version_0_7_0 = ./doc/freemind.mm
++docmapurl = file:/usr/share/freemind/freemind.mm
++docmapurl_since_version_0_7_0 = file:/usr/share/freemind/freemind.mm
+ #This is a hash that maps endings of files to programs which should be used to open them.
+ #It is only used by the application,not by the applet.
+ #Special keywords: "default" instead of file and "execute" instead of program
+@@ -252,7 +252,7 @@
+ # The Browse Mode
+ #
+ #The URL of the map that is loaded when browsemode starts up
+-browsemode_initial_map = ./doc/freemind.mm
++browsemode_initial_map = file:/usr/share/freemind/freemind.mm
+ 
+ #
+ # The default browser setting
+@@ -274,7 +274,7 @@
+ # Here the default browser for other operating systems goes:
+ #
+ # other is typically Linux:
+-default_browser_command_other_os = mozilla {0}
++default_browser_command_other_os = urlsee {0}
+ #
+ # and MAC: (thanks to Nick!)
+ default_browser_command_mac = open -a /Applications/Safari.app {0}

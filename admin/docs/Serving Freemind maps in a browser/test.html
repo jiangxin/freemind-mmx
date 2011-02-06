@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Testing Freemind's applet setup</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="layout.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<h1>Testing Freemind's applet setup</h1>
+<p>Ver 1.0 - 1 March 2004 </p>
+<p>&nbsp;<b >Robert J. Alexander - Rome - Italy</b></p>
+<p>(For any corrections or simple thanks 8-&gt; my email is <b>bob</b> and my provider is <b>ngi.it</b>)</p>
+<p>Please read the <a href="disclaimer.htm">disclaimer</a> before using this document. </p>
+<h3>Recapping the entire process</h3>
+<p>So we first installed a web server on XP to have a test, experimental setup.</p>
+<p>We then placed the needed files (applet, map and html launcher) in the proper directories of our web server.</p>
+<p>We will now start a couple of browsers, visit the proper URLs and (hopefully) will see our maps.</p>
+<p>Of course our test system is on a single machine but is is needles to say that the same trick works exactly the same for a web server in Australia and a user browsing here in Italy.</p>
+<p>First of all please remember that Freemind's applet, just as the standalone Java application need a Java runtime environment (JRE) to run and this JRE has to be a release &gt;= 1.4 of Sun's Java.</p>
+<p>This short guide will not currently explain how to setup such a JRE for your browser. Please note that a &quot;vanilla&quot; XP system will NOT have such a JRE preinstalled. </p>
+<h3>Testing with the FireFox browser</h3>
+<p>FireFox is the new name of FireBird which was formerly know as Phoenix. It's a browser only derivative of the great open source browser Mozilla. It is very easy to <a href="http://www.mozilla.org/download.html" title="Download Mozilla FireFox">download and install</a> such a browser and for security and ergonomy I vastly prefer it to MS Internet Explorer. </p>
+<p>If your JRE is also installed you should be ready for the show. Let's fire my faithful FireFox at my test web server which is setup as already described in the <a href="apache.html" title="Setting up an Apache server on XP">setting up an apache server</a> and <a href="freemind applet.html" title="Installing Freemind's applet and maps">installing the applet and maps </a>chapters of this guide. </p>
+<p>Cross your fingers. If all is ok you will see a similar screen (of course the map itself will be yours):</p>
+<p><img src="images/Frapplet_005.jpg" width="756" height="481" /> </p>
+<p>Note that before seeing this the lower section under the &quot;Please wait&quot; line will be empty while the browser is loading both the applet and your map. Depending on your connection speed to the web server it can take some time (even a few minutes).</p>
+<p>When the process is finished you will see the map and in the lower status row the &quot;Applet freemind.main.FreeMindApplet started&quot; message.</p>
+<p>If the lower part stays empty for too long something's wrong. The first thing I'd check is if executing Java in your browser is permitted. In Firefox click Tools -&gt; Options and select the &quot;Web features&quot; button. </p>
+<p><img src="images/Frapplet_009.jpg" width="567" height="471" /></p>
+<p>and check if the &quot;Enable Java&quot; checkbox is selected just as in the above picture. </p>
+<h3>Testing with Internet Explorer</h3>
+<p>Similar stuff here. If all goes well here is what you will see:</p>
+<p><img src="images/Frapplet_008.jpg" width="861" height="453" /> </p>
+<p>If you do not see this most likely you have a problem with the Java runtime. You will probably have the lower part of the browser greyed out and if you move the cursor around, in some apparently random spots you will see an error in the lower status bar. If you press the View -&gt; Java console menu you will see something like:</p>
+<p><img src="images/Frapplet_013.jpg" width="531" height="399" /> </p>
+<p>To correct this go to Tools -&gt; Internet Options -&gt; Advanced and scroll about halfway to check if &quot;Use Java2&quot; is enabled. If it's not check it, Apply and Ok. </p>
+<p><img src="images/Frapplet_015.jpg" width="406" height="486" /> </p>
+<p>You should now try the URL again and all should be set. If not this guide needs some volunteers to expand it 8-). </p>
+<p><font size="-2">Copyright &copy; 2004 Robert Alexander - bob at ngi.it</font></p>
+<p>
+      <a href="http://validator.w3.org/check/referer"><img
+          src="http://www.w3.org/Icons/valid-xhtml10"
+          alt="Valid XHTML 1.0!" height="31" width="88" /></a>
+</p>
+
+</body>
+</html>

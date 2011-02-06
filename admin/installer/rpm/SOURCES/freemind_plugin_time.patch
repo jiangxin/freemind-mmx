@@ -1,0 +1,33 @@
+--- freemind-0.7.9.rc5_3/freemind/plugins/build_time.xml	2005-07-24 16:29:09.804458480 +0200
++++ freemind-0.7.9.rc5/freemind/plugins/build_time.xml	2005-07-24 16:39:01.759467640 +0200
+@@ -4,9 +4,9 @@
+ 	<property name="plugin.dir" value="plugins/time"/>
+ 	<property name="plugin.jar" value="time_plugin.jar" />
+ 	<property name="plugin.zip" value="time_plugin-${ver}.zip" />
+-	<property name="additional.lib" value="${plugin.dir}/batik-awt-util.jar:${plugin.dir}/batik-bridge.jar:${plugin.dir}/batik-css.jar:${plugin.dir}/batik-dom.jar:${plugin.dir}/batik-extension.jar:${plugin.dir}/batik-ext.jar:${plugin.dir}/batik-gui-util.jar:${plugin.dir}/batik-gvt.jar:${plugin.dir}/batik-parser.jar:${plugin.dir}/batik-script.jar:${plugin.dir}/batik-svg-dom.jar:${plugin.dir}/batik-svggen.jar:${plugin.dir}/batik-swing.jar:${plugin.dir}/jcalendar.jar"/>
++	<property name="additional.lib" value="/usr/share/java/jcalendar.jar"/>
+ 	
+ 	<property name="additional.lib.pattern" value="${plugin.dir}/*.jar"/>
+ 
+ 	<import file="build_import.xml" />
+-</project>
+\ No newline at end of file
++</project>
+--- freemind-0.7.9.rc5_3/freemind/plugins/TimeManagement.xml	2005-07-24 16:29:09.804458480 +0200
++++ freemind-0.7.9.rc5/freemind/plugins/TimeManagement.xml	2005-07-24 16:39:17.592060720 +0200
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+ <plugin>
+ 	<plugin_classpath jar="plugins/time/time_plugin.jar"/>
+-	<plugin_classpath jar="plugins/time/jcalendar.jar"/>
++	<plugin_classpath jar="/usr/share/java/jcalendar.jar"/>
+ 	<plugin_registration isPluginBase="true" 
+ 		class_name="plugins.time.TimeManagementOrganizer">
+ 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+@@ -50,4 +50,4 @@
+ 			location="menu_bar/extras/first/time_management/remove_reminder"/>
+ 		<plugin_menu location="mindmapmode_popup/context/remove_reminder"/>
+ 	</plugin_action>
+-</plugin>
+\ No newline at end of file
++</plugin>

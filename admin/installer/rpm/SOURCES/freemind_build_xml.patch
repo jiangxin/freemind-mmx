@@ -1,0 +1,38 @@
+--- freemind-0.8.0.orig/freemind/build.xml	2005-09-04 18:44:01.000000000 +0200
++++ freemind-0.8.0/freemind/build.xml	2005-10-14 07:13:18.634500080 +0200
+@@ -16,19 +16,16 @@
+ 	<property name="java_target_version" value="1.2" />
+ 	<property name="build.compiler" value="modern" />
+ 	<property name="ant.dir" value="lib/ant/lib"/>
++	<property name="java.dir" value="/usr/share/java"/>
+ 	<property name="jarbundler.jar" value = "jarbundler-1.4.jar"/>
+ 
+-    <taskdef name="jarbundler"
+-               classpath="${src}/lib/${jarbundler.jar}"
+-               classname="com.loomcom.ant.tasks.jarbundler.JarBundler" />
+-
+ 
+ 	
+ 	
+ 	<!-- begin generator part -->
+-	<property name="jaxb" value="${ant.dir}/jaxb-xjc.jar:${ant.dir}/jaxb-api.jar:${ant.dir}/jaxb-impl.jar:${ant.dir}/jaxb-libs.jar:${ant.dir}/namespace.jar:${ant.dir}/relaxngDatatype.jar:${ant.dir}/xsdlib.jar:${ant.dir}/jax-qname.jar"/>
+-	<property name="xml" value="${ant.dir}/sax.jar:${ant.dir}/dom.jar"/> 
+-	<property name="classpath" value="${jaxb}:${xml}:lib/commons-lang-2.0.jar:lib/forms-1.0.5.jar"/>
++	<property name="jaxb" value="${ant.dir}/jaxb-xjc.jar:${ant.dir}/jaxb-api.jar:${ant.dir}/jaxb-impl.jar:${ant.dir}/jaxb-libs.jar:${ant.dir}/namespace.jar:${java.dir}/relaxngDatatype.jar:${java.dir}/xsdlib.jar:${ant.dir}/jax-qname.jar"/>
++	<property name="xml" value="${java.dir}/xml-commons-apis.jar"/> 
++	<property name="classpath" value="${jaxb}:${xml}:${java.dir}/commons-lang.jar:${java.dir}/forms.jar"/>
+ 	<property name="xsd.dir" value="." />
+ 	<property name="gen.dir" value="generated" />
+ 	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask" 
+@@ -131,11 +128,6 @@
+         <copy file="${src}/user_comment.properties" tofile="${dist}/user.properties"/>
+ 
+         <chmod file="${dist}/freemind.sh" perm="u+rx"/>
+-		<copy todir="${dist}"> 
+-			<fileset dir="${src}/windows-launcher"
+-				includes="Freemind.exe"
+-			/>
+-		</copy>
+ 		<mkdir dir="${dist}/accessories" />
+ 		<mkdir dir="${dist}/plugins" />
+ 		<copy todir="${dist}/accessories" > 

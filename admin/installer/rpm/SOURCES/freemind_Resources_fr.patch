@@ -1,0 +1,1663 @@
+--- freemind/Resources_fr.properties	2005-08-03 22:09:24.000000000 +0200
++++ freemind/Resources_fr.properties	2005-10-27 09:35:45.000000000 +0200
+@@ -1,5 +1,6 @@
+ # made by Sylvain GAMEL - sgamel
+-about = \u00C0 propos
++# revised by Eric Lavarde 2005-10-26
++about = \u00c0 propos
+ #Joerg Mueller's FreeMind
+ #Taking the Concept-Mapping approach to Human-Computer Interface design.
+ #Copyright (C) 2000-2004 Joerg Mueller and others.
+@@ -7,7 +8,7 @@
+ #Home\: http\://freemind.sourceforge.net/
+ #Have fun\!
+ #Version\: 
+-about_text = FreeMind de Joerg Mueller\nApplication du concept des cartes mentales \u00E0 l'interface Homme Machine.\nCopyright (C) 2000-2001 Joerg Mueller <joemuell@informatik.uni-freiburg.de>\nCe programme est un logiciel libre (GPL)\nAller sur http\://freemind.sourceforge.net/\nAmusez-vous \!\nVersion\: 
++about_text = FreeMind de Joerg Mueller\nApplication du concept des cartes mentales \u00e0 l'interface Homme Machine.\nTous droits r\u00e9serv\u00e9s \u00a9 2000-2001 Joerg Mueller <joemuell@informatik.uni-freiburg.de>\nCe programme est un logiciel libre (GPL)\nAller sur http\://freemind.sourceforge.net/\nAmusez-vous \!\nVersion\: 
+ #Antialias All
+ antialias_all = Tout lisser
+ #Antialias Edges
+@@ -17,9 +18,9 @@
+ #Background
+ background = Fond
+ #Bezier
+-bezier = B\u00E9zier
++bezier = B\u00e9zier
+ #Blend Color
+-blend_color = M\u00E9lange les couleurs
++blend_color = \u00c9claircir la couleur
+ #Bold
+ bold = Gras
+ #Boldify
+@@ -38,69 +39,69 @@
+ copy = Copier
+ copy_single = Copier un seul
+ cut = Couper
+-decrease_branch_font_size = R\u00E9duire la taille de police de la branche
+-decrease_node_font_size = R\u00E9duire la taille de police du n\u0153ud
++decrease_branch_font_size = R\u00e9duire la taille de police de la branche
++decrease_node_font_size = R\u00e9duire la taille de police du n\u0153ud
+ documentation = Documentation
+ edge = Bord
+ #Edge Color...
+ edge_color = Couleur du bord...
+ edge_width_parent = du parent
+ edge_width_thin = fine
+-edit = \u00C9diter
+-edit_link_manually = \u00C9diter le lien manuellement
+-edit_long_node = \u00C9diter un n\u0153ud long
+-enter_base_url = Je vais coller les liens associ\u00E9s. Merci de saisir l'URL de base.
+-enter_confirms = "Entr\u00E9e" confirme
++edit = \u00c9diter
++edit_link_manually = \u00c9diter le lien manuellement
++edit_long_node = \u00c9diter un n\u0153ud long
++enter_base_url = Je vais coller les liens associ\u00e9s. Merci de saisir l'URL de base.
++enter_confirms = "Entr\u00e9e" confirme
+ export_branch = Exporter la branche
+ export_branch_to_html = Exporter la branche en HTML
+ export_to_html = Exporter en HTML
+ extension_menu = Style
+ file = Fichier
+-file_not_found = Le fichier $1 n'a pas \u00E9t\u00E9 trouv\u00E9
++file_not_found = Le fichier $1 n'a pas \u00e9t\u00e9 trouv\u00e9
+ find = Chercher...
+ find_what=Que chercher ?
+ find_next = Chercher le suivant
+ fold = Plier
+-follow_link = Follow Link
++follow_link = Suivre le lien
+ font = Police
+ #Fork
+-fork = Branche
++fork = Fourche
+ help = Aide
+-html_export_based_on_headings = Export en HTML - Bas\u00E9 sur les ent\u00EAtes
+-html_export_no_folding = Export en HTML - Tout d\u00E9pli\u00E9
++html_export_based_on_headings = Export en HTML - Bas\u00e9 sur les en-t\u00eates
++html_export_no_folding = Export en HTML - Tout d\u00e9pli\u00e9
+ html_export_fold_currently_folded = Export en HTML - Respecte les pliages actuels
+-html_export_fold_all = Export en HTML - Tout pli\u00E9
++html_export_fold_all = Export en HTML - Tout pli\u00e9
+ #Icons
+-icon_menu = Ic\u00F4nes
++icon_menu = Ic\u00f4nes
+ icon_help = Question
+ #Important
+ icon_messagebox_warning = Important
+-icon_idea=Id\u00E9e
+-icon_button_ok = Valider
+-icon_button_cancel = Invalide
++icon_idea=Id\u00e9e
++icon_button_ok = Valide
++icon_button_cancel = Invalid\u00e9
+ icon_back = Reculer
+ icon_forward = Avancer
+-icon_attach = Pi\u00E8ce jointe
+-icon_ksmiletris = Bonne humeur
++icon_attach = Pi\u00e8ce jointe
++icon_ksmiletris = Je suis content
+ icon_clanbomber = Danger
+ icon_desktop_new = Bureau
+ icon_flag = Drapeau
+ icon_gohome = Accueil
+-icon_kaddressbook = T\u00E9l\u00E9phone
++icon_kaddressbook = T\u00e9l\u00e9phone
+ icon_knotify = Musique
+-icon_korn=Boite \u00E0 lettre
++icon_korn=Bo\u00eete \u00e0 lettres
+ #Mail
+ icon_Mail = Message
+ #Key
+ icon_password = Clef
+ #To be refined
+-icon_pencil = Modifier
++icon_pencil = \u00c0 modifier
+ #Stop
+ icon_stop = Stop
+ #Magic
+ icon_wizard = Magique
+ #To be discussed
+-icon_xmag = \u00C0 discuter
++icon_xmag = \u00c0 discuter
+ icon_bell = Se souvenir
+ icon_bookmark = Excellent
+ #Linux
+@@ -114,11 +115,11 @@
+ #Explorer Favorites...
+ import_explorer_favorites = Importer les favoris d'Explorer
+ #Folder Structure...
+-import_folder_structure = Importer une arboresce de r\u00E9pertoires
++import_folder_structure = Importer une arborescence de r\u00e9pertoires
+ #Linked Branch
+-import_linked_branch = Importer une branche li\u00E9e
++import_linked_branch = Importer une branche li\u00e9e
+ #(Linked Branch) Without Root...
+-import_linked_branch_without_root = (la branche li\u00E9e) sans la racine
++import_linked_branch_without_root = (la branche li\u00e9e) sans la racine
+ #Larger Font
+ increase_branch_font_size = Augmenter la tailler de police de la branche
+ #Larger Font
+@@ -148,23 +149,23 @@
+ #You should have received a copy of the GNU General Public License
+ #along with this program; if not, write to the Free Software
+ #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+-license_text=FreeMind - Une application pour cr\u00E9er et visualiser des Cartes Mentales\nCopyright (C) 2000  Joerg Mueller <joergmueller@bigfoot.com>\nPour plus de d\u00E9tails, se reporter au fichier COPYING\n\nCe logiciel est un logiciel libre. Vous pouvez le redistribuer et/ou\nle modifier en respectant les termes de la GNU General Public License\ntelle qu'elle est publi\u00E9e par la Free Software Foundation; soit avec la version 2\nde la License, ou (selon votre choix) toute version ult\u00E9rieure.\n\nCe logiciel est distribu\u00E9 dans l'espoir qu'il  vous soit utile,\nmais SANS AUCUNE GARANTIE ; sans m\u00EAme la garantie implicite d'une VALEUR MARCHANDE ou\nl'AD\u00C9QUATION \u00C0 UN BESOIN SP\u00C9CIFIQUE.\nReportez-vous \u00E0 la Licence Publique G\u00E9n\u00E9rale GNU pour de plus amples informations.\n\nVous devriez avoir re\u00E7u une copie de la Licence Publique G\u00E9n\u00E9rale GNU\navec ce logiciel. Si tel n'est pas le cas, \u00E9crivez \u00E0 \:\nFree Software Foundation, Inc.\n59 Temple Place\nSuite 330,\nBoston, MA  02111-1307, USA.
++license_text=FreeMind - Une application pour cr\u00e9er et visualiser des Cartes Mentales\nTous droits r\u00e9serv\u00e9s \u00a9 2000  Joerg Mueller <joergmueller@bigfoot.com>\nPour plus de d\u00e9tails, se reporter au fichier COPYING\n\nCe logiciel est un logiciel libre. Vous pouvez le redistribuer et/ou\nle modifier en respectant les termes de la GNU General Public License\ntelle qu'elle est publi\u00e9e par la Free Software Foundation; soit avec la version 2\nde la License, ou (selon votre choix) toute version ult\u00e9rieure.\n\nCe logiciel est distribu\u00e9 dans l'espoir qu'il  vous soit utile,\nmais SANS AUCUNE GARANTIE ; sans m\u00eame la garantie implicite d'une VALEUR MARCHANDE ou\nl'AD\u00c9QUATION \u00c0 UN BESOIN SP\u00c9CIFIQUE.\nReportez-vous \u00e0 la Licence Publique G\u00e9n\u00e9rale GNU pour de plus amples informations.\n\nVous devriez avoir re\u00e7u une copie de la Licence Publique G\u00e9n\u00e9rale GNU\navec ce logiciel. Si tel n'est pas le cas, \u00e9crivez \u00e0 \:\nFree Software Foundation, Inc.\n59 Temple Place\nSuite 330,\nBoston, MA  02111-1307, USA.
+ #Linear
+ linear = rectiligne
+ #Locking of the map $1 failed. Opening as read-only.
+ locking_failed_by_open = Je n'ai pas pu verrouiller la carte $1. Ouverture en lecture-seule.
+ #Locking of the map $1 failed. Action Save As aborted.
+-locking_failed_by_save_as = Je n'ai pas pu verrouiller la carte $1. Op\u00E9ration "Sauver sous" abandonn\u00E9e.
++locking_failed_by_save_as = Je n'ai pas pu verrouiller la carte $1. Op\u00e9ration "Sauver sous" abandonn\u00e9e.
+ #The map $1 was locked by the user $2. The lock has been removed because it is old.
+-locking_old_lock_removed = La carte $1 a \u00E9t\u00E9 verrouill\u00E9e par l'utilisateur $2. Le verrou a \u00E9t\u00E9 supprim\u00E9 car il est ancien.
++locking_old_lock_removed = La carte $1 a \u00e9t\u00e9 verrouill\u00e9e par l'utilisateur $2. Le verrou a \u00e9t\u00e9 supprim\u00e9 car il est ancien.
+ #The map already exists. Do you want to overwrite it?
+-map_already_exists = La carte existe d\u00E9j\u00E0. Souhaitez-vous vraiment l'\u00E9craser ?
++map_already_exists = La carte existe d\u00e9j\u00e0. Souhaitez-vous vraiment l'\u00e9craser ?
+ #Map corrupted. View detail? 
+-map_corrupted = Carte d\u00E9t\u00E9rior\u00E9e. Afficher les d\u00E9tails ?
++map_corrupted = Carte d\u00e9t\u00e9rior\u00e9e. Afficher les d\u00e9tails ?
+ #The map $1 is already being edited by the user $2. Opening as read-only.
+-map_locked_by_open = La carte $1 est actuellement \u00E9dit\u00E9e par l'utilisateur $2. Ouverture en lecture-seule.
++map_locked_by_open = La carte $1 est actuellement \u00e9dit\u00e9e par l'utilisateur $2. Ouverture en lecture-seule.
+ #The map $1 is being edited by the user $2. Action Save As aborted.
+-map_locked_by_save_as = La carte $1 est actuellement \u00E9dit\u00E9e par l'utilisateur $2. L'op\u00E9ration "Sauver sous" est abandonn\u00E9e.
++map_locked_by_save_as = La carte $1 est actuellement \u00e9dit\u00e9e par l'utilisateur $2. L'op\u00e9ration "Sauver sous" est abandonn\u00e9e.
+ #Map
+ mindmap = Carte
+ #Maps
+@@ -174,25 +175,25 @@
+ #Mode not available
+ mode_na = Mode indisponible
+ #Mode changed to {0} Mode
+-mode_status=Mode transform\u00E9 en mode {0}
++mode_status=Mode transform\u00e9 en mode {0}
+ #FreeMind - {0} Mode
+ mode_title =FreeMind - Mode {0}
+ #Modes
+ modes = Modes
+ #Move to Root
+-move_to_root = Aller \u00E0 la racine
++move_to_root = Aller \u00e0 la racine
+ #New
+ new = Nouveau
+ #New Child Node
+-new_child = Nouveau n\u0153ud comme fils de la s\u00E9lection
++new_child = Nouveau n\u0153ud comme fils de la s\u00e9lection
+ #New Mindmap
+ new_mindmap = Nouvelle carte mentale
+ #New Node
+ new_node = Nouveau n\u0153ud
+ #New Sibling Node
+-new_sibling_behind=Nouveau n\u0153ud fr\u00E8re apr\u00E8s la s\u00E9lection
++new_sibling_behind=Nouveau n\u0153ud fr\u00e8re apr\u00e8s la s\u00e9lection
+ #New Previous Sibling Node
+-new_sibling_before=Nouveau n\u0153ud fr\u00E8re avant la s\u00E9lection
++new_sibling_before=Nouveau n\u0153ud fr\u00e8re avant la s\u00e9lection
+ #Next Map
+ next_map = Carte suivante
+ #No
+@@ -200,7 +201,7 @@
+ #Node
+ node = N\u0153ud
+ #You have changed the node. Do you want to discard changes?
+-node_changed_discard_changes = Vous avez modifi\u00E9 le n\u0153d. Souhaitez-vous vraiment perdre ces modifications ?
++node_changed_discard_changes = Vous avez modifi\u00e9 le n\u0153d. Souhaitez-vous vraiment perdre ces modifications ?
+ #Node Color...
+ node_color = Couleur du n\u0153ud...
+ #Node Down
+@@ -214,13 +215,13 @@
+ #Normal
+ normal = Normal
+ #No "$1" found from "$2".
+-no_found_from = "$1" n'a pas \u00E9t\u00E9 trouv\u00E9 \u00E0 partir de "$2".
++no_found_from = "$1" n'a pas \u00e9t\u00e9 trouv\u00e9 \u00e0 partir de "$2".
+ #No more "$1" found from "$2".
+-no_more_found_from = "$1" n'est plus trouvable \u00E0 partir de "$2".
++no_more_found_from = "$1" n'est plus trouvable \u00e0 partir de "$2".
+ #No previous find.
+-no_previous_find = Pas de pr\u00E9c\u00E9dente recherche.
++no_previous_find = Pas de pr\u00e9c\u00e9dente recherche.
+ #The map must be saved before you can set a link by file chooser
+-not_saved_for_link_error = La carte doit avoir \u00E9t\u00E9 sauv\u00E9e avant de pouvoir d\u00E9finir un lien via le s\u00E9lecteur de fichiers.
++not_saved_for_link_error = La carte doit avoir \u00e9t\u00e9 sauv\u00e9e avant de pouvoir d\u00e9finir un lien via le s\u00e9lecteur de fichiers.
+ #Open...
+ open = Ouvrir...
+ #Page Setup...
+@@ -228,11 +229,11 @@
+ #Paste
+ paste = Coller
+ #New node as sibling is not possible for the root
+-new_node_as_sibling_not_possible_for_the_root=Impossible de cr\u00E9er un n\u0153ud fr\u00E8re pour la racine
++new_node_as_sibling_not_possible_for_the_root=Impossible de cr\u00e9er un n\u0153ud fr\u00e8re pour la racine
+ #Preferences
+-preferences = Pr\u00E9f\u00E9rences
++preferences = Pr\u00e9f\u00e9rences
+ #Previous Map
+-previous_map = Carte pr\u00E9c\u00E9dente
++previous_map = Carte pr\u00e9c\u00e9dente
+ #Print...
+ print = Imprimer...
+ #Quit
+@@ -240,36 +241,36 @@
+ #Remove Node
+ remove_node = Supprimer ce n\u0153ud
+ #Read Only
+-read_only = Lecture seule
++read_only = En lecture seule
+ #Repair Link
+-repair_link = R\u00E9parer le lien
++repair_link = R\u00e9parer le lien
+ #Couldn't load the linked map. Repair the link manually?
+-repair_link_question = Impossible de charger la carte li\u00E9e. Faut-il r\u00E9parer le lien manuellement ?
++repair_link_question = Impossible de charger la carte li\u00e9e. Faut-il r\u00e9parer le lien manuellement ?
+ #Save
+ save = Sauver
+ save_as = Sauver sous...
+ #Attempt to save the map $1 failed.
+-save_failed = La tentatice de souver la carte $1 a \u00E9chou\u00E9e.
++save_failed = La tentatice de sauver la carte $1 a \u00e9chou\u00e9e.
+ #Save the following mindmap? \:
+ save_unsaved = Faut-il sauver la carte suivante ? 
+ #Saved
+-saved = Sauv\u00E9(e)
++saved = Sauv\u00e9(e)
+ #Evaluate\!
+-scheme_evaluate = \u00C9valuer \!
++scheme_evaluate = \u00c9valuer \!
+ #Select the folder, in which your favorites reside
+-select_favorites_folder = S\u00E9lectionnez le r\u00E9pertoire dans lequel se trouvent vos favoris
++select_favorites_folder = S\u00e9lectionnez le r\u00e9pertoire dans lequel se trouvent vos favoris
+ #Select the folder to import
+-select_folder_for_importing = S\u00E9lectionnez le r\u00E9pertoire \u00E0 importer
++select_folder_for_importing = S\u00e9lectionnez le r\u00e9pertoire \u00e0 importer
+ #Image (File Chooser or Link)...
+-set_image_by_filechooser = D\u00E9finir l'image (s\u00E9lection de fichier ou lien)
++set_image_by_filechooser = Ins\u00e9rer une image (s\u00e9lection de fichier ou lien)
+ #Hyperlink (File Chooser)...
+-set_link_by_filechooser = D\u00E9finir le lien (s\u00E9lection de fichier)
++set_link_by_filechooser = Ins\u00e9rer un lien (s\u00e9lection de fichier)
+ #Hyperlink (Text Field)...
+-set_link_by_textfield = D\u00E9finir le lien (champ de saisie)
++set_link_by_textfield = Ins\u00e9rer un lien (champ de saisie)
+ #Sharp Bezier
+-sharp_bezier = B\u00E9zier effil\u00E9
++sharp_bezier = B\u00e9zier effil\u00e9
+ #Sharp Linear
+-sharp_linear = rectiligne effil\u00E9
++sharp_linear = rectiligne effil\u00e9
+ #Split
+ split = Diviser
+ #Style
+@@ -277,70 +278,70 @@
+ #Toggle Bold
+ toggle_bold_branch = Branche avec/sans gras
+ #(Un)fold Children
+-toggle_children_folded = Plier/d\u00E9plier les enfants
++toggle_children_folded = Plier/d\u00e9plier les enfants
+ #Toggle Folded
+-toggle_folded = Plier/d\u00E9plier
++toggle_folded = Plier/d\u00e9plier
+ #Toggle Italic
+ toggle_italic_branch = Branche avec/sans italique
+ #Toggle Menubar
+ toggle_menubar = Montrer/masquer la barre de menu
+ toggle_toolbar = Montrer/masquer la barre d'outils
+ #Toggle Left Toolbar
+-toggle_left_toolbar = Montrer/masquer la barre d'ic\u00F4nes
++toggle_left_toolbar = Montrer/masquer la barre d'ic\u00f4nes
+ #Underline
+ underline = Souligner
+ #Unfold
+-unfold = D\u00E9plier
++unfold = D\u00e9plier
+ #This URL is malformed\!
+ url_error = Cette URL est incorrecte \!
+ #Could not load map at URL\:
+-url_load_error = Je suis incapable de charger la carte \u00E0 l'URL \:
++url_load_error = Je suis incapable de charger la carte \u00e0 l'URL \:
+ #Width
+-width = \u00C9paisseur
++width = \u00c9paisseur
+ #Yes
+ yes = Oui
+ #Zoom In
+ zoom_in = Augmenter le zoom
+ #Zoom Out
+-zoom_out = R\u00E9duire le zoom
++zoom_out = R\u00e9duire le zoom
+ #Remove Last Icon
+-remove_last_icon = Retirer le dernier ic\u00F4nes
++remove_last_icon = Retirer la derni\u00e8re ic\u00f4ne
+ #Remove All Icons
+-remove_all_icons = Retirer tous les ic\u00F4nes
++remove_all_icons = Retirer toutes les ic\u00f4nes
+ #You are going to create a lot of links to the same node. Do you really want to create these links?
+-lots_of_links_warning = Vous allez cr\u00E9er un nombre important de liens vers le m\u00EAme n\u0153ud. Voulez-vous vraiment cr\u00E9er ces liens ?
++lots_of_links_warning = Vous allez cr\u00e9er un nombre important de liens vers le m\u00eame n\u0153ud. Voulez-vous vraiment cr\u00e9er ces liens ?
+ #Remove Arrow Link
+-remove_arrow_link = Supprimer la fl\u00E8che du lien
++remove_arrow_link = Supprimer la fl\u00e8che du lien
+ #Arrow Link Color...
+-arrow_link_color = Couleur de la fl\u00E8che du lien...
++arrow_link_color = Couleur de la fl\u00e8che du lien...
+ follow_link = Suivre le lien 
+ #User defined.
+-user_defined_zoom = Zoom personnalis\u00E9
++user_defined_zoom = Zoom personnalis\u00e9
+ #Changing the zoom to the user defined zoom value of {0}%.
+-user_defined_zoom_status_bar = Changement du facteur de grossissement \u00E0 {0}%, choix de l'utilisateur.
++user_defined_zoom_status_bar = Changement du facteur de grossissement \u00e0 {0}%, choix de l'utilisateur.
+ # new from 14.12.2003, fc
+ FAQ = Foire aux questions (FAQ)
+ #Print Scaling
+-printing_settings = R\u00E9glages d'impression
+-fit_to_page = Ajuster \u00E0 une seule page
++printing_settings = R\u00e9glages d'impression
++fit_to_page = Ajuster \u00e0 une seule page
+ #Print Zoom Factor (0.0 - 2.0)\:
+ user_zoom = Facteur grossissant pour l'impression (0.0 - 2.0) \:
+ #OK
+ ok = Valider
+ #Single-click to Select
+-selection_method_by_click = S\u00E9lection par simple clic
++selection_method_by_click = S\u00e9lection par simple clic
+ #Point to Select
+-selection_method_direct = S\u00E9lection par pointage
++selection_method_direct = S\u00e9lection par pointage
+ #Delayed Automatic Selection 
+-selection_method_delayed=S\u00E9lection retard\u00E9e
++selection_method_delayed=S\u00e9lection retard\u00e9e
+ #The selected node has no link to import from.
+-import_linked_branch_no_link=Le n\u0153ud s\u00E9lectionn\u00E9 n'a pas de lien exploitable comme source d'importation.
++import_linked_branch_no_link=Le n\u0153ud s\u00e9lectionn\u00e9 n'a pas de lien exploitable comme source d'importation.
+ 
+ #You have to select at least two nodes to get links.
+-less_than_two_selected_nodes=Vous devez s\u00E9lectionner au moins deux n\u0153uds pour les lier.
++less_than_two_selected_nodes=Vous devez s\u00e9lectionner au moins deux n\u0153uds pour les lier.
+ 
+ #The link is not valid anymore. The node was deleted in between.
+-link_not_available_any_more=Ce lien n'est plus valide. Le n\u0153ud a \u00E9t\u00E9 supprim\u00E9 dans l'intervalle.
++link_not_available_any_more=Ce lien n'est plus valide. Le n\u0153ud a \u00e9t\u00e9 supprim\u00e9 dans l'intervalle.
+ #Tools
+ menu_extras=Outils
+ #Export
+@@ -348,9 +349,9 @@
+ #Import
+ menu_file_import=Importer
+ #Format
+-menu_format=Pr\u00E9sentation
++menu_format=Pr\u00e9sentation
+ #Insert
+-menu_insert=Ins\u00E9rer
++menu_insert=Ins\u00e9rer
+ #Navigate
+ menu_navigate=Navigation
+ 
+@@ -358,10 +359,10 @@
+ menu_view=Affichage
+ 
+ #Most Recent Files
+-most_recent_files=Fichier les plus r\u00E9cents
++most_recent_files=Fichier les plus r\u00e9cents
+ 
+ #You can't paste a format until you've copied one.
+-no_format_copy_before_format_paste=Vous ne pouvez coller un format avant d'en avoir copi\u00E9 un.
++no_format_copy_before_format_paste=Vous ne pouvez coller un format avant d'en avoir copi\u00e9 un.
+ 
+ #Node Background Color...
+ node_background_color=Couleur de fond du n\u0153ud...
+@@ -370,21 +371,21 @@
+ undo=Annuler
+ 
+ #Underlined
+-underlined=Soulign\u00E9
++underlined=Soulign\u00e9
+ 
+ #An unexpected error occured. Please try to make a bug report.
+-undefined_error=Une erreur impr\u00E9vue viens de se produire. Merci de bien vouloir essayer d'\u00E9tablir un rapport de bogue.
++undefined_error=Une erreur impr\u00e9vue viens de se produire. Merci de bien vouloir essayer d'\u00e9tablir un rapport de bogue.
+ 
+ #Select Visible Branch
+-select_branch=S\u00E9lectionner la branche visible
++select_branch=S\u00e9lectionner la branche visible
+ 
+ #Select All Visible
+-select_all=S\u00E9lectionner ce qui est visible
++select_all=S\u00e9lectionner ce qui est visible
+ 
+ #Revert
+-RevertAction=Revenir \u00E0 la sauvegarde
++RevertAction=Revenir \u00e0 la sauvegarde
+ #Reset Position
+-reset_node_position=Remise \u00E0 z\u00E9ro de la position
++reset_node_position=Remise \u00e0 z\u00e9ro de la position
+ 
+ #Remove Node Background Color
+ remove_node_background_color=Retirer la couleur de fond du n\u0153ud
+@@ -393,16 +394,16 @@
+ redo=Refaire
+ 
+ #Properties ...
+-property_dialog=Propri\u00E9t\u00E9s...
++property_dialog=Propri\u00e9t\u00e9s...
+ as_parent=En le parent
+ 
+ #All nodes must have the same parent to use this function.
+-cannot_add_parent_diff_parents=Tous les n\u0153uds doivent avoir le m\u00EAme parent pour utiliser cette fonction.
++cannot_add_parent_diff_parents=Tous les n\u0153uds doivent avoir le m\u00eame parent pour utiliser cette fonction.
+ 
+ #The root node can't be added to a new parent.
+-cannot_add_parent_to_root=Le n\u0153ud racine ne peut \u00EAtre ajout\u00E9 \u00E0 un nouveau parent.
++cannot_add_parent_to_root=Le n\u0153ud racine ne peut \u00eatre ajout\u00e9 \u00e0 un nouveau parent.
+ #Can't move a node to one of its children.
+-cannot_move_to_child=Impossible de d\u00E9placer un n\u0153ud dans un de ces enfants.
++cannot_move_to_child=Impossible de d\u00e9placer un n\u0153ud dans un de ces enfants.
+ 
+ #Combined
+ combined=Mixte
+@@ -416,10 +417,10 @@
+ #Edge Width 
+ edge_width=Largeur de ligne 
+ #Edit Node
+-edit_node=\u00C9diter le n\u0153ud
++edit_node=\u00c9diter le n\u0153ud
+ 
+ #Cannot create directory for export.
+-error_creating_directory=Impossible de cr\u00E9er un r\u00E9pertoire pour l'exportation.
++error_creating_directory=Impossible de cr\u00e9er un r\u00e9pertoire pour l'exportation.
+ #Portable Document Format (PDF)
+ export_pdf_text=Adobe PDF (Portable Document Format)
+ 
+@@ -427,7 +428,7 @@
+ export_svg_text=Graphique vectoriel SVG (Scalable Vector Graphic)
+ 
+ #The file {0} already exists. Do you want to overwrite it?
+-file_already_exists=Le fichier {0} existe d\u00E9j\u00E0. Voulez-vous vraiment l'\u00E9craser ?
++file_already_exists=Le fichier {0} existe d\u00e9j\u00e0. Voulez-vous vraiment l'\u00e9craser ?
+ 
+ #font family
+ font_family=Famille de police
+@@ -448,7 +449,7 @@
+ accessories/plugins/EncryptNode.properties_2=Entrez le mot de passe \:
+ 
+ #Re-enter Password\:
+-accessories/plugins/EncryptNode.properties_3=Entrez \u00E0 nouveau le mot de passe \:
++accessories/plugins/EncryptNode.properties_3=Entrez \u00e0 nouveau le mot de passe \:
+ 
+ #Enter your password.
+ accessories/plugins/EncryptNode.properties_4=Entrez votre mot de passe.
+@@ -460,13 +461,14 @@
+ accessories/plugins/EncryptNode.properties_7=Annuler
+ 
+ #Select me to continue\!
+-accessories/plugins/EncryptNode.properties_select_me=S\u00E9lectionnez-moi pour continuer \!
++accessories/plugins/EncryptNode.properties_select_me=S\u00e9lectionnez-moi pour continuer \!
+ 
+ #The password is not correct.
+ accessories/plugins/EncryptNode.properties_wrong_password=Le mot de passe n'est pas valide.
+ 
+ #Toggle Crypted / Encrypted
+-accessories/plugins/EnterPassword.properties_name=Basculer de/vers chiffr\u00E9 \u00E0 non-chiffr\u00E9
++accessories/plugins/EnterPassword.properties_name=Chiffrer/d\u00e9chiffrer
++accessories/plugins/EnterPassword.properties_documentation=Basculer de/vers chiffr\u00e9 \u00e0 non-chiffr\u00e9
+ 
+ #As JPEG...
+ accessories/plugins/ExportToImage_JPEG.properties_name=En JPEG...
+@@ -479,9 +481,11 @@
+ 
+ #As XHTML (JavaScript version)...
+ accessories/plugins/ExportWithXSLT_HTML.properties_name=En XHTML (version JavaScript)...
++accessories/plugins/ExportWithXSLT_HTML.properties_documentation=Fichier XHTML avec avec une liste pouvant \u00eatre pli\u00e9e et d\u00e9pli\u00e9e.
+ 
+ #As XHTML (Clickable map image version)...
+ accessories/plugins/ExportWithXSLT_HTML3.properties_name=En XHTML (image cliquable)..
++accessories/plugins/ExportWithXSLT_HTML3.properties_documentation=Fichier XHTML avec une image cliquable en t\u00eate.
+ 
+ #Zoom to Fit to Page
+ accessories/plugins/FitToPage.properties_name=Faire tenir dans la page
+@@ -499,10 +503,10 @@
+ accessories/plugins/FormatPaste.properties_name=Coller la mise en forme
+ 
+ #Formular Editor
+-accessories/plugins/FormularEditor.properties_name=\u00C9diteur de formule
++accessories/plugins/FormularEditor.properties_name=\u00c9diteur de formule
+ 
+ #Unfold One Level
+-accessories/plugins/UnfoldOneLevel.properties_name=D\u00E9plier un niveau
++accessories/plugins/UnfoldOneLevel.properties_name=D\u00e9plier un niveau
+ 
+ #Add Graphical Link
+ add_link=Ajouter un lien graphique
+@@ -511,18 +515,18 @@
+ add_local_link=Ajouter un lien local
+ 
+ #Unfold All
+-accessories/plugins/UnfoldAll.properties_name=Tout d\u00E9plier
++accessories/plugins/UnfoldAll.properties_name=Tout d\u00e9plier
+ #Show icons hierarchically
+-accessories/plugins/HierarchicalIcons.properties_name=Afficher les ic\u00F4nes hi\u00E9rarchiquement
++accessories/plugins/HierarchicalIcons.properties_name=Afficher les ic\u00f4nes hi\u00e9rarchiquement
+ 
+ #Select Icon...
+-accessories/plugins/IconSelectionPlugin.properties_name=S\u00E9lection d'ic\u00F4nes...
++accessories/plugins/IconSelectionPlugin.properties_name=S\u00e9lection d'ic\u00f4nes...
+ 
+ #Create a new encrypted map
+-accessories/plugins/NewEncryptedMap.properties_documentation=Cr\u00E9er une nouvelle carte chriffr\u00E9e
++accessories/plugins/NewEncryptedMap.properties_documentation=Cr\u00e9er une nouvelle carte chriffr\u00e9e
+ 
+ #Create Encrypted Map ...
+-accessories/plugins/NewEncryptedMap.properties_name=Cr\u00E9er carte chriffr\u00E9e...
++accessories/plugins/NewEncryptedMap.properties_name=Cr\u00e9er carte chriffr\u00e9e...
+ 
+ #New Parent Node
+ accessories/plugins/NewParentNode.properties_name=Nouveau n\u0153ud parent
+@@ -531,63 +535,63 @@
+ accessories/plugins/NodeNote.properties_name=Note
+ 
+ #Priority 1
+-icon_full-1=Priorit\u00E9 1
++icon_full-1=Priorit\u00e9 1
+ #Priority 2
+-icon_full-2=Priorit\u00E9 2
++icon_full-2=Priorit\u00e9 2
+ #Priority 3
+-icon_full-3=Priorit\u00E9 3
++icon_full-3=Priorit\u00e9 3
+ #Priority 4
+-icon_full-4=Priorit\u00E9 4
++icon_full-4=Priorit\u00e9 4
+ #Priority 5
+-icon_full-5=Priorit\u00E9 5
++icon_full-5=Priorit\u00e9 5
+ #Priority 6
+-icon_full-6=Priorit\u00E9 6
++icon_full-6=Priorit\u00e9 6
+ #Priority 7
+-icon_full-7=Priorit\u00E9 7
++icon_full-7=Priorit\u00e9 7
+ #Choose password for encrypted node
+-accessories/plugins/EncryptNode.properties_0=Choisir le mot de passe pour le n\u0153ud chiffr\u00E9
++accessories/plugins/EncryptNode.properties_0=Choisir le mot de passe pour le n\u0153ud chiffr\u00e9
+ 
+ #Passwords are not equal or to short.
+ accessories/plugins/EncryptNode.properties_1=Les mots de passe ne sont pas identiques ou sont trop courts.
+ 
+ #Insert Encrypted Node...
+-accessories/plugins/EncryptNode.properties_name=Ins\u00E9rer un n\u0153ud chiffr\u00E9
++accessories/plugins/EncryptNode.properties_name=Ins\u00e9rer un n\u0153ud chiffr\u00e9
+ 
+ #Show Revisions in Yellow
+-accessories/plugins/RevisionPlugin.properties_name=Afficher les r\u00E9visions en jaune
++accessories/plugins/RevisionPlugin.properties_name=Afficher les r\u00e9visions en jaune
+ #<html>Fixes the layout of the map. <br>The first level is black, the second blue, etc.</html>
+ accessories/plugins/AutomaticLayout.properties_documentation=<html>Corrige la mise en forme de la carte.<br>Le premier niveau est noir, le second bleu, etc.</html>
+ 
+ #<html>This makes the node blinking. But be careful. Do not associate it to many nodes, and <strong> not with other automatic formattings to the same node</strong></html>
+-accessories/plugins/BlinkingNodeHook.properties_documentation=<html>Ceci rend la n\u0153ud clignotant. Mais prennez garde \u00E0 ne pas l'associer \u00E0 trop de n\u0153uds, et <strong>surtout pas</strong> avec d'autres n\u0153uds ayant un formattage automatique pour ce m\u00EAme n\u0153ud</html>
++accessories/plugins/BlinkingNodeHook.properties_documentation=<html>Ceci rend la n\u0153ud clignotant. Mais prennez garde \u00e0 ne pas l'associer \u00e0 trop de n\u0153uds, et <strong>surtout pas</strong> avec d'autres n\u0153uds ayant un formattage automatique pour ce m\u00eame n\u0153ud</html>
+ 
+ #<html>This function keeps track of node creation and modification times.</html>
+-accessories/plugins/CreationModificationPlugin.properties_documentation=<html>Cette fonction garde la trace des date et heure de cr\u00E9ation et modification des n\u0153uds.</html>
++accessories/plugins/CreationModificationPlugin.properties_documentation=<html>Cette fonction garde la trace des date et heure de cr\u00e9ation et modification des n\u0153uds.</html>
+ #<html>Remember, that the strength of the encryption<br> depends nearly completely on the quality of your password.
+-accessories/plugins/EncryptNode.properties_5=<html>Souvenez-vous que la qualit\u00E9 d'un chiffrement d\u00E9pend presque enti\u00E8rement de la qualit\u00E9 de votre mot de passe.</html>
++accessories/plugins/EncryptNode.properties_5=<html>Souvenez-vous que la qualit\u00e9 d'un chiffrement d\u00e9pend presque enti\u00e8rement de la qualit\u00e9 de votre mot de passe.</html>
+ 
+ #Inserts a new node whose child nodes are stored encrypted.
+-accessories/plugins/EncryptNode.properties_documentation=Ins\u00E8re un nouveau n\u0153ud dont les descendants seront stock\u00E9s chiffr\u00E9s.
++accessories/plugins/EncryptNode.properties_documentation=Ins\u00e8re un nouveau n\u0153ud dont les descendants seront stock\u00e9s chiffr\u00e9s.
+ 
+ #You can only toggle the encryption state of an encrypted node. Please insert such a node using the tools menu.
+-accessories/plugins/EncryptNode.properties_insert_encrypted_node_first=Vous ne pouvez changer l'\u00E9tat de chiffrement d'un n\u0153ud chiffr\u00E9. Ins\u00E9rez un tel n\u0153ud en utilisant le menu "outils".
++accessories/plugins/EncryptNode.properties_insert_encrypted_node_first=Vous ne pouvez changer l'\u00e9tat de chiffrement d'un n\u0153ud chiffr\u00e9. Ins\u00e9rez un tel n\u0153ud en utilisant le menu "outils".
+ #Exports the map in the current folding to a JPEG image.
+-accessories/plugins/ExportToImage_JPEG.properties_documentation=Exporte la carte telle qu'elle est pli\u00E9e sous forme d'image au format JPEG.
++accessories/plugins/ExportToImage_JPEG.properties_documentation=Exporte la carte telle qu'elle est pli\u00e9e sous forme d'image au format JPEG.
+ 
+ #Exports the map in the current folding to a PNG image.
+-accessories/plugins/ExportToImage_PNG.properties_documentation=Exporte la carte telle qu'elle est pli\u00E9e sous forme d'image au format PNG.
++accessories/plugins/ExportToImage_PNG.properties_documentation=Exporte la carte telle qu'elle est pli\u00e9e sous forme d'image au format PNG.
+ 
+ #This is an uniform export method using XSLT scripts.
+ accessories/plugins/ExportWithXSLT.properties_documentation=Ceci est une exportation qui utilise une feuille de style XML de transformation (XSLT).
+ 
+ #Adjusts the zoom such that the entire map fits into the current window.
+-accessories/plugins/FitToPage.properties_documentation=Ajuste le facteur de grossissement de sorte que la carte tienne enti\u00E8rement dans la fen\u00EAtre courante.
++accessories/plugins/FitToPage.properties_documentation=Ajuste le facteur de grossissement de sorte que la carte tienne enti\u00e8rement dans la fen\u00eatre courante.
+ 
+ #<html>Folds the selected nodes and all their children.</html>
+-accessories/plugins/FoldAll.properties_documentation=<html>Plie les n\u0153uds s\u00E9lectionn\u00E9s ainsi que leurs descendants.</html>
++accessories/plugins/FoldAll.properties_documentation=<html>Plie les n\u0153uds s\u00e9lectionn\u00e9s ainsi que leurs descendants.</html>
+ 
+ #<html>Folds the selected nodes by one level.</html>
+-accessories/plugins/FoldOneLevel.properties_documentation=<html>Plie 'un niveau du n\u0153ud s\u00E9lectionn\u00E9.</html>
++accessories/plugins/FoldOneLevel.properties_documentation=<html>Plie 'un niveau du n\u0153ud s\u00e9lectionn\u00e9.</html>
+ 
+ #<html>Copies the format of a node.</html>
+ accessories/plugins/FormatCopy.properties_documentation=<html>Copie la mise en forme du n\u0153ud.</html>
+@@ -596,22 +600,22 @@
+ accessories/plugins/FormatPaste.properties_documentation=<html>Colle la mise en forme d'un n\u0153ud.</html>
+ 
+ #<html>Associates a simple formular editor to the current note.</html>
+-accessories/plugins/FormularEditor.properties_documentation=<html>Associe un \u00E9diteur de formule basique au n\u0153uds courant.</html>
++accessories/plugins/FormularEditor.properties_documentation=<html>Associe un \u00e9diteur de formule basique au n\u0153uds courant.</html>
+ 
+ #If one of the (grand)children of me has an icon, I will show this icon in little format, too.
+-accessories/plugins/HierarchicalIcons.properties_documentation=Si un de mes descendants a un ic\u00F4ne, je vais \u00E9galement afficher cet ic\u00F4ne.
++accessories/plugins/HierarchicalIcons.properties_documentation=Si un de mes descendants a une ic\u00f4ne, je vais \u00e9galement afficher cette ic\u00f4ne.
+ 
+ #<html>Here you can select an icon using a subwindow.</html>
+-accessories/plugins/IconSelectionPlugin.properties_documentation=<html>Ici vous pourrez s\u00E9lectionner un ic\u00F4ne en utisant une palette.</html>
++accessories/plugins/IconSelectionPlugin.properties_documentation=<html>Ici vous pourrez s\u00e9lectionner une ic\u00f4ne en utisant une palette.</html>
+ 
+ #<html>All selected are sent to a new parent.</html>
+-accessories/plugins/NewParentNode.properties_documentation=<html>Tout ce qui est s\u00E9lectionn\u00E9 est envoy\u00E9 vers un nouveau parent.</html>
++accessories/plugins/NewParentNode.properties_documentation=<html>Tout ce qui est s\u00e9lectionn\u00e9 est envoy\u00e9 vers un nouveau parent.</html>
+ 
+ #<html>Associates a simple note editor to the current note.</html>
+-accessories/plugins/NodeNote.properties_documentation=<html>Associe un \u00E9diteur de note basique au n\u0153ud courant.</html>
++accessories/plugins/NodeNote.properties_documentation=<html>Associe un \u00e9diteur de note basique au n\u0153ud courant.</html>
+ 
+ #Change Arrows of Arrow Link
+-change_arrows_in_arrow_link=Modifie la fl\u00E8che utilis\u00E9e pour ce lien.
++change_arrows_in_arrow_link=Modifie la fl\u00e8che utilis\u00e9e pour ce lien.
+ #change_link_arrows
+ change_link_arrows=change_link_arrows [TRANSLATE]
+ 
+@@ -631,19 +635,19 @@
+ choose_node_color=Choix de la couleur du n\u0153ud \:
+ 
+ #<html>Unfolds the selected nodes by one level.</html>
+-accessories/plugins/UnfoldOneLevel.properties_documentation=<html>D\u00E9plie un niveau du n\u0153ud s\u00E9lectionn\u00E9.</html>
++accessories/plugins/UnfoldOneLevel.properties_documentation=<html>D\u00e9plie un niveau du n\u0153ud s\u00e9lectionn\u00e9.</html>
+ 
+ #<html>Unfolds the selected nodes and all their children.</html>
+-accessories/plugins/UnfoldAll.properties_documentation=<html>D\u00E9plie le n\u0153ud s\u00E9lectionn\u00E9 ainsi que ses descendants.</html>
++accessories/plugins/UnfoldAll.properties_documentation=<html>D\u00e9plie le n\u0153ud s\u00e9lectionn\u00e9 ainsi que ses descendants.</html>
+ 
+ #PMCalculation
+ accessories/plugins/PMCalculation.properties_name=PMCalculation [TRANSLATE]
+ 
+ #<html>Calculates the efforts for different tasks.</html>
+-accessories/plugins/PMCalculation.properties_documentation=<html>Calcul les efforts pour diff\u00E9rentes t\u00E2ches.</html>
++accessories/plugins/PMCalculation.properties_documentation=<html>Calcul les efforts pour diff\u00e9rentes t\u00e2ches.</html>
+ 
+ #<html>Marks the background of each changed node.</html>
+-accessories/plugins/RevisionPlugin.properties_documentation=<html>Marque le fond de chaque n\u0153ud modifi\u00E9.</html>
++accessories/plugins/RevisionPlugin.properties_documentation=<html>Marque le fond de chaque n\u0153ud modifi\u00e9.</html>
+ 
+ #Goto Link
+ goto_link_node_action=Aller au lien
+@@ -655,10 +659,10 @@
+ GrabKeyDialog.common.ok=Valider
+ 
+ #Assigned to
+-GrabKeyDialog.grab-key.assigned-to=Assign\u00E9e \u00E0
++GrabKeyDialog.grab-key.assigned-to=Assign\u00e9e \u00e0
+ 
+ #Currently not assigned
+-GrabKeyDialog.grab-key.assigned-to.none=Actuellement non assign\u00E9
++GrabKeyDialog.grab-key.assigned-to.none=Actuellement non assign\u00e9
+ 
+ #Clear
+ GrabKeyDialog.grab-key.clear=Effacer
+@@ -673,7 +677,7 @@
+ GrabKeyDialog.grab-key.title=Entrez une nouvelle touche clavier
+ 
+ #Freemind_Reverted_
+-freemind_reverted=Freemind_r\u00E9cup\u00E9r\u00E9_
++freemind_reverted=Freemind_r\u00e9cup\u00e9r\u00e9_
+ 
+ #Help...
+ plugins/FreemindHelp.xml_name=Aide...
+@@ -688,18 +692,18 @@
+ OptionPanel.separator.html_export=<html>Exporation HTML (<em>HyperText Markup Language</em>)</html>
+ 
+ #Selection Method
+-OptionPanel.selection_method=M\u00E9thode de s\u00E9lection
++OptionPanel.selection_method=M\u00e9thode de s\u00e9lection
+ #Selection Method
+-OptionPanel.separator.selection_method=M\u00E9thode de s\u00E9lection
++OptionPanel.separator.selection_method=M\u00e9thode de s\u00e9lection
+ 
+ #Set Image By Filechooser
+-OptionPanel.keystroke_set_image_by_filechooser=D\u00E9fini l'image avec le s\u00E9lecteur de fichier
++OptionPanel.keystroke_set_image_by_filechooser=D\u00e9fini l'image avec le s\u00e9lecteur de fichier
+ 
+ #Set Link By Filechooser
+-OptionPanel.keystroke_set_link_by_filechooser=D\u00E9fini le lien avec le s\u00E9lecteur de fichier
++OptionPanel.keystroke_set_link_by_filechooser=D\u00e9fini le lien avec le s\u00e9lecteur de fichier
+ 
+ #Set Link By Textfield
+-OptionPanel.keystroke_set_link_by_textfield=D\u00E9fini le lien par une saisie libre
++OptionPanel.keystroke_set_link_by_textfield=D\u00e9fini le lien par une saisie libre
+ 
+ #Show Calendar...
+ plugins/TimeManagement.xml_name=Montrer le calendrier...
+@@ -708,37 +712,37 @@
+ plugins/NodeList.xml_name=Montrer l'historique de la carte...
+ 
+ #Show Time Scheduler List ...
+-plugins/TimeList.xml_name=Montrer la liste des alerte planifi\u00E9es...
++plugins/TimeList.xml_name=Montrer la liste des alerte planifi\u00e9es...
+ #Standard Background Color
+-OptionPanel.standardbackgroundcolor=Couleur de fond par d\u00E9faut
++OptionPanel.standardbackgroundcolor=Couleur de fond par d\u00e9faut
+ #Standard Cloud Color
+-OptionPanel.standardcloudcolor=Couleur de nuage par d\u00E9faut
++OptionPanel.standardcloudcolor=Couleur de nuage par d\u00e9faut
+ #Standard Cloude Style
+-OptionPanel.standardcloudestyle=Style de nuage par d\u00E9faut
++OptionPanel.standardcloudestyle=Style de nuage par d\u00e9faut
+ 
+ #Standard Edge Color
+-OptionPanel.standardedgecolor=Couleur de ligne par d\u00E9faut
++OptionPanel.standardedgecolor=Couleur de ligne par d\u00e9faut
+ 
+ #Standard Edge Style
+-OptionPanel.standardedgestyle=Style de ligne par d\u00E9faut
++OptionPanel.standardedgestyle=Style de ligne par d\u00e9faut
+ 
+ #Standard Link Color
+-OptionPanel.standardlinkcolor=Couleur de lien par d\u00E9faut
++OptionPanel.standardlinkcolor=Couleur de lien par d\u00e9faut
+ 
+ #Standard Node Color
+-OptionPanel.standardnodecolor=Couleur de n\u0153ud par d\u00E9faut
++OptionPanel.standardnodecolor=Couleur de n\u0153ud par d\u00e9faut
+ 
+ #Standard Node Style
+-OptionPanel.standardnodestyle=Style de n\u0153ud par d\u00E9faut
++OptionPanel.standardnodestyle=Style de n\u0153ud par d\u00e9faut
+ 
+ #Standard Link Style
+-OptionPanel.standardlinkestyle=Style de lien par d\u00E9faut
++OptionPanel.standardlinkestyle=Style de lien par d\u00e9faut
+ 
+ #Standard Root Node Style
+-OptionPanel.standardrootnodestyle=Style par d\u00E9faut pour le n\u0153ud racine
++OptionPanel.standardrootnodestyle=Style par d\u00e9faut pour le n\u0153ud racine
+ 
+ #Standard Selected Node Color
+-OptionPanel.standardselectednodecolor=Couleur par d\u00E9faut pour le n\u0153ud s\u00E9lectionn\u00E9
++OptionPanel.standardselectednodecolor=Couleur par d\u00e9faut pour le n\u0153ud s\u00e9lectionn\u00e9
+ 
+ #Text
+ plugins/TimeList.xml_Text=Texte
+@@ -747,7 +751,7 @@
+ OptionPanel.keystroke_undo=Annuler
+ 
+ #Userproperties
+-OptionPanel.userproperties=Propri\u00E9t\u00E9es personnelles de l'utilisateur
++OptionPanel.userproperties=Propri\u00e9t\u00e9es personnelles de l'utilisateur
+ 
+ #Windows
+ OptionPanel.windows=Windows
+@@ -756,7 +760,7 @@
+ OptionPanel.keystroke_zoom_in=Augmenter le zoom
+ 
+ #Zoom Out
+-OptionPanel.keystroke_zoom_out=R\u00E9duire le zoom
++OptionPanel.keystroke_zoom_out=R\u00e9duire le zoom
+ 
+ #Time Management
+ plugins/TimeManagement.xml_WindowTitle=Gestion du temps
+@@ -780,10 +784,10 @@
+ OptionPanel.combined=Mixte
+ 
+ #Default
+-OptionPanel.default=R\u00E9glages par d\u00E9faut
++OptionPanel.default=R\u00e9glages par d\u00e9faut
+ 
+ #Bezier
+-OptionPanel.bezier=B\u00E9zier
++OptionPanel.bezier=B\u00e9zier
+ 
+ #Appearance
+ OptionPanel.Appearance=Aspect
+@@ -791,9 +795,6 @@
+ #Behaviour
+ OptionPanel.Behaviour=Comportement
+ 
+-#Automatic
+-OptionPanel.automatic=Automatique
+-
+ #As Parent
+ OptionPanel.as_parent=Comme le parent
+ 
+@@ -804,31 +805,31 @@
+ OptionPanel.antialiasAll=Tout lisser
+ 
+ #Absolute
+-OptionPanel.absolute=Absolu
++OptionPanel.absolute=Absolus
+ 
+ #To see the effect of the changed settings, you probably have to restart FreeMind.
+-option_changes_may_require_restart=Pour pouvoir voir les effets des nouvelles pr\u00E9f\u00E9rences, vous devrez probablement red\u00E9marrer FreeMind.
++option_changes_may_require_restart=Pour pouvoir voir les effets des nouvelles pr\u00e9f\u00e9rences, vous devrez probablement red\u00e9marrer FreeMind.
+ 
+ #<html> Auto options. Do not modify these as they will be saved to auto.properties anyway.</html>
+-OptionPanel.antialiasEdges.tooltip=<html>Options automatiques. Ne les modifiez pas elle seront sauvegard\u00E9e dans <tt>auto.properties</tt> de toutes fa\u00E7ons.</html>
++OptionPanel.antialiasEdges.tooltip=<html>Options automatiques. Ne les modifiez pas elles seront sauvegard\u00e9es dans <tt>auto.properties</tt> de toute fa\u00e7on.</html>
+ 
+ #Bubble
+ OptionPanel.bubble=Bulle
+ 
+ #Defaults
+-OptionPanel.Defaults=R\u00E9glages par d\u00E9faut
++OptionPanel.Defaults=R\u00e9glages par d\u00e9faut
+ 
+ #Drag And Drop
+-OptionPanel.draganddrop=Glisser/d\u00E9poser
++OptionPanel.draganddrop=Glisser/d\u00e9poser
+ 
+ #Buttons Position
+ OptionPanel.el__buttons_position=Position des boutons
+ 
+ #Enter Confirms By Default
+-OptionPanel.el__enter_confirms_by_default=Par d\u00E9faut, la touche "Entr\u00E9e" confirme
++OptionPanel.el__enter_confirms_by_default=Par d\u00e9faut, la touche "Entr\u00e9e" confirme
+ 
+ #Based On Headings
+-OptionPanel.html_export_based_on_headings=\u00C0 partir des titres
++OptionPanel.html_export_based_on_headings=\u00c0 partir des titres
+ 
+ #Fold All
+ OptionPanel.html_export_fold_all=Tout plier
+@@ -839,22 +840,19 @@
+ OptionPanel.keystroke_delete_child=Supprimer les enfants
+ 
+ #Min Default Window Height
+-OptionPanel.el__min_default_window_height=Hauteur minimale des fen\u00EAtres
++OptionPanel.el__min_default_window_height=Hauteur minimale par d\u00e9faut de fen\u00eatre
+ 
+ #Edit
+-OptionPanel.keystroke_edit=\u00C9diter
++OptionPanel.keystroke_edit=\u00c9diter
+ 
+ #Apply Pattern 13
+-OptionPanel.keystroke_apply_pattern_13=Appliquer le mod\u00E8le 13
++OptionPanel.keystroke_apply_pattern_13=Appliquer le mod\u00e8le 13
+ 
+ #Copy Single
+-OptionPanel.keystroke_copy_single=Copier un \u00E9l\u00E9ment
++OptionPanel.keystroke_copy_single=Copier un \u00e9l\u00e9ment
+ 
+ #<html> above / below</html>
+-OptionPanel.el__buttons_position.tooltip=Au-dessus/dessous
+-
+-#Sl
+-OptionPanel.sl=Sl
++OptionPanel.el__buttons_position.tooltip=Entrez la valeur 'above' (au-dessus) ou 'below' (en dessous)
+ 
+ #Add Child
+ OptionPanel.keystroke_add_child=Ajouter un enfant
+@@ -863,7 +861,7 @@
+ OptionPanel.keystroke_print=Imprimer
+ 
+ #Patternsfile
+-OptionPanel.patternsfile=Fichier de mod\u00E8le
++OptionPanel.patternsfile=Fichier de mod\u00e8le
+ 
+ #First
+ OptionPanel.first=Premier
+@@ -878,31 +876,28 @@
+ OptionPanel.separator.language=Langue
+ 
+ #Apply Pattern 15
+-OptionPanel.keystroke_apply_pattern_15=Appliquer le mod\u00E8le 15
+-
+-#Language
+-OptionPanel.language=Langue
++OptionPanel.keystroke_apply_pattern_15=Appliquer le mod\u00e8le 15
+ 
+ #Cancel
+ plugins/TimeManagement.xml_cancelButton=Annuler
+ 
+ #<html> and MAC\: (thanks to Nick\!)</html>
+-OptionPanel.default_browser_command_mac.tooltip=<html> et le <strong>Mac</strong>\: (grace \u00E0 Nick \!)</html>
++OptionPanel.default_browser_command_mac.tooltip=<html> et le <strong>Mac</strong>\: (grace \u00e0 Nick \!)</html>
+ 
+ #<html> Experimental feature</html>
+-OptionPanel.experimental_file_locking_on.tooltip=<html>Fonctionalit\u00E9s exp\u00E9rimentales</html>
++OptionPanel.experimental_file_locking_on.tooltip=<html>Fonctionalit\u00e9s exp\u00e9rimentales</html>
+ 
+ #Add
+ OptionPanel.keystroke_add=Ajouter
+ 
+ #Add Arrow Link Action
+-OptionPanel.keystroke_add_arrow_link_action=Action pour ajouter une fl\u00E8che de lien
++OptionPanel.keystroke_add_arrow_link_action=Action pour ajouter une fl\u00e8che de lien
+ 
+ #Add Child Mac
+ OptionPanel.keystroke_add_child_mac=Ajouter un enfant (Mac)
+ 
+ #Add Sibling Before
+-OptionPanel.keystroke_add_sibling_before=Ajouter un fr\u00E8re au-dessus
++OptionPanel.keystroke_add_sibling_before=Ajouter un fr\u00e8re au-dessus
+ 
+ #Add Local Link Action
+ OptionPanel.keystroke_add_local_link_action=Action pour ajouter un lien local
+@@ -911,59 +906,59 @@
+ OptionPanel.separator.anti_alias=Lissage
+ 
+ #Apply Pattern 1
+-OptionPanel.keystroke_apply_pattern_1=Appliquer le mod\u00E8le 1
++OptionPanel.keystroke_apply_pattern_1=Appliquer le mod\u00e8le 1
+ 
+ #Apply Pattern 10
+-OptionPanel.keystroke_apply_pattern_10=Appliquer le mod\u00E8le 10
++OptionPanel.keystroke_apply_pattern_10=Appliquer le mod\u00e8le 10
+ 
+ #Apply Pattern 11
+-OptionPanel.keystroke_apply_pattern_11=Appliquer le mod\u00E8le 11
++OptionPanel.keystroke_apply_pattern_11=Appliquer le mod\u00e8le 11
+ 
+ #Apply Pattern 12
+-OptionPanel.keystroke_apply_pattern_12=Appliquer le mod\u00E8le 12
++OptionPanel.keystroke_apply_pattern_12=Appliquer le mod\u00e8le 12
+ 
+ #Apply Pattern 14
+-OptionPanel.keystroke_apply_pattern_14=Appliquer le mod\u00E8le 14
++OptionPanel.keystroke_apply_pattern_14=Appliquer le mod\u00e8le 14
+ 
+ #Apply Pattern 16
+-OptionPanel.keystroke_apply_pattern_16=Appliquer le mod\u00E8le 16
++OptionPanel.keystroke_apply_pattern_16=Appliquer le mod\u00e8le 16
+ 
+ #Apply Pattern 17
+-OptionPanel.keystroke_apply_pattern_17=Appliquer le mod\u00E8le 17
++OptionPanel.keystroke_apply_pattern_17=Appliquer le mod\u00e8le 17
+ 
+ #Apply Pattern 18
+-OptionPanel.keystroke_apply_pattern_18=Appliquer le mod\u00E8le 18
++OptionPanel.keystroke_apply_pattern_18=Appliquer le mod\u00e8le 18
+ 
+ #Apply Pattern 2
+-OptionPanel.keystroke_apply_pattern_2=Appliquer le mod\u00E8le 2
++OptionPanel.keystroke_apply_pattern_2=Appliquer le mod\u00e8le 2
+ 
+ #Apply Pattern 3
+-OptionPanel.keystroke_apply_pattern_3=Appliquer le mod\u00E8le 3
++OptionPanel.keystroke_apply_pattern_3=Appliquer le mod\u00e8le 3
+ 
+ #Apply Pattern 4
+-OptionPanel.keystroke_apply_pattern_4=Appliquer le mod\u00E8le 4
++OptionPanel.keystroke_apply_pattern_4=Appliquer le mod\u00e8le 4
+ 
+ #Apply Pattern 5
+-OptionPanel.keystroke_apply_pattern_5=Appliquer le mod\u00E8le 5
++OptionPanel.keystroke_apply_pattern_5=Appliquer le mod\u00e8le 5
+ 
+ #Apply Pattern 6
+-OptionPanel.keystroke_apply_pattern_6=Appliquer le mod\u00E8le 6
++OptionPanel.keystroke_apply_pattern_6=Appliquer le mod\u00e8le 6
+ 
+ #Apply Pattern 7
+-OptionPanel.keystroke_apply_pattern_7=Appliquer le mod\u00E8le 7
++OptionPanel.keystroke_apply_pattern_7=Appliquer le mod\u00e8le 7
+ 
+ #Apply Pattern 8
+-OptionPanel.keystroke_apply_pattern_8=Appliquer le mod\u00E8le 8
++OptionPanel.keystroke_apply_pattern_8=Appliquer le mod\u00e8le 8
+ 
+ #Apply Pattern 9
+-OptionPanel.keystroke_apply_pattern_9=Appliquer le mod\u00E8le 9
++OptionPanel.keystroke_apply_pattern_9=Appliquer le mod\u00e8le 9
+ 
+ #Append Date To Selected Nodes
+-plugins/TimeManagement.xml_appendButton=Ajouter la date au(x) n\u0153ud(s) s\u00E9lectionn\u00E9(s)
++plugins/TimeManagement.xml_appendButton=Ajouter la date au(x) n\u0153ud(s) s\u00e9lectionn\u00e9(s)
+ #As PDF...
+-plugins/ExportPdf.xml_name=En PDF...
++plugins/ExportPdf.xml_name=Comme PDF...
+ #As SVG...
+-plugins/ExportSvg.xml_name=En SVG...
++plugins/ExportSvg.xml_name=Comme SVG...
+ 
+ #Automatic Save
+ OptionPanel.separator.automatic_save=Sauvegarde automatique
+@@ -978,7 +973,7 @@
+ OptionPanel.separator.browser=Navigateur
+ 
+ #By Click
+-OptionPanel.selection_method_by_click=Par clic
++OptionPanel.selection_method_by_click=Par clique
+ 
+ #Close
+ OptionPanel.keystroke_close=Fermer
+@@ -990,7 +985,7 @@
+ OptionPanel.keystroke_copy=Copier
+ 
+ #Created
+-plugins/TimeList.xml_Created=Cr\u00E9e
++plugins/TimeList.xml_Created=Cr\u00e9e
+ 
+ #Cut
+ OptionPanel.keystroke_cut=Couper
+@@ -998,81 +993,69 @@
+ #Date
+ plugins/TimeList.xml_Date=Date
+ 
+-#De
+-OptionPanel.de=De
+-
+ #Edge Color...
+ OptionPanel.keystroke_edge_color=Couleur du bord
+ 
+ #Edit Long Node
+-OptionPanel.keystroke_edit_long_node=\u00C9diter un n\u0153ud long
++OptionPanel.keystroke_edit_long_node=\u00c9diter un n\u0153ud long
+ 
+ #Edit Long Node Window
+-OptionPanel.separator.edit_long_node_window=Fen\u00EAtre pour \u00E9diter un n\u0153ud long
+-
+-#En
+-OptionPanel.en=En
++OptionPanel.separator.edit_long_node_window=Fen\u00eatre pour \u00e9diter un n\u0153ud long
+ 
+ #Enable Leaves Folding
+-OptionPanel.enable_leaves_folding=Active la pr\u00E9servation des pliages
++OptionPanel.enable_leaves_folding=Permet le (d\u00e9)pliage des feuilles
+ 
+ #Direct
+-OptionPanel.selection_method_direct=Direct
++OptionPanel.selection_method_direct=Directe
+ 
+ #Disable Cursor Move Paper
+-OptionPanel.disable_cursor_move_paper=Inactiver le d\u00E9placement du papier par le curseur
++OptionPanel.disable_cursor_move_paper=Inactiver le curseur de d\u00e9placement du papier
+ 
+ #Disable Key Type
+ OptionPanel.disable_key_type=Inactiver la saisie au clavier
+ 
+-#Dk
+-OptionPanel.dk=Dk
+-
+ #Docmapurl
+ OptionPanel.docmapurl_since_version_0_7_0=URL de la carte de documentation
+ 
+ #Default Colors
+-OptionPanel.separator.default_colors=Couleurs par d\u00E9faut
++OptionPanel.separator.default_colors=Couleurs par d\u00e9faut
+ 
+ #Default Font
+-OptionPanel.defaultfont=Police par d\u00E9faut
+-OptionPanel.defaultfontsize=Default Font Size
++OptionPanel.defaultfont=Police par d\u00e9faut
++OptionPanel.defaultfontsize=Taille de police par d\u00e9faut
+ 
+ #Default Font Style
+-OptionPanel.defaultfontstyle=Default Font Style
++OptionPanel.defaultfontstyle=Style de police par d\u00e9faut
+ 
+ #Default Fonts
+-OptionPanel.separator.default_fonts=Police par d\u00E9faut
++OptionPanel.separator.default_fonts=Police par d\u00e9faut
+ 
+ #Default Styles
+-OptionPanel.separator.default_styles=Style par d\u00E9faut
++OptionPanel.separator.default_styles=Styles par d\u00e9faut
+ 
+ #Delayed
+-OptionPanel.selection_method_delayed=Retard\u00E9
++OptionPanel.selection_method_delayed=Retard\u00e9e
+ 
+ #Delete Automatic Saves At Exit
+ OptionPanel.delete_automatic_saves_at_exit=Supprime les sauvegardes automatiques en quittant
+ 
+ #Default Browser Command Mac
+-OptionPanel.default_browser_command_mac=Commande pour le navigateur par d\u00E9faut pour Mac
++OptionPanel.default_browser_command_mac=Commande pour le navigateur par d\u00e9faut pour Mac
+ 
+ #Default Browser Command Other Os
+-OptionPanel.default_browser_command_other_os=Commande pour le navigateur par d\u00E9faut pour d'autres syst\u00E8mes
++OptionPanel.default_browser_command_other_os=Commande pour le navigateur par d\u00e9faut pour d'autres syst\u00e8mes
+ 
+ #Default Browser Command Windows 9x
+-OptionPanel.default_browser_command_windows_9x=Commande pour le navigateur par d\u00E9faut pour Windows 9x
++OptionPanel.default_browser_command_windows_9x=Commande pour le navigateur par d\u00e9faut pour Windows 9x
+ 
+ #Default Browser Command Windows Nt
+-OptionPanel.default_browser_command_windows_nt=Commande pour le navigateur par d\u00E9faut pour Windows NT
+-
+-#Es
+-OptionPanel.es=Es
++OptionPanel.default_browser_command_windows_nt=Commande pour le navigateur par d\u00e9faut pour Windows NT
+ 
+ #Environment
+ OptionPanel.Environment=Environnement
+ 
+ #Experimental File Locking
+-OptionPanel.experimental_file_locking_on=V\u00E9rouillage de fichier exp\u00E9rimental
++OptionPanel.experimental_file_locking_on=V\u00e9rouillage de fichier exp\u00e9rimental
+ 
+ #Export Branch
+ OptionPanel.keystroke_export_branch=Exporter la branche
+@@ -1081,18 +1064,18 @@
+ OptionPanel.keystroke_export_branch_to_html=Exporter la branche en HTML
+ 
+ #Export Icons In Html
+-OptionPanel.export_icons_in_html=Exporter les ic\u00F4nes en HTML
++OptionPanel.export_icons_in_html=Exporter les ic\u00f4nes en HTML
+ #Export To Html
+-OptionPanel.keystroke_export_to_html=Exporter en HTML
++OptionPanel.keystroke_export_to_html=Exporter au format HTML
+ 
+ #Export to PDF
+-plugins/ExportPdf.xml_documentation=Exporter en PDF
++plugins/ExportPdf.xml_documentation=Exporter au format PDF
+ 
+ #Export to SVG
+-plugins/ExportSvg.xml_documentation=Exporter en SVG
++plugins/ExportSvg.xml_documentation=Exporter au format SVG
+ 
+ #Fold Currently Folded
+-OptionPanel.html_export_fold_currently_folded=Conserver pli\u00E9 ce qui est pli\u00E9
++OptionPanel.html_export_fold_currently_folded=Conserver pli\u00e9 ce qui est pli\u00e9
+ 
+ 
+ #Folding Symbol Width
+@@ -1102,41 +1085,31 @@
+ OptionPanel.keystroke_follow_link=Suivre le lien
+ 
+ #Fork
+-OptionPanel.fork=Branche
+-
+-#Fr
+-OptionPanel.fr=Fr
++OptionPanel.fork=Fourche
+ 
+ #Gtk
+ OptionPanel.gtk=Gtk
+ 
+ #FreeMind Extended Help
+-plugins/FreemindHelp.xml_documentation=Aide \u00E9tendue de FreeMind
++plugins/FreemindHelp.xml_documentation=Aide \u00e9tendue de FreeMind
+ 
+ #Html Export Folding
+-OptionPanel.html_export_folding=l'HTML pr\u00E9serve le pliage
+-
+-#Hu
+-OptionPanel.hu=Hu
++OptionPanel.html_export_folding=l'HTML pr\u00e9serve le pliage
+ 
+ #Hyperlink Types
+ OptionPanel.separator.hyperlink_types=Types d'hyper-liens
+ 
+ #Icons
+-plugins/TimeList.xml_Icons=Ic\u00F4nes
++plugins/TimeList.xml_Icons=Ic\u00f4nes
+ 
+ #Initial Map Size
+ OptionPanel.separator.initial_map_size=Taille initiale de la carte
+ 
+-OptionPanel.it=It
+-
+-#Ja
+-OptionPanel.ja=Ja
+ #Join Nodes
+ OptionPanel.keystroke_join_nodes=Fusionner les n\u0153uds
+ 
+ #Key Type Adds New
+-OptionPanel.key_type_adds_new=La frappe ajoute un nouveau
++OptionPanel.key_type_adds_new=La frappe ajoute un nouveau noeud
+ 
+ #Key Typing
+ OptionPanel.separator.key_typing=Saisie clavier
+@@ -1144,17 +1117,14 @@
+ #Keystrokes
+ OptionPanel.Keystrokes=Raccourcis clavier
+ 
+-#Kr
+-OptionPanel.kr=Kr
+-
+ #Last
+ OptionPanel.last=Dernier
+ 
+ #Last Opened List Length
+-OptionPanel.last_opened_list_length=Longueur de la liste des fichiers les plus r\u00E9cents
++OptionPanel.last_opened_list_length=Longueur de la liste des fichiers les plus r\u00e9cents
+ 
+ #Linear
+-OptionPanel.linear=Lin\u00E9aire
++OptionPanel.linear=Rectiligne
+ 
+ #Links
+ OptionPanel.links=Liens
+@@ -1166,7 +1136,7 @@
+ OptionPanel.lookandfeel=<html>Aspect de l'interface (<em>Look & Feel</em>)</html>
+ 
+ #Metal
+-OptionPanel.metal=M\u00E9tal
++OptionPanel.metal=M\u00e9tal
+ 
+ #Minute\:
+ plugins/TimeManagement.xml_minute=Minutes \:
+@@ -1181,25 +1151,25 @@
+ OptionPanel.keystroke_mode_MindMap=Mode MindMap
+ 
+ #Modified
+-plugins/TimeList.xml_Modified=Modifi\u00E9e
++plugins/TimeList.xml_Modified=Modifi\u00e9e
+ 
+ #Motif
+ OptionPanel.motif=Motif
+ 
+ #Move Down
+-OptionPanel.keystroke_move_down=D\u00E9placer en bas
++OptionPanel.keystroke_move_down=D\u00e9placer en bas
+ 
+ #Move Left
+-OptionPanel.keystroke_move_left=D\u00E9placer \u00E0 gauche
++OptionPanel.keystroke_move_left=D\u00e9placer \u00e0 gauche
+ 
+ #Move Right
+-OptionPanel.keystroke_move_right=D\u00E9placer \u00E0 droite
++OptionPanel.keystroke_move_right=D\u00e9placer \u00e0 droite
+ 
+ #Move Up
+-OptionPanel.keystroke_move_up=D\u00E9placer en haut
++OptionPanel.keystroke_move_up=D\u00e9placer en haut
+ 
+ #MoveToRoot
+-OptionPanel.keystroke_moveToRoot=D\u00E9placer \u00E0 la racine
++OptionPanel.keystroke_moveToRoot=D\u00e9placer \u00e0 la racine
+ 
+ #NewMap
+ OptionPanel.keystroke_newMap=Nouvelle carte
+@@ -1214,7 +1184,7 @@
+ OptionPanel.keystroke_open_first_in_history=Ouvrir le premier fichier de l'historique
+ 
+ #Other Defaults
+-OptionPanel.separator.other_defaults=Autres r\u00E9glages par d\u00E9faut
++OptionPanel.separator.other_defaults=Autres r\u00e9glages par d\u00e9faut
+ 
+ #Paste
+ OptionPanel.keystroke_paste=Coller
+@@ -1226,56 +1196,41 @@
+ OptionPanel.keystroke_remove=Retirer
+ 
+ #Remove all reminders associated with the selected nodes.
+-plugins/TimeManagement.xml_removeReminderButton_tooltip=Supprime toutes les alertes associ\u00E9es aux n\u0153uds s\u00E9lectionn\u00E9.
++plugins/TimeManagement.xml_removeReminderButton_tooltip=Supprime toutes les alertes associ\u00e9es aux n\u0153uds s\u00e9lectionn\u00e9.
+ 
+ #Reminder scheduled at {0,date} {0,time}.
+-plugins/TimeManagement.xml_reminderNode_tooltip=Alerte planifi\u00E9e le {0,date} \u00E0 {0,time}.
+-
+-#Pt BR
+-OptionPanel.pt_BR=Pt BR
+-
+-#Pt PT
+-OptionPanel.pt_PT=Pt PT
++plugins/TimeManagement.xml_reminderNode_tooltip=Alerte planifi\u00e9e le {0,date} \u00e0 {0,time}.
+ 
+ #Quit
+ OptionPanel.keystroke_quit=Quitter
+ 
+ #Remind Me At This Date
+-plugins/TimeManagement.xml_reminderButton=M'alerter \u00E0 cette date
++plugins/TimeManagement.xml_reminderButton=M'alerter \u00e0 cette date
+ #Save
+ OptionPanel.OK=Sauver
+ 
+ #Save
+ OptionPanel.keystroke_save=Sauver
+ 
+-#Ru
+-OptionPanel.ru=Ru
+-
+ #Save As
+ OptionPanel.keystroke_saveAs=Sauver sous
+ 
+ #Select All
+-OptionPanel.keystroke_select_all=Tout s\u00E9lectionner
++OptionPanel.keystroke_select_all=Tout s\u00e9lectionner
+ 
+ #Select Branch
+-OptionPanel.keystroke_select_branch=S\u00E9lectionner la branche
++OptionPanel.keystroke_select_branch=S\u00e9lectionner la branche
+ 
+ #Time For Automatic Save
+-OptionPanel.time_for_automatic_save=D\u00E9lai pour la sauvegarde automatique
++OptionPanel.time_for_automatic_save=D\u00e9lai pour la sauvegarde automatique (en millisecondes)
+ 
+ #Time For Delayed Selection
+-OptionPanel.time_for_delayed_selection=D\u00E9lai pour la s\u00E9lection temporis\u00E9e
++OptionPanel.time_for_delayed_selection=D\u00e9lai pour la s\u00e9lection retard\u00e9e
+ 
+ #Time has elapsed for the node " {0} ". Do you want to snooze for ten minutes?
+-plugins/TimeManagement.xml_reminderNode_showNode=L'heure est pass\u00E9 pour le n\u0153ud \u00AB{0}\u00BB. Voullez-vous ignorer pour dix minutes ?
++plugins/TimeManagement.xml_reminderNode_showNode=L'heure est pass\u00e9e pour le n\u0153ud \u00ab{0}\u00bb. Voulez-vous l'ignorer pour dix minutes ?
+ #Toggle Folded
+-OptionPanel.keystroke_toggle_folded=Plier/d\u00E9plier
+-
+-#Zh
+-OptionPanel.zh=Zh
+-
+-#Zh CN
+-OptionPanel.zh_CN=Zh CN
++OptionPanel.keystroke_toggle_folded=Plier/d\u00e9plier
+ 
+ #Remove Reminder
+ plugins/TimeManagement.xml_removeReminderButton=Supprimer l'alerte
+@@ -1286,13 +1241,10 @@
+ plugins/RemoveReminder.xml_documentation=Supprimer une alerte pour un n\u0153ud.
+ 
+ #PreviousMap
+-OptionPanel.keystroke_previousMap=Carte pr\u00E9c\u00E9dente
++OptionPanel.keystroke_previousMap=Carte pr\u00e9c\u00e9dente
+ 
+ #Position Window Below Node
+-OptionPanel.el__position_window_below_node=Positionne la fen\u00EAtre apr\u00E8s le n\u0153ud
+-
+-#Pl
+-OptionPanel.pl=Pl
++OptionPanel.el__position_window_below_node=Positionne la fen\u00eatre sous le n\u0153ud
+ 
+ #Node Up
+ OptionPanel.keystroke_node_up=Monter le n\u0153ud
+@@ -1300,21 +1252,21 @@
+ OptionPanel.keystroke_node_color=Couleur du n\u0153ud
+ 
+ #Node Color Blend
+-OptionPanel.keystroke_node_color_blend=Rapprocher les couleurs du n\u0153ud
++OptionPanel.keystroke_node_color_blend=\u00c9claircir la couleur du n\u0153ud
+ #<html>The standard node color. In html notation (\#RRGGBB in hex values) </html>
+-OptionPanel.standardnodecolor.tooltip=<html>Couleur standard des n\u0153uds.<br>Syntaxe HTML&nbsp;\: \#RRGGBB en valeurs hexad\u00E9cimal.</html>
++OptionPanel.standardnodecolor.tooltip=<html>Couleur standard des n\u0153uds.<br>Syntaxe HTML&nbsp;\: \#RRGGBB en valeurs hexad\u00e9cimal.</html>
+ 
+ #<html>The default maximal node width in pixels</html>
+-OptionPanel.max_node_width.tooltip=<html>Largeur maximale par d\u00E9faut des n\u0153uds en pixels.</html>
++OptionPanel.max_node_width.tooltip=<html>Largeur maximale par d\u00e9faut des n\u0153uds en pixels.</html>
+ 
+ #<html> time between two consecutive automatic saving actions (in msec)\: To disable automatic saving set this number to 2000000000.</html>
+-OptionPanel.time_for_automatic_save.tooltip=<html>intervalle entre deux actions cons\u00E9cutives de sauvegarde automatique (en millisecondes). Pour d\u00E9sactiver la sauvegarde automatique, mettre cette valeur \u00E0 2000000000.</html>
++OptionPanel.time_for_automatic_save.tooltip=<html>intervalle entre deux actions cons\u00e9cutives de sauvegarde automatique (en millisecondes). Pour d\u00e9sactiver la sauvegarde automatique, mettre cette valeur \u00e0 2000000000.</html>
+ 
+ #<html> If the files should be deleted automatically on a normal shutdown of Freemind set the following variable to true</html>
+-OptionPanel.delete_automatic_saves_at_exit.tooltip=<html>Si les fichiers doivent \u00EAtre supprim\u00E9s automatiquement lorsque FreeMind se termine normalement, mettez vrai pour cette valeur.</html>
++OptionPanel.delete_automatic_saves_at_exit.tooltip=<html>Si les fichiers doivent \u00eatre supprim\u00e9s automatiquement lorsque FreeMind se termine normalement, mettez vrai pour cette valeur.</html>
+ 
+ #<html>The default node font. This will only work if the font (TrueTypeFont) is available on the system </html>
+-OptionPanel.defaultfont.tooltip=<html>Police par d\u00E9faut pour les n\u0153uds. Cela ne fonctionnera que si la police (TrueType) est disponible sur le syst\u00E8me.</html>
++OptionPanel.defaultfont.tooltip=<html>Police par d\u00e9faut pour les n\u0153uds. Cela ne fonctionnera que si la police (TrueType) est disponible sur le syst\u00e8me.</html>
+ 
+ #<html>The initial size of every map </html>
+ OptionPanel.mapxsize.tooltip=<html>Taille initiale de toutes les cartes.</html>
+@@ -1322,48 +1274,45 @@
+ #Node Toggle Underlined
+ OptionPanel.keystroke_node_toggle_underlined=Basculer le soulignement du n\u0153ud
+ 
+-#Nl
+-OptionPanel.nl=Nl
+-
+ #<html>Key typing\: if enabled enters node editing</html>
+-OptionPanel.disable_key_type.tooltip=<html>Saisie au clavier&nbsp;\: passe en mode \u00E9dition avec la touche "Entr\u00E9e" lorsque l'option est activ\u00E9e.</html>
++OptionPanel.disable_key_type.tooltip=<html>Saisie au clavier&nbsp;\: passe en mode \u00e9dition avec la touche "Entr\u00e9e" lorsque l'option est activ\u00e9e.</html>
+ 
+ #Internal hook for scheduling resubmission tasks.
+-plugins/TimeManagementReminder.xml_documentation=Accroche interne pour planifier les t\u00E2ches de r\u00E9\u00E9mission.
++plugins/TimeManagementReminder.xml_documentation=Accroche interne pour planifier les t\u00e2ches de r\u00e9\u00e9mission.
+ 
+ #Relative
+-OptionPanel.relative=Relatif
++OptionPanel.relative=Relatifs
+ 
+ #<html>If dnd is enabled. </html>
+-OptionPanel.draganddrop.tooltip=<html>Si le glisser/d\u00E9pos\u00E9 est inactif.</html>
++OptionPanel.draganddrop.tooltip=<html>Si le glisser/d\u00e9pos\u00e9 est inactif.</html>
+ 
+ #Max Default Window Height
+-OptionPanel.el__max_default_window_height=Hauteur maximale par d\u00E9faut des fen\u00EAtres
++OptionPanel.el__max_default_window_height=Hauteur maximale par d\u00e9faut de fen\u00eatre
+ 
+ #<html>The standard link color in html notation </html>
+ OptionPanel.standardlinkcolor.tooltip=<html>Couleur standard des liens, en syntaxe HTML.</html>
+ #Internal hook for scheduling resubmission tasks.
+-plugins/TimeManagementReminder.xml_name=Accroche interne pour planifier les t\u00E2ches de r\u00E9\u00E9mission.
++plugins/TimeManagementReminder.xml_name=Accroche interne pour planifier les t\u00e2ches de r\u00e9\u00e9mission.
+ 
+ #<html>Width of the folding marking circle</html>
+ OptionPanel.foldingsymbolwidth.tooltip=<html>Largeur du cercle indiquant le pliage.</html>
+ 
+ #Map-X-size
+-OptionPanel.mapxsize=Taille de carte sur l'axe des X
++OptionPanel.mapxsize=Largeur originelle de carte (en pixels)
+ #Map-Y-size
+-OptionPanel.mapysize=Taille de carte sur l'axe des X
++OptionPanel.mapysize=Hauteur originelle de carte (en pixels)
+ 
+ #Node Decrease Font Size
+-OptionPanel.keystroke_node_decrease_font_size=R\u00E9duire la taille des caract\u00E8res du n\u0153ud
++OptionPanel.keystroke_node_decrease_font_size=R\u00e9duire la taille des caract\u00e8res du n\u0153ud
+ 
+ #Node Down
+ OptionPanel.keystroke_node_down=Descendre le n\u0153ud
+ 
+ #Node Increase Font Size
+-OptionPanel.keystroke_node_increase_font_size=Augmenter la taille des caract\u00E8res du n\u0153ud
++OptionPanel.keystroke_node_increase_font_size=Augmenter la taille des caract\u00e8res du n\u0153ud
+ 
+ #Node editing commands
+-OptionPanel.separator.node_editing_commands=Commandes d'\u00E9dition des n\u0153uds
++OptionPanel.separator.node_editing_commands=Commandes d'\u00e9dition des n\u0153uds
+ 
+ #Node navigation commands
+ OptionPanel.separator.node_navigation_commands=Commandes de navigation dans les n\u0153uds
+@@ -1378,7 +1327,7 @@
+ OptionPanel.keystroke_node_toggle_italic=Basculer l'italique pour le n\u0153ud
+ 
+ #New node commands
+-OptionPanel.separator.new_node_commands=Commande pour cr\u00E9er un n\u0153ud
++OptionPanel.separator.new_node_commands=Commande pour cr\u00e9er un n\u0153ud
+ 
+ #Path To Automatic Saves
+ OptionPanel.path_to_automatic_saves=Chemin pour les sauvegardes automatiques
+@@ -1387,111 +1336,111 @@
+ OptionPanel.separator.patterns=Fichier pour les gabarits
+ 
+ #Shows all nodes with its creation/modification dates.
+-plugins/NodeList.xml_documentation=Afficher tous les n\u0153uds avec leur date de cr\u00E9ation et modification.
++plugins/NodeList.xml_documentation=Afficher tous les n\u0153uds avec leur date de cr\u00e9ation et modification.
+ 
+ #Shows all scheduled times and the corresponding nodes.
+-plugins/TimeList.xml_documentation=Montre toutes les alertes horaire ainsi que les n\u0153uds associ\u00E9s.
++plugins/TimeList.xml_documentation=Montre toutes les alertes horaire ainsi que les n\u0153uds associ\u00e9s.
+ 
+ #Toggle Children Folded
+-OptionPanel.keystroke_toggle_children_folded=Plier/d\u00E9plier les enfants
++OptionPanel.keystroke_toggle_children_folded=Plier/d\u00e9plier les enfants
+ 
+ #Max Node Width
+ OptionPanel.max_node_width=Largeur maximale des n\u0153uds
+ 
+ #Max Default Window Width
+-OptionPanel.el__max_default_window_width=Largeur maximale par d\u00E9faut des fen\u00EAtres
++OptionPanel.el__max_default_window_width=Largeur maximale par d\u00e9faut de fen\u00eatre
+ #Min Default Window Width
+-OptionPanel.el__min_default_window_width=Largeur minimale des fen\u00EAtres
++OptionPanel.el__min_default_window_width=Largeur minimale par d\u00e9faut de fen\u00eatre
+ 
+ #Place New Branches
+ OptionPanel.placenewbranches=Postionnement des nouvelles branches
+ 
+ #Number Of Different Files For Automatic Save
+-OptionPanel.number_of_different_files_for_automatic_save=Nombre de fichiers diff\u00E9rents pour la sauvegarde automatique
++OptionPanel.number_of_different_files_for_automatic_save=Nombre de fichiers diff\u00e9rents pour la sauvegarde automatique
+ 
+ #<html> number n of different files to store the maps into.  The first automatic save is done in the first file, and so on  up to the n+1-save which is again stored in the first file (cyclic)</html>
+-OptionPanel.number_of_different_files_for_automatic_save.tooltip=<html>Quantit\u00E9 de <em>n</em> fichiers diff\u00E9rents utilis\u00E9s pour stocker les cartes.<br>La premi\u00E8re sauvegarde automatique est faite dans le premier fichier, ainsi de suite jusqu'\u00E0 la <em>n</em>+1<sup>\u00E8me</sup> sauvegarde qui est \u00E0 nouveau stock\u00E9e dans le premier fichier.</html>
++OptionPanel.number_of_different_files_for_automatic_save.tooltip=<html>Quantit\u00e9 de <em>n</em> fichiers diff\u00e9rents utilis\u00e9s pour stocker les cartes.<br>La premi\u00e8re sauvegarde automatique est faite dans le premier fichier, ainsi de suite jusqu'\u00e0 la <em>n</em>+1<sup>\u00e8me</sup> sauvegarde qui est \u00e0 nouveau stock\u00e9e dans le premier fichier.</html>
+ 
+ #<html> This is typically Linux\:</html>
+-OptionPanel.default_browser_command_other_os.tooltip=<html>Cela correspond typiquement \u00E0 Linux.</html>
++OptionPanel.default_browser_command_other_os.tooltip=<html>Cela correspond typiquement \u00e0 Linux.</html>
+ 
+ #<html> Selection time delay of nodes when mouse is over (in msec). Change this value to 1 if you want direct selection on mouse over.</html>
+-OptionPanel.time_for_delayed_selection.tooltip=<html>D\u00E9lai de s\u00E9lection des n\u0153uds lorsque le pointeur de la souris est dessus (en millisecondes).<br>Mettez 1 dans cette valeur si vous souhaitez une s\u00E9lection directe.</html>
++OptionPanel.time_for_delayed_selection.tooltip=<html>D\u00e9lai de s\u00e9lection des n\u0153uds lorsque le pointeur de la souris est dessus (en millisecondes).<br>Mettez 1 dans cette valeur si vous souhaitez une s\u00e9lection directe.</html>
+ 
+ #<html> Tell if HTML exported from FreeMind should contain icons. The trouble with icons is that quite often the links to icons will not be found in the exported HTML.</html>
+-OptionPanel.export_icons_in_html.tooltip=<html>Indique que l'HTML export\u00E9 par FreeMind doit int\u00E9grer les ic\u00F4nes.<br>Malheureusement le lien vers ces ic\u00F4nes n'est que rarement r\u00E9solu et ces derniers ne peuvent \u00EAtre affich\u00E9s.</html>
++OptionPanel.export_icons_in_html.tooltip=<html>Indique que l'HTML export\u00e9 par FreeMind doit int\u00e9grer les ic\u00f4nes.<br>Malheureusement le lien vers ces ic\u00f4nes n'est que rarement r\u00e9solu et ces derniers ne peuvent \u00eatre affich\u00e9s.</html>
+ 
+ #<html> with the following switch you can enable/disable the delayed selection scheme. Auto options. Do not modify these as they will be saved to auto.properties anyway.</html>
+-OptionPanel.selection_method.tooltip=<html>Avec cet indicateur vous pouvez activer et d\u00E9sactiver le mode de s\u00E9lection-retard\u00E9e. Cette option est automatique. Ne pas la modifier puisqu'elle sera dans tous les cas sauv\u00E9e dans le fichier <tt>auto.properties</tt>.</html>
++OptionPanel.selection_method.tooltip=<html>Avec cet indicateur vous pouvez activer et d\u00e9sactiver le mode de s\u00e9lection-retard\u00e9e. Cette option est automatique. Ne pas la modifier puisqu'elle sera dans tous les cas sauv\u00e9e dans le fichier <tt>auto.properties</tt>.</html>
+ 
+ #<html> to change the default path (this is 'java.io.tmpdir' of java), enter a directory path here\: other possibilities\: * freemind_home   stands for the directory, where the auto.properties are. * default         points to java.io.tmpdir</html>
+-OptionPanel.path_to_automatic_saves.tooltip=<html>Indiquez un chemin par d\u00E9faut pour les fichiers temporaires (propri\u00E9t\u00E9 Java <tt>'java.io.tmpdir</tt>).<br>Il est \u00E9galement possible d'utiliser <em>freemind_home</em> o\u00F9 se trouve <tt>auto.properties</tt></html>
++OptionPanel.path_to_automatic_saves.tooltip=<html>Indiquez un chemin par d\u00e9faut pour les fichiers temporaires (propri\u00e9t\u00e9 Java <tt>'java.io.tmpdir</tt>).<br>Il est \u00e9galement possible d'utiliser <em>freemind_home</em> o\u00f9 se trouve <tt>auto.properties</tt></html>
+ 
+ #<html>Don't display 'move' cursor during paper dragging</html>
+-OptionPanel.disable_cursor_move_paper.tooltip=<html>Ne pas afficher le pointeur de souris de d\u00E9placement lorsque la page glisse.</html>
++OptionPanel.disable_cursor_move_paper.tooltip=<html>Ne pas afficher le pointeur de souris de d\u00e9placement lorsque la page glisse.</html>
+ 
+ #<html>Set Links either relative or absolute </html>
+-OptionPanel.links.tooltip=<html>D\u00E9fini des liens soit relativement \u00E0 la carte courante, soit en chemin absolus.</html>
++OptionPanel.links.tooltip=<html>D\u00e9fini des liens soit relativement \u00e0 la carte courante, soit en chemin absolus.</html>
+ 
+ #<html>The standard cloud color in html notation </html>
+-OptionPanel.standardcloudcolor.tooltip=<html>Couleur par d\u00E9faut des nuages en syntaxe HTML.</html>
++OptionPanel.standardcloudcolor.tooltip=<html>Couleur par d\u00e9faut des nuages en syntaxe HTML.</html>
+ 
+ #<html>The standard edge color in html notation </html>
+-OptionPanel.standardedgecolor.tooltip=<html>Couleur par d\u00E9faut des lignes en syntaxe HTML.</html>
++OptionPanel.standardedgecolor.tooltip=<html>Couleur par d\u00e9faut des lignes en syntaxe HTML.</html>
+ 
+ #<html>The standard node color if selected. In html notation (\#RRGGBB in hex values) </html>
+-OptionPanel.standardselectednodecolor.tooltip=<html>Couleur standard des n\u0153uds s\u00E9lectionn\u00E9s.<br>Syntaxe HTML&nbsp;\: \#RRGGBB en valeurs hexad\u00E9cimal.</html>
++OptionPanel.standardselectednodecolor.tooltip=<html>Couleur standard des n\u0153uds s\u00e9lectionn\u00e9s.<br>Syntaxe HTML&nbsp;\: \#RRGGBB en valeurs hexad\u00e9cimal.</html>
+ 
+ #<html>The standard background color in html notation </html>
+-OptionPanel.standardbackgroundcolor.tooltip=<html>Couleur par d\u00E9faut du fond, en syntaxe HTML.</html>
++OptionPanel.standardbackgroundcolor.tooltip=<html>Couleur par d\u00e9faut du fond, en syntaxe HTML.</html>
+ 
+ #<html>The standard cloud style. currently, only 'bezier' is supported</html>
+-OptionPanel.standardcloudestyle.tooltip=<html>Style par d\u00E9faut des nuages. Seule la valeur 'bezier' est actuellement accept\u00E9e.</html>
++OptionPanel.standardcloudestyle.tooltip=<html>Style par d\u00e9faut des nuages. Seule la valeur 'bezier' est actuellement accept\u00e9e.</html>
+ 
+ #<html>Currently, there may only be one reminder per node. <br>The current remnider is scheduled at {0,date} {0,time}, your choice was {1,date} {1,time}. <br><br>Do you want to change the node's reminder time (YES) <br>or do you want to keep the old one (NO)?</html>
+-plugins/TimeManagement.xml_reminderNode_onlyOneDate=<html>Il ne peut actuellement y avoir qu'une alerte par n\u0153ud.<br>\nL'alerte actuelle est planifi\u00E9e pour le {0,date} \u00E0 {0,time}.<br>\nVotre Choix \u00E9tait le {1,date} \u00E0 {1,time}.<br>\nVoulez-vous modifier l'alter pour ce n\u0153ud (Oui)&nbsp;?<br>\nOu souhaitez conserver la pr\u00E9c\u00E9dente (Non)&nbsp;?</html>
++plugins/TimeManagement.xml_reminderNode_onlyOneDate=<html>Il ne peut actuellement y avoir qu'une alerte par n\u0153ud.<br>\nL'alerte actuelle est planifi\u00e9e pour le {0,date} \u00e0 {0,time}.<br>\nVotre Choix \u00e9tait le {1,date} \u00e0 {1,time}.<br>\nVoulez-vous modifier l'alter pour ce n\u0153ud (Oui)&nbsp;?<br>\nOu souhaitez conserver la pr\u00e9c\u00e9dente (Non)&nbsp;?</html>
+ 
+ #<html>Enable leaves folding   \=\= changing bubble/fork for fold action  (although if false, you can always use node style to change it)</html>
+-OptionPanel.enable_leaves_folding.tooltip=<html>Permet de pliage des feuilles.<br>C'est \u00E0 dire que pour un pliage</html>
++OptionPanel.enable_leaves_folding.tooltip=<html>Une fois cette option activ\u00e9, vous pouvez plier/d\u00e9plier une feuille.<br>L'int\u00e9r\u00eat est peu \u00e9vident.</html>
+ 
+ #<html>Shows the calendar module by Kai Toedter.</html>
+-plugins/TimeManagement.xml_documentation=<html>Affiche le module de calendrier.<br><em>D\u00E9velopp\u00E9 par Kai Toedter.</em></html>
++plugins/TimeManagement.xml_documentation=<html>Affiche le module de calendrier.<br><em>D\u00e9velopp\u00e9 par Kai Toedter.</em></html>
+ 
+ #<html>The Look&Feel to use. 'metal','windows','motif', 'gtk' are supported, 'mac' is available only on MacOS. default means, that the default look and feel is used. If you want to put your own L&F, please, enter the class name here and assure that the corresponding jar file(s) are loaded. If there are problems with the look and feel, then choose 'nothing' here. It work for applets</html>
+-OptionPanel.lookandfeel.tooltip=<html>Le <em>Look & Feel</em> \u00E0 utiliser.<br>\n"M\u00E9tal", "Windows", "Motif" "GTk" sont support\u00E9s, "Mac" n'est disponible que sur syst\u00E8me Mac OS.<br>\n"D\u00E9faut" indique d'utiliser le L&F par d\u00E9faut pour la machine virtuelle.<br>\nPour utiliser votre propre L&F, merci de saisir le nom de la classe et assurez-vous que le fichier JAR est correctement charg\u00E9.<br>\nS'il y a un probl\u00E8me de L&F, choississez "Aucun en particulier". Cela fonctionne pour les Applets.\n<,/html>
++OptionPanel.lookandfeel.tooltip=<html>Le <em>Look & Feel</em> \u00e0 utiliser.<br>\n"M\u00e9tal", "Windows", "Motif" "GTk" sont support\u00e9s, "Mac" n'est disponible que sur syst\u00e8me Mac OS.<br>\n"D\u00e9faut" indique d'utiliser le L&F par d\u00e9faut pour la machine virtuelle.<br>\nPour utiliser votre propre L&F, merci de saisir le nom de la classe et assurez-vous que le fichier JAR est correctement charg\u00e9.<br>\nS'il y a un probl\u00e8me de L&F, choississez "Aucun en particulier". Cela fonctionne pour les Applets.\n<,/html>
+ 
+ #<html>The root node style if no other is specified. 'fork' and 'bubble' and 'combined' are supported </html>
+-OptionPanel.standardrootnodestyle.tooltip=<html>Le style du n\u0153ud racine si aucun n'est sp\u00E9cifi\u00E9.<br>\nLa valeurs "branche", "bulle" et "mixte" sont support\u00E9es.</html>
++OptionPanel.standardrootnodestyle.tooltip=<html>Le style du n\u0153ud racine si aucun n'est sp\u00e9cifi\u00e9.<br>\nLes valeurs "fourche", "bulle" et "mixte" sont support\u00e9es.</html>
+ 
+ #<html>The standard edge style. 'linear' and 'bezier' are supported </html>
+-OptionPanel.standardedgestyle.tooltip=<html>Style par d\u00E9faut des lignes.<br>\nSont support\u00E9es les valeurs "rectiligne" et "b\u00E9zier".</html>
++OptionPanel.standardedgestyle.tooltip=<html>Style par d\u00e9faut des lignes.<br>\nSont support\u00e9es les valeurs "rectiligne" et "b\u00e9zier".</html>
+ 
+ #<html>The standard link style. currently, only 'bezier' is supported</html>
+-OptionPanel.standardlinkestyle.tooltip=<html>Style par d\u00E9faut des lignes de lien.<br>\nSeule la valeur "b\u00E9zier" est actuellement support\u00E9e.</html>
++OptionPanel.standardlinkestyle.tooltip=<html>Style par d\u00e9faut des lignes de lien.<br>\nSeule la valeur "b\u00e9zier" est actuellement support\u00e9e.</html>
+ 
+ #<html>When pressed a timer is scheduled to the date given. Then blinking icons calls your attention.<br> If you close the map, the timers are reactivated the next time, the map is opened.</html>
+-plugins/TimeManagement.xml_reminderButton_tooltip=<html>Ce bouton permet de planifier une alerte pour la date donn\u00E9e.<br>\nUn ic\u00F4ne clignotant attirera votre attention.<br>\nSi vous fermer la carte, les alertes sont r\u00E9activ\u00E9es \u00E0 l'ouverture qui suit.</html>
++plugins/TimeManagement.xml_reminderButton_tooltip=<html>Ce bouton permet de planifier une alerte pour la date donn\u00e9e.<br>\nUne ic\u00f4ne clignotante attirera votre attention.<br>\nSi vous fermer la carte, les alertes sont r\u00e9activ\u00e9es \u00e0 l'ouverture qui suit.</html>
+ 
+ #<html>Where to place new branches. Valid values are 'first' and 'last' </html>
+-OptionPanel.placenewbranches.tooltip=<html>O\u00F9 placer les nouvelles branches.<br>\nLes valeurs acceptables sont "premier" et "dernier".</html>
++OptionPanel.placenewbranches.tooltip=<html>O\u00f9 placer les nouvelles branches.<br>\nLes valeurs acceptables sont "premier" et "dernier".</html>
+ 
+ #<html>This is the language that should be used in the program. 'automatic' tries to load the current user's language. </html>
+-OptionPanel.language.tooltip=<html>La langue qui doit \u00EAtre utilis\u00E9e par l'application.<br>\nLa valeur 'automatique" tente de charger la langue utilis\u00E9e actuellement par l'utilisateur dans sont syst\u00E8me.</html>
++OptionPanel.language.tooltip=<html>La langue qui doit \u00eatre utilis\u00e9e par l'application.<br>\nLa valeur 'automatique" tente de charger la langue utilis\u00e9e actuellement par l'utilisateur dans sont syst\u00e8me.</html>
+ 
+ #<html>The URL of the map that is loaded when browsemode starts up</html>
+-OptionPanel.browsemode_initial_map.tooltip=<html>L'URL de la carte qui est charg\u00E9e lorsque le mode navigation est activ\u00E9.</html>
++OptionPanel.browsemode_initial_map.tooltip=<html>L'URL de la carte qui est charg\u00e9e lorsque le mode navigation est activ\u00e9.</html>
+ 
+ #<html>The default new node style. 'fork', 'bubble' 'as_parent' and 'combined' are supported </html>
+-OptionPanel.standardnodestyle.tooltip=<html>Le style par d\u00E9faut des nouveaux n\u0153uds.<br>\nSeules les valeurs indiqu\u00E9es dans la liste sont support\u00E9es.</html>
++OptionPanel.standardnodestyle.tooltip=<html>Le style par d\u00e9faut des nouveaux n\u0153uds.<br>\nSeules les valeurs indiqu\u00e9es dans la liste sont support\u00e9es.</html>
+ 
+ #<html>For Windows (the "" signs are necessary due to links, that have "\=" in their URL).</html>
+-OptionPanel.default_browser_command_windows_9x.tooltip=<html>Pour Windows (les signes "" sont n\u00E9csaires \u00E0 cause des liens qui contiennent un caract\u00E8re "\=" dans leur URL).</html>
++OptionPanel.default_browser_command_windows_9x.tooltip=<html>Pour Windows (les signes "" sont n\u00e9csaires \u00e0 cause des liens qui contiennent un caract\u00e8re "\=" dans leur URL).</html>
+ 
+ #<html>For Windows (the "" signs are necessary due to links, that have "\=" in their URL).</html>
+-OptionPanel.default_browser_command_windows_nt.tooltip=<html>Pour Windows (les signes "" sont n\u00E9csaires \u00E0 cause des liens qui contiennent un caract\u00E8re "\=" dans leur URL).</html>
++OptionPanel.default_browser_command_windows_nt.tooltip=<html>Pour Windows (les signes "" sont n\u00e9csaires \u00e0 cause des liens qui contiennent un caract\u00e8re "\=" dans leur URL).</html>
+ 
+ #<html>Key typing\: overwrites content (false) / creates new sibling (true)  (requires\: disable_key_type \= false)</html>
+-OptionPanel.key_type_adds_new.tooltip=<html>Saisie au claiver&nbsp;\:\n<ul>\n<li><em>faux</em> remplace le contenu\n<li><em>vrai</em> cr\u00E9e un nouveau n\u0153ud fr\u00E8re\n</ul>\n<em>La fonction n\u00E9cessite que l'option <tt>disable_key_type</tt> ait la valeur <tt>false</tt></html>
++OptionPanel.key_type_adds_new.tooltip=<html>Saisie au claiver&nbsp;\:\n<ul>\n<li><em>faux</em> remplace le contenu\n<li><em>vrai</em> cr\u00e9e un nouveau n\u0153ud fr\u00e8re\n</ul>\n<em>La fonction n\u00e9cessite que l'option <tt>disable_key_type</tt> ait la valeur <tt>false</tt></html>
+ 
+ OptionPanel.separator.undo=Annulation
+ 
+@@ -1501,15 +1450,13 @@
+ 
+ OptionPanel.antialias_edges=Lisser les lignes
+ 
+-OptionPanel.keystroke_option_dialog=Pr\u00E9f\u00E9rences
+-
+-OptionPanel.no=Non
++OptionPanel.keystroke_option_dialog=Pr\u00e9f\u00e9rences
+ 
+ OptionPanel.antialias_all=Tout lisser
+ 
+ format_menu_edge_widths=Largeur des lignes
+ 
+-OptionPanel.ColorProperty.ResetColor=Mise \u00E0 z\u00E9ro des couleurs
++OptionPanel.ColorProperty.ResetColor=Mise \u00e0 z\u00e9ro des couleurs
+ 
+ accessories/plugins/ExportToOoWriter.properties_name=Comme document Open Writer...
+ 
+@@ -1520,12 +1467,34 @@
+ accessories/plugins/ImportMindmanagerFiles.properties_name=Carte de MindManager X5...
+ 
+ #<html>Determines the quality of the map. More antialias needs more time.</html>
+-OptionPanel.antialias.tooltip=<html>D\u00E9termine la qualit\u00E9 du rendu de la carte. Plus de lissage demande plus de temps.</html>
++OptionPanel.antialias.tooltip=<html>D\u00e9termine la qualit\u00e9 du rendu de la carte. Plus de lissage demande plus de temps.</html>
+ 
+ #<html>Determines how many steps are stored that can be undone via "Undo".</html>
+-OptionPanel.undo_levels.tooltip=<html>D\u00E9termine combien d'\u00E9tapes sont stock\u00E9es pour pouvoir \u00EAtre annul\u00E9es.</html>
++OptionPanel.undo_levels.tooltip=<html>D\u00e9termine combien d'\u00e9tapes sont stock\u00e9es pour pouvoir \u00eatre annul\u00e9es.</html>
+ 
+ #Unfolded nodes form the structure, folded nodes the content of the document. 
+-accessories/plugins/ExportToOoWriter.properties_documentation=Les n\u0153uds d\u00E9pli\u00E9s forment la structure, les n\u0153uds forments le contenu du document.
++accessories/plugins/ExportToOoWriter.properties_documentation=Les n\u0153uds d\u00e9pli\u00e9s forment la structure, les n\u0153uds forments le contenu du document.
+ 
+-OptionPanel.cs=Cs
++#Language
++OptionPanel.language=Langue
++OptionPanel.automatic=Automatique
++OptionPanel.cs=Tch\u00e8que
++OptionPanel.de=Allemand
++OptionPanel.dk=Danois
++OptionPanel.en=Anglais
++OptionPanel.es=Espagnol
++OptionPanel.fr=Fran\u00e7ais
++OptionPanel.hu=Hongrois
++OptionPanel.it=Italien
++OptionPanel.ja=Japonais
++OptionPanel.kr=Cor\u00e9en
++OptionPanel.lt=Lituanien
++OptionPanel.nl=N\u00e9erlandais
++OptionPanel.no=Norv\u00e9gien
++OptionPanel.pl=Polonais
++OptionPanel.pt_PT=Portugais (du Portugal)
++OptionPanel.pt_BR=Portugais (du Br\u00e9sil)
++OptionPanel.ru=Russe
++OptionPanel.sl=Slov\u00e8ne
++OptionPanel.zh=Chinois (Mandarin)
++OptionPanel.zh_CN=Chinois (simplifi\u00e9)

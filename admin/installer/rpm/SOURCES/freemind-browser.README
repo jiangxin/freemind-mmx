@@ -1,0 +1,20 @@
+freemind-browser for Debian
+---------------------------
+
+freemind-browser is a java applet to present FreeMind Mindmaps on the web
+(read-only).
+
+freemindbrowser.jar and freemindbrowser.html are examples of files to be used
+for this purpose. Place those two files in your web arborescence, make sure that
+freemindbrowser.html (or whatever name you gave to it) points properly to
+freemindbrowser.jar in the "archive" attribute of the "applet" tag (the example
+file assumes that both are in the same directory).
+
+Then copy a mind-map as well to the same web arborescence, and adapt the
+following lines to your need:
+       <param name="browsemode_initial_map"
+               value="http://freemind.sourceforge.net/maps/freemind.mm">
+
+NOTE: the URL to the map file must be absolute, but can only be on the same
+      server as the jar file (for security reasons).
+

@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Installing the Freemind applet</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="layout.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<h1>Installing the Freemind applet</h1>
+<p>Ver 1.0 - 1 March 2004 </p>
+<p>&nbsp;<b >Robert J. Alexander - Rome - Italy</b></p>
+<p>(For any corrections or simple thanks 8-&gt; my email is <b>bob</b> and my provider is <b>ngi.it</b>)</p>
+<p>Please read the <a href="disclaimer.htm">disclaimer</a> before using this document. </p>
+<h3>Download Freemind's applet</h3>
+<p>Go to <a href="http://sourceforge.net/project/showfiles.php?group_id=7118" title="Download Freemind">Sourceforge's Freemind file download page.</a></p>
+<p>Please note that we want to download Freemind's applet and not the standalone application. This download is on the bottom half of this page in the section called &quot;Freemind-Browser&quot; the following <a href="http://sourceforge.net/project/showfiles.php?group_id=7118&package_id=16120" title="Freemind-Browser download">Freemind Applet URL</a> will show you ONLY the applet. Download the latest version (at the time of this writing rel. 0.7.1). </p>
+<p><img src="images/Frapplet_003.jpg" width="823" height="429" /></p>
+<p>After you store this file where you want and unzip it you will see that it contains two files:</p>
+<ul>
+  <li>freemindbrowser.jar: this is the applet</li>
+  <li>freemindbrowser.html: this is the sample HTML launcher</li>
+</ul>
+<h3>Install Freemind's applet onto your web server</h3>
+<p>In the <a href="apache.html" title="Installing Apache on XP">previous step</a> you have taken notice of your Web's server DocumentRoot.</p>
+<p>I personally like creating a freemind directory in it and use it to keep the applet, the HTML launchers and the maps.</p>
+<p>Take the freemindbrowser.jar file and copy it, upload it or otherwise place it in this directory. </p>
+<h3>Install your map and tailor your HTML launcher</h3>
+<p>Now the last step you need to perform is to place a couple of corresponding files:</p>
+<ol>
+  <li>Your Freemind map (the .mm file) you want to proudly show via your web server</li>
+  <li>A corresponding HTML fragment to launch it in your user's browser</li>
+</ol>
+<p>In this example my Freemind map file is called cnipaoss.mm and the HTML launcher cnipaoss.html</p>
+<p>The launcher file can be easily tailored from a copy of the freemindbrowser.html you have recently unzipped.</p>
+<p>So I copied this file into a new one called cnipaoss.html and modified it as follows:</p>
+<p><img src="images/Frapplet_007.jpg" width="1093" height="488" /></p>
+<p>If you compare it to the &quot;original&quot; freemondbrowser.html you will notice the following differences:</p>
+<ul>
+  <li>Inside the &lt;title&gt; tag I could (and should) have placed a proper title for my map (e.g. CNIPAOSS).</li>
+  <li>Just inside the &lt;body&gt; tag I have added a short paragraph which can help new users to understand what's going on</li>
+  <li>Inside the &lt;PARAM NAME=&quot;browsemode_initial_map&gt; tag I have placed the full URL of my map</li>
+</ul>
+<p>Save and exit.   </p>
+<p>So at the end you should have at least these files in a directory under your DocumentRoot:</p>
+<p><img src="images/Frapplet_002.jpg" width="789" height="279" /> </p>
+<p>Of course in the future you will have additional pairs of html and mm files.</p>
+<p>So everything is ready and let's <a href="test.html" title="Testing the setup">test our setup</a> now. </p>
+<h3>Note</h3>
+<p>&nbsp;</p>
+<p><font size="-2">Copyright &copy; 2004 Robert Alexander - bob at ngi.it</font></p>
+<p>
+      <a href="http://validator.w3.org/check/referer"><img
+          src="http://www.w3.org/Icons/valid-xhtml10"
+          alt="Valid XHTML 1.0!" height="31" width="88" /></a>
+</p>
+
+</body>
+</html>

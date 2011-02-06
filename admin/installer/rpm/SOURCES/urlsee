@@ -1,0 +1,133 @@
+#!/bin/sh
+# Small wrapper script around 'see' and some other commands in order to be
+# able to handle URLs.
+# Use the environment variables SEECMD, BROWSER, MAILER and FILEMGR
+# to control which commands are used per preference respectively for local
+# files, remote URLs, mailto URLs or local files URLs (i.e. file:/).
+# (c) Eric Lavarde 2005, placed under GPLv2 license
+
+if [ -n "${DEBUG}" ]
+then # due to the fact that FreeMind discards any output.
+        exec >${TMPDIR:=/tmp}/urlsee.log 2>&1
+fi
+
+_debug() {
+	if [ -n "${DEBUG}" ]
+	then
+		echo "DEBUG:   $1" >&2 
+		shift
+		for text in "$@"
+		do
+			echo "         ${text}" >&2
+		done
+	fi
+}
+
+_error() {
+	echo "ERROR:   $1" >&2
+	shift
+	for text in "$@"
+	do
+		echo "         ${text}" >&2
+	done
+}
+
+try_all_cmds() {
+	local file cmd
+	file="$1"
+	shift
+	for cmd in "${@}"
+	do
+		cmd=$(which "${cmd}")
+		if [ -x "${cmd}" ]
+		then
+			_debug "CALLING ${cmd}" "${file}"
+			exec "${cmd}" "${file}"
+		fi
+	done
+}
+
+if [ -z "$1" ]
+then
+	_error "Parameter missing." "Usage: $0 <URL or filename>"
+	exit 1
+else
+	FILENAME="$1"
+fi
+
+### we start with the most generic and portable possibility ###
+if [ -x "$(which xdg-open)" ]
+then
+	_debug "exec xdg-open ${FILENAME}"
+	exec xdg-open "${FILENAME}"
+fi
+
+### if this wasn't possible, we try with desktop specific commands ###
+
+# try KDE with kfmclient
+if [ "${DESKTOP_SESSION}" = "kde" ] && [ -x "$(which kfmclient)" ]
+then
+	_debug "CALLING KDE kfmclient exec ${FILENAME}"
+	exec kfmclient exec "${FILENAME}"
+fi
+
+# try GNOME with gnome-open
+if [ "${DESKTOP_SESSION}" = "gnome" ] && [ -x "$(which gnome-open)" ]
+then
+	_debug "CALLING GNOME gnome-open ${FILENAME}"
+	exec gnome-open "${FILENAME}"
+fi
+
+# try XFce with exo-open
+if [ "${DESKTOP_SESSION}" = "xfc4" ] && [ -x "$(which exo-open)" ]
+then
+	_debug "CALLING XFce4 exo-open ${FILENAME}"
+	exec exo-open "${FILENAME}"
+fi
+
+### Looks like we're not using one of the standard desktops, ###
+### so we just try the same commands without caring for env. ###
+try_all_cmds "${FILENAME}" gnome-open exo-open
+if [ -x "$(which kfmclient)" ]
+then # we can't use try_all_cmds because we have 2 parameters
+	_debug "CALLING kfmclient exec ${FILENAME}"
+	exec kfmclient exec "${FILENAME}"
+fi
+
+### And now, we need to go the messy way ###
+### I might remove this part in the future ###
+_debug "Going for the messy path, it might fail..."
+
+HTTPNAME=${FILENAME#*://} # covers all kind of url protocol
+MAILNAME=${FILENAME#mailto:} # covers only mailto addresses
+LOCALNAME=${FILENAME#file:/} # covers only local files URL
+if [ "${FILENAME}" != "${HTTPNAME}" ] && [ "${FILENAME}" = "${LOCALNAME}" ] \
+	&& [ "${FILENAME}" = "${MAILNAME}" ]
+then # FILENAME did start with an URL protocol not equal to file: or mailto:
+	try_all_cmds "${FILENAME}" ${BROWSER} sensible-browser \
+		mozilla konqueror galeon firefox
+	_error "No browser could be found. Exiting."
+	exit 1
+fi
+
+if [ "${FILENAME}" != "${MAILNAME}" ]
+then # FILENAME did start with mailto:
+	try_all_cmds "${FILENAME}" ${MAILER} mozilla konqueror thunderbird
+	_error "No mailer could be found. Exiting."
+	exit 1
+fi
+
+if [ "${LOCALNAME}" != "${FILENAME}" ]
+then # FILENAME did start with file:/ # %20 is the URL expression of blanks
+	LOCALNAME=$(echo "/${LOCALNAME}" | sed 's/%20/ /g')
+fi
+
+# first try commands that work best with local names
+try_all_cmds "${LOCALNAME}" ${SEECMD} see
+
+# then try commands that work best with file:/ names
+try_all_cmds "${FILENAME}" ${FILEMGR} konqueror nautilus \
+	${BROWSER} sensible-browser mozilla galeon firefox
+
+_error "No file manager could be found. Exiting."
+exit 1

@@ -1,0 +1,13 @@
+--- freemind/build.xml	2005-11-08 14:28:18.000000000 +0100
++++ freemind/build.xml	2005-11-08 14:27:58.000000000 +0100
+@@ -12,8 +12,8 @@
+     <property name="FM.jar" value="${dist.lib}/freemind.jar"/>
+ 	<property name="post" value="../post" />
+ 	<property name="debug" value="on" />
+-	<property name="java_source_version" value="1.2" />
+-	<property name="java_target_version" value="1.2" />
++	<property name="java_source_version" value="1.3" />
++	<property name="java_target_version" value="1.3" />
+ 	<property name="build.compiler" value="modern" />
+ 	<property name="ant.dir" value="lib/ant/lib"/>
+        <property name="java.dir" value="/usr/share/java"/>

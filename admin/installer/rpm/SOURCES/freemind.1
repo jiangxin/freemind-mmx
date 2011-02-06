@@ -1,0 +1,76 @@
+.TH "FREEMIND" "1" 
+.SH "NAME" 
+freemind \(em A Java program for creating and viewing mindmaps. 
+.SH "SYNOPSIS" 
+.PP 
+\fBfreemind\fR [no_options]  
+.SH "DESCRIPTION" 
+.PP 
+This manual page documents briefly the 
+\fBfreemind\fR command. 
+.PP 
+This manual page was written for the \fBDebian\fP distribution 
+because the original program does not have a manual page. 
+Instead, it has documentation as a mindmap (see Help menu in 
+FreeMind). 
+.PP 
+\fBfreemind\fR is a program that allows to create 
+and view so-called mindmaps, as well as export them to HTML or different 
+image formats. 
+It also has a plugin concept to extend its functionality. 
+.SH "OPTIONS" 
+.PP 
+This program does not have any option. Just start it! 
+.SH "ENVIRONMENT VARIABLES" 
+.IP "\fBDEBUG\fP         " 10 
+If  this environment variable is set, freemind gives more 
+information on how it finds its different elements, as well as some 
+other information. 
+.IP "\fBJAVACMD\fP         " 10 
+Default value for the java virtual machine (the java command). 
+.IP "\fBJAVA_BINDIR\fP         " 10 
+If $JAVACMD is not set, the java virtual machine is searched 
+under $JAVA_BINDIR/java. 
+.IP "\fBJAVA_HOME\fP         " 10 
+If $JAVACMD and $JAVA_BINDIR are not set, the java virtual 
+machine is searched under $JAVA_HOME/bin/java. 
+.IP "\fBPATH\fP         " 10 
+If all $JAVA... environment variables fail, the java virtual 
+machine command (java) is searched in the $PATH (with which). 
+.IP "\fBCLASSPATH\fP 	  \fBADD_JARS\fP         " 10 
+The $CLASSPATH variable also lets one specify additional jars, 
+which is good, if you want to add a new Look&Feel jar (the motif 
+one is so ugly...). Alternatively, the content of $ADD_JARS will 
+be prepended to $CLASSPATH. 
+.IP "\fBFREEMIND_BASE_DIR\fP         " 10 
+Directory where FreeMind searches for its plugins and 
+libraries 
+.SH "FILES" 
+.IP "\fB/etc/freemind/freemindrc\fP 	  \fB~/.freemind/freemindrc\fP         " 10 
+freemind tries to read its environment variables from 
+/etc/freemind/freemindrc and ~/.freemind/freemindrc, 
+so that specific settings are possible at machine and user level. 
+ 
+.IP "\fB/usr/bin/java\fP         " 10 
+If all searches through environment variables fail, the 
+java virtual machine is expected to be /usr/bin/java; if not, 
+freemind exits with an error. 
+ 
+.SH "SEE ALSO" 
+.PP 
+The online documentation under http://freemind.sf.net/, 
+especially the Linux related one under the Wiki page link 
+http://freemind.sourceforge.net/wiki/index.php/FreeMind_on_Linux. 
+.SH "AUTHOR" 
+.PP 
+This manual page was written by Eric Lavarde deb@zorglub.s.bawue.de for 
+the \fBDebian\fP system (but may be used by others).  Permission is 
+granted to copy, distribute and/or modify this document under 
+the terms of the GNU General Public License, Version 2 any  
+later version published by the Free Software Foundation. 
+ 
+.PP 
+On Debian systems, the complete text of the GNU General Public 
+License can be found in /usr/share/common-licenses/GPL. 
+ 
+.\" created by instant / docbook-to-man, Wed 25 May 2005, 08:46 

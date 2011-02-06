@@ -1,0 +1,39 @@
+Notes:
+
+
+Dear FreeMind users,  
+ 
+with this release, we continue the series of release candidates for
+the final version 0.9.0. It fixes some nasty usability bugs.
+
+For translators may still update the translations to the current
+ set of strings, which hasn't changed since RC3.
+ 
+For testers: we need *everybody* to do tests. From the simplest to the
+hardest (e.g. memory and performance tests using profilers).
+If you have time - join us and tell your results 
+(in the open discussion forum or in the bugs section).  
+ 
+Best regards,  
+ 
+Chris  
+        
+
+Changes:
+
+===============================
+Changes made in FreeMind 0.9.0 RC 7
+===============================
+* Fixed: Some little bugs in Import Folder Action (null pointer and waiting cursor).
+* Fixed: .mm files association does not work on Windows * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=2847660&group_id=7118
+* Feature: Question before converting maps of older versions.
+* Fixed: Maps becomes dirty on map change (if notes window is open)
+* Updated HTML Editor Simply Html
+* Fixed: Selection wrong on move nodes left/right
+* Fixed: Initial focus when notes window open 
+* Fixed: Focus when leave node editing with escape
+* Added: Open hyperlinks in nodes editor
+* New: Search&Replace replaces now all occurences. Thanks to OlegKandaurov (f0y) for the patch.
+* Fixed: Node selection after png/jpg export.
+* New language basque. Thanks to the author.
+

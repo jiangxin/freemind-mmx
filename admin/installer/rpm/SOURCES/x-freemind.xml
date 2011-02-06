@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+    <mime-type type="application/x-freemind">
+	<comment xml:lang="cs">FreeMind Mapa</comment>
+	<comment xml:lang="de">FreeMind Map</comment>
+	<comment xml:lang="dk">FreeMind Map</comment>
+	<comment xml:lang="en">FreeMind Map</comment>
+	<comment xml:lang="es">FreeMind Mapa</comment>
+	<comment xml:lang="fr">FreeMind Carte Mentale</comment>
+	<comment xml:lang="hu">FreeMind Térkép</comment>
+	<comment xml:lang="it">FreeMind Mappa</comment>
+	<comment xml:lang="ja">FreeMind マップ</comment>
+	<comment xml:lang="kr">FreeMind 맵</comment>
+	<comment xml:lang="lt">FreeMind Žemėlapis</comment>
+	<comment xml:lang="nl">FreeMind Map</comment>
+	<comment xml:lang="no">FreeMind Map</comment>
+	<comment xml:lang="pl">FreeMind Mapa</comment>
+	<comment xml:lang="pt">FreeMind Mapa</comment>
+	<comment xml:lang="pt">FreeMind Mapa</comment>
+	<comment xml:lang="ru">FreeMind Ассоциативная арта</comment>
+	<comment xml:lang="sl">FreeMind Miselni vzorec</comment>
+	<comment xml:lang="zh_CN">FreeMind 思维导图</comment>
+	<comment xml:lang="zh">FreeMind 心智圖</comment>
+	<glob pattern="*.mm"/>
+    </mime-type>
+</mime-info>
+

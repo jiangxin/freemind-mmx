@@ -1,0 +1,36 @@
+--- freemind/freemind/main/Tools.java	2005-11-08 13:08:15.000000000 +0000
++++ freemind/freemind/main/Tools.java	2005-11-08 13:11:12.000000000 +0000
+@@ -42,6 +42,7 @@
+ import java.util.zip.DataFormatException;
+ import java.util.zip.Deflater;
+ import java.util.zip.Inflater;
++import org.apache.commons.codec.binary.Base64; // required for Base64 encoding
+ 
+ public class Tools {
+ 
+@@ -562,21 +563,17 @@
+      * @return
+      */
+     public static String toBase64(byte[] byteBuffer) {
+-        return (new sun.misc.BASE64Encoder()).encode(byteBuffer);
++        // return (new sun.misc.BASE64Encoder()).encode(byteBuffer);
++	return (new String(Base64.encodeBase64Chunked(byteBuffer)));
+     }
+ 
+     /**
+      * @param base64String
+      * @return
+-     * @throws IOException
+      */
+     public static byte[] fromBase64(String base64String)  {
+-        try {
+-            return new sun.misc.BASE64Decoder().decodeBuffer(base64String);
+-        } catch (IOException e) {
+-            e.printStackTrace();
+-            throw new RuntimeException("Base64 unpacking not allowed");
+-        }
++            // return new sun.misc.BASE64Decoder().decodeBuffer(base64String);
++	    return Base64.decodeBase64(base64String.getBytes());
+     }
+ 
+     public static String compress(String message) {

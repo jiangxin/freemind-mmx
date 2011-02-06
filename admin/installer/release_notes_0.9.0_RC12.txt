@@ -1,0 +1,28 @@
+Dear FreeMind users, 
+
+with this release, we continue the series of release candidates for the final version 0.9.0. 
+
+It fixes some conversion errors for opening old maps from version 0.8.x.
+For testers: we need *everybody* to do tests. From the simplest to the hardest (e.g. memory and performance tests using profilers). If you have time - join us and tell your results (in the open discussion forum or in the 
+bugs section). 
+
+Best regards, 
+
+Chris 
+
+
+Changes: 
+
+===============================
+Changes made in FreeMind 0.9.0 RC 12
+===============================
+* Fix: Script execution can be repeated.
+* Fix: Find finds an end of searching.
+* Space replacements on conversion done with faster converter now.
+
+===============================
+Changes made in FreeMind 0.9.0 RC 11
+===============================
+* Fix: Conversion from 0.8.0 to 0.9.0 drops indentation in notes - ID: 3096369
+* Fix for the fix: Freemind cannot find text with Greek characters - ID: 3035387
+* Fix for 10. RC4 regression: incorrect viewing of UTF-8 map - ID: 2810535

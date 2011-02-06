@@ -1,0 +1,37 @@
+Notes:
+
+
+Dear FreeMind users,  
+ 
+with this release, we continue the series of release candidates for
+the final version 0.9.0. It fixes some important bugs.
+
+For translators may still update the translations to the current
+ set of strings, which hasn't changed since RC3.
+ 
+For testers: we need *everybody* to do tests. From the simplest to the
+hardest (e.g. memory and performance tests using profilers).
+If you have time - join us and tell your results 
+(in the open discussion forum or in the bugs section).  
+ 
+Best regards,  
+ 
+Chris  
+        
+
+Changes:
+
+===============================
+Changes made in FreeMind 0.9.0 RC 5
+===============================
+* Fixed caret position during automatic save in notes window. (see https://sourceforge.net/forum/message.php?msg_id=7413407).
+* Disabled splash screen of SimplyHtml as this looks unusual. Nevertheless, many thanks to the authors of this important component.
+* Fixed: Map does not load with RC4 * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=2797009&group_id=7118
+* Updated korean translation, now with correct ISO code. Thanks to the author.
+* Fixed license problem with xsd2jibx.jar. Replaced with own library compileXsd.jar with GPLv2+.
+* Long node editor uses zoomed fonts (the rich type editor are still unzoomed).
+* Fixed problems with &#xb; in node text.
+* Fixed some "Center node" problems
+* Fixed: Node marker disappears after exporting * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=2813905&group_id=7118
+* Fixed some focus problems.
+* Integrated (thanks to the author): Typos in help Mind Map * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=2805776&group_id=7118

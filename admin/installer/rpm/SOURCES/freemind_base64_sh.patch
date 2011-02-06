@@ -1,0 +1,18 @@
+--- freemind/freemind.sh	2005-11-11 09:59:28.097466016 +0100
++++ freemind/freemind.sh	2005-11-11 10:01:45.336602496 +0100
+@@ -7,6 +7,7 @@
+ # 2005-01-16, added usage of FREEMIND_BASE_DIR variable
+ # 2005-02-18, add -Dfreemind.base.dir to make plugins work, add some ""
+ #             and enhance debug mode.
++# 2005-11-08, adding commons-codec to classpath.
+ # 2005-11-09, add some dpkg/rpm information and check for Sun/Blackdown VM.
+ 
+ _debug() {
+@@ -169,6 +170,7 @@
+ /usr/share/java/xml-commons-apis.jar:\
+ /usr/share/java/forms.jar:\
+ /usr/share/java/commons-lang.jar:\
++/usr/share/java/commons-codec.jar:\
+ ${freedir}"
+ _debug "Calling: '${JAVACMD} -Dfreemind.base.dir=${freedir} -cp ${CLASSPATH} freemind.main.FreeMind  $@'."
+ "${JAVACMD}" -Dfreemind.base.dir="${freedir}" -cp "${CLASSPATH}" freemind.main.FreeMind "$@"

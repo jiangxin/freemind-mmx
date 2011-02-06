@@ -1,0 +1,43 @@
+diff -uNr freemind-0.7.9.rc5_1/freemind/plugins/build_help.xml freemind-0.7.9.rc5/freemind/plugins/build_help.xml
+--- freemind-0.7.9.rc5_1/freemind/plugins/build_help.xml	2004-11-16 17:42:37.000000000 +0100
++++ freemind-0.7.9.rc5/freemind/plugins/build_help.xml	2005-07-24 16:06:58.765807112 +0200
+@@ -4,10 +4,10 @@
+ 	<property name="plugin.dir" value="plugins/help"/>
+ 	<property name="plugin.jar" value="help_plugin.jar" />
+ 	<property name="plugin.zip" value="help_plugin-${ver}.zip" />
+-	<property name="additional.lib" value="${plugin.dir}/jhall.jar"/>
+-	<property name="additional.lib.pattern" value="${plugin.dir}/jhall.jar"/>
++	<property name="additional.lib" value="/usr/share/java/javahelp2.jar"/>
++	<property name="additional.lib.pattern" value="/usr/share/java/javahelp2.jar"/>
+ 
+ 	<import file="build_import.xml" />
+ 
+ 
+-</project>
+\ No newline at end of file
++</project>
+diff -uNr freemind-0.7.9.rc5_1/freemind/plugins/FreemindHelp.xml freemind-0.7.9.rc5/freemind/plugins/FreemindHelp.xml
+--- freemind-0.7.9.rc5_1/freemind/plugins/FreemindHelp.xml	2005-01-03 23:49:57.000000000 +0100
++++ freemind-0.7.9.rc5/freemind/plugins/FreemindHelp.xml	2005-07-24 16:07:21.531346224 +0200
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+ <plugin>
+-	<plugin_classpath jar="plugins/help/jhall.jar"/>
++	<plugin_classpath jar="/usr/share/java/javahelp2.jar"/>
+ 	<plugin_classpath jar="plugins/help/help_plugin.jar"/>
+ 	<plugin_action 
+ 		documentation="%plugins/FreemindHelp.xml_documentation" 
+@@ -10,4 +10,4 @@
+ 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+ 		<plugin_menu location="menu_bar/help/doc/fm_help"/>
+ 	</plugin_action>
+-</plugin>
+\ No newline at end of file
++</plugin>
+--- freemind-0.7.9.rc5_1/freemind/plugins/help/doc/manifest.mf	2004-11-16 17:42:38.000000000 +0100
++++ freemind-0.7.9.rc5/freemind/plugins/help/doc/manifest.mf	2005-07-24 16:06:28.229449344 +0200
+@@ -1,4 +1,3 @@
+ Main-Class: sunw.demo.jhdemo.Runner
+ Run-Class: sunw.demo.jhdemo.JHLauncher
+-Class-Path: hsviewer.jar jhall.jar doc
+ Arguments: -helpset .doc/freemind.hs

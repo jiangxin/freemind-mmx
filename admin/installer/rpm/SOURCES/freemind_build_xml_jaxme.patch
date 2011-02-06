@@ -1,0 +1,41 @@
+--- freemind-0.8.0.orig/freemind/build.xml	2005-10-14 08:09:01.773265736 +0200
++++ freemind-0.8.0/freemind/build.xml	2005-10-13 11:30:20.000000000 +0200
+@@ -17,18 +17,19 @@
+ 	<property name="build.compiler" value="modern" />
+ 	<property name="ant.dir" value="lib/ant/lib"/>
+ 	<property name="java.dir" value="/usr/share/java"/>
++	<property name="jaxme.dir" value="${java.dir}/jaxme"/>
+ 	<property name="jarbundler.jar" value = "jarbundler-1.4.jar"/>
+ 
+ 
+ 	
+ 	
+ 	<!-- begin generator part -->
+-	<property name="jaxb" value="${ant.dir}/jaxb-xjc.jar:${ant.dir}/jaxb-api.jar:${ant.dir}/jaxb-impl.jar:${ant.dir}/jaxb-libs.jar:${ant.dir}/namespace.jar:${java.dir}/relaxngDatatype.jar:${java.dir}/xsdlib.jar:${ant.dir}/jax-qname.jar"/>
++	<property name="jaxb" value="${jaxme.dir}/jaxme2.jar:${jaxme.dir}/jaxme2-rt.jar:${jaxme.dir}/jaxmeapi.jar:${jaxme.dir}/jaxmejs.jar:${jaxme.dir}/jaxmepm.jar:${jaxme.dir}/jaxmexs.jar:${java.dir}/relaxngDatatype.jar:${java.dir}/xsdlib.jar"/>
+ 	<property name="xml" value="${java.dir}/xml-commons-apis.jar"/> 
+ 	<property name="classpath" value="${jaxb}:${xml}:${java.dir}/commons-lang-2.1.jar:${java.dir}/forms-1.0.5.jar"/>
+ 	<property name="xsd.dir" value="." />
+ 	<property name="gen.dir" value="generated" />
+-	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask" 
++	<taskdef name="xjc" classname="org.apache.ws.jaxme.generator.XJCTask"
+ 	   classpath="${jaxb}" />
+ 
+   <!-- uses property ${gen.file} as the directory name of the outputs. -->
+@@ -135,14 +136,14 @@
+ 			<!-- exclude jars too!
+ 			<fileset dir="${build}/accessories"/> -->
+ 		</copy> 
+-		<!-- third party libs -->
++		<!-- third party libs
+ 		<mkdir dir="${dist.lib}" />
+ 		<copy todir="${dist.lib}"> 
+ 			<fileset dir="${src}/lib">
+ 				<exclude name="**/jaxb-xjc.jar"/>
+ 				<exclude name="${jarbundler.jar}"/>
+ 			</fileset>
+-		</copy>
++		</copy> -->
+ 		<ant antfile="accessories/plugins/build.xml" target="dist"/>
+ 		<ant antfile="plugins/build.xml" target="dist"/>
+ 		<!-- Mac OS X -->

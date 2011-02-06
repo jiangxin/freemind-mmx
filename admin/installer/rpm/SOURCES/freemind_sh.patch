@@ -1,0 +1,138 @@
+--- freemind/freemind.sh	2005-05-31 07:16:24.000000000 +0200
++++ freemind/freemind.sh	2008-02-07 22:07:12.000000000 +0100
+@@ -7,6 +7,19 @@
+ # 2005-01-16, added usage of FREEMIND_BASE_DIR variable
+ # 2005-02-18, add -Dfreemind.base.dir to make plugins work, add some ""
+ #             and enhance debug mode.
++# 2005-11-09, add some dpkg/rpm information and check for Sun/Blackdown VM.
++# 2006-10-29, follow links to this script using readlink.
++# 2008-02-02, improve Java recognition, add lsb_release, fix -x which being empty
++#             add -Dgnu.java.awt.peer.gtk.Graphics=Graphics2D for non-Sun JREs
++# 2008-02-03, add debug values script and exit
++
++# we only want to test the script, not FreeMind itself
++if ( echo "${DEBUG}" | grep -qe "script" )
++then
++	set -x
++fi
++
++########## FUNCTIONS DEFINITIONS #######################################
+ 
+ _debug() {
+ 	if [ -n "${DEBUG}" ]
+@@ -60,7 +73,19 @@
+ 		_debug "Using '$JAVACMD' as java virtual machine..."
+ 		if [ -n "${DEBUG}" ]
+ 		then
+-			"$JAVACMD" -version
++			"$JAVACMD" -version >&2
++		fi
++		if (! "${JAVACMD}" -version 2>&1 | grep -qe 'Java(TM)')
++		then
++			_error "Your Java is not a derivative from Sun's code," \
++			       "=======================================" \
++			       "FREEMIND WILL MOST PROBABLY *NOT* WORK," \
++			       "=======================================" \
++			       "define JAVACMD, JAVA_BINDIR, JAVA_HOME or PATH in order" \
++			       "to point to such a VM. See the manpage of freemind(1) for details."
++			JAVA_TYPE=other
++		else
++			JAVA_TYPE=sun
+ 		fi
+ 		return 0
+ 	else
+@@ -78,8 +103,35 @@
+ 	fi
+ }
+ 
+-_debug "Freemind parameters are '${@}'."
+-_debug "$(uname -a)"
++output_debug_info() {
++	if [ -z "${DEBUG}" ]
++	then
++		return 0
++	fi
++	_debug "Freemind parameters are '${@}'."
++	_debug "$(uname -a)"
++	if [ -x "$(which lsb_release 2>/dev/null)" ]
++	then
++		_debug "$(lsb_release -a)"
++	else
++		_debug "System is not LSB conform, 'lsb_release' does not exist."
++	fi
++	if [ -x "$(which dpkg 2>/dev/null)" ]
++	then
++		_debug "The following DEB packages are installed:"
++		COLUMNS=132 dpkg -l | grep -i -e freemind >&2
++	elif [ -x "$(which rpm 2>/dev/null)" ]
++	then
++		_debug "The following RPM packages are installed:"
++		rpm -qa | grep -i -e freemind >&2
++	else
++		_debug "Neither dpkg nor rpm is installed."
++	fi
++}
++
++########## START MAIN PART #############################################
++
++#--------- Put the environment together --------------------------------
+ 
+ _source /etc/freemind/freemindrc
+ _source ~/.freemind/freemindrc
+@@ -90,7 +142,18 @@
+ 	exit 1
+ fi
+ 
+-freepath=$(dirname "$0")
++output_debug_info
++
++if [ -L "$0" ] && [ -x $(which readlink) ]
++then # if the script is a link and we have 'readlink' to follow it
++	# -m should be faster and link does always resolve, else this script
++	# wouldn't be called, would it?
++	freefile=$(readlink -mn "$0")
++	_debug "Link '$0' resolved to '${freefile}'."
++else
++	freefile="$0"
++fi
++freepath=$(dirname "${freefile}")
+ freepath="${freepath%/bin}" # nothing happens if freemind is not installed
+                             # under something/bin
+ 
+@@ -123,6 +186,8 @@
+ 	cp /etc/freemind/patterns.xml ~/.freemind/patterns.xml
+ fi
+ 
++#--------- Call (at last) FreeMind -------------------------------------
++
+ # The CLASSPATH also lets one specify additional jars, which is good, if
+ # you want to add a new Look&Feel jar (the motif one is so ugly...).
+ # 
+@@ -131,12 +196,20 @@
+ ${freedir}/lib/ant/lib/jaxb-impl.jar:\
+ ${freedir}/lib/ant/lib/jaxb-libs.jar:\
+ ${freedir}/lib/ant/lib/namespace.jar:\
+-${freedir}/lib/ant/lib/relaxngDatatype.jar:\
+-${freedir}/lib/ant/lib/xsdlib.jar:\
++/usr/share/java/relaxngDatatype.jar:\
++/usr/share/java/xsdlib.jar:\
+ ${freedir}/lib/ant/lib/jax-qname.jar:\
+-${freedir}/lib/ant/lib/sax.jar:\
+-${freedir}/lib/ant/lib/dom.jar:\
+-${freedir}/lib/forms-1.0.5.jar:\
++/usr/share/java/xml-commons-apis.jar:\
++/usr/share/java/forms.jar:\
++/usr/share/java/commons-lang.jar:\
+ ${freedir}"
+-_debug "Calling: '${JAVACMD} -Dfreemind.base.dir=${freedir} -cp ${CLASSPATH} freemind.main.FreeMind  $@'."
+-"${JAVACMD}" -Dfreemind.base.dir="${freedir}" -cp "${CLASSPATH}" freemind.main.FreeMind "$@"
++if [ "${JAVA_TYPE}" = "sun" ]
++then
++	_debug "Calling: '${JAVACMD} -Dfreemind.base.dir=${freedir} -cp ${CLASSPATH} freemind.main.FreeMind  $@'."
++	( echo "${DEBUG}" | grep -qe "exit" ) && exit 0 # do not start FreeMind
++	"${JAVACMD}" -Dfreemind.base.dir="${freedir}" -cp "${CLASSPATH}" freemind.main.FreeMind "$@"
++else # non-Sun environments don't work currently.
++	_debug "Calling: '${JAVACMD} -Dgnu.java.awt.peer.gtk.Graphics=Graphics2D -Dfreemind.base.dir=${freedir} -cp ${CLASSPATH} freemind.main.FreeMind  $@'."
++	( echo "${DEBUG}" | grep -qe "exit" ) && exit 0 # do not start FreeMind
++	"${JAVACMD}" -Dgnu.java.awt.peer.gtk.Graphics=Graphics2D -Dfreemind.base.dir="${freedir}" -cp "${CLASSPATH}" freemind.main.FreeMind "$@"
++fi

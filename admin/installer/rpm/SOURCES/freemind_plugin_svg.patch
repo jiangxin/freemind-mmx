@@ -1,0 +1,75 @@
+--- freemind-0.7.9.rc5_0/freemind/plugins/build_svg.xml	2004-11-16 17:42:37.000000000 +0100
++++ freemind-0.7.9.rc5/freemind/plugins/build_svg.xml	2005-07-25 20:47:47.984890312 +0200
+@@ -4,11 +4,11 @@
+ 	<property name="plugin.dir" value="plugins/svg"/>
+ 	<property name="plugin.jar" value="svg_plugin.jar" />
+ 	<property name="plugin.zip" value="svg_plugin-${ver}.zip" />
+-<!--	<property name="additional.lib" value="${plugin.dir}/batik-awt-util.jar:${plugin.dir}/batik-dom.jar:${plugin.dir}/batik-svggen.jar:${plugin.dir}/batik-util.jar:${plugin.dir}/batik-xml.jar"/>
++<!--	<property name="additional.lib" value="/usr/share/java/batik/awt-util.jar:/usr/share/java/batik/dom.jar:/usr/share/java/batik/svggen.jar:/usr/share/java/batik/util.jar:/usr/share/java/batik/xml.jar:/usr/share/batik/lib/batik-awt-util.jar:/usr/share/batik/lib/batik-dom.jar:/usr/share/batik/lib/batik-svggen.jar:/usr/share/batik/lib/batik-util.jar:/usr/share/batik/lib/batik-xml.jar"/>
+ 	-->	
+-	<property name="additional.lib" value="${plugin.dir}/batik-awt-util.jar:${plugin.dir}/batik-bridge.jar:${plugin.dir}/batik-css.jar:${plugin.dir}/batik-dom.jar:${plugin.dir}/batik-extension.jar:${plugin.dir}/batik-ext.jar:${plugin.dir}/batik-gui-util.jar:${plugin.dir}/batik-gvt.jar:${plugin.dir}/batik-parser.jar:${plugin.dir}/batik-script.jar:${plugin.dir}/batik-svg-dom.jar:${plugin.dir}/batik-svggen.jar:${plugin.dir}/batik-swing.jar:${plugin.dir}/batik-transcoder.jar:${plugin.dir}/batik-util.jar:${plugin.dir}/batik-xml.jar:${plugin.dir}/js.jar:${plugin.dir}/pdf-transcoder.jar:${plugin.dir}/xerces_2_5_0.jar:${plugin.dir}/xml-apis.jar:${plugin.dir}/batik-squiggle.jar"/>
++	<property name="additional.lib" value="/usr/share/java/batik/awt-util.jar:/usr/share/java/batik/bridge.jar:/usr/share/java/batik/css.jar:/usr/share/java/batik/dom.jar:/usr/share/java/batik/extension.jar:/usr/share/java/batik/ext.jar:/usr/share/java/batik/gui-util.jar:/usr/share/java/batik/gvt.jar:/usr/share/java/batik/parser.jar:/usr/share/java/batik/script.jar:/usr/share/java/batik/svg-dom.jar:/usr/share/java/batik/svggen.jar:/usr/share/java/batik/swing.jar:/usr/share/java/batik/transcoder.jar:/usr/share/java/batik/util.jar:/usr/share/java/batik/xml.jar:/usr/share/java/js.jar:${plugin.dir}/pdf-transcoder.jar:/usr/share/java/xerces-j2.jar:/usr/share/java/xml-commons-apis.jar:/usr/share/java/batik/squiggle.jar:/usr/share/batik/lib/batik-awt-util.jar:/usr/share/batik/lib/batik-bridge.jar:/usr/share/batik/lib/batik-css.jar:/usr/share/batik/lib/batik-dom.jar:/usr/share/batik/lib/batik-extension.jar:/usr/share/batik/lib/batik-ext.jar:/usr/share/batik/lib/batik-gui-util.jar:/usr/share/batik/lib/batik-gvt.jar:/usr/share/batik/lib/batik-parser.jar:/usr/share/batik/lib/batik-script.jar:/usr/share/batik/lib/batik-svg-dom.jar:/usr/share/batik/lib/batik-svggen.jar:/usr/share/batik/lib/batik-swing.jar:/usr/share/batik/lib/batik-transcoder.jar:/usr/share/batik/lib/batik-util.jar:/usr/share/batik/lib/batik-xml.jar:/usr/share/batik/batik-squiggle.jar"/>
+ 	
+ 	<property name="additional.lib.pattern" value="${plugin.dir}/*.jar"/>
+ 
+ 	<import file="build_import.xml" />
+-</project>
+\ No newline at end of file
++</project>
+--- freemind-0.7.9.rc5_0/freemind/plugins/ExportSvg.xml	2004-11-16 17:42:37.000000000 +0100
++++ freemind-0.7.9.rc5/freemind/plugins/ExportSvg.xml	2005-07-25 20:47:37.966413352 +0200
+@@ -1,27 +1,27 @@
+ <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+ <plugin>
+ 	<plugin_classpath jar="plugins/svg/svg_plugin.jar"/>
+-	<plugin_classpath jar="plugins/svg/batik-awt-util.jar"/>
+-	<plugin_classpath jar="plugins/svg/batik-bridge.jar"/>
+-	<plugin_classpath jar="plugins/svg/batik-css.jar"/>
+-	<plugin_classpath jar="plugins/svg/batik-dom.jar"/>
+-	<plugin_classpath jar="plugins/svg/batik-extension.jar"/>
+-	<plugin_classpath jar="plugins/svg/batik-ext.jar"/>
+-	<plugin_classpath jar="plugins/svg/batik-gui-util.jar"/>
+-	<plugin_classpath jar="plugins/svg/batik-gvt.jar"/>
+-	<plugin_classpath jar="plugins/svg/batik-parser.jar"/>
+-	<plugin_classpath jar="plugins/svg/batik-script.jar"/>
+-	<plugin_classpath jar="plugins/svg/batik-squiggle.jar"/>
+-	<plugin_classpath jar="plugins/svg/batik-svg-dom.jar"/>
+-	<plugin_classpath jar="plugins/svg/batik-svggen.jar"/>
+-	<plugin_classpath jar="plugins/svg/batik-swing.jar"/>
+-	<plugin_classpath jar="plugins/svg/batik-transcoder.jar"/>
+-	<plugin_classpath jar="plugins/svg/batik-util.jar"/>
+-	<plugin_classpath jar="plugins/svg/batik-xml.jar"/>
+-	<plugin_classpath jar="plugins/svg/js.jar"/>
++	<plugin_classpath jar="/usr/share/java/batik/awt-util.jar"/>
++	<plugin_classpath jar="/usr/share/java/batik/bridge.jar"/>
++	<plugin_classpath jar="/usr/share/java/batik/css.jar"/>
++	<plugin_classpath jar="/usr/share/java/batik/dom.jar"/>
++	<plugin_classpath jar="/usr/share/java/batik/extension.jar"/>
++	<plugin_classpath jar="/usr/share/java/batik/ext.jar"/>
++	<plugin_classpath jar="/usr/share/java/batik/gui-util.jar"/>
++	<plugin_classpath jar="/usr/share/java/batik/gvt.jar"/>
++	<plugin_classpath jar="/usr/share/java/batik/parser.jar"/>
++	<plugin_classpath jar="/usr/share/java/batik/script.jar"/>
++	<plugin_classpath jar="/usr/share/java/batik/squiggle.jar"/>
++	<plugin_classpath jar="/usr/share/java/batik/svg-dom.jar"/>
++	<plugin_classpath jar="/usr/share/java/batik/svggen.jar"/>
++	<plugin_classpath jar="/usr/share/java/batik/swing.jar"/>
++	<plugin_classpath jar="/usr/share/java/batik/transcoder.jar"/>
++	<plugin_classpath jar="/usr/share/java/batik/util.jar"/>
++	<plugin_classpath jar="/usr/share/java/batik/xml.jar"/>
++	<plugin_classpath jar="/usr/share/java/js.jar"/>
+ 	<plugin_classpath jar="plugins/svg/pdf-transcoder.jar"/>
+-	<plugin_classpath jar="plugins/svg/xerces_2_5_0.jar"/>
+-	<plugin_classpath jar="plugins/svg/xml-apis.jar"/>
++	<plugin_classpath jar="/usr/share/java/xerces-j2.jar"/>
++	<plugin_classpath jar="/usr/share/java/xml-commons-apis.jar"/>
+ 	<plugin_action 
+ 		documentation="%plugins/ExportPdf.xml_documentation" 
+ 		name="%plugins/ExportPdf.xml_name" base="freemind.extensions.ModeControllerHookAdapter" 
+@@ -38,4 +38,4 @@
+ 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+ 		<plugin_menu location="menu_bar/file/export/svg_export"/>
+ 	</plugin_action>
+-</plugin>
+\ No newline at end of file
++</plugin>

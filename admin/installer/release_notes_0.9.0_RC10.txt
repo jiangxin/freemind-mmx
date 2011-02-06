@@ -1,0 +1,25 @@
+Dear FreeMind users, 
+
+with this release, we continue the series of release candidates for the final version 0.9.0. 
+
+It fixes some conversion errors for opening old maps from version 0.8.x.
+For testers: we need *everybody* to do tests. From the simplest to the hardest (e.g. memory and performance tests using profilers). If you have time - join us and tell your results (in the open discussion forum or in the 
+bugs section). 
+
+Best regards, 
+
+Chris 
+
+
+Changes: 
+
+===============================
+Changes made in FreeMind 0.9.0 RC 10
+===============================
+* Fix: data loss in notes; note conversion - ID: 3008236: http://sourceforge.net/tracker/index.php?func=detail&aid=3008236&group_id=7118&atid=107118
+* Fix: Conversion from 0.8.0 to 0.9.0 drops newlines in notes - ID: 3021953: http://sourceforge.net/tracker/?func=detail&aid=3021953&group_id=7118&atid=107118
+* Fix: Menu layout under MacOsX
+* Removed HotEqn support, as it is poorly integrated. It is still in the code and may be compiled using the switch in the file plugins/build.xml setting include_latex to true.
+* Reverted twiki export to the former version. The new one was copied to mm2twiki_headings.xsl and can be actived by a user's copy.
+* Updated the german translation. Thanks to the authors.
+* Fix: Freemind cannot find text with Greek characters - ID: 3035387 http://sourceforge.net/tracker/?func=detail&aid=3035387&group_id=7118&atid=107118

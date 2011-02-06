@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     22.02.2008 06:23:22                                                        
+
+     freemind_installer_windows    
+     Creates the installer Freemind.iss file for different purposes
+                   
+     foltin                                                                
+     ====================================================================== -->
+<project name="freemind_installer_windows" default="installer">
+    <description>
+            Creates the installer Freemind.iss file for different purposes
+    </description>
+	<property name="freemind.version" value="0.8.1"/>
+	<property name="freemind.installer_year" value="2008"/>
+
+    <!-- ================================= 
+          target: installer              
+         ================================= -->
+    <target name="installer" depends="" description="--> Creates the installer Freemind.iss file.">
+    	<property name="freemind.installer.additional_sources" value="Source: ..\..\..\bin\dist\plugins\*.*; DestDir: {app}\plugins; Flags: promptifolder overwritereadonly  recursesubdirs"/>
+    	<property name="freemind.version.extension" value="-max"/>
+    	<antcall target="write_installer"></antcall>
+	</target>
+    <!-- ================================= 
+          target: installer_min              
+         ================================= -->
+    <target name="installer_min" depends="" description="--> Creates the min installer Freemind.iss file.">
+    	<property name="freemind.installer.additional_sources" value=""/>
+    	<property name="freemind.version.extension" value="-min"/>
+    	<antcall target="write_installer"></antcall>
+	</target>
+    <!-- ================================= 
+          target: installer_java_embedded              
+         ================================= -->
+    <target name="installer_java_embedded" depends="" description="--> Creates the java embedded max installer Freemind.iss file.">
+        <available property="unzipped_jre_present" file="jre/bin/java.exe"/>
+        <fail message="No unzipped java runtime found in directory admin/installer/windows/jre." unless="unzipped_jre_present"/>
+    	<property name="freemind.installer.additional_sources" value="Source: ..\..\..\bin\dist\plugins\*.*; DestDir: {app}\plugins; Flags: promptifolder overwritereadonly  recursesubdirs"/>
+    	<property name="freemind.installer.embedded_jre" value="Source: jre\*.*; DestDir: {app}\jre; Flags: promptifolder overwritereadonly  recursesubdirs"/>
+    	<!-- No java check necessary here... -->
+    	<property name="freemind.installer.jre_check" value="  Result := true;"/>
+    	<property name="freemind.version.extension" value="-max-java-embedded"/>
+    	<copy todir="." overwrite="true">
+    		<fileset dir="../../../bin/dist">
+			    <include name="freemind.bat"/>
+			</fileset>
+    		<fileset dir="../../../freemind/windows-launcher">
+			    <include name="FreeMind-butterfly-alternative-path.exe"/>
+			</fileset>
+    	</copy>
+    	<move tofile="FreeMind.exe" file="FreeMind-butterfly-alternative-path.exe"/>
+    	<replaceregexp byline="true" file="freemind.bat" match="^java" replace="jre\\\\bin\\\\java.exe"></replaceregexp>
+    	<property name="freemind.installer.freemind_bat" value="Source: Freemind.bat; DestDir: {app}; Flags: promptifolder overwritereadonly"/>
+    	<property name="freemind.installer.freemind_exe" value="Source: FreeMind.exe; DestDir: {app}; Flags: promptifolder overwritereadonly"/>
+    	<antcall target="write_installer_base"></antcall> 
+	</target>
+    <!-- ================================= 
+          target: installer_java_installer_embedded              
+         ================================= -->
+    <target name="installer_java_installer_embedded" depends="" description="--> Creates the jre installer embedded max installer Freemind.iss file.">
+        <available property="jre_installer_present" file="jre_installer.exe"/>
+        <fail message="No  java installer found in directory admin/installer/windows." unless="jre_installer_present"/>
+    	<property name="freemind.installer.additional_sources" value="Source: ..\..\..\bin\dist\plugins\*.*; DestDir: {app}\plugins; Flags: promptifolder overwritereadonly  recursesubdirs"/>
+    	<property name="freemind.installer.embedded_jre" value="Source: jre_installer.exe; Flags: dontcopy"/>
+    	<property name="freemind.version.extension" value="-max-java-installer-embedded"/>
+    	<property name="freemind.installer.jre_check" value="  Result := InstallJavaVersion;"/>
+    	<property name="freemind.installer.freemind_bat" value="Source: ..\..\..\bin\dist\Freemind.bat; DestDir: {app}; Flags: promptifolder overwritereadonly"/>
+    	<property name="freemind.installer.freemind_exe" value="Source: ..\..\..\bin\dist\Freemind.exe; DestDir: {app}; Flags: promptifolder overwritereadonly"/>
+    	<antcall target="write_installer_base"></antcall> 
+	</target>
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: write_installer                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="write_installer">
+    	<property name="freemind.installer.embedded_jre" value=""/>
+    	<property name="freemind.installer.jre_check" value="  Result := CheckJavaVersion;"/>
+    	<property name="freemind.installer.freemind_bat" value="Source: ..\..\..\bin\dist\Freemind.bat; DestDir: {app}; Flags: promptifolder overwritereadonly"/>
+    	<property name="freemind.installer.freemind_exe" value="Source: ..\..\..\bin\dist\Freemind.exe; DestDir: {app}; Flags: promptifolder overwritereadonly"/>
+		<antcall target="write_installer_base"></antcall>
+	</target>        	
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: write_installer base                 
+         - - - - - - - - - - - - - - - - - -->
+    <target name="write_installer_base">
+        <echo file="Freemind.iss" append="false" encoding="ISO-8859-1">
+;****************************************************************************
+;* Install Script for FreeMind
+;****************************************************************************
+;* Before using this be sure to download and install Inno Setup from
+;* www.jrsoftware.org and ISTool from www.istool.org. These are required to
+;* make changes and compile this script. To use the billboard feature please
+;* dowload and install the ISX BillBoard DLL.
+;****************************************************************************
+;* Andrew J. Iggleden (AJI) 8/12/2003 - Initial Release
+;* Andrew J. Iggleden (AJI) 20/12/2003 - Version 0.7.0
+;* Christian Foltin   (FC ) 10/01/2004 - Version 0.7.1
+;* Christian Foltin   (FC ) 08/07/2005 - Version 0.8.0
+;* Christian Foltin   (FC ) 04/03/2007 - Version 0.9.0 Beta9
+;* Christian Foltin   (FC ) 25/06/2007 - Version 0.9.0 Beta10
+;* Dimitry Polivaev   (DP ) 15/07/2007 - Version 0.9.0 Beta11
+;* Christian Foltin   (FC ) 21/07/2007 - Version 0.9.0 Beta12
+;* Christian Foltin   (FC ) 07/08/2007 - Version 0.9.0 Beta13
+;* Dimitry Polivaev   (DP ) 19/10/2007 - Version 0.9.0 Beta14
+;* Christian Foltin   (FC ) 30/11/2007 - Version 0.9.0 Beta15
+;* Christian Foltin   (FC ) 02/01/2008 - Version 0.8.1
+;* Christian Foltin   (FC ) 22/02/2008 - Universial Version 
+;****************************************************************************
+
+[Files]
+Source: isxbb.dll; DestDir: {tmp}; Flags: dontcopy
+
+;Source: ..\..\..\bin\dist\Freemind.exe; DestDir: {app}; Flags: promptifolder overwritereadonly
+;Source: ..\..\..\bin\dist\Freemind.bat; DestDir: {app}; Flags: promptifolder overwritereadonly
+${freemind.installer.freemind_exe}
+${freemind.installer.freemind_bat}
+
+
+Source: ..\..\..\bin\dist\accessories\*.*; DestDir: {app}\accessories; Flags: promptifolder overwritereadonly
+Source: ..\..\..\bin\dist\browser\*.*; DestDir: {app}\browser; Flags: promptifolder overwritereadonly
+Source: ..\..\..\bin\dist\doc\*.*; DestDir: {app}\doc; Flags: promptifolder overwritereadonly
+Source: ..\..\..\bin\dist\lib\*.*; DestDir: {app}\lib; Flags: promptifolder overwritereadonly  recursesubdirs
+${freemind.installer.additional_sources}
+${freemind.installer.embedded_jre}
+
+
+Source: license.txt; DestDir: {app}; Flags: promptifolder overwritereadonly
+Source: ..\..\..\bin\dist\patterns.xml; DestDir: {app}; Flags: promptifolder overwritereadonly
+; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+
+Source: FreeMind.gif; DestDir: {tmp}; Flags: dontcopy
+Source: FreeMind1.gif; DestDir: {tmp}; Flags: dontcopy
+
+[Code]
+const
+  TOPLEFT			= 1;
+  TOPRIGHT			= 2;
+  BOTTOMLEFT		= 3;
+  BOTTOMRIGHT		= 4;
+  CENTER			= 5;
+  BACKGROUND		= 6;
+  TOP				= 7;
+  BOTTOM			= 8;
+  LEFT				= 9;
+  RIGHT				= 10;
+  TIMER				= 16;
+
+
+
+function isxbb_AddImage(Image: PAnsiChar; Flags: Cardinal): Integer;
+external 'isxbb_AddImage@files:isxbb.dll stdcall';
+
+function isxbb_Init(hWnd: Integer): Integer;
+external 'isxbb_Init@files:isxbb.dll stdcall';
+
+function isxbb_StartTimer(Seconds: Integer; Flags: Cardinal): Integer;
+external 'isxbb_StartTimer@files:isxbb.dll stdcall';
+
+function isxbb_KillTimer(Flags: Cardinal): Integer;
+external 'isxbb_KillTimer@files:isxbb.dll stdcall';
+
+
+function SearchForJavaVersion: Boolean;
+var
+  AVersion: String;
+begin
+  Result := False;
+  if RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\JavaSoft\Java Runtime Environment', 'CurrentVersion', AVersion) then
+  begin
+	if (AVersion = '1.4') or (AVersion = '1.5') or (AVersion = '1.6') or (AVersion = '1.7') then
+		Result := True;
+  end;
+end;
+
+function CheckJavaVersion: Boolean;
+begin
+  Result := SearchForJavaVersion;
+  if Result = False then	// Java not found/detected
+  begin
+	if MsgBox( 'Java 1.4 or greater not detected. - You have to download and install Java from http://java.sun.com/ - \nContinue with installation?', mbError, MB_YESNO) = MRYES then
+		Result := True
+	else
+		Result := False;
+  end;
+end;
+
+function InstallJavaVersion: Boolean;
+var
+  ErrorCode: Integer;
+        	
+begin
+  Result := SearchForJavaVersion;
+  if Result = False then	// Java not found/detected
+	  begin
+		if MsgBox( 'Java not detected. It is needed for FreeMind. Do you want to install it?', mbError, MB_YESNO) = MRYES then
+        	begin
+	        	ExtractTemporaryFile('jre_installer.exe');
+	        	if not Exec(ExpandConstant('{tmp}\jre_installer.exe'), '', '',  SW_SHOWNORMAL, ewWaitUntilTerminated, ErrorCode) then
+	        	begin
+	        		MsgBox('Java Installation:' #13#13 'Execution of ''jre_installer.exe'' failed. ' + SysErrorMessage(ErrorCode) + '.', mbError, MB_OK);
+	        		Result := False;
+	        	end;
+        	end;
+      end;
+  // in any case, we proceed.
+  Result := True;
+end;
+
+function InitializeSetup(): Boolean;
+begin
+// AJI - Displays the two gifs on the main (blue) screen.
+// AJI - Cannot guarantee that this will work on ALL Windows versions. May need tweaking.
+    ExtractTemporaryFile('FreeMind.gif');
+    ExtractTemporaryFile('FreeMind1.gif');
+
+    isxbb_AddImage(ExpandConstant('{tmp}')+'\FreeMind.gif',BOTTOMLEFT);
+    isxbb_AddImage(ExpandConstant('{tmp}')+'\FreeMind1.gif',TOPRIGHT);
+
+    isxbb_Init(StrToInt(ExpandConstant('{hwnd}')));
+${freemind.installer.jre_check}
+
+        	
+end;
+[Setup]
+AppName=FreeMind
+AppVerName=FreeMind ${freemind.version}
+AppPublisherURL=http://freemind.sourceforge.net
+AppSupportURL=http://freemind.sourceforge.net
+AppUpdatesURL=http://freemind.sourceforge.net
+;the version is not a number. doesn't work: VersionInfoVersion=${freemind.version}
+VersionInfoVersion=0.9.0.0
+        	
+DefaultDirName={pf}\FreeMind
+DefaultGroupName=FreeMind
+AllowNoIcons=true
+LicenseFile=license.txt
+WindowVisible=true
+ShowLanguageDialog=true
+
+
+AppCopyright=Copyright © 2000-${freemind.installer_year} Jörg Müller, Daniel Polansky, Petr Novak, Christian Foltin, Dimitry Polivaev and others
+;AppCopyright=Copyright © {code:InstallationDate}
+AppVersion=${freemind.version}
+InfoAfterFile=after.txt
+InfoBeforeFile=before.txt
+PrivilegesRequired=admin
+UninstallDisplayIcon={app}\Freemind.exe
+UninstallDisplayName=FreeMind
+
+AppID=B991B020-2968-11D8-AF23-444553540000
+UninstallRestartComputer=false
+ChangesAssociations=true
+FlatComponentsList=false
+OutputBaseFilename=FreeMind-Windows-Installer-${freemind.version}${freemind.version.extension}
+SolidCompression=false
+; old: InternalCompressLevel=9
+Compression=zip/9
+ShowTasksTreeLines=true
+
+ShowUndisplayableLanguages=true
+
+[Languages]
+Name: english; MessagesFile: compiler:Default.isl
+Name: basque; MessagesFile: compiler:Languages\Basque.isl
+Name: brazilianportuguese; MessagesFile: compiler:Languages\BrazilianPortuguese.isl
+Name: catalan; MessagesFile: compiler:Languages\Catalan.isl
+Name: croatian; MessagesFile: compiler:Languages\Croatian.isl
+Name: czech; MessagesFile: compiler:Languages\Czech.isl
+Name: danish; MessagesFile: compiler:Languages\Danish.isl
+Name: dutch; MessagesFile: compiler:Languages\Dutch.isl
+Name: finnish; MessagesFile: compiler:Languages\Finnish.isl
+Name: french; MessagesFile: compiler:Languages\French.isl
+Name: german; MessagesFile: compiler:Languages\German.isl
+Name: hebrew; MessagesFile: compiler:Languages\Hebrew.isl
+Name: hungarian; MessagesFile: compiler:Languages\Hungarian.isl
+Name: italian; MessagesFile: compiler:Languages\Italian.isl
+Name: norwegian; MessagesFile: compiler:Languages\Norwegian.isl
+Name: polish; MessagesFile: compiler:Languages\Polish.isl
+Name: portuguese; MessagesFile: compiler:Languages\Portuguese.isl
+Name: russian; MessagesFile: compiler:Languages\Russian.isl
+Name: slovak; MessagesFile: compiler:Languages\Slovak.isl
+Name: slovenian; MessagesFile: compiler:Languages\Slovenian.isl
+Name: spanish; MessagesFile: compiler:Languages\Spanish.isl
+
+[Tasks]
+Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:AdditionalIcons}
+Name: quicklaunchicon; Description: {cm:CreateQuickLaunchIcon}; GroupDescription: {cm:AdditionalIcons}
+
+Name: associate; Description: {cm:AssocFileExtension,Freemind,.mm}; GroupDescription: {cm:AssocingFileExtension,Freemind,.mm}
+
+
+[Icons]
+Name: {group}\FreeMind; Filename: {app}\Freemind.exe; WorkingDir: {app}; IconIndex: 0; IconFilename: {app}\Freemind.exe
+Name: {group}\Uninstall FreeMind; Filename: {uninstallexe}
+Name: {userdesktop}\FreeMind; Filename: {app}\Freemind.exe; Tasks: desktopicon; WorkingDir: {app}; IconIndex: 0; IconFilename: {app}\Freemind.exe
+Name: {userstartmenu}\FreeMind; Filename: {app}\Freemind.exe; Tasks: quicklaunchicon; WorkingDir: {app}; IconIndex: 0; IconFilename: {app}\Freemind.exe
+
+[Run]
+; NOTE: The following entry contains an English phrase ("Launch"). You are free to translate it into another language if required.
+Filename: {app}\Freemind.exe; Description: Launch FreeMind; Flags: skipifsilent postinstall unchecked
+[_ISTool]
+Use7zip=false
+EnableISX=true
+
+
+[Registry]
+Root: HKCR; Subkey: .mm; ValueType: string; ValueName: ; ValueData: Freemind; Flags: uninsdeletevalue
+;".myp" is the extension we're associating. "MyProgramFile" is the internal name for the file type as stored in the registry. Make sure you use a unique name for this so you don't inadvertently overwrite another application's registry key.
+Root: HKCR; Subkey: Freemind; ValueType: string; ValueName: ; ValueData: Freemind; Flags: uninsdeletekey
+
+;"My Program File" above is the name for the file type as shown in Explorer.
+Root: HKCR; Subkey: Freemind\DefaultIcon; ValueType: string; ValueName: ; ValueData: {app}\freemind.exe,1
+;"DefaultIcon" is the registry key that specifies the filename containing the icon to associate with the file type. ",0" tells Explorer to use the first icon from MYPROG.EXE. (",1" would mean the second icon.)
+Root: HKCR; Subkey: Freemind\shell\open\command; ValueType: string; ValueName: ; ValueData: """{app}\freemind.exe"" ""%1"""; Flags: uninsdeletekey
+</echo>
+    </target>
+
+</project>

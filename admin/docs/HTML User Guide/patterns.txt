@@ -1,0 +1,138 @@
+<!-- Default patterns supplied with FreeMind -->
+<patterns>
+   <pattern name="Default">
+      <node>
+         <font/>
+      </node>
+      <edge/>
+   </pattern>
+   <pattern name="Normal">
+      <node color="#000000"/>
+   </pattern>
+   <!-- task -->
+   <pattern name="OK">
+<node color="#33CC33">
+         <font NAME="Comic Sans MS" BOLD="true" ITALIC="false" size="12" />
+       </node>
+  </pattern>
+   <pattern name="Needs action">
+<node color="#990033">
+         <font NAME="Comic Sans MS" ITALIC="true" size="14" />
+       </node>
+  </pattern>
+   <pattern name="Hot">
+<node color="#FF3333">
+         <font NAME="Comic Sans MS" BOLD="true" size="14" />
+      </node>
+   </pattern>
+   <!-- document -->
+   <pattern name="Detail">
+      <node color="#666666">
+         <font NAME="Comic Sans MS" BOLD="false" size="10" />
+      </node>
+   </pattern>
+   <pattern name="Folder">
+<node color="#CC9900">
+         <font NAME="Arial" size="14" />
+      </node>
+   </pattern>
+   <pattern name="Topic">
+<node color="#009966">
+         <font NAME="Comic Sans MS" BOLD="false" size="15" />
+      </node>
+   </pattern>
+   <pattern name="Larger Topic">
+<node color="#009966">
+         <font NAME="Comic Sans MS" BOLD="false" size="18" />
+       </node>
+  </pattern>
+   <pattern name="Plain text">
+<node color="#000000">
+         <font NAME="Georgia" BOLD="false" ITALIC="false" size="12" />
+       </node>
+   </pattern>
+   <pattern name="Italic text">
+<node color="#000000">
+         <font NAME="Georgia" BOLD="false" ITALIC="true" size="12" />
+       </node>
+   </pattern>
+   <pattern name="Bold italic text">
+<node color="#000000">
+         <font NAME="Georgia" BOLD="true" ITALIC="true" size="12" />
+       </node>
+   </pattern>
+   <pattern name="Question">
+<node color="#FF0066">
+         <font NAME="Georgia" BOLD="false" ITALIC="true" size="15" />
+       </node>
+   </pattern>
+   <pattern name="Brown">
+<node color="#996633">
+       </node>
+   </pattern>
+   <pattern name="Purple">
+      <node color="#993399"/>
+   </pattern>
+   <pattern name="Blue">
+      <node color="#0033FF"/>
+   </pattern>
+   <pattern name="Pink">
+      <node color="#FF6666"/>
+   </pattern>
+   <pattern name="Cyan">
+      <node color="#009999"/>
+   </pattern>
+
+
+   <!-- These two examples are not really meant for serious use -->
+   <!-- example of edges -->
+   <pattern name="Insert photo">
+      <node TEXT="&lt;html&gt;&lt;img src=&quot;file:///c:/windows/desktop/photos/photo.jpg&quot;&gt;&lt;br&gt;SOME TEXT HERE &lt;br&gt;AND MORE&lt;/html&gt; ">
+<font NAME="Default" SIZE="14"/>
+       </node>
+ </pattern>
+   <pattern name="Question mark">
+      <node TEXT="&lt;html&gt;&lt;img src=&quot;file:///C:/Program Files/FreeMind/Images/btn_questionMark.gif&quot;&gt;&lt;/html&gt; ">
+<font NAME="Default" SIZE="14"/>
+       </node>
+ </pattern>
+   <pattern name="Exclamation">
+      <node TEXT="&lt;html&gt;&lt;img src=&quot;file:///C:/Program Files/FreeMind/Images/exclam.gif&quot;&gt;&lt;/html&gt; ">
+<font NAME="Default" SIZE="14"/>
+       </node></pattern>
+
+   <pattern name="OK Check">
+      <node TEXT="&lt;html&gt;&lt;img src=&quot;file:///C:/Program Files/FreeMind/Images/okcheck.gif&quot;&gt;&lt;/html&gt; ">
+<font NAME="Default" SIZE="14"/>
+       </node></pattern>
+
+   <pattern name="Now">
+      <node TEXT="&lt;html&gt;&lt;img src=&quot;file:///C:/Program Files/FreeMind/Images/now.gif&quot;&gt;&lt;/html&gt; ">
+<font NAME="Default" SIZE="14"/>
+       </node></pattern>
+
+   <pattern name="Later">
+      <node TEXT="&lt;html&gt;&lt;img src=&quot;file:///C:/Program Files/FreeMind/Images/later.gif&quot;&gt;&lt;/html&gt; ">
+<font NAME="Default" SIZE="14"/>
+       </node></pattern>
+
+   <pattern name="Skip">
+      <node TEXT="&lt;html&gt;&lt;img src=&quot;file:///C:/Program Files/FreeMind/Images/skip.gif&quot;&gt;&lt;/html&gt; ">
+<font NAME="Default" SIZE="14"/>
+       </node></pattern>
+   <pattern name="Idea">
+      <node TEXT="&lt;html&gt;&lt;img src=&quot;file:///C:/Program Files/FreeMind/Images/tips.gif&quot;&gt;&lt;/html&gt; ">
+<font NAME="Default" SIZE="14"/>
+       </node></pattern>
+
+
+   <!-- example with text
+        Because this we have no undo, this example is dangerous.
+        We'd better comment it out.
+   <pattern name="Program">
+      <node color="#996600" italic="true"  text="Program">
+         <font size="16" italic="true"/>
+      </node>
+   </pattern>
+   -->
+</patterns>

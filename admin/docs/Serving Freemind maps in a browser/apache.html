@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Installing Apache on XP</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link href="layout.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<h1>Installing Apache on XP </h1>
+<p>Ver 1.0 - 29 February 2004 </p>
+<p>&nbsp;<b >Robert J. Alexander - Rome - Italy</b></p>
+<p>(For any corrections or simple thanks 8-&gt; my email is <b>bob</b> and my provider is <b>ngi.it</b>)</p>
+<p>Please read the <a href="disclaimer.htm">disclaimer</a> before using this document. </p>
+<h3>Download the binary package for Windows 32-bit </h3>
+<p>First of all locate the <a href="http://www.apache.org/dyn/closer.cgi/httpd/" title="Apache download best mirror">best mirror</a> to download Apache from.</p>
+<p>Select the lastest release and the .msi version from the binaries/win32 directory. At the time of this writing this package is release 2.0.48  (<a href="http://www.apache.inetcosmos.org/dist/httpd/binaries/win32/apache_2.0.48-win32-x86-no_ssl.msi" title="Apache 2.0.48 msi">here</a> is the the package I am using but please use it only if unable to locate your mirror). </p>
+<p>Save the downloaded file  to a know directory and then launch it to begin the installation.</p>
+<p><img src="images/Frapplet_001.jpg" width="616" height="239" /></p>
+<p>If you are installing in a machine with an IP address corresponding to name and domain the values you will need to fill in are obvious. I, like me, you are installing on a machine that hasn't an &quot;official&quot; name (for instance my laptop when disconnected) you can use anything you like in the &quot;domain&quot; field, for example apache.org, and localhost as the server's name. </p>
+<p>The installation process will take some time and at the end you will see this screen:</p>
+<p><img src="images/Frapplet_010.jpg" width="504" height="388" /> </p>
+<p>Click on finish and if all went smoothly you will be able to see the &quot;Apache monitor&quot; application iconified in the left section of the taskbar (near the clock). It's a small Apache feather with a small green triangle if the server is running OK. See here the leftmost icon: </p>
+<p><img src="images/Frapplet_011.jpg" width="234" height="18" /> </p>
+<p>As a double check you can now direct your browser to your newly installed Apache server. In my case it's running on my disconnected notebook (IBM Thinkpad T40) and therefore is listening on the 127.0.0.1 loopback interface. I therefore use the http://127.0.0.1 URL (please beware that if you using proxies 127.0.0.1 has to be excluded). Here is what you should see since the fresh install just installs some default placeholder web pages:</p>
+<p><img src="images/Frapplet_014.jpg" width="842" height="551" /> </p>
+<p>Clicking on the Start button of your taskbar and selecting &quot;All programs&quot; you will see the &quot;Apache HTTP Server 2.0.48&quot; entry. Click it. Click on Configure and click on Edit the Apache httpd.conf file. Search for the DocumentRoot entry and this will tell you where you need to place the files to be served via your brand new Apache web server.</p>
+<p><img src="images/Frapplet_016.jpg" width="1371" height="742" /></p>
+<p>In my case I have slightly tweaked the default configuration and have set the DocumentRoot to E:\Documenti\@Data\Apache\htdocs.</p>
+<p>Take note of your DocumentRoot directory. </p>
+<p>Now it's time to <a href="freemind applet.html" title="Freemind applet">download and install the Freemind applet</a>. </p>
+<h3>Note</h3>
+Please note that this very short guide cannot assist you if anything goes wrong. There is plenty of support on the web to assist you in debugging an Apache installation or tailoring it to better suit your needs.
+<p><font size="-2">Copyright &copy; 2004 Robert Alexander - bob at ngi.it</font></p>
+<p>
+      <a href="http://validator.w3.org/check/referer"><img
+          src="http://www.w3.org/Icons/valid-xhtml10"
+          alt="Valid XHTML 1.0!" height="31" width="88" /></a>
+</p>
+
+</body>
+</html>

@@ -1,0 +1,11 @@
+--- freemind/build.xml	2005-11-11 09:56:43.139543432 +0100
++++ freemind/build.xml	2005-11-11 09:57:24.906193936 +0100
+@@ -25,7 +25,7 @@
+ 	<!-- begin generator part -->
+ 	<property name="jaxb" value="${ant.dir}/jaxb-xjc.jar:${ant.dir}/jaxb-api.jar:${ant.dir}/jaxb-impl.jar:${ant.dir}/jaxb-libs.jar:${ant.dir}/namespace.jar:${java.dir}/relaxngDatatype.jar:${java.dir}/xsdlib.jar:${ant.dir}/jax-qname.jar"/>
+ 	<property name="xml" value="${java.dir}/xml-commons-apis.jar"/> 
+-	<property name="classpath" value="${jaxb}:${xml}:${java.dir}/commons-lang.jar:${java.dir}/forms.jar"/>
++	<property name="classpath" value="${jaxb}:${xml}:${java.dir}/commons-lang.jar:${java.dir}/forms.jar:${java.dir}/commons-codec.jar"/>
+ 	<property name="xsd.dir" value="." />
+ 	<property name="gen.dir" value="generated" />
+ 	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask" 

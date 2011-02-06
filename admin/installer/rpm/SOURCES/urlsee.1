@@ -1,0 +1,56 @@
+.TH "URLSEE" "1" 
+.SH "NAME" 
+urlsee \(em program to handle URLs and filenames 
+.SH "SYNOPSIS" 
+.PP 
+\fBurlsee\fR [\fIfile or url\fR]  
+.SH "DESCRIPTION" 
+.PP 
+This manual page documents briefly the 
+\fBurlsee\fR       command. 
+.PP 
+As the name suggests, \fBurlsee\fR is a program 
+meant to teach URL handling to the \fBsee\fP     program. Depending on the kind of URL, \fBurlsee\fR     will try to use other commands to find a way to show the file or URL given 
+as parameter. Using environment variables, you can define which command 
+should be used for which kind of file or URL. 
+ 
+.SH "OPTIONS" 
+.PP 
+\fBurlsee\fR does only take a path of a file 
+(absolute or relative) or an URL as unique parameter. 
+.SH "ENVIRONMENT VARIABLES" 
+.IP "\fBBROWSER\fP         " 10 
+Command to use if the parameter is an URL which is neither 
+\fBmailto:\fR nor \fBfile:\fR. 
+Defaults are sensible-browser, mozilla, konqueror, galeon, firefox. 
+.IP "\fBMAILER\fP         " 10 
+Command to use if the parameter is a 
+\fBmailto:\fR URL. 
+Defaults are mozilla, konqueror, thunderbird. 
+.IP "\fBSEECMD\fP         " 10 
+Command to use if the parameter is a 
+\fBfile:\fR URL or a file path. Such a command will 
+be called with the parameter stripped of its 
+\fBfile:\fR prefix. 
+Default is see itself. 
+.IP "\fBFILEMGR\fP         " 10 
+Command to use if the parameter is a 
+\fBfile:\fR URL or a file path. 
+Defaults are konqueror, nautilus, and fallbacks are 
+\fBBROWSER\fR and its defaults. 
+.SH "SEE ALSO" 
+.PP 
+freemind(1) 
+.SH "AUTHOR" 
+.PP 
+This manual page was written by Eric Lavarde deb@zorglub.s.bawue.de for 
+the \fBDebian\fP system (but may be used by others).  Permission is 
+granted to copy, distribute and/or modify this document under 
+the terms of the GNU General Public License, Version 2 any  
+later version published by the Free Software Foundation. 
+ 
+.PP 
+On Debian systems, the complete text of the GNU General Public 
+License can be found in /usr/share/common-licenses/GPL. 
+ 
+.\" created by instant / docbook-to-man, Wed 25 May 2005, 08:46 

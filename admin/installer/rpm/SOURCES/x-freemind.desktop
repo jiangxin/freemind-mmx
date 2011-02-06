@@ -1,0 +1,11 @@
+[Desktop Entry]
+Encoding=UTF-8
+MimeType=application/x-freemind
+Comment=FreeMind MindMap file
+Icon=freemind
+Type=MimeType
+Patterns=*.mm;
+X-KDE-AutoEmbed=false
+[Property::X-KDE-NativeExtension]
+Type=QString
+Value=.mm
