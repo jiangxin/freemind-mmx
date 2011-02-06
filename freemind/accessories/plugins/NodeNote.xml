@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<plugin label="accessories/plugins/NodeNote">
+	<plugin_registration class_name="accessories.plugins.NodeNoteRegistration" isPluginBase="true">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+	</plugin_registration>
+	<!--fc, 23.7.06: notes are now integrated.
+		<plugin_action documentation="%accessories/plugins/NodeNote.properties_documentation" name="%accessories/plugins/NodeNote.properties_name" key_stroke="%keystroke_accessories/plugins/NodeNote.properties_key" base="freemind.extensions.NodeHookAdapter" icon_path="images/knotes.png" label="accessories/plugins/NodeNote.properties" class_name="accessories.plugins.NodeNote" instanciation="Once">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/insert/nodeNote"/>
+	</plugin_action>-->
+	<plugin_action documentation="%accessories/plugins/NodeNote_jumpto.properties_documentation" 
+		name="%accessories/plugins/NodeNote_jumpto.properties_name" 
+		key_stroke="%keystroke_accessories/plugins/NodeNote_jumpto.keystroke.alt_N" 
+		base="freemind.extensions.NodeHookAdapter" 
+		label="accessories/plugins/NodeNote_jumpto.properties" 
+		class_name="accessories.plugins.NodeNote" 
+		instanciation="Other">
+        <plugin_mode class_name="freemind.modes.mindmapmode"/>
+        <plugin_menu location="menu_bar/navigate/notes/note_jumpto"/>
+        <plugin_property name="command" value="jump"/>  
+    </plugin_action>
+	<plugin_action documentation="%accessories/plugins/NodeNote_hide_show.properties_documentation" 
+		name="%accessories/plugins/NodeNote_hide_show.properties_name" 
+		key_stroke="%keystroke_accessories/plugins/NodeNote_hide_show.keystroke.control_shift_less" 
+		base="freemind.extensions.NodeHookAdapter" 
+		label="accessories/plugins/NodeNote_hide_show.properties" 
+		class_name="accessories.plugins.NodeNote" 
+		instanciation="Other"
+		isSelectable="true">
+        <plugin_mode class_name="freemind.modes.mindmapmode"/>
+        <plugin_menu location="menu_bar/view/note_window/note_hide_show"/>
+        <plugin_menu location="popup/popup/note_hide_show"/>
+        <plugin_property name="command" value="hide_show"/> 
+    </plugin_action> 
+
+</plugin>

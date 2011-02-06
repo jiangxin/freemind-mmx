@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<plugin label="accessories/plugins/AutomaticLayout">
+	<plugin_registration isPluginBase="true" class_name="accessories.plugins.AutomaticLayout$Registration">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+	</plugin_registration>
+	<plugin_action documentation="%accessories/plugins/AutomaticLayout.properties_documentation" name="%accessories/plugins/AutomaticLayout.properties_name" base="freemind.extensions.NodeHookAdapter" icon_path="accessories/plugins/icons/kcmsystem.png" label="accessories/plugins/AutomaticLayout.properties" class_name="accessories.plugins.AutomaticLayout" instanciation="OnceForRoot" isSelectable="true">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/format/nodes/automaticLayout"/>
+	</plugin_action>
+</plugin>

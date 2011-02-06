@@ -1,0 +1,15 @@
+<project name="freemind_plugins" default="dist" basedir=".">
+	
+	<property name="plugin.xml" location="${src}/plugins/ExportSvg.xml" />
+	<property name="plugin.dir" value="plugins/svg"/>
+	<property name="local.plugin.dir" location="${src}/plugins/svg"/>
+	<property name="plugin.jar" value="svg_plugin.jar" />
+	<property name="plugin.zip" value="svg_plugin-${ver}.zip" />
+<!--	<property name="additional.lib" value="${plugin.dir}/batik-awt-util.jar:${plugin.dir}/batik-dom.jar:${plugin.dir}/batik-svggen.jar:${plugin.dir}/batik-util.jar:${plugin.dir}/batik-xml.jar"/>
+	-->	
+	<property name="additional.lib" value="${local.plugin.dir}/batik-awt-util.jar:${local.plugin.dir}/batik-bridge.jar:${local.plugin.dir}/batik-css.jar:${local.plugin.dir}/batik-dom.jar:${local.plugin.dir}/batik-extension.jar:${local.plugin.dir}/batik-ext.jar:${local.plugin.dir}/batik-gui-util.jar:${local.plugin.dir}/batik-gvt.jar:${local.plugin.dir}/batik-parser.jar:${local.plugin.dir}/batik-script.jar:${local.plugin.dir}/batik-svg-dom.jar:${local.plugin.dir}/batik-svggen.jar:${local.plugin.dir}/batik-swing.jar:${local.plugin.dir}/batik-transcoder.jar:${local.plugin.dir}/batik-util.jar:${local.plugin.dir}/batik-xml.jar:${local.plugin.dir}/js.jar:${local.plugin.dir}/pdf-transcoder.jar:${local.plugin.dir}/xerces_2_5_0.jar:${local.plugin.dir}/xml-apis.jar:${local.plugin.dir}/batik-squiggle.jar"/>
+	
+	<property name="additional.lib.pattern" value="${plugin.dir}/*.jar"/>
+
+	<import file="build_import.xml" />
+</project>

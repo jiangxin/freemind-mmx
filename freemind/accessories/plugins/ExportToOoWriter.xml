@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<plugin label="accessories/plugins/ExportToOoWriter">
+	<plugin_action
+		documentation="%accessories/plugins/ExportToOoWriter.properties_documentation"
+		name="%accessories/plugins/ExportToOoWriter.properties_name" base="freemind.extensions.ModeControllerHookAdapter"
+		label="accessories/plugins/ExportToOoWriter.properties" class_name="accessories.plugins.ExportToOoWriter">
+		<plugin_property name="file_type" value="odt"/>
+		<!-- <plugin_property name="file_description" value="%accessories/plugins/ExportWithXSLT_Applet.properties_webpage"/> --> 
+		<plugin_property name="files" value="accessories/mm2oowriter.xsl->content.xml,accessories/mm2oowriter.manifest.xsl->META-INF/manifest.xml,accessories/mm2oowriterStyles.xml->styles.xml"/>
+		<plugin_mode class_name="freemind.modes.mindmapmode" />
+		<plugin_menu location="menu_bar/file/export/text/exportOoWriter" />
+	</plugin_action>
+<!--
+ 	<plugin_action
+		documentation="%accessories/plugins/ExportToOoImpress.properties_documentation"
+		name="%accessories/plugins/ExportToOoImpress.properties_name" base="freemind.extensions.ModeControllerHookAdapter"
+		label="accessories/plugins/ExportToOoImpress.properties" class_name="accessories.plugins.ExportToOoWriter">
+		<plugin_property name="file_type" value="odp"/>
+		<plugin_property name="files" value="accessories/mm2ooimpress.xsl->content.xml,accessories/mm2ooimpress.manifest.xsl->META-INF/manifest.xml,accessories/mm2ooimpressStyles.xml->styles.xml"/>
+		<plugin_mode class_name="freemind.modes.mindmapmode" />
+		<plugin_menu location="menu_bar/file/export/text/exportOoImpress" />
+	</plugin_action> 
+	 -->
+</plugin>

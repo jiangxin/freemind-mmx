@@ -1,0 +1,1143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+
+	  <xs:complexType name="xml_action">
+	  </xs:complexType>
+
+	<!-- Compound action.  -->
+	<xs:element name="compound_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element ref="compound_action"/>
+					<xs:element ref="select_node_action"/>
+					<xs:element ref="cut_node_action"/>
+					<xs:element ref="paste_node_action"/>
+					<xs:element ref="revert_xml_action"/>
+					<xs:element ref="bold_node_action"/>
+					<xs:element ref="italic_node_action"/>
+					<xs:element ref="underlined_node_action"/>
+					<xs:element ref="font_size_node_action"/>
+					<xs:element ref="font_node_action"/>
+					<xs:element ref="node_color_format_action"/>
+					<xs:element ref="node_background_color_format_action"/>
+					<xs:element ref="node_style_format_action"/>
+					<xs:element ref="edge_color_format_action"/>
+					<xs:element ref="edge_width_format_action"/>
+					<xs:element ref="edge_style_format_action"/>
+					<xs:element ref="delete_node_action"/>
+					<xs:element ref="edit_node_action"/>
+					<xs:element ref="new_node_action"/>
+					<xs:element ref="undo_xml_action"/>
+					<xs:element ref="fold_action"/>
+					<xs:element ref="move_nodes_action"/>
+					<xs:element ref="hook_node_action"/>
+					<xs:element ref="hook_content_node_action"/>
+					<xs:element ref="add_icon_action"/>
+					<xs:element ref="remove_icon_xml_action"/>
+					<xs:element ref="remove_all_icons_xml_action"/>
+					<xs:element ref="move_node_xml_action"/>
+					<xs:element ref="add_cloud_xml_action"/>
+					<xs:element ref="cloud_color_xml_action"/>
+					<xs:element ref="add_arrow_link_xml_action"/>
+					<xs:element ref="add_link_xml_action"/>
+					<xs:element ref="remove_arrow_link_xml_action"/>
+					<xs:element ref="arrow_link_color_xml_action"/>
+					<xs:element ref="arrow_link_arrow_xml_action"/>
+					<xs:element ref="arrow_link_point_xml_action"/>
+
+					<xs:element ref="set_attribute_name_elementary_action"/>
+					<xs:element ref="set_attribute_value_elementary_action"/>
+					<xs:element ref="insert_attribute_elementary_action"/>
+					<xs:element ref="delete_attribute_elementary_action"/>
+					<xs:element ref="set_attribute_column_width_elementary_action"/>
+					<xs:element ref="registry_attribute_elementary_action"/>
+					<xs:element ref="unregistry_attribute_elementary_action"/>
+					<xs:element ref="registry_attribute_value_elementary_action"/>
+					<xs:element ref="unregistry_attribute_value_elementary_action"/>
+					<xs:element ref="replace_attribute_value_elementary_action"/>
+					<xs:element ref="set_attribute_font_size_elementary_action"/>
+					<xs:element ref="set_attribute_visible_elementary_action"/>
+					<xs:element ref="set_attribute_restricted_elementary_action"/>
+					<xs:element ref="edit_note_to_node_action"/>
+
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Select action. Selects a node. -->
+	<xs:element name="select_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- File Transferable List Element -->
+	<xs:element name="transferable_file">
+	  <xs:complexType>
+	      <xs:attribute name="file_name" use="required" type="xs:string"/>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Node actions. These actions involve exactly one node.-->
+	<xs:element name="transferable_content">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="transferable_file" minOccurs="0"
+					maxOccurs="unbounded" />
+				<!--				<xs:element name="TransferableAsFileList" type="xs:long" minOccurs="0" maxOccurs="unbounded"/>-->
+				<xs:element name="Transferable" minOccurs="0" maxOccurs="1" type="xs:string"/>
+				<xs:element name="TransferableAsPlainText" minOccurs="0" maxOccurs="1" type="xs:string"/>
+				<xs:element name="TransferableAsRTF" minOccurs="0" maxOccurs="1" type="xs:string"/>
+				<xs:element name="TransferableAsDrop" minOccurs="0" maxOccurs="1" type="xs:string"/>
+				<xs:element name="TransferableAsHtml" minOccurs="0" maxOccurs="1" type="xs:string"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+
+	<!-- cut Action
+		The node is given in NodeCoordinates (see PasteAction).
+		 -->
+	<xs:element name="cut_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Paste Action
+		The node is given in NodeCoordinates (see PasteAction).
+		-->
+	<xs:element name="paste_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+              <xs:sequence>
+		        <xs:element ref="transferable_content" maxOccurs="1" minOccurs="1"/>
+		      </xs:sequence>
+		      <xs:attribute name="isLeft" use="required" type="xs:boolean"/>
+		      <xs:attribute name="asSibling" use="required" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Revert Action
+		 Reloads the map from the file system (or via collaboration)
+		-->
+	<xs:element name="revert_xml_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+		      <xs:attribute name="map" use="required" type="xs:string"/>
+			  <!-- As this attribute does not make sense on
+				   distributed environments, it must not be used
+				   apart from local. -->
+		      <xs:attribute name="localFileName" use="optional" type="xs:string"/>
+			  <!-- Is used when the map should
+					be stored with a given name prefix. -->
+		      <xs:attribute name="filePrefix" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Map actions. These actions involve whole map.-->
+	
+	<!-- Node actions. These actions involve exactly one node.-->
+	  <xs:complexType name="node_action">
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+		      <xs:attribute name="node" use="required" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+
+	<!-- Add Icon Action -->
+	<xs:element name="add_icon_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+		      <xs:attribute name="icon_name" use="required" type="xs:string"/>
+		      <xs:attribute name="icon_position" use="required" type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Remove last Icon Action -->
+	<xs:element name="remove_icon_xml_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+		      <xs:attribute name="icon_position" use="required" type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Remove All Icon Action -->
+	<xs:element name="remove_all_icons_xml_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action"/>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Add Cloud Action -->
+	<xs:element name="add_cloud_xml_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+		      <xs:attribute name="enabled" use="required" type="xs:boolean"/>
+		      <xs:attribute name="color" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Move Node Action -->
+	<xs:element name="move_node_xml_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+		      <xs:attribute name="v_gap"   use="required" type="xs:int"/>
+		      <xs:attribute name="h_gap"   use="required" type="xs:int"/>
+		      <xs:attribute name="shift_y" use="required" type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Cloud Color Action -->
+	<xs:element name="cloud_color_xml_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+		      <xs:attribute name="color" use="required" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+
+	<!-- Add Link Action -->
+	<xs:element name="add_link_xml_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+		      <xs:attribute name="destination" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Add Arrow Link Action -->
+	<xs:element name="add_arrow_link_xml_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+		      <xs:attribute name="destination" use="required" type="xs:string"/>
+					<!-- This is the id the new link should have. Hopefully it is unique. -->
+					<xs:attribute name="new_id"    use="optional" type="xs:string"/>
+					<!-- Other attributes of the link (for undo of the remove action):-->
+					<xs:attribute name="color"    use="optional" type="xs:string"/>
+					<xs:attribute name="startInclination"    use="optional" type="xs:string"/>
+					<xs:attribute name="endInclination"    use="optional" type="xs:string"/>
+					<xs:attribute name="startArrow"    use="optional" type="xs:string"/>
+					<xs:attribute name="endArrow"    use="optional" type="xs:string"/>
+					<!--Currently not used:
+						<xs:attribute name="style"    use="optional" type="xs:string"/>
+						<xs:element name="referenceText" minOccurs="0" maxOccurs="1" type="xs:string"/>
+						-->
+				</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Remove Arrow Link Action -->
+	<xs:element name="remove_arrow_link_xml_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+				<xs:attribute name="id" use="required" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Color Arrow Link Action -->
+	<xs:element name="arrow_link_color_xml_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+				<xs:attribute name="id" use="required" type="xs:string"/>
+				<xs:attribute name="color" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Arrow Link Arrow Action (denotes whether or not the link has start and end arrow) -->
+	<xs:element name="arrow_link_arrow_xml_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+				<xs:attribute name="id" use="required" type="xs:string"/>
+				<xs:attribute name="end_arrow" use="optional" type="xs:string"/>
+				<xs:attribute name="start_arrow" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Arrow Link Point Action -->
+	<xs:element name="arrow_link_point_xml_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+				<xs:attribute name="id" use="required" type="xs:string"/>
+				<xs:attribute name="end_point" use="optional" type="xs:string"/>
+				<xs:attribute name="start_point" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+
+	<!-- Format node actions. These actions describe format changes.-->
+	  <xs:complexType name="format_node_action">
+		<xs:complexContent>
+			<xs:extension base="node_action"/>
+		</xs:complexContent>
+	  </xs:complexType>
+
+	<!-- Bold Action -->
+	<xs:element name="bold_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="format_node_action">
+		      <xs:attribute name="bold" use="required" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Italic Action -->
+	<xs:element name="italic_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="format_node_action">
+		      <xs:attribute name="italic" use="required" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Underlined Action -->
+	<xs:element name="underlined_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="format_node_action">
+		      <xs:attribute name="underlined" use="required" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Sets the color of the nodes Action -->
+	<xs:element name="node_color_format_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="format_node_action">
+		      <xs:attribute name="color" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Sets the color of the node's background Action -->
+	<xs:element name="node_background_color_format_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="format_node_action">
+		      <xs:attribute name="color" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Sets the color of the edges Action -->
+	<xs:element name="edge_color_format_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="format_node_action">
+		      <xs:attribute name="color" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Sets the style of the edges Action -->
+	<xs:element name="edge_style_format_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="format_node_action">
+		      <xs:attribute name="style" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Sets the width of the edges Action -->
+	<xs:element name="edge_width_format_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="format_node_action">
+		      <xs:attribute name="width" use="optional" type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Sets the style of the nodes Action -->
+	<xs:element name="node_style_format_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="format_node_action">
+		      <xs:attribute name="style" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Sets the size of the node's font -->
+	<xs:element name="font_size_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="format_node_action">
+		      <xs:attribute name="size" use="required" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Sets the node's font -->
+	<xs:element name="font_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="format_node_action">
+		      <xs:attribute name="font" use="required" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+
+	<!-- Delete node Action
+		 This is done via the parent and its index, because at creation time of the node, the id was not present. -->
+	<xs:element name="delete_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Text node Action (Base for edit and "new node" actions) -->
+	<xs:complexType name="text_node_action">
+		<xs:complexContent>
+			<xs:extension base="node_action">
+				<xs:sequence>
+					<xs:element name="text" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+				</xs:sequence>			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+	<!-- Edit node Action -->
+	<xs:element name="edit_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="text_node_action"/>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Edit note to a node Action -->
+	<xs:element name="edit_note_to_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="text_node_action"/>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- New node Action -->
+	<xs:element name="new_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+				<!--  for childs of root this denotes "left" or "right". -->
+				<xs:attribute name="position"    use="optional" type="xs:string"/>
+				<xs:attribute name="index"       use="optional" type="xs:int"/>
+				<!-- This is the id the new node should have. Hopefully it is unique. -->
+				<xs:attribute name="newId"    use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Undo Action -->
+	<xs:element name="undo_xml_action">
+	  <xs:complexType>
+	  	<xs:complexContent>
+	  		<xs:extension base="xml_action">
+	  			<xs:sequence>
+	  			<!-- description contains the marshalled doAction for this undoAction. The doAction is performed by undo. -->
+	  				<xs:element name="description" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+	  			<!-- remedia contains the marshalled redoAction for this undoAction. The redoAction is performed by redo following undo. -->
+	  				<xs:element name="remedia" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+	  			</xs:sequence>
+	  		</xs:extension>
+	  	</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Toggle folded node Action
+		 This is done via the parent and its index, because at creation time of the node, the id was not present. -->
+	<xs:element name="fold_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+		      <xs:attribute name="folded" use="required" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- This element is part of a node list. -->
+	<xs:element name="node_list_member">
+		<xs:complexType>
+	      <xs:attribute name="node" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- NodeUpAction and NodeDownAction:
+		   The node from node_action is the selected node. -->
+	<xs:element name="move_nodes_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+          <xs:sequence>
+						<!-- The selected nodes: -->
+    	      <xs:element ref="node_list_member" maxOccurs="unbounded" minOccurs="1"/>
+          </xs:sequence>
+					<!-- Up = -1, Down = 1-->
+		      <xs:attribute name="direction" use="required" type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+
+	</xs:element>
+
+	<!-- Add a permanent hook to a node -->
+	<xs:element name="hook_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+          <xs:sequence>
+						<!-- The selected nodes: -->
+    	      <xs:element ref="node_list_member" maxOccurs="unbounded" minOccurs="1"/>
+          </xs:sequence>
+		      <xs:attribute name="hook_name" use="required" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Change hook attribute content-->
+	<xs:element name="hook_content_node_action">
+	  <xs:complexType>
+	  	<xs:complexContent>
+	  		<xs:extension base="node_action">
+	  			<xs:sequence>
+	  				<xs:element name="content" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+	  			</xs:sequence>
+	  			<xs:attribute name="hook_name" use="required"
+	  				type="xs:string" />
+	  			<xs:attribute name="attribute_name" use="optional"
+	  				type="xs:string" />
+	  		</xs:extension>
+	  	</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Set attribute name Action -->
+	<xs:element name="set_attribute_name_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+				<xs:attribute name="row"    use="optional" type="xs:int"/>
+				<xs:attribute name="name"   use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Set attribute value Action -->
+	<xs:element name="set_attribute_value_elementary_action">
+	  <xs:complexType>
+	  	<xs:complexContent>
+	  		<xs:extension base="node_action">
+	  			<xs:sequence>
+	  				<xs:element name="value" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
+	  			</xs:sequence>
+	  			<xs:attribute name="row" type="xs:int" />
+
+	  		</xs:extension>
+	  	</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Insert attribute Action -->
+	<xs:element name="insert_attribute_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+	  			<xs:sequence>
+	  				<xs:element name="value" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+	  			</xs:sequence>
+				<xs:attribute name="row"    use="optional" type="xs:int"/>
+				<xs:attribute name="name"   use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Delete attribute Action -->
+	<xs:element name="delete_attribute_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+				<xs:attribute name="row"    use="optional" type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Set attribute column width Action -->
+	<xs:element name="set_attribute_column_width_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+				<xs:attribute name="column" use="optional" type="xs:int"/>
+				<xs:attribute name="width"  use="optional" type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Registry attribute Action -->
+	<xs:element name="registry_attribute_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+				<xs:attribute name="name"  use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Unregistry attribute Action -->
+	<xs:element name="unregistry_attribute_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+				<xs:attribute name="name" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Registry attribute value Action -->
+	<xs:element name="registry_attribute_value_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+	  			<xs:sequence>
+	  				<xs:element name="value" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+	  			</xs:sequence>
+				<xs:attribute name="name"  use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Unregistry attribute value Action -->
+	<xs:element name="unregistry_attribute_value_elementary_action">
+	  <xs:complexType>
+	  	<xs:complexContent>
+	  		<xs:extension base="xml_action">
+	  			<xs:sequence>
+	  				<xs:element name="value" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+	  			</xs:sequence>
+	  			<xs:attribute name="name" use="optional" type="xs:string" />	  		</xs:extension>
+	  	</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+		<!-- Replace attribute value Action -->
+	<xs:element name="replace_attribute_value_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+	  			<xs:sequence>
+	  				<xs:element name="old_value" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+	  				<xs:element name="new_value" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+	  			</xs:sequence>
+				<xs:attribute name="name"  use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Set attribute font size Action -->
+	<xs:element name="set_attribute_font_size_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+				<xs:attribute name="size" use="optional" type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Set attribute visibility elementary Action -->
+	<xs:element name="set_attribute_visible_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+			      <xs:attribute name="index" use="required" type="xs:int"/>
+			      <xs:attribute name="isVisible" use="required" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Set attribute restriction elementary Action -->
+	<xs:element name="set_attribute_restricted_elementary_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+			      <xs:attribute name="index" use="required" type="xs:int"/>
+			      <xs:attribute name="isRestricted" use="required" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Collaboration actions (not usable inside FreeMind but only in between different
+		 instances (and thus not contained in compound_action). -->
+	<xs:element name="collaboration_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+		      <xs:attribute name="user" use="optional" type="xs:string"/>
+		      <xs:attribute name="timestamp" use="optional" type="xs:string"/>
+			  <!-- The command -->
+		      <xs:attribute name="cmd" use="required">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="request_map_sharing"/>
+						<xs:enumeration value="accept_map_sharing"/>
+						<xs:enumeration value="stop_map_sharing"/>
+						<xs:enumeration value="decline_map_sharing"/>
+					</xs:restriction>
+				</xs:simpleType>
+			  </xs:attribute>
+			  <!-- If the command is "request_map_sharing" the entire map is sent with the command.-->
+		      <xs:attribute name="map" use="optional" type="xs:string"/>
+		      <xs:attribute name="filename" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- =======================================================================================
+						Window positions to be stored in the auto.properties
+		   ======================================================================================= -->
+	<!-- Windowpositionstorage stores the window configuration of some windows. -->
+	  <xs:complexType name="window_configuration_storage">
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+		      <xs:attribute name="x" use="required" type="xs:int"/>
+		      <xs:attribute name="y" use="required" type="xs:int"/>
+		      <xs:attribute name="width" use="required" type="xs:int"/>
+		      <xs:attribute name="height" use="required" type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+
+	<xs:element name="normal_window_configuration_storage">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="window_configuration_storage">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Windowpositionstorage stores the window configuration of the
+		 option panel window. -->
+	<xs:element name="option_panel_window_configuration_storage">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="window_configuration_storage">
+			<xs:attribute use="optional" name="panel" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Windowpositionstorage stores the window configuration of the
+		 time list window. -->
+	<xs:element name="time_window_configuration_storage">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="window_configuration_storage">
+	          <xs:sequence>
+	    	      <xs:element ref="time_window_column_setting" maxOccurs="unbounded" minOccurs="0"/>
+	          </xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- This element holds the sorting and size information to a column -->
+	<xs:element name="time_window_column_setting">
+		<xs:complexType>
+		      <xs:attribute name="column_width" use="required" type="xs:int"/>
+		      <xs:attribute name="column_sorting" use="optional" type="xs:int"/>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- Script Editor settings: -->
+	<xs:element name="script_editor_window_configuration_storage">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="window_configuration_storage">
+				<xs:attribute use="optional" name="left_ratio" type="xs:int"/>
+				<xs:attribute use="optional" name="top_ratio"  type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Manage Style Editor settings: -->
+	<xs:element name="manage_style_editor_window_configuration_storage">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="window_configuration_storage">
+				<xs:attribute use="optional" name="divider_position"  type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+
+	<!-- ======================================================================================= 
+		 										Patterns
+		   ======================================================================================= -->
+
+				
+
+	<xs:complexType name="pattern_property_base"><xs:complexContent><!-- if value is not present, the attribute is cleared. -->     <xs:attribute name="value" use="optional" type="xs:string"/>  </xs:complexContent>  </xs:complexType>
+	<xs:element name="pattern_node_background_color"> <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_node_color">            <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_node_style">            <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_node_text">             <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_node_font_name">        <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_node_font_bold">        <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_node_font_italic">      <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_node_font_size">        <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_icon">                  <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_edge_color">            <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_edge_style">            <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_edge_width">            <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_child">                 <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+    <xs:element name="pattern_script">                <xs:complexType><xs:complexContent><xs:extension base="pattern_property_base"></xs:extension></xs:complexContent></xs:complexType>  </xs:element>
+
+	<xs:element name="pattern">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="xml_action">
+					<xs:choice>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_node_background_color"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_node_color"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_node_style"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_node_text"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_node_font_name"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_node_font_bold"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_node_font_italic"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_node_font_size"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_icon"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_edge_color"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_edge_style"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_edge_width"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_child"/>
+						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_script"/>
+					</xs:choice>
+				    <xs:attribute name="name" use="required" type="xs:string"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>		
+	</xs:element>
+
+	<xs:element name="patterns">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="xml_action">
+					<xs:sequence>
+						<xs:choice minOccurs="0"  maxOccurs="unbounded">
+							<xs:element ref="pattern"/>
+						</xs:choice>
+					</xs:sequence>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>		
+	</xs:element>
+
+	
+	<!-- ======================================================================================= 
+		 										Plugin XML
+		   ======================================================================================= -->
+	<xs:element name="plugin">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice minOccurs="0"  maxOccurs="unbounded">
+					<xs:element ref="plugin_classpath"/>
+					<xs:element ref="plugin_registration"/>
+					<xs:element ref="plugin_action"/>
+					<xs:element ref="plugin_strings"/>
+				</xs:choice>
+			</xs:sequence>
+			<!-- The label must be unique among all plugins,
+				 it is used to provide the basePlugin-feature. -->
+	      <xs:attribute name="label" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+
+  <xs:element name="plugin_classpath">
+    <xs:complexType>
+				<!-- The path values are added to the classpath dynamically.  -->
+	      <xs:attribute name="jar" use="required" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="plugin_registration">
+    <xs:complexType>
+			<xs:sequence>
+					<xs:element ref="plugin_mode" maxOccurs="unbounded" minOccurs="1"/>
+			</xs:sequence>
+				<!-- A class that implements HookRegistration.
+					   It is called at map startup and shutdown.
+						 The public constructor must be calleable with arguments:
+						 (ModeController controller, MindMap map) -->
+	      <xs:attribute name="class_name" use="required" type="xs:string"/>
+		  <!-- One registration can be the plugin base for the current
+			   plugin. This base can be retrieved via the getPluginBaseClass method. -->
+	      <xs:attribute name="isPluginBase" use="optional" type="xs:boolean" default="false"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="plugin_mode">
+    <xs:complexType>
+				<!-- The mode class (e.g. freemind.modes.mindmapmode) -->
+	      <xs:attribute name="class_name" use="required" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+	<!-- This is used to pass additional information to the plugin. -->
+  <xs:element name="plugin_property">
+    <xs:complexType>
+	      <xs:attribute name="name" use="required" type="xs:string"/>
+	      <xs:attribute name="value" use="optional" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="plugin_action">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element ref="plugin_mode"/>
+					<xs:element ref="plugin_menu" />
+					<xs:element ref="plugin_property"/>
+				</xs:choice>
+			</xs:sequence>
+			<!-- The unique label of this action (e.g. the class_name if this is unique.). -->
+			<xs:attribute name="label" use="required" type="xs:string"/>
+			<!-- A name string starting with '%' is searched in the resource bundle.  -->
+			<xs:attribute name="name" use="optional" type="xs:string"/>
+			<!-- The hook base class (e.g. freemind.extensions.ModeControllerHookAdapter). -->
+			<xs:attribute name="base" use="required" type="xs:string"/>
+			<!-- The hook fully qualified class (e.g. accessories.plugins.AutomaticLayout). -->
+			<xs:attribute name="class_name" use="required" type="xs:string"/>
+			<!-- A doc string starting with '%' is searched in the resource bundle. -->
+			<xs:attribute name="documentation" use="optional" type="xs:string"/>
+			<!-- Icon path (e.g. "accessories/plugins/icons/2leftarrow.png"). -->
+			<xs:attribute name="icon_path" use="optional" type="xs:string"/>
+			<!-- Optional key stroke (e.g. alt HOME) -->
+			<xs:attribute name="key_stroke" use="optional" type="xs:string"/>
+			<!-- Describe the multiplicity of the plugin (only for PermanentNodeHooks):
+			   once:  can only be associated once to a node.
+			   other or not mentioned: can be associated more than once.  -->
+			<xs:attribute name="instanciation" use="optional" default="Once">
+				<xs:simpleType>
+					<xs:restriction base="xs:token">
+						<xs:enumeration value="Once"/>
+						<xs:enumeration value="OnceForRoot"/>
+						<xs:enumeration value="OnceForAllNodes"/>
+						<xs:enumeration value="Other"/>
+						<xs:enumeration value="ApplyToRoot"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:attribute>
+			<xs:attribute name="isSelectable" use="optional" type="xs:boolean" default="false"/>		
+		</xs:complexType>
+  </xs:element>
+
+  <xs:element name="plugin_menu">
+    <xs:complexType>
+	      <xs:attribute name="location" use="required" type="xs:string"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="plugin_strings">
+		<xs:complexType>
+			<xs:sequence>
+					<xs:element ref="plugin_string" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+      <xs:attribute name="language" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+
+  <xs:element name="plugin_string">
+		<xs:complexType>
+      <xs:attribute name="key" use="required" type="xs:string"/>
+      <xs:attribute name="value" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+
+
+	<!-- =======================================================================================
+		 										Menu XML
+		   ======================================================================================= -->
+
+	<xs:group name="base">
+       <xs:choice>
+	          <xs:element ref="menu_category"/>
+	          <xs:element ref="menu_submenu"/>
+	          <xs:element ref="menu_action"/>
+	          <xs:element ref="menu_checked_action"/>
+	          <xs:element ref="menu_radio_action"/>
+	          <xs:element ref="menu_separator"/>
+       </xs:choice>
+	</xs:group>
+
+	<xs:element name="menu_structure">
+		<xs:complexType>
+	      <xs:sequence>
+	        <xs:choice minOccurs="0" maxOccurs="unbounded">
+	          <xs:element ref="menu_category"/>
+	        </xs:choice>
+	      </xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+    <xs:complexType name="menu_category_base">
+ 	      <xs:sequence>
+	        <xs:choice minOccurs="0" maxOccurs="unbounded">
+	          <xs:group ref="base"/>
+	        </xs:choice>
+	      </xs:sequence>
+	      <xs:attribute name="name" use="required" type="xs:string"/>
+    </xs:complexType>
+
+
+  <xs:element name="menu_category">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="menu_category_base">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+  </xs:element>
+
+  <xs:element name="menu_submenu">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="menu_category_base">
+		      <xs:attribute name="name_ref" use="required" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+  </xs:element>
+
+
+    <xs:complexType name="menu_action_base">
+	      <xs:attribute name="field" use="required" type="xs:string"/>
+		  <!-- Denots a reference to the freemind.properties and a keystroke within. -->
+	      <xs:attribute name="key_ref" use="optional" type="xs:string"/>
+	      <!-- if name is not given, field is used instead. -->
+	      <xs:attribute name="name" use="optional" type="xs:string"/>
+    </xs:complexType>
+
+  <xs:element name="menu_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="menu_action_base">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+  </xs:element>
+
+  <xs:element name="menu_checked_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="menu_action_base">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+  </xs:element>
+
+  <xs:element name="menu_radio_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="menu_action_base">
+			      <xs:attribute name="selected" use="optional" default ="false" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+  </xs:element>
+
+
+  <xs:element name="menu_separator">
+    <xs:complexType>
+    </xs:complexType>
+  </xs:element>
+
+
+
+
+</xs:schema>

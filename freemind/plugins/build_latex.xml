@@ -1,0 +1,13 @@
+<project name="freemind_plugins" default="dist" basedir=".">
+
+	<property name="plugin.xml" location="${src}/plugins/Latex.xml" />
+	<property name="plugin.dir" value="plugins/latex"/>
+	<property name="local.plugin.dir" location="${src}/plugins/latex"/>
+	<property name="plugin.jar" value="latex_plugin.jar" />
+	<property name="plugin.zip" value="latex_plugin-${ver}.zip" />
+	<property name="additional.lib" value="${local.plugin.dir}/HotEqn.jar"/>
+
+	<property name="additional.lib.pattern" value="${plugin.dir}/*.jar,${plugin.dir}/*.txt"/>
+
+	<import file="build_import.xml" />
+</project>

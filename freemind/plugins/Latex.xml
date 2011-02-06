@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<plugin label="plugins/latex/LatexNodeHook">
+	<plugin_classpath jar="latex/latex_plugin.jar"/>
+	<plugin_classpath jar="latex/HotEqn.jar"/>
+	<plugin_action 
+			documentation="%plugins/latex/LatexNodeHook.properties_documentation" 
+			name="%plugins/latex/LatexNodeHook.properties_name" 
+			base="freemind.extensions.NodeHookAdapter" 
+			label="plugins/latex/LatexNodeHook.properties" 
+			class_name="plugins.latex.LatexNodeHook" 
+			instanciation="Once">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/insert/other/LatexNodeHook"/>
+	</plugin_action>
+</plugin>
