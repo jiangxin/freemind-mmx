@@ -536,7 +536,6 @@
           target: installers for everybody
          ================================= -->
     <target name="installers_all" depends="" description="--> Creates all installers.">
-    	<property name="cvstag" value="fm_060405_integration" />
 
     	<property name="InnoSetup" location="D:/Programme/Inno Setup 5/ISCC.exe" />
 <!--
@@ -550,18 +549,11 @@
 -->
     	<mkdir dir="${inst.dest.dir}"/>
     	<mkdir dir="${inst.dir}"/>
-		<cvs  cvsRoot=":pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind"
-		       package="freemind"
-		       dest="${inst.dir}"
-		       compressionlevel="9"
-			  command="checkout -P -r ${cvstag}"></cvs>
-		<cvs  dest="${inst.dir}/freemind"
-		       compressionlevel="9"
-			  command="update -k b -P -- freemind.sh "></cvs>
-		<cvs  cvsRoot=":pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind"
-		       package="admin"
-		       compressionlevel="9"
-		       dest="${inst.dir}"></cvs>
+    	<exec dir="." executable="git">
+    		<arg value="clone"/>
+    		<arg value="${gitRoot}"/>
+    		<arg value="${inst.dir}/"/>
+    	</exec>            
     	<ant dir="${inst.dir}/freemind" target="clean" ></ant>
     	<ant dir="${inst.dir}/freemind" target="post" ></ant>
     	<copy todir="${inst.dest.dir}">
@@ -606,11 +598,11 @@
          - - - - - - - - - - - - - - - - - -->
     <target name="installers_chris_mac">
     	<exec dir="." executable="ssh" os="Linux">
-    		<arg value="foltin@mahler.local"/>
-    		<arg value="cd /tmp ; rm -rf fm_installers ; mkdir fm_installers ; cd fm_installers ; /usr/bin/cvs -d${cvsRoot} login ; /usr/bin/cvs -d${cvsRoot} co -P -r ${branch} freemind ; cd freemind ; ant post"/>
+    		<arg value="foltin@${macName}"/>
+    		<arg value="cd /tmp ; rm -rf fm_installers ; mkdir fm_installers ; cd fm_installers ; /opt/local/bin/git clone ${gitRoot} .; cd freemind ; ant post"/>
     	</exec>
     	<exec dir="." executable="scp" os="Linux">
-    		<arg value="foltin@mahler.local:/tmp/fm_installers/post/*.dmg"/>
+    		<arg value="foltin@${macName}:/tmp/fm_installers/post/*.dmg"/>
     		<arg value="${inst.dest.dir}/"/>
     	</exec>            
     </target>
@@ -620,26 +612,21 @@
           target: installers, for Chris' computers
          ================================= -->
     <target name="installers_chris" depends="" description="--> Creates all installers. This is a task that only works on Chris laptops. But it should be informative to others who want to build the installers">
-    	<property name="cvsRoot" value=":pserver:anonymous@freemind.cvs.sourceforge.net:/cvsroot/freemind"/>
+    	<property name="gitRoot" value="git://freemind.git.sourceforge.net/gitroot/freemind/freemind"/>
+		<property name="macName" value="mahler.local"/>
 
         <property name="inst.dir" location="/tmp/fm_installer"/>
         <property name="inst.dest.dir" location="../installers"/>
     	<property name="inst.windows.installer" location="${inst.dir}/admin/installer/windows"/>
-<!--    	<property name="branch" value="fm-0-8-1"/> -->
-	   	<property name="branch" value="fm_060405_integration"/> 
-
-<!--
-		-->
     	<mkdir dir="${inst.dest.dir}"/>
     	<delete dir="${inst.dir}" failonerror="false"/>
     	<mkdir dir="${inst.dir}"/>
-		<cvs  cvsRoot="${cvsRoot}"
-		       package="freemind"
-		       dest="${inst.dir}"
-			  command="checkout -P -r ${branch}"></cvs>
-		<cvs  cvsRoot="${cvsRoot}"
-		       package="admin/installer/windows"
-		       dest="${inst.dir}"></cvs>
+    	<exec dir="." executable="git">
+    		<arg value="clone"/>
+    		<arg value="${gitRoot}"/>
+    		<arg value="${inst.dir}/"/>
+    	</exec>            
+
     	<ant dir="${inst.dir}/freemind" target="post" inheritall="false"></ant>
     	<copy todir="${inst.dest.dir}">
     		<fileset dir="${inst.dir}/post">
@@ -652,9 +639,6 @@
 			    <include name="jre/**"/>
 			</fileset>
 		</copy> 
-<!--
-    	<property name="freemind.version" value="0.8.1"/>
-    	-->
     	<property name="freemind.version" value="${ver}"/>  
     	<antcall target="create_windows_installer">
     		<param name="inst.windows.variant" value="installer"/>
