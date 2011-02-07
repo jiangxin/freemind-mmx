@@ -1,0 +1,22 @@
+<project name="flash" default="help" basedir="mtasc">
+	
+    <target name="help">
+      <echo>
+      To compile the flash application get compiler "mtasc" from 
+      http://www.mtasc.org/ and put it under the mtasc directory.
+      
+      Then type "ant dist" in the flash directory.
+      This works under Linux. For windows, you probably have to enhance
+      this script.
+
+      </echo>
+    </target>
+
+	<target name="dist">
+  		<exec dir="../source" executable="mtasc" resolveexecutable="true">
+			<arg line="visorFreeMind\Main.as -swf visorFreemind.swf -header  800:600:24" />
+		</exec>
+	</target>
+
+
+</project>
