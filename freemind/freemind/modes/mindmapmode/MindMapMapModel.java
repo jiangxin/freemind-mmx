@@ -410,7 +410,7 @@ public class MindMapMapModel extends MapAdapter  {
 	MindMapNodeModel loadTree(ReaderCreator pReaderCreator) throws XMLParseException, IOException {
 		return loadTree(pReaderCreator, true);
 	}
-    MindMapNodeModel loadTree(ReaderCreator pReaderCreator, boolean pAskUserBeforeUpdate) throws XMLParseException, IOException {
+    public MindMapNodeModel loadTree(ReaderCreator pReaderCreator, boolean pAskUserBeforeUpdate) throws XMLParseException, IOException {
         int versionInfoLength;
 		versionInfoLength = EXPECTED_START_STRINGS[0].length();
         // reading the start of the file:

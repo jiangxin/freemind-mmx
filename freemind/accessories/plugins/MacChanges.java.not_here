@@ -36,7 +36,6 @@ import freemind.controller.Controller.LocalLinkConverter;
 import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
-import freemind.modes.ModeController;
 
 /** This plugin changes some things for mac users.
  * @author foltin
@@ -52,6 +51,8 @@ public class MacChanges extends ApplicationAdapter  {
 	private final FreeMindMain mFrame;
 
 	private boolean mIsStartupPhase = false;
+	
+	private int loadEventsDuringStartup = 0;
 	
 	public MacChanges(FreeMindMain pFrame) {
 		mFrame = pFrame;
@@ -101,10 +102,9 @@ public class MacChanges extends ApplicationAdapter  {
 	public void handleOpenFile(final ApplicationEvent event) {
 		try {
 			if(mIsStartupPhase) {
-				// restore at startup:
 				logger.info("Later loading " + event.getFilename());
-				mFrame.setProperty(FreeMindCommon.ON_START_IF_NOT_SPECIFIED, 
-						freemind.modes.mindmapmode.MindMapMapModel.RESTORE_MODE_MIND_MAP + event.getFilename());
+				mFrame.setProperty(FreeMindCommon.LOAD_EVENT_DURING_STARTUP + loadEventsDuringStartup, event.getFilename());
+				++loadEventsDuringStartup;
 			} else {
 				logger.info("Direct loading " + event.getFilename());
 				mFrame.getController().getModeController().load(
