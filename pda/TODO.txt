@@ -1,0 +1,28 @@
+TO DO:
+==========================================================================
+
+- (DONE) allows display of root node as well as forest
+- (DONE) ask allowsChildren to determine leaf node
+- (Done) allows the tree to showLeaf or not (so it will display folder node only)
+   This allow a director tree to be build and use another control to display
+   the files.  (remove this feature - just extends node and override both toLeaf() methods to return 
+   false)
+- (DONE) fix hbar scrolling policy 
+  (Note - still minor bug in calc the max for hbar maximum - extra pixel)    
+- (DONE) delete node
+- (DONE) modify user object
+- (Done) insert new node
+- (DONE) draw scrollbar borders
+
+
+TODO:
+==========================================================================
+- Tree or TreeModel ???  scrollToVisibleNode() method implementation
+- Node depthFirstVector() implementation
+- Vertical scrollbar policy
+- refactor code
+
+- remove and insert using treepath?? or node[] ??
+
+
+

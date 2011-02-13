@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- SUPERWABA ant build file -->
+
+<project name="freemindpda" default="build" basedir=".">
+
+<description>
+</description>
+
+<!-- this target displays a help message which documents this configuration file features -->
+
+<target name="help" depends="">
+  <echo message="Too see the possible targets, type 'ant -projecthelp'.   The useful sub-targets are: build (*default* - compile and create pdb/prc/lnk files), build-wince-cab (create cab installation files), build-wince-exe (create exe files for all WinCE platforms), run (as applet), clean, device (install on Palm device), emulator (call POSE to run your app)"/>
+</target>
+
+<target name="init">
+  <!-- property name="sw.root" value="c:/superwabasdk_gpl"/ -->
+  <property name="sw.root" value="/home/vik/src/SuperWabaSDK"/>
+  <echo message="Superwaba SDK root folder is ${sw.root}"/>
+
+  <property name="app.name"  value="FreeMindPDA"/>
+</target>
+
+<!-- Properties used in compilation -->
+
+<target name="compile-init" depends="init">
+  <property name="app.creator"   value="FmPD" />
+  <property name="app.basedir"   value="${basedir}"/>
+  <property name="app.resources" value="*.bmp,*.wav"/>
+  <property name="app.build"     value="${app.basedir}/build"/>
+  <delete dir="${app.build}" />
+  <mkdir dir="${app.build}" />
+</target>
+
+<!-- Properties used in build process -->
+
+<target name="compile" depends="compile-init">
+  <javac srcdir="${app.basedir}"
+         destdir="${app.build}"
+         classpath="${sw.root}/lib/SuperWaba.jar"
+         target="1.1"
+         debug="off"
+  />
+</target>
+
+<target name="build" depends="compile">
+  <copy todir="${app.build}">
+    <fileset dir="${app.basedir}">
+      <include name="*.bmp" />
+      <include name="*.wav" />
+    </fileset>
+  </copy>
+  <exec dir="${app.build}" executable="warp.bat" os="Windows 2000" vmlauncher="false">
+    <arg line="c /c ${app.creator} ${app.name} *" />
+  </exec>
+  <exec dir="${app.build}" executable="exegen.bat" os="Windows 2000" vmlauncher="false">
+    <arg line="/c ${app.creator} ${app.name}" />
+  </exec>
+</target>
+
+</project>

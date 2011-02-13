@@ -1,0 +1,241 @@
+FreeMindPDA V0.0
+
+Author:		Vik Olliver  vik@diamondage.co.nz
+
+Purpose:	To modify FreeMind files on a PDA
+
+This package is very much under development. It uses the SuperWaba SDK (version
+4.5a preferred at the moment, though the main build file is for 5.x) which can
+be had for free from http://www.superwaba.com and is licenced (as is SuperWaba)
+under the GPL.
+
+The original FreeMind is a Java application that can be had from
+http://freemind.sourceforge.net but because of the differences between a PDA and
+a Desktop PC, the PDA version is a complete rewrite and at present only borrows
+the file format and methodology from the original FreeMind. If someone can weld
+the two together usefully, then by all means go for it.
+
+Though aimed at Palm and PocketPC PDAs, the software will run happily under
+Java, Linux and Windows 98 or higher - so you can test it out before committing
+to a PDA. As of 2005, native Linux support and Symbian support are expected from
+the SuperWaba project.
+
+To develop, you'll need a 1.4 Java SDK and the Palm SDK from SuperWaba. I use
+Eclipse as a development environment, and the build scripts are for Ant 1.6 or
+better. Details for developing SuperWaba and sample apps are in the SuperWaba
+SDK docs and samples directories. Developers on other platforms will need the
+appropriate SuperWaba SDKs.
+
+You should copy all the files from SuperWabaSDK/lib/xplat/ to your PDA, as this
+application uses the extra libraries.
+
+You can install it without building it, but read the SuperWaba documentation PDF
+file first.
+
+PocketPC Data files currently live either on the storage card or root directory.
+Tony Manso kindly fixed the code so that it would save files on the Palm Treo
+PDAs.
+
+Note that even when I get it all working 100%, you will not be able to save maps
+over 64K large to PDB's due to limitations of the Palm operating system. Someone
+will need to write a conduit if they want to extract maps from a Palm. They're
+just ASCII in a record.
+
+
+Changelog
+
+12-Jun-2005
+
+Finally got around to implementing the changes Tony Manso made in May that allow
+the application to save maps on the Treo. The earlier build fiel is now moved to
+build_45a.xml
+
+
+25-Jan-2005
+
+Fixed save PDB to write a new record rather than set a
+non-existent one for writing.
+
+
+22-Jan-2005
+
+New nodes now apppended to list rather than inserted.
+
+Fixed bug in EditFmNode where an existing node was confused with a
+new node - newNode=false was missing in initialisation.
+
+18-Jan-2005
+
+Release of V0.01
+
+Edit node class modified to use a permanently available container
+to cut down response time to an edit on Palm devices.
+
+Enlarged arrow buttons.
+
+
+30-Nov-2004
+
+Added initial read/write for PDB catalogs.
+
+
+29-Nov-2004
+
+Check for uneditable or non-created nodes.
+
+Corrected storage directory detection for PocketPCs.
+
+Prevented operations on root node.
+
+Check for minimum SuperWaba version of 4.5
+
+Let empty map nodes have children.
+
+Fixed access to tree on save so that the [map] is accessible when closed.
+
+Icons can now be added and removed sanely.
+
+Added mini-icon for PocketPC application (PocketPC users must reset to see).
+
+Edit buttons bunched on left to avoid PocketPC keyboard.
+
+Objects can now be moved around the tree.
+
+
+26-Nov-2004
+
+Added LGPL licence to tarball.
+
+Separated parser from TreeFile module and made parser's tags static.
+
+Prevented crash on loading on a machine without a filesystem.
+
+Put up warning when trying to save on device without a filesystem.
+
+Made OK buttons larger.
+
+Added a few more icons.
+
+Extended edit button toggles between extended and 1-line edit.
+
+Cursor on end of single line edit by default.
+
+Reserved Palm Creator ID FmPD for FreeMindPDA.
+
+Corrected zero index colour on 48x48 icon.
+
+Built links & exe in tarball (CABs won't build on Linux).
+
+
+25-Nov-2004
+
+Added a few new icons.
+
+Icons now in separate class and have a find-by-name function.
+
+Appropriate icons shown next to entries.
+
+Resized icons to fit in ascent-only space.
+
+
+22-Nov-2004
+
+Prevent unset timer access in startup (results in null pointer errors).
+
+Save current file on exit.
+
+Stripped out extraneous debug code. It just got too slow on a Palm.
+
+Popup during load process for user confidence.
+
+Changed package name from FreeMindPDA to FreeMind to fit Palm screen.
+
+Put the scaled icon creation code in its own class.
+
+Renamed home/link icons and added more.
+
+
+19-Nov-2004
+
+Creating a child node now goes directly into editing that node.
+
+Editing a node sets focus on edit field.
+
+Added splash screen and compliance message.
+
+Quitting a new node now does not leave an empty node dangling there.
+
+Sibling nodes can now be created with "Insert".
+
+
+18-Nov-2004
+
+Put default items in a standard edit box because MultiEdit is just
+too goddamn slow.
+
+Added some colour application icons (PocketPC users will need to reset)
+
+Added SVG file of butterfly should anyone wish to improve the logo.
+
+A new blank map can now be created.
+
+Filenames can be specified for saved files.
+
+
+16-Nov-2004
+
+Fixed creation of child nodes with TEXT attributes.
+
+Added "Save" item to menu to save over the last opened file.
+
+Added LINK icon.
+
+Took out unsupported "split" method and replaced it with homegrown version.
+
+Shortened MultiEdit box for faster typing response.
+
+Popups to give user confidence when file is saved.
+
+Fixed additional nodes inadvertently stored if Tree is expanded.
+
+
+15-Nov-2004
+
+Can select which file to load from current directory.
+
+Added simple icon files for home and a tick.
+
+Changed Tree and node code to accept multiple user icons.
+
+Put "Home" icon next to [Map] entry (mostly to try out the above).
+
+
+12-Nov-2004
+
+Can now reload the original Test file using File Load menu item.
+
+
+11-Nov-2004
+
+Fixed extra quotes on output file.
+
+Renamed insert button to "Child" and made it work.
+
+Fix edit to only edit the currently selected attribute.
+
+
+To Do:
+
+Change directory for load & save.
+Enable Catalog access for Palm devices.
+Move buttons to top of screen to avoid PocketPC kbd.
+"Bookmark" of shortcuts to prominent nodes
+Add "callback" methods to do things when user icons are pressed.
+Add a "Tick" icon handler to implement To Do list on PDA.
+Add block operations.
+Allow cut & paste editing in text fields.
+Utility to convert Palm address DB to a .mm file (phone, address etc. icons)
+Much, much more.
+
+Vik :v)
+
