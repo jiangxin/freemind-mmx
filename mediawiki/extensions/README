@@ -1,0 +1,109 @@
+(C) Dimitry Polivaev, 2006-2007
+http://freemind.sourceforge.net/wiki/index.php/Embedded_Mind_Maps
+
+Installation:
+
+1. Copy file FreeMind.php and directory freemind into <mediawiki>/extensions
+2. Copy file freemindbrowser.jar into <mediawiki>/extensions/freemind
+3. Copy files bola.jpg bola4.gif estrella.png flashobject.js visorFreemind.swf from flash viewer distribution into <mediawiki>/extensions/freemind
+4. Add the line include('extensions/FreeMind.php'); to the end of your LocalSettings.php file (The name of your file is case sensitive!)
+5. Add 'mm' to the list of allowed file extensions, e.g. $wgFileExtensions = array( 'png', 'gif', 'jpg', 'jpeg', 'wmz', 'mm' );
+
+Now you can use the extension.
+
+Embedding FreeMind Maps
+
+1. To embed a freemind mind map file which has been uploaded to this wiki, use:
+
+ <mm>[[Hello.mm]]</mm>. Do not upload .mm files with spaces as the plugin apparently can't parse for spaces in file names.
+
+2. You can specify if you want to display the map in the flash browser or in the java applet
+
+ <mm>[[Hello.mm|flash]]</mm>
+ <mm>[[Hello.mm|applet]]</mm>
+
+The flash viewer is smaller and starts much faster than the applet viewer. For this reason do not use both flash and applet on the same wiki page, but choose the one you find the best.
+
+3. You can display the map in a separate page by adding a colon in front of the file name:
+
+ <mm>[[:Hello.mm]]</mm>
+ <mm>[[:Hello.mm|description]]</mm>
+ <mm>[[:Hello.mm|applet]]</mm>
+
+4. Embed map in flash (with height)
+
+  <mm>[[Hello.mm|flash|80pt]]</mm>
+
+5. Embed map in flash without title (with height and collapsed to level 1)
+
+  <mm>[[Hello.mm|flash|notitle|80pt|parameters startCollapsedToLevel=1]]</mm>
+
+
+6. Embed map in applet (with height and title)
+
+  <mm>[[Hello.mm|applet|150px|title example map]]</mm>
+
+7. Link to special page with the map in flash
+
+  <mm>[[:Hello.mm|flash]]</mm>
+  <mm>[[:Hello.mm|flash|title the map in flash|map in flash]]</mm>
+  <mm>[[:Hello.mm|flash|notitle|map in flash without title]]</mm>
+
+8. Link to special page with the map in applet
+
+  <mm>[[:Hello.mm|applet]]</mm>
+  <mm>[[:Hello.mm|applet|title the map in applet|map in applet]]</mm>
+  <mm>[[:Hello.mm|applet|notitle|map in applet without title]]</mm>
+
+
+9. Link to description page
+
+  [[:Image:Hello.mm]]
+  [[:Image:Hello.mm|Example map]]
+
+
+10. Link directly to file
+
+[[Media:Hello.mm]]
+[[Media:Hello.mm|Example map]]
+
+
+Advanced options
+
+1. The full syntax for embedding an map in the wiki page is:
+
+  <mm>[[{name}|{options}|parameters {parameters}]]</mm>
+
+2. The full syntax for displaying the map in the separate page is:
+
+  <mm>[[:{name}|{options}|parameters {parameters}|different text]]</mm>
+
+3. The options can be zero or more of the following, separated by pipes:
+
+  applet, flash: Controls how the image is displayed,
+  {height}px: Sets the given height in pixels,
+  {height}pt: Sets the given height in points,
+  title {title text}:Displayed map caption also used as a reference to the map file.
+  notitle: Display no title and no reference.
+
+The options can be given in any order.
+
+The parameters can be zero or more of the {key}={value} pairs separated by spaces. They are transferred to the browser showing the map. Consult flash browser documentation as a mind map (http://freemind.sourceforge.net/wiki/extensions/freemind/flashBrowserDocu.html) for more info.
+
+If a given option does not match any of the other possibilities, it is assumed to be the link text.
+
+4. Embedding images in uploaded mind maps
+
+If you want to include pictures in your map, they should be referenced by absolute paths to the images previoulsy iploaded to this site
+
+   1. Upload the pictures first
+   2. Every image in the FreeMind wiki becomes it own path. You can obtain it e.g. using wiki special page Special:Imagelist. All images listed there are linked to the image position e.g. http://freemind.sourceforge.net/wiki/images/0/00/Dothiepinscheme.gif
+   3. Copy the links and insert them in your local mind map files.
+   4. Check that the images are shown properly.
+   5. Upload the mind map.
+
+5. External images and map files
+
+You can neither link to nor embed an external map.
+You can not embed a map including images located on external server.
+

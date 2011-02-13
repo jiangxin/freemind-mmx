@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!-- SUPERWABA ant build file -->
+
+<project name="freemindpda" default="build" basedir=".">
+
+<description>
+</description>
+
+<!-- this target displays a help message which documents this configuration file features -->
+
+<target name="help" depends="">
+  <echo message="Too see the possible targets, type 'ant -projecthelp'.   The useful sub-targets are: build (*default* - compile and create pdb/prc/lnk files), build-wince-cab (create cab installation files), build-wince-exe (create exe files for all WinCE platforms), run (as applet), clean, device (install on Palm device), emulator (call POSE to run your app)"/>
+</target>
+
+<target name="init">
+  <!-- @todo add a check to be sure the SDK build.xml is located -->
+  <property name="sw.root" value="/home/vik/src/SuperWabaSDK"/>
+  <echo message="Superwaba SDK root folder is ${sw.root}"/>
+
+  <property name="app.name"  value="FreeMind"/>
+</target>
+
+<!-- Properties used in compilation -->
+
+<target name="compile-init" depends="init">
+  <property name="app.basedir"      value="${basedir}"/>
+  <property name="app.resources" value="*.bmp,*.wav"/>
+  <property name="app.build"     value="${app.basedir}/build"/>
+</target>
+
+<!-- Properties used in build process -->
+
+<target name="build-init" depends="compile-init">
+  <property name="app.creatorid" value="FmPD"/>
+  <property name="version"       value="2.2"/>
+  <property name="warp.includes" value=""/>
+  <property name="warp.excludes" value="superwaba"/>
+  <property name="main.class"    value="FreeMindPDA"/>
+  <property name="bypass-jopt"   value="1"/>
+</target>
+
+<!-- Properties used when running in desktop. you may also specify other parameters. -->
+
+<target name="run-init" depends="build-init">
+  <property name="applet.scale"  value="2"/>
+  <property name="applet.bpp"    value="8"/>
+  <property name="applet.width"  value="320"/>
+  <property name="applet.height" value="320"/>
+  <property name="applet.uiStyle" value="WinCE"/>
+  <property name="applet.useSonyFonts" value=""/>
+</target>
+
+<!-- no changes below should be needed -->
+
+<target name="build-wince-exe" depends="build-init,compile">
+  <ant antfile="build.xml" dir="${sw.root}" target="app-build">
+   <property name="exegen.options" value="/E"/>
+  </ant>
+</target>
+
+<target name="build-wince-cab" depends="build-init,compile">
+  <ant antfile="build.xml" dir="${sw.root}" target="app-build">
+   <property name="exegen.options" value="/Z"/>
+  </ant>
+</target>
+
+<target name="run" depends="run-init,compile">
+  <ant antfile="build.xml" dir="${sw.root}" target="app-run"/>
+</target>
+
+<target name="emulator" depends="run-init,build">
+  <ant antfile="build.xml" dir="${sw.root}" target="app-emulator"/>
+</target>
+
+<target name="device" depends="run-init,build">
+  <ant antfile="build.xml" dir="${sw.root}" target="app-device"/>
+</target>
+
+<target name="compile" depends="compile-init">
+  <ant antfile="build.xml" dir="${sw.root}" target="app-compile"/>
+</target>
+
+<target name="build" depends="build-init,compile">
+  <ant antfile="build.xml" dir="${sw.root}" target="app-build"/>
+</target>
+
+<target name="clean" depends="compile-init">
+  <ant antfile="build.xml" dir="${sw.root}" target="app-clean"/>
+</target>
+
+</project>
