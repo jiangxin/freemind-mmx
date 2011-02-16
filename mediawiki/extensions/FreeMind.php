@@ -7,7 +7,7 @@ $wgExtensionFunctions[] = "wfFreemindExtension";
 function wfFreemindExtension()
 {
     global $wgParser;
-    // Defines the tag <mindmap> ... </mindmap>
+    // Defines the tag <mm> ... </mm>
     // The second parameter is the callback function for
     // processing the text between the tags
     $wgParser->setHook("mm", "renderMindmap");
