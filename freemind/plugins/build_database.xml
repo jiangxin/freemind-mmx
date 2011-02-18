@@ -5,7 +5,7 @@
 	<property name="local.plugin.dir" location="${src}/plugins/collaboration/database"/>
 	<property name="plugin.jar" value="database_plugin.jar" />
 	<property name="plugin.zip" value="database_plugin-${ver}.zip" />
-	<property name="additional.lib" value="${local.plugin.dir}/hsqldb.jar:${local.plugin.dir}/database_plugin.jar"/>
+	<property name="additional.lib" value="${local.plugin.dir}/hsqldb.jar:${local.plugin.dir}/database_plugin.jar:${src}/lib/forms-1.0.5.jar"/>
 	<property name="additional.lib.pattern" value="${plugin.dir}/*.jar"/>
 
 	<import file="build_import.xml" />

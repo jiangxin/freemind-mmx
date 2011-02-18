@@ -72,15 +72,15 @@ public class UpdateThread extends Thread implements ResultHandler, FinalActionFi
 	public void run() {
 		while (!mShouldTerminate) {
 			try {
-				logger.info("Looking for updates...");
+				logger.fine("Looking for updates...");
 				synchronized (mPrimaryKeyMutex) {
 					String query = "SELECT * FROM "
 							+ DatabaseBasics.TABLE_XML_ACTIONS + " WHERE "
 							+ DatabaseBasics.ROW_PK + " >= " + mPrimaryKey;
-					logger.info("Looking for updates... Query");
+					logger.fine("Looking for updates... Query");
 					query(query, this);
 				}
-				logger.info("Looking for updates... Done.");
+				logger.fine("Looking for updates... Done.");
 				Thread.sleep(1000);
 			} catch (Exception e) {
 				freemind.main.Resources.getInstance().logException(e);
