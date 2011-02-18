@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<plugin label="accessories.plugins.JumpLastEditLocation">
+	<plugin_registration class_name="accessories.plugins.JumpLastEditLocation">
+		<plugin_mode class_name="freemind.modes.mindmapmode" />
+	</plugin_registration>
+	<plugin_action
+		documentation="%accessories/plugins/JumpLastEditLocation.properties_documentation"
+		name="%accessories/plugins/JumpLastEditLocation.properties_name" base="freemind.extensions.NodeHookAdapter"
+		label="accessories/plugins/JumpLastEditLocation.properties" 
+		class_name="accessories.plugins.JumpLastEditLocation"
+		instanciation="ApplyToRoot">
+		<plugin_mode class_name="freemind.modes.mindmapmode" />
+		<plugin_menu location="menu_bar/navigate/nodes/jump_last_edit_location" />
+	</plugin_action>
+</plugin>

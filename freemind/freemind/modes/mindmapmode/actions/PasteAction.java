@@ -53,6 +53,7 @@ import freemind.controller.actions.generated.instance.PasteNodeAction;
 import freemind.controller.actions.generated.instance.TransferableContent;
 import freemind.controller.actions.generated.instance.TransferableFile;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.main.FreeMind;
 import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
@@ -61,6 +62,7 @@ import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
@@ -241,27 +243,40 @@ public class PasteAction extends AbstractAction implements ActorXml{
 	private class MindMapNodesFlavorHandler implements DataFlavorHandler {
 
         public void paste(Object TransferData, MindMapNode target, boolean asSibling, boolean isLeft, Transferable t) {
-			  //System.err.println("mindMapNodesFlavor");
-        	HashMap IDToTarget = new HashMap();
 			 String textFromClipboard =
 				(String)TransferData;
-			 if (textFromClipboard != null) {
-               String[] textLines = textFromClipboard.split(ModeController.NODESEPARATOR);
-               if (textLines.length > 1) {
-                   pMindMapController.getFrame().setWaitingCursor(true);
-               }
-               for (int i = 0; i < textLines.length; ++i) {
-                   //logger.info(textLines[i]+", "+ target+", "+ asSibling);
-                   MindMapNodeModel newModel = pasteXMLWithoutRedisplay(
-                           textLines[i], target, asSibling, true, isLeft, IDToTarget);
-                   ListIterator childrenUnfolded = newModel.childrenUnfolded();
-                   while(childrenUnfolded.hasNext()){
-                	   pMindMapController.fireRecursiveNodeCreateEvent((MindMapNode) childrenUnfolded.next());
-                   }
-                   newModel.setLeft(isLeft);
-                   addUndoAction(newModel);
-               }
-           }
+			if (textFromClipboard != null) {
+				String[] textLines = textFromClipboard
+						.split(ModeController.NODESEPARATOR);
+				if (textLines.length > 1) {
+					pMindMapController.getFrame().setWaitingCursor(true);
+				}
+				// and now? paste it:
+				String mapContent = MindMapMapModel.MAP_INITIAL_START
+						+ FreeMind.XML_VERSION + "\"><node TEXT=\"DUMMY\">";
+				for (int j = 0; j < textLines.length; j++) {
+					mapContent += textLines[j];
+				}
+				mapContent += "</node></map>";
+				try {
+					MindMapNode node = pMindMapController.getMindMapMapModel()
+							.loadTree(
+									new MindMapMapModel.StringReaderCreator(
+											mapContent), false);
+					int index = 0;
+					for (ListIterator i = node.childrenUnfolded(); i.hasNext();) {
+						MindMapNodeModel importNode = (MindMapNodeModel) i
+								.next();
+						insertNodeInto(importNode, target, asSibling, isLeft,
+								true);
+						addUndoAction(importNode);
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					freemind.main.Resources.getInstance().logException(
+							e);
+				}
+			}
         }
 
         public DataFlavor getDataFlavor() {

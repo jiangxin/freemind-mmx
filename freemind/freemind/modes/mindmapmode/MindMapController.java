@@ -973,7 +973,7 @@ freemind.main.Resources.getInstance().logException(					e1);
 
 
     //convenience methods
-    private MindMapMapModel getMindMapMapModel() {
+    public MindMapMapModel getMindMapMapModel() {
 	return (MindMapMapModel)getMap();
     }
 
