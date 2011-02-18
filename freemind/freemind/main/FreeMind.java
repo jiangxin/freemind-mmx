@@ -1003,6 +1003,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			}
 		}
 		if (!fileLoaded) {
+			fileLoaded = processLoadEventFromStartupPhase();
+		}
+		if (!fileLoaded) {
 			String restoreable = getProperty(FreeMindCommon.ON_START_IF_NOT_SPECIFIED);
 			if (Tools.isPreferenceTrue(getProperty(FreeMindCommon.LOAD_LAST_MAP))
 					&& restoreable != null
@@ -1029,6 +1032,50 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			pModeController.newMap();
 		}
 	}
+	
+	/**
+	 * Iterates over the load events from the startup phase 
+	 * <p>
+	 * More than one file can be opened during startup. The filenames are stored in numbered properties, i.e.
+	 * <ul>
+	 * loadEventDuringStartup0=/Users/alex/Desktop/test1.mm
+	 * loadEventDuringStartup1=/Users/alex/Desktop/test2.mm
+	 * </ul>
+	 * @return true if at least one file has been loaded 
+	 */
+	private boolean processLoadEventFromStartupPhase() {
+		boolean atLeastOneFileHasBeenLoaded = false;
+		int count=0;
+		while (true) {
+			String propertyKey = FreeMindCommon.LOAD_EVENT_DURING_STARTUP + count;
+			if (getProperty(propertyKey) == null) {
+				break;
+			} else {
+				if (processLoadEventFromStartupPhase(propertyKey))
+					atLeastOneFileHasBeenLoaded = true;
+				++count;
+			}
+		}
+		return atLeastOneFileHasBeenLoaded;
+	}
+	
+	private boolean processLoadEventFromStartupPhase(String propertyKey) {
+		String filename = getProperty(propertyKey);
+		try {
+			if (logger.isLoggable(Level.INFO)) {
+				logger.info("Loading " + filename);
+			}
+			controller.getModeController().load(Tools.fileToUrl(new File(filename)));
+			// remove temporary property because we do not want to store in a file and survive restart
+			getProperties().remove(propertyKey);
+			return true;
+		} catch (Exception e) {
+			freemind.main.Resources.getInstance().logException(e);
+			out("An error occured on opening the file: " + filename + ".");
+			return false;
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

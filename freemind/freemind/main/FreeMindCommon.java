@@ -176,6 +176,22 @@ public class FreeMindCommon {
     public static final String SAVE_ONLY_INTRISICALLY_NEEDED_IDS = "save_only_intrisically_needed_ids";
 
 	public static final String LOAD_NEW_MAP = "load_new_map_when_no_other_is_specified";
+	
+	/**
+	 * Load event occurred during startup
+	 * <p>
+	 * If FreeMind is not started and you double-click a .mm file on Mac OS X
+	 * the .mm file is not passed to Java's main method but handleOpenFile is called
+	 * which happens during startup where it is not safe to already load the map.
+	 * Therefore the event is stored in this property and later processed by loadMaps.
+	 * <p>
+	 * Related issues
+	 * <ul>
+	 * <li>http://sourceforge.net/tracker/?func=detail&aid=2908045&group_id=7118&atid=107118
+	 * <li>http://sourceforge.net/tracker/index.php?func=detail&aid=1980423&group_id=7118&atid=107118
+	 * </ul>
+	 */
+	public static final String LOAD_EVENT_DURING_STARTUP = "loadEventDuringStartup";
 
 	private static Logger logger = null;
 
