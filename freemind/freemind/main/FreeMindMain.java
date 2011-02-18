@@ -131,6 +131,10 @@ public interface FreeMindMain {
 			mType = pType;
 			mNum = pNum;
 		}
+		/** Sets the version number from a string.
+		 * @param pString: The version number coding. Example "0.9.0 Beta 1"
+		 * Keywords are "Alpha", "Beta", "RC". Separation by " " or by ".".
+		 */
 		public VersionInformation(String pString) {
 			StringTokenizer t = new StringTokenizer(pString, ". ", false);
 			String[] info = new String[t.countTokens()];

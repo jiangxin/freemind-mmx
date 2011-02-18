@@ -27,6 +27,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import freemind.controller.actions.generated.instance.CompoundAction;
+import freemind.controller.actions.generated.instance.FoldAction;
 import freemind.controller.actions.generated.instance.NodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
@@ -43,32 +44,25 @@ import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
  * 
  * @author foltin
  */
-public class JumpLastEditLocation extends MindMapNodeHookAdapter implements
-		ActionHandler, HookRegistration {
+public class JumpLastEditLocation extends MindMapNodeHookAdapter {
 
-	private MindMapController controller;
 
-	private MindMap mMap;
-
-	private Logger logger;
-
-	private String mLastEditLocation = null;
-
-	public JumpLastEditLocation(ModeController controller, MindMap map) {
-		this.controller = (MindMapController) controller;
-		mMap = map;
-		logger = controller.getFrame().getLogger(this.getClass().getName());
+	public JumpLastEditLocation(){
+		
 	}
-
 	
 	public void invoke(MindMapNode pNode) {
 		super.invoke(pNode);
-		if(mLastEditLocation == null) {
+		JumpLastEditLocationRegistration base = (JumpLastEditLocationRegistration) getPluginBaseClass();
+		
+		String lastEditLocation = base.getLastEditLocation();
+		if(lastEditLocation == null) {
 			return;
 		}
 		try {
 			MindMapNode node = getMindMapController().getNodeFromID(
-					mLastEditLocation);
+					lastEditLocation);
+			this.logger.info("Selecting " + node + " as last edit location.");
 			Vector nodes = new Vector();
 			nodes.add(node);
 			getMindMapController().selectMultipleNodes(node, nodes);
@@ -76,40 +70,63 @@ public class JumpLastEditLocation extends MindMapNodeHookAdapter implements
 			freemind.main.Resources.getInstance().logException(e);
 		}
 	}
-	public void register() {
-		controller.getActionFactory().registerHandler(this);
-	}
+	
+	
+	public static class JumpLastEditLocationRegistration implements HookRegistration, ActionHandler {
 
-	public void deRegister() {
-		controller.getActionFactory().deregisterHandler(this);
-	}
+		private MindMapController controller;
 
-	public void executeAction(XmlAction action) {
-		// detect format changes:
-		detectFormatChanges(action);
-	}
+		private MindMap mMap;
 
-	/**
-	 */
-	private void detectFormatChanges(XmlAction doAction) {
-		if (doAction instanceof CompoundAction) {
-			CompoundAction compAction = (CompoundAction) doAction;
-			for (Iterator i = compAction.getListChoiceList().iterator(); i
-					.hasNext();) {
-				XmlAction childAction = (XmlAction) i.next();
-				detectFormatChanges(childAction);
-			}
-		} else if (doAction instanceof NodeAction) {
-			mLastEditLocation = ((NodeAction) doAction).getNode();
-			logger.info("Last edit location: " + mLastEditLocation);
+		private Logger logger;
+
+		private String mLastEditLocation = null;
+
+		public String getLastEditLocation() {
+			return mLastEditLocation;
 		}
 
-	}
 
-	public void startTransaction(String name) {
-	}
+		public JumpLastEditLocationRegistration(ModeController controller, MindMap map) {
+			this.controller = (MindMapController) controller;
+			mMap = map;
+			logger = controller.getFrame().getLogger(this.getClass().getName());
+		}
+		
+		public void register() {
+			controller.getActionFactory().registerHandler(this);
+		}
+	
+		public void deRegister() {
+			controller.getActionFactory().deregisterHandler(this);
+		}
 
-	public void endTransaction(String name) {
-	}
+		public void executeAction(XmlAction action) {
+			// detect format changes:
+			detectFormatChanges(action);
+		}
+	
+		/**
+		 */
+		private void detectFormatChanges(XmlAction doAction) {
+			if (doAction instanceof CompoundAction) {
+				CompoundAction compAction = (CompoundAction) doAction;
+				for (Iterator i = compAction.getListChoiceList().iterator(); i
+						.hasNext();) {
+					XmlAction childAction = (XmlAction) i.next();
+					detectFormatChanges(childAction);
+				}
+			} else if ((doAction instanceof NodeAction) && ! (doAction instanceof FoldAction)) {
+				mLastEditLocation = ((NodeAction) doAction).getNode();
+				logger.info("Last edit location: " + mLastEditLocation);
+			}
+	
+		}
 
+		public void startTransaction(String name) {
+		}
+	
+		public void endTransaction(String name) {
+		}
+	}
 }
