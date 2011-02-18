@@ -47,7 +47,7 @@
         <!-- look if there is any node inside the map (there should never be none, but who knows?) 
              and take its text as the title -->
         <xsl:choose>
-          <xsl:when test="/map/node">
+          <xsl:when test="/map/node/@TEXT">
             <title><xsl:value-of select="/map/node/@TEXT" /></title>
           </xsl:when>
           <xsl:otherwise>
