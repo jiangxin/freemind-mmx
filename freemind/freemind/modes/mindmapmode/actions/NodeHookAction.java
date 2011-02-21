@@ -201,6 +201,8 @@ public class NodeHookAction extends FreemindAction implements HookAction, ActorX
 	 */
 	private void finishInvocation(MindMapNode focussed, List selecteds,
 			MindMapNode adaptedFocussedNode, Collection destinationNodes) {
+		// restore selection only, if nothing selected.
+		if(getController().getView().getSelecteds().size() == 0) {
 			// select all destination nodes:
 			// fc, 25.8.2004: The following code snippet should be moved to a more general place.
 			final NodeView focussedNodeView = mMindMapController.getNodeView(focussed);
@@ -218,6 +220,7 @@ public class NodeHookAction extends FreemindAction implements HookAction, ActorX
 				}
 			}
 		}
+	}
 
 
 
