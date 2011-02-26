@@ -98,11 +98,11 @@ public class CloudAction extends NodeGeneralAction implements NodeActorXml, Menu
 		if (action instanceof AddCloudXmlAction) {
 			AddCloudXmlAction nodecloudAction = (AddCloudXmlAction) action;
 			MindMapNode node = getNodeFromID(nodecloudAction.getNode());
-			if(node.isRoot()) {
-				return;
-			}
 			if ((node.getCloud() == null) == nodecloudAction.getEnabled()) {
 				if (nodecloudAction.getEnabled()) {
+					if(node.isRoot()) {
+						return;
+					}
 					node.setCloud(new MindMapCloudModel(node,
 							getMindMapController().getFrame()));
 					if (nodecloudAction.getColor() != null) {

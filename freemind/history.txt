@@ -4,7 +4,7 @@ Changes made in FreeMind 0.9.1 Beta1
 * New plugin: jump to last edit location (like ctrl+q in eclipse)
 * mac: fixed open multiple files (thanks for the patch)
 * fixed: pasting multiple nodes drops arrow links
-
+* Fixed: remove cloud around root: https://sourceforge.net/projects/freemind/forums/forum/22102/topic/3867308/index/page/1
 
 
 ===============================
