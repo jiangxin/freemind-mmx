@@ -28,6 +28,7 @@ import java.util.Vector;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.NewNodeAction;
 import freemind.controller.actions.generated.instance.NodeAction;
+import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.actions.xml.ActionFilter;
@@ -39,7 +40,6 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 
 	private static final String XML_STORAGE_ORIGINAL = "ORIGINAL_ID";
 	private static final String XML_STORAGE_CLONE = "CLONE_ID";
-	MindMapNode mOriginalNode, mCloneNode;
 	String mOriginalNodeId;
 	String mCloneNodeId;
 
@@ -47,31 +47,48 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	public ActionPair filterAction(ActionPair pair) {
-		if (pair.getDoAction() instanceof NodeAction) {
-			NodeAction nodeAction = (NodeAction) pair.getDoAction();
-			// check for clone or original?
-			MindMapNode node = getMindMapController().getNodeFromID(
-					nodeAction.getNode());
-			if (isNodeChildOf(node, mOriginalNode)) {
-				MindMapNode correspondingNode = getCorrespondingNode(node,
-						mOriginalNode, mCloneNode);
-				ActionPair newPair = getNewActionPair(pair, nodeAction,
-						correspondingNode);
-				return newPair;
-			}
-			if (isNodeChildOf(node, mCloneNode)) {
-				MindMapNode correspondingNode = getCorrespondingNode(node,
-						mCloneNode, mOriginalNode);
-				ActionPair newPair = getNewActionPair(pair, nodeAction,
-						correspondingNode);
-				return newPair;
-			}
-		}
+		XmlAction doAction = pair.getDoAction();
+		doAction = cloneAction(doAction);
+		pair.setDoAction(doAction);
 		return pair;
 	}
 
-	private ActionPair getNewActionPair(ActionPair pair, NodeAction nodeAction,
-			MindMapNode correspondingNode) {
+	private XmlAction cloneAction(XmlAction doAction) {
+		logger.info("Found do action: " + doAction.getClass().getName());
+		if (doAction instanceof NodeAction) {
+			NodeAction nodeAction = (NodeAction) doAction;
+			// check for clone or original?
+			MindMapNode node = getMindMapController().getNodeFromID(
+					nodeAction.getNode());
+			MindMapNode originalNode = getOriginalNode();
+			MindMapNode cloneNode = getCloneNode();
+			if (isNodeChildOf(node, originalNode)) {
+				MindMapNode correspondingNode = getCorrespondingNode(node,
+						originalNode, cloneNode);
+				doAction = getNewCompoundAction(nodeAction, correspondingNode);
+			}
+			if (isNodeChildOf(node, cloneNode)) {
+				MindMapNode correspondingNode = getCorrespondingNode(node,
+						cloneNode, originalNode);
+				doAction = getNewCompoundAction(nodeAction, correspondingNode);
+			}
+		} else {
+			if (doAction instanceof CompoundAction) {
+				CompoundAction compoundAction = (CompoundAction) doAction;
+				List choiceList = compoundAction.getListChoiceList();
+				int index = 0;
+				for(Iterator it = choiceList.iterator(); it.hasNext(); ){
+					XmlAction subAction = (XmlAction) it.next();
+					subAction = cloneAction(subAction);
+					compoundAction.setAtChoice(index, subAction);
+					index ++;
+				}
+			}
+		}
+		return doAction;
+	}
+
+	private XmlAction getNewCompoundAction(NodeAction nodeAction, MindMapNode correspondingNode) {
 		CompoundAction compound = new CompoundAction();
 		compound.addChoice(nodeAction);
 		// deep copy:
@@ -85,8 +102,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		copiedNodeAction.setNode(getMindMapController().getNodeID(
 				correspondingNode));
 		compound.addChoice(copiedNodeAction);
-		ActionPair newPair = new ActionPair(compound, pair.getUndoAction());
-		return newPair;
+		return compound;
 	}
 
 	private MindMapNode getCorrespondingNode(MindMapNode pNode,
@@ -123,22 +139,21 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 
 	public void invoke(MindMapNode node) {
 		super.invoke(node);
-		getMindMapController().getActionFactory().registerFilter(this);
 		if(mOriginalNodeId != null) {
-			// the plugin has recently be loaded and the nodes are to be filled.
-			mOriginalNode = getMindMapController().getNodeFromID(mOriginalNodeId);
-			mCloneNode = getMindMapController().getNodeFromID(mCloneNodeId);
+			// the plugin has recently be loaded and the nodes have been filled.
+			getMindMapController().getActionFactory().registerFilter(this);
 			return;
 		}
-		mOriginalNode = getMindMapController().getSelected();
-		logger.info("Original node " + mOriginalNode + ", id "
-				+ getMindMapController().getNodeID(mOriginalNode));
-		if (mOriginalNode.isRoot()) {
+		MindMapNode originalNode = getMindMapController().getSelected();
+		mOriginalNodeId = getMindMapController().getNodeID(originalNode);
+		logger.info("Original node " + originalNode + ", id "
+				+ mOriginalNodeId);
+		if (originalNode.isRoot()) {
 			throw new IllegalArgumentException("Root can't be cloned");
 		}
 		// insert clone:
-		Transferable copy = getMindMapController().copy(mOriginalNode, true);
-		MindMapNode parent = mOriginalNode.getParentNode();
+		Transferable copy = getMindMapController().copy(originalNode, true);
+		MindMapNode parent = originalNode.getParentNode();
 		List listOfChilds = parent.getChildren();
 		Vector listOfChildIds = new Vector();
 		for (Iterator it = listOfChilds.iterator(); it.hasNext();) {
@@ -156,20 +171,21 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 					+ childId);
 			if (!listOfChildIds.contains(childId)) {
 				// clone found:
-				mCloneNode = child;
+				mCloneNodeId = childId;
 				break;
 			}
 		}
-		if (mCloneNode == null) {
+		if (mCloneNodeId == null) {
 			throw new IllegalArgumentException("Clone node not found.");
 		}
+		getMindMapController().getActionFactory().registerFilter(this);
 	}
 	
 	public void save(XMLElement xml) {
 		super.save(xml);
 		HashMap values = new HashMap();
-		values.put(XML_STORAGE_ORIGINAL, getMindMapController().getNodeID(mOriginalNode));
-		values.put(XML_STORAGE_CLONE, getMindMapController().getNodeID(mCloneNode));
+		values.put(XML_STORAGE_ORIGINAL, mOriginalNodeId);
+		values.put(XML_STORAGE_CLONE, mCloneNodeId);
 		saveNameValuePairs(values, xml);
 		logger.info("Saved clone plugin");
 	}
@@ -177,15 +193,20 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	public void loadFrom(XMLElement child) {
 		super.loadFrom(child);
 		HashMap values = loadNameValuePairs(child);
-		// the nodes itself are presumable unknown. Thus we store the ids and derive the node later on.
 		mOriginalNodeId = (String) values.get(XML_STORAGE_ORIGINAL);
-		mOriginalNode = null;
 		mCloneNodeId = (String) values.get(XML_STORAGE_CLONE);
-		mCloneNode = null;
 	}
 
 	public void shutdownMapHook() {
 		getMindMapController().getActionFactory().deregisterFilter(this);
 		super.shutdownMapHook();
+	}
+
+	MindMapNode getOriginalNode() {
+		return getMindMapController().getNodeFromID(mOriginalNodeId);
+	}
+
+	MindMapNode getCloneNode() {
+		return getMindMapController().getNodeFromID(mCloneNodeId);
 	}
 }

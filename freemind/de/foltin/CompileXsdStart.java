@@ -394,7 +394,7 @@ public class CompileXsdStart extends DefaultHandler {
 				isSingleChoice = true;
 				appendToClassMap(
 						KEY_CLASS_SINGLE_CHOICE,
-						"  public void addChoice(Object choice) {\n    choiceList.add(choice);\n  }\n\n  public void addAtChoice(int position, Object choice) {\n    choiceList.add(position, choice);\n  }\n  public Object getChoice(int index) {\n    return (Object)choiceList.get( index );\n  }\n\n  public int sizeChoiceList() {\n    return choiceList.size();\n  }\n\n  public void clearChoiceList() {\n    choiceList.clear();\n  }\n\n  public java.util.List getListChoiceList() {\n    return java.util.Collections.unmodifiableList(choiceList);\n  }\n\n  protected ArrayList choiceList = new ArrayList();\n\n");
+						"  public void addChoice(Object choice) {\n    choiceList.add(choice);\n  }\n\n  public void addAtChoice(int position, Object choice) {\n    choiceList.add(position, choice);\n  }\n\n  public void setAtChoice(int position, Object choice) {\n    choiceList.set(position, choice);\n  }\n  public Object getChoice(int index) {\n    return (Object)choiceList.get( index );\n  }\n\n  public int sizeChoiceList() {\n    return choiceList.size();\n  }\n\n  public void clearChoiceList() {\n    choiceList.clear();\n  }\n\n  public java.util.List getListChoiceList() {\n    return java.util.Collections.unmodifiableList(choiceList);\n  }\n\n  protected ArrayList choiceList = new ArrayList();\n\n");
 				addArrayListImport();
 				mBindingXml
 						.append("    <collection field='choiceList' ordered='false'>\n");

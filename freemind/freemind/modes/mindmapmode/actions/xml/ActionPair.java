@@ -52,6 +52,14 @@ public class ActionPair {
 		return undoAction;
 	}
 
+	public void setDoAction(XmlAction doAction) {
+		this.doAction = doAction;
+	}
+
+	public void setUndoAction(XmlAction undoAction) {
+		this.undoAction = undoAction;
+	}
+
 	public ActionPair reverse() {
 		return new ActionPair(getUndoAction(), getDoAction());
 	}
