@@ -86,7 +86,7 @@ public class NodeUpAction extends AbstractAction implements ActorXml{
             for (Iterator i = selecteds.iterator(); i.hasNext();) {
                 MindMapNode node = (MindMapNode) i.next();
                 if(node.getParent() != parent) {
-                    logger.warning("Not all selected nodes have the same parent.");
+                    logger.warning("Not all selected nodes (here: " + node.getText() + ") have the same parent "+ parent.getText()+".");
                     return;
                 }
                 range.add(new Integer(sortedChildren.indexOf(node)));

@@ -26,11 +26,15 @@ import java.util.List;
 import java.util.Vector;
 
 import freemind.controller.actions.generated.instance.CompoundAction;
+import freemind.controller.actions.generated.instance.MoveNodesAction;
 import freemind.controller.actions.generated.instance.NewNodeAction;
 import freemind.controller.actions.generated.instance.NodeAction;
+import freemind.controller.actions.generated.instance.NodeListMember;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
+import freemind.modes.NodeAdapter;
+import freemind.modes.mindmapmode.actions.MoveNodeAction;
 import freemind.modes.mindmapmode.actions.xml.ActionFilter;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
@@ -65,12 +69,12 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 			if (isNodeChildOf(node, originalNode)) {
 				MindMapNode correspondingNode = getCorrespondingNode(node,
 						originalNode, cloneNode);
-				doAction = getNewCompoundAction(nodeAction, correspondingNode);
+				doAction = getNewCompoundAction(nodeAction, correspondingNode, originalNode, cloneNode);
 			}
 			if (isNodeChildOf(node, cloneNode)) {
 				MindMapNode correspondingNode = getCorrespondingNode(node,
 						cloneNode, originalNode);
-				doAction = getNewCompoundAction(nodeAction, correspondingNode);
+				doAction = getNewCompoundAction(nodeAction, correspondingNode, cloneNode, originalNode);
 			}
 		} else {
 			if (doAction instanceof CompoundAction) {
@@ -88,12 +92,24 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		return doAction;
 	}
 
-	private XmlAction getNewCompoundAction(NodeAction nodeAction, MindMapNode correspondingNode) {
+	private XmlAction getNewCompoundAction(NodeAction nodeAction, MindMapNode correspondingNode, MindMapNode originalNode, MindMapNode cloneNode) {
 		CompoundAction compound = new CompoundAction();
 		compound.addChoice(nodeAction);
 		// deep copy:
 		NodeAction copiedNodeAction = (NodeAction) getMindMapController()
 				.unMarshall(getMindMapController().marshall(nodeAction));
+		// special cases:
+		if (copiedNodeAction instanceof MoveNodesAction) {
+			MoveNodesAction moveAction = (MoveNodesAction) copiedNodeAction;
+			for (int i = 0; i < moveAction.getListNodeListMemberList().size(); i++) {
+				NodeListMember member = moveAction.getNodeListMember(i);
+				NodeAdapter memberNode = getMindMapController().getNodeFromID(member.getNode());
+				if (isNodeChildOf(memberNode, originalNode)) {
+					MindMapNode correspondingNode2 = getCorrespondingNode(memberNode, originalNode, cloneNode);
+					member.setNode(getMindMapController().getNodeID(correspondingNode2));
+				}
+			}
+		}
 		if (copiedNodeAction instanceof NewNodeAction) {
 			NewNodeAction newNodeAction = (NewNodeAction) copiedNodeAction;
 			String newId = getMap().getLinkRegistry().generateUniqueID(null);
