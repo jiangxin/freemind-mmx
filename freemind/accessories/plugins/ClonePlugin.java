@@ -26,11 +26,13 @@ import java.util.List;
 import java.util.Vector;
 
 import freemind.controller.actions.generated.instance.CompoundAction;
+import freemind.controller.actions.generated.instance.CutNodeAction;
 import freemind.controller.actions.generated.instance.MoveNodesAction;
 import freemind.controller.actions.generated.instance.NewNodeAction;
 import freemind.controller.actions.generated.instance.NodeAction;
 import freemind.controller.actions.generated.instance.NodeListMember;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
@@ -61,38 +63,61 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		logger.info("Found do action: " + doAction.getClass().getName());
 		if (doAction instanceof NodeAction) {
 			NodeAction nodeAction = (NodeAction) doAction;
+			if (nodeAction instanceof CutNodeAction) {
+				CutNodeAction cutNodeAction = (CutNodeAction) nodeAction;
+				if (Tools.safeEquals(cutNodeAction.getNode(), mOriginalNodeId)) {
+					// the complete original/clone is cutted.
+					logger.warning("Removing complete plugin.");
+					return doAction;
+				}
+				if (Tools.safeEqualsIgnoreCase(cutNodeAction.getNode(),
+						mCloneNodeId)) {
+					// the complete original/clone is cutted.
+					logger.warning("Clone is removed.");
+					return doAction;
+				}
+			}
 			// check for clone or original?
 			MindMapNode node = getMindMapController().getNodeFromID(
 					nodeAction.getNode());
+			// TODO: Do this only once.
 			MindMapNode originalNode = getOriginalNode();
 			MindMapNode cloneNode = getCloneNode();
+			if(cloneNode==null) {
+				logger.info("Clone node is (currently?) not available.");
+				return doAction;
+			}
 			if (isNodeChildOf(node, originalNode)) {
 				MindMapNode correspondingNode = getCorrespondingNode(node,
 						originalNode, cloneNode);
-				doAction = getNewCompoundAction(nodeAction, correspondingNode, originalNode, cloneNode);
+				doAction = getNewCompoundAction(nodeAction, correspondingNode,
+						originalNode, cloneNode);
 			}
 			if (isNodeChildOf(node, cloneNode)) {
 				MindMapNode correspondingNode = getCorrespondingNode(node,
 						cloneNode, originalNode);
-				doAction = getNewCompoundAction(nodeAction, correspondingNode, cloneNode, originalNode);
+				doAction = getNewCompoundAction(nodeAction, correspondingNode,
+						cloneNode, originalNode);
 			}
 		} else {
 			if (doAction instanceof CompoundAction) {
 				CompoundAction compoundAction = (CompoundAction) doAction;
 				List choiceList = compoundAction.getListChoiceList();
 				int index = 0;
-				for(Iterator it = choiceList.iterator(); it.hasNext(); ){
+				for (Iterator it = choiceList.iterator(); it.hasNext();) {
 					XmlAction subAction = (XmlAction) it.next();
 					subAction = cloneAction(subAction);
 					compoundAction.setAtChoice(index, subAction);
-					index ++;
+					index++;
 				}
 			}
 		}
 		return doAction;
 	}
 
-	private XmlAction getNewCompoundAction(NodeAction nodeAction, MindMapNode correspondingNode, MindMapNode originalNode, MindMapNode cloneNode) {
+	private XmlAction getNewCompoundAction(NodeAction nodeAction,
+			MindMapNode correspondingNode, MindMapNode originalNode,
+			MindMapNode cloneNode) {
 		CompoundAction compound = new CompoundAction();
 		compound.addChoice(nodeAction);
 		// deep copy:
@@ -103,10 +128,13 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 			MoveNodesAction moveAction = (MoveNodesAction) copiedNodeAction;
 			for (int i = 0; i < moveAction.getListNodeListMemberList().size(); i++) {
 				NodeListMember member = moveAction.getNodeListMember(i);
-				NodeAdapter memberNode = getMindMapController().getNodeFromID(member.getNode());
+				NodeAdapter memberNode = getMindMapController().getNodeFromID(
+						member.getNode());
 				if (isNodeChildOf(memberNode, originalNode)) {
-					MindMapNode correspondingNode2 = getCorrespondingNode(memberNode, originalNode, cloneNode);
-					member.setNode(getMindMapController().getNodeID(correspondingNode2));
+					MindMapNode correspondingNode2 = getCorrespondingNode(
+							memberNode, originalNode, cloneNode);
+					member.setNode(getMindMapController().getNodeID(
+							correspondingNode2));
 				}
 			}
 		}
@@ -155,15 +183,14 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 
 	public void invoke(MindMapNode node) {
 		super.invoke(node);
-		if(mOriginalNodeId != null) {
+		if (mOriginalNodeId != null) {
 			// the plugin has recently be loaded and the nodes have been filled.
 			getMindMapController().getActionFactory().registerFilter(this);
 			return;
 		}
 		MindMapNode originalNode = getMindMapController().getSelected();
 		mOriginalNodeId = getMindMapController().getNodeID(originalNode);
-		logger.info("Original node " + originalNode + ", id "
-				+ mOriginalNodeId);
+		logger.info("Original node " + originalNode + ", id " + mOriginalNodeId);
 		if (originalNode.isRoot()) {
 			throw new IllegalArgumentException("Root can't be cloned");
 		}
@@ -196,7 +223,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		}
 		getMindMapController().getActionFactory().registerFilter(this);
 	}
-	
+
 	public void save(XMLElement xml) {
 		super.save(xml);
 		HashMap values = new HashMap();
@@ -205,7 +232,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		saveNameValuePairs(values, xml);
 		logger.info("Saved clone plugin");
 	}
-	
+
 	public void loadFrom(XMLElement child) {
 		super.loadFrom(child);
 		HashMap values = loadNameValuePairs(child);
@@ -223,6 +250,11 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	MindMapNode getCloneNode() {
-		return getMindMapController().getNodeFromID(mCloneNodeId);
+		try {
+			return getMindMapController().getNodeFromID(mCloneNodeId);
+		} catch (IllegalArgumentException e) {
+//			freemind.main.Resources.getInstance().logException(e);
+			return null;
+		}
 	}
 }

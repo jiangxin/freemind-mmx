@@ -62,7 +62,7 @@ public class JumpLastEditLocation extends MindMapNodeHookAdapter {
 		try {
 			MindMapNode node = getMindMapController().getNodeFromID(
 					lastEditLocation);
-			this.logger.info("Selecting " + node + " as last edit location.");
+			this.logger.fine("Selecting " + node + " as last edit location.");
 			Vector nodes = new Vector();
 			nodes.add(node);
 			getMindMapController().selectMultipleNodes(node, nodes);
@@ -118,7 +118,7 @@ public class JumpLastEditLocation extends MindMapNodeHookAdapter {
 				}
 			} else if ((doAction instanceof NodeAction) && ! (doAction instanceof FoldAction)) {
 				mLastEditLocation = ((NodeAction) doAction).getNode();
-				logger.info("Last edit location: " + mLastEditLocation);
+				logger.fine("Last edit location: " + mLastEditLocation);
 			}
 	
 		}
