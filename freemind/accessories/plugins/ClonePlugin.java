@@ -145,7 +145,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		}
 		copiedNodeAction.setNode(getMindMapController().getNodeID(
 				correspondingNode));
-		compound.addChoice(copiedNodeAction);
+		compound.addAtChoice(0, copiedNodeAction);
 		return compound;
 	}
 

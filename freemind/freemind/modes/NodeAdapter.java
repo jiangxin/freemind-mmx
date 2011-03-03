@@ -680,6 +680,9 @@ public abstract class NodeAdapter implements MindMapNode {
 
     // fc, 16.12.2003 left-right bug:
     public boolean isLeft() {
+    	if(getParent() != null && !getParentNode().isRoot()) {
+    		return getParentNode().isLeft();
+    	}
         if(position == UNKNOWN_POSITION && ! isRoot()){
             setLeft(getParentNode().isLeft());
         }
