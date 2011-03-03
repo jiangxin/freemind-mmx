@@ -32,11 +32,9 @@ import freemind.controller.actions.generated.instance.NewNodeAction;
 import freemind.controller.actions.generated.instance.NodeAction;
 import freemind.controller.actions.generated.instance.NodeListMember;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
-import freemind.modes.mindmapmode.actions.MoveNodeAction;
 import freemind.modes.mindmapmode.actions.xml.ActionFilter;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
@@ -53,40 +51,42 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	public ActionPair filterAction(ActionPair pair) {
+		MindMapNode originalNode = getOriginalNode();
+		if(originalNode==null) {
+			logger.info("Original node is (currently?) not available (presumably pasting).");
+			return pair;
+		}
+		MindMapNode cloneNode = getCloneNode();
+		if(cloneNode==null) {
+			logger.info("Clone node is (currently?) not available.");
+			return pair;
+		}
 		XmlAction doAction = pair.getDoAction();
-		doAction = cloneAction(doAction);
+		doAction = cloneAction(doAction, originalNode, cloneNode);
 		pair.setDoAction(doAction);
 		return pair;
 	}
 
-	private XmlAction cloneAction(XmlAction doAction) {
+	private XmlAction cloneAction(XmlAction doAction, MindMapNode originalNode, MindMapNode cloneNode) {
 		logger.info("Found do action: " + doAction.getClass().getName());
 		if (doAction instanceof NodeAction) {
 			NodeAction nodeAction = (NodeAction) doAction;
+			MindMapNode node = getMindMapController().getNodeFromID(
+					nodeAction.getNode());
 			if (nodeAction instanceof CutNodeAction) {
 				CutNodeAction cutNodeAction = (CutNodeAction) nodeAction;
-				if (Tools.safeEquals(cutNodeAction.getNode(), mOriginalNodeId)) {
-					// the complete original/clone is cutted.
+				if (isNodeChildOf(originalNode, node)) {
+					// the complete original is cutted.
 					logger.warning("Removing complete plugin.");
 					return doAction;
 				}
-				if (Tools.safeEqualsIgnoreCase(cutNodeAction.getNode(),
-						mCloneNodeId)) {
-					// the complete original/clone is cutted.
+				if (isNodeChildOf(cloneNode, node)) {
+					// the complete clone is cutted.
 					logger.warning("Clone is removed.");
 					return doAction;
 				}
 			}
 			// check for clone or original?
-			MindMapNode node = getMindMapController().getNodeFromID(
-					nodeAction.getNode());
-			// TODO: Do this only once.
-			MindMapNode originalNode = getOriginalNode();
-			MindMapNode cloneNode = getCloneNode();
-			if(cloneNode==null) {
-				logger.info("Clone node is (currently?) not available.");
-				return doAction;
-			}
 			if (isNodeChildOf(node, originalNode)) {
 				MindMapNode correspondingNode = getCorrespondingNode(node,
 						originalNode, cloneNode);
@@ -106,7 +106,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 				int index = 0;
 				for (Iterator it = choiceList.iterator(); it.hasNext();) {
 					XmlAction subAction = (XmlAction) it.next();
-					subAction = cloneAction(subAction);
+					subAction = cloneAction(subAction, originalNode, cloneNode);
 					compoundAction.setAtChoice(index, subAction);
 					index++;
 				}
@@ -241,12 +241,18 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	public void shutdownMapHook() {
+		logger.info("Shutdown of clones");
 		getMindMapController().getActionFactory().deregisterFilter(this);
 		super.shutdownMapHook();
 	}
 
 	MindMapNode getOriginalNode() {
-		return getMindMapController().getNodeFromID(mOriginalNodeId);
+		try {
+			return getMindMapController().getNodeFromID(mOriginalNodeId);
+		} catch (IllegalArgumentException e) {
+//			freemind.main.Resources.getInstance().logException(e);
+			return null;
+		}
 	}
 
 	MindMapNode getCloneNode() {

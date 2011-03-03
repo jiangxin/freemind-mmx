@@ -95,6 +95,21 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
      */
     public void deleteWithoutUndo(MindMapNode selectedNode) {
         // remove hooks:
+		removeHooks(selectedNode);
+        MindMapNode parent = selectedNode.getParentNode();
+        mMindMapController.fireNodePreDeleteEvent(selectedNode);
+        // deregister node:
+        mMindMapController.getModel().getLinkRegistry().deregisterLinkTarget(selectedNode);
+		mMindMapController.removeNodeFromParent( selectedNode);
+		// post event
+		mMindMapController.fireNodePostDeleteEvent(selectedNode, parent);
+    }
+
+	private void removeHooks(MindMapNode selectedNode) {
+		for (Iterator it = selectedNode.childrenUnfolded(); it.hasNext();) {
+			MindMapNode child = (MindMapNode) it.next();
+			removeHooks(child);
+		}
 		long currentRun = 0;
 		// determine timeout:
 		long timeout = selectedNode.getActivatedHooks().size() * 2 + 2;
@@ -105,14 +120,7 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
                 throw new IllegalStateException("Timeout reached shutting down the hooks.");
             }
         }
-        MindMapNode parent = selectedNode.getParentNode();
-        mMindMapController.fireNodePreDeleteEvent(selectedNode);
-        // deregister node:
-        mMindMapController.getModel().getLinkRegistry().deregisterLinkTarget(selectedNode);
-		mMindMapController.removeNodeFromParent( selectedNode);
-		// post event
-		mMindMapController.fireNodePostDeleteEvent(selectedNode, parent);
-    }
+	}
 
     /* (non-Javadoc)
      * @see freemind.controller.actions.ActorXml#getDoActionClass()
