@@ -20,10 +20,13 @@
 package accessories.plugins;
 
 import java.awt.datatransfer.Transferable;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+
+import accessories.plugins.time.TimeManagement;
 
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.CutNodeAction;
@@ -31,26 +34,32 @@ import freemind.controller.actions.generated.instance.MoveNodesAction;
 import freemind.controller.actions.generated.instance.NewNodeAction;
 import freemind.controller.actions.generated.instance.NodeAction;
 import freemind.controller.actions.generated.instance.NodeListMember;
+import freemind.controller.actions.generated.instance.PasteNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController.NodeLifetimeListener;
 import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.actions.xml.ActionFilter;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
 
 public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
-		ActionFilter {
+		ActionFilter, NodeLifetimeListener {
 
 	private static final String XML_STORAGE_ORIGINAL = "ORIGINAL_ID";
 	private static final String XML_STORAGE_CLONE = "CLONE_ID";
 	String mOriginalNodeId;
 	String mCloneNodeId;
+	private boolean mIsDisabled = false;
 
 	public ClonePlugin() {
 	}
 
 	public ActionPair filterAction(ActionPair pair) {
+		if(isDisabled()) {
+			return pair;
+		}
 		MindMapNode originalNode = getOriginalNode();
 		if(originalNode==null) {
 			logger.info("Original node is (currently?) not available (presumably pasting).");
@@ -74,26 +83,25 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 			MindMapNode node = getMindMapController().getNodeFromID(
 					nodeAction.getNode());
 			if (nodeAction instanceof CutNodeAction) {
-				CutNodeAction cutNodeAction = (CutNodeAction) nodeAction;
-				if (isNodeChildOf(originalNode, node)) {
-					// the complete original is cutted.
+				if (originalNode.isChildOfOrEqual(node)) {
+					// the complete original is cut.
 					logger.warning("Removing complete plugin.");
 					return doAction;
 				}
-				if (isNodeChildOf(cloneNode, node)) {
-					// the complete clone is cutted.
+				if (cloneNode.isChildOfOrEqual(node)) {
+					// the complete clone is cut.
 					logger.warning("Clone is removed.");
 					return doAction;
 				}
 			}
 			// check for clone or original?
-			if (isNodeChildOf(node, originalNode)) {
+			if (node.isChildOfOrEqual(originalNode)) {
 				MindMapNode correspondingNode = getCorrespondingNode(node,
 						originalNode, cloneNode);
 				doAction = getNewCompoundAction(nodeAction, correspondingNode,
 						originalNode, cloneNode);
 			}
-			if (isNodeChildOf(node, cloneNode)) {
+			if (node.isChildOfOrEqual(cloneNode)) {
 				MindMapNode correspondingNode = getCorrespondingNode(node,
 						cloneNode, originalNode);
 				doAction = getNewCompoundAction(nodeAction, correspondingNode,
@@ -130,7 +138,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 				NodeListMember member = moveAction.getNodeListMember(i);
 				NodeAdapter memberNode = getMindMapController().getNodeFromID(
 						member.getNode());
-				if (isNodeChildOf(memberNode, originalNode)) {
+				if (memberNode.isChildOfOrEqual(originalNode)) {
 					MindMapNode correspondingNode2 = getCorrespondingNode(
 							memberNode, originalNode, cloneNode);
 					member.setNode(getMindMapController().getNodeID(
@@ -171,21 +179,23 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		return target;
 	}
 
-	private boolean isNodeChildOf(MindMapNode pNode, MindMapNode pParentNode) {
-		if (pNode == pParentNode) {
-			return true;
-		}
-		if (pNode.isRoot()) {
-			return false;
-		}
-		return isNodeChildOf(pNode.getParentNode(), pParentNode);
-	}
-
 	public void invoke(MindMapNode node) {
 		super.invoke(node);
 		if (mOriginalNodeId != null) {
 			// the plugin has recently be loaded and the nodes have been filled.
-			getMindMapController().getActionFactory().registerFilter(this);
+			/* test for error cases:
+			 * - orig is child of clone now
+			 * - if clone is a child of clone, this is here not reachable, as the 
+			 *   plugin remains active and is not newly invoked. Hmm, what to do?
+			 */
+//			MindMapNode originalNode = getOriginalNode();
+//			MindMapNode cloneNode = getCloneNode();
+//			logger.info("Invoke with orig: " + originalNode + " and clone " + cloneNode);
+//			if(originalNode.isDescendantOf(cloneNode)){
+//				disablePlugin();
+//				return;
+//			}
+			registerPlugin();
 			return;
 		}
 		MindMapNode originalNode = getMindMapController().getSelected();
@@ -221,7 +231,17 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		if (mCloneNodeId == null) {
 			throw new IllegalArgumentException("Clone node not found.");
 		}
-		getMindMapController().getActionFactory().registerFilter(this);
+		registerPlugin();
+	}
+
+	private void disablePlugin() {
+		// TODO: Abspeichern!
+		getMindMapController().getController().errorMessage("This is not possible. Cloning will be disabled.");
+		mIsDisabled = true;
+	}
+
+	private boolean isDisabled() {
+		return mIsDisabled;
 	}
 
 	public void save(XMLElement xml) {
@@ -242,8 +262,19 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 
 	public void shutdownMapHook() {
 		logger.info("Shutdown of clones");
-		getMindMapController().getActionFactory().deregisterFilter(this);
+		deregisterPlugin();
 		super.shutdownMapHook();
+	}
+
+	private void registerPlugin() {
+//		getMindMapController().registerNodeLifetimeListener(this);
+		getMindMapController().getActionFactory().registerFilter(this);
+	}
+
+
+	private void deregisterPlugin() {
+		getMindMapController().getActionFactory().deregisterFilter(this);
+//		getMindMapController().deregisterNodeLifetimeListener(this);
 	}
 
 	MindMapNode getOriginalNode() {
@@ -262,5 +293,35 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 //			freemind.main.Resources.getInstance().logException(e);
 			return null;
 		}
+	}
+
+	public void onCreateNodeHook(MindMapNode node) {
+		if(isDisabled()) {
+			return;
+		}
+		MindMapNode originalNode = getOriginalNode();
+		if(originalNode==null) {
+			logger.info("Original node is (currently?) not available (presumably pasting).");
+			return;
+		}
+		MindMapNode cloneNode = getCloneNode();
+		if(cloneNode==null) {
+			logger.info("Clone node is (currently?) not available.");
+			return;
+		}
+		if(cloneNode.isChildOfOrEqual(node) && node.isChildOfOrEqual(originalNode)){
+			// orig -> .... -> node -> .. -> clone
+			disablePlugin();
+		}
+		if(originalNode.isChildOfOrEqual(node) && node.isChildOfOrEqual(cloneNode)){
+			// clone -> .... -> node -> .. -> original
+			disablePlugin();
+		}
+	}
+
+	public void onPreDeleteNode(MindMapNode node) {
+	}
+
+	public void onPostDeleteNode(MindMapNode node, MindMapNode parent) {
 	}
 }

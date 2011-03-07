@@ -167,7 +167,21 @@ public interface MindMapNode extends MutableTreeNode {
 
     TreePath getPath();
 
-    boolean isDescendantOf(MindMapNode node);
+    /**
+     * Returns whether the argument is parent
+     * or parent of one of the grandpa's of this node.
+     * (transitive)
+     */
+    boolean isChildOf(MindMapNode node);
+
+    /**
+     * If the test node is identical or in
+     * the same family and elder as the object.
+     * node.isChild..(parent) == true means:
+     * parent -> .. -> node exists in the tree.
+     * @see isDecendantOf
+     */
+    boolean isChildOfOrEqual(MindMapNode pParentNode);
 
     boolean isRoot();
 

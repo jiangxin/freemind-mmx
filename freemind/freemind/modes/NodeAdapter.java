@@ -583,24 +583,26 @@ public abstract class NodeAdapter implements MindMapNode {
     	return getText();
     }
 
-    /**
-     * Returns whether the argument is parent
-     * or parent of one of the grandpa's of this node.
-     * (transitive)
-     */
-    public boolean isDescendantOf(MindMapNode node) {
-	if(this.isRoot())
-	    return false;
-	else if (node == getParentNode())
-	    return true;
-	else
-	    return getParentNode().isDescendantOf(node);
-    }
+	public boolean isChildOf(MindMapNode pParentNode) {
+		if (this.isRoot())
+			return false;
+		else if (pParentNode == getParentNode())
+			return true;
+		else
+			return getParentNode().isChildOf(pParentNode);
+	}
 
-    public boolean isRoot() {
-	return (parent==null);
+	public boolean isRoot() {
+		return (parent == null);
+	}
+    
+    public boolean isChildOfOrEqual(MindMapNode pParentNode){
+		if (this == pParentNode) {
+			return true;
+		}
+		return isChildOf(pParentNode);
     }
-
+    
     public boolean hasChildren() {
         return children != null && !children.isEmpty(); }
 

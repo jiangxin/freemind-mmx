@@ -171,7 +171,7 @@ final class TestMindMapNode implements MindMapNode {
         return null;
     }
 
-    public boolean isDescendantOf(MindMapNode node) {
+    public boolean isChildOf(MindMapNode node) {
         return false;
     }
 
