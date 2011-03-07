@@ -20,13 +20,10 @@
 package accessories.plugins;
 
 import java.awt.datatransfer.Transferable;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-
-import accessories.plugins.time.TimeManagement;
 
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.CutNodeAction;
@@ -34,7 +31,6 @@ import freemind.controller.actions.generated.instance.MoveNodesAction;
 import freemind.controller.actions.generated.instance.NewNodeAction;
 import freemind.controller.actions.generated.instance.NodeAction;
 import freemind.controller.actions.generated.instance.NodeListMember;
-import freemind.controller.actions.generated.instance.PasteNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
@@ -95,18 +91,10 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 				}
 			}
 			// check for clone or original?
-			if (node.isChildOfOrEqual(originalNode)) {
-				MindMapNode correspondingNode = getCorrespondingNode(node,
-						originalNode, cloneNode);
-				doAction = getNewCompoundAction(nodeAction, correspondingNode,
-						originalNode, cloneNode);
-			}
-			if (node.isChildOfOrEqual(cloneNode)) {
-				MindMapNode correspondingNode = getCorrespondingNode(node,
-						cloneNode, originalNode);
-				doAction = getNewCompoundAction(nodeAction, correspondingNode,
-						cloneNode, originalNode);
-			}
+			doAction = cloneAction(doAction, originalNode, cloneNode,
+					nodeAction, node);
+			doAction = cloneAction(doAction, cloneNode, originalNode,
+					nodeAction, node);
 		} else {
 			if (doAction instanceof CompoundAction) {
 				CompoundAction compoundAction = (CompoundAction) doAction;
@@ -119,6 +107,17 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 					index++;
 				}
 			}
+		}
+		return doAction;
+	}
+
+	private XmlAction cloneAction(XmlAction doAction, MindMapNode originalNode,
+			MindMapNode cloneNode, NodeAction nodeAction, MindMapNode node) {
+		if (node.isChildOfOrEqual(originalNode)) {
+			MindMapNode correspondingNode = getCorrespondingNode(node,
+					originalNode, cloneNode);
+			doAction = getNewCompoundAction(nodeAction, correspondingNode,
+					originalNode, cloneNode);
 		}
 		return doAction;
 	}
@@ -188,13 +187,13 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 			 * - if clone is a child of clone, this is here not reachable, as the 
 			 *   plugin remains active and is not newly invoked. Hmm, what to do?
 			 */
-//			MindMapNode originalNode = getOriginalNode();
-//			MindMapNode cloneNode = getCloneNode();
-//			logger.info("Invoke with orig: " + originalNode + " and clone " + cloneNode);
-//			if(originalNode.isDescendantOf(cloneNode)){
-//				disablePlugin();
-//				return;
-//			}
+			MindMapNode originalNode = getOriginalNode();
+			MindMapNode cloneNode = getCloneNode();
+			logger.info("Invoke with orig: " + originalNode + " and clone " + cloneNode);
+			if(originalNode.isChildOf(cloneNode)){
+				disablePlugin();
+				return;
+			}
 			registerPlugin();
 			return;
 		}
@@ -267,14 +266,14 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	private void registerPlugin() {
-//		getMindMapController().registerNodeLifetimeListener(this);
+		getMindMapController().registerNodeLifetimeListener(this);
 		getMindMapController().getActionFactory().registerFilter(this);
 	}
 
 
 	private void deregisterPlugin() {
 		getMindMapController().getActionFactory().deregisterFilter(this);
-//		getMindMapController().deregisterNodeLifetimeListener(this);
+		getMindMapController().deregisterNodeLifetimeListener(this);
 	}
 
 	MindMapNode getOriginalNode() {

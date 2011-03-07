@@ -430,8 +430,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         // the executor must be the first here, because it is executed last then.
         getActionFactory().registerHandler(new ModeControllerActionHandler(getActionFactory()));
         getActionFactory().registerUndoHandler(new UndoActionHandler(this, undo, redo));
-        //debug:          
-        getActionFactory().registerHandler(new freemind.modes.mindmapmode.actions.xml.PrintActionHandler(this));
+        //debug:        getActionFactory().registerHandler(new freemind.modes.mindmapmode.actions.xml.PrintActionHandler(this));
 
         cut = new CutAction(this);
         paste = new PasteAction(this);
