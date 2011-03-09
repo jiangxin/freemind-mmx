@@ -160,6 +160,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public static final String RESOURCES_USE_MARGIN_TOP_ZERO_FOR_NOTES = "resources_use_margin_top_zero_for_notes";
 
+	public static final String RESOURCES_DON_T_SHOW_CLONE_ICONS = "resources_don_t_show_clone_icons";
+
 	// public static final String defaultPropsURL = "freemind.properties";
 	// public static Properties defaultProps;
 	public static Properties props;

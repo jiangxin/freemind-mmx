@@ -9,8 +9,8 @@
 		label="accessories/plugins/JumpLastEditLocation.properties" 
 		class_name="accessories.plugins.JumpLastEditLocation"
 		key_stroke="%keystroke_accessories/plugins/JumpLastEditLocation.properties.properties_key"
-		instanciation="ApplyToRoot">
+		instanciation="Once">
 		<plugin_mode class_name="freemind.modes.mindmapmode" />
-		<plugin_menu location="menu_bar/navigate/nodes/jump_last_edit_location" />
+		<plugin_menu location="menu_bar/navigate/folding/jump_last_edit_location" />
 	</plugin_action>
 </plugin>
