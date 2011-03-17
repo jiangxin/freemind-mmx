@@ -28,6 +28,8 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -322,8 +324,15 @@ public class UpdateThread extends Thread implements ResultHandler,
 	}
 
 	private String getUserName() {
-		// TODO: Get host name
-		return System.getProperty("user.name");
+		// Get host name
+		String hostname="UNKNOWN";
+		try {
+		    InetAddress addr = InetAddress.getLocalHost();
+			hostname = addr.getHostName();
+		} catch (UnknownHostException e) {
+		}
+
+		return System.getProperty("user.name")+"@"+hostname;
 	}
 
 	protected void createTables(String pPassword) throws SQLException {
