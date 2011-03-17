@@ -131,6 +131,20 @@ public class MapModuleManager {
 			listener.removeListener(pListener);
 		}
 
+		/**
+		 * You can register yourself as a contributor to the title at the main controller.
+		 */
+		public static interface MapTitleContributor {
+			/**
+			 * @param pOldTitle The current title
+			 * @param pMapModule
+			 * @param pModel
+			 * @return The current title can be changed or something can be added, but it must be
+			 * returned as a whole.
+			 */
+			String getMapTitle(String pOldTitle, MapModule pMapModule, MindMap pModel);
+		}
+		
 //        /** Contains pairs String (key+extension) => MapModule instances.
 //         * The instances of mode, ie. the Model/View pairs. Normally, the
 //        * order should be the order of insertion, but such a Map is not

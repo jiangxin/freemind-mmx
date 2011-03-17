@@ -30,6 +30,7 @@ import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -48,20 +49,25 @@ import com.jgoodies.forms.layout.FormLayout;
 import freemind.common.NumberProperty;
 import freemind.common.PropertyBean;
 import freemind.common.PropertyControl;
+import freemind.controller.MapModuleManager.MapTitleContributor;
 import freemind.main.Tools;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
+import freemind.view.MapModule;
 
-public class DatabaseBasics extends MindMapNodeHookAdapter  {
+public class DatabaseBasics extends MindMapNodeHookAdapter implements MapTitleContributor  {
 
 	public final static String SLAVE_HOOK_NAME = "plugins/collaboration/database/database_slave_plugin";
 	public final static String SLAVE_STARTER_NAME = "plugins/collaboration/database/database_slave_starter_plugin";
 	protected static final String ROW_PK = "PK";
 	protected static final String ROW_ACTION = "do_action";
 	protected static final String TABLE_XML_ACTIONS = "XmlActions";
+	protected static final String TABLE_USERS = "Users";
 	protected static final String ROW_UNDOACTION = "undo_action";
 	protected static final String ROW_MAP = "map";
+	protected static final String ROW_USER = "user";
 	private static final String PORT_PROPERTY = "plugins.collaboration.database.port";
 	protected static java.util.logging.Logger logger = null;
 	protected UpdateThread mUpdateThread = null;
@@ -80,8 +86,14 @@ public class DatabaseBasics extends MindMapNodeHookAdapter  {
 			logger = freemind.main.Resources.getInstance().getLogger(
 					this.getClass().getName());
 		}
+		getMindMapController().getController().registerMapTitleContributor(this);
 	}
 
+	public void shutdownMapHook() {
+		getMindMapController().getController().deregisterMapTitleContributor(this);
+		super.shutdownMapHook();
+	}
+	
 	protected static void togglePermanentHook(MindMapController controller) {
 		MindMapNode rootNode = controller.getRootNode();
 		List selecteds = Arrays.asList(new MindMapNode[] { rootNode });
@@ -221,6 +233,35 @@ public class DatabaseBasics extends MindMapNodeHookAdapter  {
 
 	public UpdateThread getUpdateThread() {
 		return mUpdateThread;
+	}
+
+	public String getMapTitle(String pOldTitle, MapModule pMapModule,
+			MindMap pModel) {
+		String title = pOldTitle;
+		if(pModel.getModeController() != getMindMapController()) {
+			return title;
+		}
+		if(mUpdateThread != null) {
+			try {
+				boolean first=true;
+				Vector users = mUpdateThread.getUsers();
+				// TODO: translation
+				title += ", Collaboration with: ";
+				for (Iterator it = users.iterator(); it.hasNext();) {
+					String user = (String) it.next();
+					if(first)
+						first=false;
+					else
+						title += ", ";
+					title += user;
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				freemind.main.Resources.getInstance().logException(e);
+				
+			}
+		}
+		return title;
 	}
 
 }

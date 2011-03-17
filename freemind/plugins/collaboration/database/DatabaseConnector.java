@@ -54,7 +54,9 @@ public class DatabaseConnector extends DatabaseBasics  {
 			if (connectionHook!= null) {
 				// I'm already present, so remove me.
 				logger.info("Deregister filter, so that the hook isn't reported to the database.");
-				connectionHook.getUpdateThread().deregisterFilter();
+				UpdateThread updateThread = connectionHook.getUpdateThread();
+				updateThread.deregisterFilter();
+				updateThread.removeUser();
 				logger.info("Shutting down the permanent hook.");
 				togglePermanentHook(controller);
 				return;
@@ -84,6 +86,7 @@ public class DatabaseConnector extends DatabaseBasics  {
 					+ hostProperty.getValue() + ":" + portProperty.getValue() + "/xdb", "sa", password);
 			logger.info("Starting update thread...");
 			mUpdateThread = new UpdateThread(connection, controller);
+			mUpdateThread.insertUser();
 			mUpdateThread.start();
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);

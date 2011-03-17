@@ -111,6 +111,7 @@ import freemind.view.mindmapview.MapView;
 public class Controller  implements MapModuleChangeObserver {
 
 	private HashSet mMapTitleChangeListenerSet = new HashSet();
+	private HashSet mMapTitleContributorSet = new HashSet();
     /**
      * Converts from a local link to the real file URL of the
      * documentation map. (Used to change this behaviour under MacOSX).
@@ -823,6 +824,11 @@ public class Controller  implements MapModuleChangeObserver {
             if (file != null) {
                 title += " " + file.getAbsolutePath();
             }
+            for (Iterator iterator = mMapTitleContributorSet.iterator(); iterator.hasNext();) {
+            	MapModuleManager.MapTitleContributor contributor = (MapModuleManager.MapTitleContributor) iterator.next();
+            	title = contributor.getMapTitle(title, mapModule, model);
+            }
+            
 		}
 		getFrame().setTitle(title);
 		for (Iterator iterator = mMapTitleChangeListenerSet.iterator(); iterator.hasNext();) {
@@ -838,6 +844,13 @@ public class Controller  implements MapModuleChangeObserver {
 		mMapTitleChangeListenerSet.remove(pMapTitleChangeListener);
 	}
 
+	public void registerMapTitleContributor(MapModuleManager.MapTitleContributor pMapTitleContributor){
+		mMapTitleContributorSet.add(pMapTitleContributor);
+	}
+	public void deregisterMapTitleContributor(MapModuleManager.MapTitleContributor pMapTitleContributor){
+		mMapTitleContributorSet.remove(pMapTitleContributor);
+	}
+	
     //
     // Actions management
     //

@@ -36,6 +36,7 @@ import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Vector;
 
 import javax.swing.SwingUtilities;
 
@@ -47,13 +48,14 @@ import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActionFilter.FinalActionFilter;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
-public class UpdateThread extends Thread implements ResultHandler, FinalActionFilter {
+public class UpdateThread extends Thread implements ResultHandler,
+		FinalActionFilter {
 	private static final String QUERY = "SELECT * FROM "
-				+ DatabaseBasics.TABLE_XML_ACTIONS + " WHERE "
-				+ DatabaseBasics.ROW_PK + " >= ?";
+			+ DatabaseBasics.TABLE_XML_ACTIONS + " WHERE "
+			+ DatabaseBasics.ROW_PK + " >= ?";
 	private boolean mShouldTerminate = false;
 	private boolean mIsTerminated = false;
 	protected Connection mConnection = null;
@@ -64,7 +66,8 @@ public class UpdateThread extends Thread implements ResultHandler, FinalActionFi
 	private static java.util.logging.Logger logger = null;
 	private PreparedStatement mPrepareStatement;
 
-	public UpdateThread(Connection pConnection, MindMapController pController) throws SQLException {
+	public UpdateThread(Connection pConnection, MindMapController pController)
+			throws SQLException {
 		super();
 		if (logger == null) {
 			logger = freemind.main.Resources.getInstance().getLogger(
@@ -81,6 +84,7 @@ public class UpdateThread extends Thread implements ResultHandler, FinalActionFi
 			freemind.main.Resources.getInstance().logException(e1);
 			return;
 		}
+		int counter = 0;
 		while (!mShouldTerminate) {
 			try {
 				logger.info("Looking for updates...");
@@ -91,6 +95,11 @@ public class UpdateThread extends Thread implements ResultHandler, FinalActionFi
 				}
 				logger.info("Looking for updates... Done.");
 				Thread.sleep(1000);
+				counter++;
+				if(counter>10) {
+					counter = 0;
+					mController.getController().setTitle();
+				}
 			} catch (Exception e) {
 				freemind.main.Resources.getInstance().logException(e);
 			}
@@ -129,18 +138,17 @@ public class UpdateThread extends Thread implements ResultHandler, FinalActionFi
 		}
 	}
 
-	public void processResults(ResultSet pRs) {
+	public void processResults(ResultSet rs) {
 		try {
-			while (pRs.next()) {
-				long nextPk = pRs.getLong(DatabaseBasics.ROW_PK);
+			while (rs.next()) {
+				long nextPk = rs.getLong(DatabaseBasics.ROW_PK);
 				mPrimaryKey = nextPk + 1;
-				String doAction = pRs.getString(DatabaseBasics.ROW_ACTION);
-				String undoAction = pRs
+				String doAction = rs.getString(DatabaseBasics.ROW_ACTION);
+				String undoAction = rs
 						.getString(DatabaseBasics.ROW_UNDOACTION);
-				String map = pRs.getString(DatabaseBasics.ROW_MAP);
-				logger.info("Got the following from database: "
-						+ nextPk + ", " + doAction + ", " + undoAction + ", "
-						+ map);
+				String map = rs.getString(DatabaseBasics.ROW_MAP);
+				logger.info("Got the following from database: " + nextPk + ", "
+						+ doAction + ", " + undoAction + ", " + map);
 				if (doAction != null && undoAction != null) {
 					XmlAction xmlDoAction = mController.unMarshall(doAction);
 					XmlAction xmlUndoAction = mController
@@ -151,12 +159,14 @@ public class UpdateThread extends Thread implements ResultHandler, FinalActionFi
 					createNewMap(map);
 				} else {
 					logger.info("Shutting down was signalled.");
+					rs.close();
 					// session has ended.
 					DatabaseBasics.togglePermanentHook(mController);
 					// and end.
 					return;
 				}
 			}
+			rs.close();
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
 		}
@@ -223,15 +233,15 @@ public class UpdateThread extends Thread implements ResultHandler, FinalActionFi
 		}
 	}
 
-	public synchronized void query(PreparedStatement preparedStatement, ResultHandler pHandler)
-			throws SQLException {
+	public synchronized void query(PreparedStatement preparedStatement,
+			ResultHandler pHandler) throws SQLException {
 
 		Statement st = null;
 		ResultSet rs = null;
 
 		boolean execute = preparedStatement.execute();
-		if(execute) {
-			rs = preparedStatement.getResultSet(); 
+		if (execute) {
+			rs = preparedStatement.getResultSet();
 			pHandler.processResults(rs);
 		}
 	}
@@ -284,6 +294,7 @@ public class UpdateThread extends Thread implements ResultHandler, FinalActionFi
 		// create tables
 		logger.info("Create tables...");
 		createTables(password);
+		insertUser();
 		// register as listener:
 		registerFilter();
 		// send first action:
@@ -297,14 +308,39 @@ public class UpdateThread extends Thread implements ResultHandler, FinalActionFi
 		insertIntoActionTable(expression);
 	}
 
+	void insertUser() throws SQLException {
+		update("INSERT INTO " + DatabaseBasics.TABLE_USERS + "("
+				+ DatabaseBasics.ROW_USER + ") VALUES('"
+				+ escapeQuotations(getUserName()) + "')");
+	}
+
+	public void removeUser() throws SQLException {
+		update("DELETE FROM " + DatabaseBasics.TABLE_USERS + " WHERE " +
+				DatabaseBasics.ROW_USER + " = '"
+				+ escapeQuotations(getUserName()) + "')");
+		
+	}
+
+	private String getUserName() {
+		// TODO: Get host name
+		return System.getProperty("user.name");
+	}
+
 	protected void createTables(String pPassword) throws SQLException {
 		update("ALTER USER sa SET PASSWORD \"" + pPassword + "\"");
-		update("DROP TABLE " + DatabaseBasics.TABLE_XML_ACTIONS + " IF EXISTS");
+		dropTable(DatabaseBasics.TABLE_XML_ACTIONS);
+		dropTable(DatabaseBasics.TABLE_USERS);
 		update("CREATE TABLE " + DatabaseBasics.TABLE_XML_ACTIONS + " ("
 				+ DatabaseBasics.ROW_PK + " IDENTITY, "
 				+ DatabaseBasics.ROW_ACTION + " VARCHAR, "
 				+ DatabaseBasics.ROW_UNDOACTION + " VARCHAR, "
 				+ DatabaseBasics.ROW_MAP + " VARCHAR)");
+		update("CREATE TABLE " + DatabaseBasics.TABLE_USERS + " ("
+				+ DatabaseBasics.ROW_USER + " VARCHAR)");
+	}
+
+	private boolean dropTable(String tableName) throws SQLException {
+		return update("DROP TABLE " + tableName + " IF EXISTS");
 	}
 
 	public void signalEndOfSession() {
@@ -319,4 +355,27 @@ public class UpdateThread extends Thread implements ResultHandler, FinalActionFi
 			freemind.main.Resources.getInstance().logException(e);
 		}
 	}
+
+	public Vector getUsers() throws SQLException {
+		Vector result = new Vector();
+		String s = "SELECT * FROM " + DatabaseBasics.TABLE_USERS;
+		Statement st = null;
+
+		st = mConnection.createStatement();
+		boolean execute = st.execute(s);
+		if(!execute) {
+			return result;
+		}
+		ResultSet rs = st.getResultSet();
+		try {
+			while (rs.next()) {
+				result.add(rs.getString(DatabaseBasics.ROW_USER));
+			}
+			rs.close();
+		} catch (Exception e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
+		return result;
+	}
+
 }
