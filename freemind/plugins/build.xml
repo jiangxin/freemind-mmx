@@ -22,8 +22,6 @@
 				    <exclude name="build_latex.xml"  if="include_latex"/>
 					<!-- Jabber is outdated. -->
 				    <exclude name="build_jabber.xml"/>
-					<!-- This collaboration module is for post 0.9.0. -->
-				    <exclude name="build_database.xml"/>
 				</fileset>
 			</subant>
 		</sequential>

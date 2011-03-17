@@ -29,6 +29,7 @@ import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -50,6 +51,9 @@ import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActionFilter.FinalActionFilter;
 
 public class UpdateThread extends Thread implements ResultHandler, FinalActionFilter {
+	private static final String QUERY = "SELECT * FROM "
+				+ DatabaseBasics.TABLE_XML_ACTIONS + " WHERE "
+				+ DatabaseBasics.ROW_PK + " >= ?";
 	private boolean mShouldTerminate = false;
 	private boolean mIsTerminated = false;
 	protected Connection mConnection = null;
@@ -58,8 +62,9 @@ public class UpdateThread extends Thread implements ResultHandler, FinalActionFi
 	protected MindMapController mController;
 	protected boolean mFilterEnabled = true;
 	private static java.util.logging.Logger logger = null;
+	private PreparedStatement mPrepareStatement;
 
-	public UpdateThread(Connection pConnection, MindMapController pController) {
+	public UpdateThread(Connection pConnection, MindMapController pController) throws SQLException {
 		super();
 		if (logger == null) {
 			logger = freemind.main.Resources.getInstance().getLogger(
@@ -70,15 +75,19 @@ public class UpdateThread extends Thread implements ResultHandler, FinalActionFi
 	}
 
 	public void run() {
+		try {
+			mPrepareStatement = mConnection.prepareStatement(QUERY);
+		} catch (SQLException e1) {
+			freemind.main.Resources.getInstance().logException(e1);
+			return;
+		}
 		while (!mShouldTerminate) {
 			try {
 				logger.info("Looking for updates...");
 				synchronized (mPrimaryKeyMutex) {
-					String query = "SELECT * FROM "
-							+ DatabaseBasics.TABLE_XML_ACTIONS + " WHERE "
-							+ DatabaseBasics.ROW_PK + " >= " + mPrimaryKey;
+					mPrepareStatement.setLong(1, mPrimaryKey);
 					logger.info("Looking for updates... Query");
-					query(query, this);
+					query(mPrepareStatement, this);
 				}
 				logger.info("Looking for updates... Done.");
 				Thread.sleep(1000);
@@ -214,17 +223,17 @@ public class UpdateThread extends Thread implements ResultHandler, FinalActionFi
 		}
 	}
 
-	public synchronized void query(String expression, ResultHandler pHandler)
+	public synchronized void query(PreparedStatement preparedStatement, ResultHandler pHandler)
 			throws SQLException {
 
 		Statement st = null;
 		ResultSet rs = null;
 
-		st = mConnection.createStatement();
-		rs = st.executeQuery(expression);
-
-		pHandler.processResults(rs);
-		st.close();
+		boolean execute = preparedStatement.execute();
+		if(execute) {
+			rs = preparedStatement.getResultSet(); 
+			pHandler.processResults(rs);
+		}
 	}
 
 	public synchronized boolean update(String expression) throws SQLException {

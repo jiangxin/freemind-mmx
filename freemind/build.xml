@@ -48,8 +48,10 @@
 	<taskdef name="bind" classname="org.jibx.binding.ant.CompileTask">
 		<classpath path="${jibxlibs}"/>
 	</taskdef>
+	<property name="formsLib" location="lib/forms-1.0.5.jar:lib/SimplyHTML/SimplyHTML.jar"/>
+	<property name="simplyHtml" location="lib/SimplyHTML/SimplyHTML.jar"/>
 
-	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:lib/forms-1.0.5.jar:lib/SimplyHTML/SimplyHTML.jar"/>
+	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:${formsLib}:${simplyHtml}"/>
 
 	  <target name="xmlbind.checkStatusOfGeneration">
 	    <uptodate property="xmlbind.isUpToDate"
