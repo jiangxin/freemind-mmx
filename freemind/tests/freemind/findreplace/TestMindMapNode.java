@@ -466,4 +466,9 @@ final class TestMindMapNode implements MindMapNode {
 		return true;
 	}
 
+	public boolean isChildOfOrEqual(MindMapNode pParentNode) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

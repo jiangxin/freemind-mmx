@@ -107,6 +107,10 @@ public class DatabaseConnector extends DatabaseBasics  {
 		}
 		return null;
 	}
+
+	public String getRole() {
+		return ROLE_SLAVE;
+	}
 	
 
 

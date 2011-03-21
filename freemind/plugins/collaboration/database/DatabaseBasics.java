@@ -57,7 +57,7 @@ import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 import freemind.view.MapModule;
 
-public class DatabaseBasics extends MindMapNodeHookAdapter implements MapTitleContributor  {
+public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements MapTitleContributor  {
 
 	public final static String SLAVE_HOOK_NAME = "plugins/collaboration/database/database_slave_plugin";
 	public final static String SLAVE_STARTER_NAME = "plugins/collaboration/database/database_slave_starter_plugin";
@@ -68,6 +68,8 @@ public class DatabaseBasics extends MindMapNodeHookAdapter implements MapTitleCo
 	protected static final String ROW_UNDOACTION = "undo_action";
 	protected static final String ROW_MAP = "map";
 	protected static final String ROW_USER = "user";
+	protected static final String ROLE_MASTER = "master";
+	protected static final String ROLE_SLAVE = "slave";
 	private static final String PORT_PROPERTY = "plugins.collaboration.database.port";
 	protected static java.util.logging.Logger logger = null;
 	protected UpdateThread mUpdateThread = null;
@@ -80,6 +82,11 @@ public class DatabaseBasics extends MindMapNodeHookAdapter implements MapTitleCo
 		super();
 	}
 
+	/**
+	 * @return "ROLE_MASTER" OR "ROLE_SLAVE"
+	 */
+	public abstract String getRole();
+	
 	public void startupMapHook() {
 		super.startupMapHook();
 		if (logger == null) {
@@ -246,7 +253,7 @@ public class DatabaseBasics extends MindMapNodeHookAdapter implements MapTitleCo
 				boolean first=true;
 				Vector users = mUpdateThread.getUsers();
 				// TODO: translation
-				title += ", Collaboration with: ";
+				title += ", Collaboration as " + getRole() + " with: ";
 				for (Iterator it = users.iterator(); it.hasNext();) {
 					String user = (String) it.next();
 					if(first)

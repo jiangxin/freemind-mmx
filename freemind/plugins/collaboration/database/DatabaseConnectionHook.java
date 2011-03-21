@@ -102,5 +102,10 @@ public class DatabaseConnectionHook extends DatabaseBasics implements PermanentN
 	public void onViewRemovedHook(NodeView pNodeView) {
 	}
 
+	public String getRole() {
+		return ROLE_SLAVE;
+//		throw new IllegalArgumentException("Don't know, which role!?");
+	}
+
 }
 

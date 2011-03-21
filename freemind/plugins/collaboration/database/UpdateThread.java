@@ -55,6 +55,7 @@ import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 public class UpdateThread extends Thread implements ResultHandler,
 		FinalActionFilter {
+	private static final String QUERY_GET_USERS = "SELECT * FROM " + DatabaseBasics.TABLE_USERS;
 	private static final String QUERY = "SELECT * FROM "
 			+ DatabaseBasics.TABLE_XML_ACTIONS + " WHERE "
 			+ DatabaseBasics.ROW_PK + " >= ?";
@@ -67,6 +68,7 @@ public class UpdateThread extends Thread implements ResultHandler,
 	protected boolean mFilterEnabled = true;
 	private static java.util.logging.Logger logger = null;
 	private PreparedStatement mPrepareStatement;
+	private PreparedStatement mPrepareStatementUsers = null;
 
 	public UpdateThread(Connection pConnection, MindMapController pController)
 			throws SQLException {
@@ -89,13 +91,13 @@ public class UpdateThread extends Thread implements ResultHandler,
 		int counter = 0;
 		while (!mShouldTerminate) {
 			try {
-				logger.info("Looking for updates...");
+				logger.fine("Looking for updates...");
 				synchronized (mPrimaryKeyMutex) {
 					mPrepareStatement.setLong(1, mPrimaryKey);
-					logger.info("Looking for updates... Query");
+					logger.fine("Looking for updates... Query");
 					query(mPrepareStatement, this);
 				}
-				logger.info("Looking for updates... Done.");
+				logger.fine("Looking for updates... Done.");
 				Thread.sleep(1000);
 				counter++;
 				if(counter>10) {
@@ -366,16 +368,16 @@ public class UpdateThread extends Thread implements ResultHandler,
 	}
 
 	public Vector getUsers() throws SQLException {
+		if(mPrepareStatementUsers==null){
+			mPrepareStatementUsers = mConnection.prepareStatement(QUERY_GET_USERS);
+		}
 		Vector result = new Vector();
-		String s = "SELECT * FROM " + DatabaseBasics.TABLE_USERS;
-		Statement st = null;
 
-		st = mConnection.createStatement();
-		boolean execute = st.execute(s);
+		boolean execute = mPrepareStatementUsers.execute();
 		if(!execute) {
 			return result;
 		}
-		ResultSet rs = st.getResultSet();
+		ResultSet rs = mPrepareStatementUsers.getResultSet();
 		try {
 			while (rs.next()) {
 				result.add(rs.getString(DatabaseBasics.ROW_USER));

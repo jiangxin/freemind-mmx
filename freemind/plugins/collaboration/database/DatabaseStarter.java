@@ -177,4 +177,10 @@ public class DatabaseStarter extends DatabaseBasics implements PermanentNodeHook
 	public void onViewRemovedHook(NodeView pNodeView) {
 	}
 
+
+
+	public String getRole() {
+		return ROLE_MASTER;
+	}
+
 }
