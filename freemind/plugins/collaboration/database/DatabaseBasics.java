@@ -49,6 +49,7 @@ import com.jgoodies.forms.layout.FormLayout;
 import freemind.common.NumberProperty;
 import freemind.common.PropertyBean;
 import freemind.common.PropertyControl;
+import freemind.controller.Controller;
 import freemind.controller.MapModuleManager.MapTitleContributor;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
@@ -97,7 +98,9 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements M
 	}
 
 	public void shutdownMapHook() {
-		getMindMapController().getController().deregisterMapTitleContributor(this);
+		Controller controller = getMindMapController().getController();
+		controller.deregisterMapTitleContributor(this);
+		controller.setTitle();
 		super.shutdownMapHook();
 	}
 	

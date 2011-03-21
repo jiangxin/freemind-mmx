@@ -88,7 +88,7 @@ public class UpdateThread extends Thread implements ResultHandler,
 			freemind.main.Resources.getInstance().logException(e1);
 			return;
 		}
-		int counter = 0;
+		int counter = 1;
 		while (!mShouldTerminate) {
 			try {
 				logger.fine("Looking for updates...");
@@ -99,9 +99,9 @@ public class UpdateThread extends Thread implements ResultHandler,
 				}
 				logger.fine("Looking for updates... Done.");
 				Thread.sleep(1000);
-				counter++;
-				if(counter>10) {
-					counter = 0;
+				counter--;
+				if(counter<=0) {
+					counter = 10;
 					mController.getController().setTitle();
 				}
 			} catch (Exception e) {
@@ -321,7 +321,7 @@ public class UpdateThread extends Thread implements ResultHandler,
 	public void removeUser() throws SQLException {
 		update("DELETE FROM " + DatabaseBasics.TABLE_USERS + " WHERE " +
 				DatabaseBasics.ROW_USER + " = '"
-				+ escapeQuotations(getUserName()) + "')");
+				+ escapeQuotations(getUserName()) + "'");
 		
 	}
 

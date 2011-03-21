@@ -23,6 +23,7 @@
 
 package plugins.collaboration.database;
 
+import freemind.extensions.DontSaveMarker;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
@@ -32,7 +33,7 @@ import freemind.view.mindmapview.NodeView;
  * @author foltin
  * 
  */
-public class DatabaseConnectionHook extends DatabaseBasics implements PermanentNodeHook {
+public class DatabaseConnectionHook extends DatabaseBasics implements PermanentNodeHook, DontSaveMarker {
 
 	/**
      *
@@ -104,7 +105,6 @@ public class DatabaseConnectionHook extends DatabaseBasics implements PermanentN
 
 	public String getRole() {
 		return ROLE_SLAVE;
-//		throw new IllegalArgumentException("Don't know, which role!?");
 	}
 
 }

@@ -6,8 +6,8 @@
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 	</plugin_registration>
 	<plugin_action 
-		documentation="TODO" 
-		name="Start Collaboration Master" 
+		documentation="%plugins/collaboration/database/database_master_plugin.description" 
+		name="%plugins/collaboration/database/database_master_plugin.name" 
 		base="freemind.extensions.PermanentNodeHookAdapter" 
 		label="plugins/collaboration/database/database_master_plugin" 
 		class_name="plugins.collaboration.database.DatabaseStarter"
@@ -16,8 +16,8 @@
 		<plugin_menu location="menu_bar/extras/first/collaboration/database_master"/>
 	</plugin_action>
 	<plugin_action 
-		documentation="TODO" 
-		name="Start Collaboration Slave" 
+		documentation="%plugins/collaboration/database/database_slave_starter_plugin.description" 
+		name="%plugins/collaboration/database/database_slave_starter_plugin.name" 
 		base="freemind.extensions.NodeHookAdapter" 
 		label="plugins/collaboration/database/database_slave_starter_plugin" 
 		class_name="plugins.collaboration.database.DatabaseConnector"
@@ -27,7 +27,7 @@
 		<plugin_menu location="menu_bar/extras/first/collaboration/database_slave"/>
 	</plugin_action>
 	<plugin_action 
-		documentation="TODO" 
+		documentation="NONE" 
 		name="Collaboration Slave Hook" 
 		base="freemind.extensions.PermanentNodeHookAdapter" 
 		label="plugins/collaboration/database/database_slave_plugin" 

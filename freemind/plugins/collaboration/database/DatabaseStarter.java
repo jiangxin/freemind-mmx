@@ -30,6 +30,7 @@ import java.util.Vector;
 
 import freemind.common.NumberProperty;
 import freemind.common.StringProperty;
+import freemind.extensions.DontSaveMarker;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
@@ -41,7 +42,7 @@ import freemind.view.mindmapview.NodeView;
  * @author foltin
  * 
  */
-public class DatabaseStarter extends DatabaseBasics implements PermanentNodeHook {
+public class DatabaseStarter extends DatabaseBasics implements PermanentNodeHook, DontSaveMarker {
 
 	private File mTempDbFile;
 

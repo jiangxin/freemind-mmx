@@ -50,6 +50,7 @@ import javax.swing.tree.TreePath;
 import freemind.controller.Controller;
 import freemind.controller.filter.Filter;
 import freemind.controller.filter.FilterInfo;
+import freemind.extensions.DontSaveMarker;
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.FreeMind;
@@ -1097,9 +1098,13 @@ freemind.main.Resources.getInstance().logException(			e);
         }
 
     	for (Iterator i = getActivatedHooks().iterator(); i.hasNext();) {
+    		PermanentNodeHook permHook = (PermanentNodeHook) i.next();
+    		if (permHook instanceof DontSaveMarker) {
+				continue;
+			}
             XMLElement hookElement = new XMLElement();
             hookElement.setName("hook");
-            ((PermanentNodeHook) i.next()).save(hookElement);
+			permHook.save(hookElement);
             node.addChild(hookElement);
         }
 
