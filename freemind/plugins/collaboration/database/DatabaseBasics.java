@@ -72,6 +72,20 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements M
 	protected static final String ROLE_MASTER = "master";
 	protected static final String ROLE_SLAVE = "slave";
 	private static final String PORT_PROPERTY = "plugins.collaboration.database.port";
+	private static final String DATABASE_BASICS_CLASS = "plugins.collaboration.database.DatabaseBasics";
+
+	protected static final String PASSWORD = DATABASE_BASICS_CLASS + ".password";
+	protected static final String PASSWORD_DESCRIPTION = DATABASE_BASICS_CLASS + ".password.description";
+
+	protected static final String PASSWORD_VERIFICATION = DATABASE_BASICS_CLASS + ".password_verification";
+	protected static final String PASSWORD_VERIFICATION_DESCRIPTION = DATABASE_BASICS_CLASS + ".password_verification_description";
+
+	protected static final String HOST = DATABASE_BASICS_CLASS + ".host";
+	protected static final String HOST_DESCRIPTION = DATABASE_BASICS_CLASS + ".host.description";
+	
+	protected static final String PORT = DATABASE_BASICS_CLASS + ".port";
+	protected static final String PORT_DESCRIPTION = DATABASE_BASICS_CLASS + ".port.description";
+
 	protected static java.util.logging.Logger logger = null;
 	protected UpdateThread mUpdateThread = null;
 
@@ -118,7 +132,7 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements M
 
 	protected NumberProperty getPortProperty() {
 		final NumberProperty portProperty = new NumberProperty(
-				"The port to open", "Port", 1024, 32767, 1);
+				PORT_DESCRIPTION, PORT, 1024, 32767, 1);
 		// fill values:
 		portProperty.setValue(""
 				+ getMindMapController().getFrame().getIntProperty(PORT_PROPERTY, 9001));
@@ -255,7 +269,7 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements M
 			try {
 				boolean first=true;
 				Vector users = mUpdateThread.getUsers();
-				// TODO: translation
+				// TODO: translation, add port information
 				title += ", Collaboration as " + getRole() + " with: ";
 				for (Iterator it = users.iterator(); it.hasNext();) {
 					String user = (String) it.next();

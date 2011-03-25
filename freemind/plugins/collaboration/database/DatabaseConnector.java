@@ -64,9 +64,9 @@ public class DatabaseConnector extends DatabaseBasics  {
 			logger.info("Connect...");
 			Class.forName("org.hsqldb.jdbcDriver");
 			StringProperty passwordProperty = new StringProperty(
-					"The password needed to connect", "Password");
+					PASSWORD_DESCRIPTION, PASSWORD);
 			StringProperty hostProperty = new StringProperty(
-					"The host to connect to (IP or name possible)", "Host");
+					HOST_DESCRIPTION, HOST);
 			NumberProperty portProperty = getPortProperty();
 			hostProperty.setValue(controller.getFrame().getProperty(
 					HOST_PROPERTY));

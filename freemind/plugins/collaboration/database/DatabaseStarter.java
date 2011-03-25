@@ -54,10 +54,10 @@ public class DatabaseStarter extends DatabaseBasics implements PermanentNodeHook
 		super.startupMapHook();
 		MindMapController controller = getMindMapController();
 		final StringProperty passwordProperty = new StringProperty(
-				"The password needed to connect", "Password");
+				PASSWORD_DESCRIPTION, PASSWORD);
 		final StringProperty passwordProperty2 = new StringProperty(
-				"Enter the password twice to make sure that it is correct.",
-				"Password again");
+				PASSWORD_VERIFICATION_DESCRIPTION,
+				PASSWORD_VERIFICATION);
 		// StringProperty bindProperty = new StringProperty(
 		// "IP address of the local machine, or 0.0.0.0 if ", "Host");
 		final NumberProperty portProperty = getPortProperty();
@@ -69,7 +69,7 @@ public class DatabaseStarter extends DatabaseBasics implements PermanentNodeHook
 		FormDialog dialog = new FormDialog(controller);
 		dialog.setUp(controls, new FormDialogValidator() {
 			public boolean isValid() {
-				logger.info("Output valid?");
+				logger.finest("Output valid?");
 				return Tools.safeEquals(passwordProperty.getValue(),
 						passwordProperty2.getValue());
 			}
