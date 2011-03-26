@@ -273,7 +273,6 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements M
 			try {
 				boolean first=true;
 				Vector users = mUpdateThread.getUsers();
-				// TODO: translation, add port information
 				for (Iterator it = users.iterator(); it.hasNext();) {
 					String user = (String) it.next();
 					if(first)
