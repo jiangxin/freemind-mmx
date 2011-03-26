@@ -68,6 +68,7 @@ public class DatabaseConnector extends DatabaseBasics  {
 			StringProperty hostProperty = new StringProperty(
 					HOST_DESCRIPTION, HOST);
 			NumberProperty portProperty = getPortProperty();
+			// get last value
 			hostProperty.setValue(controller.getFrame().getProperty(
 					HOST_PROPERTY));
 			Vector controls = new Vector();
@@ -79,6 +80,7 @@ public class DatabaseConnector extends DatabaseBasics  {
 			if (!dialog.isSuccess())
 				return;
 			setPortProperty(portProperty);
+			// store value for next time.
 			controller.getFrame().setProperty(HOST_PROPERTY,
 					hostProperty.getValue());
 			String password = passwordProperty.getValue();
@@ -86,6 +88,8 @@ public class DatabaseConnector extends DatabaseBasics  {
 					+ hostProperty.getValue() + ":" + portProperty.getValue() + "/xdb", "sa", password);
 			logger.info("Starting update thread...");
 			mUpdateThread = new UpdateThread(connection, controller);
+			mUpdateThread.setPort(portProperty.getValue());
+			mUpdateThread.setHost(hostProperty.getValue());
 			mUpdateThread.insertUser();
 			mUpdateThread.start();
 		} catch (Exception e) {
@@ -108,7 +112,7 @@ public class DatabaseConnector extends DatabaseBasics  {
 		return null;
 	}
 
-	public String getRole() {
+	public Integer getRole() {
 		return ROLE_SLAVE;
 	}
 	

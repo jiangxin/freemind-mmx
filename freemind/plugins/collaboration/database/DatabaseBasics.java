@@ -51,6 +51,7 @@ import freemind.common.PropertyBean;
 import freemind.common.PropertyControl;
 import freemind.controller.Controller;
 import freemind.controller.MapModuleManager.MapTitleContributor;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -69,8 +70,8 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements M
 	protected static final String ROW_UNDOACTION = "undo_action";
 	protected static final String ROW_MAP = "map";
 	protected static final String ROW_USER = "user";
-	protected static final String ROLE_MASTER = "master";
-	protected static final String ROLE_SLAVE = "slave";
+	protected static final Integer ROLE_MASTER = Integer.valueOf(0);
+	protected static final Integer ROLE_SLAVE = Integer.valueOf(1);
 	private static final String PORT_PROPERTY = "plugins.collaboration.database.port";
 	private static final String DATABASE_BASICS_CLASS = "plugins.collaboration.database.DatabaseBasics";
 
@@ -86,6 +87,8 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements M
 	protected static final String PORT = DATABASE_BASICS_CLASS + ".port";
 	protected static final String PORT_DESCRIPTION = DATABASE_BASICS_CLASS + ".port.description";
 
+	protected static final String TITLE = DATABASE_BASICS_CLASS + ".title";
+	
 	protected static java.util.logging.Logger logger = null;
 	protected UpdateThread mUpdateThread = null;
 
@@ -98,9 +101,9 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements M
 	}
 
 	/**
-	 * @return "ROLE_MASTER" OR "ROLE_SLAVE"
+	 * @return ROLE_MASTER OR ROLE_SLAVE
 	 */
-	public abstract String getRole();
+	public abstract Integer getRole();
 	
 	public void startupMapHook() {
 		super.startupMapHook();
@@ -263,21 +266,21 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements M
 			MindMap pModel) {
 		String title = pOldTitle;
 		if(pModel.getModeController() != getMindMapController()) {
-			return title;
+			return pOldTitle;
 		}
+		String userString = "";
 		if(mUpdateThread != null) {
 			try {
 				boolean first=true;
 				Vector users = mUpdateThread.getUsers();
 				// TODO: translation, add port information
-				title += ", Collaboration as " + getRole() + " with: ";
 				for (Iterator it = users.iterator(); it.hasNext();) {
 					String user = (String) it.next();
 					if(first)
 						first=false;
 					else
-						title += ", ";
-					title += user;
+						userString += ", ";
+					userString += user;
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -285,7 +288,16 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements M
 				
 			}
 		}
-		return title;
+		return pOldTitle+Resources.getInstance().format(TITLE, new Object[]{this.getRole(), this.getHost(), this.getPort(), userString});
 	}
+
+	public String getPort() {
+		return mUpdateThread.getPort();
+	}
+
+	public String getHost() {
+		return mUpdateThread.getHost();
+	}
+
 
 }

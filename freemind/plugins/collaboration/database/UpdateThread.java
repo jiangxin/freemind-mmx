@@ -28,8 +28,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -45,6 +43,7 @@ import javax.swing.SwingUtilities;
 import plugins.collaboration.database.DatabaseBasics.ResultHandler;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.PermanentNodeHook;
+import freemind.main.Tools;
 import freemind.modes.MapAdapter;
 import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
@@ -69,6 +68,25 @@ public class UpdateThread extends Thread implements ResultHandler,
 	private static java.util.logging.Logger logger = null;
 	private PreparedStatement mPrepareStatement;
 	private PreparedStatement mPrepareStatementUsers = null;
+	protected String mPort;
+	public String getPort() {
+		return mPort;
+	}
+
+	public void setPort(String pPort) {
+		mPort = pPort;
+	}
+
+	public String getHost() {
+		return mHost;
+	}
+
+	public void setHost(String pHost) {
+		mHost = pHost;
+	}
+
+	protected String mHost;
+
 
 	public UpdateThread(Connection pConnection, MindMapController pController)
 			throws SQLException {
@@ -327,12 +345,7 @@ public class UpdateThread extends Thread implements ResultHandler,
 
 	private String getUserName() {
 		// Get host name
-		String hostname="UNKNOWN";
-		try {
-		    InetAddress addr = InetAddress.getLocalHost();
-			hostname = addr.getHostName();
-		} catch (UnknownHostException e) {
-		}
+		String hostname = Tools.getHostName();
 
 		return System.getProperty("user.name")+"@"+hostname;
 	}

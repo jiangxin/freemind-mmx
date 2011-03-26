@@ -105,6 +105,8 @@ public class DatabaseStarter extends DatabaseBasics implements PermanentNodeHook
 			logger.info("Connecting to " + url);
 			Connection connection = DriverManager.getConnection(url, "sa", "");
 			mUpdateThread = new UpdateThread(connection, controller);
+			mUpdateThread.setHost(Tools.getHostName());
+			mUpdateThread.setPort(portProperty.getValue());
 			mUpdateThread.setupTables(password);
 			logger.info("Starting update thread...");
 			mUpdateThread.start();
@@ -180,7 +182,7 @@ public class DatabaseStarter extends DatabaseBasics implements PermanentNodeHook
 
 
 
-	public String getRole() {
+	public Integer getRole() {
 		return ROLE_MASTER;
 	}
 

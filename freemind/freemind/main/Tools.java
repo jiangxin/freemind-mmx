@@ -53,10 +53,12 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
 import java.util.Arrays;
@@ -1423,6 +1425,16 @@ public class Tools {
 			
 		}
 		return b.toString();
+	}
+
+	public static String getHostName() {
+		String hostname="UNKNOWN";
+		try {
+		    InetAddress addr = InetAddress.getLocalHost();
+			hostname = addr.getHostName();
+		} catch (UnknownHostException e) {
+		}
+		return hostname;
 	}
 
 }
