@@ -65,6 +65,7 @@
 				<xsl:apply-templates select="."/>
 			</xsl:for-each> -->
 			<xsl:apply-templates select="./ap:IconsGroup" />
+			<xsl:apply-templates select="./ap:Task" />
 		</node>
 	</xsl:template>
 
@@ -83,6 +84,20 @@
 
 	<xsl:template match="ap:Icons">
 			<xsl:apply-templates select="./ap:Icon" />
+	</xsl:template>
+
+	<xsl:template match="ap:Task[@TaskPriority]">
+		<xsl:element name="icon">
+			<xsl:attribute name="BUILTIN">
+				<xsl:choose>
+                                <xsl:when test="@TaskPriority='urn:mindjet:Prio1'">full-1</xsl:when>
+                                <xsl:when test="@TaskPriority='urn:mindjet:Prio2'">full-2</xsl:when>
+                                <xsl:when test="@TaskPriority='urn:mindjet:Prio3'">full-3</xsl:when>
+                                <xsl:when test="@TaskPriority='urn:mindjet:Prio4'">full-4</xsl:when>
+                                <xsl:when test="@TaskPriority='urn:mindjet:Prio5'">full-5</xsl:when>
+				</xsl:choose>
+			</xsl:attribute>
+		</xsl:element>
 	</xsl:template>
 
 	<xsl:template match="ap:Icon[@xsi:type='ap:StockIcon']">

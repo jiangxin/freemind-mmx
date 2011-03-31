@@ -1,5 +1,11 @@
 ===============================
-Changes made in FreeMind 0.9.1 Beta1
+Changes made in FreeMind 1.0.0 Alpha2
+===============================
+* Commited patch Support priority icons when importing from MindManager - ID: 3260285 http://sourceforge.net/tracker/?f\
+unc=detail&atid=307118&aid=3260285&group_id=7118. Thanks to the author.
+
+===============================
+Changes made in FreeMind 1.0.0 Alpha1
 ===============================
 * New plugin: jump to last edit location (like ctrl+q in eclipse)
 * mac: fixed open multiple files (thanks for the patch)
