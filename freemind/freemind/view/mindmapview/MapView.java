@@ -463,28 +463,57 @@ public class MapView extends JPanel implements Printable, Autoscroll{
     /**
      * Scroll the viewport of the map to the south-west, i.e. scroll the map itself to the north-east.
      */
-    public void scrollBy(int x, int y) {
-        JViewport mapViewport = (JViewport)getParent();
-		if(mapViewport != null){
-        Point currentPoint = mapViewport.getViewPosition();                 // Get View Position
-        currentPoint.translate(x, y);                                       // Add the difference to it
-        // Watch for the boundaries
-        //    Low boundaries
-        if (currentPoint.getX()<0) {
-            currentPoint.setLocation(0, currentPoint.getY()); }
-        if (currentPoint.getY()<0) {
-            currentPoint.setLocation(currentPoint.getX(), 0); }
-        //    High boundaries
-        double maxX = getSize().getWidth() - mapViewport.getExtentSize().getWidth();     // getView() gets viewed area - JPanel
-        double maxY = getSize().getHeight() - mapViewport.getExtentSize().getHeight();
-        if (currentPoint.getX()>maxX) {
-            currentPoint.setLocation(maxX, currentPoint.getY()); }
-        if (currentPoint.getY()>maxY) {
-            currentPoint.setLocation(currentPoint.getX(), maxY); }
-		mapViewport.setViewPosition(currentPoint);
-    }
-    }
+	public void scrollBy(int x, int y) {
+		JViewport mapViewport = (JViewport) getParent();
+		if (mapViewport != null) {
+			Point currentPoint = mapViewport.getViewPosition(); // Get View
+																// Position
+			currentPoint.translate(x, y); // Add the difference to it
+			setViewLocation(currentPoint.x, currentPoint.y);
+		}
+	}
 
+	/**
+	 * @return the position of the view or null, if not present.
+	 */
+	public Point getViewLocation(){
+		JViewport mapViewport = (JViewport) getParent();
+		if (mapViewport != null) {
+			return mapViewport.getViewPosition(); 
+		}
+		return null;		
+	}
+	
+    public void setViewLocation(int x, int y) {
+		JViewport mapViewport = (JViewport) getParent();
+		if (mapViewport != null) {
+			Point currentPoint = new Point(x,y);
+			// Watch for the boundaries
+			// Low boundaries
+			if (currentPoint.getX() < 0) {
+				currentPoint.setLocation(0, currentPoint.getY());
+			}
+			if (currentPoint.getY() < 0) {
+				currentPoint.setLocation(currentPoint.getX(), 0);
+			}
+			// High boundaries
+			double maxX = getSize().getWidth()
+					- mapViewport.getExtentSize().getWidth(); // getView() gets
+																// viewed area -
+																// JPanel
+			double maxY = getSize().getHeight()
+					- mapViewport.getExtentSize().getHeight();
+			if (currentPoint.getX() > maxX) {
+				currentPoint.setLocation(maxX, currentPoint.getY());
+			}
+			if (currentPoint.getY() > maxY) {
+				currentPoint.setLocation(currentPoint.getX(), maxY);
+			}
+			mapViewport.setViewPosition(currentPoint);
+		}
+    	
+    }
+    
     //
     // Node Navigation
     //

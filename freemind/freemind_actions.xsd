@@ -855,6 +855,35 @@
 	  </xs:complexType>
 	</xs:element>
 
+	<!-- This element holds map to last state (zoom, last selecteds, etc.) -->
+	<xs:element name="mindmap_last_state_storage">
+		<xs:complexType>
+			  <!--  time attribute to be able to remove the oldest entries. -->
+		      <xs:attribute name="last_changed" use="required" type="xs:long"/>
+		      <xs:attribute name="restorable_name" use="required" type="xs:string"/>
+		      <xs:attribute name="last_zoom" use="optional" type="xs:float"/>
+		      <!--  viewport in the map -->
+		      <xs:attribute name="x" use="required" type="xs:int"/>
+		      <xs:attribute name="y" use="required" type="xs:int"/>
+		      <!--  last selecteds -->
+	          <xs:sequence>
+	    	      <xs:element ref="node_list_member" maxOccurs="unbounded" minOccurs="0"/>
+	          </xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<!-- A map with filename to zoom and last selected is stored here-->
+	  <xs:complexType name="mindmap_last_state_map_storage">
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+		      <xs:attribute name="last_focused_tab" use="optional" type="xs:int"/>
+	          <xs:sequence>
+	    	      <xs:element ref="mindmap_last_state_storage" maxOccurs="unbounded" minOccurs="0"/>
+	          </xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+
 
 	<!-- ======================================================================================= 
 		 										Patterns

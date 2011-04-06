@@ -193,6 +193,8 @@ public class FreeMindCommon {
 	 */
 	public static final String LOAD_EVENT_DURING_STARTUP = "loadEventDuringStartup";
 
+	public static final String MINDMAP_LAST_STATE_MAP_STORAGE = "mindmap_last_state_map_storage";
+
 	private static Logger logger = null;
 
 	/**

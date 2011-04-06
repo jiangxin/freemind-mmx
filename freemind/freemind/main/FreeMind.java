@@ -45,6 +45,7 @@ import java.io.PrintStream;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -72,9 +73,12 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import freemind.controller.Controller;
+import freemind.controller.LastStateStorageManagement;
 import freemind.controller.MapModuleManager;
-import freemind.controller.MenuBar;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
+import freemind.controller.MenuBar;
+import freemind.controller.actions.generated.instance.MindmapLastStateMapStorage;
+import freemind.controller.actions.generated.instance.MindmapLastStateStorage;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
@@ -128,7 +132,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	private Logger logger = null;
 	
-	protected static final VersionInformation VERSION = new VersionInformation("1.0.0 Alpha 1");
+	protected static final VersionInformation VERSION = new VersionInformation("1.0.0 Alpha 2");
 	
 	public static final String XML_VERSION = "1.0.0";
 
@@ -1006,6 +1010,36 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		}
 		if (!fileLoaded) {
 			fileLoaded = processLoadEventFromStartupPhase();
+		}
+		if(!fileLoaded){
+			int index = 0;
+			MapModule mapToFocus=null;
+	        String lastStateMapXml = getProperty(FreeMindCommon.MINDMAP_LAST_STATE_MAP_STORAGE);
+	        LastStateStorageManagement management= new LastStateStorageManagement(lastStateMapXml);
+	        for (Iterator it = management.getList().iterator(); it.hasNext();) {
+				MindmapLastStateStorage store = (MindmapLastStateStorage) it.next();
+				String restorable = store.getRestorableName();
+				try {
+					if(controller.getLastOpenedList().open(
+							restorable)){
+						// restore zoom, etc.
+						MapView view = controller.getModeController().getView();
+						view.setZoom(store.getLastZoom());
+//doesn't work						view.setViewLocation(store.getX(), store.getY());
+						if(index == management.getLastFocussedTab()) {
+							mapToFocus = controller.getMapModule();
+						}
+					}
+					index++;
+					fileLoaded = true;
+				} catch (Exception e) {
+					freemind.main.Resources.getInstance()
+					.logException(e);
+				}
+			}
+	        if(mapToFocus != null) {
+	        	controller.getMapModuleManager().changeToMapModule(mapToFocus.getDisplayName());
+	        }
 		}
 		if (!fileLoaded) {
 			String restoreable = getProperty(FreeMindCommon.ON_START_IF_NOT_SPECIFIED);

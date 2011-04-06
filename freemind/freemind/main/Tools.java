@@ -94,6 +94,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import freemind.common.XmlBindingTools;
+import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.MindMapNode;
 import freemind.view.mindmapview.NodeView;
 
@@ -1435,6 +1437,38 @@ public class Tools {
 		} catch (UnknownHostException e) {
 		}
 		return hostname;
+	}
+
+    public static String marshall(XmlAction action) {
+        return XmlBindingTools.getInstance().marshall(action);
+    }
+
+    public static XmlAction unMarshall(String inputString) {
+        return XmlBindingTools.getInstance().unMarshall(inputString);
+    }
+
+	public static String getFileNameFromRestorable(String restoreable){
+		StringTokenizer token = new StringTokenizer(restoreable, ":");
+		String fileName;
+		if (token.hasMoreTokens()) {
+			token.nextToken();
+			// fix for windows (??, fc, 25.11.2005).
+			fileName = token.nextToken("").substring(1);
+		} else {
+			fileName = null;
+		}
+		return fileName;
+	}
+
+	public static String getModeFromRestorable(String restoreable){
+		StringTokenizer token = new StringTokenizer(restoreable, ":");
+		String mode;
+		if (token.hasMoreTokens()) {
+			mode = token.nextToken();
+		} else {
+			mode = null;
+		}
+		return mode;
 	}
 
 }

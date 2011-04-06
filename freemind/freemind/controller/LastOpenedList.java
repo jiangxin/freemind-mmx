@@ -19,6 +19,7 @@
 /*$Id: LastOpenedList.java,v 1.8.18.2.2.2 2008/04/11 16:58:31 christianfoltin Exp $*/
 package freemind.controller;
 
+import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.view.MapModule;
 
@@ -34,7 +35,7 @@ import java.util.*;
  * Maps should be shown in the format:"mode\:key",ie."Mindmap\:/home/joerg/freemind.mm"
  */
 public class LastOpenedList {
-    private Controller c;
+    private Controller mController;
     private int maxEntries = 25; // is rewritten from property anyway
     /**
      * Contains Restore strings.
@@ -46,7 +47,7 @@ public class LastOpenedList {
     private Map mRestorableToMapName = new HashMap();
 
     LastOpenedList(Controller c, String restored) {
-        this.c=c;
+        this.mController=c;
         maxEntries = new Integer(c.getFrame().getProperty("last_opened_list_length")).intValue();
 	load(restored);
     }
@@ -92,21 +93,19 @@ public class LastOpenedList {
 	}
     }
 
-    public void open(String restoreable) throws FileNotFoundException, XMLParseException, MalformedURLException, IOException, URISyntaxException {
-		boolean changedToMapModule = c.getMapModuleManager()
+    public boolean open(String restoreable) throws FileNotFoundException, XMLParseException, MalformedURLException, IOException, URISyntaxException {
+		boolean changedToMapModule = mController.getMapModuleManager()
 				.tryToChangeToMapModule(
 						(String) mRestorableToMapName.get(restoreable));
 		if ((restoreable != null) && !(changedToMapModule)) {
-			StringTokenizer token = new StringTokenizer(restoreable, ":");
-			if (token.hasMoreTokens()) {
-				String mode = token.nextToken();
-				if (c.createNewMode(mode)) {
-					// fix for windows (??, fc, 25.11.2005).
-					String fileName = token.nextToken("").substring(1);
-					c.getMode().restore(fileName);
-				}
+			String mode = Tools.getModeFromRestorable(restoreable);
+			String fileName = Tools.getFileNameFromRestorable(restoreable);
+			if (mController.createNewMode(mode)) {
+				mController.getMode().restore(fileName);
+				return true;
 			}
 		}
+		return false;
 	}
 	
     ListIterator listIterator () {

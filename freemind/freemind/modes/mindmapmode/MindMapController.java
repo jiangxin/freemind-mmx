@@ -1991,11 +1991,11 @@ freemind.main.Resources.getInstance().logException(					e1);
     }
 
     public String marshall(XmlAction action) {
-        return XmlBindingTools.getInstance().marshall(action);
+        return Tools.marshall(action);
     }
 
     public XmlAction unMarshall(String inputString) {
-        return XmlBindingTools.getInstance().unMarshall(inputString);
+        return Tools.unMarshall(inputString);
     }
 
     public void storeDialogPositions(JDialog dialog,

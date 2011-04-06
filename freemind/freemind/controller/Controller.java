@@ -30,6 +30,7 @@ import java.awt.GridBagLayout;
 import java.awt.HeadlessException;
 import java.awt.Insets;
 import java.awt.KeyboardFocusManager;
+import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -83,6 +84,9 @@ import javax.swing.WindowConstants;
 
 import freemind.common.BooleanProperty;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
+import freemind.controller.actions.generated.instance.MindmapLastStateMapStorage;
+import freemind.controller.actions.generated.instance.MindmapLastStateStorage;
+import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.controller.filter.FilterController;
 import freemind.controller.printpreview.PreviewDialog;
 import freemind.main.FreeMind;
@@ -880,6 +884,32 @@ public class Controller  implements MapModuleChangeObserver {
 
     private void quit() {
         String currentMapRestorable = (getModel()!=null) ? getModel().getRestoreable() : null;
+        MindMap currentModel = getModel();
+        // collect all maps:
+        int index=0;
+        String lastStateMapXml = getProperty(FreeMindCommon.MINDMAP_LAST_STATE_MAP_STORAGE);
+        LastStateStorageManagement management= new LastStateStorageManagement(lastStateMapXml);
+        for (Iterator it = getMapModuleManager().getMapModuleVector().iterator(); it.hasNext();) {
+			MapModule module = (MapModule) it.next();
+			MindmapLastStateStorage store = new MindmapLastStateStorage();
+			String restoreable = module.getModel().getRestoreable();
+			if(restoreable == null)
+				continue;
+			store.setRestorableName(restoreable);
+			store.setLastZoom(module.getView().getZoom());
+			Point viewLocation = module.getView().getViewLocation();
+			if (viewLocation != null) {
+				store.setX(viewLocation.x);
+				store.setY(viewLocation.y);
+			}
+			management.changeOrAdd(store);
+			if(module.getModel() == currentModel) {
+				logger.warning("Focussing tab " + index + " named " + module.getDisplayName());
+				management.setLastFocussedTab(index);
+			}
+			index++;
+		}
+        setProperty(FreeMindCommon.MINDMAP_LAST_STATE_MAP_STORAGE, management.getXml());
         while (getMapModuleManager().getMapModuleVector().size() > 0) {
 				if (getMapModule() != null) {
 					boolean closingNotCancelled = getMapModuleManager().close(

@@ -1,5 +1,10 @@
 ===============================
-Changes made in FreeMind 0.9.1 Beta1
+Changes made in FreeMind 1.0.0 alpha 2
+===============================
+* New feature: restore of tabs and zoom implemented
+
+===============================
+Changes made in FreeMind 1.0.0 alpha 1
 ===============================
 * New plugin: jump to last edit location (like ctrl+q in eclipse)
 * mac: fixed open multiple files (thanks for the patch)
