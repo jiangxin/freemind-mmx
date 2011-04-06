@@ -6,16 +6,16 @@ When save mindmap file, some fields save to a extra file, named .<filename>.mmx
 Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
 
 ---
- freemind/main/XMLElement.java                   |   88 +++++++++++++++++++-
- freemind/modes/MindMapNode.java                 |    1 +
- freemind/modes/NodeAdapter.java                 |  106 +++++++++++++++++++++--
- freemind/modes/mindmapmode/MindMapMapModel.java |   54 ++++++++++--
+ freemind/freemind/main/XMLElement.java             |   88 ++++++++++++++++-
+ freemind/freemind/modes/MindMapNode.java           |    1 +
+ freemind/freemind/modes/NodeAdapter.java           |  106 ++++++++++++++++++--
+ .../modes/mindmapmode/MindMapMapModel.java         |   54 +++++++++--
  4 files changed, 232 insertions(+), 17 deletions(-)
 
-diff --git a/freemind/main/XMLElement.java b/freemind/main/XMLElement.java
+diff --git a/freemind/freemind/main/XMLElement.java b/freemind/freemind/main/XMLElement.java
 index e610275..cc2a5e5 100644
---- a/freemind/main/XMLElement.java
-+++ b/freemind/main/XMLElement.java
+--- a/freemind/freemind/main/XMLElement.java
++++ b/freemind/freemind/main/XMLElement.java
 @@ -291,7 +291,75 @@ public class XMLElement
       */
      private int parserLineNr;
@@ -128,10 +128,10 @@ index e610275..cc2a5e5 100644
                  writer.write(key);
                  writer.write('='); writer.write('"');
                  this.writeEncoded(writer, value);
-diff --git a/freemind/modes/MindMapNode.java b/freemind/modes/MindMapNode.java
+diff --git a/freemind/freemind/modes/MindMapNode.java b/freemind/freemind/modes/MindMapNode.java
 index 100d17e..b8e6000 100644
---- a/freemind/modes/MindMapNode.java
-+++ b/freemind/modes/MindMapNode.java
+--- a/freemind/freemind/modes/MindMapNode.java
++++ b/freemind/freemind/modes/MindMapNode.java
 @@ -250,6 +250,7 @@ public interface MindMapNode extends MutableTreeNode {
       * @param saveChildren if true, the save recurses to all of the nodes children.
       */
@@ -140,10 +140,10 @@ index 100d17e..b8e6000 100644
  
      // fc, 10.2.2005:
      /** State icons are icons that are not saved. They indicate that
-diff --git a/freemind/modes/NodeAdapter.java b/freemind/modes/NodeAdapter.java
+diff --git a/freemind/freemind/modes/NodeAdapter.java b/freemind/freemind/modes/NodeAdapter.java
 index cfef28b..2a9c535 100644
---- a/freemind/modes/NodeAdapter.java
-+++ b/freemind/modes/NodeAdapter.java
+--- a/freemind/freemind/modes/NodeAdapter.java
++++ b/freemind/freemind/modes/NodeAdapter.java
 @@ -56,6 +56,7 @@ import freemind.main.FreeMind;
  import freemind.main.FreeMindCommon;
  import freemind.main.FreeMindMain;
@@ -349,10 +349,10 @@ index cfef28b..2a9c535 100644
          }
      }
  
-diff --git a/freemind/modes/mindmapmode/MindMapMapModel.java b/freemind/modes/mindmapmode/MindMapMapModel.java
+diff --git a/freemind/freemind/modes/mindmapmode/MindMapMapModel.java b/freemind/freemind/modes/mindmapmode/MindMapMapModel.java
 index acf305f..bfd6153 100644
---- a/freemind/modes/mindmapmode/MindMapMapModel.java
-+++ b/freemind/modes/mindmapmode/MindMapMapModel.java
+--- a/freemind/freemind/modes/mindmapmode/MindMapMapModel.java
++++ b/freemind/freemind/modes/mindmapmode/MindMapMapModel.java
 @@ -255,7 +255,26 @@ public class MindMapMapModel extends MapAdapter  {
          	}
              // OSSXP.COM: save file using default character set.
@@ -435,4 +435,4 @@ index acf305f..bfd6153 100644
  
  	/**
 -- 
-tg: (bfc7932..) t/split_output_to_extra_mmx_file (depends on: t/output_encode_in_utf8)
+tg: (44dd814..) t/split_output_to_extra_mmx_file (depends on: t/output_encode_in_utf8)

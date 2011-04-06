@@ -6,13 +6,13 @@ Deployment freemind in /opt/freemind
 Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
 
 ---
- freemind.sh |    8 ++++++--
+ freemind/freemind.sh |    8 ++++++--
  1 files changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/freemind.sh b/freemind.sh
+diff --git a/freemind/freemind.sh b/freemind/freemind.sh
 index 5cd29ee..e58305b 100644
---- a/freemind.sh
-+++ b/freemind.sh
+--- a/freemind/freemind.sh
++++ b/freemind/freemind.sh
 @@ -138,6 +138,7 @@ output_debug_info() {
  #--------- Put the environment together --------------------------------
  
@@ -43,4 +43,4 @@ index 5cd29ee..e58305b 100644
  
  #--------- Call (at last) FreeMind -------------------------------------
 -- 
-tg: (918d0c3..) t/ossxp_deployment (depends on: master)
+tg: (b26071e..) t/ossxp_deployment (depends on: master)

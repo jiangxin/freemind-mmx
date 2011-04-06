@@ -6,13 +6,13 @@ Encode illegal chars to html entities.
 Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
 
 ---
- freemind/modes/NodeAdapter.java |    6 +++---
+ freemind/freemind/modes/NodeAdapter.java |    6 +++---
  1 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/freemind/modes/NodeAdapter.java b/freemind/modes/NodeAdapter.java
+diff --git a/freemind/freemind/modes/NodeAdapter.java b/freemind/freemind/modes/NodeAdapter.java
 index cfef28b..8f683a4 100644
---- a/freemind/modes/NodeAdapter.java
-+++ b/freemind/modes/NodeAdapter.java
+--- a/freemind/freemind/modes/NodeAdapter.java
++++ b/freemind/freemind/modes/NodeAdapter.java
 @@ -209,7 +209,7 @@ public abstract class NodeAdapter implements MindMapNode {
  
      /** \0 is not allowed: */
@@ -40,4 +40,4 @@ index cfef28b..8f683a4 100644
          	
          }
 -- 
-tg: (918d0c3..) t/filter_all_illegal_xml_chars (depends on: master)
+tg: (b26071e..) t/filter_all_illegal_xml_chars (depends on: master)

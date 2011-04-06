@@ -6,17 +6,17 @@ Show worldhello hacked version number on splash screen and about dialog.
 Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
 
 ---
- build.xml                               |    2 +-
- freemind/controller/Controller.java     |    4 +-
- freemind/main/FreeMind.java             |    3 +
- freemind/main/FreeMindSplash.java       |  416 +++++++++++++++---------------
- freemind/main/FreeMindSplashModern.java |  426 ++++++++++++++++---------------
+ freemind/build.xml                               |    2 +-
+ freemind/freemind/controller/Controller.java     |    4 +-
+ freemind/freemind/main/FreeMind.java             |    3 +
+ freemind/freemind/main/FreeMindSplash.java       |  416 +++++++++++-----------
+ freemind/freemind/main/FreeMindSplashModern.java |  426 +++++++++++-----------
  5 files changed, 431 insertions(+), 420 deletions(-)
 
-diff --git a/build.xml b/build.xml
+diff --git a/freemind/build.xml b/freemind/build.xml
 index 27f19a5..299226f 100644
---- a/build.xml
-+++ b/build.xml
+--- a/freemind/build.xml
++++ b/freemind/build.xml
 @@ -4,7 +4,7 @@
        <filterchain>
          <tokenfilter>
@@ -26,10 +26,10 @@ index 27f19a5..299226f 100644
          </tokenfilter>
        	<!-- Replace spaces by underscores. -->
        	<tokenfilter><replaceregex pattern=" " replace="_" flags="g"/></tokenfilter>
-diff --git a/freemind/controller/Controller.java b/freemind/controller/Controller.java
+diff --git a/freemind/freemind/controller/Controller.java b/freemind/freemind/controller/Controller.java
 index a4e52f9..833ce84 100644
---- a/freemind/controller/Controller.java
-+++ b/freemind/controller/Controller.java
+--- a/freemind/freemind/controller/Controller.java
++++ b/freemind/freemind/controller/Controller.java
 @@ -1181,7 +1181,9 @@ public class Controller  implements MapModuleChangeObserver {
          public void actionPerformed(ActionEvent e) {
             JOptionPane.showMessageDialog(getFrame().getViewport(), controller
@@ -41,10 +41,10 @@ index a4e52f9..833ce84 100644
  					.getResourceString("about"),
  					JOptionPane.INFORMATION_MESSAGE);
          }
-diff --git a/freemind/main/FreeMind.java b/freemind/main/FreeMind.java
+diff --git a/freemind/freemind/main/FreeMind.java b/freemind/freemind/main/FreeMind.java
 index 4309d02..9fa4c1c 100644
---- a/freemind/main/FreeMind.java
-+++ b/freemind/main/FreeMind.java
+--- a/freemind/freemind/main/FreeMind.java
++++ b/freemind/freemind/main/FreeMind.java
 @@ -125,6 +125,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
  	
  	protected static final VersionInformation VERSION = new VersionInformation("0.9.0 RC 6");
@@ -55,10 +55,10 @@ index 4309d02..9fa4c1c 100644
  	public static final String XML_VERSION = "0.9.0";
  
  	public static final String RESOURCES_REMIND_USE_RICH_TEXT_IN_NEW_LONG_NODES = "remind_use_rich_text_in_new_long_nodes";
-diff --git a/freemind/main/FreeMindSplash.java b/freemind/main/FreeMindSplash.java
+diff --git a/freemind/freemind/main/FreeMindSplash.java b/freemind/freemind/main/FreeMindSplash.java
 index ac4de17..20dab28 100644
---- a/freemind/main/FreeMindSplash.java
-+++ b/freemind/main/FreeMindSplash.java
+--- a/freemind/freemind/main/FreeMindSplash.java
++++ b/freemind/freemind/main/FreeMindSplash.java
 @@ -1,207 +1,209 @@
 -/***************************************************************************
 -                           FreeMindSplash, taken from GanttSplash.java  -  description
@@ -476,10 +476,10 @@ index ac4de17..20dab28 100644
 +
 +}
 +
-diff --git a/freemind/main/FreeMindSplashModern.java b/freemind/main/FreeMindSplashModern.java
+diff --git a/freemind/freemind/main/FreeMindSplashModern.java b/freemind/freemind/main/FreeMindSplashModern.java
 index 272f411..7efe2ad 100644
---- a/freemind/main/FreeMindSplashModern.java
-+++ b/freemind/main/FreeMindSplashModern.java
+--- a/freemind/freemind/main/FreeMindSplashModern.java
++++ b/freemind/freemind/main/FreeMindSplashModern.java
 @@ -1,211 +1,215 @@
 -/***************************************************************************
 - *
@@ -909,4 +909,4 @@ index 272f411..7efe2ad 100644
 +
 +}
 -- 
-tg: (918d0c3..) t/show_custom_version_number (depends on: master)
+tg: (b26071e..) t/show_custom_version_number (depends on: master)

@@ -6,14 +6,14 @@ Subject: [PATCH] t/i18n_addon
 Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
 
 ---
- Resources_en.properties    |   12 ++++++++++++
- Resources_zh_CN.properties |   12 ++++++++++++
+ freemind/Resources_en.properties    |   12 ++++++++++++
+ freemind/Resources_zh_CN.properties |   12 ++++++++++++
  2 files changed, 24 insertions(+), 0 deletions(-)
 
-diff --git a/Resources_en.properties b/Resources_en.properties
+diff --git a/freemind/Resources_en.properties b/freemind/Resources_en.properties
 index 161e4bc..b72b7bf 100644
---- a/Resources_en.properties
-+++ b/Resources_en.properties
+--- a/freemind/Resources_en.properties
++++ b/freemind/Resources_en.properties
 @@ -1364,6 +1364,18 @@ icon_flag = Red Flag
  #changed:
  OptionPanel.remind_use_rich_text_in_new_long_nodes=Use formatting for all nodes
@@ -33,10 +33,10 @@ index 161e4bc..b72b7bf 100644
  # new, fc, 21.5.2008:
  icon_freemind_butterfly = FreeMind
  icon_full-8 = Priority 8
-diff --git a/Resources_zh_CN.properties b/Resources_zh_CN.properties
+diff --git a/freemind/Resources_zh_CN.properties b/freemind/Resources_zh_CN.properties
 index 50c98b0..d1dd2b9 100644
---- a/Resources_zh_CN.properties
-+++ b/Resources_zh_CN.properties
+--- a/freemind/Resources_zh_CN.properties
++++ b/freemind/Resources_zh_CN.properties
 @@ -1376,6 +1376,18 @@ icon_full-9 = \u4f18\u5148\u7ea7 9
  # new, fc, 25.5.2008:
  node_is_write_protected=\u76ee\u6807\u8282\u70b9\u88ab\u5199\u4fdd\u62a4\u3002
@@ -57,4 +57,4 @@ index 50c98b0..d1dd2b9 100644
  KeyDoc=PDF\u683c\u5f0f\u7684\u952e\u6620\u5c04\u6587\u6863
  # translate only, when you have an own translation of this doc.
 -- 
-tg: (ca51dbe..) t/i18n_addon (depends on: t/i18n_zh_cn)
+tg: (5874c82..) t/i18n_addon (depends on: t/i18n_zh_cn)

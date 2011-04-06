@@ -6,13 +6,13 @@ Build as debian/ubuntu package, build file bugfix.
 Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
 
 ---
- build.xml |    9 ++++++---
+ freemind/build.xml |    9 ++++++---
  1 files changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/build.xml b/build.xml
+diff --git a/freemind/build.xml b/freemind/build.xml
 index 3031a11..a8cdd32 100644
---- a/build.xml
-+++ b/build.xml
+--- a/freemind/build.xml
++++ b/freemind/build.xml
 @@ -152,6 +152,8 @@
  		     classpath problems of the plugins. -->
  			<exclude name="tests/**" />
@@ -51,4 +51,4 @@ index 3031a11..a8cdd32 100644
  		</jar>
  		<ant antfile="${acc_build}" target="jar"/>
 -- 
-tg: (ce01559..) t/linux_dist_build (depends on: t/load_mm_with_mmx_file)
+tg: (706db61..) t/linux_dist_build (depends on: t/load_mm_with_mmx_file)

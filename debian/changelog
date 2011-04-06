@@ -1,3 +1,9 @@
+ossxp-freemind (0.9.0~rc6-0.17.1.git~mmx) unstable; urgency=low
+
+  * Upstream scm migrate from cvs to git.
+
+ -- Jiang Xin <worldhello.net@gmail.com>  Wed, 06 Apr 2011 23:31:57 +0800
+
 ossxp-freemind (0.9.0~rc6-0.17.git~mmx) unstable; urgency=low
 
   * Upstream upgrade to 0.9.0_RC_6.

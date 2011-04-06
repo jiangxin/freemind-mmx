@@ -6,13 +6,13 @@ Do not escape utf8 characters as entities.
 Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
 
 ---
- freemind/main/HtmlTools.java |  109 ++++++++++++++++++++++++++++++++++++++++++
+ freemind/freemind/main/HtmlTools.java |  109 +++++++++++++++++++++++++++++++++
  1 files changed, 109 insertions(+), 0 deletions(-)
 
-diff --git a/freemind/main/HtmlTools.java b/freemind/main/HtmlTools.java
+diff --git a/freemind/freemind/main/HtmlTools.java b/freemind/freemind/main/HtmlTools.java
 index c309a70..89cd08b 100644
---- a/freemind/main/HtmlTools.java
-+++ b/freemind/main/HtmlTools.java
+--- a/freemind/freemind/main/HtmlTools.java
++++ b/freemind/freemind/main/HtmlTools.java
 @@ -23,6 +23,7 @@ package freemind.main;
  import java.io.IOException;
  import java.io.StringReader;
@@ -143,4 +143,4 @@ index c309a70..89cd08b 100644
  
  }
 -- 
-tg: (918d0c3..) t/unescape_unicode_as_entities (depends on: master)
+tg: (b26071e..) t/unescape_unicode_as_entities (depends on: master)

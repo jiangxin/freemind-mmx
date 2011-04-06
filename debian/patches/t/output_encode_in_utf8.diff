@@ -6,21 +6,21 @@ Save mm file in UTF-8 format.
 Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
 
 ---
- accessories/freemind2flash.xsl                    |    4 +-
- accessories/plugins/ExportWithXSLT.java           |    3 +-
- freemind/main/FreeMind.java                       |    3 ++
- freemind/main/HtmlTools.java                      |    2 +-
- freemind/main/XMLElement.java                     |    7 +++-
- freemind/modes/StylePattern.java                  |    2 +-
- freemind/modes/mindmapmode/MindMapController.java |    3 +-
- freemind/modes/mindmapmode/MindMapHTMLWriter.java |    4 +-
- freemind/modes/mindmapmode/MindMapMapModel.java   |   32 ++++++++++++++++++--
+ freemind/accessories/freemind2flash.xsl            |    4 +-
+ freemind/accessories/plugins/ExportWithXSLT.java   |    3 +-
+ freemind/freemind/main/FreeMind.java               |    3 ++
+ freemind/freemind/main/HtmlTools.java              |    2 +-
+ freemind/freemind/main/XMLElement.java             |    7 +++-
+ freemind/freemind/modes/StylePattern.java          |    2 +-
+ .../modes/mindmapmode/MindMapController.java       |    3 +-
+ .../modes/mindmapmode/MindMapHTMLWriter.java       |    4 +-
+ .../modes/mindmapmode/MindMapMapModel.java         |   32 +++++++++++++++++--
  9 files changed, 46 insertions(+), 14 deletions(-)
 
-diff --git a/accessories/freemind2flash.xsl b/accessories/freemind2flash.xsl
+diff --git a/freemind/accessories/freemind2flash.xsl b/freemind/accessories/freemind2flash.xsl
 index 4d588a6..489bcad 100644
---- a/accessories/freemind2flash.xsl
-+++ b/accessories/freemind2flash.xsl
+--- a/freemind/accessories/freemind2flash.xsl
++++ b/freemind/accessories/freemind2flash.xsl
 @@ -1,4 +1,4 @@
 -<?xml version="1.0" encoding="iso-8859-1"?>
 +<?xml version="1.0" encoding="utf-8"?>
@@ -36,10 +36,10 @@ index 4d588a6..489bcad 100644
  		<title><xsl:call-template name="output-title" /></title>
          <xsl:element name="script">
              <xsl:attribute name="type">text/javascript</xsl:attribute>
-diff --git a/accessories/plugins/ExportWithXSLT.java b/accessories/plugins/ExportWithXSLT.java
+diff --git a/freemind/accessories/plugins/ExportWithXSLT.java b/freemind/accessories/plugins/ExportWithXSLT.java
 index 850e3f8..d29c638 100644
---- a/accessories/plugins/ExportWithXSLT.java
-+++ b/accessories/plugins/ExportWithXSLT.java
+--- a/freemind/accessories/plugins/ExportWithXSLT.java
++++ b/freemind/accessories/plugins/ExportWithXSLT.java
 @@ -52,6 +52,7 @@ import javax.xml.transform.stream.StreamSource;
  import accessories.plugins.util.html.ClickableImageCreator;
  import accessories.plugins.util.xslt.ExportDialog;
@@ -57,10 +57,10 @@ index 850e3f8..d29c638 100644
          getController().getMap().getFilteredXml(fileout);
          return success;
      }
-diff --git a/freemind/main/FreeMind.java b/freemind/main/FreeMind.java
+diff --git a/freemind/freemind/main/FreeMind.java b/freemind/freemind/main/FreeMind.java
 index 4309d02..948b3f5 100644
---- a/freemind/main/FreeMind.java
-+++ b/freemind/main/FreeMind.java
+--- a/freemind/freemind/main/FreeMind.java
++++ b/freemind/freemind/main/FreeMind.java
 @@ -81,6 +81,9 @@ import freemind.view.mindmapview.MapView;
  
  public class FreeMind extends JFrame implements FreeMindMain {
@@ -71,10 +71,10 @@ index 4309d02..948b3f5 100644
  	private static final String SPLIT_PANE_POSITION = "split_pane_position";
  
  	private static final String SPLIT_PANE_LAST_POSITION = "split_pane_last_position";
-diff --git a/freemind/main/HtmlTools.java b/freemind/main/HtmlTools.java
+diff --git a/freemind/freemind/main/HtmlTools.java b/freemind/freemind/main/HtmlTools.java
 index c309a70..64b307f 100644
---- a/freemind/main/HtmlTools.java
-+++ b/freemind/main/HtmlTools.java
+--- a/freemind/freemind/main/HtmlTools.java
++++ b/freemind/freemind/main/HtmlTools.java
 @@ -332,7 +332,7 @@ public class HtmlTools {
  		for (int i = 0; i < text.length(); ++i) {
  			myChar = text.charAt(i);
@@ -84,10 +84,10 @@ index c309a70..64b307f 100644
  				result.append("&#x").append(Integer.toString(intValue, 16))
  						.append(';');
  			} else {
-diff --git a/freemind/main/XMLElement.java b/freemind/main/XMLElement.java
+diff --git a/freemind/freemind/main/XMLElement.java b/freemind/freemind/main/XMLElement.java
 index 2174b5c..e610275 100644
---- a/freemind/main/XMLElement.java
-+++ b/freemind/main/XMLElement.java
+--- a/freemind/freemind/main/XMLElement.java
++++ b/freemind/freemind/main/XMLElement.java
 @@ -2118,7 +2118,8 @@ public class XMLElement
      {
          try {
@@ -109,10 +109,10 @@ index 2174b5c..e610275 100644
                          writer.write('&'); writer.write('#');
                          writer.write('x');
                          writer.write(Integer.toString(unicode, 16));
-diff --git a/freemind/modes/StylePattern.java b/freemind/modes/StylePattern.java
+diff --git a/freemind/freemind/modes/StylePattern.java b/freemind/freemind/modes/StylePattern.java
 index c3644eb..7db2e30 100644
---- a/freemind/modes/StylePattern.java
-+++ b/freemind/modes/StylePattern.java
+--- a/freemind/freemind/modes/StylePattern.java
++++ b/freemind/freemind/modes/StylePattern.java
 @@ -504,7 +504,7 @@ public class StylePattern {
  
  
@@ -122,10 +122,10 @@ index c3644eb..7db2e30 100644
              pattern.write(fileout);
  
              fileout.close();
-diff --git a/freemind/modes/mindmapmode/MindMapController.java b/freemind/modes/mindmapmode/MindMapController.java
+diff --git a/freemind/freemind/modes/mindmapmode/MindMapController.java b/freemind/freemind/modes/mindmapmode/MindMapController.java
 index 014d7af..6bfe58c 100644
---- a/freemind/modes/mindmapmode/MindMapController.java
-+++ b/freemind/modes/mindmapmode/MindMapController.java
+--- a/freemind/freemind/modes/mindmapmode/MindMapController.java
++++ b/freemind/freemind/modes/mindmapmode/MindMapController.java
 @@ -114,6 +114,7 @@ import freemind.extensions.UndoEventReceiver;
  import freemind.extensions.HookFactory.RegistrationContainer;
  import freemind.main.ExampleFileFilter;
@@ -143,10 +143,10 @@ index 014d7af..6bfe58c 100644
          MindMapHTMLWriter htmlWriter = new MindMapHTMLWriter(
                  fileout);
          htmlWriter.saveHTML(rootNodeOfBranch);      
-diff --git a/freemind/modes/mindmapmode/MindMapHTMLWriter.java b/freemind/modes/mindmapmode/MindMapHTMLWriter.java
+diff --git a/freemind/freemind/modes/mindmapmode/MindMapHTMLWriter.java b/freemind/freemind/modes/mindmapmode/MindMapHTMLWriter.java
 index 52276ea..f2d0616 100644
---- a/freemind/modes/mindmapmode/MindMapHTMLWriter.java
-+++ b/freemind/modes/mindmapmode/MindMapHTMLWriter.java
+--- a/freemind/freemind/modes/mindmapmode/MindMapHTMLWriter.java
++++ b/freemind/freemind/modes/mindmapmode/MindMapHTMLWriter.java
 @@ -92,7 +92,7 @@ class MindMapHTMLWriter {
          for (int i = 0; i < len; ++i) {
              myChar = text.charAt(i);
@@ -163,10 +163,10 @@ index 52276ea..f2d0616 100644
 -}
 \ No newline at end of file
 +}
-diff --git a/freemind/modes/mindmapmode/MindMapMapModel.java b/freemind/modes/mindmapmode/MindMapMapModel.java
+diff --git a/freemind/freemind/modes/mindmapmode/MindMapMapModel.java b/freemind/freemind/modes/mindmapmode/MindMapMapModel.java
 index 5143e71..acf305f 100644
---- a/freemind/modes/mindmapmode/MindMapMapModel.java
-+++ b/freemind/modes/mindmapmode/MindMapMapModel.java
+--- a/freemind/freemind/modes/mindmapmode/MindMapMapModel.java
++++ b/freemind/freemind/modes/mindmapmode/MindMapMapModel.java
 @@ -172,7 +172,7 @@ public class MindMapMapModel extends MapAdapter  {
     public boolean saveTXT(MindMapNodeModel rootNodeOfBranch, File file) {
          // Returns success of the operation.
@@ -229,4 +229,4 @@ index 5143e71..acf305f 100644
          Reader reader = null;
          for(int i = 0; i < EXPECTED_START_STRINGS.length; i++){
 -- 
-tg: (918d0c3..) t/output_encode_in_utf8 (depends on: master)
+tg: (b26071e..) t/output_encode_in_utf8 (depends on: master)
