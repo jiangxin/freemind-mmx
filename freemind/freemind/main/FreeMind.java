@@ -46,6 +46,7 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -79,10 +80,12 @@ import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.MenuBar;
 import freemind.controller.actions.generated.instance.MindmapLastStateMapStorage;
 import freemind.controller.actions.generated.instance.MindmapLastStateStorage;
+import freemind.controller.actions.generated.instance.NodeListMember;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
+import freemind.modes.NodeAdapter;
 import freemind.preferences.FreemindPropertyListener;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
@@ -761,10 +764,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				NodeView selectedView = ctrl.getSelectedView();
 				if (selectedView!=null) {
 					selectedView.requestFocus();
-					MindMapNode selected = ctrl.getSelected();
-					if (selected!=null) {
-						ctrl.centerNode(selected);
-					}
+//					MindMapNode selected = ctrl.getSelected();
+//					if (selected!=null) {
+//						ctrl.centerNode(selected);
+//					}
 				}
 				frame.removeWindowFocusListener(this);
 			}
@@ -1023,9 +1026,24 @@ public class FreeMind extends JFrame implements FreeMindMain {
 					if(controller.getLastOpenedList().open(
 							restorable)){
 						// restore zoom, etc.
-						MapView view = controller.getModeController().getView();
+						ModeController modeController = controller.getModeController();
+						MapView view = modeController.getView();
 						view.setZoom(store.getLastZoom());
 //doesn't work						view.setViewLocation(store.getX(), store.getY());
+						try {
+							// Selected:
+							MindMapNode sel = modeController.getNodeFromID(store.getLastSelected());
+							List selected = new Vector();
+							for (Iterator iter = store.getListNodeListMemberList().iterator(); iter
+									.hasNext();) {
+								NodeListMember member = (NodeListMember) iter.next();
+								NodeAdapter selNode = modeController.getNodeFromID(member.getNode());
+								selected.add(selNode);
+							}
+							modeController.select(sel, selected);
+						} catch(Exception e) {
+							freemind.main.Resources.getInstance().logException(e);
+						}
 						if(index == management.getLastFocussedTab()) {
 							mapToFocus = controller.getMapModule();
 						}

@@ -1876,52 +1876,6 @@ freemind.main.Resources.getInstance().logException(					e1);
         }
     }
 
-    public void select(NodeView node) {
-        if (node == null) {
-            logger.warning("Select with null NodeView called!");
-            return;
-        }
-        getView().scrollNodeToVisible(node);
-        getView().selectAsTheOnlyOneSelected(node);
-        getView().setSiblingMaxLevel(node.getModel().getNodeLevel()); // this level is default
-    }
-
-    public void selectMultipleNodes(NodeView focussed, Collection selecteds) {
-        selectMultipleNodesImpl(focussed, selecteds);
-    }
-    public void selectMultipleNodes(MindMapNode focussed, Collection selecteds) {
-        selectMultipleNodesImpl(focussed, selecteds);
-    }
-    private void selectMultipleNodesImpl(Object focussed, Collection selecteds) {
-        // are they visible?
-        for (Iterator i = selecteds.iterator(); i.hasNext();) {
-            MindMapNode node = (MindMapNode)(i.next());
-            displayNode(node);
-        }
-        // this one must be visible.
-        select(getNodeView(focussed));
-        for (Iterator i = selecteds.iterator(); i.hasNext();) {
-            NodeView node = getNodeView(i.next());
-            getView().makeTheSelected(node);
-        }
-        getController().obtainFocusForSelected(); // focus fix
-    }
-
-    private NodeView getNodeView(Object object) {
-        if(object instanceof NodeView){
-            return (NodeView)object;
-        }
-        if(object instanceof MindMapNode){
-            return getView().getNodeView((MindMapNode)object);
-        }
-        throw new ClassCastException();
-    }
-
-    public void selectBranch(NodeView selected, boolean extend) {
-        displayNode(selected.getModel());
-        getView().selectBranch(selected, extend);
-    }
-
     public boolean extendSelection(MouseEvent e) {
         NodeView newlySelectedNodeView = ((MainView) e.getComponent()).getNodeView();
         //MindMapNode newlySelectedNode = newlySelectedNodeView.getModel();

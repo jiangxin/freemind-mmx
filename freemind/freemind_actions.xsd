@@ -866,6 +866,7 @@
 		      <xs:attribute name="x" use="required" type="xs:int"/>
 		      <xs:attribute name="y" use="required" type="xs:int"/>
 		      <!--  last selecteds -->
+		      <xs:attribute name="last_selected" use="required" type="xs:string"/>
 	          <xs:sequence>
 	    	      <xs:element ref="node_list_member" maxOccurs="unbounded" minOccurs="0"/>
 	          </xs:sequence>

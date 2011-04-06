@@ -2,7 +2,6 @@ package tests.freemind;
 
 import freemind.controller.LastStateStorageManagement;
 import freemind.controller.actions.generated.instance.MindmapLastStateStorage;
-import junit.framework.TestCase;
 
 public class LastStorageManagementTests extends FreeMindTestBase {
 
@@ -21,7 +20,7 @@ public class LastStorageManagementTests extends FreeMindTestBase {
 	public void testChangeOrAdd() {
 		for(int i =0 ; i < LastStateStorageManagement.LIST_AMOUNT_LIMIT+1; ++i){
 			MindmapLastStateStorage test = new MindmapLastStateStorage();
-			test.setFileName(""+i);
+			test.setRestorableName(""+i);
 			mMgm.changeOrAdd(test);
 			assertEquals(test, mMgm.getStorage(""+i));
 			waitOneMilli();
@@ -33,7 +32,7 @@ public class LastStorageManagementTests extends FreeMindTestBase {
 	public void testChangeOrAdd2() {
 		for(int i =0 ; i < LastStateStorageManagement.LIST_AMOUNT_LIMIT; ++i){
 			MindmapLastStateStorage test = new MindmapLastStateStorage();
-			test.setFileName(""+i);
+			test.setRestorableName(""+i);
 			mMgm.changeOrAdd(test);
 			assertEquals(test, mMgm.getStorage(""+i));
 			waitOneMilli();
@@ -44,7 +43,7 @@ public class LastStorageManagementTests extends FreeMindTestBase {
 		mMgm.changeOrAdd(storageFirstElement);
 		waitOneMilli();
 		MindmapLastStateStorage test = new MindmapLastStateStorage();
-		test.setFileName(""+LastStateStorageManagement.LIST_AMOUNT_LIMIT+1);
+		test.setRestorableName(""+LastStateStorageManagement.LIST_AMOUNT_LIMIT+1);
 		mMgm.changeOrAdd(test);
 		waitOneMilli();
 		// the element at one is the oldest and must have been removed.
@@ -56,7 +55,6 @@ public class LastStorageManagementTests extends FreeMindTestBase {
 		try {
 			Thread.sleep(1);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			freemind.main.Resources.getInstance().logException(e);
 			
 		}

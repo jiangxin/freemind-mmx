@@ -204,21 +204,7 @@ public class NodeHookAction extends FreemindAction implements HookAction, ActorX
 		// restore selection only, if nothing selected.
 		if(getController().getView().getSelecteds().size() == 0) {
 			// select all destination nodes:
-			// fc, 25.8.2004: The following code snippet should be moved to a more general place.
-			final NodeView focussedNodeView = mMindMapController.getNodeView(focussed);
-            if (focussedNodeView != null) {
-				getController().getView().selectAsTheOnlyOneSelected(
-                        focussedNodeView);
-				getController().getView().scrollNodeToVisible(
-                        focussedNodeView);
-				for (Iterator i = selecteds.iterator(); i.hasNext();) {
-					MindMapNode node = (MindMapNode) i.next();
-                    final NodeView nodeView = mMindMapController.getNodeView(node);
-					if(nodeView != null) {
-						getController().getView().makeTheSelected(nodeView);
-					}
-				}
-			}
+			getController().select(focussed, selecteds);
 		}
 	}
 

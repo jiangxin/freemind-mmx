@@ -173,7 +173,7 @@ public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
 			String nodeId = (String) iter.next();
 			newSelecteds.add(getMindMapController().getNodeFromID(nodeId));
 		}
-		getMindMapController().selectMultipleNodes(newInstanceOfSelectedNode, newSelecteds);
+		getMindMapController().select(newInstanceOfSelectedNode, newSelecteds);
 	}
 
 }

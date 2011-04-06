@@ -56,6 +56,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -84,9 +85,8 @@ import javax.swing.WindowConstants;
 
 import freemind.common.BooleanProperty;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
-import freemind.controller.actions.generated.instance.MindmapLastStateMapStorage;
 import freemind.controller.actions.generated.instance.MindmapLastStateStorage;
-import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.controller.actions.generated.instance.NodeListMember;
 import freemind.controller.filter.FilterController;
 import freemind.controller.printpreview.PreviewDialog;
 import freemind.main.FreeMind;
@@ -95,6 +95,7 @@ import freemind.main.FreeMindMain;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
+import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.ModesCreator;
@@ -902,9 +903,17 @@ public class Controller  implements MapModuleChangeObserver {
 				store.setX(viewLocation.x);
 				store.setY(viewLocation.y);
 			}
+			ModeController modeController = module.getModeController();
+			store.setLastSelected(modeController.getNodeID(modeController.getSelected()));
+			List selecteds = modeController.getSelecteds();
+			for (Iterator iter = selecteds.iterator(); iter.hasNext();) {
+				MindMapNode node = (MindMapNode) iter.next();
+				NodeListMember member = new NodeListMember();
+				member.setNode(modeController.getNodeID(node));
+				store.addNodeListMember(member);
+			}
 			management.changeOrAdd(store);
 			if(module.getModel() == currentModel) {
-				logger.warning("Focussing tab " + index + " named " + module.getDisplayName());
 				management.setLastFocussedTab(index);
 			}
 			index++;

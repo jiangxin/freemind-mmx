@@ -508,10 +508,42 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     public void select( NodeView node) {
+        if (node == null) {
+            logger.warning("Select with null NodeView called!");
+            return;
+        }
         getView().scrollNodeToVisible(node);
         getView().selectAsTheOnlyOneSelected(node);
         getView().setSiblingMaxLevel(node.getModel().getNodeLevel()); // this level is default
     }
+
+	public void select(MindMapNode focused, List selecteds) {
+        // are they visible?
+        for (Iterator i = selecteds.iterator(); i.hasNext();) {
+            MindMapNode node = (MindMapNode)(i.next());
+            displayNode(node);
+        }
+		final NodeView focussedNodeView = getNodeView(focused);
+		if (focussedNodeView != null) {
+			getView().selectAsTheOnlyOneSelected(focussedNodeView);
+			getView().scrollNodeToVisible(focussedNodeView);
+			for (Iterator i = selecteds.iterator(); i.hasNext();) {
+				MindMapNode node = (MindMapNode) i.next();
+				NodeView nodeView = getNodeView(node);
+				if (nodeView != null) {
+					getView().makeTheSelected(nodeView);
+				}
+			}
+		}
+        getController().obtainFocusForSelected(); // focus fix
+
+	}
+
+    public void selectBranch(NodeView selected, boolean extend) {
+        displayNode(selected.getModel());
+        getView().selectBranch(selected, extend);
+    }
+
 
 	/**
 	 * This class sortes nodes by ascending depth of their paths to root. This
@@ -855,6 +887,8 @@ public abstract class ControllerAdapter implements ModeController {
     // (blocked to protect against particular events e.g. in edit mode)
     private boolean isBlocked = false;
 
+	private MapView mView;
+
     public boolean isBlocked() {
       return this.isBlocked;
     }
@@ -908,9 +942,13 @@ public abstract class ControllerAdapter implements ModeController {
     }
 
     public MapView getView() {
-        return getController().getView();
+        return mView;
     }
 
+    public void setView(MapView pView) {
+    	mView = pView;    	
+    }
+    
     protected void updateMapModuleName() {
         getController().getMapModuleManager().updateMapModuleName();
     }

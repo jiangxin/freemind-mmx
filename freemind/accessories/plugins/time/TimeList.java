@@ -490,7 +490,7 @@ public class TimeList extends MindMapHookAdapter {
 				int row = selectedRows[i];
 				selectedNodes.add(getMindMapNode(row));
 			}
-            getMindMapController().selectMultipleNodes(focussedNode, selectedNodes);
+            getMindMapController().select(focussedNode, selectedNodes);
 		}
 	}
 

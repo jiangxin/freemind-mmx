@@ -71,7 +71,7 @@ public class JumpLastEditLocation extends MindMapNodeHookAdapter {
 			this.logger.fine("Selecting " + node + " as last edit location.");
 			Vector nodes = new Vector();
 			nodes.add(node);
-			getMindMapController().selectMultipleNodes(node, nodes);
+			getMindMapController().select(node, nodes);
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
 		}

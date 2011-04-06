@@ -112,7 +112,10 @@ public interface ModeController extends TextTranslator  {
     /** Single selection: the node is the only one selected after calling this method.
      */
     public void select( NodeView node) ;
-
+    /** Multiple selection. All MindMapNode s from the selecteds list are selected,
+     * and the focused is moreover focused. */
+    public void select(MindMapNode focused, List selecteds);
+    public void selectBranch(NodeView selected, boolean extend);
     MindMapNode getSelected();
     NodeView getSelectedView();
 	/**
@@ -272,5 +275,6 @@ public interface ModeController extends TextTranslator  {
     public Transferable copy(List selectedNodes, boolean copyInvisible);
 
 	JFileChooser getFileChooser(FileFilter filter);
+	void setView(MapView pView);
     
 }

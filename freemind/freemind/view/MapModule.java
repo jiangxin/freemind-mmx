@@ -44,6 +44,7 @@ public class MapModule {
 	this.view = view;
 	this.mode = mode;
 	this.modeController = modeController;
+	modeController.setView(view);
     }
 
     /**

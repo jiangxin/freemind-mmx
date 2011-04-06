@@ -45,6 +45,7 @@ public class AllTests {
         suite.addTest(new TestSuite(TransformTest.class));
         suite.addTest(new TestSuite(MarshallerTests.class));
         suite.addTest(new TestSuite(SignedScriptTests.class));
+        suite.addTest(new TestSuite(LastStorageManagementTests.class));
         // $JUnit-END$
         return suite;
     }
