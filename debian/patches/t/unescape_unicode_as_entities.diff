@@ -10,7 +10,7 @@ Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
  1 files changed, 109 insertions(+), 0 deletions(-)
 
 diff --git a/freemind/freemind/main/HtmlTools.java b/freemind/freemind/main/HtmlTools.java
-index c309a70..89cd08b 100644
+index 1a907cd..d437727 100644
 --- a/freemind/freemind/main/HtmlTools.java
 +++ b/freemind/freemind/main/HtmlTools.java
 @@ -23,6 +23,7 @@ package freemind.main;
@@ -21,7 +21,7 @@ index c309a70..89cd08b 100644
  import java.util.ArrayList;
  import java.util.Iterator;
  import java.util.Locale;
-@@ -77,6 +78,9 @@ public class HtmlTools {
+@@ -81,6 +82,9 @@ public class HtmlTools {
          try {
              XHTMLWriter.html2xhtml(reader, writer);
              String resultXml = writer.toString();
@@ -31,8 +31,8 @@ index c309a70..89cd08b 100644
              // for safety:
              if(!isWellformedXml(resultXml)) {
                  return toXMLEscapedText(htmlText);
-@@ -567,5 +571,110 @@ public class HtmlTools {
- 		return output;
+@@ -652,5 +656,110 @@ public class HtmlTools {
+ 		return result.toString();
  	}
      
 +    /* Borrow code from org.apache.commons.lang.Entities */ 
@@ -143,4 +143,4 @@ index c309a70..89cd08b 100644
  
  }
 -- 
-tg: (b26071e..) t/unescape_unicode_as_entities (depends on: master)
+tg: (19169f1..) t/unescape_unicode_as_entities (depends on: tgmaster)

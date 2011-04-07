@@ -14,7 +14,7 @@ Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
  5 files changed, 431 insertions(+), 420 deletions(-)
 
 diff --git a/freemind/build.xml b/freemind/build.xml
-index 27f19a5..299226f 100644
+index 3da2f49..601c047 100644
 --- a/freemind/build.xml
 +++ b/freemind/build.xml
 @@ -4,7 +4,7 @@
@@ -27,10 +27,10 @@ index 27f19a5..299226f 100644
        	<!-- Replace spaces by underscores. -->
        	<tokenfilter><replaceregex pattern=" " replace="_" flags="g"/></tokenfilter>
 diff --git a/freemind/freemind/controller/Controller.java b/freemind/freemind/controller/Controller.java
-index a4e52f9..833ce84 100644
+index 15580f7..2da5f07 100644
 --- a/freemind/freemind/controller/Controller.java
 +++ b/freemind/freemind/controller/Controller.java
-@@ -1181,7 +1181,9 @@ public class Controller  implements MapModuleChangeObserver {
+@@ -1187,7 +1187,9 @@ public class Controller  implements MapModuleChangeObserver {
          public void actionPerformed(ActionEvent e) {
             JOptionPane.showMessageDialog(getFrame().getViewport(), controller
  					.getResourceString("about_text")
@@ -42,12 +42,12 @@ index a4e52f9..833ce84 100644
  					JOptionPane.INFORMATION_MESSAGE);
          }
 diff --git a/freemind/freemind/main/FreeMind.java b/freemind/freemind/main/FreeMind.java
-index 4309d02..9fa4c1c 100644
+index 57dd669..70aa681 100644
 --- a/freemind/freemind/main/FreeMind.java
 +++ b/freemind/freemind/main/FreeMind.java
-@@ -125,6 +125,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
+@@ -130,6 +130,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
  	
- 	protected static final VersionInformation VERSION = new VersionInformation("0.9.0 RC 6");
+ 	protected static final VersionInformation VERSION = new VersionInformation("0.9.0");
  	
 +	// OSSXP.COM: set oem version.
 +	public static final String HACKEDVERSION = "(MMX Hack <REVISION>, from ossxp.com)";
@@ -909,4 +909,4 @@ index 272f411..7efe2ad 100644
 +
 +}
 -- 
-tg: (b26071e..) t/show_custom_version_number (depends on: master)
+tg: (19169f1..) t/show_custom_version_number (depends on: tgmaster)

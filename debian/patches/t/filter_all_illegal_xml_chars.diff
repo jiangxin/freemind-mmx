@@ -40,4 +40,4 @@ index cfef28b..8f683a4 100644
          	
          }
 -- 
-tg: (b26071e..) t/filter_all_illegal_xml_chars (depends on: master)
+tg: (19169f1..) t/filter_all_illegal_xml_chars (depends on: tgmaster)

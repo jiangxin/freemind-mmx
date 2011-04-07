@@ -6,23 +6,14 @@ Build as debian/ubuntu package, build file bugfix.
 Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
 
 ---
- freemind/build.xml |    9 ++++++---
- 1 files changed, 6 insertions(+), 3 deletions(-)
+ freemind/build.xml |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/freemind/build.xml b/freemind/build.xml
-index 3031a11..a8cdd32 100644
+index 70fa445..287a543 100644
 --- a/freemind/build.xml
 +++ b/freemind/build.xml
-@@ -152,6 +152,8 @@
- 		     classpath problems of the plugins. -->
- 			<exclude name="tests/**" />
- 			<exclude name="plugins/**" />
-+			<exclude name="debian/**" />
-+			<exclude name=".pc/**" />
- 		</javac>
- 		<!-- Starter should work with java 1.1, too as it checks the java version.-->
- 		<delete failonerror="false" file="${build}/freemind/main/FreeMindStarter.class"></delete>
-@@ -173,6 +175,7 @@
+@@ -173,6 +173,7 @@
  		<copy todir="${dist}">
  			<fileset dir="${src}/windows-launcher">
  			  <include name="FreeMind.exe"/>
@@ -30,16 +21,7 @@ index 3031a11..a8cdd32 100644
  			</fileset>
  		</copy>
  		<mkdir dir="${dist}/doc" />
-@@ -296,7 +299,7 @@
- 		<tar tarfile="${post}/freemind-src.tar"
- 			longfile="gnu"
- 			basedir="${src_base_for_post}"
--			includes="freemind/**,.classpath,.project" excludes="freemind/bin/**" />
-+			includes="freemind/**,.classpath,.project" excludes="freemind/bin/**, freemind/.pc/**, freemind/debian/**" />
- 		<gzip src="${post}/freemind-src.tar"
- 			zipfile="${post}/freemind-src-${ver}.tar.gz" />
- 		<delete>
-@@ -378,8 +381,8 @@
+@@ -382,8 +383,8 @@
  				<include name="patterns_updater.xslt"/>
  				<include name="Resources*"/>
  				<include name="mindmap_menus.xml"/>
@@ -51,4 +33,4 @@ index 3031a11..a8cdd32 100644
  		</jar>
  		<ant antfile="${acc_build}" target="jar"/>
 -- 
-tg: (706db61..) t/linux_dist_build (depends on: t/load_mm_with_mmx_file)
+tg: (4d71238..) t/linux_dist_build (depends on: t/load_mm_with_mmx_file)

@@ -43,4 +43,4 @@ index 5cd29ee..e58305b 100644
  
  #--------- Call (at last) FreeMind -------------------------------------
 -- 
-tg: (b26071e..) t/ossxp_deployment (depends on: master)
+tg: (19169f1..) t/ossxp_deployment (depends on: tgmaster)

@@ -10,10 +10,10 @@ Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
  freemind/build.xml                                 |    4 +-
  freemind/freemind.bat                              |    2 +-
  freemind/freemind.sh                               |    1 +
- freemind/freemind/main/Tools.java                  |  121 +++++++++++++++++++-
- .../modes/mindmapmode/MindMapMapModel.java         |    4 +-
+ freemind/freemind/main/Tools.java                  |  119 ++++++++++++++++++++
+ .../modes/mindmapmode/MindMapMapModel.java         |   22 ++++-
  .../modes/mindmapmode/freemind_join_mm_mmx.xslt    |   36 ++++++
- 7 files changed, 161 insertions(+), 8 deletions(-)
+ 7 files changed, 181 insertions(+), 4 deletions(-)
 
 diff --git a/freemind/MANIFEST.MF b/freemind/MANIFEST.MF
 index e6db851..1f7a44f 100644
@@ -27,27 +27,27 @@ index e6db851..1f7a44f 100644
  Created-By: Joerg Mueller
  
 diff --git a/freemind/build.xml b/freemind/build.xml
-index 27f19a5..3031a11 100644
+index 3da2f49..70fa445 100644
 --- a/freemind/build.xml
 +++ b/freemind/build.xml
 @@ -49,7 +49,7 @@
  		<classpath path="${jibxlibs}"/>
  	</taskdef>
  
--	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:lib/commons-lang-2.0.jar:lib/forms-1.0.5.jar:lib/SimplyHTML/SimplyHTML.jar"/>
-+	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:lib/commons-lang-2.0.jar:lib/forms-1.0.5.jar:lib/SimplyHTML/SimplyHTML.jar:lib/saxon.jar"/>
+-	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:lib/forms-1.0.5.jar:lib/SimplyHTML/SimplyHTML.jar"/>
++	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:lib/forms-1.0.5.jar:lib/SimplyHTML/SimplyHTML.jar:lib/saxon.jar"/>
  
  	  <target name="xmlbind.checkStatusOfGeneration">
  	    <uptodate property="xmlbind.isUpToDate"
-@@ -197,6 +197,7 @@
- 				<include name="commons-lang-2.0.jar"/>
+@@ -196,6 +196,7 @@
+ 			<fileset dir="${src}/lib">
  				<include name="forms-1.0.5.jar"/>
  				<include name="bindings.jar"/>
 +				<include name="saxon.jar"/>
  				<include name="jibx/jibx-run.jar"/>
  				<include name="jibx/xpp3.jar"/>
  				<include name="SimplyHTML/gnu-regexp-1.1.4.jar"/>
-@@ -378,6 +379,7 @@
+@@ -382,6 +383,7 @@
  				<include name="Resources*"/>
  				<include name="mindmap_menus.xml"/>
  				<include name="**/freemind_version_updater.xslt"/>
@@ -56,13 +56,13 @@ index 27f19a5..3031a11 100644
  		</jar>
  		<ant antfile="${acc_build}" target="jar"/>
 diff --git a/freemind/freemind.bat b/freemind/freemind.bat
-index d10bb7d..7171493 100644
+index 1520107..6156327 100644
 --- a/freemind/freemind.bat
 +++ b/freemind/freemind.bat
 @@ -1,2 +1,2 @@
  @echo off
--java -cp lib\freemind.jar;lib\commons-lang-2.0.jar;lib\forms-1.0.5.jar;lib\jibx\jibx-run.jar;lib\jibx\xpp3.jar;lib\bindings.jar freemind.main.FreeMindStarter
-+java -cp lib\freemind.jar;lib\commons-lang-2.0.jar;lib\forms-1.0.5.jar;lib\jibx\jibx-run.jar;lib\jibx\xpp3.jar;lib\bindings.jar;lib\saxon.jar freemind.main.FreeMindStarter
+-java -Xmx256M -Xss8M -cp lib\freemind.jar;lib\commons-lang-2.0.jar;lib\forms-1.0.5.jar;lib\jibx\jibx-run.jar;lib\jibx\xpp3.jar;lib\bindings.jar freemind.main.FreeMindStarter
++java -Xmx256M -Xss8M -cp lib\freemind.jar;lib\commons-lang-2.0.jar;lib\forms-1.0.5.jar;lib\jibx\jibx-run.jar;lib\jibx\xpp3.jar;lib\bindings.jar;lib\saxon.jar freemind.main.FreeMindStarter
 diff --git a/freemind/freemind.sh b/freemind/freemind.sh
 index 5cd29ee..16c4c52 100644
 --- a/freemind/freemind.sh
@@ -76,7 +76,7 @@ index 5cd29ee..16c4c52 100644
  if [ "${JAVA_TYPE}" = "sun" ]
  then
 diff --git a/freemind/freemind/main/Tools.java b/freemind/freemind/main/Tools.java
-index bf805de..cf860e5 100644
+index b74535f..858eb00 100644
 --- a/freemind/freemind/main/Tools.java
 +++ b/freemind/freemind/main/Tools.java
 @@ -95,6 +95,12 @@ import javax.xml.transform.stream.StreamSource;
@@ -92,22 +92,10 @@ index bf805de..cf860e5 100644
  /**
   * @author foltin
   *
-@@ -1001,7 +1007,8 @@ public class Tools {
- 		    return new StringReader(writer.getBuffer().toString());
- 	    }
- 	    else{
--	        return getActualReader(file);
-+	        // OSSXP.COM
-+	        return getActualReader(file, frame);
- 	    }
+@@ -1035,6 +1041,119 @@ public class Tools {
+ 	    return new BufferedReader(pReader);
  	}
  
-@@ -1019,10 +1026,116 @@ public class Tools {
- 		return HtmlTools.replaceIllegalXmlCharacters(fileContents);
- 	}
- 
--	/** Creates a default reader that just reads the given file.
--	 * @throws FileNotFoundException
 +	/*
 +	 * OSSXP.COM: hacked FreeMind saved two seperate files, .mm and .mmx file.
 +	 * Join them in runtime using XSLT TransformerFactory.
@@ -196,8 +184,7 @@ index bf805de..cf860e5 100644
 +	/* 
 +	 * OSSXP.COM: In this hacked version, .mm file is a true XML file.
 +	 * load XML file using DOM.
- 	 */
--	public static Reader getActualReader(File file) throws FileNotFoundException {
++	 */
 +	private static Reader getActualReaderXml(File file) throws IOException {
 +	    try
 +	    {
@@ -219,31 +206,76 @@ index bf805de..cf860e5 100644
 +	    	exp.printStackTrace();
 +	    }
 +
- 	    return new BufferedReader(new FileReader(file));
- 	}
- 
++	    return new BufferedReader(new FileReader(file));
++	}
++
+ 	/**
+ 	 * In case of trouble, the method returns null.
+ 	 * @param pInputFile the file to read.
 diff --git a/freemind/freemind/modes/mindmapmode/MindMapMapModel.java b/freemind/freemind/modes/mindmapmode/MindMapMapModel.java
-index 5143e71..a4f44e9 100644
+index d6a87f7..b248560 100644
 --- a/freemind/freemind/modes/mindmapmode/MindMapMapModel.java
 +++ b/freemind/freemind/modes/mindmapmode/MindMapMapModel.java
-@@ -375,7 +375,7 @@ public class MindMapMapModel extends MapAdapter  {
+@@ -388,6 +388,10 @@ public class MindMapMapModel extends MapAdapter  {
+     	public String toString() {
+     		return mString;
+     	}
++    	
++    	public File getFile() {
++    		return null;
++    	}
+     }
+     private static class FileReaderCreator implements ReaderCreator {
+ 		private final File mFile;
+@@ -403,9 +407,14 @@ public class MindMapMapModel extends MapAdapter  {
+ 		public String toString() {
+ 			return mFile.getName();
+ 		}
++
++		public File getFile() {
++			return mFile;
++		}
+ 	}
+ 	public interface ReaderCreator{
+     	Reader createReader() throws FileNotFoundException;
++    	File   getFile();
+     }
+ 	MindMapNodeModel loadTree(ReaderCreator pReaderCreator) throws XMLParseException, IOException {
+ 		return loadTree(pReaderCreator, true);
+@@ -417,6 +426,9 @@ public class MindMapMapModel extends MapAdapter  {
+         StringBuffer buffer = readFileStart(pReaderCreator.createReader(), versionInfoLength);
+         // the resulting file is accessed by the reader:
+         Reader reader = null;
++        // OSSXP.COM: We need filename when do Tool.getActualReader,
++        //            for we need join .mm file with .mmx file.
++        File file = pReaderCreator.getFile();
+         for(int i = 0; i < EXPECTED_START_STRINGS.length; i++){
+         	versionInfoLength = EXPECTED_START_STRINGS[i].length();
+         	String mapStart = "";
+@@ -425,7 +437,10 @@ public class MindMapMapModel extends MapAdapter  {
          	}
              if (mapStart.startsWith(EXPECTED_START_STRINGS[i])) {
                  // actual version:
--                reader = Tools.getActualReader(file);
-+                reader = Tools.getActualReader(file, getFrame());
+-                reader = Tools.getActualReader(pReaderCreator.createReader());
++                if (file != null)
++                    reader = Tools.getActualReader(file, getFrame());
++                else
++                    reader = Tools.getActualReader(pReaderCreator.createReader());
                  break;
              }
          }
-@@ -389,7 +389,7 @@ public class MindMapMapModel extends MapAdapter  {
- 					OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED)
- 					.show().getResult();
- 			if(showResult != JOptionPane.OK_OPTION) {
--				reader = Tools.getActualReader(file);
-+				reader = Tools.getActualReader(file, getFrame());
- 			} else {
- 				reader = Tools.getUpdateReader(file, FREEMIND_VERSION_UPDATER_XSLT, getFrame());
+@@ -448,7 +463,10 @@ public class MindMapMapModel extends MapAdapter  {
+ 				// something went wrong on update:
+ 				// FIXME: Translate me.
+ 				this.getModeController().getFrame().out("Error on conversion. Continue without conversion. Some elements may be lost!");
+-				reader = Tools.getActualReader(pReaderCreator.createReader());
++        if (file != null)
++          reader = Tools.getActualReader(file, getFrame());
++        else
++				  reader = Tools.getActualReader(pReaderCreator.createReader());
  			}
+         }
+         try {
 diff --git a/freemind/freemind/modes/mindmapmode/freemind_join_mm_mmx.xslt b/freemind/freemind/modes/mindmapmode/freemind_join_mm_mmx.xslt
 new file mode 100644
 index 0000000..bee253b
@@ -287,4 +319,4 @@ index 0000000..bee253b
 +
 +</xsl:stylesheet>
 -- 
-tg: (b26071e..) t/load_mm_with_mmx_file (depends on: master)
+tg: (19169f1..) t/load_mm_with_mmx_file (depends on: tgmaster)

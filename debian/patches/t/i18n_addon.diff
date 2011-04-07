@@ -11,10 +11,10 @@ Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
  2 files changed, 24 insertions(+), 0 deletions(-)
 
 diff --git a/freemind/Resources_en.properties b/freemind/Resources_en.properties
-index 161e4bc..b72b7bf 100644
+index 82690cd..4879b94 100644
 --- a/freemind/Resources_en.properties
 +++ b/freemind/Resources_en.properties
-@@ -1364,6 +1364,18 @@ icon_flag = Red Flag
+@@ -1365,6 +1365,18 @@ icon_flag = Red Flag
  #changed:
  OptionPanel.remind_use_rich_text_in_new_long_nodes=Use formatting for all nodes
  
@@ -34,10 +34,10 @@ index 161e4bc..b72b7bf 100644
  icon_freemind_butterfly = FreeMind
  icon_full-8 = Priority 8
 diff --git a/freemind/Resources_zh_CN.properties b/freemind/Resources_zh_CN.properties
-index 50c98b0..d1dd2b9 100644
+index 1efc586..3cb9142 100644
 --- a/freemind/Resources_zh_CN.properties
 +++ b/freemind/Resources_zh_CN.properties
-@@ -1376,6 +1376,18 @@ icon_full-9 = \u4f18\u5148\u7ea7 9
+@@ -1381,6 +1381,18 @@ icon_full-9 = \u4f18\u5148\u7ea7 9
  # new, fc, 25.5.2008:
  node_is_write_protected=\u76ee\u6807\u8282\u70b9\u88ab\u5199\u4fdd\u62a4\u3002
  
@@ -57,4 +57,4 @@ index 50c98b0..d1dd2b9 100644
  KeyDoc=PDF\u683c\u5f0f\u7684\u952e\u6620\u5c04\u6587\u6863
  # translate only, when you have an own translation of this doc.
 -- 
-tg: (5874c82..) t/i18n_addon (depends on: t/i18n_zh_cn)
+tg: (d35440d..) t/i18n_addon (depends on: t/i18n_zh_cn)
