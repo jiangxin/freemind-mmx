@@ -482,6 +482,8 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new StringProperty(null, "last_opened_list_length")); //  25
 		controls.add(new BooleanProperty(FreeMindCommon.LOAD_LAST_MAP+".tooltip",
                 FreeMindCommon.LOAD_LAST_MAP)); // true
+		controls.add(new BooleanProperty(FreeMindCommon.LOAD_LAST_MAPS_AND_LAYOUT+".tooltip",
+				FreeMindCommon.LOAD_LAST_MAPS_AND_LAYOUT)); // true
 		controls
 				.add(new BooleanProperty(
 

@@ -1012,7 +1012,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		if (!fileLoaded) {
 			fileLoaded = processLoadEventFromStartupPhase();
 		}
-		if(!fileLoaded){
+		if(!fileLoaded && Tools.isPreferenceTrue(getProperty(FreeMindCommon.LOAD_LAST_MAPS_AND_LAYOUT))){
 			int index = 0;
 			MapModule mapToFocus=null;
 	        String lastStateMapXml = getProperty(FreeMindCommon.MINDMAP_LAST_STATE_MAP_STORAGE);
@@ -1068,6 +1068,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				try {
 					controller.getLastOpenedList().open(
 							restoreable);
+					controller.getModeController().getView().moveToRoot();
 					fileLoaded = true;
 				} catch (Exception e) {
 					freemind.main.Resources.getInstance()

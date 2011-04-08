@@ -173,6 +173,7 @@ public class FreeMindCommon {
      */
     public static final String ON_START_IF_NOT_SPECIFIED = "onStartIfNotSpecified";
     public static final String LOAD_LAST_MAP = "loadLastMap";
+    public static final String LOAD_LAST_MAPS_AND_LAYOUT = "load_last_maps_and_layout";
     public static final String SAVE_ONLY_INTRISICALLY_NEEDED_IDS = "save_only_intrisically_needed_ids";
 
 	public static final String LOAD_NEW_MAP = "load_new_map_when_no_other_is_specified";
