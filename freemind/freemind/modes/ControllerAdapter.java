@@ -362,10 +362,7 @@ public abstract class ControllerAdapter implements ModeController {
     	model.load(file);
     	logger.info("Start loading " + file);
         newMap(model);
-//    	EventQueue.invokeLater(new Runnable(){
-//    		public void run() {
-    			model.setSaved(true);
-//    		}});
+		model.setSaved(true);
         logger.info("Finished loading " + file);
     	return newModeController;
     }
@@ -654,7 +651,8 @@ public abstract class ControllerAdapter implements ModeController {
 				File theFile = selectedFiles[i];
 	            try {
 	                lastCurrentDir = theFile.getParentFile();
-	                load(theFile);
+	                ModeController newMC = load(theFile);
+	                newMC.getView().moveToRoot();
 	            } catch (Exception ex) {
 	               handleLoadingException (ex); 
 	               break;
