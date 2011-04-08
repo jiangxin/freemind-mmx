@@ -74,6 +74,7 @@ public class LastStateStorageManagement {
 			if (Tools.safeEquals(pStore.getRestorableName(), store.getRestorableName())) {
 				// deep copy
 				store.setLastZoom(pStore.getLastZoom());
+				store.setLastSelected(pStore.getLastSelected());
 				store.setX(pStore.getX());
 				store.setY(pStore.getY());
 				store.clearNodeListMemberList();

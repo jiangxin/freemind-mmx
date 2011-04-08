@@ -41,14 +41,12 @@ import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PushbackInputStream;
+import java.io.PrintStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -1388,6 +1386,17 @@ public class Tools {
 				new IllegalArgumentException("HERE"));
 	}
 
+	
+	/**
+	 * Logs the stacktrace into a string.
+	 */
+	public static String getStackTrace() {
+		IllegalArgumentException ex = new IllegalArgumentException("HERE");
+		ByteArrayOutputStream b = new ByteArrayOutputStream();
+		ex.printStackTrace(new PrintStream(b));
+		return b.toString();
+	}
+	
 	
     /**
      * Adapts the font size inside of a component to the zoom

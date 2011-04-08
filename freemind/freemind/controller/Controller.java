@@ -542,7 +542,8 @@ public class Controller  implements MapModuleChangeObserver {
             getFrame().setView(newMapModule.getView());
             setAllActions(true);
             if ((getView().getSelected() == null)) {
-            	moveToRoot();
+//            	moveToRoot();
+            	getView().selectAsTheOnlyOneSelected(getView().getRoot());
             }
             lastOpened.mapOpened(newMapModule);
             ((MainToolBar) getToolbar()).setZoomComboBox(newMapModule.getView()

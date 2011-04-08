@@ -1263,6 +1263,8 @@ public abstract class ControllerAdapter implements ModeController {
         NodeView view = null;
         if(node!=null){
             view = getController().getView().getNodeView(node);
+        } else {
+        	return;
         }
         if(view==null){
             displayNode(node);
