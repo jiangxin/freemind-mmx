@@ -861,9 +861,9 @@
 			  <!--  time attribute to be able to remove the oldest entries. -->
 		      <xs:attribute name="last_changed" use="required" type="xs:long"/>
 		      <!-- -1 means, that this map wasn't open at the last session. -->
-		      <xs:attribute name="tab_index" use="optional" type="xs:int" default="-1"/>
+		      <xs:attribute name="tab_index" use="required" type="xs:int"/>
 		      <xs:attribute name="restorable_name" use="required" type="xs:string"/>
-		      <xs:attribute name="last_zoom" use="optional" type="xs:float"  default="1.0"/>
+		      <xs:attribute name="last_zoom" use="required" type="xs:float"  default="1.0"/>
 		      <!--  viewport in the map -->
 		      <xs:attribute name="x" use="required" type="xs:int"/>
 		      <xs:attribute name="y" use="required" type="xs:int"/>
