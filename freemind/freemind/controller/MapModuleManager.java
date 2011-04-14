@@ -363,8 +363,10 @@ public class MapModuleManager {
         /**
         *  Close the currently active map, return false if closing canceled.
          * @param force forces the closing without any save actions.
+         * @param pRestorable is a buffer, if the name of the restorable is needed after saving.
+         * @return false if saving was canceled.
         */             
-       public boolean close(boolean force) {
+       public boolean close(boolean force, StringBuffer pRestorable) {
        	    // (DP) The mode controller does not close the map
     	   		MapModule module = getMapModule();
     	   		// FIXME: This is not correct, as this class should not ask somebody. 
@@ -372,6 +374,9 @@ public class MapModuleManager {
             boolean closingNotCancelled = module.getModeController().close(force, this);
             if (!closingNotCancelled) {
                return false; }	
+            if(pRestorable != null){
+            	pRestorable.append(module.getModel().getRestorable());
+            }
             
             int index = mapModuleVector.indexOf(module);
             mapModuleVector.remove(module);

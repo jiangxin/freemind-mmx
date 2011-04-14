@@ -95,12 +95,12 @@ public class LastStateStorageManagement {
 					store.addNodeListMember(member);
 				}
 				found = true;
-				store.setLastChanged(System.currentTimeMillis());
+				setLastChanged(store);
 				break;
 			}
 		}
 		if (!found) {
-			pStore.setLastChanged(System.currentTimeMillis());
+			setLastChanged(pStore);
 			mLastStatesMap.addMindmapLastStateStorage(pStore);
 		}
 		// size limit
@@ -134,11 +134,16 @@ public class LastStateStorageManagement {
 		}
 	}
 
+	private void setLastChanged(MindmapLastStateStorage pStore) {
+		pStore.setLastChanged(System.currentTimeMillis());
+	}
+
 	public MindmapLastStateStorage getStorage(String pRestorableName) {
 		for (Iterator it = mLastStatesMap.getListMindmapLastStateStorageList()
 				.iterator(); it.hasNext();) {
 			MindmapLastStateStorage store = (MindmapLastStateStorage) it.next();
 			if (Tools.safeEquals(pRestorableName, store.getRestorableName())) {
+				setLastChanged(store);
 				return store;
 			}
 		}

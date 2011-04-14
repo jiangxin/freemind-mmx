@@ -704,7 +704,7 @@ public class Controller  implements MapModuleChangeObserver {
      * @param force true= without save.
      */
     public void close(boolean force) {
-		getMapModuleManager().close(force);
+		getMapModuleManager().close(force, null);
 	}
 
 
@@ -888,20 +888,22 @@ public class Controller  implements MapModuleChangeObserver {
         String currentMapRestorable = (getModel()!=null) ? getModel().getRestorable() : null;
         // collect all maps:
         Vector restorables = new Vector();
-        for (Iterator it = getMapModuleManager().getMapModuleVector().iterator(); it.hasNext();) {
-			MapModule module = (MapModule) it.next();
-			MindmapLastStateStorage store = new MindmapLastStateStorage();
-			String restorable = module.getModel().getRestorable();
-			if(restorable == null)
-				continue;
-			restorables.add(restorable);
+        // move to first map in the window.
+        List mapModuleVector = getMapModuleManager().getMapModuleVector();
+        if(mapModuleVector.size() > 0){
+        	String displayName = ((MapModule) mapModuleVector.get(0)).getDisplayName();
+			getMapModuleManager().changeToMapModule(displayName);
         }
-		while (getMapModuleManager().getMapModuleVector().size() > 0) {
+		while (mapModuleVector.size() > 0) {
 			if (getMapModule() != null) {
+				StringBuffer restorableBuffer = new StringBuffer();
 				boolean closingNotCancelled = getMapModuleManager()
-						.close(false);
+						.close(false, restorableBuffer);
 				if (!closingNotCancelled) {
 					return;
+				}
+				if (restorableBuffer.length() != 0) {
+					restorables.add(restorableBuffer.toString());
 				}
 			} else {
 				// map module without view open.
@@ -930,8 +932,8 @@ public class Controller  implements MapModuleChangeObserver {
 
         String lastOpenedString=lastOpened.save();
         setProperty("lastOpened",lastOpenedString);
-        if (currentMapRestorable != null) {
-           getFrame().setProperty(FreeMindCommon.ON_START_IF_NOT_SPECIFIED,currentMapRestorable); }
+		getFrame().setProperty(FreeMindCommon.ON_START_IF_NOT_SPECIFIED,
+				currentMapRestorable != null ? currentMapRestorable : "");
         // getFrame().setProperty("menubarVisible",menubarVisible ? "true" : "false");
         // ^ Not allowed in application because of problems with not working key shortcuts
         setProperty("toolbarVisible", toolbarVisible ? "true" : "false");

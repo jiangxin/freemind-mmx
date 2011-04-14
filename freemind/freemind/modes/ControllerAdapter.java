@@ -816,6 +816,24 @@ public abstract class ControllerAdapter implements ModeController {
     public boolean close(boolean force, MapModuleManager mapModuleManager) {
     	// remove old messages.
     	getFrame().out("");
+		if (!force && !getModel().isSaved()) {
+			String text = getText("save_unsaved") + "\n"
+					+ mapModuleManager.getMapModule().toString();
+			String title = Tools.removeMnemonic(getText("save"));
+			int returnVal = JOptionPane.showOptionDialog(getFrame()
+					.getContentPane(), text, title,
+					JOptionPane.YES_NO_CANCEL_OPTION,
+					JOptionPane.QUESTION_MESSAGE, null, null, null);
+			if (returnVal == JOptionPane.YES_OPTION) {
+				boolean savingNotCancelled = save();
+				if (!savingNotCancelled) {
+					return false;
+				}
+			} else if ((returnVal == JOptionPane.CANCEL_OPTION)
+					|| (returnVal == JOptionPane.CLOSED_OPTION)) {
+				return false;
+			}
+		}
 		LastStateStorageManagement management = new LastStateStorageManagement(
 				getFrame().getProperty(
 						FreeMindCommon.MINDMAP_LAST_STATE_MAP_STORAGE));
@@ -832,7 +850,8 @@ public abstract class ControllerAdapter implements ModeController {
 				store.setX(viewLocation.x);
 				store.setY(viewLocation.y);
 			}
-			store.setLastSelected(this.getNodeID(this.getSelected()));
+			String lastSelected = this.getNodeID(this.getSelected());
+			store.setLastSelected(lastSelected);
 			store.clearNodeListMemberList();
 			List selecteds = this.getSelecteds();
 			for (Iterator iter = selecteds.iterator(); iter.hasNext();) {
@@ -845,17 +864,6 @@ public abstract class ControllerAdapter implements ModeController {
 			getFrame().setProperty(FreeMindCommon.MINDMAP_LAST_STATE_MAP_STORAGE,
 					management.getXml());
 		}
-        if (!force && !getModel().isSaved()) {
-            String text = getText("save_unsaved")+"\n"+mapModuleManager.getMapModule().toString();
-            String title = Tools.removeMnemonic(getText("save"));
-            int returnVal = JOptionPane.showOptionDialog(getFrame().getContentPane(),text,title,JOptionPane.YES_NO_CANCEL_OPTION,
-                                                         JOptionPane.QUESTION_MESSAGE,null,null,null);
-            if (returnVal==JOptionPane.YES_OPTION) {
-               boolean savingNotCancelled = save();
-               if (!savingNotCancelled) {
-               	  return false; }}
-			else if ((returnVal==JOptionPane.CANCEL_OPTION) || (returnVal == JOptionPane.CLOSED_OPTION)) {
-				return false; }}
 
         getModel().destroy();
         return true; }
