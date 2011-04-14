@@ -24,6 +24,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.KeyboardFocusManager;
+import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -53,6 +54,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
+import java.util.Vector;
 import java.util.logging.Level;
 
 import javax.swing.AbstractAction;
@@ -73,10 +75,14 @@ import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileFilter;
 
 import freemind.controller.Controller;
+import freemind.controller.LastStateStorageManagement;
 import freemind.controller.MapModuleManager;
 import freemind.controller.MindMapNodesSelection;
 import freemind.controller.StructuredMenuHolder;
+import freemind.controller.actions.generated.instance.MindmapLastStateStorage;
+import freemind.controller.actions.generated.instance.NodeListMember;
 import freemind.extensions.PermanentNodeHook;
+import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain;
 import freemind.main.Resources;
 import freemind.main.Tools;
@@ -364,6 +370,33 @@ public abstract class ControllerAdapter implements ModeController {
         newMap(model);
 		model.setSaved(true);
         logger.info("Finished loading " + file);
+		// restore zoom, etc.
+        String lastStateMapXml = getFrame().getProperty(FreeMindCommon.MINDMAP_LAST_STATE_MAP_STORAGE);
+        LastStateStorageManagement management= new LastStateStorageManagement(lastStateMapXml);
+        MindmapLastStateStorage store = management.getStorage(model.getRestorable());
+        if(store != null) {
+			ModeController modeController = newModeController;
+			MapView view = modeController.getView();
+			view.setZoom(store.getLastZoom());
+			MindMapNode sel = null;
+			try {
+				// Selected:
+				sel = modeController.getNodeFromID(store.getLastSelected());
+				modeController.centerNode(sel);
+				List selected = new Vector();
+				for (Iterator iter = store.getListNodeListMemberList().iterator(); iter
+						.hasNext();) {
+					NodeListMember member = (NodeListMember) iter.next();
+					NodeAdapter selNode = modeController.getNodeFromID(member.getNode());
+					selected.add(selNode);
+				}
+				modeController.select(sel, selected);
+			} catch(Exception e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+        } else {
+        	newModeController.getView().moveToRoot();
+        }
     	return newModeController;
     }
     
@@ -583,11 +616,12 @@ public abstract class ControllerAdapter implements ModeController {
 	}
 
 	/**
-     * Return false is the action was cancelled, e.g. when
-     * it has to lead to saving as.
-     */
-    public boolean save(File file) {
-       return getModel().save(file); }
+	 * Return false is the action was cancelled, e.g. when it has to lead to
+	 * saving as.
+	 */
+	public boolean save(File file) {
+		return getModel().save(file);
+	}
 
     /** @return returns the new JMenuItem.*/
     protected JMenuItem add(JMenu menu, Action action, String keystroke) {
@@ -652,7 +686,6 @@ public abstract class ControllerAdapter implements ModeController {
 	            try {
 	                lastCurrentDir = theFile.getParentFile();
 	                ModeController newMC = load(theFile);
-	                newMC.getView().moveToRoot();
 	            } catch (Exception ex) {
 	               handleLoadingException (ex); 
 	               break;
@@ -780,6 +813,33 @@ public abstract class ControllerAdapter implements ModeController {
     public boolean close(boolean force, MapModuleManager mapModuleManager) {
     	// remove old messages.
     	getFrame().out("");
+		LastStateStorageManagement management = new LastStateStorageManagement(
+				getFrame().getProperty(
+						FreeMindCommon.MINDMAP_LAST_STATE_MAP_STORAGE));
+		String restorable = getModel().getRestorable();
+		MindmapLastStateStorage store = management.getStorage(restorable);
+		if (store == null) {
+			store = new MindmapLastStateStorage();
+		}
+		store.setRestorableName(restorable);
+		store.setLastZoom(getView().getZoom());
+		Point viewLocation = getView().getViewLocation();
+		if (viewLocation != null) {
+			store.setX(viewLocation.x);
+			store.setY(viewLocation.y);
+		}
+		store.setLastSelected(this.getNodeID(this.getSelected()));
+		store.clearNodeListMemberList();
+		List selecteds = this.getSelecteds();
+		for (Iterator iter = selecteds.iterator(); iter.hasNext();) {
+			MindMapNode node = (MindMapNode) iter.next();
+			NodeListMember member = new NodeListMember();
+			member.setNode(this.getNodeID(node));
+			store.addNodeListMember(member);
+		}
+		management.changeOrAdd(store);
+		getFrame().setProperty(FreeMindCommon.MINDMAP_LAST_STATE_MAP_STORAGE,
+				management.getXml());
         if (!force && !getModel().isSaved()) {
             String text = getText("save_unsaved")+"\n"+mapModuleManager.getMapModule().toString();
             String title = Tools.removeMnemonic(getText("save"));

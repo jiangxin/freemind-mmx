@@ -79,7 +79,7 @@ public interface MindMap extends TreeModel {
      * two different maps don't give the same restoreable
      * key.
      */
-    String getRestoreable();
+    String getRestorable();
 
     TreeNode[] getPathToRoot( TreeNode node );
 

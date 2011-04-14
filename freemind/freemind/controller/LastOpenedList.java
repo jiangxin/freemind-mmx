@@ -54,7 +54,7 @@ public class LastOpenedList {
 
     void mapOpened(MapModule mapModule) {
 	if (mapModule==null || mapModule.getModel()==null) return;
-	String restoreString = mapModule.getModel().getRestoreable();
+	String restoreString = mapModule.getModel().getRestorable();
 	if (restoreString==null) return;
 	if (lastOpenedList.contains(restoreString)) {
 	    lastOpenedList.remove(restoreString);

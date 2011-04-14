@@ -1017,44 +1017,22 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			MapModule mapToFocus=null;
 	        String lastStateMapXml = getProperty(FreeMindCommon.MINDMAP_LAST_STATE_MAP_STORAGE);
 	        LastStateStorageManagement management= new LastStateStorageManagement(lastStateMapXml);
-	        for (Iterator it = management.getList().iterator(); it.hasNext();) {
+	        for (Iterator it = management.getLastOpenList().iterator(); it.hasNext();) {
 				MindmapLastStateStorage store = (MindmapLastStateStorage) it.next();
 				String restorable = store.getRestorableName();
 				try {
 					if(controller.getLastOpenedList().open(
 							restorable)){
-						// restore zoom, etc.
-						ModeController modeController = controller.getModeController();
-						MapView view = modeController.getView();
-						view.setZoom(store.getLastZoom());
-						MindMapNode sel = null;
-						try {
-							// Selected:
-							sel = modeController.getNodeFromID(store.getLastSelected());
-							modeController.centerNode(sel);
-							List selected = new Vector();
-							for (Iterator iter = store.getListNodeListMemberList().iterator(); iter
-									.hasNext();) {
-								NodeListMember member = (NodeListMember) iter.next();
-								NodeAdapter selNode = modeController.getNodeFromID(member.getNode());
-								selected.add(selNode);
-							}
-							modeController.select(sel, selected);
-						} catch(Exception e) {
-							freemind.main.Resources.getInstance().logException(e);
-						}
-						//doesn't work	
-//						view.setViewLocation(store.getX(), store.getY());
 						if(index == management.getLastFocussedTab()) {
 							mapToFocus = controller.getMapModule();
 						}
 					}
-					index++;
 					fileLoaded = true;
 				} catch (Exception e) {
 					freemind.main.Resources.getInstance()
 					.logException(e);
 				}
+				index++;
 			}
 	        if(mapToFocus != null) {
 	        	controller.getMapModuleManager().changeToMapModule(mapToFocus.getDisplayName());

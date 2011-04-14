@@ -1,5 +1,7 @@
 package tests.freemind;
 
+import java.util.List;
+
 import freemind.controller.LastStateStorageManagement;
 import freemind.controller.actions.generated.instance.MindmapLastStateStorage;
 
@@ -29,6 +31,25 @@ public class LastStorageManagementTests extends FreeMindTestBase {
 		assertNull(mMgm.getStorage(""+0));
 	}
 
+	public void testGetList() {
+		for(int i =0 ; i < LastStateStorageManagement.LIST_AMOUNT_LIMIT; ++i){
+			MindmapLastStateStorage test = new MindmapLastStateStorage();
+			test.setRestorableName(""+i);
+			if(i<=5){
+				test.setTabIndex(5-i);
+			} else {
+				test.setTabIndex(-1);
+			}
+			mMgm.changeOrAdd(test);
+			assertEquals(test, mMgm.getStorage(""+i));
+			waitOneMilli();
+		}
+		List list = mMgm.getLastOpenList();
+		assertEquals(6, list.size());
+		assertEquals("5", ((MindmapLastStateStorage) list.get(0)).getRestorableName());
+		assertEquals("4", ((MindmapLastStateStorage) list.get(1)).getRestorableName());
+	}
+	
 	public void testChangeOrAdd2() {
 		for(int i =0 ; i < LastStateStorageManagement.LIST_AMOUNT_LIMIT; ++i){
 			MindmapLastStateStorage test = new MindmapLastStateStorage();

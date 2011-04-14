@@ -20,10 +20,13 @@
 
 package freemind.controller;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.Vector;
 
 import freemind.controller.actions.generated.instance.MindmapLastStateMapStorage;
 import freemind.controller.actions.generated.instance.MindmapLastStateStorage;
@@ -66,6 +69,14 @@ public class LastStateStorageManagement {
 		return Tools.marshall(mLastStatesMap);
 	}
 	
+	public void clearTabIndices(){
+		for (Iterator it = mLastStatesMap.getListMindmapLastStateStorageList()
+				.iterator(); it.hasNext();) {
+			MindmapLastStateStorage store = (MindmapLastStateStorage) it.next();
+			store.setTabIndex(-1);
+		}
+	}
+	
 	public void changeOrAdd(MindmapLastStateStorage pStore) {
 		boolean found = false;
 		for (Iterator it = mLastStatesMap.getListMindmapLastStateStorageList()
@@ -77,9 +88,9 @@ public class LastStateStorageManagement {
 				store.setLastSelected(pStore.getLastSelected());
 				store.setX(pStore.getX());
 				store.setY(pStore.getY());
+				Vector listCopy = new Vector(pStore.getListNodeListMemberList());
 				store.clearNodeListMemberList();
-				for (Iterator it2 = pStore.getListNodeListMemberList()
-						.iterator(); it2.hasNext();) {
+				for (Iterator it2 = listCopy.iterator(); it2.hasNext();) {
 					NodeListMember member = (NodeListMember) it2.next();
 					store.addNodeListMember(member);
 				}
@@ -123,19 +134,34 @@ public class LastStateStorageManagement {
 		}
 	}
 
-	public MindmapLastStateStorage getStorage(String pFileName) {
+	public MindmapLastStateStorage getStorage(String pRestorableName) {
 		for (Iterator it = mLastStatesMap.getListMindmapLastStateStorageList()
 				.iterator(); it.hasNext();) {
 			MindmapLastStateStorage store = (MindmapLastStateStorage) it.next();
-			if (Tools.safeEquals(pFileName, store.getRestorableName())) {
+			if (Tools.safeEquals(pRestorableName, store.getRestorableName())) {
 				return store;
 			}
 		}
 		return null;
 	}
 	
-	public List getList() {
-		return mLastStatesMap.getListMindmapLastStateStorageList();
+	public List getLastOpenList() {
+		Vector ret = new Vector();
+		for (Iterator it = mLastStatesMap.getListMindmapLastStateStorageList().iterator(); it.hasNext();) {
+			MindmapLastStateStorage store = (MindmapLastStateStorage) it.next();
+			if(store.getTabIndex()>= 0){
+				ret.add(store);
+			}
+		}
+		Collections.sort(ret, new Comparator() {
+			
+			public int compare(Object arg0, Object arg1) {
+				MindmapLastStateStorage store0 = (MindmapLastStateStorage) arg0;
+				MindmapLastStateStorage store1 = (MindmapLastStateStorage) arg1;
+				return store0.getTabIndex()-store1.getTabIndex();
+			}
+		});
+		return ret;
 	}
 	
 	public int getLastFocussedTab() {

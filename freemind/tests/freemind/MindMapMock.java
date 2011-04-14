@@ -96,7 +96,7 @@ public class MindMapMock implements MindMap {
     		fileout.close();
     }
 
-    public String getRestoreable() {
+    public String getRestorable() {
         return null;
     }
 

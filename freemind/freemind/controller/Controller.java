@@ -885,54 +885,48 @@ public class Controller  implements MapModuleChangeObserver {
     //
 
     private void quit() {
-        String currentMapRestorable = (getModel()!=null) ? getModel().getRestoreable() : null;
-        MindMap currentModel = getModel();
+        String currentMapRestorable = (getModel()!=null) ? getModel().getRestorable() : null;
         // collect all maps:
-        int index=0;
-        String lastStateMapXml = getProperty(FreeMindCommon.MINDMAP_LAST_STATE_MAP_STORAGE);
-        LastStateStorageManagement management= new LastStateStorageManagement(lastStateMapXml);
+        Vector restorables = new Vector();
         for (Iterator it = getMapModuleManager().getMapModuleVector().iterator(); it.hasNext();) {
 			MapModule module = (MapModule) it.next();
 			MindmapLastStateStorage store = new MindmapLastStateStorage();
-			String restoreable = module.getModel().getRestoreable();
-			if(restoreable == null)
+			String restorable = module.getModel().getRestorable();
+			if(restorable == null)
 				continue;
-			store.setRestorableName(restoreable);
-			store.setLastZoom(module.getView().getZoom());
-			Point viewLocation = module.getView().getViewLocation();
-			if (viewLocation != null) {
-				store.setX(viewLocation.x);
-				store.setY(viewLocation.y);
+			restorables.add(restorable);
+        }
+		while (getMapModuleManager().getMapModuleVector().size() > 0) {
+			if (getMapModule() != null) {
+				boolean closingNotCancelled = getMapModuleManager()
+						.close(false);
+				if (!closingNotCancelled) {
+					return;
+				}
+			} else {
+				// map module without view open.
+				// FIXME: This seems to be a bad hack. correct me!
+				getMapModuleManager().nextMapModule();
 			}
-			ModeController modeController = module.getModeController();
-			store.setLastSelected(modeController.getNodeID(modeController.getSelected()));
-			List selecteds = modeController.getSelecteds();
-			for (Iterator iter = selecteds.iterator(); iter.hasNext();) {
-				MindMapNode node = (MindMapNode) iter.next();
-				NodeListMember member = new NodeListMember();
-				member.setNode(modeController.getNodeID(node));
-				store.addNodeListMember(member);
+		}
+		// store last tab session:
+		int index=0;
+		String lastStateMapXml = getProperty(FreeMindCommon.MINDMAP_LAST_STATE_MAP_STORAGE);
+		LastStateStorageManagement management= new LastStateStorageManagement(lastStateMapXml);
+		management.setLastFocussedTab(-1);
+		management.clearTabIndices();
+		for (Iterator it = restorables.iterator(); it.hasNext();) {
+			String restorable = (String) it.next();
+			MindmapLastStateStorage storage = management.getStorage(restorable);
+			if(storage != null) {
+				storage.setTabIndex(index);
 			}
-			management.changeOrAdd(store);
-			if(module.getModel() == currentModel) {
+			if(Tools.safeEquals(restorable, currentMapRestorable)) {
 				management.setLastFocussedTab(index);
 			}
 			index++;
 		}
-        setProperty(FreeMindCommon.MINDMAP_LAST_STATE_MAP_STORAGE, management.getXml());
-        while (getMapModuleManager().getMapModuleVector().size() > 0) {
-				if (getMapModule() != null) {
-					boolean closingNotCancelled = getMapModuleManager().close(
-							false);
-					if (!closingNotCancelled) {
-						return;
-					}
-				} else {
-					// map module without view open.
-					// FIXME: This seems to be a bad hack. correct me!
-					getMapModuleManager().nextMapModule();
-				}
-		}
+		setProperty(FreeMindCommon.MINDMAP_LAST_STATE_MAP_STORAGE, management.getXml());
 
         String lastOpenedString=lastOpened.save();
         setProperty("lastOpened",lastOpenedString);

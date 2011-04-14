@@ -225,7 +225,7 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
     public String getAsHTML(List mindMapNodes) {
        return null; }
 
-    public String getRestoreable() {
+    public String getRestorable() {
 	return null;
     }
 

@@ -118,7 +118,7 @@ public class MindMapMapModel extends MapAdapter  {
         return linkRegistry;
     }
 
-    public String getRestoreable() {
+    public String getRestorable() {
        return getFile()==null ? null : RESTORE_MODE_MIND_MAP+getFile().getAbsolutePath(); }
 
     public void changeNode(MindMapNode node, String newText) {

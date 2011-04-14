@@ -860,8 +860,10 @@
 		<xs:complexType>
 			  <!--  time attribute to be able to remove the oldest entries. -->
 		      <xs:attribute name="last_changed" use="required" type="xs:long"/>
+		      <!-- -1 means, that this map wasn't open at the last session. -->
+		      <xs:attribute name="tab_index" use="optional" type="xs:int" default="-1"/>
 		      <xs:attribute name="restorable_name" use="required" type="xs:string"/>
-		      <xs:attribute name="last_zoom" use="optional" type="xs:float"/>
+		      <xs:attribute name="last_zoom" use="optional" type="xs:float"  default="1.0"/>
 		      <!--  viewport in the map -->
 		      <xs:attribute name="x" use="required" type="xs:int"/>
 		      <xs:attribute name="y" use="required" type="xs:int"/>
@@ -877,7 +879,7 @@
 	  <xs:complexType name="mindmap_last_state_map_storage">
 		<xs:complexContent>
 			<xs:extension base="xml_action">
-		      <xs:attribute name="last_focused_tab" use="optional" type="xs:int"/>
+		      <xs:attribute name="last_focused_tab" use="optional" type="xs:int" default="-1"/>
 	          <xs:sequence>
 	    	      <xs:element ref="mindmap_last_state_storage" maxOccurs="unbounded" minOccurs="0"/>
 	          </xs:sequence>

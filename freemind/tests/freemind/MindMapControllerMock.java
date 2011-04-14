@@ -599,4 +599,19 @@ public class MindMapControllerMock implements ModeController {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public void select(MindMapNode pFocused, List pSelecteds) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void selectBranch(NodeView pSelected, boolean pExtend) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setView(MapView pView) {
+		// TODO Auto-generated method stub
+		
+	}
 }
