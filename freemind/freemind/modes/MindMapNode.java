@@ -156,6 +156,9 @@ public interface MindMapNode extends MutableTreeNode {
 
 	String getFontFamilyName();
 
+    /**
+     * @return a collection of NodeView objects.
+     */
     Collection getViewers();
 
     void addViewer(NodeView viewer );

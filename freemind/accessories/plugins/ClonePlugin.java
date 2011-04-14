@@ -20,6 +20,7 @@
 package accessories.plugins;
 
 import java.awt.datatransfer.Transferable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -39,12 +40,13 @@ import freemind.main.Resources;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController.NodeLifetimeListener;
+import freemind.modes.ModeController.NodeSelectionListener;
 import freemind.modes.NodeAdapter;
-import freemind.modes.common.plugins.NodeNoteBase;
 import freemind.modes.mindmapmode.actions.xml.ActionFilter;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
 import freemind.view.mindmapview.MultipleImage;
+import freemind.view.mindmapview.NodeView;
 
 public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		ActionFilter, NodeLifetimeListener {
@@ -56,6 +58,9 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	private boolean mIsDisabled = false;
 	private ImageIcon sCloneIcon;
 	private static Boolean sShowIcon = null;
+	private MindMapNode mOriginalNode;
+	private MindMapNode mCloneNode;
+	private ShadowNodesClass mShadowClass;
 
 	public ClonePlugin() {
 	}
@@ -64,20 +69,27 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		if (isDisabled()) {
 			return pair;
 		}
-		MindMapNode originalNode = getOriginalNode();
-		if (originalNode == null) {
-			logger.info("Original node is (currently?) not available (presumably pasting).");
-			return pair;
-		}
-		MindMapNode cloneNode = getCloneNode();
-		if (cloneNode == null) {
-			logger.info("Clone node is (currently?) not available.");
+		if(!getCorrespondingNodes()) {
 			return pair;
 		}
 		XmlAction doAction = pair.getDoAction();
-		doAction = cloneAction(doAction, originalNode, cloneNode);
+		doAction = cloneAction(doAction, mOriginalNode, mCloneNode);
 		pair.setDoAction(doAction);
 		return pair;
+	}
+
+	private boolean getCorrespondingNodes() {
+		mOriginalNode = getOriginalNode();
+		if (mOriginalNode == null) {
+			logger.info("Original node is (currently?) not available (presumably pasting).");
+			return false;
+		}
+		mCloneNode = getCloneNode();
+		if (mCloneNode == null) {
+			logger.info("Clone node is (currently?) not available.");
+			return false;
+		}
+		return true;
 	}
 
 	private XmlAction cloneAction(XmlAction doAction, MindMapNode originalNode,
@@ -278,6 +290,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 
 	private void registerPlugin() {
 		getMindMapController().registerNodeLifetimeListener(this);
+		mShadowClass = new ShadowNodesClass();
+		getMindMapController().registerNodeSelectionListener(mShadowClass);
 		getMindMapController().getActionFactory().registerFilter(this);
 		if (sCloneIcon == null) {
 			sCloneIcon = new ImageIcon(getMindMapController().getResource(
@@ -311,6 +325,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		setStateIcon(getOriginalNode(), null);
 		setStateIcon(getCloneNode(), null);
 		getMindMapController().getActionFactory().deregisterFilter(this);
+		getMindMapController().deregisterNodeSelectionListener(mShadowClass);
+		mShadowClass = null;
 		getMindMapController().deregisterNodeLifetimeListener(this);
 	}
 
@@ -336,24 +352,18 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		if (isDisabled()) {
 			return;
 		}
-		MindMapNode originalNode = getOriginalNode();
-		if (originalNode == null) {
-			logger.info("Original node is (currently?) not available (presumably pasting).");
+		if(!getCorrespondingNodes()) {
 			return;
 		}
-		MindMapNode cloneNode = getCloneNode();
-		if (cloneNode == null) {
-			logger.info("Clone node is (currently?) not available.");
-			return;
-		}
+
+		checkForChainError(mOriginalNode, node, mCloneNode);
+		checkForChainError(mCloneNode, node, mOriginalNode);
+	}
+
+	private void checkForChainError(MindMapNode originalNode, MindMapNode node, MindMapNode cloneNode) {
 		if (cloneNode.isChildOfOrEqual(node)
 				&& node.isChildOfOrEqual(originalNode)) {
 			// orig -> .... -> node -> .. -> clone
-			disablePlugin();
-		}
-		if (originalNode.isChildOfOrEqual(node)
-				&& node.isChildOfOrEqual(cloneNode)) {
-			// clone -> .... -> node -> .. -> original
 			disablePlugin();
 		}
 	}
@@ -362,5 +372,57 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	public void onPostDeleteNode(MindMapNode node, MindMapNode parent) {
+	}
+	
+	private class ShadowNodesClass implements NodeSelectionListener {
+
+		/**
+		 * Is sent when a node is selected.
+		 */
+		public void onSelectHook(NodeView node) {
+			if (!getCorrespondingNodes()) {
+				return;
+			}
+			MindMapNode model = node.getModel();
+			if (model.isChildOfOrEqual(mOriginalNode)) {
+				MindMapNode shadowNode = getCorrespondingNode(model,
+						mOriginalNode, mCloneNode);
+				setStateIcon(shadowNode, sCloneIcon);
+			}
+			if (model.isChildOfOrEqual(mCloneNode)) {
+				MindMapNode shadowNode = getCorrespondingNode(model,
+						mCloneNode, mOriginalNode);
+				setStateIcon(shadowNode, sCloneIcon);
+			}
+		}
+
+		/**
+		 * Is sent when a node is deselected.
+		 */
+		public void onDeselectHook(NodeView node) {
+			if (!getCorrespondingNodes()) {
+				return;
+			}
+			MindMapNode model = node.getModel();
+			if (model.isChildOfOrEqual(mOriginalNode)) {
+				MindMapNode shadowNode = getCorrespondingNode(model,
+						mOriginalNode, mCloneNode);
+				setStateIcon(shadowNode, null);
+			}
+			if (model.isChildOfOrEqual(mCloneNode)) {
+				MindMapNode shadowNode = getCorrespondingNode(model,
+						mCloneNode, mOriginalNode);
+				setStateIcon(shadowNode, null);
+			}
+		}
+
+		public void onUpdateNodeHook(MindMapNode pNode) {
+
+		}
+
+		public void onSaveNode(MindMapNode pNode) {
+
+		}
+
 	}
 }
