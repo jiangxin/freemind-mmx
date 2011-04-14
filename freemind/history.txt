@@ -1,4 +1,9 @@
 ===============================
+Changes made in FreeMind 1.0.0 Alpha3
+===============================
+* zoom and selected node storage now works for open/close of maps, too.
+
+===============================
 Changes made in FreeMind 1.0.0 Alpha2
 ===============================
 * New feature: restore of tabs and zoom implemented
