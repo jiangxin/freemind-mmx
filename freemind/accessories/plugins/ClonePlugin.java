@@ -253,21 +253,21 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 		 * Is sent when a node is selected.
 		 */
 		public void onSelectHook(NodeView node) {
-			MindMapNode model = node.getModel();
-			if (model.isChildOfOrEqual(getOriginalNode())) {
-				MindMapNode shadowNode = getCorrespondingNode(model);
-				selectShadowNode(shadowNode, true);
-			}
+			markShadowNode(node, true);
 		}
-		
+
 		/**
 		 * Is sent when a node is deselected.
 		 */
 		public void onDeselectHook(NodeView node) {
+			markShadowNode(node, false);
+		}
+		
+		private void markShadowNode(NodeView node, boolean pEnableShadow) {
 			MindMapNode model = node.getModel();
 			if (model.isChildOfOrEqual(getOriginalNode())) {
 				MindMapNode shadowNode = getCorrespondingNode(model);
-				selectShadowNode(shadowNode, false);
+				selectShadowNode(shadowNode, pEnableShadow);
 			}
 		}
 		
@@ -385,7 +385,9 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 				return;
 			}
 			while (node != null) {
-				node.setBackgroundColor(pEnableShadow?Color.YELLOW:Color.WHITE);
+//				node.setBackgroundColor(pEnableShadow?Color.YELLOW:Color.WHITE);
+				ImageIcon i = pEnableShadow?sCloneIcon:null;
+				node.setStateIcon(getName(), i);
 				getMindMapController().nodeRefresh(node);
 				if(node == getCloneNode())
 					break;

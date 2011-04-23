@@ -96,6 +96,7 @@ public abstract class MainView extends JLabel{
             Dimension prefSize = super.getPreferredSize();
             final float zoom = getNodeView().getMap().getZoom();
             if(zoom != 1F){
+            	// TODO: Why 0.99? fc, 23.4.2011
                 prefSize.width = (int)(0.99 + prefSize.width * zoom);
                 prefSize.height= (int)(0.99 + prefSize.height *zoom);
             }
