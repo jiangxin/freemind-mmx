@@ -398,6 +398,7 @@ public abstract class ControllerAdapter implements ModeController {
 				modeController.select(sel, selected);
 			} catch(Exception e) {
 				freemind.main.Resources.getInstance().logException(e);
+				newModeController.getView().moveToRoot();
 			}
         } else {
         	newModeController.getView().moveToRoot();
