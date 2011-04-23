@@ -19,8 +19,8 @@
  */
 package accessories.plugins;
 
+import java.awt.Color;
 import java.awt.datatransfer.Transferable;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -45,7 +45,6 @@ import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.actions.xml.ActionFilter;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
-import freemind.view.mindmapview.MultipleImage;
 import freemind.view.mindmapview.NodeView;
 
 public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements ActionFilter {
@@ -65,12 +64,6 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 
 	public ActionPair filterAction(ActionPair pair) {
 		if (isDisabled()) {
-			return pair;
-		}
-		boolean result = true;
-		result &= mShadowClass1.getCorrespondingNodes();
-		result &= mShadowClass2.getCorrespondingNodes();
-		if(!result) {
 			return pair;
 		}
 		XmlAction doAction = pair.getDoAction();
@@ -218,7 +211,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 		}
 
 		public void deregister() {
-			selectShadowNode(getOriginalNode(), false);
+//			selectShadowNode(getOriginalNode(), false);
 			getMindMapController().deregisterNodeSelectionListener(this);
 			getMindMapController().deregisterNodeLifetimeListener(this);
 		}
@@ -233,13 +226,13 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 			MindMapNode cloneNode = getCloneNode();
 			logger.info("Invoke shadow class with orig: " + originalNode
 					+ " and clone " + cloneNode);
-			if (originalNode.isChildOf(cloneNode)) {
+			if (originalNode != null && originalNode.isChildOf(cloneNode)) {
 				disablePlugin();
 				return this;
 			}
 			getMindMapController().registerNodeSelectionListener(this);
 			getMindMapController().registerNodeLifetimeListener(this);
-			selectShadowNode(originalNode, true);
+//			selectShadowNode(originalNode, true);
 			return this;
 		}
 
@@ -247,10 +240,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 			if (isDisabled()) {
 				return;
 			}
-			if(!getCorrespondingNodes()) {
-				return;
-			}
-			checkForChainError(mOriginalNode, node, mCloneNode);
+			checkForChainError(getOriginalNode(), node, getCloneNode());
 		}
 		
 		public void onPreDeleteNode(MindMapNode node) {
@@ -263,11 +253,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 		 * Is sent when a node is selected.
 		 */
 		public void onSelectHook(NodeView node) {
-			if (!getCorrespondingNodes()) {
-				return;
-			}
 			MindMapNode model = node.getModel();
-			if (model.isChildOfOrEqual(mOriginalNode)) {
+			if (model.isChildOfOrEqual(getOriginalNode())) {
 				MindMapNode shadowNode = getCorrespondingNode(model);
 				selectShadowNode(shadowNode, true);
 			}
@@ -277,11 +264,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 		 * Is sent when a node is deselected.
 		 */
 		public void onDeselectHook(NodeView node) {
-			if (!getCorrespondingNodes()) {
-				return;
-			}
 			MindMapNode model = node.getModel();
-			if (model.isChildOfOrEqual(mOriginalNode)) {
+			if (model.isChildOfOrEqual(getOriginalNode())) {
 				MindMapNode shadowNode = getCorrespondingNode(model);
 				selectShadowNode(shadowNode, false);
 			}
@@ -295,38 +279,32 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 			
 		}
 
-		// FIXME: Remove this method and encapsulated field.
-		private boolean getCorrespondingNodes() {
-			mOriginalNode = getOriginalNode();
-			if (mOriginalNode == null) {
-				logger.info("Original node is (currently?) not available (presumably pasting).");
-				return false;
-			}
-			mCloneNode = getCloneNode();
-			if (mCloneNode == null) {
-				logger.info("Clone node is (currently?) not available.");
-				return false;
-			}
-			return true;
-		}
-
 		MindMapNode getOriginalNode() {
 			try {
-				return getMindMapController().getNodeFromID(mOriginalNodeId);
+				// check for uptodateness:
+				if(mOriginalNode != null && mOriginalNode.getParentNode() == null) 
+					mOriginalNode = null;
+				if(mOriginalNode==null)
+					mOriginalNode = getMindMapController().getNodeFromID(mOriginalNodeId);
 			} catch (IllegalArgumentException e) {
 				// freemind.main.Resources.getInstance().logException(e);
-				return null;
 			}
+			return mOriginalNode;
 		}
 
 		MindMapNode getCloneNode() {
 			try {
-				return getMindMapController().getNodeFromID(mCloneNodeId);
+				// check for uptodateness:
+				if(mCloneNode != null && mCloneNode.getParentNode() == null) 
+					mCloneNode = null;
+				if(mCloneNode==null)
+					mCloneNode = getMindMapController().getNodeFromID(mCloneNodeId);
 			} catch (IllegalArgumentException e) {
 				// freemind.main.Resources.getInstance().logException(e);
-				return null;
 			}
+			return mCloneNode;
 		}
+		
 		/**
 		 * This is the main method here. It returns to a given node its
 		 * cloned node on the other side.
@@ -336,18 +314,18 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 		private MindMapNode getCorrespondingNode(MindMapNode pNode) {
 			Vector indexVector = new Vector();
 			MindMapNode child = pNode;
-			while (child != mOriginalNode) {
+			while (child != getOriginalNode()) {
 				indexVector.add(0, new Integer(child.getParentNode()
 						.getChildPosition(child)));
 				child = child.getParentNode();
 			}
-			MindMapNode target = mCloneNode;
+			MindMapNode target = getCloneNode();
 			for (Iterator it = indexVector.iterator(); it.hasNext();) {
 				int index = ((Integer) it.next()).intValue();
 				if (target.getChildCount() <= index) {
 					throw new IllegalArgumentException("Index " + index
 							+ " in other tree not found from " + target
-							+ " originating from " + mCloneNode);
+							+ " originating from " + getCloneNode());
 				}
 				target = (MindMapNode) target.getChildAt(index);
 			}
@@ -356,13 +334,13 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 
 		private XmlAction cloneAction(XmlAction doAction, NodeAction nodeAction, MindMapNode node) {
 			if (nodeAction instanceof CutNodeAction) {
-				if (mOriginalNode.isChildOfOrEqual(node)) {
+				if (getOriginalNode().isChildOfOrEqual(node)) {
 					// the complete original is cut.
-					logger.warning("Node " + mOriginalNode + " is cut.");
+					logger.warning("Node " + getOriginalNode() + " is cut.");
 					return doAction;
 				}
 			}
-			if (node.isChildOfOrEqual(mOriginalNode)) {
+			if (node.isChildOfOrEqual(getOriginalNode())) {
 				MindMapNode correspondingNode = getCorrespondingNode(node);
 				doAction = getNewCompoundAction(nodeAction, correspondingNode);
 			}
@@ -383,7 +361,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 					NodeListMember member = moveAction.getNodeListMember(i);
 					NodeAdapter memberNode = getMindMapController().getNodeFromID(
 							member.getNode());
-					if (memberNode.isChildOfOrEqual(mOriginalNode)) {
+					if (memberNode.isChildOfOrEqual(getOriginalNode())) {
 						MindMapNode correspondingNode2 = getCorrespondingNode(
 								memberNode);
 						member.setNode(getMindMapController().getNodeID(
@@ -406,16 +384,13 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 			if(!sShowIcon.booleanValue()){
 				return;
 			}
-//			if (node != null) {
-//				ImageIcon i = icon;
-//				if(icon != null) {
-//					MultipleImage image = new MultipleImage(0.25f);
-//					image.addImage(icon);
-//					i = image;
-//				}
-//				node.setStateIcon(getName(), i);
-//				//TODO: Update node
-//			}
+			while (node != null) {
+				node.setBackgroundColor(pEnableShadow?Color.YELLOW:Color.WHITE);
+				getMindMapController().nodeRefresh(node);
+				if(node == getCloneNode())
+					break;
+				node = node.getParentNode();
+			}
 		}
 
 		private void checkForChainError(MindMapNode originalNode, MindMapNode node, MindMapNode cloneNode) {
@@ -425,8 +400,6 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 				disablePlugin();
 			}
 		}
-
-
 
 	}
 }
