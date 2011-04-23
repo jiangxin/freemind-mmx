@@ -58,6 +58,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 	private static Boolean sShowIcon = null;
 	private CloneShadowClass mShadowClass1;
 	private CloneShadowClass mShadowClass2;
+	private static ImageIcon sOriginalIcon;
 
 	public ClonePlugin() {
 	}
@@ -178,6 +179,10 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 			sCloneIcon = new ImageIcon(getMindMapController().getResource(
 			"images/clone.png"));
 		}
+		if (sOriginalIcon == null) {
+			sOriginalIcon = new ImageIcon(getMindMapController().getResource(
+			"images/clone_original.png"));
+		}
 		if (sShowIcon == null) {
 			sShowIcon = Boolean
 			.valueOf(Resources.getInstance().getBoolProperty(
@@ -211,7 +216,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 		}
 
 		public void deregister() {
-//			selectShadowNode(getOriginalNode(), false);
+			selectShadowNode(getCloneNode(), false, getCloneNode());
 			getMindMapController().deregisterNodeSelectionListener(this);
 			getMindMapController().deregisterNodeLifetimeListener(this);
 		}
@@ -232,7 +237,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 			}
 			getMindMapController().registerNodeSelectionListener(this);
 			getMindMapController().registerNodeLifetimeListener(this);
-//			selectShadowNode(originalNode, true);
+			selectShadowNode(cloneNode, true, getCloneNode());
 			return this;
 		}
 
@@ -267,7 +272,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 			MindMapNode model = node.getModel();
 			if (model.isChildOfOrEqual(getOriginalNode())) {
 				MindMapNode shadowNode = getCorrespondingNode(model);
-				selectShadowNode(shadowNode, pEnableShadow);
+				selectShadowNode(shadowNode, pEnableShadow, getCloneNode());
+				selectShadowNode(model, pEnableShadow, getOriginalNode());
 			}
 		}
 		
@@ -380,16 +386,19 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 			return compound;
 		}
 
-		private void selectShadowNode(MindMapNode node, boolean pEnableShadow) {
+		private void selectShadowNode(MindMapNode node, boolean pEnableShadow, MindMapNode pCloneNode) {
 			if(!sShowIcon.booleanValue()){
 				return;
 			}
 			while (node != null) {
 //				node.setBackgroundColor(pEnableShadow?Color.YELLOW:Color.WHITE);
 				ImageIcon i = pEnableShadow?sCloneIcon:null;
+				if(node == pCloneNode){
+					i = sOriginalIcon;
+				}
 				node.setStateIcon(getName(), i);
 				getMindMapController().nodeRefresh(node);
-				if(node == getCloneNode())
+				if(node == pCloneNode)
 					break;
 				node = node.getParentNode();
 			}
