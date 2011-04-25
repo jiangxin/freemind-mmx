@@ -1,5 +1,11 @@
 <?xml version="1.0"?>
 <plugin label="accessories/plugins/ClonePlugin">
+	<plugin_registration 
+		class_name="accessories.plugins.ClonePasteAction$Registration" 
+		isPluginBase="true">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+	</plugin_registration>
+
 	<plugin_action
 		documentation="%accessories/plugins/ClonePlugin.properties_documentation"
 		name="%accessories/plugins/ClonePlugin.properties_name" base="freemind.extensions.NodeHookAdapter"

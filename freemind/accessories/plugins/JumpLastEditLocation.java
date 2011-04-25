@@ -69,9 +69,7 @@ public class JumpLastEditLocation extends MindMapNodeHookAdapter {
 			MindMapNode node = getMindMapController().getNodeFromID(
 					lastEditLocation);
 			this.logger.fine("Selecting " + node + " as last edit location.");
-			Vector nodes = new Vector();
-			nodes.add(node);
-			getMindMapController().select(node, nodes);
+			getMindMapController().select(node, Tools.getVectorWithSingleElement(node));
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
 		}

@@ -34,20 +34,20 @@ public class MindMapNodesSelection implements Transferable, ClipboardOwner {
    private String htmlContent;
    private String dropActionContent;
    private final List fileList;
-   private String nodeIdsContent;
+   private List nodeIdsContent;
 
    public static DataFlavor mindMapNodesFlavor = null;
    public static DataFlavor rtfFlavor = null;
    public static DataFlavor htmlFlavor = null;
    public static DataFlavor fileListFlavor = null;
-   /** fc, 7.8.2004: This is a quite interisting flavor, but how does it works???*/
+   /** fc, 7.8.2004: This is a quite interesting flavor, but how does it works???*/
    public static DataFlavor dropActionFlavor = null;
    /** This flavor contains the node ids only. Thus, it works only on the same map.*/
    public static DataFlavor copyNodeIdsFlavor = null;
 
    static {
       try {
-         mindMapNodesFlavor = new DataFlavor("text/freemind-nodes; class=java.lang.String");
+         mindMapNodesFlavor = new DataFlavor("text/freemind-nodes; class=java.util.List");
          rtfFlavor = new DataFlavor("text/rtf; class=java.io.InputStream"); 
          htmlFlavor = new DataFlavor("text/html; class=java.lang.String");
          fileListFlavor = new DataFlavor("application/x-java-file-list; class=java.util.List");
@@ -62,7 +62,7 @@ public class MindMapNodesSelection implements Transferable, ClipboardOwner {
 
    public MindMapNodesSelection(String nodesContent, String stringContent,
             String rtfContent, String htmlContent, String dropActionContent, 
-            List fileList, String nodeIdsContent) {
+            List fileList, List nodeIdsContent) {
         this.nodesContent = nodesContent;
         this.rtfContent = rtfContent;
         this.stringContent = stringContent;

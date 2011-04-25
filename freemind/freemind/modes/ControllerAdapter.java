@@ -1204,7 +1204,7 @@ public abstract class ControllerAdapter implements ModeController {
 		try {
 			String forNodesFlavor = createForNodesFlavor(selectedNodes,
 					copyInvisible);
-			String createForNodeIdsFlavor = createForNodeIdsFlavor(
+			List createForNodeIdsFlavor = createForNodeIdsFlavor(
 					selectedNodes, copyInvisible);
 
 			String plainText = getMap().getAsPlainText(selectedNodes);
@@ -1238,19 +1238,14 @@ public abstract class ControllerAdapter implements ModeController {
 			return forNodesFlavor;
 		}
 
-	public String createForNodeIdsFlavor(List selectedNodes, boolean copyInvisible)
+	public List createForNodeIdsFlavor(List selectedNodes, boolean copyInvisible)
 			throws UnsupportedFlavorException, IOException {
-		String forNodesFlavor = "";
+		Vector forNodesFlavor = new Vector();
 		boolean firstLoop = true;
 		for (Iterator it = selectedNodes.iterator(); it.hasNext();) {
 			MindMapNode tmpNode = (MindMapNode) it.next();
-			if (firstLoop) {
-				firstLoop = false;
-			} else {
-				forNodesFlavor += ";";
-			}
 
-			forNodesFlavor += getNodeID(tmpNode);
+			forNodesFlavor.add(getNodeID(tmpNode));
 		}
 		return forNodesFlavor;
 	}

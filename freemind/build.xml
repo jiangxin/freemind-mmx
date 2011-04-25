@@ -628,7 +628,7 @@
     		<arg value="${gitRoot}"/>
     		<arg value="${inst.dir}/"/>
     	</exec>            
-
+		<copy todir="${inst.dir}/freemind" file="${freemind.buildnumber.file}"></copy>
     	<ant dir="${inst.dir}/freemind" target="post" inheritall="false"></ant>
     	<copy todir="${inst.dest.dir}">
     		<fileset dir="${inst.dir}/post">

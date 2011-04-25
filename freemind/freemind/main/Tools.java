@@ -1480,5 +1480,11 @@ public class Tools {
 		return mode;
 	}
 
+	public static Vector getVectorWithSingleElement(Object obj) {
+		Vector nodes = new Vector();
+		nodes.add(obj);
+		return nodes;
+	}
+
 }
 

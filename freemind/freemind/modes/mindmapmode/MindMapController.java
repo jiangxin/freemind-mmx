@@ -47,7 +47,6 @@ import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -106,12 +105,12 @@ import freemind.controller.actions.generated.instance.PatternNodeText;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookFactory;
+import freemind.extensions.HookFactory.RegistrationContainer;
 import freemind.extensions.HookRegistration;
 import freemind.extensions.ModeControllerHook;
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
 import freemind.extensions.UndoEventReceiver;
-import freemind.extensions.HookFactory.RegistrationContainer;
 import freemind.main.ExampleFileFilter;
 import freemind.main.FixedHTMLWriter;
 import freemind.main.HtmlTools;
@@ -135,13 +134,12 @@ import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.AttributeController;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.modes.common.CommonNodeKeyListener;
-import freemind.modes.common.GotoLinkNodeAction;
 import freemind.modes.common.CommonNodeKeyListener.EditHandler;
+import freemind.modes.common.GotoLinkNodeAction;
 import freemind.modes.common.actions.FindAction;
-import freemind.modes.common.actions.NewMapAction;
 import freemind.modes.common.actions.FindAction.FindNextAction;
+import freemind.modes.common.actions.NewMapAction;
 import freemind.modes.common.listeners.CommonNodeMouseMotionListener;
-import freemind.modes.common.listeners.MindMapMouseWheelEventHandler;
 import freemind.modes.mindmapmode.actions.AddArrowLinkAction;
 import freemind.modes.mindmapmode.actions.AddLocalLinkAction;
 import freemind.modes.mindmapmode.actions.ApplyPatternAction;
@@ -176,6 +174,7 @@ import freemind.modes.mindmapmode.actions.NewChildAction;
 import freemind.modes.mindmapmode.actions.NewPreviousSiblingAction;
 import freemind.modes.mindmapmode.actions.NewSiblingAction;
 import freemind.modes.mindmapmode.actions.NodeBackgroundColorAction;
+import freemind.modes.mindmapmode.actions.NodeBackgroundColorAction.RemoveNodeBackgroundColorAction;
 import freemind.modes.mindmapmode.actions.NodeColorAction;
 import freemind.modes.mindmapmode.actions.NodeColorBlendAction;
 import freemind.modes.mindmapmode.actions.NodeGeneralAction;
@@ -198,7 +197,6 @@ import freemind.modes.mindmapmode.actions.UnderlinedAction;
 import freemind.modes.mindmapmode.actions.UndoAction;
 import freemind.modes.mindmapmode.actions.UsePlainTextAction;
 import freemind.modes.mindmapmode.actions.UseRichFormattingAction;
-import freemind.modes.mindmapmode.actions.NodeBackgroundColorAction.RemoveNodeBackgroundColorAction;
 import freemind.modes.mindmapmode.actions.xml.ActionFactory;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.NodeHookUndoableContentActor;
@@ -1435,7 +1433,8 @@ freemind.main.Resources.getInstance().logException(					e1);
         try {
            ((MindMapNodeModel)node).save(stringWriter, getMap().getLinkRegistry(), saveInvisible, true); }
         catch (IOException e) {}
-        return new MindMapNodesSelection(stringWriter.toString(), null, null, null, null, null, getNodeID(node)); 
+        Vector nodeList = Tools.getVectorWithSingleElement(getNodeID(node));
+		return new MindMapNodesSelection(stringWriter.toString(), null, null, null, null, null, nodeList); 
     }
 
      public Transferable cut() {
