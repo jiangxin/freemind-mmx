@@ -22,7 +22,6 @@ package freemind.modes;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.EventQueue;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
@@ -1201,20 +1200,26 @@ public abstract class ControllerAdapter implements ModeController {
            final ArrayList selectedNodes  = getView().getSingleSelectedNodes();
            return copy(selectedNodes, false); }
 
-        public Transferable copy(List selectedNodes, boolean copyInvisible) {
-           try {
-              String forNodesFlavor = createForNodesFlavor(selectedNodes,
+	public Transferable copy(List selectedNodes, boolean copyInvisible) {
+		try {
+			String forNodesFlavor = createForNodesFlavor(selectedNodes,
 					copyInvisible);
+			String createForNodeIdsFlavor = createForNodeIdsFlavor(
+					selectedNodes, copyInvisible);
 
-              String plainText = getMap().getAsPlainText(selectedNodes);
-              return new MindMapNodesSelection
-                 (forNodesFlavor, plainText, getMap().getAsRTF(selectedNodes), getMap().getAsHTML(selectedNodes), null, null); }
-              //return new StringSelection(forClipboard); }
+			String plainText = getMap().getAsPlainText(selectedNodes);
+			return new MindMapNodesSelection(forNodesFlavor, plainText,
+					getMap().getAsRTF(selectedNodes), getMap().getAsHTML(
+							selectedNodes), null, null, createForNodeIdsFlavor);
+		}
 
-
-           catch (UnsupportedFlavorException ex) { freemind.main.Resources.getInstance().logException(ex); }
-           catch (IOException ex) { freemind.main.Resources.getInstance().logException(ex); }
-           return null; }
+		catch (UnsupportedFlavorException ex) {
+			freemind.main.Resources.getInstance().logException(ex);
+		} catch (IOException ex) {
+			freemind.main.Resources.getInstance().logException(ex);
+		}
+		return null;
+	}
 
 		public String createForNodesFlavor(List selectedNodes,
 				boolean copyInvisible) throws UnsupportedFlavorException,
@@ -1232,6 +1237,24 @@ public abstract class ControllerAdapter implements ModeController {
               }
 			return forNodesFlavor;
 		}
+
+	public String createForNodeIdsFlavor(List selectedNodes, boolean copyInvisible)
+			throws UnsupportedFlavorException, IOException {
+		String forNodesFlavor = "";
+		boolean firstLoop = true;
+		for (Iterator it = selectedNodes.iterator(); it.hasNext();) {
+			MindMapNode tmpNode = (MindMapNode) it.next();
+			if (firstLoop) {
+				firstLoop = false;
+			} else {
+				forNodesFlavor += ";";
+			}
+
+			forNodesFlavor += getNodeID(tmpNode);
+		}
+		return forNodesFlavor;
+	}
+
     /**
      */
     public Color getSelectionColor() {

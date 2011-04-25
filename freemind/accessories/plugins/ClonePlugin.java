@@ -55,10 +55,10 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 	String mCloneNodeId;
 	private boolean mIsDisabled = false;
 	private ImageIcon sCloneIcon;
+	private static ImageIcon sOriginalIcon;
 	private static Boolean sShowIcon = null;
 	private CloneShadowClass mShadowClass1;
 	private CloneShadowClass mShadowClass2;
-	private static ImageIcon sOriginalIcon;
 
 	public ClonePlugin() {
 	}
@@ -391,7 +391,6 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 				return;
 			}
 			while (node != null) {
-//				node.setBackgroundColor(pEnableShadow?Color.YELLOW:Color.WHITE);
 				ImageIcon i = pEnableShadow?sCloneIcon:null;
 				if(node == pCloneNode){
 					i = sOriginalIcon;
@@ -401,6 +400,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements Acti
 				if(node == pCloneNode)
 					break;
 				node = node.getParentNode();
+				// comment this out to get a complete marked path to the root of the clones.
+				break;
 			}
 		}
 

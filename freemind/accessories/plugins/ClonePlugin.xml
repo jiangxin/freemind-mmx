@@ -3,14 +3,22 @@
 	<plugin_action
 		documentation="%accessories/plugins/ClonePlugin.properties_documentation"
 		name="%accessories/plugins/ClonePlugin.properties_name" base="freemind.extensions.NodeHookAdapter"
-		label="accessories/plugins/ClonePlugin.properties"
-		class_name="accessories.plugins.ClonePlugin" instanciation="Once"
-		isSelectable="true"
-		>
+		label="accessories/plugins/ClonePlugin.properties" class_name="accessories.plugins.ClonePlugin"
+		instanciation="Once" isSelectable="true">
 		<plugin_mode class_name="freemind.modes.mindmapmode" />
 		<plugin_menu location="menu_bar/insert/links/ClonePlugin" />
 	</plugin_action>
-<!-- 
- 	icon_path="accessories/plugins/icons/xeyes.png" 
- -->	
+	<plugin_action
+		documentation="%accessories/plugins/ClonePasteAction.properties_documentation"
+		name="%accessories/plugins/ClonePasteAction.properties_name"
+		key_stroke="%keystroke_accessories/plugins/ClonePasteAction.properties_key"
+		base="freemind.extensions.NodeHookAdapter" label="accessories/plugins/ClonePasteAction.properties"
+		class_name="accessories.plugins.ClonePasteAction" instanciation="other">
+		<!-- Instantiations: Once, OnceForRoot, OnceForAllNodes, Other, ApplyToRoot -->
+		<plugin_mode class_name="freemind.modes.mindmapmode" />
+		<plugin_menu location="menu_bar/edit/paste/paste_as_clone" />
+	</plugin_action>
+
+	<!-- icon_path="accessories/plugins/icons/xeyes.png" -->
 </plugin>
+

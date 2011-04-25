@@ -816,7 +816,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 		Transferable copy = new MindMapNodesSelection(trans.getTransferable(),
 				trans.getTransferableAsPlainText(),
 				trans.getTransferableAsRTF(), trans.getTransferableAsHtml(),
-				trans.getTransferableAsDrop(), fileList);
+				trans.getTransferableAsDrop(), fileList, null);
 		return copy;
 	}
 

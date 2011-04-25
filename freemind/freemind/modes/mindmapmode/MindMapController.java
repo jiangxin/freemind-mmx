@@ -1435,7 +1435,7 @@ freemind.main.Resources.getInstance().logException(					e1);
         try {
            ((MindMapNodeModel)node).save(stringWriter, getMap().getLinkRegistry(), saveInvisible, true); }
         catch (IOException e) {}
-        return new MindMapNodesSelection(stringWriter.toString(), null, null, null, null, null); 
+        return new MindMapNodesSelection(stringWriter.toString(), null, null, null, null, null, getNodeID(node)); 
     }
 
      public Transferable cut() {

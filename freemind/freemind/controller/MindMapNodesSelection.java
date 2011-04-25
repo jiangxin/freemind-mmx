@@ -34,6 +34,7 @@ public class MindMapNodesSelection implements Transferable, ClipboardOwner {
    private String htmlContent;
    private String dropActionContent;
    private final List fileList;
+   private String nodeIdsContent;
 
    public static DataFlavor mindMapNodesFlavor = null;
    public static DataFlavor rtfFlavor = null;
@@ -41,6 +42,8 @@ public class MindMapNodesSelection implements Transferable, ClipboardOwner {
    public static DataFlavor fileListFlavor = null;
    /** fc, 7.8.2004: This is a quite interisting flavor, but how does it works???*/
    public static DataFlavor dropActionFlavor = null;
+   /** This flavor contains the node ids only. Thus, it works only on the same map.*/
+   public static DataFlavor copyNodeIdsFlavor = null;
 
    static {
       try {
@@ -49,6 +52,7 @@ public class MindMapNodesSelection implements Transferable, ClipboardOwner {
          htmlFlavor = new DataFlavor("text/html; class=java.lang.String");
          fileListFlavor = new DataFlavor("application/x-java-file-list; class=java.util.List");
          dropActionFlavor = new DataFlavor("text/drop-action; class=java.lang.String"); 
+         copyNodeIdsFlavor = new DataFlavor("text/freemind-node-ids; class=java.lang.String");
       }
 
       catch(Exception e) {
@@ -58,13 +62,14 @@ public class MindMapNodesSelection implements Transferable, ClipboardOwner {
 
    public MindMapNodesSelection(String nodesContent, String stringContent,
             String rtfContent, String htmlContent, String dropActionContent, 
-            List fileList) {
+            List fileList, String nodeIdsContent) {
         this.nodesContent = nodesContent;
         this.rtfContent = rtfContent;
         this.stringContent = stringContent;
         this.dropActionContent = dropActionContent;
         this.htmlContent = htmlContent;
         this.fileList = fileList;
+        this.nodeIdsContent = nodeIdsContent;
     }
 
    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException {
@@ -85,10 +90,13 @@ public class MindMapNodesSelection implements Transferable, ClipboardOwner {
       if(flavor.equals(fileListFlavor)) {
           return fileList;
       }
+      if(flavor.equals(copyNodeIdsFlavor)) {
+    	  return nodeIdsContent;
+      }
       throw new UnsupportedFlavorException(flavor); }
 
    public DataFlavor[] getTransferDataFlavors() {
-       return new DataFlavor[] { DataFlavor.stringFlavor, mindMapNodesFlavor, rtfFlavor, htmlFlavor, dropActionFlavor};
+       return new DataFlavor[] { DataFlavor.stringFlavor, mindMapNodesFlavor, rtfFlavor, htmlFlavor, dropActionFlavor, copyNodeIdsFlavor};
    }
 
    public boolean isDataFlavorSupported(DataFlavor flavor) {
@@ -104,6 +112,8 @@ public class MindMapNodesSelection implements Transferable, ClipboardOwner {
            return true;
        if(flavor.equals(fileListFlavor) && (fileList != null) && fileList.size()> 0) 
            return true;
+       if(flavor.equals(copyNodeIdsFlavor) && nodeIdsContent != null) 
+    	   return true;
        return false;
    }
 
