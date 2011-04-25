@@ -33,6 +33,7 @@ import javax.swing.JMenuItem;
 import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.MindMapNodesSelection;
 import freemind.extensions.HookRegistration;
+import freemind.extensions.PermanentNodeHook;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -51,15 +52,89 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 	 * 
 	 */
 	public ClonePasteAction() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public void invoke(MindMapNode pNode) {
 		super.invoke(pNode);
 		Vector mindMapNodes = getMindMapNodes();
-		logger.warning("Node ids: " + Tools.listToString(mindMapNodes));
+		logger.info("Clones for nodes: " + Tools.listToString(mindMapNodes));
+		// now, construct the plugin for those nodes:
+		for (Iterator itPastedNodes = mindMapNodes.iterator(); itPastedNodes.hasNext();) {
+			MindMapNode originalNode = (MindMapNode) itPastedNodes.next();
+			// first, look whether or not the source is already a clone to somebody else:
+			ClonePlugin clonePlugin = getHook(originalNode);
+			if(clonePlugin != null) {
+				// TODO: add clone!
+				addNewClone(originalNode, pNode);
+				return;
+			}
+			// now, we need to look if it is a clone of somebody (chain: source -> clone -> clone)
+			// FIXME: how to do this??
+///////////////////////////////////////////////////////////////////
+			
+///////////////////////////////////////////////////////////////////
+			// finally, we construct a new one:
+			// done, we have both ids here.
+			Vector selecteds = Tools.getVectorWithSingleElement(originalNode);
+			getMindMapController().addHook(originalNode,
+					selecteds,
+					ClonePlugin.PLUGIN_NAME);
+			addNewClone(originalNode, pNode);
+		}
 	}
 
+	public void addNewClone(MindMapNode originalNode, MindMapNode pDestinationNode) {
+		String originalNodeId = getMindMapController().getNodeID(originalNode);
+		logger.info("Original node " + originalNode + ", id "
+				+ originalNodeId);
+		if (originalNode.isRoot()) {
+			throw new IllegalArgumentException("Root can't be cloned");
+		}
+		// insert clone:
+		Transferable copy = getMindMapController().copy(originalNode, true);
+		List listOfChilds = pDestinationNode.getChildren();
+		Vector listOfChildIds = new Vector();
+		for (Iterator it = listOfChilds.iterator(); it.hasNext();) {
+			String nodeID = getMindMapController().getNodeID(
+					(MindMapNode) it.next());
+			listOfChildIds.add(nodeID);
+			logger.info("Old child id:" + nodeID);
+		}
+		getMindMapController().paste(copy, pDestinationNode);
+		// how to get the clone node now?
+		String cloneNodeId = null;
+		MindMapNode cloneNode = null;
+		for (Iterator it = pDestinationNode.getChildren().iterator(); it.hasNext();) {
+			MindMapNode child = (MindMapNode) it.next();
+			String childId = getMindMapController().getNodeID(child);
+			logger.info("Checking " + child + " to be the new node, id "
+					+ childId);
+			if (!listOfChildIds.contains(childId)) {
+				// clone found:
+				cloneNodeId = childId;
+				cloneNode = child;
+				break;
+			}
+		}
+		if (cloneNodeId == null || cloneNode == null) {
+			throw new IllegalArgumentException("Clone node not found.");
+		}
+		ClonePlugin clonePlugin = getHook(originalNode);
+		clonePlugin.addClone(cloneNode);
+	}
+
+	private ClonePlugin getHook(MindMapNode originalNode) {
+		for (Iterator it2 = originalNode.getActivatedHooks().iterator(); it2
+				.hasNext();) {
+			PermanentNodeHook hook = (PermanentNodeHook) it2.next();
+			if (hook instanceof ClonePlugin) {
+				ClonePlugin cloneHook = (ClonePlugin) hook;
+				return cloneHook;
+			}
+		}
+		return null;
+	}
+	
 	public Vector getMindMapNodes() {
 		return ((Registration) getPluginBaseClass()).getMindMapNodes();
 	}
