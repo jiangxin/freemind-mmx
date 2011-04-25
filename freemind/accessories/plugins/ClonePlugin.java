@@ -20,6 +20,7 @@
 package accessories.plugins;
 
 import java.awt.datatransfer.Transferable;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -97,6 +98,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		}
 		XmlAction doAction = pair.getDoAction();
 		doAction = cloneAction(doAction);
+//		logger.warning("Result: " + Tools.marshall(doAction).replace(">", ">\n"));
 		pair.setDoAction(doAction);
 		return pair;
 	}
@@ -324,6 +326,9 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		return mOriginalNode;
 	}
 
+	/**
+	 * @return a list of MindMapNode s including the orignal node!
+	 */
 	List/* MindMapNode */getCloneNodes() {
 		try {
 			// is list up to date?

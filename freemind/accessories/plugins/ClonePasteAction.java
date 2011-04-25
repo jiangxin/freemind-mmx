@@ -21,8 +21,6 @@
 package accessories.plugins;
 
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -61,11 +59,25 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		// now, construct the plugin for those nodes:
 		for (Iterator itPastedNodes = mindMapNodes.iterator(); itPastedNodes.hasNext();) {
 			MindMapNode originalNode = (MindMapNode) itPastedNodes.next();
+
 			// first, look whether or not the source is already a clone to somebody else:
 			ClonePlugin clonePlugin = getHook(originalNode);
 			if(clonePlugin != null) {
-				// TODO: add clone!
-				addNewClone(originalNode, pNode);
+				List cloneNodes = clonePlugin.getCloneNodes();
+				// get at least one clone (such that the plugin itself is not copied!)
+				MindMapNode cloneNode = null;
+				for (Iterator it = cloneNodes.iterator(); it
+						.hasNext();) {
+					MindMapNode node = (MindMapNode) it.next();
+					if(node != originalNode) {
+						cloneNode = node;
+					}
+				}
+				if(cloneNode == null){
+					throw new IllegalArgumentException("Clone plugin but no additional clone found.");
+				}
+				Transferable copy = getMindMapController().copy(cloneNode, true);
+				addNewClone(originalNode, pNode, copy);
 				return;
 			}
 			// now, we need to look if it is a clone of somebody (chain: source -> clone -> clone)
@@ -74,16 +86,18 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 			
 ///////////////////////////////////////////////////////////////////
 			// finally, we construct a new one:
-			// done, we have both ids here.
+			logger.info("Create new clone plugin");
+			// first copy, as the hook shouldn't be copied....
+			Transferable copy = getMindMapController().copy(originalNode, true);
 			Vector selecteds = Tools.getVectorWithSingleElement(originalNode);
 			getMindMapController().addHook(originalNode,
 					selecteds,
 					ClonePlugin.PLUGIN_NAME);
-			addNewClone(originalNode, pNode);
+			addNewClone(originalNode, pNode, copy);
 		}
 	}
 
-	public void addNewClone(MindMapNode originalNode, MindMapNode pDestinationNode) {
+	public void addNewClone(MindMapNode originalNode, MindMapNode pDestinationNode, Transferable copy) {
 		String originalNodeId = getMindMapController().getNodeID(originalNode);
 		logger.info("Original node " + originalNode + ", id "
 				+ originalNodeId);
@@ -91,7 +105,6 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 			throw new IllegalArgumentException("Root can't be cloned");
 		}
 		// insert clone:
-		Transferable copy = getMindMapController().copy(originalNode, true);
 		List listOfChilds = pDestinationNode.getChildren();
 		Vector listOfChildIds = new Vector();
 		for (Iterator it = listOfChilds.iterator(); it.hasNext();) {
