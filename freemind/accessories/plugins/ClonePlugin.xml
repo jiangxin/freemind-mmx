@@ -12,7 +12,9 @@
 		label="accessories/plugins/ClonePlugin.properties" class_name="accessories.plugins.ClonePlugin"
 		instanciation="Once" isSelectable="true">
 		<plugin_mode class_name="freemind.modes.mindmapmode" />
-		<plugin_menu location="menu_bar/insert/links/ClonePlugin" />
+<!-- 
+ 		<plugin_menu location="menu_bar/insert/links/ClonePlugin" />
+ -->
 	</plugin_action>
 	<plugin_action
 		documentation="%accessories/plugins/ClonePasteAction.properties_documentation"

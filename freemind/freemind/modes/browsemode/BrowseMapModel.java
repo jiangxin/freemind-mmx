@@ -109,9 +109,6 @@ public class BrowseMapModel extends MapAdapter {
 	BrowseNodeModel root = loadTree(url);
 	if (root != null) {
 	    setRoot(root);
-			((ControllerAdapter) mModeController).invokeHooksRecursively(root,
-					this);
-
 	} else {
 	    // System.err.println("Err:"+root.toString());
 	    throw new IOException();

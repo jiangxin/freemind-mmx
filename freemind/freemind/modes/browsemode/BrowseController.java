@@ -42,11 +42,13 @@ import freemind.extensions.HookFactory;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.main.XMLParseException;
+import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
+import freemind.modes.NodeAdapter;
 import freemind.modes.common.GotoLinkNodeAction;
 import freemind.modes.common.plugins.NodeNoteBase;
 import freemind.modes.viewmodes.ViewControllerAdapter;
@@ -79,7 +81,12 @@ public class BrowseController extends ViewControllerAdapter {
 		// for displaying notes.
 		registerNodeSelectionListener(new NodeNoteViewer(this));
 	}
-
+	
+	public void startupController() {
+		super.startupController();
+	    invokeHooksRecursively((NodeAdapter) getRootNode(), getMap());
+	}
+	
 	public MapAdapter newModel(ModeController modeController) {
 		return new BrowseMapModel(getFrame(), modeController);
 	}

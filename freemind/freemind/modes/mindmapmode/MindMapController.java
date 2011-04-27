@@ -643,6 +643,8 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 				freemind.main.Resources.getInstance().logException(				e);
 			}
 		}
+	    invokeHooksRecursively((NodeAdapter) getRootNode(), getMap());
+
 
         // register mouse motion handler:
         getController().getMapMouseMotionListener().register(new MindMapMouseMotionManager(this));

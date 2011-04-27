@@ -29,6 +29,7 @@ import freemind.main.XMLElement;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
+import freemind.modes.NodeAdapter;
 import freemind.modes.common.CommonNodeKeyListener;
 import freemind.modes.common.CommonToggleFoldedAction;
 import freemind.modes.common.CommonNodeKeyListener.EditHandler;

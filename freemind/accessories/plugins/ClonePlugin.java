@@ -28,6 +28,8 @@ import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
+import accessories.plugins.ClonePasteAction.Registration;
+
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.CutNodeAction;
 import freemind.controller.actions.generated.instance.MoveNodesAction;
@@ -241,10 +243,11 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 			selectShadowNode(cloneNode, true, cloneNode);
 		}
 		getMindMapController().getActionFactory().registerFilter(this);
-
+		((Registration) getPluginBaseClass()).registerOriginal(mOriginalNodeId);
 	}
 
 	private void deregisterPlugin() {
+		((Registration) getPluginBaseClass()).deregisterOriginal(mOriginalNodeId);
 		getMindMapController().getActionFactory().deregisterFilter(this);
 		for (Iterator it = getCloneNodes().iterator(); it.hasNext();) {
 			MindMapNode cloneNode = (MindMapNode) it.next();
@@ -336,7 +339,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 				for (Iterator it = mCloneNodes.iterator(); it.hasNext();) {
 					MindMapNode cloneNode = (MindMapNode) it.next();
 					if (cloneNode.getParentNode() == null) {
-						mCloneNodes.clear();
+						clearCloneCache();
 					}
 				}
 			} else {

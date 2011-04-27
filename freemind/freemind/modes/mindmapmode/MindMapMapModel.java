@@ -354,9 +354,6 @@ public class MindMapMapModel extends MapAdapter  {
 		   MindMapNodeModel root = loadTree(file);
 		   if (root != null) {
 		      setRoot(root);
-		      ((MindMapController) mModeController).invokeHooksRecursively(
-		              root, this);
-
 		   }
 		   setFile(file);
 	}
