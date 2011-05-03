@@ -37,7 +37,6 @@ import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
-import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 
@@ -61,50 +60,53 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		// now, construct the plugin for those nodes:
 		for (Iterator itPastedNodes = mindMapNodes.iterator(); itPastedNodes.hasNext();) {
 			MindMapNode copiedNode = (MindMapNode) itPastedNodes.next();
+			ClonePlugin clonePlugin = null;
 			// now, we need to look if it is a clone of somebody (chain: source -> clone -> clone)
-			HashSet originalNodeIds = ((Registration) getPluginBaseClass()).getOriginalNodeIds();
-			for (Iterator originalIdsIt = originalNodeIds.iterator(); originalIdsIt
-					.hasNext();) {
-				String originalId = (String) originalIdsIt.next();
-				try {
-					MindMapNode original = getMindMapController().getNodeFromID(originalId);
-					ClonePlugin clonePlugin = getHook(original);
-					if(clonePlugin != null) {
-						List cloneNodes = clonePlugin.getCloneNodes();
-						if(cloneNodes.contains(copiedNode)){
-							// found!
-							copiedNode = original;
-							// get at least one clone (such that the plugin itself is not copied!)
-							MindMapNode cloneNode = null;
-							for (Iterator it = cloneNodes.iterator(); it
-							.hasNext();) {
-								MindMapNode node = (MindMapNode) it.next();
-								if(node != copiedNode) {
-									cloneNode = node;
-								}
-							}
-							if(cloneNode == null){
-								throw new IllegalArgumentException("Clone plugin but no additional clone found.");
-							}
-							Transferable copy = getMindMapController().copy(cloneNode, true);
-							addNewClone(copiedNode, pNode, copy);
-							return;
-						}
+			ShadowClonePlugin shadowHook = getShadowHook(copiedNode);
+			if(shadowHook != null) {
+				// found. get the original
+				copiedNode = shadowHook.getOriginalNode();
+			}
+			clonePlugin = getHook(copiedNode);
+			if (clonePlugin != null) {
+				// get one clone node as it has the correct plugin already
+				// attached.
+				// get at least one clone (such that the plugin itself is not
+				// copied!)
+				List cloneNodes = clonePlugin.getCloneNodes();
+				MindMapNode cloneNode = null;
+				for (Iterator it = cloneNodes.iterator(); it.hasNext();) {
+					MindMapNode node = (MindMapNode) it.next();
+					if (node != copiedNode) {
+						cloneNode = node;
 					}
-				} catch (Exception e) {
-					freemind.main.Resources.getInstance().logException(e);
+				}
+				if (cloneNode != null) {
+					Transferable copy = getMindMapController().copy(cloneNode,
+							true);
+					addNewClone(copiedNode, pNode, copy);
+					return;
+				} else {
+					// ok, we have a clone without shadow nodes. We remove the old hook:
+					addHook(copiedNode);
+					// and create a new fresh one.
 				}
 			}
 			// finally, we construct a new one:
 			logger.info("Create new clone plugin");
-			// first copy, as the hook shouldn't be copied....
-			Transferable copy = getMindMapController().copy(copiedNode, true);
-			Vector selecteds = Tools.getVectorWithSingleElement(copiedNode);
-			getMindMapController().addHook(copiedNode,
-					selecteds,
-					ClonePlugin.PLUGIN_NAME);
+			Transferable copy = addHook(copiedNode);
 			addNewClone(copiedNode, pNode, copy);
 		}
+	}
+
+	public Transferable addHook(MindMapNode pOriginalNode) {
+		// first copy, as the hook shouldn't be copied....
+		Transferable copy = getMindMapController().copy(pOriginalNode, true);
+		Vector selecteds = Tools.getVectorWithSingleElement(pOriginalNode);
+		getMindMapController().addHook(pOriginalNode,
+				selecteds,
+				ClonePlugin.PLUGIN_LABEL);
+		return copy;
 	}
 
 	public void addNewClone(MindMapNode originalNode, MindMapNode pDestinationNode, Transferable copy) {
@@ -142,16 +144,40 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		if (cloneNodeId == null || cloneNode == null) {
 			throw new IllegalArgumentException("Clone node not found.");
 		}
+		ShadowClonePlugin shadowHook = getShadowHook(cloneNode);
+		if (shadowHook == null) {
+			Vector selecteds = Tools.getVectorWithSingleElement(cloneNode);
+			getMindMapController().addHook(cloneNode, selecteds,
+					ShadowClonePlugin.PLUGIN_LABEL);
+		}
+		shadowHook = getShadowHook(cloneNode);
+		if (shadowHook == null) {
+			throw new IllegalArgumentException(
+					"Clone hook not found although created...");
+		}
+		shadowHook.setOriginalNodeId(originalNodeId);
 		ClonePlugin clonePlugin = getHook(originalNode);
 		clonePlugin.addClone(cloneNode);
 	}
 
-	private ClonePlugin getHook(MindMapNode originalNode) {
+	public static ClonePlugin getHook(MindMapNode originalNode) {
 		for (Iterator it2 = originalNode.getActivatedHooks().iterator(); it2
 				.hasNext();) {
 			PermanentNodeHook hook = (PermanentNodeHook) it2.next();
 			if (hook instanceof ClonePlugin) {
 				ClonePlugin cloneHook = (ClonePlugin) hook;
+				return cloneHook;
+			}
+		}
+		return null;
+	}
+	
+	public static ShadowClonePlugin getShadowHook(MindMapNode cloneNode) {
+		for (Iterator it2 = cloneNode.getActivatedHooks().iterator(); it2
+		.hasNext();) {
+			PermanentNodeHook hook = (PermanentNodeHook) it2.next();
+			if (hook instanceof ShadowClonePlugin) {
+				ShadowClonePlugin cloneHook = (ShadowClonePlugin) hook;
 				return cloneHook;
 			}
 		}

@@ -19,9 +19,7 @@
  */
 package accessories.plugins;
 
-import java.awt.datatransfer.Transferable;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -29,13 +27,11 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 
 import accessories.plugins.ClonePasteAction.Registration;
-
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.CutNodeAction;
 import freemind.controller.actions.generated.instance.MoveNodesAction;
 import freemind.controller.actions.generated.instance.NewNodeAction;
 import freemind.controller.actions.generated.instance.NodeAction;
-import freemind.controller.actions.generated.instance.NodeList;
 import freemind.controller.actions.generated.instance.NodeListMember;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.FreeMind;
@@ -73,12 +69,10 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		}
 	}
 
-	private static final String XML_STORAGE_ORIGINAL = "ORIGINAL_ID";
-	private static final String XML_STORAGE_CLONE = "CLONE_ID";
-	public static final String PLUGIN_NAME = "accessories/plugins/ClonePlugin.properties";
+	public static final String PLUGIN_LABEL = "accessories/plugins/ClonePlugin.properties";
 
 	private String mOriginalNodeId;
-	private Vector mCloneNodeIds;
+	private HashSet mCloneNodeIds;
 	/**
 	 * Includes the original node.
 	 */
@@ -137,7 +131,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 			registerPlugin();
 		} else {
 			mOriginalNodeId = getMindMapController().getNodeID(node);
-			mCloneNodeIds = new Vector();
+			mCloneNodeIds = new HashSet();
 		}
 	}
 
@@ -164,38 +158,11 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 
 	public void save(XMLElement xml) {
 		super.save(xml);
-		HashMap values = new HashMap();
-		values.put(XML_STORAGE_ORIGINAL, mOriginalNodeId);
-		NodeList list = new NodeList();
-		for (Iterator it = mCloneNodeIds.iterator(); it.hasNext();) {
-			String cloneId = (String) it.next();
-			NodeListMember member = new NodeListMember();
-			member.setNode(cloneId);
-			list.addNodeListMember(member);
-		}
-		values.put(XML_STORAGE_CLONE, Tools.marshall(list));
-		saveNameValuePairs(values, xml);
 		logger.info("Saved clone plugin");
 	}
 
 	public void loadFrom(XMLElement child) {
 		super.loadFrom(child);
-		HashMap values = loadNameValuePairs(child);
-		mOriginalNodeId = (String) values.get(XML_STORAGE_ORIGINAL);
-		mCloneNodeIds = new Vector();
-		String clones = (String) values.get(XML_STORAGE_CLONE);
-		
-		if (clones.startsWith("<")) {
-			NodeList list = (NodeList) Tools.unMarshall(clones);
-			for (Iterator it = list.getListNodeListMemberList().iterator(); it
-					.hasNext();) {
-				NodeListMember member = (NodeListMember) it.next();
-				mCloneNodeIds.add(member.getNode());
-			}
-		} else {
-			// compatibility with old style
-			mCloneNodeIds.add(clones);
-		}
 		mOriginalNode = null;
 		mCloneNodes = null;
 	}
@@ -296,7 +263,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	private void markShadowNode(NodeView node, boolean pEnableShadow) {
 		try {
 			MindMapNode model = node.getModel();
-			List/* pair of MindMapNodePair */shadowNodes = getCorrespondingNodes(model, true);
+			List/* pair of MindMapNodePair */shadowNodes = getCorrespondingNodes(model, false);
 			for (Iterator it = shadowNodes.iterator(); it.hasNext();) {
 				MindMapNodePair shadowNode = (MindMapNodePair) it.next();
 				selectShadowNode(shadowNode.getCorresponding(), pEnableShadow,
@@ -415,6 +382,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 				if (clone.isChildOfOrEqual(node)) {
 					// the complete original is cut.
 					logger.info("Node " + clone + " is cut.");
+					// FIXME use undoable action here.
+//					removeClone(clone);
 					return doAction;
 				}
 			}
@@ -430,6 +399,28 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		}
 		return compound;
 	}
+
+//	public void removeClone(MindMapNode pClone) {
+//		String id = getMindMapController().getNodeID(pClone);
+//		if(Tools.safeEquals(id, mOriginalNodeId)){
+//			// this is ok, the hook gets removed automatically.
+//			return;
+//		}
+//		if(!mCloneNodeIds.contains(id)){
+//			throw new IllegalArgumentException("Clone " + pClone + " not found on remove.");
+//		}
+//		mCloneNodeIds.remove(id);
+//		if(mCloneNodeIds.isEmpty()){
+//			// that was the last one. Shut down the light.
+//			MindMapNode originalNode = getOriginalNode();
+//			Vector selecteds = Tools.getVectorWithSingleElement(originalNode);
+//			getMindMapController().addHook(originalNode,
+//					selecteds,
+//					ClonePlugin.PLUGIN_NAME);
+//
+//		}
+//		clearCloneCache();
+//	}
 
 	private void getNewCompoundAction(NodeAction nodeAction,
 			MindMapNodePair correspondingNodePair, CompoundAction compound) {
@@ -497,6 +488,12 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 			// orig -> .... -> node -> .. -> clone
 			disablePlugin();
 		}
+	}
+
+	public void removeClone(MindMapNode pCloneNode) {
+		mCloneNodeIds.remove(getMindMapController().getNodeID(pCloneNode));
+		clearCloneCache();
+		registerPlugin();
 	}
 
 }

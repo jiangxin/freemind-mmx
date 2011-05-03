@@ -166,6 +166,7 @@ public interface MindMapActions {
 
     //hooks, fc 28.2.2004:
 	public void addHook(MindMapNode focussed, List selecteds, String hookName);
+	public void removeHook(MindMapNode focussed, List selecteds, String hookName);
     /**
      * This is the only way to instanciate new Hooks. THEY HAVE TO BE INVOKED AFTERWARDS!
      * The hook is equipped with the map and controller information.

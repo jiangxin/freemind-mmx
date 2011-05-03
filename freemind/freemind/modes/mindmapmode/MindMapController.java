@@ -1616,6 +1616,10 @@ freemind.main.Resources.getInstance().logException(					e1);
         nodeHookAction.addHook(focussed, selecteds, hookName);
     }
 
+    public void removeHook(MindMapNode focussed, List selecteds, String hookName) {
+    	nodeHookAction.removeHook(focussed, selecteds, hookName);
+    }
+    
     protected class SetLinkByFileChooserAction extends AbstractAction {
         public SetLinkByFileChooserAction() {
             super(getText("set_link_by_filechooser"));

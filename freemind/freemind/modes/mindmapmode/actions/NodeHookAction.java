@@ -110,7 +110,7 @@ public class NodeHookAction extends FreemindAction implements HookAction, ActorX
 			// remove the hook:
 			for (Iterator i = destinationNodes.iterator(); i.hasNext();) {
 				MindMapNode currentDestinationNode = (MindMapNode) i.next();
-				// find the hook ini the current node, if present:
+				// find the hook in the current node, if present:
 				for (Iterator j = currentDestinationNode.getActivatedHooks().iterator(); j
 				.hasNext();) {
 					PermanentNodeHook hook = (PermanentNodeHook) j.next();
@@ -129,8 +129,8 @@ public class NodeHookAction extends FreemindAction implements HookAction, ActorX
 					 */
 					break;
 				}
-				}
 			}
+		}
 		return undoAction;
 	}
 
@@ -304,6 +304,23 @@ public class NodeHookAction extends FreemindAction implements HookAction, ActorX
 		return instMethod.isAlreadyPresent(mMindMapController, _hookName,
 				adaptedFocussedNode);
 
+	}
+
+	public void removeHook(MindMapNode pFocussed, List pSelecteds,
+			String pHookName) {
+	    HookNodeAction undoAction = createHookNodeAction(pFocussed, pSelecteds, pHookName);
+
+        XmlAction doAction=null;
+        // this is the non operation:
+        doAction = new CompoundAction();
+	    if (getInstanciationMethod(pHookName).isPermanent()) {
+            // double application = remove.
+            doAction = createHookNodeUndoAction(pFocussed,
+                    pSelecteds, pHookName);
+        }
+        getController().getActionFactory().startTransaction((String) getValue(NAME));
+		getController().getActionFactory().executeAction(new ActionPair(undoAction, doAction));
+        getController().getActionFactory().endTransaction((String) getValue(NAME));
 	}
 
 }
