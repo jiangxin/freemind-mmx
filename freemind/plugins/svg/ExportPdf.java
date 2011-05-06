@@ -40,6 +40,7 @@ import org.w3c.dom.Element;
 
 import freemind.main.FeedBack;
 import freemind.main.FreeMindSplash;
+import freemind.main.Tools;
 import freemind.view.mindmapview.MapView;
 
 /**
@@ -88,7 +89,7 @@ public class ExportPdf extends ExportVectorGraphic {
             // flush and close the stream then exit
             ostream.flush();
             ostream.close();
-
+            getController().getFrame().openDocument(Tools.fileToUrl(chosenFile));
         } catch (Exception e) {
             freemind.main.Resources.getInstance().logException(e);
             JOptionPane.showMessageDialog(getController().getFrame().getContentPane(), e.getLocalizedMessage(), null, JOptionPane.ERROR_MESSAGE);
