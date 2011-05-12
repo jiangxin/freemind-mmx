@@ -217,7 +217,14 @@ public class TimeManagement extends MindMapHookAdapter implements
 			calendar.setDate(lastDate);
 		}
 		dialog.pack();
-		calendar.getDayChooser().setFocus();
+		// focus fix after startup.
+		dialog.addWindowFocusListener(new WindowAdapter() {
+
+			public void windowGainedFocus(WindowEvent e) {
+				calendar.getDayChooser().getSelectedDay().requestFocus();
+				dialog.removeWindowFocusListener(this);
+			}
+		});
 		dialog.setVisible(true);
 	}
 

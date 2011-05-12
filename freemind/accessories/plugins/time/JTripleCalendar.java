@@ -22,6 +22,8 @@ package accessories.plugins.time;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Calendar;
@@ -30,6 +32,10 @@ import java.util.Date;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import tests.freemind.FreeMindMainMock;
+import freemind.main.Resources;
+import freemind.main.Tools;
 
 /** */
 public class JTripleCalendar extends JPanel implements PropertyChangeListener {
@@ -46,7 +52,9 @@ public class JTripleCalendar extends JPanel implements PropertyChangeListener {
         gridLayout.setHgap(50);
         setLayout(gridLayout);
         leftPanel = createInfoPanel();
+        leftPanel.getCalendarWidget().addPropertyChangeListener(this);
         rightPanel = createInfoPanel();
+        rightPanel.getCalendarWidget().addPropertyChangeListener(this);
         add(leftPanel);
         calendarWidget = new JCalendar();
         calendarWidget.addPropertyChangeListener(this);
@@ -77,14 +85,23 @@ public class JTripleCalendar extends JPanel implements PropertyChangeListener {
             monthYearPanel.add(monthChooser, BorderLayout.WEST);
             monthYearPanel.add(yearChooser, BorderLayout.CENTER);
             
-            dayChooser = new JDayChooser(true){
-                            protected void init() {
-                                super.init();
-                                // no color selection
-                                selectedColor = oldDayBackgroundColor;
-                            }
-                        };
-            dayChooser.setEnabled(false);
+			dayChooser = new JDayChooser(true) {
+				protected void init() {
+					super.init();
+					// no color selection
+					selectedColor = oldDayBackgroundColor;
+				}
+
+				public void addListeners(int index) {
+					days[index].addActionListener(this);
+					days[index].setFocusable(false);
+				}
+			};
+            dayChooser.setEnabled(true);
+            /** This is needed as sometimes the current selected date is equal to the one, 
+             * the user presses. Thus, without this statement, no property change event
+             * is issued.*/
+            dayChooser.setAlwaysFireDayProperty(true);
             this.add(monthYearPanel, BorderLayout.NORTH);
             this.add(dayChooser, BorderLayout.CENTER);
         }
@@ -97,12 +114,22 @@ public class JTripleCalendar extends JPanel implements PropertyChangeListener {
             //            monthYearLabel.setText(toMonthYearLabelString(calendar));
             dayChooser.setYear(year);
             dayChooser.setMonth(month);
-            // it is enabled after setting some time.
-            dayChooser.setEnabled(false);
+            // this is not necessary, I think.
+            dayChooser.setEnabled(true);
         }
-//        private String toMonthYearLabelString(Calendar calendar) {
-//            return (calendar.get(Calendar.MONTH)+1)+"." + calendar.get(Calendar.YEAR);
-//        }
+        
+        /**
+    	 * Returns the calendar property.
+    	 * 
+    	 * @return the value of the calendar property.
+    	 */
+    	public Calendar getCalendar() {
+    		return dayChooser.calendar;
+    	}
+    	
+    	public JDayChooser getCalendarWidget() {
+    		return dayChooser;
+    	}
     }
     
     private JInfoPanel createInfoPanel() {
@@ -111,23 +138,56 @@ public class JTripleCalendar extends JPanel implements PropertyChangeListener {
     }
     
     public static void main(String[] args) {
-        JFrame frame = new JFrame("JTripleCalendar");
+    	Resources.createInstance(new FreeMindMainMock());
+        final JFrame frame = new JFrame("JTripleCalendar");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        JTripleCalendar jcalendar = new JTripleCalendar();
+        final JTripleCalendar jcalendar = new JTripleCalendar();
         frame.getContentPane().add(jcalendar);
         frame.pack();
+		// focus fix after startup.
+		frame.addWindowFocusListener(new WindowAdapter() {
+
+			public void windowGainedFocus(WindowEvent e) {
+				jcalendar.getDayChooser().getSelectedDay().requestFocus();
+				frame.removeWindowFocusListener(this);
+			}
+		});
+
         frame.setVisible(true);
 
     }
 
     public void propertyChange(PropertyChangeEvent evt) {
+    	if(evt.getSource() == calendarWidget) {
             Calendar gregorianCalendar = (Calendar) calendarWidget.getCalendar().clone();
-            gregorianCalendar.add(Calendar.MONTH, -1);
-            leftPanel.setDate(gregorianCalendar);
-            gregorianCalendar.add(Calendar.MONTH, 2);
-            rightPanel.setDate(gregorianCalendar);
-
+            propagateDate(gregorianCalendar);
+		} else {
+			if (Tools.safeEquals(evt.getPropertyName(),
+					JDayChooser.DAY_PROPERTY)) {
+				checkForDateChange(evt, leftPanel);
+				checkForDateChange(evt, rightPanel);
+    		} 
+    		
+    	}
     }
+
+	public void checkForDateChange(PropertyChangeEvent evt, JInfoPanel pPanel) {
+		if (evt.getSource() == pPanel.getCalendarWidget()) {
+			Calendar gregorianCalendar = (Calendar) pPanel
+					.getCalendar().clone();
+			gregorianCalendar.set(Calendar.DAY_OF_MONTH,
+					((Integer) evt.getNewValue()).intValue());
+			calendarWidget.setDate(gregorianCalendar.getTime());
+			propagateDate(gregorianCalendar);
+		}
+	}
+
+	public void propagateDate(Calendar gregorianCalendar) {
+		gregorianCalendar.add(Calendar.MONTH, -1);
+		leftPanel.setDate(gregorianCalendar);
+		gregorianCalendar.add(Calendar.MONTH, 2);
+		rightPanel.setDate(gregorianCalendar);
+	}
 
 
    public Calendar getCalendar() {

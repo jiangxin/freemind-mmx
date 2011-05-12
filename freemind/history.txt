@@ -1,4 +1,10 @@
 ===============================
+Changes made in FreeMind 1.0.0 Alpha4
+===============================
+* Export to pdf opens viewer afterwards.
+* Better calendar operations
+
+===============================
 Changes made in FreeMind 1.0.0 Alpha3
 ===============================
 * zoom and selected node storage now works for open/close of maps, too.

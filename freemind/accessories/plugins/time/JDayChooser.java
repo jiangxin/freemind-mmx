@@ -182,9 +182,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 						}
 
 					};
-					days[index].addActionListener(this);
-					days[index].addKeyListener(this);
-					days[index].addFocusListener(this);
+					addListeners(index);
 				}
 
 				days[index].setMargin(new Insets(0, 0, 0, 0));
@@ -228,6 +226,12 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 		}
 		initialized = true;
 		updateUI();
+	}
+
+	public void addListeners(int index) {
+		days[index].addActionListener(this);
+		days[index].addKeyListener(this);
+		days[index].addFocusListener(this);
 	}
 
 	/**
@@ -510,10 +514,10 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 	 *            the new month
 	 */
 	public void setMonth(int month) {
-		int maxDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+		int maxDays = getDaysInMonth();
 		calendar.set(Calendar.MONTH, month);
 		if(maxDays == day) {
-			day = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+			day = getDaysInMonth();
 		}
 
 		// Since the day does not change,
@@ -525,6 +529,10 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 		alwaysFireDayProperty = storedMode;
 
 		drawDays();
+	}
+
+	public int getDaysInMonth() {
+		return calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 	}
 
 	/**
@@ -642,17 +650,43 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 	 */
 	public void keyPressed(KeyEvent e) {
 //        System.out.println("KEY " + e);
-		int offset = (e.getKeyCode() == KeyEvent.VK_UP) ? (-7)
-				: ((e.getKeyCode() == KeyEvent.VK_DOWN) ? (+7)
-						: ((e.getKeyCode() == KeyEvent.VK_LEFT) ? (-1)
-								: ((e.getKeyCode() == KeyEvent.VK_RIGHT) ? (+1) : 0)));
-
+		
+		int offset=0;
+		int monthOffset = 0;
+		switch(e.getKeyCode()){
+		case KeyEvent.VK_UP:
+			offset -= 7;
+			break;		
+		case KeyEvent.VK_DOWN:
+			offset += 7;
+			break;
+		case KeyEvent.VK_LEFT:
+			offset -= 1;
+			break;
+		case KeyEvent.VK_RIGHT:
+			offset += 1;
+			break;
+		case KeyEvent.VK_PAGE_DOWN:
+			offset += getDaysInMonth();
+			break;
+		case KeyEvent.VK_PAGE_UP:
+			GregorianCalendar tempCalendar = getTemporaryCalendar();
+			tempCalendar.add(Calendar.MONTH, -1);
+			offset = -tempCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+			break;
+		case KeyEvent.VK_HOME:
+			offset = -getDay()+1;
+			break;
+		case KeyEvent.VK_END:
+			offset += getDaysInMonth() - getDay();
+			break;
+		}
 		int newDay = getDay() + offset;
 
-        if ((newDay >= 1) && (newDay <= calendar.getActualMaximum(Calendar.DAY_OF_MONTH))) {
+        if ((newDay >= 1) && (newDay <= getDaysInMonth())) {
 			setDay(newDay);
 		} else if(monthChooser != null && yearChooser != null){
-            GregorianCalendar tempCalendar = new GregorianCalendar(yearChooser.getYear(), monthChooser.getMonth(), getDay());
+            GregorianCalendar tempCalendar = getTemporaryCalendar();
             tempCalendar.add(Calendar.DAY_OF_MONTH, offset);
             int month = tempCalendar.get(Calendar.MONTH);
             int year = tempCalendar.get(Calendar.YEAR);
@@ -661,6 +695,11 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
             monthChooser.setMonth(month);
             this.setDay(day);
         }
+	}
+
+	public GregorianCalendar getTemporaryCalendar() {
+		GregorianCalendar tempCalendar = new GregorianCalendar(yearChooser.getYear(), monthChooser.getMonth(), getDay());
+		return tempCalendar;
 	}
 
 	/**
@@ -1072,6 +1111,10 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 			}
 			super.paint(g);
 		}
+	}
+
+	public JButton getSelectedDay() {
+		return selectedDay;
 	}
 
 }
