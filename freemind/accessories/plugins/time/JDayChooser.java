@@ -651,43 +651,39 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 	public void keyPressed(KeyEvent e) {
 //        System.out.println("KEY " + e);
 		
-		int offset=0;
-		int monthOffset = 0;
+		int newDay = getDay();
 		switch(e.getKeyCode()){
 		case KeyEvent.VK_UP:
-			offset -= 7;
+			newDay -= 7;
 			break;		
 		case KeyEvent.VK_DOWN:
-			offset += 7;
+			newDay += 7;
 			break;
 		case KeyEvent.VK_LEFT:
-			offset -= 1;
+			newDay -= 1;
 			break;
 		case KeyEvent.VK_RIGHT:
-			offset += 1;
+			newDay += 1;
 			break;
 		case KeyEvent.VK_PAGE_DOWN:
-			offset += getDaysInMonth();
+			newDay = getDaysInMonth() + diffMonth(1);
 			break;
 		case KeyEvent.VK_PAGE_UP:
-			GregorianCalendar tempCalendar = getTemporaryCalendar();
-			tempCalendar.add(Calendar.MONTH, -1);
-			offset = -tempCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+			newDay = diffMonth(-1);
 			break;
 		case KeyEvent.VK_HOME:
-			offset = -getDay()+1;
+			newDay = 1;
 			break;
 		case KeyEvent.VK_END:
-			offset += getDaysInMonth() - getDay();
+			newDay = getDaysInMonth();
 			break;
 		}
-		int newDay = getDay() + offset;
 
         if ((newDay >= 1) && (newDay <= getDaysInMonth())) {
 			setDay(newDay);
 		} else if(monthChooser != null && yearChooser != null){
             GregorianCalendar tempCalendar = getTemporaryCalendar();
-            tempCalendar.add(Calendar.DAY_OF_MONTH, offset);
+            tempCalendar.set(Calendar.DAY_OF_MONTH, newDay);
             int month = tempCalendar.get(Calendar.MONTH);
             int year = tempCalendar.get(Calendar.YEAR);
             int day = tempCalendar.get(Calendar.DAY_OF_MONTH);
@@ -695,6 +691,14 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
             monthChooser.setMonth(month);
             this.setDay(day);
         }
+	}
+
+	private int diffMonth(int pMonthDiff) {
+		GregorianCalendar tempCalendar = getTemporaryCalendar();
+		tempCalendar.add(Calendar.MONTH, pMonthDiff);
+		int max = tempCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+		int dayMonth = tempCalendar.get(Calendar.DAY_OF_MONTH);
+		return (pMonthDiff>0)?(dayMonth):(-max + dayMonth);
 	}
 
 	public GregorianCalendar getTemporaryCalendar() {
