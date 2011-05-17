@@ -33,6 +33,7 @@ import freemind.controller.actions.generated.instance.MoveNodesAction;
 import freemind.controller.actions.generated.instance.NewNodeAction;
 import freemind.controller.actions.generated.instance.NodeAction;
 import freemind.controller.actions.generated.instance.NodeListMember;
+import freemind.controller.actions.generated.instance.PasteNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.FreeMind;
 import freemind.main.Resources;
@@ -380,10 +381,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 			for (Iterator it = getCloneNodes().iterator(); it.hasNext();) {
 				MindMapNode clone = (MindMapNode) it.next();
 				if (clone.isChildOfOrEqual(node)) {
-					// the complete original is cut.
+					// the complete node is cut.
 					logger.info("Node " + clone + " is cut.");
-					// FIXME use undoable action here.
-//					removeClone(clone);
 					return doAction;
 				}
 			}
@@ -399,28 +398,6 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		}
 		return compound;
 	}
-
-//	public void removeClone(MindMapNode pClone) {
-//		String id = getMindMapController().getNodeID(pClone);
-//		if(Tools.safeEquals(id, mOriginalNodeId)){
-//			// this is ok, the hook gets removed automatically.
-//			return;
-//		}
-//		if(!mCloneNodeIds.contains(id)){
-//			throw new IllegalArgumentException("Clone " + pClone + " not found on remove.");
-//		}
-//		mCloneNodeIds.remove(id);
-//		if(mCloneNodeIds.isEmpty()){
-//			// that was the last one. Shut down the light.
-//			MindMapNode originalNode = getOriginalNode();
-//			Vector selecteds = Tools.getVectorWithSingleElement(originalNode);
-//			getMindMapController().addHook(originalNode,
-//					selecteds,
-//					ClonePlugin.PLUGIN_NAME);
-//
-//		}
-//		clearCloneCache();
-//	}
 
 	private void getNewCompoundAction(NodeAction nodeAction,
 			MindMapNodePair correspondingNodePair, CompoundAction compound) {
@@ -457,7 +434,17 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		}
 		copiedNodeAction.setNode(getMindMapController().getNodeID(
 				correspondingNodePair.getCorresponding()));
-		compound.addAtChoice(0, copiedNodeAction);
+		if (copiedNodeAction instanceof PasteNodeAction) {
+			/* difficult thing here:
+			 * if something is pasted, the paste action itself contains the node ids of the paste.
+			 * The first pasted action will get that node id. 
+			 * This should be the corresponding node itself.
+			 * This presumably corrects a bug that the selection on move actions is changing.
+			 */
+			compound.addChoice(copiedNodeAction);
+		} else {
+			compound.addAtChoice(0, copiedNodeAction);
+		}
 	}
 
 	private void selectShadowNode(MindMapNode node, boolean pEnableShadow,

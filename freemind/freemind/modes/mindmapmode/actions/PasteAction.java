@@ -284,6 +284,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 					mapContent += textLines[j];
 				}
 				mapContent += "</node></map>";
+//				logger.info("Pasting " + mapContent);
 				try {
 					MindMapNode node = pMindMapController.getMindMapMapModel()
 							.loadTree(
@@ -496,7 +497,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 			return;
 		}
 		try {
-			// Uncomment to print obtained data flavours
+			// Uncomment to print obtained data flavors
 
 			/*
 			 * DataFlavor[] fl = t.getTransferDataFlavors(); for (int i = 0; i <
