@@ -369,22 +369,15 @@ public class MapView extends JPanel implements Printable, Autoscroll{
     //
 
     class CheckLaterForCenterNodeTask extends TimerTask {
-    	Timer mMyTimer; 
     	NodeView mNode;
 
-		public CheckLaterForCenterNodeTask(Timer pMyTimer, NodeView pNode) {
+		public CheckLaterForCenterNodeTask(NodeView pNode) {
 			super();
-			mMyTimer = pMyTimer;
 			mNode = pNode;
 		}
 
 		public void run() {
-			if(!isValid()) {
-				// reschedule for some ms in the future.
-				mMyTimer.schedule(new CheckLaterForCenterNodeTask(mMyTimer, mNode), 100);
-			} else {
-				centerNode(mNode);
-			}
+			centerNode(mNode);
 		}
     	
     }
@@ -402,7 +395,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         if (!isValid()) {
 			// the window size could be changed twice for maximized windows.
         	Timer t = new Timer();
-        	t.schedule(new CheckLaterForCenterNodeTask(t, node), 100);
+        	t.schedule(new CheckLaterForCenterNodeTask(node), 100);
         	return;
         }
         Dimension d = viewPort.getExtentSize();
