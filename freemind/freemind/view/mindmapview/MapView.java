@@ -51,6 +51,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 
 import javax.swing.JComponent;
@@ -366,6 +368,27 @@ public class MapView extends JPanel implements Printable, Autoscroll{
     // Navigation
     //
 
+    class CheckLaterForCenterNodeTask extends TimerTask {
+    	Timer mMyTimer; 
+    	NodeView mNode;
+
+		public CheckLaterForCenterNodeTask(Timer pMyTimer, NodeView pNode) {
+			super();
+			mMyTimer = pMyTimer;
+			mNode = pNode;
+		}
+
+		public void run() {
+			if(!isValid()) {
+				// reschedule for some ms in the future.
+				mMyTimer.schedule(new CheckLaterForCenterNodeTask(mMyTimer, mNode), 100);
+			} else {
+				centerNode(mNode);
+			}
+		}
+    	
+    }
+        
     /**
      * Problem: Before  scrollRectToVisible is called, the node has the location (0,0), ie. the location first gets
      * calculated after the scrollpane is actually scrolled. Thus, as a workaround, I simply call scrollRectToVisible
@@ -376,34 +399,11 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         JViewport viewPort = (JViewport)getParent();
         // FIXME: Correct the resize map behaviour.
     	Tools.waitForEventQueue();
-        if (!(isValid())) {
-			// Dimitry: workaround: the window size could be changed
-			// twice for maximized windows.
-			// Run centerNode afterwards anyway.
-			class CenterNodeRunnable implements Runnable {
-				private int counter;
-
-				public CenterNodeRunnable() {
-					this.counter = 1;
-				}
-
-				public void run() {
-					if (counter-- == 0) {
-						centerNode(node);
-					} else {
-						try {
-							// needs to wait here, because hidden tabs create this event infinitely.
-							Thread.sleep(100);
-						} catch (InterruptedException e) {
-							freemind.main.Resources.getInstance().logException(e);
-						}
-						EventQueue.invokeLater(this);
-					}
-				}
-			}
-
-			EventQueue.invokeLater(new CenterNodeRunnable());
-			return;
+        if (!isValid()) {
+			// the window size could be changed twice for maximized windows.
+        	Timer t = new Timer();
+        	t.schedule(new CheckLaterForCenterNodeTask(t, node), 100);
+        	return;
         }
         Dimension d = viewPort.getExtentSize();
         JComponent content = node.getContent();
@@ -1092,7 +1092,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 			long localTime = System.currentTimeMillis()-startMilli;
 			mPaintingAmount++;
 			mPaintingTime += localTime;
-			logger.fine("End paint in "+localTime+ ". Mean time:" + (mPaintingTime/mPaintingAmount));
+			logger.fine("End paint of " + getModel().getRestorable() + " in "+localTime+ ". Mean time:" + (mPaintingTime/mPaintingAmount));
         }
 
     public void paintChildren(Graphics graphics) {
