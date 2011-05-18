@@ -306,6 +306,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         disableMoveCursor = Resources.getInstance().getBoolProperty("disable_cursor_move_paper");
         
         addComponentListener(new ResizeListener());
+		mCenterNodeTimer = new Timer();
     }
 
 	private void createPropertyChangeListener() {
@@ -393,9 +394,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         // FIXME: Correct the resize map behaviour.
     	Tools.waitForEventQueue();
         if (!isValid()) {
-			// the window size could be changed twice for maximized windows.
-        	Timer t = new Timer();
-        	t.schedule(new CheckLaterForCenterNodeTask(node), 100);
+			mCenterNodeTimer.schedule(new CheckLaterForCenterNodeTask(node), 100);
         	return;
         }
         Dimension d = viewPort.getExtentSize();
@@ -1389,6 +1388,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
     }
 
     private static final int margin = 20;
+	private Timer mCenterNodeTimer;
 
     /* (non-Javadoc)
      * @see java.awt.dnd.Autoscroll#getAutoscrollInsets()
