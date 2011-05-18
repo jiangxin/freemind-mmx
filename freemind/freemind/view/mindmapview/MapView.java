@@ -223,6 +223,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         super();
         this.model = model;
     	this.controller= controller;
+    	mCenterNodeTimer = new Timer();
         // initialize the standard colors.
         if (standardNodeTextColor == null) {
             try{
@@ -306,7 +307,6 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         disableMoveCursor = Resources.getInstance().getBoolProperty("disable_cursor_move_paper");
         
         addComponentListener(new ResizeListener());
-		mCenterNodeTimer = new Timer();
     }
 
 	private void createPropertyChangeListener() {
