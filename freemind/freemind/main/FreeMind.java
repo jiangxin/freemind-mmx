@@ -135,7 +135,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	private Logger logger = null;
 	
-	protected static final VersionInformation VERSION = new VersionInformation("1.0.0 Alpha 3");
+	protected static final VersionInformation VERSION = new VersionInformation("1.0.0 Alpha 4");
 	
 	public static final String XML_VERSION = "1.0.0";
 
@@ -192,6 +192,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	private FreeMindCommon mFreeMindCommon;
 
 	private static FileHandler mFileHandler;
+	private static boolean mFileHandlerError = false;
 
 	private JScrollPane mScrollPane = null;
 
@@ -666,7 +667,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public Logger getLogger(String forClass) {
 		Logger loggerForClass = java.util.logging.Logger.getLogger(forClass);
-		if (mFileHandler == null) {
+		if (mFileHandler == null && ! mFileHandlerError) {
 			// initialize handlers using an old System.err:
 			final Logger parentLogger = loggerForClass.getParent();
 			final Handler[] handlers = parentLogger.getHandlers();
@@ -701,6 +702,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			} catch (Exception e) {
 				System.err.println("Error creating logging File Handler");
 				e.printStackTrace();
+				mFileHandlerError = true;
 				// to avoid infinite recursion.
 				// freemind.main.Resources.getInstance().logExecption(e);
 			}

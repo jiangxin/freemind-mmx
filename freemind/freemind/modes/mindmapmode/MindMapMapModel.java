@@ -363,8 +363,10 @@ public class MindMapMapModel extends MapAdapter  {
        super.destroy();
        lockManager.releaseLock();
        lockManager.releaseTimer();
-       /* cancel the timer, if map is closed. */
-       timerForAutomaticSaving.cancel();
+       if (timerForAutomaticSaving != null) {
+			/* cancel the timer, if map is closed. */
+			timerForAutomaticSaving.cancel();
+       }
     }
     MindMapNodeModel loadTree(final File pFile) throws XMLParseException, IOException {
     	return loadTree(new FileReaderCreator(pFile));
