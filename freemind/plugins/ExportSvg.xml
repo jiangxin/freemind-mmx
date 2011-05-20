@@ -29,6 +29,16 @@
 		class_name="plugins.svg.ExportPdf">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/file/export/pdf/pdf_export"/>
+		<plugin_property name="export_type" value="map"/>
+	</plugin_action>
+	<plugin_action 
+		documentation="%plugins/ExportPdfNode.xml_documentation" 
+		name="%plugins/ExportPdfNode.xml_name" base="freemind.extensions.ModeControllerHookAdapter" 
+		label="plugins/ExportPdfNode.xml" 
+		class_name="plugins.svg.ExportPdf">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/file/export/pdf/pdf_branch_export"/>
+		<plugin_property name="export_type" value="node"/>
 	</plugin_action>
 	<plugin_action 
 		documentation="%plugins/ExportSvg.xml_documentation" 

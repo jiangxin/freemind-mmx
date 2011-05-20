@@ -4,6 +4,7 @@ Changes made in FreeMind 1.0.0 Alpha4
 * Export to pdf opens viewer afterwards.
 * Better calendar operations
 * Fixed for working in shared desktops: http://sourceforge.net/tracker/?func=detail&aid=3304466&group_id=7118&atid=107118
+* Export of branches to PDF added.
 
 ===============================
 Changes made in FreeMind 1.0.0 Alpha3

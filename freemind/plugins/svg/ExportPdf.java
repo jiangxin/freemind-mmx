@@ -41,6 +41,7 @@ import org.w3c.dom.Element;
 import freemind.main.FeedBack;
 import freemind.main.FreeMindSplash;
 import freemind.main.Tools;
+import freemind.modes.MindMapNode;
 import freemind.view.mindmapview.MapView;
 
 /**
@@ -51,7 +52,10 @@ public class ExportPdf extends ExportVectorGraphic {
 
     public void startupMapHook() {
         super.startupMapHook();
-        File chosenFile = chooseFile("pdf",
+		boolean nodeExport = Tools.safeEquals("node",
+				getResourceString("export_type"));
+
+		File chosenFile = chooseFile("pdf",
                 getResourceString("export_pdf_text"), null);
         if (chosenFile == null) {
             return;
@@ -62,9 +66,13 @@ public class ExportPdf extends ExportVectorGraphic {
                 return;
 
             getController().getFrame().setWaitingCursor(true);
-
-            SVGGraphics2D g2d = fillSVGGraphics2D(view);
-
+            SVGGraphics2D g2d;
+            if(nodeExport) {
+            	MindMapNode selectedNode = getController().getSelected();
+            	g2d = fillSVGGraphics2D(view, selectedNode);
+            } else {
+				g2d = fillSVGGraphics2D(view);
+            }
 
             PDFTranscoder pdfTranscoder = new PDFTranscoder();
             /*

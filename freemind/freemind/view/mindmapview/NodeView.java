@@ -1387,7 +1387,7 @@ public class NodeView extends JComponent implements TreeModelListener{
     }
 
 
-	Rectangle getInnerBounds() {
+	public Rectangle getInnerBounds() {
 		final int space = getMap().getZoomed(SPACE_AROUND);
 		return new Rectangle(space, space, getWidth() - 2 * space, getHeight() - 2 * space);
 	}

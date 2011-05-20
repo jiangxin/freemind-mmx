@@ -30,6 +30,7 @@ import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.io.File;
 import java.io.InputStream;
+import java.util.Iterator;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -40,15 +41,16 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.batik.dom.GenericDOMImplementation;
 import org.apache.batik.svggen.SVGGeneratorContext;
-import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.batik.svggen.SVGGeneratorContext.GraphicContextDefaults;
+import org.apache.batik.svggen.SVGGraphics2D;
 import org.apache.batik.util.SVGConstants;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 
 import freemind.extensions.ExportHook;
-import freemind.modes.NodeAdapter;
+import freemind.modes.MindMapNode;
 import freemind.view.mindmapview.MapView;
+import freemind.view.mindmapview.NodeView;
 
 /**
  * @author foltin
@@ -60,21 +62,7 @@ public class ExportVectorGraphic extends ExportHook{
 	 */
 	protected SVGGraphics2D fillSVGGraphics2D(MapView view) {
 //		NodeAdapter root = (NodeAdapter) getController().getMap().getRoot();
-		DOMImplementation impl = GenericDOMImplementation.getDOMImplementation();
-		String namespaceURI = SVGConstants.SVG_NAMESPACE_URI;
-		Document domFactory = impl.createDocument(namespaceURI, "svg", null);
-		SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(domFactory);
-		ctx.setEmbeddedFontsOn(true);
-		GraphicContextDefaults defaults
-		    = new GraphicContextDefaults();
-		defaults.setFont(new Font("Arial", Font.PLAIN, 12));
-		ctx.setGraphicContextDefaults(defaults);
-		ctx.setPrecision(12);
-
-		SVGGraphics2D g2d = new SVGGraphics2D(ctx, false);
-		// This prevents the "null incompatible with text-specific antialiasing enable key" error
-		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_DEFAULT);
+		SVGGraphics2D g2d = createSvgGraphics2D();
 		try {
 			view.preparePrinting();
 			Rectangle innerBounds = view.getInnerBounds();
@@ -91,6 +79,57 @@ public class ExportVectorGraphic extends ExportHook{
 		//		g2d.setColor(Color.BLACK);
 //		g2d.setStroke(new BasicStroke(3));
 //		g2d.drawRect(innerBounds.x, innerBounds.y, innerBounds.width - 2, innerBounds.height - 2);
+		return g2d;
+	}
+
+	protected SVGGraphics2D fillSVGGraphics2D(MapView view, MindMapNode pNode) {
+		SVGGraphics2D g2d = createSvgGraphics2D();
+		try {
+			view.preparePrinting();
+			Rectangle innerBounds = null;;
+			for (Iterator it = pNode.getViewers().iterator(); it.hasNext();) {
+				NodeView nodeView = (NodeView) it.next();
+				if(innerBounds == null) {
+					innerBounds = nodeView.getInnerBounds();
+				} else {
+					innerBounds.add(nodeView.getInnerBounds());
+				}
+			}
+			g2d.setSVGCanvasSize(new Dimension(innerBounds.width,
+					innerBounds.height));
+			g2d.translate(-innerBounds.x, -innerBounds.y);
+			//
+			// Generate SVG content
+			//
+			for (Iterator it = pNode.getViewers().iterator(); it.hasNext();) {
+				NodeView nodeView = (NodeView) it.next();
+				nodeView.print(g2d);
+			}
+		} finally {
+			view.endPrinting();
+		}
+		//		g2d.setColor(Color.BLACK);
+//		g2d.setStroke(new BasicStroke(3));
+//		g2d.drawRect(innerBounds.x, innerBounds.y, innerBounds.width - 2, innerBounds.height - 2);
+		return g2d;
+	}
+	
+	public SVGGraphics2D createSvgGraphics2D() {
+		DOMImplementation impl = GenericDOMImplementation.getDOMImplementation();
+		String namespaceURI = SVGConstants.SVG_NAMESPACE_URI;
+		Document domFactory = impl.createDocument(namespaceURI, "svg", null);
+		SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(domFactory);
+		ctx.setEmbeddedFontsOn(true);
+		GraphicContextDefaults defaults
+		    = new GraphicContextDefaults();
+		defaults.setFont(new Font("Arial", Font.PLAIN, 12));
+		ctx.setGraphicContextDefaults(defaults);
+		ctx.setPrecision(12);
+
+		SVGGraphics2D g2d = new SVGGraphics2D(ctx, false);
+		// This prevents the "null incompatible with text-specific antialiasing enable key" error
+		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_DEFAULT);
 		return g2d;
 	}
 
