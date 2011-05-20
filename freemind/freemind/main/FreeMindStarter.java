@@ -29,7 +29,9 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Locale;
 import java.util.Properties;
-
+import java.awt.Toolkit;
+import java.lang.IllegalAccessException;
+import java.lang.NoSuchFieldException;
 import javax.swing.JOptionPane;
 
 /**
@@ -55,6 +57,22 @@ public class FreeMindStarter {
 		starter.createUserDirectory(defaultPreferences);
 		Properties userPreferences = starter.readUsersPreferences(defaultPreferences);
 		starter.setDefaultLocale(userPreferences);
+
+		// Christopher Robin Elmersson: set
+		Toolkit xToolkit = Toolkit.getDefaultToolkit();
+
+		try{
+	  		java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass().getDeclaredField("awtAppClassName");
+			awtAppClassNameField.setAccessible(true);
+			try{
+				awtAppClassNameField.set(xToolkit, "FreeMind");
+			} catch(java.lang.IllegalAccessException ex){
+				System.err.println("Could not set window name");
+			}
+		} catch (NoSuchFieldException ex){
+			//System.err.println("Could not get awtAppClassName");
+		}
+
 		//use reflection to call :
 //		FreeMind.main(args, defaultPreferences, userPreferences, starter.getUserPreferencesFile(defaultPreferences));
 		try {
