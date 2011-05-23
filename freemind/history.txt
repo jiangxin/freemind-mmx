@@ -1,4 +1,9 @@
 ===============================
+Changes made in FreeMind 1.0.0 Alpha5
+===============================
+* Fixed browser for 1.0.0
+
+===============================
 Changes made in FreeMind 1.0.0 Alpha4
 ===============================
 * Export to pdf opens viewer afterwards.

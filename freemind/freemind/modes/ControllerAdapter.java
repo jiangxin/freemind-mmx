@@ -372,7 +372,7 @@ public abstract class ControllerAdapter implements ModeController {
     	return newModeController;
     }
 
-	private void restoreMapsLastState(final ModeController newModeController,
+	protected void restoreMapsLastState(final ModeController newModeController,
 			final MapAdapter model) {
 		// restore zoom, etc.
         String lastStateMapXml = getFrame().getProperty(FreeMindCommon.MINDMAP_LAST_STATE_MAP_STORAGE);

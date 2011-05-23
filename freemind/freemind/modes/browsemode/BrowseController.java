@@ -87,6 +87,11 @@ public class BrowseController extends ViewControllerAdapter {
 	    invokeHooksRecursively((NodeAdapter) getRootNode(), getMap());
 	}
 	
+	protected void restoreMapsLastState(ModeController pNewModeController,
+			MapAdapter pModel) {
+		// intentionally do nothing.
+	}
+	
 	public MapAdapter newModel(ModeController modeController) {
 		return new BrowseMapModel(getFrame(), modeController);
 	}
