@@ -168,7 +168,7 @@
 
 		<copy todir="${dist}">
 			<fileset dir="${src}"
-				includes="freemind.bat,freemind.sh,license,patterns.xml"
+				includes="freemind.bat,freemindw.bat,freemind.sh,license,patterns.xml"
 			/>
 		</copy>
 		<chmod file="${dist}/freemind.sh" perm="u+rx"/>
