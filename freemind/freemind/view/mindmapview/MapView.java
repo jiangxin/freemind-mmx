@@ -55,10 +55,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
+import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JViewport;
+import javax.swing.KeyStroke;
 
 import freemind.controller.Controller;
 import freemind.controller.NodeKeyListener;
@@ -108,6 +110,33 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 	}
 
 	static public class ScrollPane extends JScrollPane{
+		public ScrollPane() {
+			/*
+			 * Diagnosis for the input map, but I haven't 
+			 * managed to remove the ctrl pageup/down keys
+			 * from it.
+			 */
+			InputMap inputMap = getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+			KeyStroke[] keys = inputMap.allKeys();
+			if (keys != null) {
+				for (int i = 0; i < keys.length; i++) {
+					KeyStroke stroke = keys[i];
+					logger.fine("Stroke: " + stroke);
+				}
+			} else {
+				logger.fine("No keys in input map");
+			}
+		}
+		protected boolean processKeyBinding(KeyStroke pKs, KeyEvent pE,
+				int pCondition, boolean pPressed) {
+			/* the scroll pane eats control page up and down. 
+			 * Moreover, the page up and down itself is not very
+			 * useful, as the map hops away too far.
+			 */
+			if(pE.getKeyCode() == KeyEvent.VK_PAGE_DOWN || pE.getKeyCode() == KeyEvent.VK_PAGE_UP)
+				return false;
+			return super.processKeyBinding(pKs, pE, pCondition, pPressed);
+		}
 		protected void validateTree() {
 			final Component view = getViewport().getView();
 			if(view != null){
@@ -390,13 +419,13 @@ public class MapView extends JPanel implements Printable, Autoscroll{
      * scrolled.
      */
     public void centerNode( final NodeView node ) {
-        JViewport viewPort = (JViewport)getParent();
         // FIXME: Correct the resize map behaviour.
     	Tools.waitForEventQueue();
         if (!isValid()) {
 			mCenterNodeTimer.schedule(new CheckLaterForCenterNodeTask(node), 100);
         	return;
         }
+        JViewport viewPort = (JViewport)getParent();
         Dimension d = viewPort.getExtentSize();
         JComponent content = node.getContent();
 		Rectangle rect = new Rectangle(content.getWidth()/2 - d.width/2,

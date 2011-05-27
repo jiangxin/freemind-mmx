@@ -1093,14 +1093,15 @@ public class Tools {
       System.err.println("END OF Transferable");
       System.err.println(); }
 
-   public static void addEscapeActionToDialog(final JDialog dialog) {
-	   class EscapeAction extends AbstractAction{
-		public void actionPerformed(ActionEvent e) {
-			dialog.dispose();
-		};		   
-	   }
+	public static void addEscapeActionToDialog(final JDialog dialog) {
+		class EscapeAction extends AbstractAction {
+			public void actionPerformed(ActionEvent e) {
+				dialog.dispose();
+			};
+		}
 		addEscapeActionToDialog(dialog, new EscapeAction());
-   }
+	}
+
    public static void addEscapeActionToDialog(JDialog dialog, Action action) {
        addKeyActionToDialog(dialog, action, "ESCAPE", "end_dialog");
    }

@@ -2,6 +2,7 @@
 Changes made in FreeMind 1.0.0 Alpha5
 ===============================
 * Fixed browser for 1.0.0
+* Changed the change map shortcuts to something more familiar (eg. from firefox) with control page up/down.
 
 ===============================
 Changes made in FreeMind 1.0.0 Alpha4
