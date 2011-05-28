@@ -76,6 +76,7 @@ html { height:100% }
             </xsl:element>
             <param name="initial_mode" value="Browse"/>
             <param name="selection_method" value="selection_method_direct"/>
+            <param name="separate_jvm" value="true"/>
         </xsl:element>
    		</body>
     </html>

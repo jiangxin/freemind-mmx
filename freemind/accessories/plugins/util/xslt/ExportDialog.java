@@ -29,8 +29,6 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.Enumeration;
-import java.util.Properties;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -44,8 +42,8 @@ import freemind.main.ExampleFileFilter;
 import freemind.modes.ModeController;
 
 public class ExportDialog extends JFrame {
-    private static final String ACCESSORIES_PLUGINS_UTIL_XSLT_EXPORT_DIALOG_STORE_TARGET = "accessories.plugins.util.xslt.ExportDialog.store.target";
-	private static final String ACCESSORIES_PLUGINS_UTIL_XSLT_EXPORT_DIALOG_STORE_XSLT = "accessories.plugins.util.xslt.ExportDialog.store.xslt";
+    private static final String ACCESSORIES_PLUGINS_UTIL_XSLT_EXPORT_DIALOG_STORE_TARGET = "accessories.plugins.util.xslt.ExportDialog.store.target"; //$NON-NLS-1$
+	private static final String ACCESSORIES_PLUGINS_UTIL_XSLT_EXPORT_DIALOG_STORE_XSLT = "accessories.plugins.util.xslt.ExportDialog.store.xslt"; //$NON-NLS-1$
 
 	class ExportListener implements ActionListener {
 	    private ExportDialog parent = null;
@@ -85,7 +83,7 @@ public class ExportDialog extends JFrame {
         
     public ExportDialog(File nxmlFile, ModeController pController) {
         
-        super("ExportDialog");
+        super(pController.getFrame().getResourceString("ExportDialog.2")); //$NON-NLS-1$
         xmlFile = nxmlFile;
 		mController = pController;
         
@@ -115,7 +113,7 @@ public class ExportDialog extends JFrame {
         //Zwei Labels und zwei Textfelder
         gbc = makegbc(0, 0, 1, 1);
         gbc.fill = GridBagConstraints.NONE;
-        JLabel label = new JLabel("Choose XSL File ");
+        JLabel label = new JLabel(getResourceString("ExportDialog.3")); //$NON-NLS-1$
         gbl.setConstraints(label, gbc);
         getContentPane().add(label);
         //Textfeld
@@ -131,7 +129,7 @@ public class ExportDialog extends JFrame {
         
         gbc = makegbc(0, 1, 1, 1);
         gbc.fill = GridBagConstraints.NONE;
-        JLabel labeli = new JLabel("choose ExportFile ");
+        JLabel labeli = new JLabel(getResourceString("ExportDialog.4")); //$NON-NLS-1$
         gbl.setConstraints(labeli, gbc);
         getContentPane().add(labeli);
         //Textfeld
@@ -144,7 +142,7 @@ public class ExportDialog extends JFrame {
         getContentPane().add(fieldTargetFileName);
         
         //XSL-Button
-        JButton xslbutton = new JButton("Browse");
+        JButton xslbutton = new JButton(getResourceString("ExportDialog.5")); //$NON-NLS-1$
         gbc = makegbc(2, 0, 1, 1);
         gbc.fill = GridBagConstraints.NONE;
         //gbc.anchor = GridBagConstraints.SOUTHEAST;
@@ -152,7 +150,7 @@ public class ExportDialog extends JFrame {
         xslbutton.addActionListener(new FileChooseListener(0, fieldXsltFileName, xslbutton, xmlFile));
         getContentPane().add(xslbutton);
         //export-Button
-        JButton exportbutton = new JButton("Browse");
+        JButton exportbutton = new JButton(getResourceString("ExportDialog.6")); //$NON-NLS-1$
         gbc = makegbc(2, 1, 1, 1);
         gbc.fill = GridBagConstraints.NONE;
         //gbc.anchor = GridBagConstraints.SOUTHEAST;
@@ -161,7 +159,7 @@ public class ExportDialog extends JFrame {
         getContentPane().add(exportbutton);
         
         //ok-Button
-        JButton button = new JButton("Export");
+        JButton button = new JButton(getResourceString("ExportDialog.7")); //$NON-NLS-1$
         gbc = makegbc(2, 2, 1, 1);
         gbc.fill = GridBagConstraints.NONE;
         //gbc.anchor = GridBagConstraints.SOUTHEAST;
@@ -170,7 +168,7 @@ public class ExportDialog extends JFrame {
         getContentPane().add(button);
         
         //cancel-Button
-        JButton cbutton = new JButton("Cancel");
+        JButton cbutton = new JButton(getResourceString("ExportDialog.8")); //$NON-NLS-1$
         gbc = makegbc(1, 2, 1, 1);
         gbc.anchor=gbc.EAST;
         gbc.fill = GridBagConstraints.NONE;
@@ -195,82 +193,90 @@ public class ExportDialog extends JFrame {
         gbc.anchor=gbc.WEST;
         return gbc;
     }
-}
+    
+	private String getResourceString(String pString) {
+		return mController.getFrame().getResourceString(pString);
+	}
 
-class FileChooseListener implements ActionListener{
-    
-    private Component parent = null;
-    private JTextField jtf = null;
-    private int kind = 0;
-    private final String xslch = "Choose XSL Template";
-    private final String expch = "Define a File to Export";
-    private String WindowTitle = null;
-    private File xf = null;
-    private FileChooseListener(){};
-    
-    public FileChooseListener(int wit, JTextField jt,Component c, File mmFile){
-        parent = c;
-        jtf = jt;
-        kind = wit;
-        xf = mmFile;
-        if(kind == 0){
-            WindowTitle = xslch;}
-        else{
-            WindowTitle = expch;}
-    }
-    
-    
-    public void actionPerformed(ActionEvent e) {
-        
-        
-        JFileChooser chooser;
-        if(kind==0){
-            StringBuffer map = new StringBuffer("");
-           
-                chooser = new JFileChooser();
-        }
-        else
-            chooser = new JFileChooser(xf.getParentFile());
-        
-        
-        ExampleFileFilter filter = null;
-        
-        if(kind==0){
-            filter = new ExampleFileFilter(new String("xsl"),"XSLT Templatefile");
-            chooser.setFileFilter(filter);};
-            
-            int returnVal = chooser.showDialog(parent, WindowTitle);
-            if (returnVal==JFileChooser.APPROVE_OPTION) {
-                try {
-                    if(kind==0 ){
-                        if(!new File(chooser.getSelectedFile().getAbsolutePath()).exists()){
-                            Object Message = "The XSL Template chosen doesn't seem to exist. \nPlease Choose another.";
-                            JOptionPane.showMessageDialog(null, Message, "Warning File does not exist", JOptionPane.WARNING_MESSAGE);
-                        }
-                        else{
-                            //System.out.println("File chosen:"+chooser.getSelectedFile().getAbsolutePath());
-                            jtf.setText(chooser.getSelectedFile().getAbsolutePath());
-                        };
-                    }
-                    if(kind==1){
-                        if( !new File(chooser.getSelectedFile().getAbsolutePath()).exists()){
-                            jtf.setText(chooser.getSelectedFile().getAbsolutePath());
-                        }
-                        else{
-                            int i = JOptionPane.showConfirmDialog(null, "File exists. Do You want to overwrite?", "Warning, File exists", 2);
-                            if(i == JOptionPane.YES_OPTION){
-                                jtf.setText(chooser.getSelectedFile().getAbsolutePath());}
-                            
-                            //alert = new AlertBox("The Exportfile chosen exists. Do you want to overwrite it. \nPlease Choose another.");
-                            //System.out.println("File chosen:"+chooser.getSelectedFile().getAbsolutePath());
-                        };
-                    };
-                    
-                    
-                } catch (Exception ex) {
-                    System.out.println("exeption:"+ex); } {
-                    }
-            }
-    }
-    
+
+
+	class FileChooseListener implements ActionListener{
+	    
+	    private Component parent = null;
+	    private JTextField jtf = null;
+	    private int kind = 0;
+	    private final String xslch = getResourceString("ExportDialog.9"); //$NON-NLS-1$
+	    private final String expch = getResourceString("ExportDialog.10"); //$NON-NLS-1$
+	    private String WindowTitle = null;
+	    private File xf = null;
+	    private FileChooseListener(){};
+	    
+	    public FileChooseListener(int wit, JTextField jt,Component c, File mmFile){
+	        parent = c;
+	        jtf = jt;
+	        kind = wit;
+	        xf = mmFile;
+	        if(kind == 0){
+	            WindowTitle = xslch;}
+	        else{
+	            WindowTitle = expch;}
+	    }
+	    
+	    
+	    public void actionPerformed(ActionEvent e) {
+	        
+	        
+	        JFileChooser chooser;
+	        if(kind==0){
+	            StringBuffer map = new StringBuffer(""); //$NON-NLS-1$
+	           
+	                chooser = new JFileChooser();
+	        }
+	        else
+	            chooser = new JFileChooser(xf.getParentFile());
+	        
+	        
+	        ExampleFileFilter filter = null;
+	        
+	        if(kind==0){
+	            filter = new ExampleFileFilter(new String("xsl"),getResourceString("ExportDialog.13")); //$NON-NLS-1$ //$NON-NLS-2$
+	            chooser.setFileFilter(filter);};
+	            
+	            int returnVal = chooser.showDialog(parent, WindowTitle);
+	            if (returnVal==JFileChooser.APPROVE_OPTION) {
+	                try {
+	                    if(kind==0 ){
+	                        if(!new File(chooser.getSelectedFile().getAbsolutePath()).exists()){
+	                            Object Message = getResourceString("ExportDialog.14"); //$NON-NLS-1$
+	                            JOptionPane.showMessageDialog(null, Message, getResourceString("ExportDialog.15"), JOptionPane.WARNING_MESSAGE); //$NON-NLS-1$
+	                        }
+	                        else{
+	                            //System.out.println("File chosen:"+chooser.getSelectedFile().getAbsolutePath());
+	                            jtf.setText(chooser.getSelectedFile().getAbsolutePath());
+	                        };
+	                    }
+	                    if(kind==1){
+	                        if( !new File(chooser.getSelectedFile().getAbsolutePath()).exists()){
+	                            jtf.setText(chooser.getSelectedFile().getAbsolutePath());
+	                        }
+	                        else{
+	                            int i = JOptionPane.showConfirmDialog(null, getResourceString("ExportDialog.16"), getResourceString("ExportDialog.17"), 2); //$NON-NLS-1$ //$NON-NLS-2$
+	                            if(i == JOptionPane.YES_OPTION){
+	                                jtf.setText(chooser.getSelectedFile().getAbsolutePath());}
+	                            
+							// alert = new
+							// AlertBox("The Exportfile chosen exists. Do you want to overwrite it. \nPlease Choose another.");
+							// System.out.println("File chosen:"+chooser.getSelectedFile().getAbsolutePath());
+						}
+					}
+
+				} catch (Exception ex) {
+					System.out.println("exeption:" + ex);} { //$NON-NLS-1$
+				}
+			}
+		}
+	
+	    
+	}
+
 }

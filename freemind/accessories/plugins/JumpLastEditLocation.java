@@ -155,7 +155,7 @@ public class JumpLastEditLocation extends MindMapNodeHookAdapter {
 				if (mLastEditLocations.size() > 10) {
 					mLastEditLocations.remove(0);
 				}
-				logger.info("New last edit location: " + lastLocation
+				logger.fine("New last edit location: " + lastLocation
 						+ " from " + controller.marshall(doAction));
 			}
 
