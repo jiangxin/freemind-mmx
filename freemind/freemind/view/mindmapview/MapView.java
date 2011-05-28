@@ -111,21 +111,21 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 
 	static public class ScrollPane extends JScrollPane{
 		public ScrollPane() {
-			/*
-			 * Diagnosis for the input map, but I haven't 
-			 * managed to remove the ctrl pageup/down keys
-			 * from it.
-			 */
-			InputMap inputMap = getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-			KeyStroke[] keys = inputMap.allKeys();
-			if (keys != null) {
-				for (int i = 0; i < keys.length; i++) {
-					KeyStroke stroke = keys[i];
-					logger.fine("Stroke: " + stroke);
-				}
-			} else {
-				logger.fine("No keys in input map");
-			}
+//			/*
+//			 * Diagnosis for the input map, but I haven't 
+//			 * managed to remove the ctrl pageup/down keys
+//			 * from it.
+//			 */
+//			InputMap inputMap = getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+//			KeyStroke[] keys = inputMap.allKeys();
+//			if (keys != null) {
+//				for (int i = 0; i < keys.length; i++) {
+//					KeyStroke stroke = keys[i];
+//					logger.fine("Stroke: " + stroke);
+//				}
+//			} else {
+//				logger.fine("No keys in input map");
+//			}
 		}
 		protected boolean processKeyBinding(KeyStroke pKs, KeyEvent pE,
 				int pCondition, boolean pPressed) {
@@ -252,6 +252,8 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         super();
         this.model = model;
     	this.controller= controller;
+    	if(logger == null)
+    		logger = controller.getFrame().getLogger(this.getClass().getName());
     	mCenterNodeTimer = new Timer();
         // initialize the standard colors.
         if (standardNodeTextColor == null) {
@@ -311,9 +313,6 @@ public class MapView extends JPanel implements Printable, Autoscroll{
             createPropertyChangeListener();
             
         }
- 		if(logger == null)
-			logger = controller.getFrame().getLogger(this.getClass().getName());
-
         this.setAutoscrolls(true);
 
         this.setLayout( new MindMapLayout( ) );
