@@ -21,15 +21,12 @@
 package freemind.main;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -46,12 +43,10 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
-import java.util.Vector;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -70,22 +65,12 @@ import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import freemind.controller.Controller;
 import freemind.controller.LastStateStorageManagement;
-import freemind.controller.MapModuleManager;
-import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.MenuBar;
-import freemind.controller.actions.generated.instance.MindmapLastStateMapStorage;
 import freemind.controller.actions.generated.instance.MindmapLastStateStorage;
-import freemind.controller.actions.generated.instance.NodeListMember;
-import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
-import freemind.modes.Mode;
 import freemind.modes.ModeController;
-import freemind.modes.NodeAdapter;
 import freemind.preferences.FreemindPropertyListener;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
@@ -201,11 +186,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	private JComponent mContentComponent = null;
 
 	private JTabbedPane mTabbedPane = null;
-	private boolean mTabbedPaneSelectionUpdate = true;
 
 	private ImageIcon mWindowIcon;
-
-	private Vector mTabbedPaneMapModules;
 
 	public FreeMind(Properties pDefaultPreferences, Properties pUserPreferences, File pAutoPropertiesFile) {
 		super("FreeMind");
@@ -814,83 +796,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			map.remove(keyStrokeCtrlUp);
 			mTabbedPane = new JTabbedPane();
 			mTabbedPane.setFocusable(false);
-			mTabbedPaneMapModules = new Vector();
-			mTabbedPane.addChangeListener(new ChangeListener() {
-
-				public synchronized void stateChanged(ChangeEvent pE) {
-					tabSelectionChanged();
-				}
-
-
-			});
-			controller.getMapModuleManager().addListener(
-					new MapModuleChangeObserver() {
-
-						public void afterMapModuleChange(
-								MapModule pOldMapModule, Mode pOldMode,
-								MapModule pNewMapModule, Mode pNewMode) {
-							int selectedIndex = mTabbedPane.getSelectedIndex();
-							if (pNewMapModule == null) {
-								return;
-							}
-							// search, if already present:
-							for (int i = 0; i < mTabbedPaneMapModules.size(); ++i) {
-								if (mTabbedPaneMapModules.get(i) ==
-										pNewMapModule) {
-									if (selectedIndex != i) {
-										mTabbedPane.setSelectedIndex(i);
-									}
-									return;
-								}
-							}
-							// create new tab:
-							mTabbedPaneMapModules.add(pNewMapModule);
-							mTabbedPane.addTab(pNewMapModule.toString(),
-									new JPanel());
-							mTabbedPane.setSelectedIndex(mTabbedPane
-									.getTabCount() - 1);
-						}
-
-						public void beforeMapModuleChange(
-								MapModule pOldMapModule, Mode pOldMode,
-								MapModule pNewMapModule, Mode pNewMode) {
-						}
-
-						public boolean isMapModuleChangeAllowed(
-								MapModule pOldMapModule, Mode pOldMode,
-								MapModule pNewMapModule, Mode pNewMode) {
-							return true;
-						}
-
-						public void numberOfOpenMapInformation(int pNumber) {
-						}
-
-						public void afterMapClose(MapModule pOldMapModule,
-								Mode pOldMode) {
-							for (int i = 0; i < mTabbedPaneMapModules.size(); ++i) {
-								if (mTabbedPaneMapModules.get(i) ==	pOldMapModule) {
-									logger.fine("Remove tab:" + i + " with title:" + mTabbedPane.getTitleAt(i));
-									mTabbedPaneSelectionUpdate = false;
-									mTabbedPane.removeTabAt(i);
-									mTabbedPaneMapModules.remove(i);
-									mTabbedPaneSelectionUpdate = true;
-									tabSelectionChanged();
-									return;
-								}
-							}							
-						}
-					});
-			controller.registerMapTitleChangeListener(new MapModuleManager.MapTitleChangeListener(){
-
-				public void setMapTitle(String pNewMapTitle,
-						MapModule pMapModule, MindMap pModel) {
-					for (int i = 0; i < mTabbedPaneMapModules.size(); ++i) {
-						if (mTabbedPaneMapModules.get(i) ==	pMapModule) {
-							mTabbedPane.setTitleAt(i, pNewMapTitle + ((pModel.isSaved())?"":"*"));
-						}
-					}
-				}
-			});
+			controller.addTabbedPane(mTabbedPane);
 			getContentPane().add(mTabbedPane, BorderLayout.CENTER);
 		} else {
 			// don't use tabbed panes.
@@ -1134,32 +1040,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	}
 
 
-	private void tabSelectionChanged() {
-		if(!mTabbedPaneSelectionUpdate)
-			return;
-		int selectedIndex = mTabbedPane.getSelectedIndex();
-		// display nothing on the other tabs:
-		for(int j = 0 ; j < mTabbedPane.getTabCount(); j++) {
-			if(j != selectedIndex)
-				mTabbedPane.setComponentAt(j, new JPanel());
-		}
-		if (selectedIndex < 0) {
-			// nothing selected. probably, the last map was closed
-			return;
-		}
-		MapModule module = (MapModule) mTabbedPaneMapModules.get(selectedIndex);
-		logger.fine("Selected index of tab is now: " + selectedIndex + " with title:"+module.toString());
-		if (module != controller.getMapModule()) {
-			// we have to change the active map actively:
-			controller.getMapModuleManager().changeToMapModule(module.toString());
-		}
-		// mScrollPane could be set invisible by JTabbedPane
-		mScrollPane.setVisible(true);
-		mTabbedPane.setComponentAt(selectedIndex, mContentComponent);
-	}
-
-
-
+	
 	public JSplitPane insertComponentIntoSplitPane(JComponent pMindMapComponent) {
 		if(mSplitPane != null) {
 			// already present:
@@ -1236,7 +1117,15 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			getRootPane().revalidate();
 		}
 	}
-	
-	
-	
+
+
+	public JScrollPane getScrollPane() {
+		return mScrollPane;
+	}
+
+
+	public JComponent getContentComponent() {
+		return mContentComponent;
+	}
+		
 }

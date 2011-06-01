@@ -23,7 +23,6 @@ package tests.freemind;
 import java.awt.Container;
 import java.io.File;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
@@ -31,6 +30,7 @@ import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
 import freemind.controller.Controller;
@@ -207,5 +207,13 @@ public class FreeMindMainMock implements FreeMindMain {
 		
 	}
 
+	public JComponent getContentComponent() {
+		return null;
+	}
+
+	public JScrollPane getScrollPane() {
+		return null;
+	}
+	
 }
 

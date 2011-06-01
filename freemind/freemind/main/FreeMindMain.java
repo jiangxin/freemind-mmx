@@ -31,6 +31,7 @@ import java.util.Vector;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 
 import freemind.controller.Controller;
@@ -236,4 +237,8 @@ public interface FreeMindMain {
     public String getAdjustableProperty(String label);
 
     public void setDefaultProperty(String key, String value);
+
+	public abstract JComponent getContentComponent();
+
+	public abstract JScrollPane getScrollPane();
 }

@@ -311,6 +311,9 @@ public class MenuBar extends JMenuBar {
 		JMenuItem nextMap = menuHolder.addAction(c.navigationNextMap, MINDMAP_MENU+"navigate/navigationNextMap");
 		nextMap.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_nextMap")));
 	
+		JMenuItem MoveMapLeft = menuHolder.addAction(c.navigationMoveMapLeftAction, MINDMAP_MENU+"navigate/navigationMoveMapLeft");
+		MoveMapLeft.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty("keystroke_MoveMapLeft")));
+		
 	
 		// option menu item moved to mindmap_menus.xml
 	

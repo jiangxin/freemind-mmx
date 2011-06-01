@@ -77,11 +77,14 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import freemind.common.BooleanProperty;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
@@ -176,10 +179,11 @@ public class Controller  implements MapModuleChangeObserver {
     public Action webDocu;
     public Action documentation;
     public Action license;
-    public Action navigationPreviousMap;
     public Action showFilterToolbarAction;
     public Action showAttributeManagerAction;
+    public Action navigationPreviousMap;
     public Action navigationNextMap;
+    public Action navigationMoveMapLeftAction;
 
     public Action moveToRoot;
     public Action toggleMenubar;
@@ -196,6 +200,14 @@ public class Controller  implements MapModuleChangeObserver {
 	// this values better suit at least the test purposes
     private static final String[] zooms = {"25%","50%","75%","100%","150%","200%","300%","400%"};
 //    private static final String[] zooms = {"25%","40%","60%","75%","100%","125%","150%","200%"};
+
+    private static Vector propertyChangeListeners = new Vector();
+
+    private AttributeManagerDialog attributeDialog = null;
+	private Vector mTabbedPaneMapModules;
+	private JTabbedPane mTabbedPane;
+	private boolean mTabbedPaneSelectionUpdate = true;
+
 
     //
     // Constructors
@@ -257,9 +269,10 @@ public class Controller  implements MapModuleChangeObserver {
         documentation = new DocumentationAction(this);
         license = new LicenseAction(this);
         navigationPreviousMap = new NavigationPreviousMapAction(this);
+        navigationNextMap = new NavigationNextMapAction(this);
+        navigationMoveMapLeftAction=new NavigationMoveMapLeftAction(this);
         showFilterToolbarAction = new ShowFilterToolbarAction(this);
         showAttributeManagerAction = new ShowAttributeDialogAction(this);
-        navigationNextMap = new NavigationNextMapAction(this);
         toggleMenubar = new ToggleMenubarAction(this);
         toggleToolbar = new ToggleToolbarAction(this);
         toggleLeftToolbar = new ToggleLeftToolbarAction(this);
@@ -591,6 +604,7 @@ public class Controller  implements MapModuleChangeObserver {
 	public void numberOfOpenMapInformation(int number) {
 		navigationPreviousMap.setEnabled(number>0);
 		navigationNextMap.setEnabled(number>0);
+		navigationMoveMapLeftAction.setEnabled(number>1);
 	}
 
 
@@ -1322,6 +1336,55 @@ public class Controller  implements MapModuleChangeObserver {
         }
     }
 
+    private class NavigationMoveMapLeftAction extends AbstractAction {
+    	NavigationMoveMapLeftAction(Controller controller) {
+    		super(controller.getResourceString("move_map_left"),
+    				new ImageIcon(getResource("images/1leftarrow.png")));
+    		setEnabled(false);
+    	}
+    	public void actionPerformed(ActionEvent event) {
+    		if(mTabbedPane!=null){
+    			int selectedIndex = mTabbedPane.getSelectedIndex();
+    			int previousIndex = (selectedIndex>0)?(selectedIndex-1):(mTabbedPane.getTabCount()-1);
+    			moveTab(selectedIndex, previousIndex);
+    		}
+    	}
+    }
+    
+    public void moveTab(int src, int dst){
+    	// snippet taken from http://www.exampledepot.com/egs/javax.swing/tabbed_TpMove.html
+    	// Get all the properties
+    	Component comp = mTabbedPane.getComponentAt(src);
+    	String label = mTabbedPane.getTitleAt(src);
+    	Icon icon = mTabbedPane.getIconAt(src);
+    	Icon iconDis = mTabbedPane.getDisabledIconAt(src);
+    	String tooltip = mTabbedPane.getToolTipTextAt(src);
+    	boolean enabled = mTabbedPane.isEnabledAt(src);
+    	int keycode = mTabbedPane.getMnemonicAt(src);
+    	int mnemonicLoc = mTabbedPane.getDisplayedMnemonicIndexAt(src);
+    	Color fg = mTabbedPane.getForegroundAt(src);
+    	Color bg = mTabbedPane.getBackgroundAt(src);
+
+    	mTabbedPaneSelectionUpdate = false;
+    	// Remove the tab
+    	mTabbedPane.remove(src);
+    	// Add a new tab
+    	mTabbedPane.insertTab(label, icon, comp, tooltip, dst);
+    	Object sourceModule = mTabbedPaneMapModules.get(src);
+    	mTabbedPaneMapModules.setElementAt(mTabbedPaneMapModules.get(dst), src);
+    	mTabbedPaneMapModules.setElementAt(sourceModule, dst);
+    	mTabbedPane.setSelectedIndex(dst);
+    	mTabbedPaneSelectionUpdate = true;
+
+    	// Restore all properties
+    	mTabbedPane.setDisabledIconAt(dst, iconDis);
+    	mTabbedPane.setEnabledAt(dst, enabled);
+    	mTabbedPane.setMnemonicAt(dst, keycode);
+    	mTabbedPane.setDisplayedMnemonicIndexAt(dst, mnemonicLoc);
+    	mTabbedPane.setForegroundAt(dst, fg);
+    	mTabbedPane.setBackgroundAt(dst, bg);
+    }
+    
     //
     // Node navigation
     //
@@ -1455,10 +1518,6 @@ public class Controller  implements MapModuleChangeObserver {
     //
     // Preferences
     //
-
-    private static Vector propertyChangeListeners = new Vector();
-
-    private AttributeManagerDialog attributeDialog = null;
 
     public static Collection getPropertyChangeListeners() {
         return Collections.unmodifiableCollection(propertyChangeListeners);
@@ -1696,7 +1755,111 @@ public class Controller  implements MapModuleChangeObserver {
 		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, (getAntialiasAll())?RenderingHints.VALUE_ANTIALIAS_ON:RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 
-	
+	public void addTabbedPane(JTabbedPane pTabbedPane) {
+		mTabbedPane = pTabbedPane;
+		mTabbedPaneMapModules = new Vector();
+		mTabbedPane.addChangeListener(new ChangeListener() {
+
+			public synchronized void stateChanged(ChangeEvent pE) {
+				tabSelectionChanged();
+			}
+
+
+		});
+		getMapModuleManager().addListener(
+				new MapModuleChangeObserver() {
+
+					public void afterMapModuleChange(
+							MapModule pOldMapModule, Mode pOldMode,
+							MapModule pNewMapModule, Mode pNewMode) {
+						int selectedIndex = mTabbedPane.getSelectedIndex();
+						if (pNewMapModule == null) {
+							return;
+						}
+						// search, if already present:
+						for (int i = 0; i < mTabbedPaneMapModules.size(); ++i) {
+							if (mTabbedPaneMapModules.get(i) ==
+									pNewMapModule) {
+								if (selectedIndex != i) {
+									mTabbedPane.setSelectedIndex(i);
+								}
+								return;
+							}
+						}
+						// create new tab:
+						mTabbedPaneMapModules.add(pNewMapModule);
+						mTabbedPane.addTab(pNewMapModule.toString(),
+								new JPanel());
+						mTabbedPane.setSelectedIndex(mTabbedPane
+								.getTabCount() - 1);
+					}
+
+					public void beforeMapModuleChange(
+							MapModule pOldMapModule, Mode pOldMode,
+							MapModule pNewMapModule, Mode pNewMode) {
+					}
+
+					public boolean isMapModuleChangeAllowed(
+							MapModule pOldMapModule, Mode pOldMode,
+							MapModule pNewMapModule, Mode pNewMode) {
+						return true;
+					}
+
+					public void numberOfOpenMapInformation(int pNumber) {
+					}
+
+					public void afterMapClose(MapModule pOldMapModule,
+							Mode pOldMode) {
+						for (int i = 0; i < mTabbedPaneMapModules.size(); ++i) {
+							if (mTabbedPaneMapModules.get(i) ==	pOldMapModule) {
+								logger.fine("Remove tab:" + i + " with title:" + mTabbedPane.getTitleAt(i));
+								mTabbedPaneSelectionUpdate = false;
+								mTabbedPane.removeTabAt(i);
+								mTabbedPaneMapModules.remove(i);
+								mTabbedPaneSelectionUpdate = true;
+								tabSelectionChanged();
+								return;
+							}
+						}							
+					}
+				});
+		registerMapTitleChangeListener(new MapModuleManager.MapTitleChangeListener(){
+
+			public void setMapTitle(String pNewMapTitle,
+					MapModule pMapModule, MindMap pModel) {
+				for (int i = 0; i < mTabbedPaneMapModules.size(); ++i) {
+					if (mTabbedPaneMapModules.get(i) ==	pMapModule) {
+						mTabbedPane.setTitleAt(i, pNewMapTitle + ((pModel.isSaved())?"":"*"));
+					}
+				}
+			}
+		});
+		
+	}
+
+	private void tabSelectionChanged() {
+		if(!mTabbedPaneSelectionUpdate)
+			return;
+		int selectedIndex = mTabbedPane.getSelectedIndex();
+		// display nothing on the other tabs:
+		for(int j = 0 ; j < mTabbedPane.getTabCount(); j++) {
+			if(j != selectedIndex)
+				mTabbedPane.setComponentAt(j, new JPanel());
+		}
+		if (selectedIndex < 0) {
+			// nothing selected. probably, the last map was closed
+			return;
+		}
+		MapModule module = (MapModule) mTabbedPaneMapModules.get(selectedIndex);
+		logger.fine("Selected index of tab is now: " + selectedIndex + " with title:"+module.toString());
+		if (module != getMapModule()) {
+			// we have to change the active map actively:
+			getMapModuleManager().changeToMapModule(module.toString());
+		}
+		// mScrollPane could be set invisible by JTabbedPane
+		frame.getScrollPane().setVisible(true);
+		mTabbedPane.setComponentAt(selectedIndex, frame.getContentComponent());
+	}	
 
 }
 

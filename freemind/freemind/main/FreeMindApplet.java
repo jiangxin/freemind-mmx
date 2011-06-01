@@ -40,6 +40,7 @@ import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -390,4 +391,17 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 		}
 	}
 
+	public JComponent getContentComponent() {
+		// TODO: Is that correct?
+		if(mComponentInSplitPane != null){
+			return mComponentInSplitPane;
+		}
+		return southPanel;
+	}
+
+	public JScrollPane getScrollPane() {
+		return scrollPane;
+	}
+
+		
 }
