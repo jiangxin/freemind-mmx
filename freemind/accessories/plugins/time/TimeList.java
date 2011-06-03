@@ -170,7 +170,7 @@ public class TimeList extends MindMapHookAdapter {
 
 
 		showAllNodes = Tools.xmlToBoolean(getResourceString("show_all_nodes"));
-		dialog = new JDialog(getController().getFrame().getJFrame(), true /* modal */);
+		dialog = new JDialog(getController().getFrame().getJFrame(), false /* unmodal */);
 		String windowTitle;
 		if (showAllNodes) {
 			windowTitle = "plugins/TimeManagement.xml_WindowTitle_All_Nodes";
