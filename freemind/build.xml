@@ -119,6 +119,8 @@
 		</jar>
 		<delete dir="binding">
 		</delete>
+		<delete failonerror="false" file="${src}/accessories/plugins/MacChanges.java" quiet="true"/>
+		<delete failonerror="false" file="${src}/accessories/plugins/MacChanges.xml" quiet="true"/>
 	</target>
 
 	<target name="patterns">
