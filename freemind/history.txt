@@ -3,6 +3,10 @@ Changes made in FreeMind 1.0.0 Alpha5
 ===============================
 * Fixed browser for 1.0.0
 * Changed the change map shortcuts to something more familiar (eg. from firefox) with control page up/down.
+* Fixed translation of export xslt dialog http://sourceforge.net/tracker/?func=detail&atid=107118&aid=3308701&group_id=7118
+* Patch https://sourceforge.net/tracker/?func=detail&aid=1909107&group_id=7118&atid=307118 integrated. Thanks to the author!
+* Patch https://sourceforge.net/tracker/?func=detail&aid=2973357&group_id=7118&atid=307118 integrated. Thanks to the author!
+* Patch https://sourceforge.net/tracker/?func=detail&aid=1079144&group_id=7118&atid=307118 integrated. Thanks to the author!         
 
 ===============================
 Changes made in FreeMind 1.0.0 Alpha4
