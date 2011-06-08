@@ -189,6 +189,14 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	private ImageIcon mWindowIcon;
 
+	public static final String KEYSTROKE_MOVE_MAP_LEFT = "keystroke_MoveMapLeft";
+
+	public static final String KEYSTROKE_MOVE_MAP_RIGHT = "keystroke_MoveMapRight";
+
+	public static final String KEYSTROKE_PREVIOUS_MAP = "keystroke_previousMap";
+
+	public static final String KEYSTROKE_NEXT_MAP = "keystroke_nextMap";
+
 	public FreeMind(Properties pDefaultPreferences, Properties pUserPreferences, File pAutoPropertiesFile) {
 		super("FreeMind");
 		// Focus searcher

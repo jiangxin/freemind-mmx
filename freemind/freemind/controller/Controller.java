@@ -184,6 +184,7 @@ public class Controller  implements MapModuleChangeObserver {
     public Action navigationPreviousMap;
     public Action navigationNextMap;
     public Action navigationMoveMapLeftAction;
+    public Action navigationMoveMapRightAction;
 
     public Action moveToRoot;
     public Action toggleMenubar;
@@ -271,6 +272,7 @@ public class Controller  implements MapModuleChangeObserver {
         navigationPreviousMap = new NavigationPreviousMapAction(this);
         navigationNextMap = new NavigationNextMapAction(this);
         navigationMoveMapLeftAction=new NavigationMoveMapLeftAction(this);
+        navigationMoveMapRightAction=new NavigationMoveMapRightAction(this);
         showFilterToolbarAction = new ShowFilterToolbarAction(this);
         showAttributeManagerAction = new ShowAttributeDialogAction(this);
         toggleMenubar = new ToggleMenubarAction(this);
@@ -601,10 +603,12 @@ public class Controller  implements MapModuleChangeObserver {
         obtainFocusForSelected();
     }
 
-	public void numberOfOpenMapInformation(int number) {
+	public void numberOfOpenMapInformation(int number, int pIndex) {
 		navigationPreviousMap.setEnabled(number>0);
 		navigationNextMap.setEnabled(number>0);
-		navigationMoveMapLeftAction.setEnabled(number>1);
+		logger.info("number " + number + ", pIndex " + pIndex);
+		navigationMoveMapLeftAction.setEnabled(number>1 && pIndex > 0);
+		navigationMoveMapRightAction.setEnabled(number>1 && pIndex < number-1);
 	}
 
 
@@ -917,7 +921,9 @@ public class Controller  implements MapModuleChangeObserver {
 					return;
 				}
 				if (restorableBuffer.length() != 0) {
-					restorables.add(restorableBuffer.toString());
+					String restorableString = restorableBuffer.toString();
+					logger.info("Closed the map " + restorableString);
+					restorables.add(restorableString);
 				}
 			} else {
 				// map module without view open.
@@ -1339,13 +1345,28 @@ public class Controller  implements MapModuleChangeObserver {
     private class NavigationMoveMapLeftAction extends AbstractAction {
     	NavigationMoveMapLeftAction(Controller controller) {
     		super(controller.getResourceString("move_map_left"),
-    				new ImageIcon(getResource("images/1leftarrow.png")));
+    				new ImageIcon(getResource("images/draw-arrow-back.png")));
     		setEnabled(false);
     	}
     	public void actionPerformed(ActionEvent event) {
     		if(mTabbedPane!=null){
     			int selectedIndex = mTabbedPane.getSelectedIndex();
     			int previousIndex = (selectedIndex>0)?(selectedIndex-1):(mTabbedPane.getTabCount()-1);
+    			moveTab(selectedIndex, previousIndex);
+    		}
+    	}
+    }
+    
+    private class NavigationMoveMapRightAction extends AbstractAction {
+    	NavigationMoveMapRightAction(Controller controller) {
+    		super(controller.getResourceString("move_map_right"),
+    				new ImageIcon(getResource("images/draw-arrow-forward.png")));
+    		setEnabled(false);
+    	}
+    	public void actionPerformed(ActionEvent event) {
+    		if(mTabbedPane!=null){
+    			int selectedIndex = mTabbedPane.getSelectedIndex();
+    			int previousIndex = (selectedIndex>= mTabbedPane.getTabCount()-1)?0:(selectedIndex+1);
     			moveTab(selectedIndex, previousIndex);
     		}
     	}
@@ -1370,9 +1391,8 @@ public class Controller  implements MapModuleChangeObserver {
     	mTabbedPane.remove(src);
     	// Add a new tab
     	mTabbedPane.insertTab(label, icon, comp, tooltip, dst);
-    	Object sourceModule = mTabbedPaneMapModules.get(src);
-    	mTabbedPaneMapModules.setElementAt(mTabbedPaneMapModules.get(dst), src);
-    	mTabbedPaneMapModules.setElementAt(sourceModule, dst);
+    	Tools.swapVectorPositions(mTabbedPaneMapModules, src, dst);
+    	getMapModuleManager().swapModules(src, dst);
     	mTabbedPane.setSelectedIndex(dst);
     	mTabbedPaneSelectionUpdate = true;
 
@@ -1805,7 +1825,7 @@ public class Controller  implements MapModuleChangeObserver {
 						return true;
 					}
 
-					public void numberOfOpenMapInformation(int pNumber) {
+					public void numberOfOpenMapInformation(int pNumber, int pIndex) {
 					}
 
 					public void afterMapClose(MapModule pOldMapModule,

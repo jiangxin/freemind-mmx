@@ -1487,5 +1487,12 @@ public class Tools {
 		return nodes;
 	}
 
+	public static void swapVectorPositions(Vector pVector, int src, int dst){
+		if(src >= pVector.size() || dst >= pVector.size() || src < 0 || dst < 0){
+			throw new IllegalArgumentException("One index is out of bounds " + src + ", " + dst + ", size= "+pVector.size());
+		}
+    	pVector.set(dst, pVector.set(src, pVector.get(dst)));
+	}
+	
 }
 

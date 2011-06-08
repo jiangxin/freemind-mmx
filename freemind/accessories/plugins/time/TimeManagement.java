@@ -396,6 +396,6 @@ public class TimeManagement extends MindMapHookAdapter implements
 		return true;
 	}
 
-	public void numberOfOpenMapInformation(int number) {
+	public void numberOfOpenMapInformation(int number, int pIndex) {
 	}
 }

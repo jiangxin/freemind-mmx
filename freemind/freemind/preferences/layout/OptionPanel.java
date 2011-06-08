@@ -773,12 +773,16 @@ public class OptionPanel implements TextTranslator {
 		// shift
 		// W
 
-		controls.add(new KeyProperty(frame, null, "keystroke_previousMap")); //  control
+		controls.add(new KeyProperty(frame, null, FreeMind.KEYSTROKE_PREVIOUS_MAP)); //  control
 		// LEFT
 
-		controls.add(new KeyProperty(frame, null, "keystroke_nextMap")); //  control
+		controls.add(new KeyProperty(frame, null, FreeMind.KEYSTROKE_NEXT_MAP)); //  control
 		// RIGHT
 
+		controls.add(new KeyProperty(frame, null, FreeMind.KEYSTROKE_MOVE_MAP_LEFT)); 
+		
+		controls.add(new KeyProperty(frame, null, FreeMind.KEYSTROKE_MOVE_MAP_RIGHT)); 
+		
 		controls.add(new KeyProperty(frame, null, "keystroke_mode_MindMap")); //  alt
 		// 1
 

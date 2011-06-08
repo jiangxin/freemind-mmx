@@ -160,7 +160,7 @@ import freemind.view.mindmapview.NodeView;
             getFilterToolbar().mapChanged(newMap);
     }
 
-    public void numberOfOpenMapInformation(int number) {
+    public void numberOfOpenMapInformation(int number, int pIndex) {
     }
     private static Filter createTransparentFilter(){
         if(inactiveFilter == null)

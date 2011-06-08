@@ -66,8 +66,9 @@ public class MapModuleManager {
 			void afterMapClose(MapModule oldMapModule, Mode oldMode);
 			void afterMapModuleChange(MapModule oldMapModule, Mode oldMode, MapModule newMapModule, Mode newMode);
 			/** To enable/disable the previous/next map actions.
+			 * @param pIndex TODO
 			 */
-			void numberOfOpenMapInformation(int number);
+			void numberOfOpenMapInformation(int number, int pIndex);
 		}
 	
 		public static class MapModuleChangeObserverCompound implements MapModuleChangeObserver {
@@ -101,10 +102,10 @@ public class MapModuleManager {
 					observer.afterMapModuleChange(oldMapModule, oldMode, newMapModule, newMode);
 				}
 			}
-			public void numberOfOpenMapInformation(int number) {
+			public void numberOfOpenMapInformation(int number, int pIndex) {
 				for (Iterator iter = new Vector(listeners).iterator(); iter.hasNext();) {
 					MapModuleChangeObserver observer = (MapModuleChangeObserver) iter.next();
-					observer.numberOfOpenMapInformation(number);
+					observer.numberOfOpenMapInformation(number, pIndex);
 				}
 			}
 			public void afterMapClose(MapModule pOldMapModule, Mode pOldMode) {
@@ -335,8 +336,12 @@ public class MapModuleManager {
 		this.mapModule = newMapModule;
 		this.mCurrentMode = newMode;
 		listener.afterMapModuleChange(oldMapModule, oldMode, newMapModule, newMode);
-		listener.numberOfOpenMapInformation(mapModuleVector.size());
+		fireNumberOfOpenMapInformation();
 		return true;
+	}
+	
+	private void fireNumberOfOpenMapInformation() {
+		listener.numberOfOpenMapInformation(mapModuleVector.size(), mapModuleVector.indexOf(getMapModule()));
 	}
 
 
@@ -395,4 +400,9 @@ public class MapModuleManager {
 
        // }}
 
+       public void swapModules(int src, int dst){
+    	   Tools.swapVectorPositions(mapModuleVector, src, dst);
+    	   fireNumberOfOpenMapInformation();
+       }
+       
     }

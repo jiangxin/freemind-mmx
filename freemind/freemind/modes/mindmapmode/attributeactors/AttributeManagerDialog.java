@@ -267,7 +267,7 @@ public class AttributeManagerDialog extends JDialog implements MapModuleChangeOb
         }
     }
 
-    public void numberOfOpenMapInformation(int number) {
+    public void numberOfOpenMapInformation(int number, int pIndex) {
     }
 
 	public void afterMapClose(MapModule pOldMapModule, Mode pOldMode) {
