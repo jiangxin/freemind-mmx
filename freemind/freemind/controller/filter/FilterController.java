@@ -105,7 +105,7 @@ import freemind.view.mindmapview.NodeView;
     /**
      */
     public void showFilterToolbar(boolean show){
-        if (show == getFilterToolbar().isVisible())
+        if (show == isVisible())
             return;
         getFilterToolbar().setVisible(show);
         final Filter filter = getMap().getFilter();
@@ -117,6 +117,10 @@ import freemind.view.mindmapview.NodeView;
         }
         refreshMap();        
     }
+
+	public boolean isVisible() {
+		return getFilterToolbar().isVisible();
+	}
     void refreshMap() {
         c.getModeController().refreshMap();
     }

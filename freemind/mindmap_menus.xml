@@ -339,6 +339,13 @@
 				<menu_action name="paste" field="paste" key_ref="keystroke_paste"/>
 			</menu_category>
 			<menu_separator/>
+			<menu_category name="navigation">
+				<menu_action name="navigationPreviousMap" field="navigationPreviousMap"/>
+				<menu_action name="navigationNextMap" field="navigationNextMap"/>
+				<menu_action name="printDirect" field="printDirect"/>
+				<menu_action name="showFilterToolbarAction" field="showFilterToolbarAction"/>
+			</menu_category>
+			<menu_separator/>
 			<menu_category name="insert">
 				<menu_action name="newChild" field="newChild"/>
 			</menu_category>

@@ -77,7 +77,7 @@ public class FreeMindToolBar extends JToolBar {
 		returnValue.setFocusable(false);
 
 		// fc, 20.6.2004: try to make the toolbar looking good under Mac OS X.
-		if (System.getProperty("os.name").startsWith("Mac OS")) {
+		if (Tools.isMacOsX()) {
 			returnValue.setBorderPainted     (false);
 		}
 		returnValue.setContentAreaFilled (false);

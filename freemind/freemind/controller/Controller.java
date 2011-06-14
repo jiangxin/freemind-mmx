@@ -133,7 +133,7 @@ public class Controller  implements MapModuleChangeObserver {
     /**  The current mode */
     private Mode mMode;
     private FreeMindMain frame;
-    private JToolBar toolbar;
+    private MainToolBar toolbar;
     private JToolBar filterToolbar;
     private JPanel northToolbarPanel;
     private NodeMouseMotionListener nodeMouseMotionListener;
@@ -543,6 +543,7 @@ public class Controller  implements MapModuleChangeObserver {
         }
         if (oldModeController.getModeToolBar() != null) {
             toolbar.remove(oldModeController.getModeToolBar());
+            toolbar.activate(true);
         }
         /* other toolbars are to be removed too. */
         if (oldModeController.getLeftToolBar() != null) {
@@ -578,6 +579,7 @@ public class Controller  implements MapModuleChangeObserver {
         setTitle();
         JToolBar newToolBar = newModeController.getModeToolBar();
         if (newToolBar != null) {
+        	toolbar.activate(false);
             toolbar.add(newToolBar);
             newToolBar.repaint();
         }
@@ -1317,12 +1319,11 @@ public class Controller  implements MapModuleChangeObserver {
 
     private class ShowFilterToolbarAction extends AbstractAction {
         ShowFilterToolbarAction(Controller controller) {
-            super(null,
+            super(getResourceString("filter_toolbar"),
                   new ImageIcon(getResource("images/filter.gif")));
         }
         public void actionPerformed(ActionEvent event) {
-            JToggleButton btnFilter = (JToggleButton)event.getSource();
-            if(btnFilter.getModel().isSelected()){
+            if(!getFilterController().isVisible()){
                 getFilterController().showFilterToolbar(true);
             }
             else{

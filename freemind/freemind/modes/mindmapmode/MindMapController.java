@@ -886,7 +886,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 				}
 				String keystroke = action.getKeyRef();
 				try {
-					Action theAction = (Action) this.getClass().getField(field).get(this);
+					Action theAction = (Action) Tools.getField(new Object[]{this, getController()}, field); 
 					String theCategory = categoryCopy+"/"+name;
 					if (obj instanceof MenuCheckedAction) {
 						addCheckBox(holder, theCategory, theAction, keystroke);
@@ -900,7 +900,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 						add(holder, theCategory, theAction, keystroke);
 					}
 				} catch (Exception e1) {
-freemind.main.Resources.getInstance().logException(					e1);
+					freemind.main.Resources.getInstance().logException(					e1);
 				}
             } else if (obj instanceof MenuSeparator) {
             	holder.addSeparator(categoryCopy);

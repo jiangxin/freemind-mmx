@@ -20,48 +20,42 @@
 
 package freemind.controller;
 
-import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.logging.Logger;
 
-import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JToggleButton;
 
 public class MainToolBar extends FreeMindToolBar {
     private JComboBox zoom;	    
     Controller controller;
     String userDefinedZoom;
     private static Logger logger= null;
-	
+    FreeMindToolBar mInnerToolBar;
+    
+    
     public MainToolBar(final Controller controller) {
     	super();
         this.setRollover(true);
         this.controller = controller;
+        mInnerToolBar = new FreeMindToolBar();
         if(logger == null) {
             logger = controller.getFrame().getLogger(this.getClass().getName());
         }
         userDefinedZoom = controller.getResourceString("user_defined_zoom");
 
-	add(controller.navigationPreviousMap);
-	add(controller.navigationNextMap);
-	add(controller.printDirect);
-	JToggleButton btnFilter = new JToggleButton (controller.showFilterToolbarAction);
-	// don't paint the border, in order to look like every other toolbar item.
-	//btnFilter.setBorderPainted(false);
-	// set null margin, in order to look like every other toolbar item.
-	btnFilter.setMargin(new Insets(0, 0, 0, 0));
-	btnFilter.setFocusable(false);
-	btnFilter.setContentAreaFilled(false);
-	btnFilter.setToolTipText(controller.getResourceString("filter_toolbar"));
-	add(btnFilter);
+		mInnerToolBar.add(controller.navigationPreviousMap);
+		mInnerToolBar.add(controller.navigationNextMap);
+		mInnerToolBar.add(controller.printDirect);
+		mInnerToolBar.add(controller.showFilterToolbarAction);
 
         zoom = new JComboBox(controller.getZooms());
         zoom.setSelectedItem("100%");
         zoom.addItem(userDefinedZoom);
         // Focus fix.
         zoom.setFocusable(false);
+//        mInnerToolBar.add(zoom);
+        this.add(mInnerToolBar);
         add(zoom);
 		zoom.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
@@ -74,6 +68,15 @@ public class MainToolBar extends FreeMindToolBar {
 		});
 	}
 
+    public void activate(boolean visible) {
+    	if(visible){
+    		this.remove(mInnerToolBar);
+    		this.add(mInnerToolBar);
+    	} else {
+    		this.remove(mInnerToolBar);
+    	}
+    }
+    
     private void setZoomByItem(Object item) {
 		if (((String) item).equals(userDefinedZoom))
 			return; // nothing to do...

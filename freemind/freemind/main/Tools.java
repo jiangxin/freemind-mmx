@@ -51,6 +51,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -1492,6 +1493,19 @@ public class Tools {
 			throw new IllegalArgumentException("One index is out of bounds " + src + ", " + dst + ", size= "+pVector.size());
 		}
     	pVector.set(dst, pVector.set(src, pVector.get(dst)));
+	}
+
+	public static Object getField(Object[] pObjects, String pField) throws IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchFieldException {
+		for (int i = 0; i < pObjects.length; i++) {
+			Object object = pObjects[i];
+			for (int j = 0; j < object.getClass().getFields().length; j++) {
+				Field f = object.getClass().getFields()[j];
+				if(Tools.safeEquals(pField, f.getName())) {
+					return object.getClass().getField(pField).get(object);
+				}
+			}
+		}
+		return null;
 	}
 	
 }
