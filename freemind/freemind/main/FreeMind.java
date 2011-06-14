@@ -78,6 +78,8 @@ import freemind.view.mindmapview.NodeView;
 
 public class FreeMind extends JFrame implements FreeMindMain {
 
+	private static final String FREE_MIND_PROGRESS_LOAD_MAPS = "FreeMind.progress.loadMaps";
+
 	private static final String SPLIT_PANE_POSITION = "split_pane_position";
 
 	private static final String SPLIT_PANE_LAST_POSITION = "split_pane_last_position";
@@ -732,15 +734,15 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			frame.mWindowIcon = new ImageIcon(frame
 					.getResource("images/FreeMindWindowIcon.png"));
 		}
-		feedBack.setMaximumValue(9);
+		feedBack.setMaximumValue(9+frame.getMaximumNumberOfMapsToLoad(args));
 		frame.init(feedBack);
 
 		feedBack.increase("FreeMind.progress.startCreateController");
 		final ModeController ctrl = frame.createModeController(args);
 		
-		feedBack.increase("FreeMind.progress.loadMaps");
+		feedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS);
 		// This could be improved.
-		frame.loadMaps(args, ctrl);
+		frame.loadMaps(args, ctrl, feedBack);
 		
 		Tools.waitForEventQueue();
 		feedBack.increase("FreeMind.progress.endStartup");
@@ -895,7 +897,17 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		return ctrl;
 	}
 
-	private void loadMaps(final String[] args, ModeController pModeController) {
+	private int getMaximumNumberOfMapsToLoad(String[] args){
+		LastStateStorageManagement management = getLastStateStorageManagement();
+		int[] values = {args.length, management.getLastOpenList().size(), 1};
+		int ret = 0;
+		for (int i = 0; i < values.length; i++) {
+			ret = Math.max(ret, values[i]);
+		}
+		return ret;
+	}
+	 
+	private void loadMaps(final String[] args, ModeController pModeController, FeedBack pFeedBack) {
 		boolean fileLoaded = false;
 		for (int i = 0; i < args.length; i++) {
 			// JOptionPane.showMessageDialog(null,i+":"+args[i]);
@@ -924,6 +936,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 					// System.exit(1);
 				}
 			}
+			pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS);
 		}
 		if (!fileLoaded) {
 			fileLoaded = processLoadEventFromStartupPhase();
@@ -931,8 +944,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		if(!fileLoaded && Tools.isPreferenceTrue(getProperty(FreeMindCommon.LOAD_LAST_MAPS_AND_LAYOUT))){
 			int index = 0;
 			MapModule mapToFocus=null;
-	        String lastStateMapXml = getProperty(FreeMindCommon.MINDMAP_LAST_STATE_MAP_STORAGE);
-	        LastStateStorageManagement management= new LastStateStorageManagement(lastStateMapXml);
+	        LastStateStorageManagement management = getLastStateStorageManagement();
 	        for (Iterator it = management.getLastOpenList().iterator(); it.hasNext();) {
 				MindmapLastStateStorage store = (MindmapLastStateStorage) it.next();
 				String restorable = store.getRestorableName();
@@ -949,6 +961,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 					.logException(e);
 				}
 				index++;
+				pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS);
 			}
 	        if(mapToFocus != null) {
 	        	controller.getMapModuleManager().changeToMapModule(mapToFocus.getDisplayName());
@@ -964,6 +977,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 							restoreable);
 					controller.getModeController().getView().moveToRoot();
 					fileLoaded = true;
+					pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS);
 				} catch (Exception e) {
 					freemind.main.Resources.getInstance()
 					.logException(e);
@@ -980,7 +994,15 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			 * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1752516&group_id=7118
 			 */
 			pModeController.newMap();
+			pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS);
 		}
+	}
+
+
+	private LastStateStorageManagement getLastStateStorageManagement() {
+		String lastStateMapXml = getProperty(FreeMindCommon.MINDMAP_LAST_STATE_MAP_STORAGE);
+		LastStateStorageManagement management= new LastStateStorageManagement(lastStateMapXml);
+		return management;
 	}
 	
 	/**

@@ -22,9 +22,6 @@
 /*$Id: FeedBack.java,v 1.1.2.1.2.2 2007/02/03 23:19:26 christianfoltin Exp $*/
 package freemind.main;
 
-import java.awt.Image;
-
-import javax.swing.ImageIcon;
 
 public interface FeedBack {
 	void progress(int act, String messageId);

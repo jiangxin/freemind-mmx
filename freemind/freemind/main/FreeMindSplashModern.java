@@ -96,8 +96,7 @@ public class FreeMindSplashModern extends JFrame implements IFreeMindSplash {
 
         public void setImageJLabel(JLabel imageJLabel) {
             mImageJLabel = imageJLabel;
-        }
-        
+        }        
     }
     
     private final FreeMindMain frame;
