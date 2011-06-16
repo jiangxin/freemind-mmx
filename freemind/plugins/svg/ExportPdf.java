@@ -26,8 +26,6 @@ package plugins.svg;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 
 import javax.swing.JOptionPane;
 
@@ -38,8 +36,6 @@ import org.apache.fop.svg.PDFTranscoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import freemind.main.FeedBack;
-import freemind.main.FreeMindSplash;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.view.mindmapview.MapView;
@@ -54,9 +50,13 @@ public class ExportPdf extends ExportVectorGraphic {
         super.startupMapHook();
 		boolean nodeExport = Tools.safeEquals("node",
 				getResourceString("export_type"));
-
+		MindMapNode selectedNode = getController().getSelected();
+		String nameExtension = null;
+		if(nodeExport){
+			nameExtension = " " + selectedNode.getShortText(getController());
+		}
 		File chosenFile = chooseFile("pdf",
-                getResourceString("export_pdf_text"), null);
+                getResourceString("export_pdf_text"), nameExtension);
         if (chosenFile == null) {
             return;
         }
@@ -68,7 +68,6 @@ public class ExportPdf extends ExportVectorGraphic {
             getController().getFrame().setWaitingCursor(true);
             SVGGraphics2D g2d;
             if(nodeExport) {
-            	MindMapNode selectedNode = getController().getSelected();
             	g2d = fillSVGGraphics2D(view, selectedNode);
             } else {
 				g2d = fillSVGGraphics2D(view);

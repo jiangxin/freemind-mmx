@@ -51,8 +51,11 @@ import freemind.view.mindmapview.MapView;
 public class ExportHook extends ModeControllerHookAdapter {
 	private MapView view;
 
-	/**
-	 * @param nameExtension TODO
+    /**
+     * @param type
+     * @param description
+     * @param nameExtension
+     * @return
      */
     protected File chooseFile(String type, String description, String nameExtension) {
         Container component = getController().getFrame().getContentPane();
