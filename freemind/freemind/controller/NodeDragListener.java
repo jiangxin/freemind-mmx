@@ -20,6 +20,7 @@
 package freemind.controller;
 
 import freemind.main.Resources;
+import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.view.mindmapview.MainView;
 import freemind.view.mindmapview.NodeView;
@@ -63,12 +64,18 @@ public class NodeDragListener implements DragGestureListener {
 
       Cursor cursor = getCursorByAction(e.getDragAction());
 
-      if ((e.getTriggerEvent().getModifiersEx() & InputEvent.BUTTON3_DOWN_MASK) != 0) {
-         // Change drag action
-         cursor = DragSource.DefaultLinkDrop;
-         dragAction = "LINK"; }
+		int modifiersEx = e.getTriggerEvent().getModifiersEx();
+		boolean macLinkAction = Tools.isMacOsX()
+				&& ((modifiersEx & InputEvent.BUTTON1_DOWN_MASK) != 0)
+				&& e.getTriggerEvent().isMetaDown();
+		boolean otherOsLinkAction = (modifiersEx & InputEvent.BUTTON3_DOWN_MASK) != 0;
+		if (macLinkAction || otherOsLinkAction) {
+			// Change drag action
+			cursor = DragSource.DefaultLinkDrop;
+			dragAction = "LINK";
+		}
 
-      if ((e.getTriggerEvent().getModifiersEx() & InputEvent.BUTTON2_DOWN_MASK) != 0) {
+      if ((modifiersEx & InputEvent.BUTTON2_DOWN_MASK) != 0) {
          // Change drag action
          cursor = DragSource.DefaultCopyDrop;
          dragAction = "COPY"; }

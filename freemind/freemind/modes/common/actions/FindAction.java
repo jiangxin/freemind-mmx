@@ -90,15 +90,22 @@ public class FindAction extends AbstractAction {
 		controller.getView().repaint();
 		if (!found) {
            String messageText = controller.getText("no_found_from");
-           String searchTerm = messageText.startsWith("<html>")
-              ? HtmlTools.toXMLEscapedText(getSearchTerm())
-              : getSearchTerm();
+           String searchTerm = getSearchTermAsEscapedString(messageText);
            controller.getController().informationMessage
               (messageText.
                replaceAll("\\$1", searchTerm).
                replaceAll("\\$2", getFindFromText()),
 					controller.getView().getSelected());
 		}
+	}
+
+	private String getSearchTermAsEscapedString(String messageText) {
+		String searchTerm = messageText.startsWith("<html>") ? HtmlTools
+				.toXMLEscapedText(getSearchTerm()) : getSearchTerm();
+		// Fix for https://sourceforge.net/tracker/?func=detail&aid=3200783&group_id=7118&atid=107118
+		// Patch https://sourceforge.net/tracker/?func=detail&aid=3276562&group_id=7118&atid=307118, thanks to the author
+		searchTerm = searchTerm.replace("$", "\\$");
+		return searchTerm;
 	}
 
 	public static class FindNextAction extends AbstractAction {
@@ -124,9 +131,7 @@ public class FindAction extends AbstractAction {
 			controller.getView().repaint();
 			if (!found) {
                 String messageText = controller.getText("no_more_found_from");
-                String searchTerm = messageText.startsWith("<html>")
-                   ? HtmlTools.toXMLEscapedText(find.getSearchTerm())
-                   : find.getSearchTerm();
+                String searchTerm = find.getSearchTermAsEscapedString(messageText);
                 controller.getController().informationMessage
                    (messageText.
                     replaceAll("\\$1", searchTerm).

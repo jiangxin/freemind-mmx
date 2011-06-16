@@ -580,7 +580,7 @@ public class Controller  implements MapModuleChangeObserver {
         JToolBar newToolBar = newModeController.getModeToolBar();
         if (newToolBar != null) {
         	toolbar.activate(false);
-            toolbar.add(newToolBar);
+            toolbar.add(newToolBar, 0);
             newToolBar.repaint();
         }
         /* new left toolbar. */

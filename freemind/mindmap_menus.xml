@@ -326,11 +326,7 @@
 				<menu_action field="open" key_ref="keystroke_open"/>
 				<menu_action field="save" key_ref="keystroke_save"/>
 				<menu_action field="saveAs" key_ref="keystroke_saveAs"/>
-			</menu_category>
-			<menu_separator/>
-			<menu_category name="undo">
-				<menu_action name="undo" field="undo" key_ref="keystroke_undo"/>
-				<menu_action name="redo" field="redo" key_ref="keystroke_redo"/>
+				<menu_action name="printDirect" field="printDirect"/>
 			</menu_category>
 			<menu_separator/>
 			<menu_category name="paste">
@@ -339,12 +335,15 @@
 				<menu_action name="paste" field="paste" key_ref="keystroke_paste"/>
 			</menu_category>
 			<menu_separator/>
-			<menu_category name="navigation">
+			<menu_category name="undo">
+				<menu_action name="undo" field="undo" key_ref="keystroke_undo"/>
+				<menu_action name="redo" field="redo" key_ref="keystroke_redo"/>
+			</menu_category>
+			<menu_separator/>
+<!-- 		<menu_category name="navigation">
 				<menu_action name="navigationPreviousMap" field="navigationPreviousMap"/>
 				<menu_action name="navigationNextMap" field="navigationNextMap"/>
-				<menu_action name="printDirect" field="printDirect"/>
-				<menu_action name="showFilterToolbarAction" field="showFilterToolbarAction"/>
-			</menu_category>
+			</menu_category>  -->
 			<menu_separator/>
 			<menu_category name="insert">
 				<menu_action name="newChild" field="newChild"/>
@@ -359,9 +358,12 @@
 				<menu_action field="cloud" key_ref="keystroke_node_toggle_cloud"/>
 			</menu_category>
 			<menu_separator/>
-			<menu_category name="attributes">
-				<menu_action field="showAttributeManagerAction" key_ref="keystroke_show_attribute_manager"/>
+			<menu_category name="filter">
+				<menu_action name="showFilterToolbarAction" field="showFilterToolbarAction"/>
 			</menu_category>
+<!-- 		<menu_category name="attributes">
+				<menu_action field="showAttributeManagerAction" key_ref="keystroke_show_attribute_manager"/>
+			</menu_category>  -->
 			<menu_separator/>
 			<menu_category name="folding">
 			</menu_category>
