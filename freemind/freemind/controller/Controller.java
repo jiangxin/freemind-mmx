@@ -542,8 +542,10 @@ public class Controller  implements MapModuleChangeObserver {
             }
         }
         if (oldModeController.getModeToolBar() != null) {
-            toolbar.remove(oldModeController.getModeToolBar());
-            toolbar.activate(true);
+//            toolbar.remove(oldModeController.getModeToolBar());
+//            toolbar.activate(true);
+            northToolbarPanel.remove( oldModeController.getModeToolBar());
+            northToolbarPanel.add( toolbar, BorderLayout.NORTH);
         }
         /* other toolbars are to be removed too. */
         if (oldModeController.getLeftToolBar() != null) {
@@ -579,8 +581,10 @@ public class Controller  implements MapModuleChangeObserver {
         setTitle();
         JToolBar newToolBar = newModeController.getModeToolBar();
         if (newToolBar != null) {
-        	toolbar.activate(false);
-            toolbar.add(newToolBar, 0);
+//        	toolbar.activate(false);
+//            toolbar.add(newToolBar, 0);
+            northToolbarPanel.remove( toolbar);
+            northToolbarPanel.add( newToolBar, BorderLayout.NORTH);
             newToolBar.repaint();
         }
         /* new left toolbar. */

@@ -28,6 +28,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
+import javax.swing.JToolBar;
 
 import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
@@ -55,6 +56,10 @@ public class FileController extends ViewControllerAdapter {
 	super(mode);
     }
 
+    public JToolBar getModeToolBar() {
+    	return ((FileMode) getMode()).getToolbar();
+    }
+    
     public MapAdapter newModel(ModeController modeController) {
 	return new FileMapModel(getFrame(), modeController);
     }

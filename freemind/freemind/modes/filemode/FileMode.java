@@ -46,7 +46,11 @@ public class FileMode extends Mode {
     }
 
 
-    public String toString() {
+    public JToolBar getToolbar() {
+		return toolbar;
+	}
+
+	public String toString() {
 	return MODENAME;
     }
 
