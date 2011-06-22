@@ -19,6 +19,12 @@
  *
  * Created on 22.06.2011
  */
+
+/** 
+ * To use this script, call 
+ * java -Dstartup_groovy_script=accessories\ExportToPdf.groovy -jar lib\freemind.jar
+ */
+
 // show map (otherwise it can't be exported)
 c.showThisMap()
 // get exporter
