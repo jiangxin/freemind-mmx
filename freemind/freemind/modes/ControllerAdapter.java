@@ -89,6 +89,7 @@ import freemind.main.XMLElement;
 import freemind.main.XMLParseException;
 import freemind.modes.attributes.AttributeController;
 import freemind.modes.common.listeners.MindMapMouseWheelEventHandler;
+import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 import freemind.view.mindmapview.attributeview.AttributeTable;
@@ -1408,6 +1409,10 @@ public abstract class ControllerAdapter implements ModeController {
 	public Set getRegisteredMouseWheelEventHandler() {
 		return Collections.EMPTY_SET;
 	}
+	public MapModule getMapModule() {
+		return getController().getMapModuleManager().getModuleGivenModeController(this);
+	}
+	
 
 
 }

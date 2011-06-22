@@ -234,7 +234,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 	private boolean fitToPage = true;
 
     /** Used to identify a right click onto a link curve.*/
-    private Vector/* of ArrowLinkViews*/ ArrowLinkViews;
+    private Vector/* of ArrowLinkViews*/ mArrowLinkViews = new Vector();
 
     private Point rootContentLocation;
 
@@ -1122,7 +1122,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 //        }
 //        graphics.drawImage(image, 0, 0, getHeight(), getWidth(), null);
         HashMap labels = new HashMap();
-        ArrowLinkViews = new Vector();
+        mArrowLinkViews = new Vector();
         collectLabels(rootView, labels);
         super.paintChildren(graphics);
     	Graphics2D graphics2d = (Graphics2D)graphics;
@@ -1197,7 +1197,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
                 if(ref  instanceof MindMapArrowLink) {
                     ArrowLinkView arrowLink = new ArrowLinkView((MindMapArrowLink) ref, getNodeView(ref.getSource()), getNodeView(ref.getTarget()));
                     arrowLink.paint(graphics);
-                    ArrowLinkViews.add(arrowLink);
+                    mArrowLinkViews.add(arrowLink);
                     // resize map?
                     // adjust container size
 //                    Rectangle rec = arrowLink.getBounds();
@@ -1218,10 +1218,10 @@ public class MapView extends JPanel implements Printable, Autoscroll{
     }
 
     public MindMapArrowLink detectCollision(Point p) {
-        if(ArrowLinkViews == null)
+        if(mArrowLinkViews == null)
             return null;
-        for(int i = 0; i < ArrowLinkViews.size(); ++i) {
-            ArrowLinkView arrowView = (ArrowLinkView) ArrowLinkViews.get(i);
+        for(int i = 0; i < mArrowLinkViews.size(); ++i) {
+            ArrowLinkView arrowView = (ArrowLinkView) mArrowLinkViews.get(i);
             if(arrowView.detectCollision(p))
                 return arrowView.getModel();
         }
@@ -1373,8 +1373,8 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         innerBounds.x += getRoot().getX();
         innerBounds.y += getRoot().getY();
         final Rectangle maxBounds = new Rectangle(0, 0, getWidth(), getHeight());        
-        for(int i = 0; i < ArrowLinkViews.size(); ++i) {
-            ArrowLinkView arrowView = (ArrowLinkView) ArrowLinkViews.get(i);
+        for(int i = 0; i < mArrowLinkViews.size(); ++i) {
+            ArrowLinkView arrowView = (ArrowLinkView) mArrowLinkViews.get(i);
             final CubicCurve2D arrowLinkCurve = arrowView.arrowLinkCurve;
             if(arrowLinkCurve == null){
             	continue;

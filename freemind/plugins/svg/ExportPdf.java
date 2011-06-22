@@ -30,6 +30,7 @@ import java.io.FileOutputStream;
 import javax.swing.JOptionPane;
 
 import org.apache.batik.svggen.SVGGraphics2D;
+import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.fop.svg.PDFTranscoder;
@@ -60,49 +61,55 @@ public class ExportPdf extends ExportVectorGraphic {
         if (chosenFile == null) {
             return;
         }
+        getController().getFrame().setWaitingCursor(true);
         try {
-            MapView view = getController().getView();
-            if (view == null)
-                return;
-
-            getController().getFrame().setWaitingCursor(true);
-            SVGGraphics2D g2d;
-            if(nodeExport) {
-            	g2d = fillSVGGraphics2D(view, selectedNode);
-            } else {
-				g2d = fillSVGGraphics2D(view);
-            }
-
-            PDFTranscoder pdfTranscoder = new PDFTranscoder();
-            /*
-			 * according to
-			 * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1921334&group_id=7118
-			 * 
-			 * Submitted By: Frank Spangenberg (f_spangenberg) Summary: Large
-			 * mind maps produce invalid PDF
-			 */
-            pdfTranscoder.addTranscodingHint(PDFTranscoder.KEY_MAX_HEIGHT, new Float(19200));
-            pdfTranscoder.addTranscodingHint(PDFTranscoder.KEY_MAX_WIDTH, new Float(19200));
-            /* end patch*/
-            Document doc = g2d.getDOMFactory();
-            Element rootE = doc.getDocumentElement();
-            g2d.getRoot(rootE);
-            TranscoderInput input = new TranscoderInput(doc);
-            final FileOutputStream ostream = new FileOutputStream(chosenFile);
-            final BufferedOutputStream bufStream = new BufferedOutputStream(ostream);
-			TranscoderOutput output = new TranscoderOutput(bufStream);
-            // save the image
-            pdfTranscoder.transcode(input, output);
-            // flush and close the stream then exit
-            ostream.flush();
-            ostream.close();
-            getController().getFrame().openDocument(Tools.fileToUrl(chosenFile));
+			exportAsPdf(nodeExport, selectedNode, chosenFile);
+	        getController().getFrame().openDocument(Tools.fileToUrl(chosenFile));
         } catch (Exception e) {
             freemind.main.Resources.getInstance().logException(e);
             JOptionPane.showMessageDialog(getController().getFrame().getContentPane(), e.getLocalizedMessage(), null, JOptionPane.ERROR_MESSAGE);
         }
         getController().getFrame().setWaitingCursor(false);
     }
+
+	public boolean exportAsPdf(boolean nodeExport, MindMapNode selectedNode,
+			File chosenFile) throws Exception {
+        MapView view = getController().getView();
+        if (view == null)
+            return false;
+
+        SVGGraphics2D g2d;
+        if(nodeExport) {
+        	g2d = fillSVGGraphics2D(view, selectedNode);
+        } else {
+			g2d = fillSVGGraphics2D(view);
+        }
+
+        PDFTranscoder pdfTranscoder = new PDFTranscoder();
+        /*
+		 * according to
+		 * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1921334&group_id=7118
+		 * 
+		 * Submitted By: Frank Spangenberg (f_spangenberg) Summary: Large
+		 * mind maps produce invalid PDF
+		 */
+        pdfTranscoder.addTranscodingHint(PDFTranscoder.KEY_MAX_HEIGHT, new Float(19200));
+        pdfTranscoder.addTranscodingHint(PDFTranscoder.KEY_MAX_WIDTH, new Float(19200));
+        /* end patch*/
+        Document doc = g2d.getDOMFactory();
+        Element rootE = doc.getDocumentElement();
+        g2d.getRoot(rootE);
+        TranscoderInput input = new TranscoderInput(doc);
+        final FileOutputStream ostream = new FileOutputStream(chosenFile);
+        final BufferedOutputStream bufStream = new BufferedOutputStream(ostream);
+		TranscoderOutput output = new TranscoderOutput(bufStream);
+        // save the image
+        pdfTranscoder.transcode(input, output);
+        // flush and close the stream then exit
+        ostream.flush();
+        ostream.close();
+        return true;
+	}
 
 
 }

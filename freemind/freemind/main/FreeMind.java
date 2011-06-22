@@ -43,10 +43,12 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
+import java.util.Vector;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
@@ -190,6 +192,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	private JTabbedPane mTabbedPane = null;
 
 	private ImageIcon mWindowIcon;
+
+	private boolean mStartupDone = false;
+	
+	private List mStartupDoneListeners = new Vector();
 
 	public static final String KEYSTROKE_MOVE_MAP_LEFT = "keystroke_MoveMapLeft";
 
@@ -756,10 +762,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				NodeView selectedView = ctrl.getSelectedView();
 				if (selectedView!=null) {
 					selectedView.requestFocus();
-//					MindMapNode selected = ctrl.getSelected();
-//					if (selected!=null) {
-//						ctrl.centerNode(selected);
-//					}
 				}
 				frame.removeWindowFocusListener(this);
 			}
@@ -768,9 +770,17 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		if (splash != null) {
 			splash.setVisible(false);
 		}
+		frame.fireStartupDone();
 	}
 
-
+	private void fireStartupDone() {
+		mStartupDone = true;
+		for (Iterator it = mStartupDoneListeners.iterator(); it.hasNext();) {
+			StartupDoneListener listener = (StartupDoneListener) it.next();
+			listener.startupDone();
+		}
+	}
+	
 	private void setScreenBounds() {
 		// Create the MenuBar
 		menuBar = new MenuBar(controller);
@@ -1156,6 +1166,13 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public JComponent getContentComponent() {
 		return mContentComponent;
+	}
+
+
+	public void registerStartupDoneListener(
+			StartupDoneListener pStartupDoneListener) {
+		if(!mStartupDone)	
+			mStartupDoneListeners.add(pStartupDoneListener);
 	}
 		
 }

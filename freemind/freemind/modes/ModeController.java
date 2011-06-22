@@ -46,6 +46,7 @@ import freemind.extensions.HookFactory;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLParseException;
 import freemind.modes.attributes.AttributeController;
+import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
@@ -249,6 +250,7 @@ public interface ModeController extends TextTranslator  {
 	 */
 	void setModel(MapAdapter model);
 	Mode getMode();
+	MapModule getMapModule();
 	Controller getController();
 	HookFactory getHookFactory();
 	Color getSelectionColor();

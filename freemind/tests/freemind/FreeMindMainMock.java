@@ -214,6 +214,12 @@ public class FreeMindMainMock implements FreeMindMain {
 	public JScrollPane getScrollPane() {
 		return null;
 	}
+
+	public void registerStartupDoneListener(
+			StartupDoneListener pStartupDoneListener) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }
 

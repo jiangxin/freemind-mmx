@@ -403,5 +403,11 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 		return scrollPane;
 	}
 
+	public void registerStartupDoneListener(
+			StartupDoneListener pStartupDoneListener) {
+		// TODO Auto-generated method stub
+		
+	}
+
 		
 }

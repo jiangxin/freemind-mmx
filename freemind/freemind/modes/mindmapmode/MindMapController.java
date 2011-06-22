@@ -2133,5 +2133,9 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 			selection.setContents(t, null);
 		}
 	}
-	
+
+	public void showThisMap() {
+		getController().getMapModuleManager().changeToMapModule(getMapModule());
+	}
+
 }

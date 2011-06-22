@@ -37,9 +37,11 @@ import java.util.Map;
 import java.util.Vector;
 
 import freemind.main.Tools;
+import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
+import freemind.modes.mindmapmode.MindMapController;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 
@@ -206,6 +208,21 @@ public class MapModuleManager {
             setMapModule(mapModule, modeController.getMode());
         }
 
+		public MapModule getModuleGivenModeController(ModeController pModeController) {
+			MapModule mapModule = null;
+			for (Iterator iter = getMapModules().entrySet()
+					.iterator(); iter.hasNext();) {
+				Map.Entry mapEntry = (Map.Entry) iter.next();
+				mapModule = (MapModule) mapEntry.getValue();
+				if (pModeController.equals(mapModule.getModeController())) {
+					break;
+				}
+				mapModule=null;
+			}
+			return mapModule;
+		}
+
+        
         public void updateMapModuleName() {
             //removeFromViews() doesn't work because MapModuleChanged()
             //must not be called at this state
@@ -302,7 +319,7 @@ public class MapModuleManager {
             }
             return changeToMapModule(mapModuleCandidate); 
         }
-		private boolean changeToMapModule(MapModule mapModuleCandidate) {
+		public boolean changeToMapModule(MapModule mapModuleCandidate) {
 			return setMapModule(mapModuleCandidate, mapModuleCandidate.getMode());
 		}
 

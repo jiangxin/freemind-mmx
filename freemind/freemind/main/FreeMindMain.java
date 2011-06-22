@@ -39,6 +39,10 @@ import freemind.controller.MenuBar;
 import freemind.view.mindmapview.MapView;
 
 public interface FreeMindMain {
+	public interface StartupDoneListener {
+		void startupDone();
+	}
+
 	public JFrame getJFrame();
 	
     public boolean isApplet();
@@ -241,4 +245,6 @@ public interface FreeMindMain {
 	public abstract JComponent getContentComponent();
 
 	public abstract JScrollPane getScrollPane();
+	
+	public abstract void registerStartupDoneListener(StartupDoneListener pStartupDoneListener);
 }

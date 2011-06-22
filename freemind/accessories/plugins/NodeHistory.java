@@ -65,7 +65,7 @@ public class NodeHistory extends MindMapNodeHookAdapter {
 		public NodeHolder(MindMapNode pNode,
 				MindMapController pMindMapController) {
 			mNodeId = pNode.getObjectId(pMindMapController);
-			MapModule mapModule = getModuleGivenModeController(pMindMapController);
+			MapModule mapModule = pMindMapController.getMapModule();
 			if(mapModule == null) {
 				throw new IllegalArgumentException("MapModule not present to controller " + pMindMapController);
 			}
@@ -108,26 +108,13 @@ public class NodeHistory extends MindMapNodeHookAdapter {
 		public boolean isIdentical(MindMapNode pNode,
 				MindMapController pMindMapController) {
 			String id = pNode.getObjectId(pMindMapController);
-			MapModule mapModule = getModuleGivenModeController(pMindMapController);
+			MapModule mapModule = pMindMapController.getMapModule();
 			if (mapModule != null) {
 				return id.equals(mNodeId);
 			}			
 			return false;
 		}
 
-		private MapModule getModuleGivenModeController(MindMapController pMindMapController) {
-			MapModule mapModule = null;
-			for (Iterator iter = pMindMapController.getController()
-					.getMapModuleManager().getMapModules().entrySet()
-					.iterator(); iter.hasNext();) {
-				Map.Entry mapEntry = (Map.Entry) iter.next();
-				mapModule = (MapModule) mapEntry.getValue();
-				if (pMindMapController.equals(mapModule.getModeController())) {
-					break;
-				}
-			}
-			return mapModule;
-		}
 
 	}
 

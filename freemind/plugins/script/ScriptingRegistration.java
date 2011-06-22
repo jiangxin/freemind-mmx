@@ -3,6 +3,7 @@
  */
 package plugins.script;
 
+import java.io.File;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,7 @@ import freemind.controller.actions.generated.instance.Pattern;
 import freemind.controller.actions.generated.instance.ScriptEditorWindowConfigurationStorage;
 import freemind.extensions.HookRegistration;
 import freemind.main.FreeMind;
+import freemind.main.FreeMindMain.StartupDoneListener;
 import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.main.Tools.BooleanHolder;
@@ -32,7 +34,7 @@ import freemind.preferences.FreemindPropertyContributor;
 import freemind.preferences.layout.OptionPanel;
 
 public class ScriptingRegistration implements HookRegistration,
-		ExternalPatternAction {
+		ExternalPatternAction, StartupDoneListener {
 
 	private static final class ScriptingPluginPropertyContributor implements
 			FreemindPropertyContributor {
@@ -155,6 +157,7 @@ public class ScriptingRegistration implements HookRegistration,
 		controller.registerPlugin(mScriptEditorStarter);
 		mScriptingPluginPropertyContributor = new ScriptingPluginPropertyContributor(controller);
 		OptionPanel.addContributor(mScriptingPluginPropertyContributor);
+		controller.getFrame().registerStartupDoneListener(this);
 	}
 
 	public void deRegister() {
@@ -166,18 +169,43 @@ public class ScriptingRegistration implements HookRegistration,
 	public void act(MindMapNode node, Pattern pattern) {
 		if (pattern.getPatternScript() != null
 				&& pattern.getPatternScript().getValue() != null) {
-			ScriptingEngine.executeScript(node, new BooleanHolder(false),
-					HtmlTools.unescapeHTMLUnicodeEntity(pattern
-							.getPatternScript().getValue()), controller,
-					new ErrorHandler() {
-						public void gotoLine(int pLineNumber) {
-						}
-					}, System.out, getScriptCookies());
+			String scriptString = HtmlTools.unescapeHTMLUnicodeEntity(pattern
+							.getPatternScript().getValue());
+			executeScript(node, scriptString);
 		}
+	}
+
+	private void executeScript(MindMapNode node, String scriptString) {
+		ScriptingEngine.executeScript(node, new BooleanHolder(false),
+				scriptString, controller,
+				new ErrorHandler() {
+					public void gotoLine(int pLineNumber) {
+					}
+				}, System.out, getScriptCookies());
 	}
 
 	public HashMap getScriptCookies() {
 		return mScriptCookies;
+	}
+
+	public void startupDone() {
+		/* Is there a startup groovy script? */
+		String startupScriptFile = controller.getFrame().getProperty("startup_groovy_script");
+		if(startupScriptFile != null && !startupScriptFile.isEmpty()) {
+			String expandFileName = Tools.expandFileName(startupScriptFile);
+			ScriptingEngine.logger.info("Starting script at " + expandFileName);
+			String scriptString = Tools.getFile(new File(expandFileName));
+			if(scriptString != null && !scriptString.isEmpty()){
+				ScriptingEngine.logger.info("Starting script " + scriptString);
+				try {
+					executeScript(controller.getRootNode(), scriptString);
+				} catch (Exception e) {
+					freemind.main.Resources.getInstance().logException(e);
+				}
+			} else {
+				ScriptingEngine.logger.warning("Starting script not found!");				
+			}
+		}
 	}
 
 }

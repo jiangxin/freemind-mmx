@@ -245,4 +245,9 @@ public interface MindMapActions {
      */
     void clearNodeContents(MindMapNode pNode);
 
+    /** 
+     * Switches the display to the map this controller belongs to.
+     */
+    void showThisMap();
+    
 }
