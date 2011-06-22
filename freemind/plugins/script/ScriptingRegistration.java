@@ -190,7 +190,7 @@ public class ScriptingRegistration implements HookRegistration,
 
 	public void startupDone() {
 		/* Is there a startup groovy script? */
-		String startupScriptFile = controller.getFrame().getProperty("startup_groovy_script");
+		String startupScriptFile = System.getProperty("startup_groovy_script");
 		if(startupScriptFile != null && !startupScriptFile.isEmpty()) {
 			String expandFileName = Tools.expandFileName(startupScriptFile);
 			ScriptingEngine.logger.info("Starting script at " + expandFileName);

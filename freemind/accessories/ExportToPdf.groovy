@@ -31,4 +31,5 @@ try {
 	ex.exportAsPdf(false, c.getRootNode(),
 			new File(file));
 	} catch(e) { print e; }
+System.exit(0);
 return 0;
