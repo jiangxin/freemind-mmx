@@ -113,62 +113,72 @@ public class ExportWithXSLT extends ExportHook {
 				 // no file.
 				 return;
 			 }
-		     transform(saveFile);
+			 try {
+				 mTransformResultWithoutError=true;
+				 String transformErrors = transform(saveFile);
+				 if(transformErrors != null) {
+					JOptionPane.showMessageDialog(null,
+							getResourceString(transformErrors),
+							"Freemind", JOptionPane.ERROR_MESSAGE);
+					mTransformResultWithoutError = false;
+				 } else {
+					 if(Tools.safeEquals(getResourceString("load_file"), "true")) {
+						 getController().getFrame().openDocument(Tools.fileToUrl(saveFile));
+					 }
+				 }
+			 } catch (Exception e) {
+				 freemind.main.Resources.getInstance().logException(e);
+				 mTransformResultWithoutError = false;
+			 }
 		 }
 	}
 	/**
 	 * @param saveFile 
+	 * @return If ok: null, else: the resource identifier of the error string.
+	 * @throws Exception 
      * 
      */
-    public void transform(File saveFile) {
-        try {
-        		mTransformResultWithoutError=true;
-            // get AREA:
-            // create HTML image?
-            boolean create_image = Tools.safeEquals(getResourceString("create_html_linked_image"), "true");
-            String areaCode = getAreaCode(create_image);
-            // XSLT Transformation
-            String xsltFileName = getResourceString("xslt_file");
-            boolean success = transformMapWithXslt(xsltFileName, saveFile, areaCode);
-            if (!success) {
-				JOptionPane.showMessageDialog(null,
-						getResourceString("error_applying_template"),
-						"Freemind", JOptionPane.ERROR_MESSAGE);
-				return;
-			}
-            // create directory?
-            if(success && Tools.safeEquals(getResourceString("create_dir"), "true")) {
-                String directoryName = saveFile.getAbsolutePath()+"_files";
-                success = createDirectory(directoryName);
-                
-                // copy files from the resources to the file system:
-                if(success) {
-                    String files = getResourceString("files_to_copy");
-                    String filePrefix = getResourceString("file_prefix");
-                    copyFilesFromResourcesToDirectory(directoryName, files, filePrefix);
-                }
-                // copy icons?
-                if(success && Tools.safeEquals(getResourceString("copy_icons"),"true")) {
-                    success = copyIcons(directoryName);
-                }
-                if(success && Tools.safeEquals(getResourceString("copy_map"),"true")) {
-                    success = copyMap(directoryName);
-                }
-                if(success && create_image) {
-                    createImageFromMap(directoryName);
-                }
+    public String transform(File saveFile) throws Exception {
+        // get AREA:
+        // create HTML image?
+        boolean create_image = Tools.safeEquals(getResourceString("create_html_linked_image"), "true");
+        String areaCode = getAreaCode(create_image);
+        // XSLT Transformation
+        String xsltFileName = getResourceString("xslt_file");
+        boolean success = transformMapWithXslt(xsltFileName, saveFile, areaCode);
+        if (!success) {
+//			JOptionPane.showMessageDialog(null,
+//					getResourceString("error_applying_template"),
+//					"Freemind", JOptionPane.ERROR_MESSAGE);
+			return "error_applying_template";
+		}
+        // create directory?
+        if(success && Tools.safeEquals(getResourceString("create_dir"), "true")) {
+            String directoryName = saveFile.getAbsolutePath()+"_files";
+            success = createDirectory(directoryName);
+            
+            // copy files from the resources to the file system:
+            if(success) {
+                String files = getResourceString("files_to_copy");
+                String filePrefix = getResourceString("file_prefix");
+                copyFilesFromResourcesToDirectory(directoryName, files, filePrefix);
             }
-            if(!success){
-                JOptionPane.showMessageDialog(null, getResourceString("error_creating_directory"), "Freemind", JOptionPane.ERROR_MESSAGE);
-                return;
+            // copy icons?
+            if(success && Tools.safeEquals(getResourceString("copy_icons"),"true")) {
+                success = copyIcons(directoryName);
             }
-            if(Tools.safeEquals(getResourceString("load_file"), "true")) {
-                getController().getFrame().openDocument(Tools.fileToUrl(saveFile));
+            if(success && Tools.safeEquals(getResourceString("copy_map"),"true")) {
+                success = copyMap(directoryName);
             }
-        } catch (Exception e) {
-            freemind.main.Resources.getInstance().logException(e);
-            mTransformResultWithoutError = false;
+            if(success && create_image) {
+                createImageFromMap(directoryName);
+            }
         }
+        if(!success){
+//            JOptionPane.showMessageDialog(null, getResourceString("error_creating_directory"), "Freemind", JOptionPane.ERROR_MESSAGE);
+            return "error_creating_directory";
+        }
+        return null;
     }
 
     private boolean copyMap(String pDirectoryName) throws IOException

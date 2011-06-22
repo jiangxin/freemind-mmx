@@ -135,7 +135,7 @@ public class TransformTest extends FreeMindTestBase {
 
 	private void doExportWithExportPlugin(String mapFileToBeExported,
 			String destinationFileName, Properties properties)
-			throws IOException {
+			throws Exception {
 		InputStream xmlSource = ClassLoader.getSystemResource(
 				mapFileToBeExported).openStream();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
