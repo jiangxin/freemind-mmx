@@ -137,8 +137,8 @@ public class TimeManagement extends MindMapHookAdapter implements
 			gb2.gridx = 0;
 			gb2.gridy = 2;
 			gb2.fill = GridBagConstraints.HORIZONTAL;
-			JButton appendButton = new JButton(
-					getResourceString("plugins/TimeManagement.xml_appendButton"));
+			JButton appendButton = new JButton();
+			Tools.setLabelAndMnemonic(appendButton, getResourceString("plugins/TimeManagement.xml_appendButton"));
 			appendButton.addActionListener(new ActionListener() {
 
 				public void actionPerformed(ActionEvent arg0) {
@@ -162,8 +162,8 @@ public class TimeManagement extends MindMapHookAdapter implements
 			gb2.gridx = 1;
 			gb2.gridy = 2;
 			gb2.fill = GridBagConstraints.HORIZONTAL;
-			JButton reminderButton = new JButton(
-					getResourceString("plugins/TimeManagement.xml_reminderButton"));
+			JButton reminderButton = new JButton();
+			Tools.setLabelAndMnemonic(reminderButton, getResourceString("plugins/TimeManagement.xml_reminderButton"));
 			reminderButton
 					.setToolTipText(getResourceString("plugins/TimeManagement.xml_reminderButton_tooltip"));
 
@@ -175,8 +175,8 @@ public class TimeManagement extends MindMapHookAdapter implements
 			gb2.gridx = 2;
 			gb2.gridy = 2;
 			gb2.fill = GridBagConstraints.HORIZONTAL;
-			JButton reminderButton = new JButton(
-					getResourceString("plugins/TimeManagement.xml_removeReminderButton"));
+			JButton reminderButton = new JButton();
+			Tools.setLabelAndMnemonic(reminderButton, getResourceString("plugins/TimeManagement.xml_removeReminderButton"));
 			reminderButton
 					.setToolTipText(getResourceString("plugins/TimeManagement.xml_removeReminderButton_tooltip"));
 			reminderButton.addActionListener(new RemoveReminders());
@@ -187,7 +187,8 @@ public class TimeManagement extends MindMapHookAdapter implements
 			gb2.gridx = 3;
 			gb2.gridy = 2;
 			gb2.fill = GridBagConstraints.HORIZONTAL;
-			JButton todayButton = new JButton(
+			JButton todayButton = new JButton();
+			Tools.setLabelAndMnemonic(todayButton, 
 					getResourceString("plugins/TimeManagement.xml_todayButton"));
 			todayButton.addActionListener(new ActionListener() {
 
@@ -202,8 +203,10 @@ public class TimeManagement extends MindMapHookAdapter implements
 			gb2.gridx = 4;
 			gb2.gridy = 2;
 			gb2.fill = GridBagConstraints.HORIZONTAL;
-			JButton cancelButton = new JButton(
+			JButton cancelButton = new JButton();
+			Tools.setLabelAndMnemonic(cancelButton,
 					getResourceString("plugins/TimeManagement.xml_closeButton"));
+			dialog.getRootPane().setDefaultButton(cancelButton);
 			cancelButton.addActionListener(new ActionListener() {
 
 				public void actionPerformed(ActionEvent arg0) {
