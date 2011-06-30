@@ -1507,6 +1507,76 @@ public class Tools {
 		}
 		return null;
 	}
+
+	public static boolean isUnix() {
+		return (File.separatorChar == '/') && isMacOsX();
+	}
+	
+	// {{{ setPermissions() method
+	/**
+	 * Sets numeric permissions of a file. On non-Unix platforms, does nothing.
+	 * From jEdit
+	 */
+	public static void setPermissions(String path, int permissions) {
+
+		if (permissions != 0) {
+			if (isUnix()) {
+				String[] cmdarray = { "chmod",
+						Integer.toString(permissions, 8), path };
+
+				try {
+					Process process = Runtime.getRuntime().exec(cmdarray);
+					process.getInputStream().close();
+					process.getOutputStream().close();
+					process.getErrorStream().close();
+					// Jun 9 2004 12:40 PM
+					// waitFor() hangs on some Java
+					// implementations.
+					/*
+					 * int exitCode = process.waitFor(); if(exitCode != 0)
+					 * Log.log
+					 * (Log.NOTICE,FileVFS.class,"chmod exited with code " +
+					 * exitCode);
+					 */
+				}
+
+				// Feb 4 2000 5:30 PM
+				// Catch Throwable here rather than Exception.
+				// Kaffe's implementation of Runtime.exec throws
+				// java.lang.InternalError.
+				catch (Throwable t) {
+				}
+			}
+		}
+	} //}}}
+
+	public static String arrayToUrls(String[] pArgs) {
+		StringBuffer b = new StringBuffer();
+		for (int i = 0; i < pArgs.length; i++) {
+			String fileName = pArgs[i];
+			try {
+				b.append(fileToUrl(new File(fileName)));
+				b.append('\n');
+			} catch (MalformedURLException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+		}
+		return b.toString();
+	}
+
+	public static Vector/*<URL>*/ urlStringToUrls(String pUrls){
+		String[] urls = pUrls.split("\n");
+		Vector ret = new Vector();
+		for (int i = 0; i < urls.length; i++) {
+			String url = urls[i];
+			try {
+				ret.add(new URL(url));
+			} catch (MalformedURLException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+		}
+		return ret;
+	}
 	
 }
 

@@ -32,13 +32,18 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -196,6 +201,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	private boolean mStartupDone = false;
 	
 	private List mStartupDoneListeners = new Vector();
+
+	private EditServer mEditServer;
 
 	public static final String KEYSTROKE_MOVE_MAP_LEFT = "keystroke_MoveMapLeft";
 
@@ -659,8 +666,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		return mFreeMindCommon.getResourceString(resource);
 	}
 
-	public String getResourceString(String key, String resource) {
-		return mFreeMindCommon.getResourceString(key, resource);
+	public String getResourceString(String key, String pDefault) {
+		return mFreeMindCommon.getResourceString(key, pDefault);
 	}
 
 	public Logger getLogger(String forClass) {
@@ -711,6 +718,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	public static void main(final String[] args, Properties pDefaultPreferences, Properties pUserPreferences, File pAutoPropertiesFile) {
 		final FreeMind frame = new FreeMind(pDefaultPreferences, pUserPreferences, pAutoPropertiesFile);
 		IFreeMindSplash splash = null;
+		frame.checkForAnotherInstance(args);
+		frame.initServer();
 		final FeedBack feedBack;
 		// change here, if you don't like the splash
 		if (true) {
@@ -772,6 +781,76 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		}
 		frame.fireStartupDone();
 	}
+
+	private void initServer() {
+		mEditServer = new EditServer(getPortFile(), this);
+		mEditServer.start();
+	}
+
+
+	private void checkForAnotherInstance(String[] pArgs) {
+		String portFile = getPortFile();
+		//{{{ Try connecting to another running FreeMind instance
+		if(portFile != null && new File(portFile).exists())
+		{
+			try
+			{
+				BufferedReader in = new BufferedReader(new FileReader(portFile));
+				String check = in.readLine();
+				if(!check.equals("b"))
+					throw new Exception("Wrong port file format");
+
+				int port = Integer.parseInt(in.readLine());
+				int key = Integer.parseInt(in.readLine());
+
+				Socket socket = new Socket(InetAddress.getByName("127.0.0.1"),port);
+				DataOutputStream out = new DataOutputStream(
+					socket.getOutputStream());
+				out.writeInt(key);
+
+				String script;
+				// Put url to open here
+				script = Tools.arrayToUrls(pArgs);
+				out.writeUTF(script);
+
+				logger.info("Waiting for server");
+				// block until its closed
+				try
+				{
+					socket.getInputStream().read();
+				}
+				catch(Exception e)
+				{
+				}
+
+				in.close();
+				out.close();
+
+				System.exit(0);
+			}
+			catch(Exception e)
+			{
+				// ok, this one seems to confuse newbies
+				// endlessly, so log it as NOTICE, not
+				// ERROR
+				logger.info("An error occurred"
+					+ " while connecting to the jEdit server instance.");
+				logger.info("This probably means that"
+					+ " jEdit crashed and/or exited abnormally");
+				logger.info("the last time it was run.");
+				logger.info("If you don't"
+					+ " know what this means, don't worry.");
+				logger.info(""+e);
+			}
+		}
+		
+	}
+
+
+	private String getPortFile() {
+		return getFreemindDirectory() + File.separator + getProperty("portFile");
+	}
+
 
 	private void fireStartupDone() {
 		mStartupDone = true;

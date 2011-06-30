@@ -140,7 +140,7 @@ public class FreeMindCommon {
             }
         }
 
-        String getResourceString(String key, String resource) {
+        String getResourceString(String key, String pDefault) {
         	try {
         		try {
         			return languageResources.getString(key);
@@ -149,7 +149,7 @@ public class FreeMindCommon {
         		}
         	} catch (Exception e) {
 //        		logger.info(key+" not found.");
-        		return resource;
+        		return pDefault;
         	}
         }
     }
@@ -229,8 +229,8 @@ public class FreeMindCommon {
         return ((FreemindResourceBundle)getResources()).getResourceString(key);
     }
 
-    public String getResourceString(String key, String resource) {
-        return ((FreemindResourceBundle)getResources()).getResourceString(key, resource);
+    public String getResourceString(String key, String pDefault) {
+        return ((FreemindResourceBundle)getResources()).getResourceString(key, pDefault);
     }
 
     public void clearLanguageResources() {

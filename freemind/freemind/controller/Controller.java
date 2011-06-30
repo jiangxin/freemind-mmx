@@ -977,6 +977,7 @@ public class Controller  implements MapModuleChangeObserver {
         	setProperty("appwindow_state", String.valueOf(winState));
         }
         getFrame().saveProperties();
+        // FIXME: Stop edit server!
         //save to properties
         System.exit(0);
     }
