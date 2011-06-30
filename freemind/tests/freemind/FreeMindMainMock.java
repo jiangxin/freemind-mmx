@@ -132,7 +132,7 @@ public class FreeMindMainMock implements FreeMindMain {
     public void setProperty(String key, String value) {
     }
 
-    public void saveProperties() {
+    public void saveProperties(boolean pIsShutdown) {
     }
 
     public String getFreemindDirectory() {

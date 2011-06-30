@@ -98,7 +98,7 @@ public interface FreeMindMain {
 
     public void setProperty(String key, String value);
 
-    public void saveProperties();
+    public void saveProperties(boolean pIsShutdown);
 
     /** Returns the path to the directory the freemind auto properties are in, or null, if not present.*/
     public String getFreemindDirectory();

@@ -976,8 +976,8 @@ public class Controller  implements MapModuleChangeObserver {
         	}
         	setProperty("appwindow_state", String.valueOf(winState));
         }
-        getFrame().saveProperties();
-        // FIXME: Stop edit server!
+        // Stop edit server!
+        getFrame().saveProperties(true);
         //save to properties
         System.exit(0);
     }
@@ -1627,7 +1627,7 @@ public class Controller  implements MapModuleChangeObserver {
                                 .showMessageDialog(
                                         null,
                                         getResourceString("option_changes_may_require_restart"));
-                        controller.getFrame().saveProperties();
+                        controller.getFrame().saveProperties(false);
                     }
 				}
 			});

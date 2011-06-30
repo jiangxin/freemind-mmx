@@ -423,7 +423,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				+ getProperty("properties_folder");
 	}
 
-	public void saveProperties() {
+	public void saveProperties(boolean pIsShutdown) {
 		try {
 			OutputStream out = new FileOutputStream(autoPropertiesFile);
 			final OutputStreamWriter outputStreamWriter = new OutputStreamWriter(out, "8859_1");
@@ -437,6 +437,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		} catch (Exception ex) {
 		}
 		getController().getFilterController().saveConditions();
+		if(pIsShutdown) {
+			mEditServer.stopServer();
+		}
 	}
 
 	public MapView getView() {

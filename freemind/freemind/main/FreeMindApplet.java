@@ -173,7 +173,7 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
        return iMaxNodeWidth;
     }
 
-    public void saveProperties() {
+    public void saveProperties(boolean pIsShutdown) {
     }
 
     public void setTitle(String title) {

@@ -1509,7 +1509,7 @@ public class Tools {
 	}
 
 	public static boolean isUnix() {
-		return (File.separatorChar == '/') && isMacOsX();
+		return (File.separatorChar == '/') || isMacOsX();
 	}
 	
 	// {{{ setPermissions() method
