@@ -85,6 +85,8 @@ import freemind.view.mindmapview.NodeView;
 
 public class FreeMind extends JFrame implements FreeMindMain {
 
+	private static final String PORT_FILE = "portFile";
+
 	private static final String FREE_MIND_PROGRESS_LOAD_MAPS = "FreeMind.progress.loadMaps";
 
 	private static final String SPLIT_PANE_POSITION = "split_pane_position";
@@ -163,6 +165,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public static final String RESOURCES_DON_T_SHOW_CLONE_ICONS = "resources_don_t_show_clone_icons";
 
+	public static final String RESOURCES_DON_T_OPEN_PORT = "resources_don_t_open_port";
+
 	// public static final String defaultPropsURL = "freemind.properties";
 	// public static Properties defaultProps;
 	public static Properties props;
@@ -202,7 +206,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	
 	private List mStartupDoneListeners = new Vector();
 
-	private EditServer mEditServer;
+	private EditServer mEditServer = null;
 
 	public static final String KEYSTROKE_MOVE_MAP_LEFT = "keystroke_MoveMapLeft";
 
@@ -437,7 +441,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		} catch (Exception ex) {
 		}
 		getController().getFilterController().saveConditions();
-		if(pIsShutdown) {
+		if(pIsShutdown && mEditServer != null) {
 			mEditServer.stopServer();
 		}
 	}
@@ -786,13 +790,20 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	}
 
 	private void initServer() {
-		mEditServer = new EditServer(getPortFile(), this);
+		String portFile = getPortFile();
+		if(portFile == null) {
+			return;
+		}
+		mEditServer = new EditServer(portFile, this);
 		mEditServer.start();
 	}
 
 
 	private void checkForAnotherInstance(String[] pArgs) {
 		String portFile = getPortFile();
+		if(portFile == null){
+			return;
+		}
 		//{{{ Try connecting to another running FreeMind instance
 		if(portFile != null && new File(portFile).exists())
 		{
@@ -850,8 +861,14 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	}
 
 
+	/**
+	 * @return null, if no port should be opened.
+	 */
 	private String getPortFile() {
-		return getFreemindDirectory() + File.separator + getProperty("portFile");
+		if(mEditServer == null && Resources.getInstance().getBoolProperty(RESOURCES_DON_T_OPEN_PORT)){
+			return null;
+		}
+		return getFreemindDirectory() + File.separator + getProperty(PORT_FILE);
 	}
 
 
