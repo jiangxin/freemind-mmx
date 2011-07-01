@@ -23,20 +23,25 @@
 
 package plugins.svg;
 
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.swing.JOptionPane;
 
 import org.apache.batik.svggen.SVGGraphics2D;
-import org.apache.batik.transcoder.TranscoderException;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
+import org.apache.batik.transcoder.TranscodingHints.Key;
 import org.apache.fop.svg.PDFTranscoder;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import freemind.controller.Controller;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.view.mindmapview.MapView;
@@ -46,6 +51,7 @@ import freemind.view.mindmapview.MapView;
  *
  */
 public class ExportPdf extends ExportVectorGraphic {
+	ExportPdfPapers papers = new ExportPdfPapers();
 
     public void startupMapHook() {
         super.startupMapHook();
@@ -61,9 +67,13 @@ public class ExportPdf extends ExportVectorGraphic {
         if (chosenFile == null) {
             return;
         }
+        HashMap transcodingHints = choosePaper();
+        if(transcodingHints == null) {
+        	return;
+        }
         getController().getFrame().setWaitingCursor(true);
         try {
-			exportAsPdf(nodeExport, selectedNode, chosenFile);
+			exportAsPdf(nodeExport, selectedNode, chosenFile, transcodingHints);
 	        getController().getFrame().openDocument(Tools.fileToUrl(chosenFile));
         } catch (Exception e) {
             freemind.main.Resources.getInstance().logException(e);
@@ -72,8 +82,65 @@ public class ExportPdf extends ExportVectorGraphic {
         getController().getFrame().setWaitingCursor(false);
     }
 
-	public boolean exportAsPdf(boolean nodeExport, MindMapNode selectedNode,
-			File chosenFile) throws Exception {
+    /**
+     * @return a map PDFTranscoder->value.
+     */
+    public HashMap choosePaper(){
+    	HashMap retValue = new HashMap();
+		//user dialog			
+        String[] paperNames =papers.getPaperNames();
+		Controller controller= this.getController().getController();		
+		ExportPdfDialog dialog=new ExportPdfDialog(getController().getFrame().getJFrame(),paperNames,controller);
+		dialog.setVisible(true);			
+
+		// canceled?
+		if(!dialog.getResult()) {
+			return null;
+		}
+		
+		//get user input for format
+		int orientation = dialog.getOrientation();
+		String format=dialog.getFormat();
+		logger.info("Paper format=" + format);		
+						
+		//set page format
+		PageFormat pageFormat=new PageFormat();		
+		pageFormat.setOrientation(orientation);		
+		Paper paper = papers.determinePaper(format);
+		if(paper != null)
+		{			
+			pageFormat.setPaper(paper);
+	    
+			if(pageFormat.getOrientation() == PageFormat.PORTRAIT)
+			{
+				logger.info("Orientation: Portrait");
+				//portrait
+				retValue.put(PDFTranscoder.KEY_HEIGHT, new Float(pageFormat.getPaper().getHeight()));
+				retValue.put(PDFTranscoder.KEY_WIDTH, new Float(pageFormat.getPaper().getWidth()));				
+			}
+			else 
+			{
+				logger.info("Orientation: Landscape");
+				//landscape
+				retValue.put(PDFTranscoder.KEY_HEIGHT, new Float(pageFormat.getPaper().getWidth()));
+				retValue.put(PDFTranscoder.KEY_WIDTH, new Float(pageFormat.getPaper().getHeight()));
+			}
+		}
+		else
+		{
+			logger.severe("Paper == null");
+		}
+		return retValue;
+    }
+    
+    /** For compatibility with groovy export scripts. */
+    public boolean exportAsPdf(boolean nodeExport, MindMapNode selectedNode,
+    		File chosenFile) throws Exception {
+    	return exportAsPdf(nodeExport, selectedNode, chosenFile, null);
+    }
+
+    public boolean exportAsPdf(boolean nodeExport, MindMapNode selectedNode,
+			File chosenFile, HashMap pTranscoderHints) throws Exception {
         MapView view = getController().getView();
         if (view == null)
             return false;
@@ -95,7 +162,15 @@ public class ExportPdf extends ExportVectorGraphic {
 		 */
         pdfTranscoder.addTranscodingHint(PDFTranscoder.KEY_MAX_HEIGHT, new Float(19200));
         pdfTranscoder.addTranscodingHint(PDFTranscoder.KEY_MAX_WIDTH, new Float(19200));
-        /* end patch*/
+        if (pTranscoderHints != null) {
+			for (Iterator it = pTranscoderHints.keySet().iterator(); it
+					.hasNext();) {
+				Key key = (Key) it.next();
+				pdfTranscoder
+						.addTranscodingHint(key, pTranscoderHints.get(key));
+			}
+		}
+		/* end patch*/
         Document doc = g2d.getDOMFactory();
         Element rootE = doc.getDocumentElement();
         g2d.getRoot(rootE);
