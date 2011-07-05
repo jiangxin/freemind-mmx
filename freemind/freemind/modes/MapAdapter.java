@@ -20,56 +20,52 @@
 
 package freemind.modes;
 
-import java.awt.Color;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.logging.Logger;
 
 import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultTreeModel;
-import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
 
-import freemind.controller.MindMapNodesSelection;
 import freemind.controller.filter.DefaultFilter;
 import freemind.controller.filter.Filter;
 import freemind.controller.filter.condition.NoFilteringCondition;
 import freemind.extensions.PermanentNodeHook;
-import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
-import freemind.view.mindmapview.MapView;
 
 public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 
-    private EventListenerList treeModelListeners = new EventListenerList();
-    /**
+    private static final int INTERVAL_BETWEEN_FILE_MODIFICATION_TIME_CHECKS = 5000;
+	/**
 	 * denotes the amount of changes since the last save. The initial value is
 	 * zero, such that new models are not to be saved.
 	 */
     protected int changesPerformedSinceLastSave = 0;
     protected boolean readOnly = true;
     private File file;
+    private long mFileTime = 0;
     private FreeMindMain frame;
     static protected Logger logger;
     private MapRegistry registry;
     private Filter filter = null;
 	protected final ModeController mModeController;
-
+	private HashSet mMapSourceChangedObserverSet = new HashSet();
+	private Timer mTimerForFileChangeObservation;
 
 
     public MapAdapter (FreeMindMain frame, ModeController modeController) {
@@ -82,19 +78,67 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 		}
 		registry = new MapRegistry(this, modeController);
         filter = new DefaultFilter(NoFilteringCondition.createCondition(), true, false);
+        mTimerForFileChangeObservation = new Timer();
+		mTimerForFileChangeObservation.schedule(
+				new FileChangeInspectorThread(),
+				INTERVAL_BETWEEN_FILE_MODIFICATION_TIME_CHECKS,
+				INTERVAL_BETWEEN_FILE_MODIFICATION_TIME_CHECKS);
     }
 
     public ModeController getModeController() {
     		return mModeController;
     }
 
+    protected class FileChangeInspectorThread extends TimerTask {
+    	
+    	public void run() {
+			try{
+				// TODO: save&load must be synchronized, too. Moreover, the time must be increased.
+				boolean shouldFire = false;
+				File fileName;
+				long lastModified = 0;
+				// minimal synchronized block:
+				synchronized (MapAdapter.this) {
+					fileName = getFile();
+					if(fileName!=null){
+						lastModified = fileName.lastModified();
+						if(lastModified > mFileTime) {
+							shouldFire = true;
+						}
+					}
+				}
+				if(shouldFire){
+					mFileTime = lastModified;
+					logger.info("File " + fileName + " changed on disk as it was last modified at " + new Date(lastModified));
+					for (Iterator it = mMapSourceChangedObserverSet.iterator(); it
+							.hasNext();) {
+						MapSourceChangedObserver observer = (MapSourceChangedObserver) it.next();
+						try {
+							observer.mapSourceChanged(MapAdapter.this);
+						} catch (Exception e) {
+							freemind.main.Resources.getInstance()
+									.logException(e);
+						}
+					}
+				}
+			} catch (Exception e) {
+				freemind.main.Resources.getInstance()
+				.logException(e);
+			}
+		}
+    }
+    
     //
     // Abstract methods that _must_ be implemented.
     //
 
     public abstract boolean save(File file);
+    
+    public abstract void load(URL file) throws FileNotFoundException, IOException, XMLParseException, URISyntaxException; 
 
-    public abstract void load(URL file) throws FileNotFoundException, IOException, XMLParseException, URISyntaxException ;
+	private void resetFileTime() {
+		mFileTime = System.currentTimeMillis();
+	}
     public void load(File file) throws FileNotFoundException, IOException{
     	try {
 			load(Tools.fileToUrl(file));
@@ -116,6 +160,7 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 	}
 
 	public void destroy() {
+		mTimerForFileChangeObservation.cancel();
 		// Do all the necessary destructions in your model,
 		// e.g. remove file locks.
 		// and remove all hooks:
@@ -373,6 +418,25 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
     public void setFilter(Filter filter) {
         this.filter = filter;
     }
+
+	public void registerMapSourceChangedObserver(
+			MapSourceChangedObserver pMapSourceChangedObserver, long pGetEventIfChangedAfterThisTimeInMillies) {
+		if(pGetEventIfChangedAfterThisTimeInMillies != 0 && 
+				mFileTime > pGetEventIfChangedAfterThisTimeInMillies) {
+			try {
+				// Issue event here.
+				pMapSourceChangedObserver.mapSourceChanged(this);
+			} catch (Exception e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+		}
+		mMapSourceChangedObserverSet.add(pMapSourceChangedObserver);
+	}
+
+	public void deregisterMapSourceChangedObserver(
+			MapSourceChangedObserver pMapSourceChangedObserver) {
+		mMapSourceChangedObserverSet.remove(pMapSourceChangedObserver);
+	}
         
 }
 

@@ -113,6 +113,24 @@ public interface MindMap extends TreeModel {
 	 */
 	void setSaved(boolean isSaved);
 
-// (PN)
-//    void close();
+	/**
+	 * When the map source is changed (eg. on disk, there is a newer version 
+	 * edited from somebody else), this observer can be used to notice this. 
+	 * @author foltin
+	 * @date 04.07.2011
+	 */
+	public interface MapSourceChangedObserver {
+		void mapSourceChanged(MindMap pMap);
+	}
+	
+	/**
+	 * @param pMapSourceChangedObserver
+	 * @param pGetEventIfChangedAfterThisTimeInMillies if 0, nothing happens, but if you have ever
+	 * registered, unregistered at time t, and register again at time t+s, you should specify t here.
+	 * If there was an event in between t and t+s, and event is issued directly.
+	 */
+	void registerMapSourceChangedObserver(MapSourceChangedObserver pMapSourceChangedObserver,
+				long pGetEventIfChangedAfterThisTimeInMillies);
+	void deregisterMapSourceChangedObserver(MapSourceChangedObserver pMapSourceChangedObserver);
+	
 }
