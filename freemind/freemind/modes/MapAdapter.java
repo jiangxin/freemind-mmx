@@ -80,7 +80,7 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
         filter = new DefaultFilter(NoFilteringCondition.createCondition(), true, false);
         mTimerForFileChangeObservation = new Timer();
 		mTimerForFileChangeObservation.schedule(
-				new FileChangeInspectorThread(),
+				new FileChangeInspectorTimerTask(),
 				INTERVAL_BETWEEN_FILE_MODIFICATION_TIME_CHECKS,
 				INTERVAL_BETWEEN_FILE_MODIFICATION_TIME_CHECKS);
     }
@@ -89,57 +89,57 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
     		return mModeController;
     }
 
-    protected class FileChangeInspectorThread extends TimerTask {
+    protected class FileChangeInspectorTimerTask extends TimerTask {
     	
     	public void run() {
-			try{
-				// TODO: save&load must be synchronized, too. Moreover, the time must be increased.
-				boolean shouldFire = false;
-				File fileName;
-				long lastModified = 0;
-				// minimal synchronized block:
-				synchronized (MapAdapter.this) {
-					fileName = getFile();
-					if(fileName!=null){
-						lastModified = fileName.lastModified();
-						if(lastModified > mFileTime) {
-							shouldFire = true;
-						}
-					}
-				}
-				if(shouldFire){
+			boolean shouldFire = false;
+			long lastModified = 0;
+			// minimal synchronized block:
+			synchronized (MapAdapter.this) {
+				lastModified = getFileTime();
+				if(lastModified > mFileTime) {
+					shouldFire = true;
 					mFileTime = lastModified;
-					logger.info("File " + fileName + " changed on disk as it was last modified at " + new Date(lastModified));
-					for (Iterator it = mMapSourceChangedObserverSet.iterator(); it
-							.hasNext();) {
-						MapSourceChangedObserver observer = (MapSourceChangedObserver) it.next();
-						try {
-							observer.mapSourceChanged(MapAdapter.this);
-						} catch (Exception e) {
-							freemind.main.Resources.getInstance()
-									.logException(e);
-						}
+				}
+			}
+			if(shouldFire){
+				logger.info("File " + getFile()
+						+ " changed on disk as it was last modified at "
+						+ new Date(lastModified));
+				for (Iterator it = mMapSourceChangedObserverSet.iterator(); it
+						.hasNext();) {
+					MapSourceChangedObserver observer = (MapSourceChangedObserver) it.next();
+					try {
+						observer.mapSourceChanged(MapAdapter.this);
+					} catch (Exception e) {
+						freemind.main.Resources.getInstance()
+								.logException(e);
 					}
 				}
-			} catch (Exception e) {
-				freemind.main.Resources.getInstance()
-				.logException(e);
 			}
 		}
     }
     
-    //
-    // Abstract methods that _must_ be implemented.
-    //
-
-    public abstract boolean save(File file);
-    
-    public abstract void load(URL file) throws FileNotFoundException, IOException, XMLParseException, URISyntaxException; 
-
-	private void resetFileTime() {
-		mFileTime = System.currentTimeMillis();
+	/**
+	 * Instantiations of this class must call this, when a map was loaded or saved.
+	 */
+	protected void setFileTime() {
+		mFileTime = getFileTime();
 	}
-    public void load(File file) throws FileNotFoundException, IOException{
+
+	private long getFileTime() {
+		long lastModified;
+		File fileName;
+		fileName = getFile();
+		if(fileName!=null){
+			lastModified = fileName.lastModified();
+		} else {
+			lastModified = 0;
+		}
+		return lastModified;
+	}
+        
+	public void load(File file) throws FileNotFoundException, IOException{
     	try {
 			load(Tools.fileToUrl(file));
 		} catch (XMLParseException e) {
@@ -160,11 +160,15 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 	}
 
 	public void destroy() {
-		mTimerForFileChangeObservation.cancel();
+		cancelFileChangeObservationTimer();
 		// Do all the necessary destructions in your model,
 		// e.g. remove file locks.
 		// and remove all hooks:
 		removeNodes( getRootNode());
+	}
+
+	protected void cancelFileChangeObservationTimer() {
+		mTimerForFileChangeObservation.cancel();
 	}
 
     // (PN)
@@ -433,10 +437,11 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 		mMapSourceChangedObserverSet.add(pMapSourceChangedObserver);
 	}
 
-	public void deregisterMapSourceChangedObserver(
+	public long deregisterMapSourceChangedObserver(
 			MapSourceChangedObserver pMapSourceChangedObserver) {
 		mMapSourceChangedObserverSet.remove(pMapSourceChangedObserver);
+		return mFileTime;
 	}
-        
+
 }
 

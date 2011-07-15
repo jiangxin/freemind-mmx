@@ -23,9 +23,11 @@ package freemind.modes;
 import java.awt.Color;
 import java.awt.datatransfer.Transferable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
@@ -34,6 +36,7 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
 import freemind.controller.filter.Filter;
+import freemind.main.XMLParseException;
 
 public interface MindMap extends TreeModel {
 
@@ -58,6 +61,16 @@ public interface MindMap extends TreeModel {
      */
     File getFile();
 
+    //
+    // Abstract methods that _must_ be implemented.
+    //
+
+    public boolean save(File file);
+    
+    public void load(URL file) throws FileNotFoundException, IOException, XMLParseException, URISyntaxException; 
+
+
+    
     /**
      * Return URL of the map (whether as local file or a web location)
      */
@@ -131,6 +144,10 @@ public interface MindMap extends TreeModel {
 	 */
 	void registerMapSourceChangedObserver(MapSourceChangedObserver pMapSourceChangedObserver,
 				long pGetEventIfChangedAfterThisTimeInMillies);
-	void deregisterMapSourceChangedObserver(MapSourceChangedObserver pMapSourceChangedObserver);
+	/**
+	 * @param pMapSourceChangedObserver
+	 * @return the last saving time to be stored (see {@link MindMap#registerMapSourceChangedObserver(MapSourceChangedObserver, long)})
+	 */
+	long deregisterMapSourceChangedObserver(MapSourceChangedObserver pMapSourceChangedObserver);
 	
 }

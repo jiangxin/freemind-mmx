@@ -22,6 +22,7 @@ package freemind.modes.mindmapmode;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -76,6 +77,7 @@ import javax.swing.text.html.HTMLEditorKit;
 import org.jibx.runtime.IUnmarshallingContext;
 import org.jibx.runtime.JiBXException;
 
+import freemind.common.OptionalDontShowMeAgainDialog;
 import freemind.common.XmlBindingTools;
 import freemind.controller.MenuBar;
 import freemind.controller.MenuItemEnabledListener;
@@ -113,6 +115,7 @@ import freemind.extensions.PermanentNodeHook;
 import freemind.extensions.UndoEventReceiver;
 import freemind.main.ExampleFileFilter;
 import freemind.main.FixedHTMLWriter;
+import freemind.main.FreeMind;
 import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
@@ -122,6 +125,7 @@ import freemind.modes.EdgeAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
+import freemind.modes.MindMap.MapSourceChangedObserver;
 import freemind.modes.MindMapArrowLink;
 import freemind.modes.MindMapLink;
 import freemind.modes.MindMapNode;
@@ -217,7 +221,7 @@ import freemind.view.mindmapview.attributeview.AttributePopupMenu;
 
 
 
-public class MindMapController extends ControllerAdapter implements MindMapActions{
+public class MindMapController extends ControllerAdapter implements MindMapActions, MapSourceChangedObserver{
 
 
     private static final String ACCESSORIES_PLUGINS_NODE_NOTE = "accessories.plugins.NodeNote";
@@ -370,6 +374,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     private MenuStructure mMenuStructure;
     private List mRegistrations;
 	private List mPatternsList = new Vector();
+	private long mGetEventIfChangedAfterThisTimeInMillies = 0;
 
     public MindMapController(Mode mode) {
 	super(mode);
@@ -657,6 +662,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 			}}));
         getController().getNodeMotionListener().register(new MindMapNodeMotionListener(this));
         getController().getNodeMouseMotionListener().register(new CommonNodeMouseMotionListener(this));
+        getMap().registerMapSourceChangedObserver(this, mGetEventIfChangedAfterThisTimeInMillies);
 	}
 
     public void shutdownController() {
@@ -673,6 +679,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         getController().getNodeKeyListener().deregister();
         getController().getNodeMotionListener().deregister();
         getController().getNodeMouseMotionListener().deregister();
+        mGetEventIfChangedAfterThisTimeInMillies = getMap().deregisterMapSourceChangedObserver(this);
     }
 
 	public MapAdapter newModel(ModeController modeController) {
@@ -2136,6 +2143,29 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 
 	public void showThisMap() {
 		getController().getMapModuleManager().changeToMapModule(getMapModule());
+	}
+
+	public void mapSourceChanged(MindMap pMap) {
+		// ask the user, if he wants to reload the map.
+		EventQueue.invokeLater(new Runnable(){
+
+			public void run() {
+				int showResult = new OptionalDontShowMeAgainDialog(
+						getFrame().getJFrame(),
+						getSelectedView(),
+						"file_changed_on_disk_reload",
+						"confirmation",
+						MindMapController.this,
+						new OptionalDontShowMeAgainDialog.StandardPropertyHandler(
+								getController(),
+								FreeMind.RESOURCES_RELOAD_FILES_WITHOUT_QUESTION),
+						OptionalDontShowMeAgainDialog.BOTH_OK_AND_CANCEL_OPTIONS_ARE_STORED)
+						.show().getResult();
+				if (showResult != JOptionPane.OK_OPTION) {
+					return;
+				}
+				revertAction.actionPerformed(null);
+			}});
 	}
 
 }

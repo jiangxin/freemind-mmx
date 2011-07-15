@@ -129,6 +129,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
     public static final String RESOURCES_DELETE_NODES_WITHOUT_QUESTION = "delete_nodes_without_question";
 
+    public static final String RESOURCES_RELOAD_FILES_WITHOUT_QUESTION = "reload_files_without_question";
+    
 	private Logger logger = null;
 	
 	protected static final VersionInformation VERSION = new VersionInformation("1.0.0 Alpha 5");

@@ -89,7 +89,7 @@ public class RevertAction extends FreemindAction implements ActorXml {
 			controller.getActionFactory().endTransaction(
 					this.getClass().getName());
 		} catch (IOException e) {
-freemind.main.Resources.getInstance().logException(			e);
+			freemind.main.Resources.getInstance().logException(e);
 		}
 
 	}

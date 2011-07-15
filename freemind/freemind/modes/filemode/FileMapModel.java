@@ -73,6 +73,7 @@ public class FileMapModel extends MapAdapter {
         /* fc, 8.8.2004: don't call super.destroy as this method tries to remove the hooks recursively.
          * This must fail. */
         //super.destroy();
+    	cancelFileChangeObservationTimer();
     }
     public void load(URL file) {
     }

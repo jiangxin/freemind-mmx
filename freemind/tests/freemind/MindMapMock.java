@@ -23,9 +23,11 @@ package tests.freemind;
 import java.awt.Color;
 import java.awt.datatransfer.Transferable;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 
@@ -34,6 +36,7 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import freemind.controller.filter.Filter;
+import freemind.main.XMLParseException;
 import freemind.modes.MapRegistry;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapLinkRegistry;
@@ -178,6 +181,30 @@ public class MindMapMock implements MindMap {
     public boolean isSaved() {
         return false;
     }
+
+	public boolean save(File pFile) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	public void load(URL pFile) throws FileNotFoundException, IOException,
+			XMLParseException, URISyntaxException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void registerMapSourceChangedObserver(
+			MapSourceChangedObserver pMapSourceChangedObserver,
+			long pGetEventIfChangedAfterThisTimeInMillies) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public long deregisterMapSourceChangedObserver(
+			MapSourceChangedObserver pMapSourceChangedObserver) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
 }
 

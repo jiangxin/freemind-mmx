@@ -2,7 +2,8 @@
 Changes made in FreeMind 1.0.0 Alpha6
 ===============================
 * Opening documents from explorer will open it in a running instance.
-* Export format for PDF can be choosen. Thanks to the author Andreas for the patch.
+* Export format for PDF can be chosen. Thanks to the author Andreas for the patch.
+* New functionality: "File changed on disk: do you want to reload?" 
 
 ===============================
 Changes made in FreeMind 1.0.0 Alpha5

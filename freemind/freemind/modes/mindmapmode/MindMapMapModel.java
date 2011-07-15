@@ -243,7 +243,15 @@ public class MindMapMapModel extends MapAdapter  {
      * Return the success of saving
      */
     public boolean save(File file) {
-        return saveInternal(file, false);
+        boolean result;
+		synchronized (this) {
+			result = saveInternal(file, false);
+			// TODO: Set only, when ok?
+			if(result){
+				setFileTime();
+			}
+		}
+		return result;
     }
 
     /** This method is intended to provide both normal save routines and saving of temporary (internal) files.*/
@@ -345,17 +353,20 @@ public class MindMapMapModel extends MapAdapter  {
 		           readOnly = true; }
 		         else {
 		           readOnly = false; }}
-		      catch (Exception e){ // Throwed by tryToLock
+		      catch (Exception e){ // Thrown by tryToLock
 		         freemind.main.Resources.getInstance().logException(e);
 		         getFrame().getController().informationMessage(
 		           Tools.expandPlaceholders(getText("locking_failed_by_open"), file.getName()));
 		         readOnly = true; }}
 
-		   MindMapNodeModel root = loadTree(file);
-		   if (root != null) {
-		      setRoot(root);
-		   }
-		   setFile(file);
+		synchronized (this) {
+			MindMapNodeModel root = loadTree(file);
+			if (root != null) {
+				setRoot(root);
+			}
+			setFile(file);
+			setFileTime();
+		}
 	}
 
 	/** When a map is closed, this method is called. */
