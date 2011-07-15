@@ -1119,10 +1119,16 @@ public class OptionPanel implements TextTranslator {
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("resources_notifications"));
-		controls.add(new RemindValueProperty("remind_type_of_new_nodes.tooltip", FreeMind.RESOURCES_REMIND_USE_RICH_TEXT_IN_NEW_LONG_NODES, modeController));
+		controls.add(new RemindValueProperty(
+				"remind_type_of_new_nodes.tooltip",
+				FreeMind.RESOURCES_REMIND_USE_RICH_TEXT_IN_NEW_LONG_NODES,
+				modeController));
 		controls.add(new DontShowNotificationProperty(
 				"resources_convert_to_current_version.tooltip",
 				FreeMind.RESOURCES_CONVERT_TO_CURRENT_VERSION));
+		controls.add(new RemindValueProperty(
+				"reload_files_without_question.tooltip",
+				FreeMind.RESOURCES_RELOAD_FILES_WITHOUT_QUESTION, modeController)); 
 		controls.add(new DontShowNotificationProperty(
 				"delete_nodes_without_question.tooltip",
 				FreeMind.RESOURCES_DELETE_NODES_WITHOUT_QUESTION)); 
