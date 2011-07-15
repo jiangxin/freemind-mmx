@@ -2162,6 +2162,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 						OptionalDontShowMeAgainDialog.BOTH_OK_AND_CANCEL_OPTIONS_ARE_STORED)
 						.show().getResult();
 				if (showResult != JOptionPane.OK_OPTION) {
+					getFrame().out(Tools.expandPlaceholders(getText("file_not_reloaded"), getMap().getFile().toString()) ); 
 					return;
 				}
 				revertAction.actionPerformed(null);
