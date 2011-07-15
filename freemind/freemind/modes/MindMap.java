@@ -133,7 +133,7 @@ public interface MindMap extends TreeModel {
 	 * @date 04.07.2011
 	 */
 	public interface MapSourceChangedObserver {
-		void mapSourceChanged(MindMap pMap);
+		void mapSourceChanged(MindMap pMap) throws Exception;
 	}
 	
 	/**

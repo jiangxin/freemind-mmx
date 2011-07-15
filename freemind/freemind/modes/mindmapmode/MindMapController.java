@@ -46,6 +46,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -2145,9 +2146,9 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 		getController().getMapModuleManager().changeToMapModule(getMapModule());
 	}
 
-	public void mapSourceChanged(MindMap pMap) {
+	public void mapSourceChanged(MindMap pMap) throws Exception {
 		// ask the user, if he wants to reload the map.
-		EventQueue.invokeLater(new Runnable(){
+		EventQueue.invokeAndWait(new Runnable(){
 
 			public void run() {
 				int showResult = new OptionalDontShowMeAgainDialog(
@@ -2162,7 +2163,10 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 						OptionalDontShowMeAgainDialog.BOTH_OK_AND_CANCEL_OPTIONS_ARE_STORED)
 						.show().getResult();
 				if (showResult != JOptionPane.OK_OPTION) {
-					getFrame().out(Tools.expandPlaceholders(getText("file_not_reloaded"), getMap().getFile().toString()) ); 
+					getFrame().out(
+							Tools.expandPlaceholders(
+									getText("file_not_reloaded"), getMap()
+											.getFile().toString()));
 					return;
 				}
 				revertAction.actionPerformed(null);
