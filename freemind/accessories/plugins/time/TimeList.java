@@ -593,7 +593,12 @@ public class TimeList extends MindMapHookAdapter {
         	setting.setColumnSorting(sorter.getSortingStatus(i));
         	storage.addTimeWindowColumnSetting(setting);
         }
-        getMindMapController().storeDialogPositions(dialog, storage, WINDOW_PREFERENCE_STORAGE_PROPERTY);
+        MindMapController mindMapController = getMindMapController();
+        // if the map is closed in between.
+		if (mindMapController != null) {
+			mindMapController.storeDialogPositions(dialog, storage,
+					WINDOW_PREFERENCE_STORAGE_PROPERTY);
+		}
 		dialog.setVisible(false);
 		dialog.dispose();
 	}
