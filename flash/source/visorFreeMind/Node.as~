@@ -1,4 +1,4 @@
-﻿/*FreeMind - A Program for creating and viewing Mindmaps
+/*FreeMind - A Program for creating and viewing Mindmaps
  *Copyright (C) 2000-2005  Joerg Mueller, Daniel Polansky, Christian Foltin and others.
  *
  *See COPYING for Details
@@ -238,6 +238,35 @@ class visorFreeMind.Node {
 		eventControler.enabled=false;
 	}
 
+  // changes from https://sourceforge.net/projects/freemind/forums/forum/22101/topic/1423817
+       // public method for url encoding
+       public function encodeUTF8(string:String):String 
+       {
+         var utftext = "";
+
+         for (var n = 0; n < string.length; n++) {
+
+                    var c = string.charCodeAt(n);
+
+                    if (c < 128) {
+                        utftext += String.fromCharCode(c);
+                    }
+                    else if((c > 127) && (c < 2048)) {
+                        utftext += String.fromCharCode((c >> 6) | 192);
+                        utftext += String.fromCharCode((c & 63) | 128);
+                    }
+                    else {
+                        utftext += String.fromCharCode((c >> 12) | 224);
+                        utftext += String.fromCharCode(((c >> 6) & 63) | 128);
+                        utftext += String.fromCharCode((c & 63) | 128);
+                    }
+                }
+
+                return utftext;
+        }
+
+
+
 	public function activateEvents(){
 		if(eventControler.enabled==false){
 			eventControler.enabled=true;
@@ -260,12 +289,16 @@ class visorFreeMind.Node {
 						//getURL(url,Node.openUrl);
 						try {
                 			getURL(url,Node.openUrl);
+//proposal from https://sourceforge.net/projects/freemind/forums/forum/22101/topic/1423817:
+//                			getURL(this.inst.encodeUTF8(url),Node.openUrl); 
             			}
             			catch (e:Error) {
                 				this.inst.browser.showTooltip("error:  "+e,14,20);
             			}
 					}else{
-						getURL(url,Node.openUrl);
+                				getURL(url,Node.openUrl);
+//proposal from https://sourceforge.net/projects/freemind/forums/forum/22101/topic/1423817:
+//						getURL(this.inst.encodeUTF8(url),Node.openUrl); 
 					}
 				}else{
 					//have in mind directory change, it works diferent in Freemind

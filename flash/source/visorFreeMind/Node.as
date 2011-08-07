@@ -128,6 +128,8 @@ class visorFreeMind.Node {
 		num+=4;
 		//creation of asociated movieClip
 		id=node_xml.attributes.ID?node_xml.attributes.ID:"node_"+num;
+                // SETTING NODE_XML ID
+                node_xml.attributes.ID = id;
 		ref_mc=mc.createEmptyMovieClip(id,num);
 		//ref_mc.trackAsMenu=true;
 		box_txt=ref_mc.createEmptyMovieClip("box_txt",11);
