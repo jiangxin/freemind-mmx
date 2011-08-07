@@ -486,7 +486,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
             
             String imgfile=""+transferData;
             
-            String strText = "<html><body><img src=\"" + imgfile + "\"/></body></html>";
+            String strText = "<html><body><img src=\"file:///" + imgfile + "\"/></body></html>";
 
             MindMapNode node = pMindMapController.newNode(strText,
                     pMindMapController.getMap());
