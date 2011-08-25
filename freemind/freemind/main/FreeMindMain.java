@@ -105,8 +105,6 @@ public interface FreeMindMain {
 
     public JLayeredPane getLayeredPane();
 
-    public Container getViewport();
-
     public void setTitle(String title);
 
      // to keep last win size (PN)

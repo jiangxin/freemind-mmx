@@ -272,6 +272,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		getContentPane().setLayout(new BorderLayout());
 
 		controller = new Controller(this);
+		controller.init();
 		feedback.increase("FreeMind.progress.settingPreferences");
 		// add a listener for the controller, resource bundle:
 		Controller.addPropertyChangeListener(new FreemindPropertyListener() {
@@ -361,10 +362,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public File getPatternsFile() {
 		return patternsFile;
-	}
-
-	public Container getViewport() {
-		return mScrollPane.getViewport();
 	}
 
 	public VersionInformation getFreemindVersion() {

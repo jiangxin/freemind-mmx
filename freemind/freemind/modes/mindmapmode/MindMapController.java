@@ -254,8 +254,8 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     //private JToolBar toolbar;
     private MindMapToolBar toolbar;
     private boolean addAsChildMode = false;
-    private Clipboard clipboard;
-    private Clipboard selection;
+    private Clipboard clipboard=null;
+    private Clipboard selection=null;
     
     private HookFactory nodeHookFactory;
 
@@ -411,15 +411,11 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         popupmenu = new MindMapPopupMenu(this);
     	logger.info("MindMapToolBar");
         toolbar = new MindMapToolBar(this);
-        setAllActions(false);
 
         // addAsChildMode (use old model of handling CtrN) (PN)
         addAsChildMode =
             Resources.getInstance().getBoolProperty("add_as_child");
         mRegistrations = new Vector();
-        Toolkit toolkit = getFrame().getViewport().getToolkit();
-		selection = toolkit.getSystemSelection();
-		clipboard = toolkit.getSystemClipboard();
 
         attributeController = new MindMapModeAttributeController(this);
         showAttributeManagerAction = getController().showAttributeManagerAction;
@@ -2130,12 +2126,23 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 	/**
 	 */
 	public Transferable getClipboardContents() {
+		getClipboard();
 		return clipboard.getContents(this);
+	}
+
+	protected void getClipboard() {
+		if(clipboard==null){
+	        Toolkit toolkit = Toolkit.getDefaultToolkit();
+			selection = toolkit.getSystemSelection();
+			clipboard = toolkit.getSystemClipboard();
+
+		}
 	}
 
 	/**
 	 */
 	public void setClipboardContents(Transferable t) {
+		getClipboard();
 		clipboard.setContents(t, null);
 		if(selection != null){
 			selection.setContents(t, null);

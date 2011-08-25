@@ -143,10 +143,6 @@ public class FreeMindMainMock implements FreeMindMain {
         return null;
     }
 
-    public Container getViewport() {
-        return null;
-    }
-
     public void setTitle(String title) {
     }
 

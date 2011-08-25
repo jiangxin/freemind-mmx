@@ -170,12 +170,16 @@ public class NodeView extends JComponent implements TreeModelListener{
     }
 
     void addDragListener(DragGestureListener dgl) {
+    	if(dgl == null)
+    		return;
 	DragSource dragSource = DragSource.getDefaultDragSource();
 	dragSource.createDefaultDragGestureRecognizer
            (getMainView(), DnDConstants.ACTION_COPY | DnDConstants.ACTION_MOVE | DnDConstants.ACTION_LINK ,dgl);
     }
 
     void addDropListener(DropTargetListener dtl) {
+    	if(dtl == null)
+    		return;
 	DropTarget dropTarget = new DropTarget(getMainView(),dtl);
 	dropTarget.setActive(true);
     }

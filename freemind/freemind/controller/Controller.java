@@ -218,6 +218,9 @@ public class Controller  implements MapModuleChangeObserver {
         if(logger == null) {
             logger = frame.getLogger(this.getClass().getName());
         }
+    }
+    
+    public void init() {
         /** 
          * Arranges the keyboard focus especially after 
          * opening FreeMind.
@@ -1261,7 +1264,7 @@ public class Controller  implements MapModuleChangeObserver {
             this.controller = controller;
         }
         public void actionPerformed(ActionEvent e) {
-           JOptionPane.showMessageDialog(getFrame().getViewport(), controller
+           JOptionPane.showMessageDialog(getView(), controller
 					.getResourceString("about_text")
 					+ getFrame().getFreemindVersion(), controller
 					.getResourceString("about"),

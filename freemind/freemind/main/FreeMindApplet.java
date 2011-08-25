@@ -91,10 +91,6 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 	return menuBar;
     }
 
-    public Container getViewport() {
-		return scrollPane.getViewport();
-    }
-
     public VersionInformation getFreemindVersion() {
         return version;
     }
@@ -250,6 +246,7 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
  	getContentPane().setLayout( new BorderLayout() );
 
 	c = new Controller(this) ;
+	c.init();
 
     c.optionAntialiasAction.changeAntialias(getProperty(FreeMindCommon.RESOURCE_ANTIALIAS));
 
