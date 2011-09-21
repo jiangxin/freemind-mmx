@@ -846,7 +846,7 @@ public abstract class ControllerAdapter implements ModeController {
 			}
 			store.setRestorableName(restorable);
 			store.setLastZoom(getView().getZoom());
-			Point viewLocation = getView().getViewLocation();
+			Point viewLocation = getView().getViewPosition();
 			if (viewLocation != null) {
 				store.setX(viewLocation.x);
 				store.setY(viewLocation.y);

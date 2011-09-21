@@ -110,6 +110,9 @@ public abstract class MainView extends JLabel{
             }
              prefSize.width += getNodeView().getMap().getZoomed(12);
              prefSize.height += getNodeView().getMap().getZoomed(4);
+//             /*@@@@@@@@@@@@@@*/
+//             prefSize.width = 150;
+//             prefSize.height = 20;
              return prefSize;
         }
         

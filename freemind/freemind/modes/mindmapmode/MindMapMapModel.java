@@ -440,7 +440,7 @@ public class MindMapMapModel extends MapAdapter  {
             }
         }
         if (reader == null) {
-        	if(pAskUserBeforeUpdate) {
+        	if(pAskUserBeforeUpdate && !Tools.isHeadless()) {
 	            int showResult = new OptionalDontShowMeAgainDialog(mModeController
 						.getFrame().getJFrame(), mModeController.getSelectedView(),
 						"really_convert_to_current_version2", "confirmation", mModeController,

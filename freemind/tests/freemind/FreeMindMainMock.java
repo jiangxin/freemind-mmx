@@ -118,7 +118,11 @@ public class FreeMindMainMock implements FreeMindMain {
     }
 
     public int getIntProperty(String key, int defaultValue) {
-        return 0;
+		try {
+			return Integer.parseInt(getProperty(key));
+		} catch (NumberFormatException nfe) {
+			return defaultValue;
+		}
     }
 
     public Properties getProperties() {
@@ -136,7 +140,7 @@ public class FreeMindMainMock implements FreeMindMain {
     }
 
     public String getFreemindDirectory() {
-        return null;
+        return ".";
     }
 
     public JLayeredPane getLayeredPane() {

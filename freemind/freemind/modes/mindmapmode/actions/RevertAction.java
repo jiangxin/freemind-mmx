@@ -55,13 +55,13 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
  */
 public class RevertAction extends FreemindAction implements ActorXml {
 
-	private final MindMapController controller;
+	private final MindMapController mindMapController;
 
 	/**
 	 */
 	public RevertAction(MindMapController modeController) {
 		super("RevertAction", (String) null, modeController);
-		controller = modeController;
+		mindMapController = modeController;
 		addActor(this);
 
 	}
@@ -73,20 +73,20 @@ public class RevertAction extends FreemindAction implements ActorXml {
 	 */
 	public void actionPerformed(ActionEvent arg0) {
 		try {
-			File file = controller.getMap().getFile();
+			File file = mindMapController.getMap().getFile();
             if(file == null) {
-                JOptionPane.showMessageDialog(controller.getView(), controller
+                JOptionPane.showMessageDialog(mindMapController.getView(), mindMapController
                         .getText("map_not_saved"), "FreeMind", JOptionPane.ERROR_MESSAGE);
                 return;
             }
 			RevertXmlAction doAction = createRevertXmlAction(file);
-			RevertXmlAction undoAction = createRevertXmlAction(controller
+			RevertXmlAction undoAction = createRevertXmlAction(mindMapController
 					.getMap(), null, file.getName());
-			controller.getActionFactory().startTransaction(
+			mindMapController.getActionFactory().startTransaction(
 					this.getClass().getName());
-			controller.getActionFactory().executeAction(
+			mindMapController.getActionFactory().executeAction(
 					new ActionPair(doAction, undoAction));
-			controller.getActionFactory().endTransaction(
+			mindMapController.getActionFactory().endTransaction(
 					this.getClass().getName());
 		} catch (IOException e) {
 			freemind.main.Resources.getInstance().logException(e);
@@ -97,13 +97,13 @@ public class RevertAction extends FreemindAction implements ActorXml {
     public void openXmlInsteadOfMap(String xmlFileContent) {
         try {
             RevertXmlAction doAction = createRevertXmlAction(xmlFileContent, null, null);
-            RevertXmlAction undoAction = createRevertXmlAction(controller
+            RevertXmlAction undoAction = createRevertXmlAction(mindMapController
                     .getMap(), null, null);
-            controller.getActionFactory().startTransaction(
+            mindMapController.getActionFactory().startTransaction(
                     this.getClass().getName());
-            controller.getActionFactory().executeAction(
+            mindMapController.getActionFactory().executeAction(
                     new ActionPair(doAction, undoAction));
-            controller.getActionFactory().endTransaction(
+            mindMapController.getActionFactory().endTransaction(
                     this.getClass().getName());
         } catch (IOException e) {
             freemind.main.Resources.getInstance().logException(e);
@@ -151,22 +151,17 @@ public class RevertAction extends FreemindAction implements ActorXml {
 				RevertXmlAction revertAction = (RevertXmlAction) action;
 
 				// close the old map.
-				controller.getController().close(true);
+				mindMapController.getController().close(true);
 				if (revertAction.getLocalFileName() != null) {
-					controller.load(new File(revertAction.getLocalFileName()));
+					mindMapController.load(new File(revertAction.getLocalFileName()));
 				} else {
 					// the map is given by xml. we store it and open it.
-					String filePrefix = controller.getText("freemind_reverted");
+					String filePrefix = mindMapController.getText("freemind_reverted");
 					if (revertAction.getFilePrefix() != null) {
 						filePrefix = revertAction.getFilePrefix();
 					}
-					File tempFile = File.createTempFile(filePrefix, freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION,
-							new File(controller.getFrame()
-									.getFreemindDirectory()));
-					FileWriter fw = new FileWriter(tempFile);
-					fw.write(revertAction.getMap());
-					fw.close();
-					controller.load(tempFile);
+					String xmlMap = revertAction.getMap();
+					mindMapController.load(xmlMap, filePrefix);
 				}
 			} catch (Exception e) {
 				freemind.main.Resources.getInstance().logException(e);

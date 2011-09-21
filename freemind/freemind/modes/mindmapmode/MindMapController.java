@@ -583,8 +583,20 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         return undo.isUndoAction() || redo.isUndoAction();
     }
 
-    public void load(String xmlMapContents) {
-        revertAction.openXmlInsteadOfMap(xmlMapContents);
+    public boolean load(String xmlMapContents, String filePrefix) {
+		try {
+			File tempFile = File.createTempFile(filePrefix,
+					freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION,
+					new File(getFrame().getFreemindDirectory()));
+			FileWriter fw = new FileWriter(tempFile);
+			fw.write(xmlMapContents);
+			fw.close();
+			load(tempFile);
+			return true;
+		} catch (Exception e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
+		return false;
     }
 
 
@@ -2178,6 +2190,10 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 				}
 				revertAction.actionPerformed(null);
 			}});
+	}
+
+	public void setNodeHookFactory(HookFactory pNodeHookFactory) {
+		nodeHookFactory = pNodeHookFactory;
 	}
 
 }

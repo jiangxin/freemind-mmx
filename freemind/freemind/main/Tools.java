@@ -1577,6 +1577,13 @@ public class Tools {
 		}
 		return ret;
 	}
+
+	/**
+	 * @return
+	 */
+	public static boolean isHeadless() {
+		return GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadless();
+	}
 	
 }
 

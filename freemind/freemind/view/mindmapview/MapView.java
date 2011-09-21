@@ -24,7 +24,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
@@ -55,7 +54,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
-import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -97,12 +95,11 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 
 		public void componentResized(ComponentEvent pE) {
 			logger.fine("Component resized " +pE + " old size " + mSize + " new size " + getSize());
-			int deltaWidth = mSize.width - getWidth();
-			int deltaHeight = mSize.height - getHeight();
-	        JViewport mapViewport = (JViewport)getParent();
-	        Point viewPosition = mapViewport.getViewPosition();
-	        viewPosition.x += deltaWidth/2;
-	        viewPosition.y += deltaHeight/2;
+//			int deltaWidth = mSize.width - getWidth();
+//			int deltaHeight = mSize.height - getHeight();
+//			Point viewPosition = getViewPosition();
+//			viewPosition.x += deltaWidth/2;
+//			viewPosition.y += deltaHeight/2;
 //	        mapViewport.setViewPosition(viewPosition);
 			mSize = getSize();
 			
@@ -424,13 +421,12 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 			mCenterNodeTimer.schedule(new CheckLaterForCenterNodeTask(node), 100);
         	return;
         }
-        JViewport viewPort = (JViewport)getParent();
-        Dimension d = viewPort.getExtentSize();
+        Dimension d = getViewportSize();
         JComponent content = node.getContent();
 		Rectangle rect = new Rectangle(content.getWidth()/2 - d.width/2,
                                        content.getHeight()/2 - d.height/2,
 			d.width, d.height);
-		logger.fine("Scroll to " + rect + ", pref size="+viewPort.getPreferredSize() + ", " + this.getPreferredSize());
+		logger.fine("Scroll to " + rect + ", " + this.getPreferredSize());
 
 		// One call of scrollRectToVisible suffices
 		// after patching the FreeMind.java
@@ -472,67 +468,47 @@ public class MapView extends JPanel implements Printable, Autoscroll{
                     width + HORIZ_SPACE2, nodeContent.getHeight() + VERT_SPACE2) );
         }
     }
-	/**
-	 * Returns the size of the visible part of the view in view coordinates.
-	 */
-	public Dimension getViewportSize(){
-		JViewport mapViewport = (JViewport)getParent();
-		return mapViewport == null ? null : mapViewport.getSize();
-	}
-
     /**
      * Scroll the viewport of the map to the south-west, i.e. scroll the map itself to the north-east.
      */
 	public void scrollBy(int x, int y) {
-		JViewport mapViewport = (JViewport) getParent();
-		if (mapViewport != null) {
-			Point currentPoint = mapViewport.getViewPosition(); // Get View
-																// Position
-			currentPoint.translate(x, y); // Add the difference to it
-			setViewLocation(currentPoint.x, currentPoint.y);
-		}
+		Point currentPoint = getViewPosition();
+		currentPoint.translate(x, y); // Add the difference to it
+		setViewLocation(currentPoint.x, currentPoint.y);
 	}
 
-	/**
-	 * @return the position of the view or null, if not present.
-	 */
-	public Point getViewLocation(){
-		JViewport mapViewport = (JViewport) getParent();
-		if (mapViewport != null) {
-			return mapViewport.getViewPosition(); 
-		}
-		return null;		
-	}
-	
     public void setViewLocation(int x, int y) {
-		JViewport mapViewport = (JViewport) getParent();
-		if (mapViewport != null) {
-			Point currentPoint = new Point(x,y);
-			// Watch for the boundaries
-			// Low boundaries
-			if (currentPoint.getX() < 0) {
-				currentPoint.setLocation(0, currentPoint.getY());
-			}
-			if (currentPoint.getY() < 0) {
-				currentPoint.setLocation(currentPoint.getX(), 0);
-			}
-			// High boundaries
-			double maxX = getSize().getWidth()
-					- mapViewport.getExtentSize().getWidth(); // getView() gets
-																// viewed area -
-																// JPanel
-			double maxY = getSize().getHeight()
-					- mapViewport.getExtentSize().getHeight();
-			if (currentPoint.getX() > maxX) {
-				currentPoint.setLocation(maxX, currentPoint.getY());
-			}
-			if (currentPoint.getY() > maxY) {
-				currentPoint.setLocation(currentPoint.getX(), maxY);
-			}
-			mapViewport.setViewPosition(currentPoint);
+		Point currentPoint = new Point(x,y);
+		// Watch for the boundaries
+		// Low boundaries
+		if (currentPoint.getX() < 0) {
+			currentPoint.setLocation(0, currentPoint.getY());
 		}
+		if (currentPoint.getY() < 0) {
+			currentPoint.setLocation(currentPoint.getX(), 0);
+		}
+		// High boundaries
+		Dimension viewportSize = getViewportSize();
+		Dimension size = getSize();
+		// getView() gets viewed area - JPanel
+		double maxX = size.getWidth() - viewportSize.getWidth();
+		double maxY = size.getHeight() - viewportSize.getHeight();
+		if (currentPoint.getX() > maxX) {
+			currentPoint.setLocation(maxX, currentPoint.getY());
+		}
+		if (currentPoint.getY() > maxY) {
+			currentPoint.setLocation(currentPoint.getX(), maxY);
+		}
+		setViewPosition(currentPoint);
     	
     }
+
+	protected void setViewPosition(Point currentPoint) {
+		if (getParent() instanceof JViewport) {
+			JViewport mapViewport = (JViewport) getParent();
+			mapViewport.setViewPosition(currentPoint);
+		}
+	}
     
     //
     // Node Navigation
@@ -1038,8 +1014,7 @@ public class MapView extends JPanel implements Printable, Autoscroll{
     }
 
     private void setViewPositionAfterValidate() {
-        JViewport vp = (JViewport)getParent();
-        Point viewPosition = vp.getViewPosition();    
+        Point viewPosition = getViewPosition();    
         Point oldRootContentLocation = rootContentLocation;
         final NodeView root = getRoot();
         Point newRootContentLocation = root.getContent().getLocation();
@@ -1051,26 +1026,27 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         {
             viewPosition.x += deltaX;
             viewPosition.y += deltaY;
-            final int scrollMode = vp.getScrollMode();
+            final int scrollMode = getScrollMode();
             //avoid immediate scrolling here:
-            vp.setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
-            vp.setViewPosition(viewPosition);
-            vp.setScrollMode(scrollMode);
+            setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
+            setViewPosition(viewPosition);
+            setScrollMode(scrollMode);
         }
         else
         {
-            vp.repaint();
+        	// FIXME: fc, 7.9.2011: Here, a viewport->repaint was previously. Test if really needed.
+            repaint();
         }
         if(nodeToBeVisible != null){
-            final int scrollMode = vp.getScrollMode();
-            vp.setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
+            final int scrollMode = getScrollMode();
+            setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
             scrollNodeToVisible(nodeToBeVisible, extraWidth);
-            vp.setScrollMode(scrollMode);
+            setScrollMode(scrollMode);
             nodeToBeVisible = null;
         }
     }
 
-        /*****************************************************************
+		/*****************************************************************
          **             P A I N T I N G                                 **
          *****************************************************************/
     
@@ -1512,4 +1488,50 @@ public class MapView extends JPanel implements Printable, Autoscroll{
         Tools.convertPointToAncestor(nodeView.getContent(), contentXY, this);
         return contentXY;
 	}
+
+	/**
+	 * Returns the size of the visible part of the view in view coordinates.
+	 */
+	public Dimension getViewportSize(){
+		if (getParent() instanceof JViewport) {
+			JViewport mapViewport = (JViewport) getParent();
+			return mapViewport == null ? null : mapViewport.getSize();
+		}
+		return null;
+	}
+	
+	/**
+	 * @return the position of the view or null, if not present.
+	 */
+	public Point getViewPosition() {
+		Point viewPosition = new Point(0,0);
+		if (getParent() instanceof JViewport) {
+			JViewport mapViewport = (JViewport) getParent();
+			viewPosition = mapViewport.getViewPosition();
+		}
+		return viewPosition;
+	}
+
+    /**
+	 * @param pSimpleScrollMode
+	 */
+	private void setScrollMode(int pSimpleScrollMode) {
+		if (getParent() instanceof JViewport) {
+			JViewport mapViewport = (JViewport) getParent();
+			mapViewport.setScrollMode(pSimpleScrollMode);
+		}
+	}
+	
+	/**
+	 * @return
+	 */
+	private int getScrollMode() {
+		if (getParent() instanceof JViewport) {
+			JViewport mapViewport = (JViewport) getParent();
+			return mapViewport.getScrollMode();
+		}
+		return 0;
+	}
+
+
 }

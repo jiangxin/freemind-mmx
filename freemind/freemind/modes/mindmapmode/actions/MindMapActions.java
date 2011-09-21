@@ -205,8 +205,11 @@ public interface MindMapActions {
             int shiftY);
 
     /** Load the given map (as String) instead of the currently opened map.
+     * @param pPrefix is used for as the file name prefix for the temporary file 
+     * 				  that holds the contents. 
+     * @return false, if an exception has occured.
      */
-    void load(String xmlMapContents);
+    boolean load(String xmlMapContents, String pPrefix);
 
     public interface  MouseWheelEventHandler {
         /** @return true if the event was sucessfully processed and false if the event did not apply.*/

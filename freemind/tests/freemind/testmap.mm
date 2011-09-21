@@ -1,4 +1,4 @@
-<map version="0.9.0_Beta_8">
+<map version="1.0.0">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
 <attribute_registry>
 <attribute_name NAME="attributeName">

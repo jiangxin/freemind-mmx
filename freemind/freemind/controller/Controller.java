@@ -221,33 +221,7 @@ public class Controller  implements MapModuleChangeObserver {
     }
     
     public void init() {
-        /** 
-         * Arranges the keyboard focus especially after 
-         * opening FreeMind.
-         * */
-        KeyboardFocusManager focusManager =
-            KeyboardFocusManager.getCurrentKeyboardFocusManager();
-        focusManager.addPropertyChangeListener(
-            new PropertyChangeListener() {
-                public void propertyChange(PropertyChangeEvent e) {
-                    String prop = e.getPropertyName();
-                    if ("focusOwner".equals(prop)) {
-                        Component comp = (Component)e.getNewValue();
-//                        logger.info("Focus change for " + comp);
-                        if (comp instanceof FreeMindMain) {
-							obtainFocusForSelected();
-						}
-                    }
-                }
-            }
-        );
-
-
-        localDocumentationLinkConverter = new DefaultLocalLinkConverter();
-
-        lastOpened = new LastOpenedList(this, getProperty("lastOpened"));
-        mapModuleManager = new MapModuleManager(this);
-        mapModuleManager.addListener(this);
+        initialization();
 
         nodeMouseMotionListener = new NodeMouseMotionListener(this);
         nodeMotionListener = new NodeMotionListener(this);
@@ -304,12 +278,47 @@ public class Controller  implements MapModuleChangeObserver {
 
         setAllActions(false);
 
-        if (!Tools.isAvailableFontFamily(getProperty("defaultfont"))) {
-           logger.warning("Warning: the font you have set as standard - "+getProperty("defaultfont")+
-                              " - is not available.");
-           frame.setProperty("defaultfont","SansSerif"); }
 
     }
+
+	/**
+	 * Does basic initializations of this class.
+	 * Normally, init is called, but if you don't need the actions, call this
+	 * method instead.
+	 */
+	public void initialization() {
+		/** 
+         * Arranges the keyboard focus especially after 
+         * opening FreeMind.
+         * */
+        KeyboardFocusManager focusManager =
+            KeyboardFocusManager.getCurrentKeyboardFocusManager();
+        focusManager.addPropertyChangeListener(
+            new PropertyChangeListener() {
+                public void propertyChange(PropertyChangeEvent e) {
+                    String prop = e.getPropertyName();
+                    if ("focusOwner".equals(prop)) {
+                        Component comp = (Component)e.getNewValue();
+//                        logger.info("Focus change for " + comp);
+                        if (comp instanceof FreeMindMain) {
+							obtainFocusForSelected();
+						}
+                    }
+                }
+            }
+        );
+
+
+        localDocumentationLinkConverter = new DefaultLocalLinkConverter();
+
+        lastOpened = new LastOpenedList(this, getProperty("lastOpened"));
+        mapModuleManager = new MapModuleManager(this);
+        mapModuleManager.addListener(this);
+        if (!Tools.isAvailableFontFamily(getProperty("defaultfont"))) {
+        	logger.warning("Warning: the font you have set as standard - "+getProperty("defaultfont")+
+        			" - is not available.");
+        	frame.setProperty("defaultfont","SansSerif"); }
+	}
 
     //
     // get/set methods
