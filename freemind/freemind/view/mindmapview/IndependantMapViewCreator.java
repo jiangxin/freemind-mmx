@@ -26,6 +26,7 @@ import java.awt.Rectangle;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DropTargetListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -36,6 +37,7 @@ import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
+import tests.freemind.FreeMindMainMock;
 import freemind.controller.Controller;
 import freemind.extensions.HookFactory;
 import freemind.extensions.HookInstanciationMethod;
@@ -43,7 +45,6 @@ import freemind.extensions.HookRegistration;
 import freemind.extensions.ModeControllerHook;
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
-import freemind.extensions.HookFactory.RegistrationContainer;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
@@ -57,6 +58,35 @@ import freemind.modes.mindmapmode.MindMapMode;
  */
 public class IndependantMapViewCreator {
 
+	public static void main(String[] args) {
+		if(args.length != 2) {
+			System.out.println("Export map to png.\nUsage:\n java -jar lib/freemind.jar freemind.view.mindmapview.IndependantMapViewCreator <map_path>.mm <picture_path>.png");
+			System.exit(0);
+		}
+		FreeMindMainMock freeMindMain = new FreeMindMainMock();
+		IndependantMapViewCreator creator = new IndependantMapViewCreator();
+		try {
+			String outputFileName = args[1];
+			creator.exportFileToPng(args[0], outputFileName, freeMindMain);
+			System.out.println("Export to " + outputFileName + " done.");
+			System.exit(0);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			freemind.main.Resources.getInstance().logException(e);
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			freemind.main.Resources.getInstance().logException(e);
+			
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			freemind.main.Resources.getInstance().logException(e);
+			
+		}
+		System.err.println("Error.");
+		System.exit(1);
+	}
+	
 	public MapView createMapViewForFile(String inputFileName, JPanel parent, FreeMindMain pFreeMindMain)
 			throws FileNotFoundException, IOException, URISyntaxException {
 		Controller controller = new Controller(pFreeMindMain);
@@ -74,7 +104,7 @@ public class IndependantMapViewCreator {
 		setNodeHookFactory(mc);
 		MindMapMapModel model = new MindMapMapModel(pFreeMindMain, mc);
 		mc.setModel(model);
-		model.load(ClassLoader.getSystemResource(inputFileName));
+		model.load(new File(inputFileName));
 		MapView mapView = createMapView(controller, model);
 		parent.add(mapView, BorderLayout.CENTER);
 		mc.setView(mapView);
