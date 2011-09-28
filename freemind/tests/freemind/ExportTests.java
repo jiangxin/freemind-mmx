@@ -25,8 +25,6 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DropTargetListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -37,7 +35,6 @@ import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
@@ -69,7 +66,14 @@ public class ExportTests extends FreeMindTestBase {
 		parent.setBounds(0, 0, 400, 600);
 		Controller controller = new Controller(mFreeMindMain);
 		controller.initialization();
-		MindMapMode mode = new MindMapMode();
+		MindMapMode mode = new MindMapMode() {
+			public freemind.modes.ModeController createModeController() {
+				return new MindMapController(this) {
+					protected void init() {
+					}
+				};
+			};
+		};
 		mode.init(controller);
 		MindMapController mc = (MindMapController) mode.createModeController();
 		setNodeHookFactory(mc);
@@ -79,25 +83,28 @@ public class ExportTests extends FreeMindTestBase {
 		MapView mapView = createMapView(controller, model);
 		parent.add(mapView, BorderLayout.CENTER);
 		mc.setView(mapView);
-		mapView.setBounds(0,0,400,600);
+		mapView.setBounds(0, 0, 400, 600);
 		Tools.waitForEventQueue();
 		mapView.addNotify();
 		// layout components:
 		mapView.getRoot().getMainView().doLayout();
 		parent.setOpaque(true);
 		parent.setDoubleBuffered(false); // for better performance
-		Rectangle dim = new Rectangle(400, 600);
+		parent.doLayout();
+		parent.validate(); // this might not be necessary
+		System.out.println(mapView.getBounds());
+		mapView.preparePrinting();
+		Rectangle dim = mapView.getBounds();
+		parent.setBounds(dim);
+		// do print
 		BufferedImage backBuffer = new BufferedImage(dim.width, dim.height,
 				BufferedImage.TYPE_INT_ARGB);
 		Graphics g = backBuffer.createGraphics();
-//		g.setColor(java.awt.Color.white);
-//		g.fillRect(0, 0, dim.width, dim.height);
-//		g.setClip(0, 0, dim.width, dim.height);
-		g.setColor(java.awt.Color.black);
-
-		parent.doLayout();
-		parent.validate(); // this might not be necessary
-		parent.printAll(g); // this might not be necessary
+		g.translate(-dim.x, -dim.y);
+		g.clipRect(dim.x, dim.y, dim.width, dim.height);
+		parent.print(g); // this might not be necessary
+//		backBuffer = backBuffer
+//				.getSubimage(dim.x, dim.y, dim.width, dim.height);
 
 		FileOutputStream out1 = new FileOutputStream("/tmp/test.png");
 		ImageIO.write(backBuffer, "png", out1);
@@ -106,8 +113,8 @@ public class ExportTests extends FreeMindTestBase {
 		System.out.println("Done.");
 	}
 
-
-	protected static MapView createMapView(Controller controller, MindMapMapModel model) {
+	protected static MapView createMapView(Controller controller,
+			MindMapMapModel model) {
 		MapView mapView = new MapView(model, controller) {
 			DragGestureListener getNodeDragListener() {
 				return null;
@@ -116,14 +123,14 @@ public class ExportTests extends FreeMindTestBase {
 			DropTargetListener getNodeDropListener() {
 				return null;
 			}
-			
+
 		};
 		return mapView;
 	}
 
-	
-	public static void main(String[] args) throws FileNotFoundException, XMLParseException, IOException, URISyntaxException {
-        FreeMindMainMock mFreeMindMain = new FreeMindMainMock();
+	public static void main(String[] args) throws FileNotFoundException,
+			XMLParseException, IOException, URISyntaxException {
+		FreeMindMainMock mFreeMindMain = new FreeMindMainMock();
 		JDialog fm = new JDialog();
 		fm.setTitle("Title");
 		fm.setModal(true);
@@ -143,16 +150,15 @@ public class ExportTests extends FreeMindTestBase {
 		MapView mapView = createMapView(controller, model);
 		parent.add(mapView, BorderLayout.CENTER);
 		mc.setView(mapView);
-		mapView.setBounds(0,0,400,600);
+		mapView.setBounds(0, 0, 400, 600);
 		Tools.waitForEventQueue();
 		mapView.addNotify();
 		// layout components:
-//		mapView.getRoot().getMainView().doLayout();
+		// mapView.getRoot().getMainView().doLayout();
 		fm.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		fm.setVisible(true);
-		
-	}
 
+	}
 
 	protected static void setNodeHookFactory(MindMapController mc) {
 		mc.setNodeHookFactory(new HookFactory() {
@@ -203,17 +209,18 @@ public class ExportTests extends FreeMindTestBase {
 					RegistrationContainer pContainer,
 					HookRegistration pInstanciatedRegistrationObject) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			public void deregisterAllRegistrationContainer() {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			public Object getPluginBaseClass(String pHookName) {
 				// TODO Auto-generated method stub
 				return null;
-			}});
+			}
+		});
 	}
 }

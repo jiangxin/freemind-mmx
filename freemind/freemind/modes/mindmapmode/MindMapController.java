@@ -387,40 +387,44 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     // create compound handler, that evaluates the compound xml actions.
     compound = new CompoundActionHandler(this);
 
-	logger.info("createIconActions");
-        // create standard actions:
-        createStandardActions();
-        // icon actions:
-        createIconActions();
-    	logger.info("createNodeHookActions");
-        //node hook actions:
-        createNodeHookActions();
-
-    	logger.info("mindmap_menus");
-        // load menus:
-        try {
-            InputStream in;
-            in = this.getFrame().getResource("mindmap_menus.xml").openStream();
-            mMenuStructure = updateMenusFromXml(in);
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            freemind.main.Resources.getInstance().logException(e);
-        }
-
-    	logger.info("MindMapPopupMenu");
-        popupmenu = new MindMapPopupMenu(this);
-    	logger.info("MindMapToolBar");
-        toolbar = new MindMapToolBar(this);
-
-        // addAsChildMode (use old model of handling CtrN) (PN)
-        addAsChildMode =
-            Resources.getInstance().getBoolProperty("add_as_child");
-        mRegistrations = new Vector();
-
-        attributeController = new MindMapModeAttributeController(this);
-        showAttributeManagerAction = getController().showAttributeManagerAction;
-        propertyAction = getController().propertyAction;
+	init();
     }
+
+	protected void init() {
+		logger.info("createIconActions");
+		    // create standard actions:
+		    createStandardActions();
+		    // icon actions:
+		    createIconActions();
+			logger.info("createNodeHookActions");
+		    //node hook actions:
+		    createNodeHookActions();
+
+			logger.info("mindmap_menus");
+		    // load menus:
+		    try {
+		        InputStream in;
+		        in = this.getFrame().getResource("mindmap_menus.xml").openStream();
+		        mMenuStructure = updateMenusFromXml(in);
+		    } catch (IOException e) {
+		        // TODO Auto-generated catch block
+		        freemind.main.Resources.getInstance().logException(e);
+		    }
+
+			logger.info("MindMapPopupMenu");
+		    popupmenu = new MindMapPopupMenu(this);
+			logger.info("MindMapToolBar");
+		    toolbar = new MindMapToolBar(this);
+
+		    // addAsChildMode (use old model of handling CtrN) (PN)
+		    addAsChildMode =
+		        Resources.getInstance().getBoolProperty("add_as_child");
+		    mRegistrations = new Vector();
+
+		    attributeController = new MindMapModeAttributeController(this);
+		    showAttributeManagerAction = getController().showAttributeManagerAction;
+		    propertyAction = getController().propertyAction;
+	}
 
     private void createStandardActions() {
         // prepare undo:
@@ -723,7 +727,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 	/**
 	 *
 	 */
-	private void createNodeHookActions() {
+	protected void createNodeHookActions() {
         if (hookActions == null) {
             hookActions = new Vector();
             // HOOK TEST
