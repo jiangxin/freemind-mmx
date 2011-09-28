@@ -101,7 +101,6 @@ public class IndependantMapViewCreator {
 		};
 		mode.init(controller);
 		MindMapController mc = (MindMapController) mode.createModeController();
-		setNodeHookFactory(mc);
 		MindMapMapModel model = new MindMapMapModel(pFreeMindMain, mc);
 		mc.setModel(model);
 		model.load(new File(inputFileName));
@@ -167,69 +166,6 @@ public class IndependantMapViewCreator {
 		return mapView;
 	}
 
-	protected static void setNodeHookFactory(MindMapController mc) {
-		mc.setNodeHookFactory(new HookFactory() {
-
-			public Vector getPossibleNodeHooks() {
-				// TODO Auto-generated method stub
-				return new Vector();
-			}
-
-			public Vector getPossibleModeControllerHooks() {
-				// TODO Auto-generated method stub
-				return new Vector();
-			}
-
-			public ModeControllerHook createModeControllerHook(String pHookName) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			public NodeHook createNodeHook(String pHookName) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			public PermanentNodeHook getHookInNode(MindMapNode pNode,
-					String pHookName) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			public List getHookMenuPositions(String pHookName) {
-				// TODO Auto-generated method stub
-				return new Vector();
-			}
-
-			public HookInstanciationMethod getInstanciationMethod(
-					String pHookName) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			public List getRegistrations() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			public void registerRegistrationContainer(
-					RegistrationContainer pContainer,
-					HookRegistration pInstanciatedRegistrationObject) {
-				// TODO Auto-generated method stub
-
-			}
-
-			public void deregisterAllRegistrationContainer() {
-				// TODO Auto-generated method stub
-
-			}
-
-			public Object getPluginBaseClass(String pHookName) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		});
-	}
 
 
 }
