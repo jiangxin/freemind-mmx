@@ -51,6 +51,7 @@ import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapMode;
+import freemind.view.mindmapview.IndependantMapViewCreator;
 import freemind.view.mindmapview.MapView;
 
 /**
@@ -61,31 +62,15 @@ public class ExportTests extends FreeMindTestBase {
 	private static final String TESTMAP_MM = "tests/freemind/testmap.mm";
 
 	public void testExportPng() throws Exception {
+		String inputFileName = TESTMAP_MM;
+		String outputFileName = "/tmp/test.png";
+
 		System.setProperty("java.awt.headless", "true");
 		JPanel parent = new JPanel();
-		parent.setBounds(0, 0, 400, 600);
-		Controller controller = new Controller(mFreeMindMain);
-		controller.initialization();
-		MindMapMode mode = new MindMapMode() {
-			public freemind.modes.ModeController createModeController() {
-				return new MindMapController(this) {
-					protected void init() {
-					}
-				};
-			};
-		};
-		mode.init(controller);
-		MindMapController mc = (MindMapController) mode.createModeController();
-		setNodeHookFactory(mc);
-		MindMapMapModel model = new MindMapMapModel(mFreeMindMain, mc);
-		mc.setModel(model);
-		model.load(ClassLoader.getSystemResource(TESTMAP_MM));
-		MapView mapView = createMapView(controller, model);
-		parent.add(mapView, BorderLayout.CENTER);
-		mc.setView(mapView);
-		mapView.setBounds(0, 0, 400, 600);
-		Tools.waitForEventQueue();
-		mapView.addNotify();
+		Rectangle bounds = new Rectangle(0,0,400,600);
+		parent.setBounds(bounds);
+		IndependantMapViewCreator creator = new IndependantMapViewCreator();
+		MapView mapView = creator.createMapViewForFile(inputFileName, parent, mFreeMindMain);
 		// layout components:
 		mapView.getRoot().getMainView().doLayout();
 		parent.setOpaque(true);
@@ -108,26 +93,11 @@ public class ExportTests extends FreeMindTestBase {
 		backBuffer = backBuffer
 				.getSubimage(dimI.x, dimI.y, dimI.width, dimI.height);
 
-		FileOutputStream out1 = new FileOutputStream("/tmp/test.png");
+		FileOutputStream out1 = new FileOutputStream(outputFileName);
 		ImageIO.write(backBuffer, "png", out1);
 		out1.close();
 
 		System.out.println("Done.");
-	}
-
-	protected static MapView createMapView(Controller controller,
-			MindMapMapModel model) {
-		MapView mapView = new MapView(model, controller) {
-			DragGestureListener getNodeDragListener() {
-				return null;
-			}
-
-			DropTargetListener getNodeDropListener() {
-				return null;
-			}
-
-		};
-		return mapView;
 	}
 
 	public static void main(String[] args) throws FileNotFoundException,
@@ -140,18 +110,9 @@ public class ExportTests extends FreeMindTestBase {
 		fm.add(parent, BorderLayout.CENTER);
 		fm.setBounds(0, 0, 300, 400);
 		parent.setBounds(0, 0, 400, 600);
-		Controller controller = new Controller(mFreeMindMain);
-		controller.initialization();
-		MindMapMode mode = new MindMapMode();
-		mode.init(controller);
-		MindMapController mc = (MindMapController) mode.createModeController();
-		setNodeHookFactory(mc);
-		MindMapMapModel model = new MindMapMapModel(mFreeMindMain, mc);
-		mc.setModel(model);
-		model.load(ClassLoader.getSystemResource(TESTMAP_MM));
-		MapView mapView = createMapView(controller, model);
+		IndependantMapViewCreator creator = new IndependantMapViewCreator();
+		MapView mapView = creator.createMapViewForFile(TESTMAP_MM, parent, mFreeMindMain);
 		parent.add(mapView, BorderLayout.CENTER);
-		mc.setView(mapView);
 		mapView.setBounds(0, 0, 400, 600);
 		Tools.waitForEventQueue();
 		mapView.addNotify();
@@ -162,67 +123,4 @@ public class ExportTests extends FreeMindTestBase {
 
 	}
 
-	protected static void setNodeHookFactory(MindMapController mc) {
-		mc.setNodeHookFactory(new HookFactory() {
-
-			public Vector getPossibleNodeHooks() {
-				// TODO Auto-generated method stub
-				return new Vector();
-			}
-
-			public Vector getPossibleModeControllerHooks() {
-				// TODO Auto-generated method stub
-				return new Vector();
-			}
-
-			public ModeControllerHook createModeControllerHook(String pHookName) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			public NodeHook createNodeHook(String pHookName) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			public PermanentNodeHook getHookInNode(MindMapNode pNode,
-					String pHookName) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			public List getHookMenuPositions(String pHookName) {
-				// TODO Auto-generated method stub
-				return new Vector();
-			}
-
-			public HookInstanciationMethod getInstanciationMethod(
-					String pHookName) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			public List getRegistrations() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			public void registerRegistrationContainer(
-					RegistrationContainer pContainer,
-					HookRegistration pInstanciatedRegistrationObject) {
-				// TODO Auto-generated method stub
-
-			}
-
-			public void deregisterAllRegistrationContainer() {
-				// TODO Auto-generated method stub
-
-			}
-
-			public Object getPluginBaseClass(String pHookName) {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		});
-	}
 }
