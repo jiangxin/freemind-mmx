@@ -93,8 +93,10 @@ public class ExportTests extends FreeMindTestBase {
 		parent.doLayout();
 		parent.validate(); // this might not be necessary
 		System.out.println(mapView.getBounds());
+		System.out.println(mapView.getInnerBounds());
 		mapView.preparePrinting();
 		Rectangle dim = mapView.getBounds();
+		Rectangle dimI = mapView.getInnerBounds();
 		parent.setBounds(dim);
 		// do print
 		BufferedImage backBuffer = new BufferedImage(dim.width, dim.height,
@@ -103,8 +105,8 @@ public class ExportTests extends FreeMindTestBase {
 		g.translate(-dim.x, -dim.y);
 		g.clipRect(dim.x, dim.y, dim.width, dim.height);
 		parent.print(g); // this might not be necessary
-//		backBuffer = backBuffer
-//				.getSubimage(dim.x, dim.y, dim.width, dim.height);
+		backBuffer = backBuffer
+				.getSubimage(dimI.x, dimI.y, dimI.width, dimI.height);
 
 		FileOutputStream out1 = new FileOutputStream("/tmp/test.png");
 		ImageIO.write(backBuffer, "png", out1);
