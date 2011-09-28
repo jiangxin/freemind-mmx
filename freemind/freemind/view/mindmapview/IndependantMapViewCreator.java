@@ -21,14 +21,19 @@
 package freemind.view.mindmapview;
 
 import java.awt.BorderLayout;
+import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DropTargetListener;
+import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Vector;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import freemind.controller.Controller;
@@ -79,6 +84,40 @@ public class IndependantMapViewCreator {
 		return mapView;
 	}
 
+	public void exportFileToPng(String inputFileName, String outputFileName, FreeMindMain pFreeMindMain)
+			throws FileNotFoundException, IOException, URISyntaxException {
+		System.setProperty("java.awt.headless", "true");
+		JPanel parent = new JPanel();
+		Rectangle bounds = new Rectangle(0,0,400,600);
+		parent.setBounds(bounds);
+		MapView mapView = createMapViewForFile(inputFileName, parent, pFreeMindMain);
+		// layout components:
+		mapView.getRoot().getMainView().doLayout();
+		parent.setOpaque(true);
+		parent.setDoubleBuffered(false); // for better performance
+		parent.doLayout();
+		parent.validate(); // this might not be necessary
+		mapView.preparePrinting();
+		Rectangle dim = mapView.getBounds();
+		Rectangle dimI = mapView.getInnerBounds();
+		parent.setBounds(dim);
+		// do print
+		BufferedImage backBuffer = new BufferedImage(dim.width, dim.height,
+				BufferedImage.TYPE_INT_ARGB);
+		Graphics g = backBuffer.createGraphics();
+		g.translate(-dim.x, -dim.y);
+		g.clipRect(dim.x, dim.y, dim.width, dim.height);
+		parent.print(g); // this might not be necessary
+		backBuffer = backBuffer
+				.getSubimage(dimI.x, dimI.y, dimI.width, dimI.height);
+
+		FileOutputStream out1 = new FileOutputStream(outputFileName);
+		ImageIO.write(backBuffer, "png", out1);
+		out1.close();
+	}
+
+
+	
 	protected MapView createMapView(Controller controller,
 			MindMapMapModel model) {
 		MapView mapView = new MapView(model, controller) {

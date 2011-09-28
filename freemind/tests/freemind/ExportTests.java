@@ -23,34 +23,20 @@ package tests.freemind;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DropTargetListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
-import freemind.controller.Controller;
-import freemind.extensions.HookFactory;
-import freemind.extensions.HookInstanciationMethod;
-import freemind.extensions.HookRegistration;
-import freemind.extensions.ModeControllerHook;
-import freemind.extensions.NodeHook;
-import freemind.extensions.PermanentNodeHook;
-import freemind.main.Tools;
 import freemind.main.XMLParseException;
-import freemind.modes.MindMapNode;
-import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.MindMapMapModel;
-import freemind.modes.mindmapmode.MindMapMode;
 import freemind.view.mindmapview.IndependantMapViewCreator;
 import freemind.view.mindmapview.MapView;
 
@@ -62,40 +48,8 @@ public class ExportTests extends FreeMindTestBase {
 	private static final String TESTMAP_MM = "tests/freemind/testmap.mm";
 
 	public void testExportPng() throws Exception {
-		String inputFileName = TESTMAP_MM;
-		String outputFileName = "/tmp/test.png";
-
-		System.setProperty("java.awt.headless", "true");
-		JPanel parent = new JPanel();
-		Rectangle bounds = new Rectangle(0,0,400,600);
-		parent.setBounds(bounds);
 		IndependantMapViewCreator creator = new IndependantMapViewCreator();
-		MapView mapView = creator.createMapViewForFile(inputFileName, parent, mFreeMindMain);
-		// layout components:
-		mapView.getRoot().getMainView().doLayout();
-		parent.setOpaque(true);
-		parent.setDoubleBuffered(false); // for better performance
-		parent.doLayout();
-		parent.validate(); // this might not be necessary
-		System.out.println(mapView.getBounds());
-		System.out.println(mapView.getInnerBounds());
-		mapView.preparePrinting();
-		Rectangle dim = mapView.getBounds();
-		Rectangle dimI = mapView.getInnerBounds();
-		parent.setBounds(dim);
-		// do print
-		BufferedImage backBuffer = new BufferedImage(dim.width, dim.height,
-				BufferedImage.TYPE_INT_ARGB);
-		Graphics g = backBuffer.createGraphics();
-		g.translate(-dim.x, -dim.y);
-		g.clipRect(dim.x, dim.y, dim.width, dim.height);
-		parent.print(g); // this might not be necessary
-		backBuffer = backBuffer
-				.getSubimage(dimI.x, dimI.y, dimI.width, dimI.height);
-
-		FileOutputStream out1 = new FileOutputStream(outputFileName);
-		ImageIO.write(backBuffer, "png", out1);
-		out1.close();
+		creator.exportFileToPng(TESTMAP_MM, "/tmp/test.png", mFreeMindMain);
 
 		System.out.println("Done.");
 	}
@@ -113,12 +67,16 @@ public class ExportTests extends FreeMindTestBase {
 		IndependantMapViewCreator creator = new IndependantMapViewCreator();
 		MapView mapView = creator.createMapViewForFile(TESTMAP_MM, parent, mFreeMindMain);
 		parent.add(mapView, BorderLayout.CENTER);
-		mapView.setBounds(0, 0, 400, 600);
-		Tools.waitForEventQueue();
-		mapView.addNotify();
-		// layout components:
-		// mapView.getRoot().getMainView().doLayout();
+		parent.setBounds(mapView.getBounds());
+		fm.setBounds(mapView.getBounds());
+
 		fm.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		fm.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent event) {
+				System.exit(0);
+			}
+		});
+
 		fm.setVisible(true);
 
 	}
