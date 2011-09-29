@@ -59,15 +59,10 @@ public class ExportTests extends FreeMindTestBase {
 		fm.setModal(true);
 		final Rectangle dim = new Rectangle();
 		JPanel parent = new JPanel() {
-			/* (non-Javadoc)
-			 * @see javax.swing.JComponent#paintChildren(java.awt.Graphics)
-			 */
 			protected void paintChildren(Graphics pG) {
-				// TODO Auto-generated method stub
-				System.out.println("Paint children " + pG);
-//				pG.translate(-dim.x, -dim.y);
+				pG.translate(0, -dim.y);
 				super.paintChildren(pG);
-//				pG.translate(dim.x, dim.y);
+				pG.translate(0, dim.y);
 			}
 		};
 		fm.add(parent, BorderLayout.CENTER);
@@ -77,16 +72,10 @@ public class ExportTests extends FreeMindTestBase {
 		mapView.doLayout();
 		Rectangle innerBounds = mapView.getInnerBounds();
 		Rectangle bounds = mapView.getBounds();
-		dim.x = bounds.x + innerBounds.x;
 		dim.y = bounds.y + innerBounds.y;
-		System.out.println(bounds);
-		System.out.println(innerBounds);
-//		parent.setBounds(mapView.getBounds());
-//		fm.setBounds(mapView.getBounds());
-		Rectangle innerBounds2 = mapView.getBounds();
-		innerBounds2.x = 0;
-		innerBounds2.y = 0;
-		fm.setBounds(innerBounds2);
+//		System.out.println(bounds);
+//		System.out.println(innerBounds);
+		fm.setBounds(mapView.getInnerBounds());
 		
 		fm.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		fm.addWindowListener(new WindowAdapter() {
