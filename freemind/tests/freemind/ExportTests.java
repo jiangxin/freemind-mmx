@@ -25,13 +25,10 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import javax.imageio.ImageIO;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
@@ -60,16 +57,37 @@ public class ExportTests extends FreeMindTestBase {
 		JDialog fm = new JDialog();
 		fm.setTitle("Title");
 		fm.setModal(true);
-		JPanel parent = new JPanel();
+		final Rectangle dim = new Rectangle();
+		JPanel parent = new JPanel() {
+			/* (non-Javadoc)
+			 * @see javax.swing.JComponent#paintChildren(java.awt.Graphics)
+			 */
+			protected void paintChildren(Graphics pG) {
+				// TODO Auto-generated method stub
+				System.out.println("Paint children " + pG);
+//				pG.translate(-dim.x, -dim.y);
+				super.paintChildren(pG);
+//				pG.translate(dim.x, dim.y);
+			}
+		};
 		fm.add(parent, BorderLayout.CENTER);
-		fm.setBounds(0, 0, 300, 400);
-		parent.setBounds(0, 0, 400, 600);
 		IndependantMapViewCreator creator = new IndependantMapViewCreator();
 		MapView mapView = creator.createMapViewForFile(TESTMAP_MM, parent, mFreeMindMain);
 		parent.add(mapView, BorderLayout.CENTER);
-		parent.setBounds(mapView.getBounds());
-		fm.setBounds(mapView.getBounds());
-
+		mapView.doLayout();
+		Rectangle innerBounds = mapView.getInnerBounds();
+		Rectangle bounds = mapView.getBounds();
+		dim.x = bounds.x + innerBounds.x;
+		dim.y = bounds.y + innerBounds.y;
+		System.out.println(bounds);
+		System.out.println(innerBounds);
+//		parent.setBounds(mapView.getBounds());
+//		fm.setBounds(mapView.getBounds());
+		Rectangle innerBounds2 = mapView.getBounds();
+		innerBounds2.x = 0;
+		innerBounds2.y = 0;
+		fm.setBounds(innerBounds2);
+		
 		fm.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		fm.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent event) {

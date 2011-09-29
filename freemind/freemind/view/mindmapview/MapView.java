@@ -489,6 +489,9 @@ public class MapView extends JPanel implements Printable, Autoscroll{
 		}
 		// High boundaries
 		Dimension viewportSize = getViewportSize();
+		if(viewportSize == null) {
+			return;
+		}
 		Dimension size = getSize();
 		// getView() gets viewed area - JPanel
 		double maxX = size.getWidth() - viewportSize.getWidth();

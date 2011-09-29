@@ -31,23 +31,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import tests.freemind.FreeMindMainMock;
 import freemind.controller.Controller;
-import freemind.extensions.HookFactory;
-import freemind.extensions.HookInstanciationMethod;
-import freemind.extensions.HookRegistration;
-import freemind.extensions.ModeControllerHook;
-import freemind.extensions.NodeHook;
-import freemind.extensions.PermanentNodeHook;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
-import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapMode;
