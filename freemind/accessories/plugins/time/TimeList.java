@@ -75,6 +75,7 @@ import javax.swing.text.Document;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 
 import freemind.controller.BlindIcon;
+import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.TimeWindowColumnSetting;
 import freemind.controller.actions.generated.instance.TimeWindowConfigurationStorage;
@@ -84,10 +85,12 @@ import freemind.main.Tools;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
+import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.common.plugins.ReminderHookBase;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
+import freemind.view.MapModule;
 import freemind.view.mindmapview.MultipleImage;
 
 /**
@@ -96,7 +99,7 @@ import freemind.view.mindmapview.MultipleImage;
  *TODO: 
  * - Extract HTML from nodes and notes.
  */
-public class TimeList extends MindMapHookAdapter {
+public class TimeList extends MindMapHookAdapter implements MapModuleChangeObserver {
 
 	private static final int TYPE_DELAY_TIME = 500;
 	
@@ -156,9 +159,14 @@ public class TimeList extends MindMapHookAdapter {
 
 	private JLabel mTreeLabel;
 
+	private MindMapController mMyMindMapController;
+
 	public void startupMapHook() {
 		super.startupMapHook();
 
+		mMyMindMapController = super.getMindMapController();
+		getMindMapController().getController().getMapModuleManager().addListener(this);
+		
 		// get strings from resources:
 		COLUMN_MODIFIED = getResourceString("plugins/TimeList.xml_Modified");
 		COLUMN_CREATED = getResourceString("plugins/TimeList.xml_Created");
@@ -594,6 +602,7 @@ public class TimeList extends MindMapHookAdapter {
         	storage.addTimeWindowColumnSetting(setting);
         }
         getMindMapController().storeDialogPositions(dialog, storage, WINDOW_PREFERENCE_STORAGE_PROPERTY);
+        getMindMapController().getController().getMapModuleManager().removeListener(this);
 		dialog.setVisible(false);
 		dialog.dispose();
 	}
@@ -899,5 +908,51 @@ public class TimeList extends MindMapHookAdapter {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Overwritten, as this dialog is not modal, but after the plugin has terminated,
+	 * the dialog is still present and needs the controller to store its values.
+	 * */
+	public MindMapController getMindMapController() {
+		return mMyMindMapController;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.controller.MapModuleManager.MapModuleChangeObserver#isMapModuleChangeAllowed(freemind.view.MapModule, freemind.modes.Mode, freemind.view.MapModule, freemind.modes.Mode)
+	 */
+	public boolean isMapModuleChangeAllowed(MapModule pOldMapModule,
+			Mode pOldMode, MapModule pNewMapModule, Mode pNewMode) {
+		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.controller.MapModuleManager.MapModuleChangeObserver#beforeMapModuleChange(freemind.view.MapModule, freemind.modes.Mode, freemind.view.MapModule, freemind.modes.Mode)
+	 */
+	public void beforeMapModuleChange(MapModule pOldMapModule, Mode pOldMode,
+			MapModule pNewMapModule, Mode pNewMode) {
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.controller.MapModuleManager.MapModuleChangeObserver#afterMapClose(freemind.view.MapModule, freemind.modes.Mode)
+	 */
+	public void afterMapClose(MapModule pOldMapModule, Mode pOldMode) {
+		disposeDialog();
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.controller.MapModuleManager.MapModuleChangeObserver#afterMapModuleChange(freemind.view.MapModule, freemind.modes.Mode, freemind.view.MapModule, freemind.modes.Mode)
+	 */
+	public void afterMapModuleChange(MapModule pOldMapModule, Mode pOldMode,
+			MapModule pNewMapModule, Mode pNewMode) {
+		disposeDialog();
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.controller.MapModuleManager.MapModuleChangeObserver#numberOfOpenMapInformation(int, int)
+	 */
+	public void numberOfOpenMapInformation(int pNumber, int pIndex) {
 	}
 }
