@@ -1209,7 +1209,7 @@ public abstract class ControllerAdapter implements ModeController {
 					selectedNodes, copyInvisible);
 
 			String plainText = getMap().getAsPlainText(selectedNodes);
-			return new MindMapNodesSelection(forNodesFlavor, plainText,
+			return new MindMapNodesSelection(forNodesFlavor,null, plainText,
 					getMap().getAsRTF(selectedNodes), getMap().getAsHTML(
 							selectedNodes), null, null, createForNodeIdsFlavor);
 		}

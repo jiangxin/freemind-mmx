@@ -85,11 +85,20 @@
 	  </xs:complexType>
 	</xs:element>
 
+	<!-- Image Transferable Element -->
+	<xs:element name="transferable_image">
+	  <xs:complexType>
+	      <xs:attribute name="image" use="required" type="xs:image"/>
+	  </xs:complexType>
+	</xs:element>
+	
 	<!-- Node actions. These actions involve exactly one node.-->
 	<xs:element name="transferable_content">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="transferable_file" minOccurs="0"
+					maxOccurs="unbounded" />
+					<xs:element ref="transferable_image" minOccurs="0"
 					maxOccurs="unbounded" />
 				<!--				<xs:element name="TransferableAsFileList" type="xs:long" minOccurs="0" maxOccurs="unbounded"/>-->
 				<xs:element name="Transferable" minOccurs="0" maxOccurs="1" type="xs:string"/>
@@ -97,6 +106,7 @@
 				<xs:element name="TransferableAsRTF" minOccurs="0" maxOccurs="1" type="xs:string"/>
 				<xs:element name="TransferableAsDrop" minOccurs="0" maxOccurs="1" type="xs:string"/>
 				<xs:element name="TransferableAsHtml" minOccurs="0" maxOccurs="1" type="xs:string"/>
+				<xs:element name="TransferableAsImage" minOccurs="0" maxOccurs="1" type="xs:string"/>
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

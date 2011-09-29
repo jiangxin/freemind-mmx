@@ -128,6 +128,8 @@ class visorFreeMind.Node {
 		num+=4;
 		//creation of asociated movieClip
 		id=node_xml.attributes.ID?node_xml.attributes.ID:"node_"+num;
+                // SETTING NODE_XML ID
+                node_xml.attributes.ID = id;
 		ref_mc=mc.createEmptyMovieClip(id,num);
 		//ref_mc.trackAsMenu=true;
 		box_txt=ref_mc.createEmptyMovieClip("box_txt",11);
@@ -273,7 +275,7 @@ class visorFreeMind.Node {
 			return;
 		}
 
-		eventControler.onPress=function(){
+		eventControler.onRelease=function(){
 			if(this.inst.node_xml.attributes.LINK != undefined && this.inst.link.hitTest(_root._xmouse,_root._ymouse,false)){
 				var url:String=this.inst.node_xml.attributes.LINK;
 				this.inst.browser.hideTooltip();

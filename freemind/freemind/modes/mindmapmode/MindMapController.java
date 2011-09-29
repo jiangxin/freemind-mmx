@@ -1456,7 +1456,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
            ((MindMapNodeModel)node).save(stringWriter, getMap().getLinkRegistry(), saveInvisible, true); }
         catch (IOException e) {}
         Vector nodeList = Tools.getVectorWithSingleElement(getNodeID(node));
-		return new MindMapNodesSelection(stringWriter.toString(), null, null, null, null, null, nodeList); 
+		return new MindMapNodesSelection(stringWriter.toString(),null, null, null, null, null, null, nodeList); 
     }
 
      public Transferable cut() {

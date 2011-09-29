@@ -1,5 +1,5 @@
 /*
- * EditServer.java - jEdit server
+ * EditServer.java - FreeMind server
  * :tabSize=8:indentSize=8:noTabs=false:
  * :folding=explicit:collapseFolds=1:
  *
@@ -49,7 +49,7 @@ import javax.swing.SwingUtilities;
  * key as four bytes in network byte order, followed by the length of the
  * BeanShell script as two bytes in network byte order, followed by the
  * script in UTF8 encoding. After the socked is closed, the BeanShell script
- * will be executed by jEdit.<p>
+ * will be executed by FreeMind.<p>
  *
  * The snippet is executed in the AWT thread. None of the usual BeanShell
  * variables (view, buffer, textArea, editPane) are set so the script has to
@@ -69,7 +69,7 @@ public class EditServer extends Thread
 	//{{{ EditServer constructor
 	EditServer(String portFile, FreeMindMain pFrame)
 	{
-		super("jEdit server daemon [" + portFile + "]");
+		super("FreeMind server daemon [" + portFile + "]");
 		mFrame = pFrame;
 		if (logger == null) {
 			logger = freemind.main.Resources.getInstance().getLogger(
@@ -115,7 +115,7 @@ public class EditServer extends Thread
 
 			ok = true;
 
-			logger.info("jEdit server started on port "
+			logger.info("FreeMind server started on port "
 				+ socket.getLocalPort());
 			logger.info("Authorization key is "
 				+ authKey);
