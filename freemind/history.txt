@@ -5,6 +5,7 @@ Changes made in FreeMind 1.0.0 Alpha6
 * Export format for PDF can be chosen. Thanks to the author Andreas for the patch.
 * New functionality: "File changed on disk: do you want to reload?" 
 * New functionality: Paste images from clipboard. Thanks to Anantha!
+* Accelerators for search&replace. (Translators: add accelerators in your language to use this function!).
 
 ===============================
 Changes made in FreeMind 1.0.0 Alpha5

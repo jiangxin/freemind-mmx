@@ -232,7 +232,7 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 						mindMapNodes.add(node);
 					}
 				} catch (Exception e) {
-                                    e.printStackTrace();
+//                                    e.printStackTrace();
 //					freemind.main.Resources.getInstance().logException(e);
 				}
 			}
