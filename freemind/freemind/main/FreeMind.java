@@ -133,7 +133,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
     
 	private Logger logger = null;
 	
-	protected static final VersionInformation VERSION = new VersionInformation("1.0.0 Alpha 5");
+	protected static final VersionInformation VERSION = new VersionInformation("1.0.0 Alpha 6");
 	
 	public static final String XML_VERSION = "1.0.0";
 
