@@ -149,5 +149,11 @@ public interface MindMap extends TreeModel {
 	 * @return the last saving time to be stored (see {@link MindMap#registerMapSourceChangedObserver(MapSourceChangedObserver, long)})
 	 */
 	long deregisterMapSourceChangedObserver(MapSourceChangedObserver pMapSourceChangedObserver);
+
 	
+	/**
+     * @param newRoot one of the nodes, that is now root.
+     * The others are grouped around.
+     */
+    void changeRoot(MindMapNode newRoot);
 }

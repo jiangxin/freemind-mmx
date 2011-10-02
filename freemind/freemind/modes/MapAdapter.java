@@ -26,12 +26,14 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.swing.event.EventListenerList;
@@ -47,6 +49,7 @@ import freemind.extensions.PermanentNodeHook;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
+import freemind.view.mindmapview.NodeView;
 
 public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 
@@ -235,6 +238,25 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
     
     public void setRoot(MindMapNode root) {
         super.setRoot(root);
+    }
+    
+    
+    /**
+     * @param newRoot one of the nodes, that is now root.
+     * The others are grouped around.
+     */
+    public void changeRoot(MindMapNode newRoot) {
+    	if(newRoot == getRootNode()) {
+    		return;
+    	}
+    	MindMapNode parent = newRoot.getParentNode();
+    	// remove parent
+    	newRoot.removeFromParent();
+    	parent.setLeft(!newRoot.isLeft());
+    	// and put it as a child
+    	newRoot.insert(parent, 0);
+    	// and set root
+    	setRoot(newRoot);
     }
 
     /**

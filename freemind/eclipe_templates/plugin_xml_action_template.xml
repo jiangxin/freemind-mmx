@@ -20,6 +20,10 @@ keystroke_accessories/plugins/${classname}.properties_key=control alt V
 		&lt;plugin_mode class_name="freemind.modes.mindmapmode"/&gt;
 		&lt;plugin_menu location="menu_bar/${menu_position}"/&gt;
 	&lt;/plugin_action&gt;
+</template><template autoinsert="true" context="xml_all" deleted="false" description="FreeMind New plugin XML file template" enabled="true" name="freemind_plugin">&lt;?xml version="1.0"?&gt;
+&lt;plugin label="accessories/plugins/${file}"&gt;
+	${cursor}
+&lt;/plugin&gt;
 </template><template autoinsert="true" context="xml_all" deleted="false" description="Registrates a plugin" enabled="true" name="freemind_registration">	&lt;plugin_registration 
 		class_name="accessories.plugins.${classname}$$${Registration}" 
 		isPluginBase="true"&gt;

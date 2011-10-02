@@ -206,5 +206,13 @@ public class MindMapMock implements MindMap {
 		return 0;
 	}
 
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap#changeRoot(freemind.modes.MindMapNode)
+	 */
+	public void changeRoot(MindMapNode pNewRoot) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
 

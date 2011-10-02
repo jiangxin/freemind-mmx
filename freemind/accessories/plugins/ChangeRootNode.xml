@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<plugin label="accessories/plugins/ChangeRootNode">
+		<plugin_action 
+		documentation="%accessories/plugins/ChangeRootNode.properties_documentation" 
+		name="%accessories/plugins/ChangeRootNode.properties_name" 
+		key_stroke="%keystroke_accessories/plugins/ChangeRootNode.properties_key" 
+		base="freemind.extensions.NodeHookAdapter" 
+		label="accessories/plugins/ChangeRootNode.properties" 
+		class_name="accessories.plugins.ChangeRootNode" 
+		instanciation="ApplyToRoot">
+		<!-- Instantiations: Once, OnceForRoot, OnceForAllNodes, Other, ApplyToRoot	 --> 
+		<!-- 
+		freemind.properties:
+# new, foltin, 01.10.2011:
+keystroke_accessories/plugins/ChangeRootNode.properties_key=control alt V
+		-->
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/extras/change_root_node"/>
+	</plugin_action>
+
+</plugin>
