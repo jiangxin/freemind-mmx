@@ -249,12 +249,27 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
     	if(newRoot == getRootNode()) {
     		return;
     	}
-    	MindMapNode parent = newRoot.getParentNode();
-    	// remove parent
-    	newRoot.removeFromParent();
-    	parent.setLeft(!newRoot.isLeft());
-    	// and put it as a child
-    	newRoot.insert(parent, 0);
+    	MindMapNode node;
+    	node = newRoot;
+    	// collect parents (as we remove them from their parents...)
+    	Vector parents = new Vector();
+    	while(node.getParentNode() != null) {
+	    	MindMapNode parent = node.getParentNode();
+	    	parents.add(0, node);
+	    	node = parent;
+    	}
+    	// bind all parents to a new chain:
+    	for (Iterator it = parents.iterator(); it.hasNext();) {
+			node = (MindMapNode) it.next();
+			MindMapNode parent = node.getParentNode();
+			// remove parent
+			node.removeFromParent();
+			if(node == newRoot) {
+				parent.setLeft(!node.isLeft());
+			}
+			// and put it as a child
+			node.insert(parent, node.getChildCount());
+    	}
     	// and set root
     	setRoot(newRoot);
     }
