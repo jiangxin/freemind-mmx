@@ -1,4 +1,9 @@
 ===============================
+Changes made in FreeMind 1.0.0 Alpha7
+===============================
+* Change of root node added
+
+===============================
 Changes made in FreeMind 1.0.0 Alpha6
 ===============================
 * Opening documents from explorer will open it in a running instance.

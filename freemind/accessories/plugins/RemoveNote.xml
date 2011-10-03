@@ -14,7 +14,7 @@
     	class_name="accessories.plugins.RemoveNote"
     	instanciation="OnceForRoot">
     	<plugin_mode class_name="freemind.modes.mindmapmode" />
-    	<plugin_menu location="menu_bar/extras/first/nodes/RemoveNote" />
+    	<plugin_menu location="menu_bar/format/nodes/remove_notes/RemoveNote" />
     	<plugin_property value="remove_note" name="actionType" />
     </plugin_action>
 </plugin>

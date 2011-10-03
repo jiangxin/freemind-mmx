@@ -249,6 +249,7 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
     	if(newRoot == getRootNode()) {
     		return;
     	}
+    	boolean left = newRoot.isLeft();
     	MindMapNode node = newRoot;
     	// collect parents (as we remove them from their parents...)
     	Vector parents = new Vector();
@@ -263,8 +264,13 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 			MindMapNode parent = node.getParentNode();
 			// remove parent
 			node.removeFromParent();
+			// special treatment for left/right
 			if(node == newRoot) {
-				parent.setLeft(!node.isLeft());
+				for (Iterator it2 = node.getChildren().iterator(); it2.hasNext();) {
+					MindMapNode child = (MindMapNode) it2.next();
+					child.setLeft(left);
+				}
+				parent.setLeft(!left);
 			}
 			// and put it as a child
 			node.insert(parent, node.getChildCount());

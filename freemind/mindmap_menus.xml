@@ -66,6 +66,7 @@
 				<menu_action field="newSibling" key_ref="keystroke_add"/>
 				<menu_action name="newPreviousSibling" field="newPreviousSibling" key_ref="keystroke_add_sibling_before"/>
 			</menu_category>
+			<menu_category name="crypto"/>
 			<menu_category name="image">
 				<menu_action field="setImageByFileChooser" key_ref="keystroke_set_image_by_filechooser"/>			
 			</menu_category>
@@ -139,8 +140,10 @@
 					<menu_action field="removeNodeBackgroundColor"/>
 				</menu_category>
 				<menu_category name="position">
+					<!-- Reset position -->
 					<menu_action field="moveNodeAction"/>
 				</menu_category>
+				<menu_category name="remove_notes"/>
 				<menu_separator/>
 			</menu_category>
 			<menu_category name="icons">
@@ -186,8 +189,8 @@
 				</menu_category>
 				<menu_category name="nodes">
 					<menu_category name="sorting"/>
-					<menu_category name="crypto">
-					</menu_category>
+					<menu_category name="root"/>
+					<menu_separator/>
 					<menu_category name="change"/>
 				</menu_category>
 				<menu_separator/>

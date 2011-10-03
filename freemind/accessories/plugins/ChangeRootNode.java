@@ -34,7 +34,6 @@ import freemind.view.mindmapview.NodeView;
 
 /**
  * Changes the root node to another one
- * TODO: nodes must be set to specific sides of the new root node.
  * TODO: Undo is missing
  * TODO: Plugins for root must be moved.
  * TODO: What happens with clouds?

@@ -15,7 +15,7 @@
 keystroke_accessories/plugins/ChangeRootNode.properties_key=control alt V
 		-->
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
-		<plugin_menu location="menu_bar/extras/change_root_node"/>
+		<plugin_menu location="menu_bar/extras/first/nodes/root/change_root_node"/>
 	</plugin_action>
 
 </plugin>
