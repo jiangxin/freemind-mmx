@@ -457,7 +457,7 @@ public abstract class XMLElementAdapter extends XMLElement {
             return;
         }
         if (getName().equals("font")) {
-            userObject = frame.getController().getFontThroughMap(
+            userObject = mModeController.getController().getFontThroughMap(
                     new Font(fontName, fontStyle, fontSize));
             return;
         }
