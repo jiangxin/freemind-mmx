@@ -172,6 +172,16 @@
 		</xs:complexContent>
 	  </xs:complexType>
 
+	<!-- Change root node action -->
+	<xs:element name="change_root_node_action">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="node_action">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
 	<!-- Add Icon Action -->
 	<xs:element name="add_icon_action">
 	  <xs:complexType>

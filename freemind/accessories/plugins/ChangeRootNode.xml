@@ -1,5 +1,11 @@
 <?xml version="1.0"?>
 <plugin label="accessories/plugins/ChangeRootNode">
+	<plugin_registration 
+		class_name="accessories.plugins.ChangeRootNode$Registration" 
+		isPluginBase="false">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+	</plugin_registration>
+
 		<plugin_action 
 		documentation="%accessories/plugins/ChangeRootNode.properties_documentation" 
 		name="%accessories/plugins/ChangeRootNode.properties_name" 
