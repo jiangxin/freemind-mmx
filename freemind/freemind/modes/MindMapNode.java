@@ -231,7 +231,16 @@ public interface MindMapNode extends MutableTreeNode {
     void  setBackgroundColor(Color color);
 
     //hooks, fc 28.2.2004:
+    /** 
+     * After a map creation, all hooks are present via this
+     * method, but still not activated.
+     * @return a list of PermanentNodeHook elements.
+     * */
     List getHooks();
+    /**
+     * After activation, this method returns the hooks of this node.
+     * @return a list of PermanentNodeHook elements
+     */
     Collection getActivatedHooks();
 
 	/** Adds the hook to the list of hooks to my node.
@@ -243,6 +252,13 @@ public interface MindMapNode extends MutableTreeNode {
 	/** Removes the hook from the activated hooks, calls shutdown method of the hook and removes the
 	 * hook from allHook belonging to the node afterwards. */
     void removeHook(PermanentNodeHook hook);
+    
+    
+	/** Removes all hooks from this node.
+	 * @param node
+	 */
+	public void removeAllHooks();
+
 	//end hooks
 
 	//tooltips,fc 29.2.2004

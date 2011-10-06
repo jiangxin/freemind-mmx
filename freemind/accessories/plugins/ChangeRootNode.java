@@ -47,8 +47,7 @@ import freemind.view.mindmapview.NodeView;
 
 /**
  * Changes the root node to another one
- * TODO: Plugins for root must be moved.
- * TODO: What happens with clouds?
+ * What happens with clouds? This is ok, as it can be removed afterwards.
  * 
  * @author foltin
  * @date 01.10.2011
@@ -130,7 +129,16 @@ public class ChangeRootNode extends MindMapNodeHookAdapter {
 					// node is already root. Everything ok.
 					return;
 				}
+				/*
+				 * moving the hooks:
+				 * 1. new interface method: movehook
+				 * 2. change root node from old to new node copying text, decoration, etc.
+				 * 3. deactivate all root hooks. this is possibly the best solution as it is consequent.
+				 * Method 3 is chosen.
+				 */
 				MindMapNode oldRoot = mMap.getRootNode();
+				oldRoot.removeAllHooks();
+				// change the root node:
 				mMap.changeRoot(focussed);
 		    	// remove all viewers:
 		    	Vector nodes = new Vector();

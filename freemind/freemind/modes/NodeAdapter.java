@@ -932,6 +932,20 @@ freemind.main.Resources.getInstance().logException(			e);
 			hooks=null;
 	}
 
+	public void removeAllHooks() {
+		int timeout = getHooks().size()*2;
+		while(getHooks().size()>0 && timeout-- > 0) {
+			PermanentNodeHook hook = (PermanentNodeHook) getHooks().get(0);
+			try {
+				removeHook(hook);
+			} catch (Exception e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+		}
+	}
+
+
+	
 	/**
 	 */
 	public SortedMap getToolTip() {

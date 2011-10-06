@@ -471,4 +471,10 @@ final class TestMindMapNode implements MindMapNode {
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#removeAllHooks()
+	 */
+	public void removeAllHooks() {
+	}
+
 }
