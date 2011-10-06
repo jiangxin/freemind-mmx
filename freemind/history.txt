@@ -2,6 +2,7 @@
 Changes made in FreeMind 1.0.0 Alpha7
 ===============================
 * Change of root node added
+* Now, find treats notes, too. (To disable, set resources_search_in_notes_too to false).
 
 ===============================
 Changes made in FreeMind 1.0.0 Alpha6

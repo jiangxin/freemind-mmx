@@ -20,21 +20,21 @@
 package freemind.modes.common.actions;
 
 import java.awt.event.ActionEvent;
-import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
-import java.util.Iterator;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
+import freemind.main.FreeMind;
+import freemind.main.HtmlTools;
+import freemind.main.Resources;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
-import freemind.modes.mindmapmode.MindMapController;
-import freemind.main.HtmlTools;
-import freemind.view.mindmapview.NodeView;
 
 public class FindAction extends AbstractAction {
 	private final ControllerAdapter controller;
@@ -158,7 +158,8 @@ public class FindAction extends AbstractAction {
 	private boolean find(LinkedList /* queue of MindMapNode */nodes,
             Collection subterms, boolean caseSensitive) {
 		// Precondition: if !caseSensitive then >>what<< is in lowercase.
-
+		boolean searchInNotesToo = Resources.getInstance().getBoolProperty(FreeMind.RESOURCES_SEARCH_IN_NOTES_TOO);
+		
 		// Fold the path of previously found node
 		boolean thereWereNodesToBeFolded = !findNodesUnfoldedByLastFind
 				.isEmpty();
@@ -190,25 +191,39 @@ public class FindAction extends AbstractAction {
 
             // Bug fix for http://sourceforge.net/tracker/?func=detail&aid=3035387&group_id=7118&atid=107118
             String nodeText = node.toString();
-            if (HtmlTools.isHtmlNode(nodeText)) {
-              nodeText = HtmlTools.unescapeHTMLUnicodeEntity(nodeText);
-              nodeText = HtmlTools.removeHtmlTagsFromString(nodeText);
-            }
-            if(!caseSensitive) {
-              nodeText = nodeText.toLowerCase();
-            }
+            nodeText = prepareTextContent(caseSensitive, nodeText);
             // End bug fix.
+            String noteText = node.getNoteText();
+            noteText = prepareTextContent(caseSensitive, noteText);
 
-
-            boolean found = true;
-            for (Iterator i = subterms.iterator(); i.hasNext();) {
-               if (nodeText.indexOf((String)i.next()) < 0 ) { // Subterm not found
-                  found = false;
-                  break; }}
-
-            if (found) { // Found
-                displayNode(node, findNodesUnfoldedByLastFind);
+			boolean found = true;
+			boolean foundInNotes = false;
+			for (Iterator i = subterms.iterator(); i.hasNext();) {
+				if (nodeText.indexOf((String) i.next()) < 0) { 
+					// Subterm not found
+					found = false;
+					break;
+				}
+			}
+			
+			if ((!found) && searchInNotesToo) {
+				/* now, search the notes. */
+				found = true;
+				for (Iterator i = subterms.iterator(); i.hasNext();) {
+					if (noteText.indexOf((String) i.next()) < 0) {
+						// Subterm not found
+						found = false;
+						break;
+					}
+				}
+				foundInNotes = true;
+			}
+			if (found) { // Found
+				displayNode(node, findNodesUnfoldedByLastFind);
 				centerNode(node);
+				if(foundInNotes) {
+					// TODO: Select text in notes window.
+				}
 				// Save the state for find next
 				this.subterms = subterms;
 				findCaseSensitive = caseSensitive;
@@ -219,6 +234,20 @@ public class FindAction extends AbstractAction {
 
 		centerNode(findFromNode);
 		return false;
+	}
+
+	public String prepareTextContent(boolean caseSensitive, String nodeText) {
+        if(nodeText == null) {
+        	nodeText = "";
+        }
+		if (HtmlTools.isHtmlNode(nodeText)) {
+			nodeText = HtmlTools.removeHtmlTagsFromString(nodeText);
+			nodeText = HtmlTools.unescapeHTMLUnicodeEntity(nodeText);
+		}
+		if(!caseSensitive) {
+		  nodeText = nodeText.toLowerCase();
+		}
+		return nodeText;
 	}
 
     private Collection breakSearchTermIntoSubterms(String searchTerm) {

@@ -218,6 +218,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public static final String KEYSTROKE_NEXT_MAP = "keystroke_nextMap";
 
+	public static final String RESOURCES_SEARCH_IN_NOTES_TOO = "resources_search_in_notes_too";
+
 	public FreeMind(Properties pDefaultPreferences, Properties pUserPreferences, File pAutoPropertiesFile) {
 		super("FreeMind");
 		// Focus searcher
