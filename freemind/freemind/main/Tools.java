@@ -326,8 +326,7 @@ public class Tools {
      * something every browser and every system uses slightly differently.
      */
     public static String urlGetFile(URL url) {
-        String osNameStart = System.getProperty("os.name").substring(0, 3);
-        if (osNameStart.equals("Win") && url.getProtocol().equals("file")) {
+        if (isWindows() && isFile(url)) {
             String fileName = url.toString().replaceFirst("^file:", "")
                     .replace('/', '\\');
             return (fileName.indexOf(':') >= 0) ? fileName.replaceFirst(
@@ -337,6 +336,14 @@ public class Tools {
             return url.getFile();
         }
     }
+
+	public static boolean isWindows() {
+		return System.getProperty("os.name").substring(0, 3).equals("Win");
+	}
+
+	public static boolean isFile(URL url) {
+		return url.getProtocol().equals("file");
+	}
 
     /**
      * This method converts an absolute url to an url relative to a given

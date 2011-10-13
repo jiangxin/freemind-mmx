@@ -281,6 +281,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
    public Action setLinkByFileChooser = new SetLinkByFileChooserAction();
    public Action setImageByFileChooser = new SetImageByFileChooserAction();
    public Action followLink = new FollowLinkAction();
+   public Action openLinkDirectory = new OpenLinkDirectoryAction();
    public Action exportBranch = new ExportBranchAction(this);
    public Action importBranch = new ImportBranchAction();
    public Action importLinkedBranch = new ImportLinkedBranchAction();
@@ -1659,7 +1660,23 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         }
     }
 
-    protected class FollowLinkAction extends AbstractAction implements MenuItemEnabledListener {
+    protected abstract class LinkActionBase extends AbstractAction implements MenuItemEnabledListener {
+		public LinkActionBase(String pText) {
+			super(pText);
+		}
+
+		public boolean isEnabled(JMenuItem pItem, Action pAction) {
+    		for (Iterator iterator = getSelecteds().iterator(); iterator.hasNext();) {
+    			MindMapNode selNode = (MindMapNode) iterator.next();
+    			if( selNode.getLink() != null ) 
+    				return true;
+    		}			
+    		return false;
+    	}
+    	
+    }
+    
+    protected class FollowLinkAction extends LinkActionBase {
         public FollowLinkAction() {
             super(getText("follow_link"));
         }
@@ -1671,16 +1688,36 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 				}
 			}
         }
-		public boolean isEnabled(JMenuItem pItem, Action pAction) {
-			for (Iterator iterator = getSelecteds().iterator(); iterator.hasNext();) {
-				MindMapNode selNode = (MindMapNode) iterator.next();
-				if( selNode.getLink() != null ) 
-					return true;
-			}			
-			return false;
-		}
     }
 
+    
+    protected class OpenLinkDirectoryAction extends LinkActionBase {
+    	public OpenLinkDirectoryAction() {
+    		super(getText("open_link_directory"));
+    	}
+    	public void actionPerformed(ActionEvent event) {
+    		for (Iterator iterator = getSelecteds().iterator(); iterator.hasNext();) {
+    			MindMapNode selNode = (MindMapNode) iterator.next();
+    			String link = selNode.getLink();
+				if(link != null) {
+					try {
+						URL url = new URL(link);
+						if(Tools.isFile(url)) {
+							File file = new File(Tools.urlGetFile(url));
+							getFrame().openDocument(Tools.fileToUrl(file.getParentFile()));
+						}
+					} catch (Exception e) {
+						freemind.main.Resources.getInstance().logException(e);
+			            JOptionPane.showMessageDialog(getFrame().getContentPane(), getText("open_directory_failed"),
+                                "FreeMind", JOptionPane.WARNING_MESSAGE);
+						break;
+					}
+    			}
+    		}
+    	}
+    }
+    
+    
 
     public void moveNodePosition(MindMapNode node, int parentVGap, int hGap,
             int shiftY) {

@@ -99,6 +99,7 @@
 			<menu_separator/>
 			<menu_category name="links">
 				<menu_action field="followLink" key_ref="keystroke_follow_link"/> <!-- goto -->				
+				<menu_action field="openLinkDirectory"/> 
 			</menu_category>
 			<menu_separator/>
 			<menu_category name="notes">
