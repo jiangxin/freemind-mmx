@@ -46,7 +46,6 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
@@ -1696,23 +1695,39 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     		super(getText("open_link_directory"));
     	}
     	public void actionPerformed(ActionEvent event) {
+    		boolean error = false;
+    		String link  = "";
     		for (Iterator iterator = getSelecteds().iterator(); iterator.hasNext();) {
     			MindMapNode selNode = (MindMapNode) iterator.next();
-    			String link = selNode.getLink();
+				link = selNode.getLink();
 				if(link != null) {
-					try {
-						URL url = new URL(link);
-						if(Tools.isFile(url)) {
-							File file = new File(Tools.urlGetFile(url));
-							getFrame().openDocument(Tools.fileToUrl(file.getParentFile()));
+					for (int i = link.length()-1; i >=0; i--) {
+						char c = link.charAt(i);
+						if( c == File.separatorChar) {
+							link = link.substring(0, i+1);
+							break;
 						}
+					}
+					try {
+						logger.info("Opening link for directory " + link);
+						loadURL(link);
 					} catch (Exception e) {
 						freemind.main.Resources.getInstance().logException(e);
-			            JOptionPane.showMessageDialog(getFrame().getContentPane(), getText("open_directory_failed"),
-                                "FreeMind", JOptionPane.WARNING_MESSAGE);
+						error = true;
 						break;
 					}
+    			} else {
+    				// really?
+    				error = true;
     			}
+    		}
+    		if(error) {
+    			// not clear, how to get here
+				Object[] args = new String[] { link };
+				JOptionPane.showMessageDialog(
+						getFrame().getContentPane(),
+						Resources.getInstance().format("open_directory_failed",
+								args), "FreeMind", JOptionPane.WARNING_MESSAGE);
     		}
     	}
     }
