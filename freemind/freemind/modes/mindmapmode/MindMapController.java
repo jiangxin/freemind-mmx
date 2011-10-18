@@ -1695,7 +1695,6 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     		super(getText("open_link_directory"));
     	}
     	public void actionPerformed(ActionEvent event) {
-    		boolean error = false;
     		String link  = "";
     		for (Iterator iterator = getSelecteds().iterator(); iterator.hasNext();) {
     			MindMapNode selNode = (MindMapNode) iterator.next();
@@ -1708,26 +1707,9 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 							break;
 						}
 					}
-					try {
-						logger.info("Opening link for directory " + link);
-						loadURL(link);
-					} catch (Exception e) {
-						freemind.main.Resources.getInstance().logException(e);
-						error = true;
-						break;
-					}
-    			} else {
-    				// really?
-    				error = true;
+					logger.info("Opening link for directory " + link);
+					loadURL(link);
     			}
-    		}
-    		if(error) {
-    			// not clear, how to get here
-				Object[] args = new String[] { link };
-				JOptionPane.showMessageDialog(
-						getFrame().getContentPane(),
-						Resources.getInstance().format("open_directory_failed",
-								args), "FreeMind", JOptionPane.WARNING_MESSAGE);
     		}
     	}
     }
