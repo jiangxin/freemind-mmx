@@ -186,6 +186,7 @@ import freemind.modes.mindmapmode.actions.NodeHookAction;
 import freemind.modes.mindmapmode.actions.NodeStyleAction;
 import freemind.modes.mindmapmode.actions.NodeUpAction;
 import freemind.modes.mindmapmode.actions.PasteAction;
+import freemind.modes.mindmapmode.actions.PasteAsPlainTextAction;
 import freemind.modes.mindmapmode.actions.RedoAction;
 import freemind.modes.mindmapmode.actions.RemoveAllIconsAction;
 import freemind.modes.mindmapmode.actions.RemoveArrowLinkAction;
@@ -305,6 +306,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
     public Action copySingle = null;
     public CutAction cut = null;
     public PasteAction paste = null;
+    public PasteAsPlainTextAction pasteAsPlainText = null;
     public BoldAction bold = null;
     public ItalicAction italic = null;
     public UnderlinedAction underlined = null;
@@ -438,6 +440,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
 
         cut = new CutAction(this);
         paste = new PasteAction(this);
+        pasteAsPlainText = new PasteAsPlainTextAction(this);
         copy = new CopyAction(this);
         copySingle = new CopySingleAction(this);
         bold = new BoldAction (this);
@@ -1046,6 +1049,7 @@ public class MindMapController extends ControllerAdapter implements MindMapActio
         copy.setEnabled(enabled);
         copySingle.setEnabled(enabled);
         paste.setEnabled(enabled);
+        pasteAsPlainText.setEnabled(enabled);
         undo.setEnabled(enabled);
         redo.setEnabled(enabled);
         edit.setEnabled(enabled);

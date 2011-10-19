@@ -76,29 +76,27 @@ public class PasteAction extends AbstractAction implements ActorXml {
 
     private static java.util.logging.Logger logger;
     private List newNodes; // only for Transferable with mindMapNodesFlavor
-    private String text;
-    private final MindMapController pMindMapController;
+    private final MindMapController mMindMapController;
 
-    public PasteAction(MindMapController adapter) {
-        super(adapter.getText("paste"), new ImageIcon(
-                adapter.getResource("images/editpaste.png")));
-        this.pMindMapController = adapter;
+    public PasteAction(MindMapController pMindMapController) {
+        super(pMindMapController.getText("paste"), new ImageIcon(
+                pMindMapController.getResource("images/editpaste.png")));
+        this.mMindMapController = pMindMapController;
         if (logger == null) {
-            logger = pMindMapController.getFrame().getLogger(
+            logger = mMindMapController.getFrame().getLogger(
                     this.getClass().getName());
         }
 
-        this.text = adapter.getText("paste");
         setEnabled(false);
-        this.pMindMapController.getActionFactory().registerActor(this,
+        this.mMindMapController.getActionFactory().registerActor(this,
                 getDoActionClass());
 
     }
 
     public void actionPerformed(ActionEvent e) {
-        this.pMindMapController.paste(
-                this.pMindMapController.getClipboardContents(),
-                this.pMindMapController.getView().getSelected().getModel());
+        this.mMindMapController.paste(
+                this.mMindMapController.getClipboardContents(),
+                this.mMindMapController.getView().getSelected().getModel());
     }
 
     /*
@@ -111,7 +109,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
     public void act(XmlAction action) {
         PasteNodeAction pasteAction = (PasteNodeAction) action;
         _paste(getTransferable(pasteAction.getTransferableContent()),
-                pMindMapController.getNodeFromID(pasteAction.getNode()),
+                mMindMapController.getNodeFromID(pasteAction.getNode()),
                 pasteAction.getAsSibling(), pasteAction.getIsLeft());
     }
 
@@ -127,7 +125,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
     public PasteNodeAction getPasteNodeAction(Transferable t,
             NodeCoordinate coord) {
         PasteNodeAction pasteAction = new PasteNodeAction();
-        pasteAction.setNode(pMindMapController.getNodeID(coord.target));
+        pasteAction.setNode(mMindMapController.getNodeID(coord.target));
         pasteAction.setTransferableContent(getTransferableContent(t));
         pasteAction.setAsSibling(coord.asSibling);
         pasteAction.setIsLeft(coord.isLeft);
@@ -138,7 +136,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
     public void paste(MindMapNode node, MindMapNode parent) {
         if (node != null) {
             insertNodeInto(node, parent);
-            pMindMapController.nodeStructureChanged(parent);
+            mMindMapController.nodeStructureChanged(parent);
         }
     }
 
@@ -161,10 +159,10 @@ public class PasteAction extends AbstractAction implements ActorXml {
                 asSibling, isLeft));
         undoAction = new CompoundAction();
         // Undo-action
-        pMindMapController.getActionFactory().startTransaction(text);
-        boolean result = pMindMapController.getActionFactory().executeAction(
+        mMindMapController.getActionFactory().startTransaction("paste");
+        boolean result = mMindMapController.getActionFactory().executeAction(
                 new ActionPair(pasteAction, undoAction));
-        pMindMapController.getActionFactory().endTransaction(text);
+        mMindMapController.getActionFactory().endTransaction("paste");
         return result;
     }
 
@@ -178,11 +176,11 @@ public class PasteAction extends AbstractAction implements ActorXml {
             final ListIterator listIterator = undoAction.getListChoiceList().listIterator(undoAction.sizeChoiceList());
             while (listIterator.hasPrevious()) {
                 CutNodeAction cutAction = (CutNodeAction) listIterator.previous();
-                NodeAdapter node = pMindMapController.getNodeFromID(cutAction.getNode());
+                NodeAdapter node = mMindMapController.getNodeFromID(cutAction.getNode());
                 nodes.add(node);
             }
             try {
-                String transferable = pMindMapController.createForNodesFlavor(
+                String transferable = mMindMapController.createForNodesFlavor(
                         nodes, true);
                 transferableContent.setTransferable(transferable);
                 transferableContent.setTransferableAsDrop(null);
@@ -253,7 +251,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
             List fileList = (List) TransferData;
             for (ListIterator it = fileList.listIterator(); it.hasNext();) {
                 File file = (File) it.next();
-                MindMapNode node = pMindMapController.newNode(file.getName(),
+                MindMapNode node = mMindMapController.newNode(file.getName(),
                         target.getMap());
                 node.setLeft(isLeft);
                 node.setLink(file.getAbsolutePath());
@@ -276,7 +274,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
             if (textFromClipboard != null) {
                 String[] textLines = textFromClipboard.split(ModeController.NODESEPARATOR);
                 if (textLines.length > 1) {
-                    pMindMapController.getFrame().setWaitingCursor(true);
+                    mMindMapController.getFrame().setWaitingCursor(true);
                 }
                 // and now? paste it:
                 String mapContent = MindMapMapModel.MAP_INITIAL_START
@@ -287,7 +285,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
                 mapContent += "</node></map>";
 //				logger.info("Pasting " + mapContent);
                 try {
-                    MindMapNode node = pMindMapController.getMindMapMapModel().loadTree(
+                    MindMapNode node = mMindMapController.getMindMapMapModel().loadTree(
                             new MindMapMapModel.StringReaderCreator(
                             mapContent), false);
                     int index = 0;
@@ -299,8 +297,8 @@ public class PasteAction extends AbstractAction implements ActorXml {
                     }
                     for (ListIterator i = node.childrenUnfolded(); i.hasNext();) {
                         MindMapNodeModel importNode = (MindMapNodeModel) i.next();
-                        pMindMapController.invokeHooksRecursively(importNode,
-                                pMindMapController.getModel());
+                        mMindMapController.invokeHooksRecursively(importNode,
+                                mMindMapController.getModel());
                     }
                 } catch (Exception e) {
                     // TODO Auto-generated catch block
@@ -330,7 +328,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
             // ^ This outputs transfer data to standard output. I don't know
             // why.
             // { Alternative pasting of HTML
-            pMindMapController.getFrame().setWaitingCursor(true);
+            mMindMapController.getFrame().setWaitingCursor(true);
             textFromClipboard = textFromClipboard.replaceFirst("(?i)(?s)<head>.*</head>", "").replaceFirst("(?i)(?s)^.*<html[^>]*>", "<html>").replaceFirst("(?i)(?s)<body [^>]*>", "<body>").replaceAll("(?i)(?s)<script.*?>.*?</script>", "").replaceAll("(?i)(?s)</?tbody.*?>", ""). // Java HTML Editor
                     // does not like
                     // the tag.
@@ -344,7 +342,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
             // <o> tag.
 
             if (Tools.safeEquals(
-                    pMindMapController.getFrame().getProperty(
+                    mMindMapController.getFrame().getProperty(
                     "cut_out_pictures_when_pasting_html"), "true")) {
                 textFromClipboard = textFromClipboard.replaceAll(
                         "(?i)(?s)<img[^>]*>", "");
@@ -352,8 +350,8 @@ public class PasteAction extends AbstractAction implements ActorXml {
 
             textFromClipboard = HtmlTools.unescapeHTMLUnicodeEntity(textFromClipboard);
 
-            MindMapNode node = pMindMapController.newNode(textFromClipboard,
-                    pMindMapController.getMap());
+            MindMapNode node = mMindMapController.newNode(textFromClipboard,
+                    mMindMapController.getMap());
             // if only one <a>...</a> element found, set link
             Matcher m = HREF_PATTERN.matcher(textFromClipboard);
             if (m.matches()) {
@@ -366,7 +364,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 
             insertNodeInto(node, target);
             addUndoAction(node);
-            pMindMapController.getFrame().setWaitingCursor(false);
+            mMindMapController.getFrame().setWaitingCursor(false);
         }
 
         public DataFlavor getDataFlavor() {
@@ -409,8 +407,8 @@ public class PasteAction extends AbstractAction implements ActorXml {
                     try {
                         // Either invalid URL or relative URL
                         if (referenceURL == null && !baseUrlCanceled) {
-                            String referenceURLString = JOptionPane.showInputDialog(pMindMapController.getView().getSelected(),
-                                    pMindMapController.getText("enter_base_url"));
+                            String referenceURLString = JOptionPane.showInputDialog(mMindMapController.getView().getSelected(),
+                                    mMindMapController.getText("enter_base_url"));
                             if (referenceURLString == null) {
                                 baseUrlCanceled = true;
                             } else {
@@ -434,7 +432,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
                         break;
                     }
                     if (linkParentNode == null) {
-                        linkParentNode = pMindMapController.newNode("Links",
+                        linkParentNode = mMindMapController.newNode("Links",
                                 target.getMap());
                         linkParentNode.setLeft(target.isNewChildLeft());
                         // Here we cannot set bold, because linkParentNode.font
@@ -442,7 +440,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
                         insertNodeInto(linkParentNode, target);
                         ((NodeAdapter) linkParentNode).setBold(true);
                     }
-                    MindMapNode linkNode = pMindMapController.newNode(text,
+                    MindMapNode linkNode = mMindMapController.newNode(text,
                             target.getMap());
                     linkNode.setLink(linkURL.toString());
                     insertNodeInto(linkNode, linkParentNode);
@@ -476,7 +474,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
                 throws UnsupportedFlavorException, IOException {
             logger.info("imageFlavor");
 
-            pMindMapController.getFrame().setWaitingCursor(true);
+            mMindMapController.getFrame().setWaitingCursor(true);
 
            /* BufferedImage img = null;
             try {
@@ -488,14 +486,14 @@ public class PasteAction extends AbstractAction implements ActorXml {
             
             String strText = "<html><body><img src=\"file:///" + imgfile + "\"/></body></html>";
 
-            MindMapNode node = pMindMapController.newNode(strText,
-                    pMindMapController.getMap());
+            MindMapNode node = mMindMapController.newNode(strText,
+                    mMindMapController.getMap());
             // if only one <a>...</a> element found, set link
 
 
             insertNodeInto(node, target);
             addUndoAction(node);
-            pMindMapController.getFrame().setWaitingCursor(false);
+            mMindMapController.getFrame().setWaitingCursor(false);
 
         }
 
@@ -539,7 +537,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
             }
             for (ListIterator e = newNodes.listIterator(); e.hasNext();) {
                 final MindMapNodeModel child = (MindMapNodeModel) e.next();
-                pMindMapController.getAttributeController().performRegistrySubtreeAttributes(child);
+                mMindMapController.getAttributeController().performRegistrySubtreeAttributes(child);
             }
             // pMindMapController.nodeStructureChanged((MindMapNode) (asSibling
             // ? target.getParent() : target));
@@ -551,7 +549,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
         } finally {
             undoAction = null;
             pasteAction = null;
-            pMindMapController.getFrame().setWaitingCursor(false);
+            mMindMapController.getFrame().setWaitingCursor(false);
         }
     }
 
@@ -573,11 +571,11 @@ public class PasteAction extends AbstractAction implements ActorXml {
         // Call nodeStructureChanged(target) after this function.
         logger.fine("Pasting " + pasted + " to " + target);
         try {
-            MindMapNodeModel node = (MindMapNodeModel) pMindMapController.createNodeTreeFromXml(new StringReader(pasted),
+            MindMapNodeModel node = (MindMapNodeModel) mMindMapController.createNodeTreeFromXml(new StringReader(pasted),
                     pIDToTarget);
             insertNodeInto(node, target, asSibling, isLeft, changeSide);
-            pMindMapController.invokeHooksRecursively(node,
-                    pMindMapController.getModel());
+            mMindMapController.invokeHooksRecursively(node,
+                    mMindMapController.getModel());
             return node;
         } catch (IOException ee) {
             freemind.main.Resources.getInstance().logException(ee);
@@ -632,7 +630,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
         String[] textLines = textFromClipboard.split("\n");
 
         if (textLines.length > 1) {
-            pMindMapController.getFrame().setWaitingCursor(true);
+            mMindMapController.getFrame().setWaitingCursor(true);
         }
 
         MindMapNode realParent = null;
@@ -643,8 +641,8 @@ public class PasteAction extends AbstractAction implements ActorXml {
             // node to
             // the parent of real parent.
             realParent = parent;
-            parent = new MindMapNodeModel(pMindMapController.getFrame(),
-                    pMindMapController.getMap());
+            parent = new MindMapNodeModel(mMindMapController.getFrame(),
+                    mMindMapController.getMap());
         }
 
         ArrayList parentNodes = new ArrayList();
@@ -689,7 +687,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
                 }
             }
 
-            MindMapNode node = pMindMapController.newNode(visibleText,
+            MindMapNode node = mMindMapController.newNode(visibleText,
                     parent.getMap());
             if (textLines.length == 1) {
                 pastedNode = node;
@@ -754,11 +752,11 @@ public class PasteAction extends AbstractAction implements ActorXml {
     /**
      */
     private void insertNodeInto(MindMapNodeModel node, MindMapNode parent, int i) {
-        pMindMapController.insertNodeInto(node, parent, i);
+        mMindMapController.insertNodeInto(node, parent, i);
     }
 
     private void insertNodeInto(MindMapNode node, MindMapNode parent) {
-        pMindMapController.insertNodeInto(node, parent);
+        mMindMapController.insertNodeInto(node, parent);
     }
 
     private TransferableContent getTransferableContent(Transferable t) {
@@ -812,9 +810,9 @@ public class PasteAction extends AbstractAction implements ActorXml {
 
                     TransferableImage timg = new TransferableImage();
 
-                    File mindmapFile = pMindMapController.getMap().getFile();
+                    File mindmapFile = mMindMapController.getMap().getFile();
                     if(mindmapFile == null) {
-                        JOptionPane.showMessageDialog(pMindMapController.getView(), pMindMapController
+                        JOptionPane.showMessageDialog(mMindMapController.getView(), mMindMapController
                                 .getText("map_not_saved"), "FreeMind", JOptionPane.ERROR_MESSAGE);
                         return null;
                     }
@@ -880,7 +878,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 
     private void addUndoAction(MindMapNode node) {
         if (undoAction != null) {
-            CutNodeAction cutNodeAction = pMindMapController.cut.getCutNodeAction(node);
+            CutNodeAction cutNodeAction = mMindMapController.cut.getCutNodeAction(node);
             undoAction.addAtChoice(0, cutNodeAction);
         }
     }

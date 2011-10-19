@@ -53,6 +53,7 @@
 				<menu_action name="copy" field="copy" key_ref="keystroke_copy"/>
 				<menu_action name="copySingle" field="copySingle" key_ref="keystroke_copy_single"/>
 				<menu_action name="paste" field="paste" key_ref="keystroke_paste"/>
+				<menu_action name="pasteAsPlainText" field="pasteAsPlainText" key_ref="keystroke_pasteAsPlainText"/>
 			</menu_category>
 			<menu_category name="find">
 				<menu_action field="find" key_ref="keystroke_find"/>

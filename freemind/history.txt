@@ -2,7 +2,8 @@
 Changes made in FreeMind 1.0.0 Alpha7
 ===============================
 * Change of root node added
-* Now, find treats notes, too. (To disable, set resources_search_in_notes_too to false).
+* Now, find treats notes, too.
+* Paste as plain text added: you get a single node with the copied text as the paste result.
 
 ===============================
 Changes made in FreeMind 1.0.0 Alpha6

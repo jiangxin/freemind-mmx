@@ -846,6 +846,8 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new KeyProperty(frame, null, "keystroke_paste")); //  control
 		// V
 
+		controls.add(new KeyProperty(frame, null, "keystroke_pasteAsPlainText")); 
+		
 		controls.add(new KeyProperty(frame, null, "keystroke_remove")); //  none
 
 		controls.add(new KeyProperty(frame, null,
