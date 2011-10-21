@@ -1,4 +1,4 @@
-===============================
+#===============================
 Changes made in FreeMind 1.0.0 Alpha7
 ===============================
 * Change of root node added
@@ -13,7 +13,7 @@ Changes made in FreeMind 1.0.0 Alpha6
 * New functionality: "File changed on disk: do you want to reload?" 
 * New functionality: Paste images from clipboard. Thanks to Anantha!
 * Accelerators for search&replace. (Translators: add accelerators in your language to use this function!).
-* Headless export to png added. Usage: java -jar lib/freemind.jar freemind.view.mindmapview.IndependantMapViewCreator <map_path>.mm <picture_path>.png
+* Headless export to png added. Usage: java -cp lib/freemind.jar freemind.view.mindmapview.IndependantMapViewCreator <map_path>.mm <picture_path>.png
 
 
 ===============================
