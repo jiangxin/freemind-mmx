@@ -5,7 +5,6 @@ package plugins.map;
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -44,7 +43,7 @@ public class MapDialog extends JFrame implements JMapViewerEventListener  {
 
     private static final long serialVersionUID = 1L;
 
-    private JMapViewer map = null;
+    private JCursorMapViewer map = null;
 
     private JLabel zoomLabel=null;
     private JLabel zoomValue=null;
@@ -56,7 +55,7 @@ public class MapDialog extends JFrame implements JMapViewerEventListener  {
         super("JMapViewer Demo");
         setSize(400, 400);
 
-        map = new JMapViewer();
+        map = new JCursorMapViewer();
 
         // Listen to the map viewer for user operations so components will
         // recieve events and update
@@ -157,21 +156,13 @@ public class MapDialog extends JFrame implements JMapViewerEventListener  {
         map.addMapMarker(new MapMarkerDot(49.71, 8.64));
         map.addMapMarker(new MapMarkerDot(48.71, -1));
         map.addMapMarker(new MapMarkerDot(49.8588, 8.643));
-        Coordinate topLeft = new Coordinate(48.72, 8.25);
-		Coordinate bottomRight = new Coordinate(49.0, 9.64);
-		map.addMapRectangle(new MapRectangleImpl(topLeft, bottomRight, Color.RED, new BasicStroke(4)) {
-			/* (non-Javadoc)
-			 * @see org.openstreetmap.gui.jmapviewer.MapRectangleImpl#paint(java.awt.Graphics, java.awt.Point, java.awt.Point)
-			 */
-			public void paint(Graphics pG, Point pTopLeft, Point pBottomRight) {
-				// TODO Auto-generated method stub
-				super.paint(pG, pTopLeft, pBottomRight);
-				System.out.println("On " + pTopLeft + " to " + pBottomRight);
-			}
-		});
-		map.setMapRectanglesVisible(true);
+        map.setCursorPosition(new Coordinate(49.8, 8.8));
+        map.setUseCursor(true);
         // map.setDisplayPositionByLatLon(49.807, 8.6, 11);
         // map.setTileGridVisible(true);
+        // [52.491874414223105, 13.487434387207031]
+        // [52.555585490917274, 13.343238830566406]
+        map.setDisplayPositionByLatLon(52.491874414223105, 13.487434387207031, 13);
     }
 
     /**
