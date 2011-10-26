@@ -32,6 +32,8 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
+import tests.freemind.FreeMindMainMock;
+
 /**
  *
  * Demonstrates the usage of {@link JMapViewer}
@@ -51,8 +53,11 @@ public class MapDialog extends JFrame implements JMapViewerEventListener  {
     private JLabel mperpLabelName=null;
     private JLabel mperpLabelValue = null;
 
+	private FreeMindMainMock mFreeMindMain;
+
     public MapDialog() {
         super("JMapViewer Demo");
+        mFreeMindMain = new FreeMindMainMock();
         setSize(400, 400);
 
         map = new JCursorMapViewer();
@@ -60,10 +65,6 @@ public class MapDialog extends JFrame implements JMapViewerEventListener  {
         // Listen to the map viewer for user operations so components will
         // recieve events and update
         map.addJMVListener(this);
-
-        // final JMapViewer map = new JMapViewer(new MemoryTileCache(),4);
-        // map.setTileLoader(new OsmFileCacheTileLoader(map));
-        // new DefaultMapController(map);
 
         setLayout(new BorderLayout());
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

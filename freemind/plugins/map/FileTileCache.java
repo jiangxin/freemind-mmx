@@ -73,7 +73,7 @@ public class FileTileCache implements TileCache {
 		String tileKey = getTileKey(pSource, pX, pY, pZ);
 		File file = getFile(tileKey);
 		if(file.exists()) {
-			System.out.println("Loading tile " + tileKey);
+//			System.out.println("Loading tile " + tileKey);
 			try {
 				BufferedImage bufferedImage = ImageIO.read(file);
 				return new Tile(pSource, pX, pY, pZ, bufferedImage);
@@ -118,7 +118,7 @@ public class FileTileCache implements TileCache {
 		File file = getFile(tileKey);
 		if(! file.exists()) {
 			try {
-				System.out.println("Saving tile " + tileKey);
+//				System.out.println("Saving tile " + tileKey);
 				ImageIO.write(pTile.getImage(), "png", file);
 			} catch (IOException e) {
 				freemind.main.Resources.getInstance().logException(e);

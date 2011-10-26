@@ -23,14 +23,24 @@ package plugins.map;
 //License: GPL. Copyright 2008 by Jan Peter Stotz
 
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
+import javax.swing.Icon;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+
 import org.openstreetmap.gui.jmapviewer.JMapController;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
+
+import freemind.controller.StructuredMenuHolder;
 
 /**
  * Default map controller which implements map moving by pressing the right
@@ -67,8 +77,47 @@ public class FreeMindMapController extends JMapController implements
 			| MouseEvent.BUTTON1_DOWN_MASK;
 	private static final int MAC_MOUSE_BUTTON1_MASK = MouseEvent.BUTTON1_DOWN_MASK;
 
+	private JPopupMenu mPopupMenu= new JPopupMenu();
+	
 	public FreeMindMapController(JMapViewer map) {
 		super(map);
+		ActionListener placeActionListener = new ActionListener() {
+			public void actionPerformed(ActionEvent actionEvent) {
+				placeNodes(actionEvent);
+			}
+		};
+		/** Menu **/
+		StructuredMenuHolder menuHolder = new StructuredMenuHolder();
+//		JMenuBar menu = new JMenuBar();
+//		JMenu mainItem = new JMenu(getText("ManagePatternsPopupDialog.Actions"));
+//		menuHolder.addMenu(mainItem, "main/actions/.");
+//		JMenuItem menuItemApplyPattern = new JMenuItem(getText("ManagePatternsPopupDialog.apply"));
+//		menuItemApplyPattern.addActionListener(applyActionListener);
+//		menuHolder.addMenuItem(menuItemApplyPattern, "main/actions/apply");
+//		menuHolder.updateMenus(menu, "main/");
+//		map.setJMenuBar(menu);
+		/* Popup menu */
+		JMenuItem menuItemApply = new JMenuItem(getText("MapControllerPopupDialog.place"));
+		menuHolder.addMenuItem(menuItemApply, "popup/place");
+		menuItemApply.addActionListener(placeActionListener);
+		menuHolder.updateMenus(mPopupMenu, "popup/");
+	}
+
+	/**
+	 * @param pActionEvent
+	 */
+	protected void placeNodes(ActionEvent pActionEvent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * @param pString
+	 * @return
+	 */
+	private String getText(String pString) {
+		// TODO Translate String
+		return pString;
 	}
 
 	private Point lastDragPoint;
@@ -102,11 +151,20 @@ public class FreeMindMapController extends JMapController implements
 	public void mouseClicked(MouseEvent e) {
     	// is button 1?
     	if(e.getButton() == MouseEvent.BUTTON1|| isPlatformOsx()
-			&& e.getModifiersEx() == MAC_MOUSE_BUTTON1_MASK)
-        getMap().setCursorPosition(map.getPosition(e.getPoint()));
+			&& e.getModifiersEx() == MAC_MOUSE_BUTTON1_MASK) {
+    		setCursorPosition(e);
+    	}
+	}
+
+	public void setCursorPosition(MouseEvent e) {
+		getMap().setCursorPosition(map.getPosition(e.getPoint()));
 	}
 
 	public void mousePressed(MouseEvent e) {
+        showPopupMenu(e);
+        if (e.isConsumed()) {
+        	return;
+        }
 		if (e.getButton() == movementMouseButton || isPlatformOsx()
 				&& e.getModifiersEx() == MAC_MOUSE_BUTTON1_MASK) {
 			lastDragPoint = null;
@@ -114,7 +172,29 @@ public class FreeMindMapController extends JMapController implements
 		}
 	}
 
+	/**
+	 * @param e event.
+	 */
+	private void showPopupMenu(MouseEvent e) {
+		if (e.isPopupTrigger()) {
+			JPopupMenu popupmenu = getPopupMenu();
+			if (popupmenu != null) {
+				// popupmenu.addPopupMenuListener( this.popupListenerSingleton
+				// );
+				setCursorPosition(e);
+				popupmenu.show(e.getComponent(), e.getX(), e.getY());
+				e.consume();
+			}
+		}
+		
+	}
+
 	public void mouseReleased(MouseEvent e) {
+        showPopupMenu(e);
+        if (e.isConsumed()) {
+            return;
+        }
+
 		if (e.getButton() == movementMouseButton || isPlatformOsx()
 				&& e.getButton() == MouseEvent.BUTTON1) {
 			lastDragPoint = null;
@@ -145,6 +225,10 @@ public class FreeMindMapController extends JMapController implements
 		return movementMouseButton;
 	}
 
+	public JPopupMenu getPopupMenu() {
+		return mPopupMenu;
+	}
+	
 	/**
 	 * Sets the mouse button that is used for moving the map. Possible values
 	 * are:
