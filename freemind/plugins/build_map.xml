@@ -1,0 +1,14 @@
+<project name="freemind_plugins" default="dist" basedir=".">
+	
+	<property name="plugin.xml" location="${src}/plugins/MapViewer.xml" />
+	<property name="plugin.dir" value="plugins/map"/>
+	<property name="local.plugin.dir" location="${src}/plugins/map"/>
+	<property name="plugin.jar" value="map_plugin.jar" />
+	<property name="plugin.zip" value="map_plugin-${ver}.zip" />
+	<property name="additional.lib" value="${local.plugin.dir}/JMapViewer.jar:${local.plugin.dir}/map_plugin.jar"/>
+	<property name="additional.lib.pattern" value="${plugin.dir}/*.jarry"/>
+
+	<import file="build_import.xml" />
+
+
+</project>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<plugin	label="plugins/ExportPdf">
+	<plugin_classpath jar="map/JMapViewer.jar"/>
+	<plugin_classpath jar="map/map_plugin.jar"/>
+	<plugin_action 
+		documentation="%plugins/map/MapDialog.properties_documentation" 
+		name="%plugins/map/MapDialog.properties_name" 
+		key_stroke="%keystroke_plugins/map/MapDialog.properties_key" 
+		base="freemind.extensions.ModeControllerHookAdapter" 
+		label="plugins/map/MapDialog.properties" 
+		class_name="plugins.map.MapDialog" 
+		instanciation="OnceForRoot">
+		<!-- Instantiations: Once, OnceForRoot, OnceForAllNodes, Other, ApplyToRoot	 --> 
+		<!-- 
+		Resources_en.properties:
+# new, foltin, 26.10.2011:
+plugins/map/MapDialog.properties_name=MapDialog
+plugins/map/MapDialog.properties_documentation=<html><br/></html>
+
+		freemind.properties:
+# new, foltin, 26.10.2011:
+keystroke_plugins/map/MapDialog.properties_key=control alt V
+		-->
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/extras/map/ShowMap"/>
+	</plugin_action>
+
+</plugin>

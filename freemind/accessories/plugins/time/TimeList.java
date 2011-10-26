@@ -614,7 +614,8 @@ public class TimeList extends MindMapHookAdapter implements MapModuleChangeObser
         	setting.setColumnSorting(sorter.getSortingStatus(i));
         	storage.addTimeWindowColumnSetting(setting);
         }
-        MindMapController mindMapController = getMindMapController();
+		getMindMapController().storeDialogPositions(dialog, storage, WINDOW_PREFERENCE_STORAGE_PROPERTY);
+
         getMindMapController().getController().getMapModuleManager().removeListener(this);
 		dialog.setVisible(false);
 		dialog.dispose();

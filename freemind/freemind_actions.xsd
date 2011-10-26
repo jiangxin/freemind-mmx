@@ -844,6 +844,22 @@
 	  </xs:complexType>
 	</xs:element>
 
+	<!-- Windowpositionstorage stores the window configuration of the
+		 map window. -->
+	<xs:element name="map_window_configuration_storage">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="window_configuration_storage">
+				<xs:attribute use="optional" name="longitude" type="xs:float"/>
+				<xs:attribute use="optional" name="latitude" type="xs:float"/>
+				<xs:attribute use="optional" name="cursor_longitude" type="xs:float"/>
+				<xs:attribute use="optional" name="cursor_latitude" type="xs:float"/>
+				<xs:attribute use="optional" name="zoom" type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
 	<!-- This element holds the sorting and size information to a column -->
 	<xs:element name="time_window_column_setting">
 		<xs:complexType>
