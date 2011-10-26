@@ -104,7 +104,7 @@ public class FileTileCache implements TileCache {
 		mTileList.add(pTile);
 		for (Iterator it = mTileList.iterator(); it.hasNext();) {
 			Tile tile = (Tile) it.next();
-			if(tile.isLoaded()) {
+			if(tile.isLoaded() && ! tile.hasError()) {
 				saveTile(tile);
 				it.remove();
 			}
