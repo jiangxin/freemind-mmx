@@ -11,6 +11,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import javax.swing.AbstractAction;
@@ -18,10 +19,8 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTable;
 import javax.swing.WindowConstants;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
@@ -36,11 +35,12 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
+import plugins.map.MapNodePositionHolder.Registration;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.actions.generated.instance.MapWindowConfigurationStorage;
-import freemind.controller.actions.generated.instance.TimeWindowColumnSetting;
-import freemind.controller.actions.generated.instance.TimeWindowConfigurationStorage;
+import freemind.extensions.PermanentNodeHook;
 import freemind.main.Tools;
+import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
@@ -94,7 +94,7 @@ public class MapDialog extends MindMapHookAdapter implements JMapViewerEventList
 		});
 		mMapDialog.setSize(400, 400);
 
-        map = new JCursorMapViewer();
+        map = new JCursorMapViewer(getMindMapController(), mMapDialog);
 
         // Listen to the map viewer for user operations so components will
         // recieve events and update
@@ -182,21 +182,21 @@ public class MapDialog extends MindMapHookAdapter implements JMapViewerEventList
         mMapDialog.add(map, BorderLayout.CENTER);
 
         //
-        MapMarkerLocation marker = new MapMarkerLocation("Label", Color.BLUE, 49.814284999, 9.642065999);
-        marker.setSize(marker.getPreferredSize());
-        map.addMapMarker(marker);
-        map.addMapMarker(new MapMarkerDot(49.814284999, 8.642065999));
-        map.addMapMarker(new MapMarkerDot(49.91, 8.24));
-        map.addMapMarker(new MapMarkerDot(49.71, 8.64));
-        map.addMapMarker(new MapMarkerDot(48.71, -1));
-        map.addMapMarker(new MapMarkerDot(49.8588, 8.643));
+//        MapMarkerLocation marker = new MapMarkerLocation("Label", Color.BLUE, 49.814284999, 9.642065999);
+//        marker.setSize(marker.getPreferredSize());
+//        map.addMapMarker(marker);
+        HashSet mapNodePositionHolders = ((Registration) getPluginBaseClass()).getMapNodePositionHolders();
+        for (Iterator it = mapNodePositionHolders.iterator(); it.hasNext();) {
+			MapNodePositionHolder nodePositionHolder = (MapNodePositionHolder) it.next();
+			logger.info("Adding map position for " + nodePositionHolder.getNode());
+			MapMarkerLocation marker = new MapMarkerLocation(nodePositionHolder.getNode().getText(), Color.BLUE, nodePositionHolder.getPosition().getLat(), nodePositionHolder.getPosition().getLon());
+			marker.setSize(marker.getPreferredSize());
+			map.addMapMarker(marker);
+		}
+        // Just fantasy:
+        map.addMapMarker(new MapMarkerDot(49.665528793, 8.345612234));
         map.setCursorPosition(new Coordinate(49.8, 8.8));
         map.setUseCursor(true);
-        // map.setDisplayPositionByLatLon(49.807, 8.6, 11);
-        // map.setTileGridVisible(true);
-        // [52.491874414223105, 13.487434387207031]
-        // [52.555585490917274, 13.343238830566406]
-        map.setDisplayPositionByLatLon(52.491874414223105, 13.487434387207031, 13);
 		// restore preferences:
 		//Retrieve window size and column positions.
 		MapWindowConfigurationStorage storage = (MapWindowConfigurationStorage) getMindMapController()
@@ -298,6 +298,5 @@ public class MapDialog extends MindMapHookAdapter implements JMapViewerEventList
 	 * @see freemind.controller.MapModuleManager.MapModuleChangeObserver#numberOfOpenMapInformation(int, int)
 	 */
 	public void numberOfOpenMapInformation(int pNumber, int pIndex) {
-	}
-
+	}	
 }

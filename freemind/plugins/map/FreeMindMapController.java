@@ -30,8 +30,11 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
-import javax.swing.Icon;
+import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -41,6 +44,9 @@ import org.openstreetmap.gui.jmapviewer.JMapController;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 
 import freemind.controller.StructuredMenuHolder;
+import freemind.extensions.PermanentNodeHook;
+import freemind.modes.MindMapNode;
+import freemind.modes.mindmapmode.MindMapController;
 
 /**
  * Default map controller which implements map moving by pressing the right
@@ -78,9 +84,15 @@ public class FreeMindMapController extends JMapController implements
 	private static final int MAC_MOUSE_BUTTON1_MASK = MouseEvent.BUTTON1_DOWN_MASK;
 
 	private JPopupMenu mPopupMenu= new JPopupMenu();
+
+	private final MindMapController mMindMapController;
+
+	private final JDialog mMapDialog;
 	
-	public FreeMindMapController(JMapViewer map) {
+	public FreeMindMapController(JMapViewer map, MindMapController pMindMapController, JDialog pMapDialog) {
 		super(map);
+		mMindMapController = pMindMapController;
+		mMapDialog = pMapDialog;
 		ActionListener placeActionListener = new ActionListener() {
 			public void actionPerformed(ActionEvent actionEvent) {
 				placeNodes(actionEvent);
@@ -88,14 +100,14 @@ public class FreeMindMapController extends JMapController implements
 		};
 		/** Menu **/
 		StructuredMenuHolder menuHolder = new StructuredMenuHolder();
-//		JMenuBar menu = new JMenuBar();
-//		JMenu mainItem = new JMenu(getText("ManagePatternsPopupDialog.Actions"));
-//		menuHolder.addMenu(mainItem, "main/actions/.");
-//		JMenuItem menuItemApplyPattern = new JMenuItem(getText("ManagePatternsPopupDialog.apply"));
-//		menuItemApplyPattern.addActionListener(applyActionListener);
-//		menuHolder.addMenuItem(menuItemApplyPattern, "main/actions/apply");
-//		menuHolder.updateMenus(menu, "main/");
-//		map.setJMenuBar(menu);
+		JMenuBar menu = new JMenuBar();
+		JMenu mainItem = new JMenu(getText("MapControllerPopupDialog.Actions"));
+		menuHolder.addMenu(mainItem, "main/actions/.");
+		JMenuItem menuItemApplyPattern = new JMenuItem(getText("MapControllerPopupDialog.place"));
+		menuItemApplyPattern.addActionListener(placeActionListener);
+		menuHolder.addMenuItem(menuItemApplyPattern, "main/actions/place");
+		menuHolder.updateMenus(menu, "main/");
+		mMapDialog.setJMenuBar(menu);
 		/* Popup menu */
 		JMenuItem menuItemApply = new JMenuItem(getText("MapControllerPopupDialog.place"));
 		menuHolder.addMenuItem(menuItemApply, "popup/place");
@@ -107,17 +119,39 @@ public class FreeMindMapController extends JMapController implements
 	 * @param pActionEvent
 	 */
 	protected void placeNodes(ActionEvent pActionEvent) {
-		// TODO Auto-generated method stub
-		
+		MindMapNode selected = mMindMapController.getSelected();
+		List selecteds = Arrays.asList(new MindMapNode[] { selected });
+//		List selecteds = mMindMapController.getSelecteds();
+		mMindMapController.addHook(selected, selecteds, MapNodePositionHolder.NODE_MAP_HOOK_NAME);
+		MapNodePositionHolder hook = getHook(selected);
+		if(hook != null) {
+			// set parameters:
+			hook.setMapCenter(map.getPosition());
+			hook.setPosition(((JCursorMapViewer)map).getCursorPosition());
+			hook.setZoom(map.getZoom());
+		}
 	}
 
 	/**
+	 */
+	public MapNodePositionHolder getHook(MindMapNode node) {
+		for (Iterator j = node.getActivatedHooks().iterator(); j.hasNext();) {
+			PermanentNodeHook element = (PermanentNodeHook) j.next();
+			if (element instanceof MapNodePositionHolder) {
+				return (MapNodePositionHolder) element;
+			}
+		}
+		return null;
+	}
+
+
+	
+	/** Translate String
 	 * @param pString
 	 * @return
 	 */
 	private String getText(String pString) {
-		// TODO Translate String
-		return pString;
+		return mMindMapController.getText(pString);
 	}
 
 	private Point lastDragPoint;

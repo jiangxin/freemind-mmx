@@ -31,11 +31,14 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.JDialog;
 import javax.swing.Timer;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.MemoryTileCache;
+
+import freemind.modes.mindmapmode.MindMapController;
 
 /**
  * @author foltin
@@ -50,11 +53,13 @@ final class JCursorMapViewer extends JMapViewer {
 	private FreeMindMapController mFreeMindMapController;
 
 	/**
+	 * @param pMindMapController 
+	 * @param pMapDialog 
 	 * 
 	 */
-	public JCursorMapViewer() {
+	public JCursorMapViewer(MindMapController pMindMapController, JDialog pMapDialog) {
         super(new FileTileCache(), 4);
-        mFreeMindMapController = new FreeMindMapController(this);
+        mFreeMindMapController = new FreeMindMapController(this, pMindMapController, pMapDialog);
 		Action updateCursorAction = new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
 				mShowCursor = !mShowCursor;

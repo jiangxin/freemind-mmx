@@ -24,5 +24,35 @@ keystroke_plugins/map/MapDialog.properties_key=control alt V
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/extras/map/ShowMap"/>
 	</plugin_action>
+	
+	<plugin_action 
+		documentation="%plugins/map/MapNodePositionHolder.properties_documentation" 
+		name="%plugins/map/MapNodePositionHolder.properties_name" 
+		key_stroke="%keystroke_plugins/map/MapNodePositionHolder.properties_key" 
+		base="freemind.extensions.NodeHookAdapter" 
+		label="plugins/map/MapNodePositionHolder.properties" 
+		class_name="plugins.map.MapNodePositionHolder" 
+		instanciation="Once">
+		<!-- Instantiations: Once, OnceForRoot, OnceForAllNodes, Other, ApplyToRoot	 --> 
+		<!-- 
+		Resources_en.properties:
+# new, foltin, 27.10.2011:
+plugins/map/MapNodePositionHolder.properties_name=MapNodePositionHolder
+plugins/map/MapNodePositionHolder.properties_documentation=<html><br/></html>
+
+		freemind.properties:
+# new, foltin, 27.10.2011:
+keystroke_plugins/map/MapNodePositionHolder.properties_key=control alt V
+		-->
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+<!-- 		<plugin_menu location="menu_bar/menu_position"/> -->
+	</plugin_action>
+
+	<plugin_registration 
+		class_name="plugins.map.MapNodePositionHolder$Registration" 
+		isPluginBase="true">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+	</plugin_registration>
+
 
 </plugin>
