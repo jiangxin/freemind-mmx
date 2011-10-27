@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template autoinsert="true" context="xml_all" deleted="false" description="FreeMind Plugin Menu Action" enabled="true" name="freemind_action">	&lt;plugin_action 
-		documentation="%accessories/plugins/${classname}.properties_documentation" 
-		name="%accessories/plugins/${classname}.properties_name" 
-		key_stroke="%keystroke_accessories/plugins/${classname}.properties_key" 
+		documentation="%${accessories_plugins}/${classname}.properties_documentation" 
+		name="%${accessories_plugins}/${classname}.properties_name" 
+		key_stroke="%keystroke_${accessories_plugins}/${classname}.properties_key" 
 		base="freemind.extensions.NodeHookAdapter" 
-		label="accessories/plugins/${classname}.properties" 
-		class_name="accessories.plugins.${classname}" 
+		label="${accessories_plugins}/${classname}.properties" 
+		class_name="${accessories_plugins}.${classname}" 
 		instanciation="${instanciation}"&gt;
 		&lt;!-- Instantiations: Once, OnceForRoot, OnceForAllNodes, Other, ApplyToRoot	 --&gt; 
 		&lt;!-- 
 		Resources_en.properties:
-# new, ${author}, ${date}:
-accessories/plugins/${classname}.properties_name=${classname}
-accessories/plugins/${classname}.properties_documentation=&lt;html&gt;&lt;br/&gt;&lt;/html&gt;
+# new, ${user}, ${date}:
+${accessories_plugins}/${classname}.properties_name=${classname}
+${accessories_plugins}/${classname}.properties_documentation=&lt;html&gt;&lt;br/&gt;&lt;/html&gt;
 
 		freemind.properties:
-# new, ${author}, ${date}:
-keystroke_accessories/plugins/${classname}.properties_key=control alt V
+# new, ${user}, ${date}:
+keystroke_${accessories_plugins}/${classname}.properties_key=control alt V
 		--&gt;
 		&lt;plugin_mode class_name="freemind.modes.mindmapmode"/&gt;
 		&lt;plugin_menu location="menu_bar/${menu_position}"/&gt;
