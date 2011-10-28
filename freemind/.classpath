@@ -33,6 +33,7 @@
 	<classpathentry kind="lib" path="plugins/latex/HotEqn.jar"/>
 	<classpathentry kind="lib" path="plugins/script/groovy-all-1.5.6.jar"/>
 	<classpathentry kind="lib" path="plugins/collaboration/database/hsqldb.jar" sourcepath="plugins/collaboration/database/hsqldb_1_8_1_3.zip"/>
+	<classpathentry kind="lib" path="plugins/map/JMapViewer.jar" sourcepath="plugins/map/JMapViewer_src.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

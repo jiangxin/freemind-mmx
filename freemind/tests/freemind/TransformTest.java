@@ -107,6 +107,7 @@ public class TransformTest extends FreeMindTestBase {
 				.createUnmarshaller();
 
 		URL pluginURL = ClassLoader.getSystemResource(xmlPluginFile);
+		assertNotNull("file " + xmlPluginFile + " found" , pluginURL);
 		// unmarshal xml:
 		Plugin plugin = null;
 		InputStream in = pluginURL.openStream();
@@ -150,8 +151,6 @@ public class TransformTest extends FreeMindTestBase {
 		exportHook.transform(destinationFile);
 		assertTrue("File " + destinationFile + " exists?", destinationFile
 				.exists());
-		assertTrue("No error during export", exportHook
-				.isTransformResultWithoutError());
 	}
 	private void doExportWithOooPlugin(String mapFileToBeExported,
 			String destinationFileName, Properties properties)

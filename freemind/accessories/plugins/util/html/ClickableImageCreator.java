@@ -114,6 +114,9 @@ public class ClickableImageCreator {
     /**
      */
     private void createArea(MindMapNode node) {
+    	if(mapView == null) {
+    		return;
+    	}
         final NodeView nodeView = mapView.getNodeView(node);
         if (nodeView != null) {
             AreaHolder holder = new AreaHolder();

@@ -16,6 +16,7 @@
 	<property name="src" location="."/>
 	<property name="src_base_for_post" location="../" />
 	<property name="build" location="../bin/classes" />
+	<property name="testbuild" location="../bin/testclasses" />
 	<property name="acc_build" location="accessories/plugins/build.xml" />
 	<property name="dist" location="../bin/dist" />
 	<property name="dist.lib" location="${dist}/lib" />
@@ -52,6 +53,11 @@
 	<property name="simplyHtml" location="lib/SimplyHTML/SimplyHTML.jar"/>
 
 	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:${formsLib}:${simplyHtml}"/>
+	<path id="jars.path">
+	  <fileset dir="${src}">
+	    <include name="**/*.jar" />
+	  </fileset>
+	</path>
 
 	  <target name="xmlbind.checkStatusOfGeneration">
 	    <uptodate property="xmlbind.isUpToDate"
@@ -166,6 +172,32 @@
 		<ant antfile="plugins/build.xml" target="build"/>
 	</target>
 
+	<target name="build_tests" depends="build">
+		<mkdir dir="${testbuild}"/>
+		<javac includeantruntime="false" srcdir="${src}"
+			destdir="${testbuild}"
+			debug="${debug}"
+		    	source="${java_source_version}"
+	       		target="${java_target_version}"
+		>
+			<classpath refid="jars.path"></classpath>
+			<exclude name="${gen.dir}/**" />
+		</javac>
+		<copy todir="${testbuild}" file="${src}/freemind.properties"/>
+	</target>
+
+	<!-- ================================= 
+          target: test              
+         ================================= -->
+    <target name="test" depends="build_tests" description="Carries out all unit tests">
+	<java classname="tests.freemind.AllTests"  fork="yes"  dir="${src}">
+		<classpath refid="jars.path"></classpath>
+		<classpath path="${testbuild}"></classpath>
+		<classpath path="${src}"></classpath>
+	</java>
+    </target>
+
+	
 	<target name="dist" depends="jar, browser">
 
 		<copy todir="${dist}">
