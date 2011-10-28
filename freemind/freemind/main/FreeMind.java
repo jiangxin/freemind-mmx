@@ -220,6 +220,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public static final String RESOURCES_SEARCH_IN_NOTES_TOO = "resources_search_in_notes_too";
 
+	public static final String RESOURCES_DON_T_SHOW_NOTE_TOOLTIPS = "resources_don_t_show_note_tooltips";
+
 	public FreeMind(Properties pDefaultPreferences, Properties pUserPreferences, File pAutoPropertiesFile) {
 		super("FreeMind");
 		// Focus searcher

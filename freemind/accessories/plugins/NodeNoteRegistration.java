@@ -401,7 +401,10 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml, MenuIte
         node.setStateIcon(NodeNoteBase.NODE_NOTE_ICON, (showIcon) ? noteIcon
                 : null);
         // tooltip, first try.
-        getMindMapController().setToolTip(node, "nodeNoteText", (enabled)?node.getNoteText():null);
+        if (!Resources.getInstance().getBoolProperty(
+        		FreeMind.RESOURCES_DON_T_SHOW_NOTE_TOOLTIPS)) {
+        	getMindMapController().setToolTip(node, "nodeNoteText", (enabled)?node.getNoteText():null);
+        }
     }
 
     public void act(XmlAction action) {
