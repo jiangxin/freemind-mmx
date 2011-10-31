@@ -24,13 +24,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import javax.swing.ImageIcon;
+
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 
 import freemind.extensions.HookRegistration;
+import freemind.main.FreeMind;
+import freemind.main.Resources;
 import freemind.main.XMLElement;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
+import freemind.modes.common.plugins.NodeNoteBase;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
 
@@ -40,15 +45,19 @@ import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
  */
 public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	public final static String NODE_MAP_HOOK_NAME = "plugins/map/MapNodePositionHolder.properties";
+	public final static String NODE_MAP_LOCATION_ICON = "node_map_location_icon";
+
 	private static final String XML_STORAGE_POS_LON = "XML_STORAGE_POS_LON";
 	private static final String XML_STORAGE_POS_LAT = "XML_STORAGE_POS_LAT";
 	private static final String XML_STORAGE_MAP_LON = "XML_STORAGE_MAP_LON";
 	private static final String XML_STORAGE_MAP_LAT = "XML_STORAGE_MAP_LAT";
 	private static final String XML_STORAGE_ZOOM = "XML_STORAGE_ZOOM";
+	private static final String NODE_MAP_LOCAT_ICON = null;
 
 	private Coordinate mPosition = new Coordinate(0, 0);
 	private Coordinate mMapCenter = new Coordinate(0, 0);
 	private int mZoom = 1;
+	private static ImageIcon pNoteIcon;
 
 	/*
 	 * (non-Javadoc)
@@ -59,12 +68,14 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	public void invoke(MindMapNode pNode) {
 		super.invoke(pNode);
 		((Registration) getPluginBaseClass()).registerMapNode(this);
+		setStateIcon(pNode, true);
 	}
 
 	/* (non-Javadoc)
 	 * @see freemind.extensions.PermanentNodeHookAdapter#shutdownMapHook()
 	 */
 	public void shutdownMapHook() {
+		setStateIcon(getNode(), false);
 		((Registration) getPluginBaseClass()).deregisterMapNode(this);
 		super.shutdownMapHook();
 	}
@@ -87,6 +98,16 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 		saveNameValuePairs(values, xml);
 	}
 
+	protected void setStateIcon(MindMapNode node, boolean enabled) {
+        // icon
+        if (pNoteIcon == null) {
+            pNoteIcon = new ImageIcon(getMindMapController()
+                    .getResource("images/map_location.png"));
+        }
+        node.setStateIcon(NODE_MAP_LOCATION_ICON, (enabled) ? pNoteIcon
+                : null);
+    }
+	
 	/**
 	 * @param pDouble
 	 * @return
