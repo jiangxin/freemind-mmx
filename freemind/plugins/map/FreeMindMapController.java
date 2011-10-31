@@ -41,6 +41,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapController;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 
@@ -105,6 +106,21 @@ public class FreeMindMapController extends JMapController implements
 		}
 	}
 	
+	/**
+	 * @author foltin
+	 * @date 31.10.2011
+	 */
+	private final class ShowNodeAction extends AbstractAction {
+		
+		public ShowNodeAction() {
+			super(getText("MapControllerPopupDialog.show_nodes"));
+		}
+		
+		public void actionPerformed(ActionEvent actionEvent) {
+			showNode(actionEvent);
+		}
+	}
+	
 	JCursorMapViewer getMap() {
 		return (JCursorMapViewer) map;
 	}
@@ -128,6 +144,7 @@ public class FreeMindMapController extends JMapController implements
 		mMapDialog = pMapDialog;
 		Action placeAction = new PlaceNodeAction();
 		Action removePlaceAction = new RemovePlaceNodeAction();
+		Action showAction = new ShowNodeAction();
 		/** Menu **/
 		StructuredMenuHolder menuHolder = new StructuredMenuHolder();
 		JMenuBar menu = new JMenuBar();
@@ -135,11 +152,14 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addMenu(mainItem, "main/actions/.");
 		menuHolder.addAction(placeAction, "main/actions/place");
 		menuHolder.addAction(removePlaceAction, "main/actions/removeplace");
+		menuHolder.addAction(removePlaceAction, "main/actions/showNode");
+		menuHolder.addAction(showAction, "main/actions/showNode");
 		menuHolder.updateMenus(menu, "main/");
 		mMapDialog.setJMenuBar(menu);
 		/* Popup menu */
 		menuHolder.addAction(placeAction, "popup/place");
 		menuHolder.addAction(removePlaceAction, "popup/removeplace");
+		menuHolder.addAction(showAction, "popup/showNode");
 		menuHolder.updateMenus(mPopupMenu, "popup/");
 	}
 
@@ -154,8 +174,9 @@ public class FreeMindMapController extends JMapController implements
 		}
 		if(hook != null) {
 			// set parameters:
+			// FIXME: Make undoable.
 			hook.setMapCenter(map.getPosition());
-			hook.setPosition(((JCursorMapViewer)map).getCursorPosition());
+			hook.setPosition(getMap().getCursorPosition());
 			hook.setZoom(map.getZoom());
 		}
 	}
@@ -173,6 +194,21 @@ public class FreeMindMapController extends JMapController implements
 		
 	}
 
+	/**
+	 * @param pActionEvent
+	 */
+	public void showNode(ActionEvent pActionEvent) {
+		MindMapNode selected = mMindMapController.getSelected();
+		MapNodePositionHolder hook = getHook(selected);
+		if(hook != null) {
+			// move map:
+			Coordinate mapCenter = hook.getMapCenter();
+			map.setDisplayPositionByLatLon(mapCenter.getLat(), mapCenter.getLon(), hook.getZoom());
+			getMap().setCursorPosition(hook.getPosition());
+		}
+		
+	}
+	
 	public MapNodePositionHolder addHookToNode(MindMapNode selected) {
 		MapNodePositionHolder hook;
 		List selecteds = Arrays.asList(new MindMapNode[] { selected });
