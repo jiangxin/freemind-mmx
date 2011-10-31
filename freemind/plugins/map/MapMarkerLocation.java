@@ -27,47 +27,56 @@ import javax.swing.JLabel;
 
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 
-public class MapMarkerLocation  extends JLabel implements MapMarker {
+import freemind.modes.MindMapNode;
 
-    private double lat = 0.0;
-    private double lon = 0.0;
-    private Color color = null;
-    private String label = null;
+public class MapMarkerLocation extends JLabel implements MapMarker {
 
-    public MapMarkerLocation(String label, Color color, double lat, double lon) {
-        super(label);
-        this.label = label;
-        this.color = color;
-        this.lat = lat;
-        this.lon = lon;
-    }
+	private final MapNodePositionHolder mNodePositionHolder;
 
-    public double getLat() {
-        return lat;
-    }
+	/**
+	 * @param pNodePositionHolder
+	 */
+	public MapMarkerLocation(MapNodePositionHolder pNodePositionHolder) {
+		mNodePositionHolder = pNodePositionHolder;
+		MindMapNode node = mNodePositionHolder.getNode();
+		// TODO: Listener, if the text changes...
+		setText(node.getText());
+//		setFont(node.getFont());
+		setForeground(node.getColor());
+//		setBackground(Color.WHITE);
+	}
 
-    public double getLon() {
-        return lon;
-    }
+	public double getLat() {
+		return mNodePositionHolder.getPosition().getLat();
+	}
 
-    public void paint(Graphics g, Point position) {
-        int size_h = 5;
-        int size = size_h * 2;
-        g.setColor(color);
-        g.fillOval(position.x - size_h, position.y - size_h, size, size);
-        g.setColor(Color.BLACK);
-        g.drawOval(position.x - size_h, position.y - size_h, size, size);
+	public double getLon() {
+		return mNodePositionHolder.getPosition().getLon();
+	}
 
-        if (label != null) {
-            g.translate(position.x, position.y);
-            this.paint(g);
-            g.translate(-position.x, -position.y);
-        }
+	public void paint(Graphics g, Point position) {
+		int size_h = 5;
+		int size = size_h * 2;
+		g.setColor(Color.BLACK);
+		g.fillOval(position.x - size_h, position.y - size_h, size, size);
+		g.setColor(getForeground());
+		g.drawOval(position.x - size_h, position.y - size_h, size, size);
+		g.setColor(Color.WHITE);
+		int node_y = position.y; //+ size;
+		int node_x = position.x;
+		g.fillRect(node_x, node_y, this.getWidth(), this.getHeight());
+		g.setColor(Color.BLACK);
 
-    }
+		g.translate(node_x, node_y);
+		this.paint(g);
+		g.translate(-node_x, -node_y);
 
-    public String toString() {
-        return "MapMarkerLocation at " + lat + " " + lon;
-    }
+	}
+
+	public String toString() {
+		return "MapMarkerLocation for node "
+				+ mNodePositionHolder.getNode().getText() + " at " + getLat()
+				+ " " + getLon();
+	}
 
 }

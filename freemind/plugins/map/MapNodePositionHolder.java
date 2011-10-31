@@ -22,6 +22,7 @@ package plugins.map;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 
@@ -144,11 +145,18 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 		}
 	}
 
+	public static interface MapNodePositionListener {
+		void registerMapNode(MapNodePositionHolder pMapNodePositionHolder);
+		void deregisterMapNode(MapNodePositionHolder pMapNodePositionHolder);
+	}
+	
 	public static class Registration implements HookRegistration {
 
 		/* Collects MapNodePositionHolder. This is necessary to be able to display them all efficiently.*/
 		private HashSet/* MapNodePositionHolder s */mMapNodePositionHolders = new HashSet();
 
+		private HashSet mMapNodePositionListeners = new HashSet();
+		
 		private final MindMapController controller;
 
 		private final MindMap mMap;
@@ -169,6 +177,14 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 
 		public void registerMapNode(MapNodePositionHolder pMapNodePositionHolder) {
 			mMapNodePositionHolders.add(pMapNodePositionHolder);
+			for (Iterator it = mMapNodePositionListeners.iterator(); it.hasNext();) {
+				MapNodePositionListener listener = (MapNodePositionListener) it.next();
+				try {
+					listener.registerMapNode(pMapNodePositionHolder);
+				} catch (Exception e) {
+					freemind.main.Resources.getInstance().logException(e);
+				}
+			}
 		}
 
 		public HashSet getMapNodePositionHolders() {
@@ -177,6 +193,20 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 
 		public void deregisterMapNode(MapNodePositionHolder pMapNodePositionHolder) {
 			mMapNodePositionHolders.remove(pMapNodePositionHolder);
+			for (Iterator it = mMapNodePositionListeners.iterator(); it.hasNext();) {
+				MapNodePositionListener listener = (MapNodePositionListener) it.next();
+				try {
+					listener.deregisterMapNode(pMapNodePositionHolder);
+				} catch (Exception e) {
+					freemind.main.Resources.getInstance().logException(e);
+				}
+			}
+		}
+		public void registerMapNodePositionListener(MapNodePositionListener pMapNodePositionListener) {
+			mMapNodePositionListeners.add(pMapNodePositionListener);
+		}
+		public void deregisterMapNodePositionListener(MapNodePositionListener pMapNodePositionListener) {
+			mMapNodePositionListeners.remove(pMapNodePositionListener);
 		}
 	}
 

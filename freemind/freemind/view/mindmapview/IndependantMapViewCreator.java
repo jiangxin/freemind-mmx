@@ -50,6 +50,7 @@ import freemind.modes.mindmapmode.MindMapMode;
 public class IndependantMapViewCreator {
 
 	public static void main(String[] args) {
+		System.setProperty("java.awt.headless", "true");
 		if(args.length != 2) {
 			System.out.println("Export map to png.\nUsage:\n java -jar lib/freemind.jar freemind.view.mindmapview.IndependantMapViewCreator <map_path>.mm <picture_path>.png");
 			System.exit(0);
@@ -106,7 +107,6 @@ public class IndependantMapViewCreator {
 
 	public void exportFileToPng(String inputFileName, String outputFileName, FreeMindMain pFreeMindMain)
 			throws FileNotFoundException, IOException, URISyntaxException {
-		System.setProperty("java.awt.headless", "true");
 		JPanel parent = new JPanel();
 		Rectangle bounds = new Rectangle(0,0,400,600);
 		parent.setBounds(bounds);

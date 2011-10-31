@@ -45,6 +45,7 @@ public class ExportTests extends FreeMindTestBase {
 	private static final String TESTMAP_MM = "tests/freemind/testmap.mm";
 
 	public void testExportPng() throws Exception {
+		System.setProperty("java.awt.headless", "true");
 		IndependantMapViewCreator creator = new IndependantMapViewCreator();
 		creator.exportFileToPng(TESTMAP_MM, "/tmp/test.png", mFreeMindMain);
 

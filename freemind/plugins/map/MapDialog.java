@@ -11,6 +11,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
@@ -35,12 +36,11 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
+import plugins.map.MapNodePositionHolder.MapNodePositionListener;
 import plugins.map.MapNodePositionHolder.Registration;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.actions.generated.instance.MapWindowConfigurationStorage;
-import freemind.extensions.PermanentNodeHook;
 import freemind.main.Tools;
-import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
@@ -53,7 +53,7 @@ import freemind.view.MapModule;
  * @author Jan Peter Stotz
  *
  */
-public class MapDialog extends MindMapHookAdapter implements JMapViewerEventListener, MapModuleChangeObserver  {
+public class MapDialog extends MindMapHookAdapter implements JMapViewerEventListener, MapModuleChangeObserver, MapNodePositionListener  {
 
     private static final long serialVersionUID = 1L;
 
@@ -70,6 +70,8 @@ public class MapDialog extends MindMapHookAdapter implements JMapViewerEventList
 	private MindMapController mMyMindMapController;
 
 	private JDialog mMapDialog;
+	
+	private HashMap /* < MapNodePositionHolder, MapMarkerLocation > */ mMarkerMap = new HashMap();
 
 	/* (non-Javadoc)
 	 * @see freemind.extensions.HookAdapter#startupMapHook()
@@ -181,18 +183,14 @@ public class MapDialog extends MindMapHookAdapter implements JMapViewerEventList
 
         mMapDialog.add(map, BorderLayout.CENTER);
 
-        //
-//        MapMarkerLocation marker = new MapMarkerLocation("Label", Color.BLUE, 49.814284999, 9.642065999);
-//        marker.setSize(marker.getPreferredSize());
-//        map.addMapMarker(marker);
+        // add known markers to the map.
         HashSet mapNodePositionHolders = ((Registration) getPluginBaseClass()).getMapNodePositionHolders();
         for (Iterator it = mapNodePositionHolders.iterator(); it.hasNext();) {
 			MapNodePositionHolder nodePositionHolder = (MapNodePositionHolder) it.next();
-			logger.info("Adding map position for " + nodePositionHolder.getNode());
-			MapMarkerLocation marker = new MapMarkerLocation(nodePositionHolder.getNode().getText(), Color.BLUE, nodePositionHolder.getPosition().getLat(), nodePositionHolder.getPosition().getLon());
-			marker.setSize(marker.getPreferredSize());
-			map.addMapMarker(marker);
+			addMapMarker(nodePositionHolder);
 		}
+        ((Registration) getPluginBaseClass()).registerMapNodePositionListener(this);
+        
         // Just fantasy:
         map.addMapMarker(new MapMarkerDot(49.665528793, 8.345612234));
         map.setCursorPosition(new Coordinate(49.8, 8.8));
@@ -209,6 +207,15 @@ public class MapDialog extends MindMapHookAdapter implements JMapViewerEventList
 
     }
 
+	public void addMapMarker(MapNodePositionHolder nodePositionHolder) {
+		Coordinate position = nodePositionHolder.getPosition();
+		logger.info("Adding map position for " + nodePositionHolder.getNode() + " at " + position);
+		MapMarkerLocation marker = new MapMarkerLocation(nodePositionHolder);
+		marker.setSize(marker.getPreferredSize());
+		map.addMapMarker(marker);
+		mMarkerMap.put(nodePositionHolder, marker);
+	}
+
 	/**
 	 * Overwritten, as this dialog is not modal, but after the plugin has terminated,
 	 * the dialog is still present and needs the controller to store its values.
@@ -222,8 +229,9 @@ public class MapDialog extends MindMapHookAdapter implements JMapViewerEventList
 	 * 
 	 */
 	protected void disposeDialog() {
-		// store window positions:
+        ((Registration) getPluginBaseClass()).deregisterMapNodePositionListener(this);
 
+		// store window positions:
 		MapWindowConfigurationStorage storage = new MapWindowConfigurationStorage();
 		// Set coordinates
 		storage.setZoom(map.getZoom());
@@ -298,5 +306,23 @@ public class MapDialog extends MindMapHookAdapter implements JMapViewerEventList
 	 * @see freemind.controller.MapModuleManager.MapModuleChangeObserver#numberOfOpenMapInformation(int, int)
 	 */
 	public void numberOfOpenMapInformation(int pNumber, int pIndex) {
+	}
+
+	/* (non-Javadoc)
+	 * @see plugins.map.MapNodePositionHolder.MapNodePositionListener#registerMapNode(plugins.map.MapNodePositionHolder)
+	 */
+	public void registerMapNode(MapNodePositionHolder pMapNodePositionHolder) {
+		addMapMarker(pMapNodePositionHolder);
+	}
+
+	/* (non-Javadoc)
+	 * @see plugins.map.MapNodePositionHolder.MapNodePositionListener#deregisterMapNode(plugins.map.MapNodePositionHolder)
+	 */
+	public void deregisterMapNode(MapNodePositionHolder pMapNodePositionHolder) {
+		MapMarkerLocation marker = (MapMarkerLocation) mMarkerMap.remove(pMapNodePositionHolder);
+		if(marker != null) {
+			map.removeMapMarker(marker);
+		}
+		
 	}	
 }

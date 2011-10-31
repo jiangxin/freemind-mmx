@@ -142,8 +142,11 @@ public class NodeView extends JComponent implements TreeModelListener{
         if(mainView != null){
             final Container c = mainView.getParent();
             int i;
-            for(i = c.getComponentCount()-1; i >= 0 && mainView != c.getComponent(i); i--);
-            c.remove(i);
+			for (i = c.getComponentCount() - 1; i >= 0
+					&& mainView != c.getComponent(i); i--) {
+				// left blank on purpose
+			}
+			c.remove(i);
             mainView.removeMouseListener( this.map.getNodeMouseMotionListener() );
             mainView.removeMouseMotionListener( this.map.getNodeMouseMotionListener() );
             mainView.removeKeyListener( this.map.getNodeKeyListener() );
