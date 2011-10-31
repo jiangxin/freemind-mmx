@@ -57,7 +57,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	private Coordinate mPosition = new Coordinate(0, 0);
 	private Coordinate mMapCenter = new Coordinate(0, 0);
 	private int mZoom = 1;
-	private static ImageIcon pNoteIcon;
+	private static ImageIcon sMapLocationIcon;
 
 	/*
 	 * (non-Javadoc)
@@ -99,12 +99,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	}
 
 	protected void setStateIcon(MindMapNode node, boolean enabled) {
-        // icon
-        if (pNoteIcon == null) {
-            pNoteIcon = new ImageIcon(getMindMapController()
-                    .getResource("images/map_location.png"));
-        }
-        node.setStateIcon(NODE_MAP_LOCATION_ICON, (enabled) ? pNoteIcon
+        node.setStateIcon(NODE_MAP_LOCATION_ICON, (enabled) ? getMapLocationIcon()
                 : null);
     }
 	
@@ -257,6 +252,15 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	
 	public MindMapNode getNode() {
 		return super.getNode();
+	}
+
+	public static ImageIcon getMapLocationIcon() {
+        // icon
+        if (sMapLocationIcon == null) {
+            sMapLocationIcon = new ImageIcon(Resources.getInstance()
+                    .getResource("images/map_location.png"));
+        }
+		return sMapLocationIcon;
 	}
 
 }

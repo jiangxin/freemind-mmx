@@ -24,7 +24,6 @@ package plugins.map;
 
 import java.awt.Point;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -34,6 +33,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -72,6 +73,21 @@ import freemind.modes.mindmapmode.MindMapController;
 public class FreeMindMapController extends JMapController implements
 		MouseListener, MouseMotionListener, MouseWheelListener {
 
+	/**
+	 * @author foltin
+	 * @date 31.10.2011
+	 */
+	private final class PlaceNodeAction extends AbstractAction {
+		
+		public PlaceNodeAction() {
+			super(getText("MapControllerPopupDialog.place"), MapNodePositionHolder.getMapLocationIcon());
+		}
+		
+		public void actionPerformed(ActionEvent actionEvent) {
+			placeNodes(actionEvent);
+		}
+	}
+
 	JCursorMapViewer getMap() {
 		return (JCursorMapViewer) map;
 	}
@@ -93,25 +109,17 @@ public class FreeMindMapController extends JMapController implements
 		super(map);
 		mMindMapController = pMindMapController;
 		mMapDialog = pMapDialog;
-		ActionListener placeActionListener = new ActionListener() {
-			public void actionPerformed(ActionEvent actionEvent) {
-				placeNodes(actionEvent);
-			}
-		};
+		Action placeAction = new PlaceNodeAction();
 		/** Menu **/
 		StructuredMenuHolder menuHolder = new StructuredMenuHolder();
 		JMenuBar menu = new JMenuBar();
 		JMenu mainItem = new JMenu(getText("MapControllerPopupDialog.Actions"));
 		menuHolder.addMenu(mainItem, "main/actions/.");
-		JMenuItem menuItemApplyPattern = new JMenuItem(getText("MapControllerPopupDialog.place"));
-		menuItemApplyPattern.addActionListener(placeActionListener);
-		menuHolder.addMenuItem(menuItemApplyPattern, "main/actions/place");
+		menuHolder.addAction(placeAction, "main/actions/place");
 		menuHolder.updateMenus(menu, "main/");
 		mMapDialog.setJMenuBar(menu);
 		/* Popup menu */
-		JMenuItem menuItemApply = new JMenuItem(getText("MapControllerPopupDialog.place"));
-		menuHolder.addMenuItem(menuItemApply, "popup/place");
-		menuItemApply.addActionListener(placeActionListener);
+		menuHolder.addAction(placeAction, "popup/place");
 		menuHolder.updateMenus(mPopupMenu, "popup/");
 	}
 
