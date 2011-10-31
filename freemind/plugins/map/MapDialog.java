@@ -115,8 +115,8 @@ public class MapDialog extends MindMapHookAdapter implements JMapViewerEventList
 
         mMapDialog.add(panel, BorderLayout.NORTH);
         mMapDialog.add(helpPanel, BorderLayout.SOUTH);
-        JLabel helpLabel = new JLabel("Use right mouse button to move,\n "
-                + "left double click or mouse wheel to zoom.");
+        JLabel helpLabel = new JLabel("Use left mouse button to move,\n "
+                + "mouse wheel to zoom, left click to set cursor.");
         helpPanel.add(helpLabel);
         JButton button = new JButton("setDisplayToFitMapMarkers");
         button.addActionListener(new ActionListener() {
@@ -191,8 +191,6 @@ public class MapDialog extends MindMapHookAdapter implements JMapViewerEventList
 		}
         ((Registration) getPluginBaseClass()).registerMapNodePositionListener(this);
         
-        // Just fantasy:
-        map.addMapMarker(new MapMarkerDot(49.665528793, 8.345612234));
         map.setCursorPosition(new Coordinate(49.8, 8.8));
         map.setUseCursor(true);
 		// restore preferences:
@@ -229,8 +227,11 @@ public class MapDialog extends MindMapHookAdapter implements JMapViewerEventList
 	 * 
 	 */
 	protected void disposeDialog() {
-        ((Registration) getPluginBaseClass()).deregisterMapNodePositionListener(this);
-
+        Registration registration = (Registration) getPluginBaseClass();
+		if (registration != null) {
+			// on close, it is null. Why?
+			registration.deregisterMapNodePositionListener(this);
+		}
 		// store window positions:
 		MapWindowConfigurationStorage storage = new MapWindowConfigurationStorage();
 		// Set coordinates

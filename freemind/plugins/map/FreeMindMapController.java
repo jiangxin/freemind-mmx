@@ -69,6 +69,8 @@ import freemind.modes.mindmapmode.MindMapController;
  *   Node Extra Menu Items:
  *   * Show node(s) in Map ==> Chooses the best view for the nodes and selects them. 
  * 
+ * 
+ * FIXME: On undo place node, the position is gone. (Undo action contains the initial zeros, I guess).
  */
 public class FreeMindMapController extends JMapController implements
 		MouseListener, MouseMotionListener, MouseWheelListener {
@@ -88,6 +90,21 @@ public class FreeMindMapController extends JMapController implements
 		}
 	}
 
+	/**
+	 * @author foltin
+	 * @date 31.10.2011
+	 */
+	private final class RemovePlaceNodeAction extends AbstractAction {
+		
+		public RemovePlaceNodeAction() {
+			super(getText("MapControllerPopupDialog.removeplace"));
+		}
+		
+		public void actionPerformed(ActionEvent actionEvent) {
+			removePlaceNodes(actionEvent);
+		}
+	}
+	
 	JCursorMapViewer getMap() {
 		return (JCursorMapViewer) map;
 	}
@@ -110,16 +127,19 @@ public class FreeMindMapController extends JMapController implements
 		mMindMapController = pMindMapController;
 		mMapDialog = pMapDialog;
 		Action placeAction = new PlaceNodeAction();
+		Action removePlaceAction = new RemovePlaceNodeAction();
 		/** Menu **/
 		StructuredMenuHolder menuHolder = new StructuredMenuHolder();
 		JMenuBar menu = new JMenuBar();
 		JMenu mainItem = new JMenu(getText("MapControllerPopupDialog.Actions"));
 		menuHolder.addMenu(mainItem, "main/actions/.");
 		menuHolder.addAction(placeAction, "main/actions/place");
+		menuHolder.addAction(removePlaceAction, "main/actions/removeplace");
 		menuHolder.updateMenus(menu, "main/");
 		mMapDialog.setJMenuBar(menu);
 		/* Popup menu */
 		menuHolder.addAction(placeAction, "popup/place");
+		menuHolder.addAction(removePlaceAction, "popup/removeplace");
 		menuHolder.updateMenus(mPopupMenu, "popup/");
 	}
 
@@ -128,10 +148,10 @@ public class FreeMindMapController extends JMapController implements
 	 */
 	protected void placeNodes(ActionEvent pActionEvent) {
 		MindMapNode selected = mMindMapController.getSelected();
-		List selecteds = Arrays.asList(new MindMapNode[] { selected });
-//		List selecteds = mMindMapController.getSelecteds();
-		mMindMapController.addHook(selected, selecteds, MapNodePositionHolder.NODE_MAP_HOOK_NAME);
 		MapNodePositionHolder hook = getHook(selected);
+		if(hook == null) { 
+			hook = addHookToNode(selected);
+		}
 		if(hook != null) {
 			// set parameters:
 			hook.setMapCenter(map.getPosition());
@@ -140,6 +160,29 @@ public class FreeMindMapController extends JMapController implements
 		}
 	}
 
+	/**
+	 * @param pActionEvent
+	 */
+	public void removePlaceNodes(ActionEvent pActionEvent) {
+		MindMapNode selected = mMindMapController.getSelected();
+		MapNodePositionHolder hook = getHook(selected);
+		if(hook != null) {
+			// double add == remove
+			addHookToNode(selected);
+		}
+		
+	}
+
+	public MapNodePositionHolder addHookToNode(MindMapNode selected) {
+		MapNodePositionHolder hook;
+		List selecteds = Arrays.asList(new MindMapNode[] { selected });
+		mMindMapController.addHook(selected, selecteds, MapNodePositionHolder.NODE_MAP_HOOK_NAME);
+		hook = getHook(selected);
+		return hook;
+	}
+
+
+	
 	/**
 	 */
 	public MapNodePositionHolder getHook(MindMapNode node) {

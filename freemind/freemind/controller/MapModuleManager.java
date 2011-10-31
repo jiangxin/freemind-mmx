@@ -339,7 +339,7 @@ public class MapModuleManager {
 
     /**
 	 *            is null if the old mode should be closed.
-	 * @return true if the set command was sucessful.
+	 * @return true if the set command was successful.
 	 */
 	boolean setMapModule(MapModule newMapModule, Mode newMode) {
 		// allowed?
