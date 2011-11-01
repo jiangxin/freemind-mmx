@@ -25,8 +25,6 @@ package freemind.preferences.layout;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -44,7 +42,6 @@ import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -83,14 +80,14 @@ import freemind.preferences.FreemindPropertyContributor;
 
 /**
  * @author foltin
- *
+ * 
  */
 public class OptionPanel implements TextTranslator {
-	//TODO: Cancel and windowClose => Are you sure, or save.
-	//FIXME: key dialog
-	//FIXME: Translate me and html
+	// TODO: Cancel and windowClose => Are you sure, or save.
+	// FIXME: key dialog
+	// FIXME: Translate me and html
 
-    private static final Color MARKED_BUTTON_COLOR = Color.BLUE;
+	private static final Color MARKED_BUTTON_COLOR = Color.BLUE;
 
 	private Vector controls;
 
@@ -107,26 +104,27 @@ public class OptionPanel implements TextTranslator {
 	private static FreeMind fmMain;
 
 	private static final String PREFERENCE_STORAGE_PROPERTY = "OptionPanel_Window_Properties";
-    private static final String DEFAULT_LAYOUT_FORMAT = "right:max(40dlu;p), 4dlu, 120dlu, 7dlu";
+	private static final String DEFAULT_LAYOUT_FORMAT = "right:max(40dlu;p), 4dlu, 120dlu, 7dlu";
 
 	/**
 	 * @throws IOException
-	 *
+	 * 
 	 */
-	public OptionPanel(FreeMind fm, JDialog frame,
-			OptionPanelFeedback feedback) {
+	public OptionPanel(FreeMind fm, JDialog frame, OptionPanelFeedback feedback) {
 		super();
 		if (fmMain == null) {
 			fmMain = fm;
 		}
 		this.frame = frame;
 		this.feedback = feedback;
-		//Retrieve window size and column positions.
-		WindowConfigurationStorage storage = XmlBindingTools.getInstance().decorateDialog(fm.getController(),
-				frame, PREFERENCE_STORAGE_PROPERTY);
-		if (storage != null && storage instanceof OptionPanelWindowConfigurationStorage) {
-				OptionPanelWindowConfigurationStorage oWindowSettings = (OptionPanelWindowConfigurationStorage) storage;
-				selectedPanel = oWindowSettings.getPanel();
+		// Retrieve window size and column positions.
+		WindowConfigurationStorage storage = XmlBindingTools.getInstance()
+				.decorateDialog(fm.getController(), frame,
+						PREFERENCE_STORAGE_PROPERTY);
+		if (storage != null
+				&& storage instanceof OptionPanelWindowConfigurationStorage) {
+			OptionPanelWindowConfigurationStorage oWindowSettings = (OptionPanelWindowConfigurationStorage) storage;
+			selectedPanel = oWindowSettings.getPanel();
 		}
 	}
 
@@ -143,25 +141,26 @@ public class OptionPanel implements TextTranslator {
 			PropertyControl control = (PropertyControl) i.next();
 			if (control instanceof PropertyBean) {
 				PropertyBean bean = (PropertyBean) control;
-				//				System.out.println("grep -n -e \""+bean.getLabel()+"\" -r * |
+				// System.out.println("grep -n -e \""+bean.getLabel()+"\" -r * |
 				// grep -e \"\\.(java|xml):\"");
 				final String label = bean.getLabel();
 				String value = fmMain.getAdjustableProperty(label);
-				//				System.out.println("Setting property " + bean.getLabel()
-				//						+ " to " + value);
+				// System.out.println("Setting property " + bean.getLabel()
+				// + " to " + value);
 				bean.setValue(value);
 			}
 		}
 	}
 
-    private Properties getOptionProperties() {
+	private Properties getOptionProperties() {
 		Properties p = new Properties();
 		for (Iterator i = controls.iterator(); i.hasNext();) {
 			PropertyControl control = (PropertyControl) i.next();
 			if (control instanceof PropertyBean) {
 				PropertyBean bean = (PropertyBean) control;
 				final String value = bean.getValue();
-				if(value != null) p.setProperty(bean.getLabel(), value);
+				if (value != null)
+					p.setProperty(bean.getLabel(), value);
 			}
 		}
 		return p;
@@ -182,7 +181,7 @@ public class OptionPanel implements TextTranslator {
 		controls = getControls();
 		for (Iterator i = controls.iterator(); i.hasNext();) {
 			PropertyControl control = (PropertyControl) i.next();
-			//			System.out.println("layouting : " + control.getLabel());
+			// System.out.println("layouting : " + control.getLabel());
 
 			if (control instanceof NewTabProperty) {
 				NewTabProperty newTab = (NewTabProperty) control;
@@ -208,8 +207,9 @@ public class OptionPanel implements TextTranslator {
 		// add the last one, too
 		rightStack.add(rightBuilder.getPanel(), lastTabName);
 		// select one panel:
-		if(selectedPanel != null && tabActionMap.containsKey(selectedPanel)){
-			((ChangeTabAction) tabActionMap.get(selectedPanel)).actionPerformed(null);
+		if (selectedPanel != null && tabActionMap.containsKey(selectedPanel)) {
+			((ChangeTabAction) tabActionMap.get(selectedPanel))
+					.actionPerformed(null);
 		}
 		JScrollPane rightScrollPane = new JScrollPane(rightStack);
 		rightScrollPane.getVerticalScrollBar().setUnitIncrement(100);
@@ -240,7 +240,6 @@ public class OptionPanel implements TextTranslator {
 
 	private static String lastKey = "";
 
-
 	/**
 	 */
 	public String getText(String string) {
@@ -263,7 +262,7 @@ public class OptionPanel implements TextTranslator {
 		tabButtonMap.put(name, tabButton);
 		tabActionMap.put(name, changeTabAction);
 		// if no default panel was given, we use the first.
-		if(selectedPanel == null){
+		if (selectedPanel == null) {
 			selectedPanel = name;
 		}
 	}
@@ -307,11 +306,12 @@ public class OptionPanel implements TextTranslator {
 	public static class NewTabProperty implements PropertyControl {
 
 		private String label;
-        private String layoutFormat;
+		private String layoutFormat;
 
 		public NewTabProperty(String label) {
 			this(label, DEFAULT_LAYOUT_FORMAT);
 		}
+
 		public NewTabProperty(String label, String layoutFormat) {
 			super();
 			this.label = label;
@@ -326,21 +326,21 @@ public class OptionPanel implements TextTranslator {
 			return label;
 		}
 
-		public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
+		public void layout(DefaultFormBuilder builder,
+				TextTranslator pTranslator) {
 
 		}
 
-        public void setEnabled(boolean pEnabled) {
+		public void setEnabled(boolean pEnabled) {
 
-        }
-
+		}
 
 	}
 
 	private static class KeyProperty extends PropertyBean implements
 			PropertyControl {
 		private int modifierMask = 0;
-        String description;
+		String description;
 
 		String label;
 
@@ -348,7 +348,8 @@ public class OptionPanel implements TextTranslator {
 		private String labelText;
 		private ImageIcon icon;
 
-        private static RowSpec rowSpec;
+		private static RowSpec rowSpec;
+
 		/**
 		 */
 		public KeyProperty(final JDialog frame, String description, String label) {
@@ -358,7 +359,7 @@ public class OptionPanel implements TextTranslator {
 			mButton.addActionListener(new ActionListener() {
 
 				public void actionPerformed(ActionEvent arg0) {
-					//FIXME: Determine bindings.
+					// FIXME: Determine bindings.
 					Vector allKeybindings = new Vector();
 					GrabKeyDialog dialog = new GrabKeyDialog(fmMain, frame,
 							new GrabKeyDialog.KeyBinding(getLabel(),
@@ -366,16 +367,16 @@ public class OptionPanel implements TextTranslator {
 							allKeybindings, null, modifierMask);
 					if (dialog.isOK()) {
 						setValue(dialog.getShortcut());
-                        firePropertyChangeEvent();
+						firePropertyChangeEvent();
 					}
 				}
 			});
 		}
 
-		public void disableModifiers(){
+		public void disableModifiers() {
 			modifierMask = KeyEvent.ALT_MASK | KeyEvent.CTRL_MASK;
 		}
-		
+
 		public String getDescription() {
 			return description;
 		}
@@ -393,40 +394,42 @@ public class OptionPanel implements TextTranslator {
 			return mButton.getText();
 		}
 
-		public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
-			if (labelText == null)   
+		public void layout(DefaultFormBuilder builder,
+				TextTranslator pTranslator) {
+			if (labelText == null)
 				labelText = pTranslator.getText(getLabel());
-			
-        	JLabel label = new JLabel(labelText, icon, JLabel.RIGHT);
-            label.setToolTipText(pTranslator.getText(getDescription()));
-            if(rowSpec == null){
-                rowSpec = new RowSpec("fill:20dlu");
-            }
-            if( 3 < builder.getColumn()){
-            builder.appendRelatedComponentsGapRow();
-            builder.appendRow(rowSpec);
-            builder.nextLine(2);
-            }
-            else{
-                builder.nextColumn(2);                
-            }
-            builder.add(label);
-            builder.nextColumn(2);
-            builder.add(mButton);
+
+			JLabel label = new JLabel(labelText, icon, JLabel.RIGHT);
+			label.setToolTipText(pTranslator.getText(getDescription()));
+			if (rowSpec == null) {
+				rowSpec = new RowSpec("fill:20dlu");
+			}
+			if (3 < builder.getColumn()) {
+				builder.appendRelatedComponentsGapRow();
+				builder.appendRow(rowSpec);
+				builder.nextLine(2);
+			} else {
+				builder.nextColumn(2);
+			}
+			builder.add(label);
+			builder.nextColumn(2);
+			builder.add(mButton);
 		}
+
 		public void setEnabled(boolean pEnabled) {
-		    mButton.setEnabled(pEnabled);
+			mButton.setEnabled(pEnabled);
 		}
 
 		public void setLabelText(String labelText) {
-			this.labelText = labelText;			
+			this.labelText = labelText;
 		}
 
 		public void setImageIcon(ImageIcon icon) {
 			this.icon = icon;
-			
+
 		}
 	}
+
 	//
 	private Vector getControls() {
 		Vector controls = new Vector();
@@ -436,7 +439,7 @@ public class OptionPanel implements TextTranslator {
 		 */
 		controls.add(new NewTabProperty("Environment"));
 		controls.add(new SeparatorProperty("language"));
-		//TODO: Search class path for translations.
+		// TODO: Search class path for translations.
 		controls.add(new ComboProperty(
 
 		/**
@@ -444,74 +447,76 @@ public class OptionPanel implements TextTranslator {
 		 * http://www.loc.gov/standards/iso639-2/php/English_list.php
 		 */
 		"language.tooltip", FreeMindCommon.RESOURCE_LANGUAGE, new String[] {
-				"automatic", "ar", "cs", "de", "dk", "en", "el", "es", "et", "eu", 
-				"fr", "gl", "hr", "hu", "id", "it", "ja", "ko", "lt", "nl",
-				"nn", "nb", "pl", "pt_BR", "pt_PT", "ro", "ru", "sk", "se", "sl",
-				"tr", "uk_UA", "vi", "zh_TW", "zh_CN" }, new TextTranslator() {
+				"automatic", "ar", "cs", "de", "dk", "en", "el", "es", "et",
+				"eu", "fr", "gl", "hr", "hu", "id", "it", "ja", "ko", "lt",
+				"nl", "nn", "nb", "pl", "pt_BR", "pt_PT", "ro", "ru", "sk",
+				"se", "sl", "tr", "uk_UA", "vi", "zh_TW", "zh_CN" },
+				new TextTranslator() {
 
-			public String getText(String pKey) {
-				// decorator, that removes "TranslateMe" comments.
-				return Tools.removeTranslateComment(OptionPanel.this
-						.getText(pKey));
-			}
-		})); // automatic
+					public String getText(String pKey) {
+						// decorator, that removes "TranslateMe" comments.
+						return Tools.removeTranslateComment(OptionPanel.this
+								.getText(pKey));
+					}
+				})); // automatic
 
-		//INTERNAL PROPERTY.
-		//		controls
-		//				.add(new StringProperty(
-		//						"The Modes which Freemind will load on startup, full Class names,
+		// INTERNAL PROPERTY.
+		// controls
+		// .add(new StringProperty(
+		// "The Modes which Freemind will load on startup, full Class names,
 		// comma, identifier, separated by a comma.",
-		//						"modes_since_0_8_0")); //
+		// "modes_since_0_8_0")); //
 		// freemind.modes.browsemode.BrowseMode,Browse,freemind.modes.mindmapmode.MindMapMode,MindMap,freemind.modes.filemode.FileMode,File
 		//
-		//		controls.add(new StringProperty(
-		//				"The initial mode that is loaded on startup", "initial_mode")); //
+		// controls.add(new StringProperty(
+		// "The initial mode that is loaded on startup", "initial_mode")); //
 		// MindMap
 		//
-		//		controls
-		//				.add(new StringProperty(
-		//						"This is the place where the users properties file is located. It is
+		// controls
+		// .add(new StringProperty(
+		// "This is the place where the users properties file is located. It is
 		// ignored by the applet (set Parameters in the html file instead). You
 		// can write '~' to indicate the users home directory. Of course this
 		// works only in the default 'freemind.properties', which is included in
 		// the jar file, not for the users freemind.props out of the jar file.",
-		//						"properties_folder")); // .freemind
+		// "properties_folder")); // .freemind
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("files"));
-		controls.add(new StringProperty(null, "last_opened_list_length")); //  25
-		controls.add(new BooleanProperty(FreeMindCommon.LOAD_LAST_MAP+".tooltip",
-                FreeMindCommon.LOAD_LAST_MAP)); // true
+		controls.add(new StringProperty(null, "last_opened_list_length")); // 25
+		controls.add(new BooleanProperty(FreeMindCommon.LOAD_LAST_MAP
+				+ ".tooltip", FreeMindCommon.LOAD_LAST_MAP)); // true
 		controls.add(new BooleanProperty(FreeMind.RESOURCES_DON_T_OPEN_PORT
 				+ ".tooltip", FreeMind.RESOURCES_DON_T_OPEN_PORT));
-		controls.add(new BooleanProperty(FreeMindCommon.LOAD_LAST_MAPS_AND_LAYOUT+".tooltip",
+		controls.add(new BooleanProperty(
+				FreeMindCommon.LOAD_LAST_MAPS_AND_LAYOUT + ".tooltip",
 				FreeMindCommon.LOAD_LAST_MAPS_AND_LAYOUT)); // true
-		controls
-				.add(new BooleanProperty(
+		controls.add(new BooleanProperty(
 
-				"experimental_file_locking_on.tooltip",
-						"experimental_file_locking_on")); //  false
+		"experimental_file_locking_on.tooltip", "experimental_file_locking_on")); // false
 		controls.add(new NextLineProperty());
-		controls.add(new StringProperty(null, "userproperties")); //  user.properties
+		controls.add(new StringProperty(null, "userproperties")); // user.properties
 
-		//FIXME: Remove autoproperties from Freemind.
-		//		controls.add(new StringProperty(null, "autoproperties")); //
+		// FIXME: Remove autoproperties from Freemind.
+		// controls.add(new StringProperty(null, "autoproperties")); //
 		// auto.properties
 
-		controls.add(new StringProperty(null, "patternsfile")); //  patterns.xml
-		//FIXME: Which one? controls.add(new StringProperty(
-		//				"The URL of the documentation mindmap (.mm)", "docmapurl")); //
+		controls.add(new StringProperty(null, "patternsfile")); // patterns.xml
+		// FIXME: Which one? controls.add(new StringProperty(
+		// "The URL of the documentation mindmap (.mm)", "docmapurl")); //
 		// ./doc/freemind.mm
 
-// replaced by browsemode_initial_map?? (See Controller, DocumentationAction).
-		//controls.add(new StringProperty(null, "docmapurl_since_version_0_7_0")); //  ./doc/freemind.mm
+		// replaced by browsemode_initial_map?? (See Controller,
+		// DocumentationAction).
+		// controls.add(new StringProperty(null,
+		// "docmapurl_since_version_0_7_0")); // ./doc/freemind.mm
 		//
-		//		 The Browse Mode
+		// The Browse Mode
 		//
 
 		controls.add(new StringProperty(
 
-		"browsemode_initial_map.tooltip", "browsemode_initial_map")); //  ./doc/freemind.mm
+		"browsemode_initial_map.tooltip", "browsemode_initial_map")); // ./doc/freemind.mm
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("automatic_save"));
 		controls.add(new StringProperty(
@@ -535,7 +540,7 @@ public class OptionPanel implements TextTranslator {
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("save"));
-		
+
 		controls.add(new BooleanProperty(
 				"resources_save_folding_state.tooltip",
 				FreeMind.RESOURCES_SAVE_FOLDING_STATE)); // true
@@ -549,74 +554,81 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new NewTabProperty("Defaults"));
 		controls.add(new SeparatorProperty("default_styles"));
 		controls.add(new ComboProperty("standardnodestyle.tooltip",
-                FreeMind.RESOURCES_NODE_STYLE,
-                MindMapNode.NODE_STYLES, this)); //  as_parent
+				FreeMind.RESOURCES_NODE_STYLE, MindMapNode.NODE_STYLES, this)); // as_parent
 
 		controls.add(new ComboProperty(
 
-		"standardrootnodestyle.tooltip", FreeMind.RESOURCES_ROOT_NODE_STYLE, new String[] {
-		        MindMapNode.STYLE_FORK,
-                MindMapNode.STYLE_BUBBLE,
-                MindMapNode.STYLE_COMBINED }, this)); //  fork
+		"standardrootnodestyle.tooltip", FreeMind.RESOURCES_ROOT_NODE_STYLE,
+				new String[] { MindMapNode.STYLE_FORK,
+						MindMapNode.STYLE_BUBBLE, MindMapNode.STYLE_COMBINED },
+				this)); // fork
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("default_colors"));
 		controls.add(new ColorProperty("standardnodetextcolor.tooltip",
 
-		FreeMind.RESOURCES_NODE_TEXT_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_NODE_TEXT_COLOR), this)); //  #000000
+		FreeMind.RESOURCES_NODE_TEXT_COLOR, fmMain
+				.getDefaultProperty(FreeMind.RESOURCES_NODE_TEXT_COLOR), this)); // #000000
 
 		controls.add(new ColorProperty("standardedgecolor.tooltip",
 
-		FreeMind.RESOURCES_EDGE_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_EDGE_COLOR), this)); //  #808080
+		FreeMind.RESOURCES_EDGE_COLOR, fmMain
+				.getDefaultProperty(FreeMind.RESOURCES_EDGE_COLOR), this)); // #808080
 
 		controls.add(new ColorProperty("standardlinkcolor.tooltip",
 
-		FreeMind.RESOURCES_LINK_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_LINK_COLOR), this)); //  #b0b0b0
+		FreeMind.RESOURCES_LINK_COLOR, fmMain
+				.getDefaultProperty(FreeMind.RESOURCES_LINK_COLOR), this)); // #b0b0b0
 
 		controls.add(new ColorProperty("standardbackgroundcolor.tooltip",
 
-		FreeMind.RESOURCES_BACKGROUND_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_BACKGROUND_COLOR), this)); //  #ffffff
+		FreeMind.RESOURCES_BACKGROUND_COLOR, fmMain
+				.getDefaultProperty(FreeMind.RESOURCES_BACKGROUND_COLOR), this)); // #ffffff
 
-		controls.add(new BooleanProperty(FreeMind.RESOURCE_PRINT_ON_WHITE_BACKGROUND+".tooltip",
-                FreeMind.RESOURCE_PRINT_ON_WHITE_BACKGROUND)); // true
+		controls.add(new BooleanProperty(
+				FreeMind.RESOURCE_PRINT_ON_WHITE_BACKGROUND + ".tooltip",
+				FreeMind.RESOURCE_PRINT_ON_WHITE_BACKGROUND)); // true
 
 		controls.add(new ColorProperty("standardcloudcolor.tooltip",
 
-		FreeMind.RESOURCES_CLOUD_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_CLOUD_COLOR), this)); //  #f0f0f0
+		FreeMind.RESOURCES_CLOUD_COLOR, fmMain
+				.getDefaultProperty(FreeMind.RESOURCES_CLOUD_COLOR), this)); // #f0f0f0
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("default_fonts"));
 		controls.add(new StringProperty(
 
-		"defaultfont.tooltip", "defaultfont")); //  SansSerif
+		"defaultfont.tooltip", "defaultfont")); // SansSerif
 
-		controls.add(new StringProperty(null, "defaultfontstyle")); //  0
+		controls.add(new StringProperty(null, "defaultfontstyle")); // 0
 
-		controls.add(new NumberProperty("defaultfontsize.tooltip", "defaultfontsize",1,96 /* taken from openoffice as maximum.*/,1)); //  12
-//		controls.add(new StringProperty(null, "defaultfontsize")); //  12
+		controls.add(new NumberProperty("defaultfontsize.tooltip",
+				"defaultfontsize", 1,
+				96 /* taken from openoffice as maximum. */, 1)); // 12
+		// controls.add(new StringProperty(null, "defaultfontsize")); // 12
 
 		controls.add(new NumberProperty("max_node_width.tooltip",
-				"max_node_width", 1, Integer.MAX_VALUE, 1)); //  600
+				"max_node_width", 1, Integer.MAX_VALUE, 1)); // 600
 
-        controls.add(new NumberProperty("max_tooltip_width.tooltip",
-		        "max_tooltip_width", 1, Integer.MAX_VALUE, 1)); //  600
+		controls.add(new NumberProperty("max_tooltip_width.tooltip",
+				"max_tooltip_width", 1, Integer.MAX_VALUE, 1)); // 600
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("other_defaults"));
 		controls.add(new ComboProperty(
 
-		"standardedgestyle.tooltip", FreeMind.RESOURCES_EDGE_STYLE, new String[] {
-				"bezier", "linear" }, this)); //  bezier
+		"standardedgestyle.tooltip", FreeMind.RESOURCES_EDGE_STYLE,
+				new String[] { "bezier", "linear" }, this)); // bezier
 
-//		controls.add(new ComboProperty(
-//
-//		"standardcloudestyle.tooltip", "standardcloudestyle",
-//				new String[] { "bezier" })); //  bezier
-//
-//		controls.add(new ComboProperty(
-//
-//		"standardlinkestyle.tooltip", "standardlinkestyle",
-//				new String[] { "bezier" })); //  bezier
+		// controls.add(new ComboProperty(
+		//
+		// "standardcloudestyle.tooltip", "standardcloudestyle",
+		// new String[] { "bezier" })); // bezier
+		//
+		// controls.add(new ComboProperty(
+		//
+		// "standardlinkestyle.tooltip", "standardlinkestyle",
+		// new String[] { "bezier" })); // bezier
 
 		/***********************************************************************
 		 * Appearance
@@ -647,209 +659,221 @@ public class OptionPanel implements TextTranslator {
 			translatedLafNames.add(info.getName());
 		}
 		controls.add(new ComboProperty("lookandfeel.tooltip",
-				FreeMind.RESOURCE_LOOKANDFEEL, lafNames, translatedLafNames)); //  default
+				FreeMind.RESOURCE_LOOKANDFEEL, lafNames, translatedLafNames)); // default
 		controls.add(new BooleanProperty(
 
-				"use_tabbed_pane.tooltip", FreeMind.RESOURCES_USE_TABBED_PANE)); //  true
-//		controls.add(new BooleanProperty(
-//				
-//				"use_split_pane.tooltip", FreeMind.RESOURCES_USE_SPLIT_PANE)); //  true
+		"use_tabbed_pane.tooltip", FreeMind.RESOURCES_USE_TABBED_PANE)); // true
+		// controls.add(new BooleanProperty(
+		//
+		// "use_split_pane.tooltip", FreeMind.RESOURCES_USE_SPLIT_PANE)); //
+		// true
 
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("selection_colors"));
-		controls.add(new BooleanProperty(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION+".tooltip",
-                FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION)); // false
-		controls.add(new ColorProperty("standardselectednoderectanglecolor.tooltip",
-				FreeMind.RESOURCES_SELECTED_NODE_RECTANGLE_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_SELECTED_NODE_RECTANGLE_COLOR), this)); //  #000000
-		
-		controls.add(new ColorProperty("standardselectednodecolor.tooltip",
-		FreeMind.RESOURCES_SELECTED_NODE_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR), this)); //  #D2D2D2
+		controls.add(new BooleanProperty(
+				FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION + ".tooltip",
+				FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION)); // false
+		controls.add(new ColorProperty(
+				"standardselectednoderectanglecolor.tooltip",
+				FreeMind.RESOURCES_SELECTED_NODE_RECTANGLE_COLOR,
+				fmMain.getDefaultProperty(FreeMind.RESOURCES_SELECTED_NODE_RECTANGLE_COLOR),
+				this)); // #000000
+
+		controls.add(new ColorProperty(
+				"standardselectednodecolor.tooltip",
+				FreeMind.RESOURCES_SELECTED_NODE_COLOR,
+				fmMain.getDefaultProperty(FreeMind.RESOURCES_SELECTED_NODE_COLOR),
+				this)); // #D2D2D2
 
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
 		final String RESOURCE_ROOT_NODE = "root_node_appearance";
 		final String RESOURCE_USE_COMMON_OUT_POINT_FOR_ROOT_NODE = "use_common_out_point_for_root_node";
 		controls.add(new SeparatorProperty(RESOURCE_ROOT_NODE));
-		controls.add(new BooleanProperty(RESOURCE_USE_COMMON_OUT_POINT_FOR_ROOT_NODE+".tooltip",
-                RESOURCE_USE_COMMON_OUT_POINT_FOR_ROOT_NODE)); // false
+		controls.add(new BooleanProperty(
+				RESOURCE_USE_COMMON_OUT_POINT_FOR_ROOT_NODE + ".tooltip",
+				RESOURCE_USE_COMMON_OUT_POINT_FOR_ROOT_NODE)); // false
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("anti_alias"));
 		controls.add(new ComboProperty("antialias.tooltip",
-				FreeMindCommon.RESOURCE_ANTIALIAS, new String[] { "antialias_edges",
-						"antialias_all", "antialias_none" }, this)); //  true
+				FreeMindCommon.RESOURCE_ANTIALIAS, new String[] {
+						"antialias_edges", "antialias_all", "antialias_none" },
+				this)); // true
 
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("initial_map_size"));
-		controls.add(new StringProperty("mapxsize.tooltip", "mapxsize")); //  1000
+		controls.add(new StringProperty("mapxsize.tooltip", "mapxsize")); // 1000
 
-		controls.add(new StringProperty(null, "mapysize")); //  3200
+		controls.add(new StringProperty(null, "mapysize")); // 3200
 
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("hyperlink_types"));
 		controls.add(new ComboProperty("links.tooltip", "links", new String[] {
-				"relative", "absolute" }, this)); //  relative
+				"relative", "absolute" }, this)); // relative
 
 		/* ***************************************************************** */
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("edit_long_node_window"));
 		controls.add(new StringProperty("el__buttons_position.tooltip",
-				"el__buttons_position")); //  above
+				"el__buttons_position")); // above
 
-		controls
-				.add(new BooleanProperty(null, "el__position_window_below_node")); //  true
+		controls.add(new BooleanProperty(null, "el__position_window_below_node")); // true
 
-		controls.add(new StringProperty(null, "el__min_default_window_height")); //  150
+		controls.add(new StringProperty(null, "el__min_default_window_height")); // 150
 
-		controls.add(new StringProperty(null, "el__max_default_window_height")); //  500
+		controls.add(new StringProperty(null, "el__max_default_window_height")); // 500
 
-		controls.add(new StringProperty(null, "el__min_default_window_width")); //  600
+		controls.add(new StringProperty(null, "el__min_default_window_width")); // 600
 
-		controls.add(new StringProperty(null, "el__max_default_window_width")); //  600
+		controls.add(new StringProperty(null, "el__max_default_window_width")); // 600
 
-        controls
-                .add(new BooleanProperty(null, "el__enter_confirms_by_default")); //  true
+		controls.add(new BooleanProperty(null, "el__enter_confirms_by_default")); // true
 
+		controls.add(new BooleanProperty(null, "el__show_icon_for_attributes")); // true
 
-        controls
-                .add(new BooleanProperty(null, "el__show_icon_for_attributes")); //  true
-
-        controls.add(new SeparatorProperty("icon_properties"));
-        controls.add(new BooleanProperty(null, FreeMind.RESOURCES_DON_T_SHOW_NOTE_ICONS));
-        controls.add(new BooleanProperty(null, FreeMind.RESOURCES_DON_T_SHOW_NOTE_TOOLTIPS));
-        controls.add(new StringProperty("icon_order_description", MindIcon.PROPERTY_STRING_ICONS_LIST));
+		controls.add(new SeparatorProperty("icon_properties"));
+		controls.add(new BooleanProperty(null,
+				FreeMind.RESOURCES_DON_T_SHOW_NOTE_ICONS));
+		controls.add(new BooleanProperty(null,
+				FreeMind.RESOURCES_DON_T_SHOW_NOTE_TOOLTIPS));
+		controls.add(new StringProperty("icon_order_description",
+				MindIcon.PROPERTY_STRING_ICONS_LIST));
 		/***********************************************************************
 		 * Keystrokes
 		 * ****************************************************************
 		 */
 		String form = "right:max(40dlu;p), 4dlu, 80dlu, 7dlu";
-		controls.add(new NewTabProperty("Keystrokes", form+ ","+form)); //", right:max(40dlu;p), 4dlu, 60dlu"));
+		controls.add(new NewTabProperty("Keystrokes", form + "," + form)); // ", right:max(40dlu;p), 4dlu, 60dlu"));
 		//
-		//		 These are the accelerators for the menu items. Valid modifiers are:
-		//		 shift | control | alt | meta | button1 | button2 | button3
-		//		 Valid keys should be all that are defined in java.awt.event.KeyEvent
-		//		 (without the "VK_" prefix), but I found this buggy. All normal char's
+		// These are the accelerators for the menu items. Valid modifiers are:
+		// shift | control | alt | meta | button1 | button2 | button3
+		// Valid keys should be all that are defined in java.awt.event.KeyEvent
+		// (without the "VK_" prefix), but I found this buggy. All normal char's
 		// should work.
 
-		//		 The ideas employed in choice of keyboard shortcuts are:
-		//		   If there is a standard for a feature, use it
-		//		   Use control modifier whereever possible
+		// The ideas employed in choice of keyboard shortcuts are:
+		// If there is a standard for a feature, use it
+		// Use control modifier whereever possible
 
-		//		Commands for the program
+		// Commands for the program
 		controls.add(new SeparatorProperty("commands_for_the_program"));
-		controls.add(new KeyProperty(frame, null, "keystroke_newMap")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_newMap")); // control
 		// N
 
-		controls.add(new KeyProperty(frame, null, "keystroke_open")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_open")); // control
 		// O
 
-		controls.add(new KeyProperty(frame, null, "keystroke_save")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_save")); // control
 		// S
 
-		controls.add(new KeyProperty(frame, null, "keystroke_saveAs")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_saveAs")); // control
 		// shift
 		// S
 
-		controls.add(new KeyProperty(frame, null, "keystroke_print")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_print")); // control
 		// P
 
-		controls.add(new KeyProperty(frame, null, "keystroke_close")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_close")); // control
 		// W
 
-		controls.add(new KeyProperty(frame, null, "keystroke_quit")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_quit")); // control
 		// Q
 
-		controls.add(new KeyProperty(frame, null, "keystroke_option_dialog")); //  control COMMA
+		controls.add(new KeyProperty(frame, null, "keystroke_option_dialog")); // control
+																				// COMMA
 
-		controls.add(new KeyProperty(frame, null, "keystroke_export_to_html")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_export_to_html")); // control
 		// E
 
 		controls.add(new KeyProperty(frame, null,
-				"keystroke_export_branch_to_html")); //  control
+				"keystroke_export_branch_to_html")); // control
 		// H
 
 		controls.add(new KeyProperty(frame, null,
-				"keystroke_open_first_in_history")); //  control
+				"keystroke_open_first_in_history")); // control
 		// shift
 		// W
 
-		controls.add(new KeyProperty(frame, null, FreeMind.KEYSTROKE_PREVIOUS_MAP)); //  control
+		controls.add(new KeyProperty(frame, null,
+				FreeMind.KEYSTROKE_PREVIOUS_MAP)); // control
 		// LEFT
 
-		controls.add(new KeyProperty(frame, null, FreeMind.KEYSTROKE_NEXT_MAP)); //  control
+		controls.add(new KeyProperty(frame, null, FreeMind.KEYSTROKE_NEXT_MAP)); // control
 		// RIGHT
 
-		controls.add(new KeyProperty(frame, null, FreeMind.KEYSTROKE_MOVE_MAP_LEFT)); 
-		
-		controls.add(new KeyProperty(frame, null, FreeMind.KEYSTROKE_MOVE_MAP_RIGHT)); 
-		
-		controls.add(new KeyProperty(frame, null, "keystroke_mode_MindMap")); //  alt
+		controls.add(new KeyProperty(frame, null,
+				FreeMind.KEYSTROKE_MOVE_MAP_LEFT));
+
+		controls.add(new KeyProperty(frame, null,
+				FreeMind.KEYSTROKE_MOVE_MAP_RIGHT));
+
+		controls.add(new KeyProperty(frame, null, "keystroke_mode_MindMap")); // alt
 		// 1
 
-		controls.add(new KeyProperty(frame, null, "keystroke_mode_Browse")); //  alt
+		controls.add(new KeyProperty(frame, null, "keystroke_mode_Browse")); // alt
 		// 2
 
-		controls.add(new KeyProperty(frame, null, "keystroke_mode_File")); //  alt
+		controls.add(new KeyProperty(frame, null, "keystroke_mode_File")); // alt
 		// 3
 
 		controls.add(new KeyProperty(frame, null,
-				"keystroke_node_toggle_italic")); //  control
+				"keystroke_node_toggle_italic")); // control
 		// I
 
 		controls.add(new KeyProperty(frame, null,
-				"keystroke_node_toggle_boldface")); //  control
+				"keystroke_node_toggle_boldface")); // control
 		// B
 
 		controls.add(new KeyProperty(frame, null,
-				"keystroke_node_toggle_underlined")); //  control
+				"keystroke_node_toggle_underlined")); // control
 		// U
 
-		controls
-				.add(new KeyProperty(frame, null, "keystroke_node_toggle_cloud")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_node_toggle_cloud")); // control
 		// shift
 		// B
 
-		controls.add(new KeyProperty(frame, null, "keystroke_undo")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_undo")); // control
 		// Z
 
-		controls.add(new KeyProperty(frame, null, "keystroke_redo")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_redo")); // control
 		// Y
 
-		controls.add(new KeyProperty(frame, null, "keystroke_delete_child")); //  DELETE
+		controls.add(new KeyProperty(frame, null, "keystroke_delete_child")); // DELETE
 
-		controls.add(new KeyProperty(frame, null, "keystroke_select_all")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_select_all")); // control
 		// A
 
-		controls.add(new KeyProperty(frame, null, "keystroke_select_branch")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_select_branch")); // control
 		// shift A
 
-		controls.add(new KeyProperty(frame, null, "keystroke_zoom_out")); //  alt
+		controls.add(new KeyProperty(frame, null, "keystroke_zoom_out")); // alt
 		// UP
 
-		controls.add(new KeyProperty(frame, null, "keystroke_zoom_in")); //  alt
+		controls.add(new KeyProperty(frame, null, "keystroke_zoom_in")); // alt
 		// DOWN
 
-		//		Node editing commands
+		// Node editing commands
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("node_editing_commands"));
-		controls.add(new KeyProperty(frame, null, "keystroke_cut")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_cut")); // control
 		// X
 
-		controls.add(new KeyProperty(frame, null, "keystroke_copy")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_copy")); // control
 		// C
 
-		controls.add(new KeyProperty(frame, null, "keystroke_copy_single")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_copy_single")); // control
 		// shift C
 
-		controls.add(new KeyProperty(frame, null, "keystroke_paste")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_paste")); // control
 		// V
 
-		controls.add(new KeyProperty(frame, null, "keystroke_pasteAsPlainText")); 
-		
-		controls.add(new KeyProperty(frame, null, "keystroke_remove")); //  none
+		controls.add(new KeyProperty(frame, null, "keystroke_pasteAsPlainText"));
+
+		controls.add(new KeyProperty(frame, null, "keystroke_remove")); // none
 
 		controls.add(new KeyProperty(frame, null,
 				"keystroke_add_arrow_link_action")); // control
@@ -860,233 +884,246 @@ public class OptionPanel implements TextTranslator {
 
 		// L
 
-		//		 Unline with control X, the node you remove with action remove cannot
+		// Unline with control X, the node you remove with action remove cannot
 		// be
-		//		 pasted again. Therefore, we do not provide any quick shortcut. We
+		// pasted again. Therefore, we do not provide any quick shortcut. We
 		// suggest
-		//		 that you use cut instead of remove.
+		// that you use cut instead of remove.
 
-		//		Node navigation commands
+		// Node navigation commands
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("node_navigation_commands"));
-		controls.add(new KeyProperty(frame, null, "keystroke_moveToRoot")); //  ESCAPE
+		controls.add(new KeyProperty(frame, null, "keystroke_moveToRoot")); // ESCAPE
 
-		controls.add(new KeyProperty(frame, null, "keystroke_move_up")); //  E
+		controls.add(new KeyProperty(frame, null, "keystroke_move_up")); // E
 
-		controls.add(new KeyProperty(frame, null, "keystroke_move_down")); //  D
+		controls.add(new KeyProperty(frame, null, "keystroke_move_down")); // D
 
-		controls.add(new KeyProperty(frame, null, "keystroke_move_left")); //  S
+		controls.add(new KeyProperty(frame, null, "keystroke_move_left")); // S
 
-		controls.add(new KeyProperty(frame, null, "keystroke_move_right")); //  F
+		controls.add(new KeyProperty(frame, null, "keystroke_move_right")); // F
 
-		controls.add(new KeyProperty(frame, null, "keystroke_follow_link")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_follow_link")); // control
 
 		// ENTER
 
-		//		New node commands
+		// New node commands
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("new_node_commands"));
-		controls.add(new KeyProperty(frame, null, "keystroke_add")); //  ENTER
+		controls.add(new KeyProperty(frame, null, "keystroke_add")); // ENTER
 
-		controls.add(new KeyProperty(frame, null, "keystroke_add_child")); //  INSERT
+		controls.add(new KeyProperty(frame, null, "keystroke_add_child")); // INSERT
 
-		controls.add(new KeyProperty(frame, null, "keystroke_add_child_mac")); //  TAB
+		controls.add(new KeyProperty(frame, null, "keystroke_add_child_mac")); // TAB
 
 		controls.add(new KeyProperty(frame, null,
-				"keystroke_add_sibling_before")); //  shift
+				"keystroke_add_sibling_before")); // shift
 
 		// ENTER
 
-		//		Node editing commands
+		// Node editing commands
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("node_editing_commands"));
-		controls.add(new KeyProperty(frame, null, "keystroke_edit")); //  F2
+		controls.add(new KeyProperty(frame, null, "keystroke_edit")); // F2
 
-		controls.add(new KeyProperty(frame, null, "keystroke_edit_long_node")); //  alt
+		controls.add(new KeyProperty(frame, null, "keystroke_edit_long_node")); // alt
 		// ENTER
 
-		controls.add(new KeyProperty(frame, null, "keystroke_join_nodes")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_join_nodes")); // control
 		// J
 
-		controls.add(new KeyProperty(frame, null, "keystroke_toggle_folded")); //  SPACE
+		controls.add(new KeyProperty(frame, null, "keystroke_toggle_folded")); // SPACE
 
 		controls.add(new KeyProperty(frame, null,
-				"keystroke_toggle_children_folded")); //  control
+				"keystroke_toggle_children_folded")); // control
 		// SPACE
 
 		controls.add(new KeyProperty(frame, null,
-				"keystroke_set_link_by_filechooser")); //  control
+				"keystroke_set_link_by_filechooser")); // control
 		// shift
 		// K
 
 		controls.add(new KeyProperty(frame, null,
-				"keystroke_set_link_by_textfield")); //  control
+				"keystroke_set_link_by_textfield")); // control
 		// K
 
 		controls.add(new KeyProperty(frame, null,
-				"keystroke_set_image_by_filechooser")); //  alt
+				"keystroke_set_image_by_filechooser")); // alt
 		// K
 
-		controls.add(new KeyProperty(frame, null, "keystroke_node_up")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_node_up")); // control
 		// UP
 
-		controls.add(new KeyProperty(frame, null, "keystroke_node_down")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_node_down")); // control
 		// DOWN
 
 		controls.add(new KeyProperty(frame, null,
-				"keystroke_node_increase_font_size")); //  control
+				"keystroke_node_increase_font_size")); // control
 		// PLUS
 
 		controls.add(new KeyProperty(frame, null,
-				"keystroke_node_decrease_font_size")); //  control
+				"keystroke_node_decrease_font_size")); // control
 		// MINUS
 
-		//		controls.add(new KeyProperty(frame, null,
-		//				"keystroke_branch_increase_font_size")); // control
-		//		// shift
-		//		// PLUS
+		// controls.add(new KeyProperty(frame, null,
+		// "keystroke_branch_increase_font_size")); // control
+		// // shift
+		// // PLUS
 		//
-		//		controls.add(new KeyProperty(frame, null,
-		//				"keystroke_branch_decrease_font_size")); // control
-		//		// shift
-		//		// MINUS
+		// controls.add(new KeyProperty(frame, null,
+		// "keystroke_branch_decrease_font_size")); // control
+		// // shift
+		// // MINUS
 		//
-		controls.add(new KeyProperty(frame, null, "keystroke_export_branch")); //  alt
+		controls.add(new KeyProperty(frame, null, "keystroke_export_branch")); // alt
 		// A
 		//
 
-		controls.add(new KeyProperty(frame, null, "keystroke_node_color")); //  alt
+		controls.add(new KeyProperty(frame, null, "keystroke_node_color")); // alt
 		// F
 
-		controls
-				.add(new KeyProperty(frame, null, "keystroke_node_color_blend")); //  alt
+		controls.add(new KeyProperty(frame, null, "keystroke_node_color_blend")); // alt
 		// B
 
-		controls.add(new KeyProperty(frame, null, "keystroke_edge_color")); //  alt
+		controls.add(new KeyProperty(frame, null, "keystroke_edge_color")); // alt
 		// E
 
-		controls.add(new KeyProperty(frame, null, "keystroke_find")); //  ctrl F
+		controls.add(new KeyProperty(frame, null, "keystroke_find")); // ctrl F
 
-		controls.add(new KeyProperty(frame, null, "keystroke_find_next")); //  ctrl
+		controls.add(new KeyProperty(frame, null, "keystroke_find_next")); // ctrl
 		// G
 
-		//		 Apply patterns
+		// Apply patterns
 
-		//		 There is no limiting number of the pattern, you can have as many
+		// There is no limiting number of the pattern, you can have as many
 		// keystrokes for patterns as you want. The reason I do not follow to
 		// F10 and further in this default is that F10 has special function on
 		// Windows.
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("patterns"));
-		controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/ManagePatterns_manage_patterns_dialog")); //  control shift F1
-		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_1")); //  F1
+		controls.add(new KeyProperty(frame, null,
+				"keystroke_accessories/plugins/ManagePatterns_manage_patterns_dialog")); // control
+																							// shift
+																							// F1
+		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_1")); // F1
 
-		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_2")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_2")); // control
 		// shift
 		// N
 
-		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_3")); //  F3
+		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_3")); // F3
 
-		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_4")); //  F4
+		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_4")); // F4
 
-		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_5")); //  F5
+		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_5")); // F5
 
-		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_6")); //  F6
+		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_6")); // F6
 
-		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_7")); //  F7
+		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_7")); // F7
 
-		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_8")); //  F8
+		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_8")); // F8
 
-		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_9")); //  F9
+		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_9")); // F9
 
-		controls
-				.add(new KeyProperty(frame, null, "keystroke_apply_pattern_10")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_10")); // control
 		// F1
 
-		controls
-				.add(new KeyProperty(frame, null, "keystroke_apply_pattern_11")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_11")); // control
 		// F2
 
-		controls
-				.add(new KeyProperty(frame, null, "keystroke_apply_pattern_12")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_12")); // control
 		// F3
 
-		controls
-				.add(new KeyProperty(frame, null, "keystroke_apply_pattern_13")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_13")); // control
 
 		// F4
 
-		controls
-				.add(new KeyProperty(frame, null, "keystroke_apply_pattern_14")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_14")); // control
 		// F5
 
-		controls
-				.add(new KeyProperty(frame, null, "keystroke_apply_pattern_15")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_15")); // control
 		// F6
 
-		controls
-				.add(new KeyProperty(frame, null, "keystroke_apply_pattern_16")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_16")); // control
 		// F7
 
-		controls
-				.add(new KeyProperty(frame, null, "keystroke_apply_pattern_17")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_17")); // control
 		// F8
 
-		controls
-				.add(new KeyProperty(frame, null, "keystroke_apply_pattern_18")); //  control
+		controls.add(new KeyProperty(frame, null, "keystroke_apply_pattern_18")); // control
 		// F9
 
-        controls.add(new NextLineProperty());
-        controls.add(new SeparatorProperty("others"));
+		controls.add(new NextLineProperty());
+		controls.add(new SeparatorProperty("others"));
 
-        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/ChangeNodeLevelAction_left.properties_key"));
-        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/ChangeNodeLevelAction_right.properties_key"));
-        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/FormatCopy.properties.properties_key"));
-        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/FormatPaste.properties.properties_key"));
-        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/IconSelectionPlugin.properties.properties_key"));
-        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/NewParentNode.properties_key"));
-        //controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/NodeNote.properties_key"));
-        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/NodeNote_jumpto.keystroke.alt_N"));
-        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/NodeNote_hide_show.keystroke.control_shift_less"));
-        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/RemoveNote.properties.properties_key"));
-        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_PAGE_UP"));
-        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_PAGE_DOWN"));
-        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_HOME"));
-        controls.add(new KeyProperty(frame, null, "keystroke_accessories/plugins/UnfoldAll.keystroke.alt_END"));
-        
-        controls.add(new NextLineProperty());
-        controls.add(new SeparatorProperty("attributes"));
-        controls.add(new KeyProperty(frame, null, "keystroke_edit_attributes")); //  control
-        controls.add(new KeyProperty(frame, null, "keystroke_show_all_attributes")); //  control
-        controls.add(new KeyProperty(frame, null, "keystroke_show_selected_attributes")); //  control
-        controls.add(new KeyProperty(frame, null, "keystroke_hide_all_attributes")); //  control
-        controls.add(new KeyProperty(frame, null, "keystroke_show_attribute_manager")); //  control
-        controls.add(new KeyProperty(frame, null, "keystroke_assign_attributes")); //  control
-        controls.add(new KeyProperty(frame, null, "keystroke_plugins/ScriptingEngine.keystroke.evaluate"));
+		controls.add(new KeyProperty(frame, null,
+				"keystroke_accessories/plugins/ChangeNodeLevelAction_left.properties_key"));
+		controls.add(new KeyProperty(frame, null,
+				"keystroke_accessories/plugins/ChangeNodeLevelAction_right.properties_key"));
+		controls.add(new KeyProperty(frame, null,
+				"keystroke_accessories/plugins/FormatCopy.properties.properties_key"));
+		controls.add(new KeyProperty(frame, null,
+				"keystroke_accessories/plugins/FormatPaste.properties.properties_key"));
+		controls.add(new KeyProperty(frame, null,
+				"keystroke_accessories/plugins/IconSelectionPlugin.properties.properties_key"));
+		controls.add(new KeyProperty(frame, null,
+				"keystroke_accessories/plugins/NewParentNode.properties_key"));
+		// controls.add(new KeyProperty(frame, null,
+		// "keystroke_accessories/plugins/NodeNote.properties_key"));
+		controls.add(new KeyProperty(frame, null,
+				"keystroke_accessories/plugins/NodeNote_jumpto.keystroke.alt_N"));
+		controls.add(new KeyProperty(frame, null,
+				"keystroke_accessories/plugins/NodeNote_hide_show.keystroke.control_shift_less"));
+		controls.add(new KeyProperty(frame, null,
+				"keystroke_accessories/plugins/RemoveNote.properties.properties_key"));
+		controls.add(new KeyProperty(frame, null,
+				"keystroke_accessories/plugins/UnfoldAll.keystroke.alt_PAGE_UP"));
+		controls.add(new KeyProperty(frame, null,
+				"keystroke_accessories/plugins/UnfoldAll.keystroke.alt_PAGE_DOWN"));
+		controls.add(new KeyProperty(frame, null,
+				"keystroke_accessories/plugins/UnfoldAll.keystroke.alt_HOME"));
+		controls.add(new KeyProperty(frame, null,
+				"keystroke_accessories/plugins/UnfoldAll.keystroke.alt_END"));
 
-        final ModeController modeController = fmMain.getController().getModeController();
-        if(modeController instanceof MindMapController){
-    		MindMapController controller = (MindMapController)modeController;
-    		Vector iconActions = controller.iconActions;
-    		Vector actions = new Vector();
-    		actions.addAll(iconActions);
-    		actions.add(controller.removeLastIconAction);
-    		actions.add(controller.removeAllIconsAction);
-            controls.add(new NextLineProperty());
-            controls.add(new SeparatorProperty("icons"));
-            final Iterator iterator = actions.iterator();
-            while(iterator.hasNext()){
-            	IconInformation info = (IconInformation) iterator.next();
-                final KeyProperty keyProperty = new KeyProperty(frame, null, info.getKeystrokeResourceName());
-                keyProperty.setLabelText(info.getDescription());
-                keyProperty.setImageIcon(info.getIcon());
-                keyProperty.disableModifiers();
+		controls.add(new NextLineProperty());
+		controls.add(new SeparatorProperty("attributes"));
+		controls.add(new KeyProperty(frame, null, "keystroke_edit_attributes")); // control
+		controls.add(new KeyProperty(frame, null,
+				"keystroke_show_all_attributes")); // control
+		controls.add(new KeyProperty(frame, null,
+				"keystroke_show_selected_attributes")); // control
+		controls.add(new KeyProperty(frame, null,
+				"keystroke_hide_all_attributes")); // control
+		controls.add(new KeyProperty(frame, null,
+				"keystroke_show_attribute_manager")); // control
+		controls.add(new KeyProperty(frame, null, "keystroke_assign_attributes")); // control
+		controls.add(new KeyProperty(frame, null,
+				"keystroke_plugins/ScriptingEngine.keystroke.evaluate"));
+
+		final ModeController modeController = fmMain.getController()
+				.getModeController();
+		if (modeController instanceof MindMapController) {
+			MindMapController controller = (MindMapController) modeController;
+			Vector iconActions = controller.iconActions;
+			Vector actions = new Vector();
+			actions.addAll(iconActions);
+			actions.add(controller.removeLastIconAction);
+			actions.add(controller.removeAllIconsAction);
+			controls.add(new NextLineProperty());
+			controls.add(new SeparatorProperty("icons"));
+			final Iterator iterator = actions.iterator();
+			while (iterator.hasNext()) {
+				IconInformation info = (IconInformation) iterator.next();
+				final KeyProperty keyProperty = new KeyProperty(frame, null,
+						info.getKeystrokeResourceName());
+				keyProperty.setLabelText(info.getDescription());
+				keyProperty.setImageIcon(info.getIcon());
+				keyProperty.disableModifiers();
 				controls.add(keyProperty);
-            }
-            
-        }
+			}
 
+		}
 
 		/***********************************************************************
 		 * Misc ****************************************************************
@@ -1096,29 +1133,30 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new ComboProperty(
 
 		"placenewbranches.tooltip", "placenewbranches", new String[] { "first",
-				"last" }, this)); //  last
-		controls.add(new BooleanProperty("draganddrop.tooltip", "draganddrop")); //  true
+				"last" }, this)); // last
+		controls.add(new BooleanProperty("draganddrop.tooltip", "draganddrop")); // true
 
-		controls.add(new BooleanProperty("unfold_on_paste.tooltip", "unfold_on_paste")); //  true
+		controls.add(new BooleanProperty("unfold_on_paste.tooltip",
+				"unfold_on_paste")); // true
 
-		controls.add(new BooleanProperty(
-		"disable_cursor_move_paper.tooltip", "disable_cursor_move_paper")); //  false
+		controls.add(new BooleanProperty("disable_cursor_move_paper.tooltip",
+				"disable_cursor_move_paper")); // false
 
-		controls.add(new BooleanProperty(
-		"enable_leaves_folding.tooltip", "enable_leaves_folding")); //  false
-		
-		controls.add(new StringProperty(
-		"foldingsymbolwidth.tooltip", "foldingsymbolwidth")); //  6
+		controls.add(new BooleanProperty("enable_leaves_folding.tooltip",
+				"enable_leaves_folding")); // false
+
+		controls.add(new StringProperty("foldingsymbolwidth.tooltip",
+				"foldingsymbolwidth")); // 6
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("key_typing"));
 		controls.add(new BooleanProperty(
 
-		"disable_key_type.tooltip", "disable_key_type")); //  false
+		"disable_key_type.tooltip", "disable_key_type")); // false
 
 		controls.add(new BooleanProperty(
 
-		"key_type_adds_new.tooltip", "key_type_adds_new")); //  false
+		"key_type_adds_new.tooltip", "key_type_adds_new")); // false
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("resources_notifications"));
@@ -1131,44 +1169,42 @@ public class OptionPanel implements TextTranslator {
 				FreeMind.RESOURCES_CONVERT_TO_CURRENT_VERSION));
 		controls.add(new RemindValueProperty(
 				"reload_files_without_question.tooltip",
-				FreeMind.RESOURCES_RELOAD_FILES_WITHOUT_QUESTION, modeController)); 
+				FreeMind.RESOURCES_RELOAD_FILES_WITHOUT_QUESTION,
+				modeController));
 		controls.add(new DontShowNotificationProperty(
 				"delete_nodes_without_question.tooltip",
-				FreeMind.RESOURCES_DELETE_NODES_WITHOUT_QUESTION)); 
+				FreeMind.RESOURCES_DELETE_NODES_WITHOUT_QUESTION));
 		controls.add(new DontShowNotificationProperty(
 				"cut_nodes_without_question.tooltip",
-				FreeMind.RESOURCES_CUT_NODES_WITHOUT_QUESTION)); 
+				FreeMind.RESOURCES_CUT_NODES_WITHOUT_QUESTION));
 		controls.add(new DontShowNotificationProperty(
 				"remove_notes_without_question.tooltip",
-				FreeMind.RESOURCES_REMOVE_NOTES_WITHOUT_QUESTION)); 
+				FreeMind.RESOURCES_REMOVE_NOTES_WITHOUT_QUESTION));
 		controls.add(new DontShowNotificationProperty(
 				"execute_scripts_without_asking.tooltip",
 				FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_ASKING));
 
-		
 		controls.add(new NextLineProperty());
-		controls
-				.add(new SeparatorProperty(FreeMind.RESOURCES_SELECTION_METHOD));
-		controls
-				.add(new ComboProperty(
+		controls.add(new SeparatorProperty(FreeMind.RESOURCES_SELECTION_METHOD));
+		controls.add(new ComboProperty(
 
 				"selection_method.tooltip",
-						FreeMind.RESOURCES_SELECTION_METHOD, new String[] {
-								"selection_method_direct",
-								"selection_method_delayed",
-								"selection_method_by_click" }, this)); //  selection_method_direct
+				FreeMind.RESOURCES_SELECTION_METHOD,
+				new String[] { "selection_method_direct",
+						"selection_method_delayed", "selection_method_by_click" },
+				this)); // selection_method_direct
 
 		controls.add(new NumberProperty("time_for_delayed_selection.tooltip",
-                "time_for_delayed_selection", 1, Integer.MAX_VALUE, 1)); // 500
+				"time_for_delayed_selection", 1, Integer.MAX_VALUE, 1)); // 500
 
 		controls.add(new NextLineProperty());
-		controls
-		.add(new SeparatorProperty("mouse_wheel"));
-        controls.add(new NumberProperty("wheel_velocity.tooltip", FreeMind.RESOURCES_WHEEL_VELOCITY, 1,250,1));
-        controls.add(new NextLineProperty());
-        controls
-        .add(new SeparatorProperty("undo"));
-        controls.add(new NumberProperty("undo_levels.tooltip", "undo_levels", 2,1000,1));
+		controls.add(new SeparatorProperty("mouse_wheel"));
+		controls.add(new NumberProperty("wheel_velocity.tooltip",
+				FreeMind.RESOURCES_WHEEL_VELOCITY, 1, 250, 1));
+		controls.add(new NextLineProperty());
+		controls.add(new SeparatorProperty("undo"));
+		controls.add(new NumberProperty("undo_levels.tooltip", "undo_levels",
+				2, 1000, 1));
 
 		/***********************************************************************
 		 * Browser/external apps
@@ -1177,22 +1213,22 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new NewTabProperty("HTML"));
 		controls.add(new SeparatorProperty("browser"));
 		//
-		//		 The default browser setting
+		// The default browser setting
 		//
-		//		 For Windows (the \"\" signs are necessary due to links, that have "="
+		// For Windows (the \"\" signs are necessary due to links, that have "="
 		// in their URL).
-		//		 default_browser_command_windows_nt = explorer "{0}"
+		// default_browser_command_windows_nt = explorer "{0}"
 		//
-		//		 The next setting works for the default browser, but eventually starts
+		// The next setting works for the default browser, but eventually starts
 		// programs without questions, so be careful!
 		//
-		//		 default_browser_command_windows_nt = rundll32
+		// default_browser_command_windows_nt = rundll32
 		// url.dll,FileProtocolHandler {0}
 
 		controls.add(new StringProperty(
 
 		"default_browser_command_windows_nt.tooltip",
-				"default_browser_command_windows_nt")); //  cmd.exe
+				"default_browser_command_windows_nt")); // cmd.exe
 		// /c
 		// start
 		// ""
@@ -1201,40 +1237,42 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new StringProperty(
 
 		"default_browser_command_windows_9x.tooltip",
-				"default_browser_command_windows_9x")); //  command.com
+				"default_browser_command_windows_9x")); // command.com
 		// /c
 		// start
 		// "{0}"
-		//		 Dimitri proposed:
-		//		 default_browser_command_windows_9x = explorer "{0}"
+		// Dimitri proposed:
+		// default_browser_command_windows_9x = explorer "{0}"
 		//
-		//		 Here the default browser for other operating systems goes:
+		// Here the default browser for other operating systems goes:
 		//
 
 		controls.add(new StringProperty(
 				"default_browser_command_other_os.tooltip",
-				"default_browser_command_other_os")); //  mozilla {0}
+				"default_browser_command_other_os")); // mozilla {0}
 		//
 
 		controls.add(new StringProperty("default_browser_command_mac.tooltip",
-				"default_browser_command_mac")); //  open -a
+				"default_browser_command_mac")); // open -a
 		// /Applications/Safari.app {0}
 
 		controls.add(new SeparatorProperty("html_export"));
 		//
-		controls
-				.add(new ComboProperty(null, "html_export_folding",
-						new String[] { "html_export_no_folding",
-								"html_export_fold_currently_folded",
-								"html_export_fold_all",
-								"html_export_based_on_headings" }, this)); //  html_export_fold_currently_folded
+		controls.add(new ComboProperty(
+				null,
+				"html_export_folding",
+				new String[] { "html_export_no_folding",
+						"html_export_fold_currently_folded",
+						"html_export_fold_all", "html_export_based_on_headings" },
+				this)); // html_export_fold_currently_folded
 
 		controls.add(new NextLineProperty());
-		controls.add(new BooleanProperty(
-		"export_icons_in_html.tooltip", "export_icons_in_html")); //  false
+		controls.add(new BooleanProperty("export_icons_in_html.tooltip",
+				"export_icons_in_html")); // false
 
 		for (Iterator iter = sContributors.iterator(); iter.hasNext();) {
-			FreemindPropertyContributor contributor = (FreemindPropertyContributor) iter.next();
+			FreemindPropertyContributor contributor = (FreemindPropertyContributor) iter
+					.next();
 			controls.addAll(contributor.getControls(this));
 		}
 		return controls;
@@ -1242,10 +1280,11 @@ public class OptionPanel implements TextTranslator {
 
 	public void closeWindow() {
 		OptionPanelWindowConfigurationStorage storage = new OptionPanelWindowConfigurationStorage();
-        storage.setPanel(selectedPanel);
-        XmlBindingTools.getInstance().storeDialogPositions(fmMain.getController(), frame, storage,
-        		PREFERENCE_STORAGE_PROPERTY);
-        frame.setVisible(false);
+		storage.setPanel(selectedPanel);
+		XmlBindingTools.getInstance().storeDialogPositions(
+				fmMain.getController(), frame, storage,
+				PREFERENCE_STORAGE_PROPERTY);
+		frame.setVisible(false);
 		frame.dispose();
 	}
 
@@ -1254,9 +1293,9 @@ public class OptionPanel implements TextTranslator {
 	public static void addContributor(FreemindPropertyContributor contributor) {
 		sContributors.add(contributor);
 	}
+
 	public static void removeContributor(FreemindPropertyContributor contributor) {
 		sContributors.remove(contributor);
 	}
-
 
 }

@@ -21,13 +21,12 @@
 package freemind.modes.schememode;
 
 import freemind.main.FreeMindMain;
-import freemind.modes.MindMapNode;
 import freemind.modes.EdgeAdapter;
-
+import freemind.modes.MindMapNode;
 
 public class SchemeEdgeModel extends EdgeAdapter {
 
-    public SchemeEdgeModel(MindMapNode node, FreeMindMain frame) {
-	super(node,frame);
-    }
+	public SchemeEdgeModel(MindMapNode node, FreeMindMain frame) {
+		super(node, frame);
+	}
 }

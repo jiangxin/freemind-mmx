@@ -35,65 +35,65 @@ import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 public class EdgeStyleAction extends NodeGeneralAction implements NodeActorXml {
-    private String mStyle;
+	private String mStyle;
 
-    public EdgeStyleAction(MindMapController controller, String style) {
-        super(controller, null, null);
-        setName(/*controller.getText("edge_style") +*/ controller.getText(style));
-        this.mStyle = style;
-        addActor(this);
-    }
+	public EdgeStyleAction(MindMapController controller, String style) {
+		super(controller, null, null);
+		setName(/* controller.getText("edge_style") + */controller
+				.getText(style));
+		this.mStyle = style;
+		addActor(this);
+	}
 
-    public ActionPair apply(MindMap model, MindMapNode selected)
-             {
-        return getActionPair(selected, mStyle);
-    }
+	public ActionPair apply(MindMap model, MindMapNode selected) {
+		return getActionPair(selected, mStyle);
+	}
 
-    public Class getDoActionClass() {
-        return EdgeStyleFormatAction.class;
-    }
+	public Class getDoActionClass() {
+		return EdgeStyleFormatAction.class;
+	}
 
-    public void setEdgeStyle(MindMapNode node, String style) {
-        modeController.getActionFactory().startTransaction(
-                (String) getValue(NAME));
-        modeController.getActionFactory().executeAction(
-                getActionPair(node, style));
-        modeController.getActionFactory().endTransaction(
-                (String) getValue(NAME));
+	public void setEdgeStyle(MindMapNode node, String style) {
+		modeController.getActionFactory().startTransaction(
+				(String) getValue(NAME));
+		modeController.getActionFactory().executeAction(
+				getActionPair(node, style));
+		modeController.getActionFactory().endTransaction(
+				(String) getValue(NAME));
 
-    }
+	}
 
-    private ActionPair getActionPair(MindMapNode selected, String style)
-             {
-        EdgeStyleFormatAction styleAction = createNodeStyleFormatAction(
-                selected, style);
-        String oldStyle = selected.getEdge().getStyle();
-        if(!selected.getEdge().hasStyle()){
-        	oldStyle = null;
-        }
+	private ActionPair getActionPair(MindMapNode selected, String style) {
+		EdgeStyleFormatAction styleAction = createNodeStyleFormatAction(
+				selected, style);
+		String oldStyle = selected.getEdge().getStyle();
+		if (!selected.getEdge().hasStyle()) {
+			oldStyle = null;
+		}
 		EdgeStyleFormatAction undoStyleAction = createNodeStyleFormatAction(
-                selected, oldStyle);
-        return new ActionPair(styleAction, undoStyleAction);
-    }
+				selected, oldStyle);
+		return new ActionPair(styleAction, undoStyleAction);
+	}
 
-    private EdgeStyleFormatAction createNodeStyleFormatAction(
-            MindMapNode selected, String style)  {
-        EdgeStyleFormatAction edgeStyleAction = new EdgeStyleFormatAction();
-        edgeStyleAction.setNode(getNodeID(selected));
-        edgeStyleAction.setStyle(style);
-        return edgeStyleAction;
-    }
+	private EdgeStyleFormatAction createNodeStyleFormatAction(
+			MindMapNode selected, String style) {
+		EdgeStyleFormatAction edgeStyleAction = new EdgeStyleFormatAction();
+		edgeStyleAction.setNode(getNodeID(selected));
+		edgeStyleAction.setStyle(style);
+		return edgeStyleAction;
+	}
 
-    public void act(XmlAction action) {
-        if (action instanceof EdgeStyleFormatAction) {
-            EdgeStyleFormatAction edgeStyleAction = (EdgeStyleFormatAction) action;
-            MindMapNode node = getNodeFromID(edgeStyleAction.getNode());
-            String newStyle = edgeStyleAction.getStyle();
+	public void act(XmlAction action) {
+		if (action instanceof EdgeStyleFormatAction) {
+			EdgeStyleFormatAction edgeStyleAction = (EdgeStyleFormatAction) action;
+			MindMapNode node = getNodeFromID(edgeStyleAction.getNode());
+			String newStyle = edgeStyleAction.getStyle();
 			MindMapEdge edge = node.getEdge();
-			if (!Tools.safeEquals(edge.hasStyle()?edge.getStyle():null, newStyle)) {
-                ((EdgeAdapter) edge).setStyle(newStyle);
-                modeController.nodeChanged(node);
-            }
-        }
-    }
+			if (!Tools.safeEquals(edge.hasStyle() ? edge.getStyle() : null,
+					newStyle)) {
+				((EdgeAdapter) edge).setStyle(newStyle);
+				modeController.nodeChanged(node);
+			}
+		}
+	}
 }

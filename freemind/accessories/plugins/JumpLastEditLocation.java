@@ -69,7 +69,8 @@ public class JumpLastEditLocation extends MindMapNodeHookAdapter {
 			MindMapNode node = getMindMapController().getNodeFromID(
 					lastEditLocation);
 			this.logger.fine("Selecting " + node + " as last edit location.");
-			getMindMapController().select(node, Tools.getVectorWithSingleElement(node));
+			getMindMapController().select(node,
+					Tools.getVectorWithSingleElement(node));
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
 		}
@@ -98,7 +99,7 @@ public class JumpLastEditLocation extends MindMapNodeHookAdapter {
 			int index = mLastEditLocations.indexOf(id);
 			int returnIndex = index - 1;
 			if (index < 0) {
-				returnIndex = size-1;
+				returnIndex = size - 1;
 			} else if (index == 0) {
 				returnIndex = 0;
 			}
@@ -166,13 +167,14 @@ public class JumpLastEditLocation extends MindMapNodeHookAdapter {
 
 		public void endTransaction(String name) {
 		}
-		
+
 		public boolean isEnabled(JMenuItem pItem, Action pAction) {
-			String hookName = ((NodeHookAction)pAction).getHookName();
-		    if(PLUGIN_NAME.equals(hookName)){
-		    	// back is only enabled if there are already some nodes to go back ;-)
-		    	return !mLastEditLocations.isEmpty();
-		    }
+			String hookName = ((NodeHookAction) pAction).getHookName();
+			if (PLUGIN_NAME.equals(hookName)) {
+				// back is only enabled if there are already some nodes to go
+				// back ;-)
+				return !mLastEditLocations.isEmpty();
+			}
 			return true;
 		}
 	}

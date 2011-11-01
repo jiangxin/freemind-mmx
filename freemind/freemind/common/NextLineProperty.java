@@ -41,9 +41,9 @@ public class NextLineProperty implements PropertyControl {
 	public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
 		builder.nextLine();
 	}
-    public void setEnabled(boolean pEnabled) {
-        
-    }
 
+	public void setEnabled(boolean pEnabled) {
+
+	}
 
 }

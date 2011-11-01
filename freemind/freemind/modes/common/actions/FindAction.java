@@ -89,7 +89,7 @@ public class FindAction extends AbstractAction {
 	private JCheckBox mFindInNotesTooBox;
 
 	private JTextField mSearchField;
-	
+
 	/** This isn't stored and is per map. */
 	private String mLastSearchString;
 
@@ -171,7 +171,7 @@ public class FindAction extends AbstractAction {
 						new Insets(5, 5, 0, 0), 0, 0));
 		mSearchField = new JTextField(mLastSearchString);
 		mSearchField.selectAll();
-		mSearchField.setMinimumSize(new Dimension(500,14));
+		mSearchField.setMinimumSize(new Dimension(500, 14));
 		contentPane.add(mSearchField, new GridBagConstraints(2, 0, 10, 1, 1.0,
 				1.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
 				new Insets(5, 5, 0, 0), 0, 0));

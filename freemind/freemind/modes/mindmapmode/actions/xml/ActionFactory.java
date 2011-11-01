@@ -33,14 +33,17 @@ import freemind.modes.mindmapmode.actions.xml.ActionFilter.FinalActionFilter;
 
 /**
  * @author foltin
- *
+ * 
  */
 public class ActionFactory {
 
 	private Controller controller;
-	/** This Vector denotes all handler of the action to be called for each action. */
+	/**
+	 * This Vector denotes all handler of the action to be called for each
+	 * action.
+	 */
 	private Vector registeredHandler;
-	/** This set denotes all filters for XmlActions.*/
+	/** This set denotes all filters for XmlActions. */
 	private Vector registeredFilters;
 	/** HashMap of Action class -> actor instance. */
 	private HashMap registeredActors;
@@ -62,14 +65,15 @@ public class ActionFactory {
 		registeredActors = new HashMap();
 	}
 
-	/** The handler is put in front. Thus it is called before others are called.
+	/**
+	 * The handler is put in front. Thus it is called before others are called.
 	 */
 	public void registerHandler(ActionHandler newHandler) {
-	    // if it is present, put it in front:
+		// if it is present, put it in front:
 		if (!registeredHandler.contains(newHandler)) {
-		    registeredHandler.remove(newHandler);
-        }
-        registeredHandler.add(0, newHandler);
+			registeredHandler.remove(newHandler);
+		}
+		registeredHandler.add(0, newHandler);
 	}
 
 	public void deregisterHandler(ActionHandler newHandler) {
@@ -80,9 +84,10 @@ public class ActionFactory {
 		if (!registeredFilters.contains(newFilter)) {
 			if (newFilter instanceof FinalActionFilter) {
 				/* Insert as the last one here. */
-				registeredFilters.insertElementAt(newFilter, registeredFilters.size());
+				registeredFilters.insertElementAt(newFilter,
+						registeredFilters.size());
 			} else {
-				registeredFilters.add(newFilter);				
+				registeredFilters.add(newFilter);
 			}
 		}
 	}
@@ -98,7 +103,6 @@ public class ActionFactory {
 		}
 	}
 
-
 	public void endTransaction(String name) {
 		for (Iterator i = registeredHandler.iterator(); i.hasNext();) {
 			ActionHandler handler = (ActionHandler) i.next();
@@ -107,22 +111,22 @@ public class ActionFactory {
 	}
 
 	/**
-	 *  @return the success of the action. If an exception arises, the method returns false. 
+	 * @return the success of the action. If an exception arises, the method
+	 *         returns false.
 	 */
 	public boolean executeAction(ActionPair pair) {
-	    if(pair == null)
-	        return false;
-	    boolean returnValue = true;
-	    ActionPair filteredPair = pair;
+		if (pair == null)
+			return false;
+		boolean returnValue = true;
+		ActionPair filteredPair = pair;
 		// first filter:
 		for (Iterator i = registeredFilters.iterator(); i.hasNext();) {
 			ActionFilter filter = (ActionFilter) i.next();
 			filteredPair = filter.filterAction(filteredPair);
 		}
-		
+
 		// register for undo
-		if(undoActionHandler != null)
-		{
+		if (undoActionHandler != null) {
 			try {
 				undoActionHandler.executeAction(filteredPair);
 			} catch (Exception e) {
@@ -130,17 +134,17 @@ public class ActionFactory {
 				returnValue = false;
 			}
 		}
-		
+
 		Object[] aArray = registeredHandler.toArray();
 		for (int i = 0; i < aArray.length; i++) {
-            ActionHandler handler = (ActionHandler) aArray[i];
+			ActionHandler handler = (ActionHandler) aArray[i];
 			try {
-                handler.executeAction(filteredPair.getDoAction());
-            } catch (Exception e) {
-                freemind.main.Resources.getInstance().logException(e);
-                returnValue = false;
-                // to break or not to break. this is the question here...
-            }
+				handler.executeAction(filteredPair.getDoAction());
+			} catch (Exception e) {
+				freemind.main.Resources.getInstance().logException(e);
+				returnValue = false;
+				// to break or not to break. this is the question here...
+			}
 		}
 		return returnValue;
 	}
@@ -156,24 +160,26 @@ public class ActionFactory {
 	public void registerActor(ActorXml actor, Class action) {
 		registeredActors.put(action, actor);
 	}
+
 	/**
 	 */
 	public void deregisterActor(Class action) {
-	    registeredActors.remove(action);
+		registeredActors.remove(action);
 	}
 
 	public ActorXml getActor(XmlAction action) {
 		for (Iterator i = registeredActors.keySet().iterator(); i.hasNext();) {
 			Class actorClass = (Class) i.next();
-			if(actorClass.isInstance(action)) {
+			if (actorClass.isInstance(action)) {
 				return (ActorXml) registeredActors.get(actorClass);
 			}
 		}
-//		Class actionClass = action.getClass();
-//		if(registeredActors.containsKey(actionClass)) {
-//			return (ActorXml) registeredActors.get(actionClass);
-//		}
-		throw new IllegalArgumentException("No actor present for xmlaction" + action.getClass());
+		// Class actionClass = action.getClass();
+		// if(registeredActors.containsKey(actionClass)) {
+		// return (ActorXml) registeredActors.get(actionClass);
+		// }
+		throw new IllegalArgumentException("No actor present for xmlaction"
+				+ action.getClass());
 	}
 
 	public void registerUndoHandler(UndoActionHandler undoActionHandler) {

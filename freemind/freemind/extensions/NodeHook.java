@@ -20,21 +20,18 @@
 
 package freemind.extensions;
 
-import java.util.Collection;
-import java.util.List;
-
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 
 public interface NodeHook extends MindMapHook {
-	
+
 	void setMap(MindMap map);
+
 	void setNode(MindMapNode node);
-	
+
 	/* hooks */
 	/**
 	 * Is called after creation:
 	 */
 	void invoke(MindMapNode node);
 }
-

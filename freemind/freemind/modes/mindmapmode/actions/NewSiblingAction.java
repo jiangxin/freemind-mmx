@@ -28,14 +28,16 @@ import javax.swing.AbstractAction;
 
 import freemind.modes.mindmapmode.MindMapController;
 
-
 public class NewSiblingAction extends AbstractAction {
-    private final MindMapController controller;
+	private final MindMapController controller;
+
 	public NewSiblingAction(MindMapController controller) {
-        super(controller.getText("new_sibling_behind"));
+		super(controller.getText("new_sibling_behind"));
 		this.controller = controller;
-    }
-    public void actionPerformed(ActionEvent e) {
-        controller.addNew(controller.getSelected(), MindMapController.NEW_SIBLING_BEHIND, null);
-    }
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		controller.addNew(controller.getSelected(),
+				MindMapController.NEW_SIBLING_BEHIND, null);
+	}
 }

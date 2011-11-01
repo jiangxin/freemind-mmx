@@ -42,7 +42,6 @@ import freemind.extensions.HookFactory;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.main.XMLParseException;
-import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -81,39 +80,40 @@ public class BrowseController extends ViewControllerAdapter {
 		// for displaying notes.
 		registerNodeSelectionListener(new NodeNoteViewer(this));
 	}
-	
+
 	public void startupController() {
 		super.startupController();
-	    invokeHooksRecursively((NodeAdapter) getRootNode(), getMap());
+		invokeHooksRecursively((NodeAdapter) getRootNode(), getMap());
 	}
-	
+
 	protected void restoreMapsLastState(ModeController pNewModeController,
 			MapAdapter pModel) {
 		// intentionally do nothing.
 	}
-	
+
 	public MapAdapter newModel(ModeController modeController) {
 		return new BrowseMapModel(getFrame(), modeController);
 	}
 
 	public void plainClick(MouseEvent e) {
-        /* perform action only if one selected node.*/
-        if(getSelecteds().size() != 1)
-            return;
-        final MainView component = (MainView)e.getComponent();
-        if (component.isInFollowLinkRegion(e.getX())) {
-            loadURL(); }
-        else {
-    		MindMapNode node = (component).getNodeView().getModel();
-            if (!node.hasChildren()) {
-                // the emulate the plain click.
-                doubleClick(e);
-                return;
-            }
-            toggleFolded.toggleFolded(getSelecteds().listIterator());
-        }
+		/* perform action only if one selected node. */
+		if (getSelecteds().size() != 1)
+			return;
+		final MainView component = (MainView) e.getComponent();
+		if (component.isInFollowLinkRegion(e.getX())) {
+			loadURL();
+		} else {
+			MindMapNode node = (component).getNodeView().getModel();
+			if (!node.hasChildren()) {
+				// the emulate the plain click.
+				doubleClick(e);
+				return;
+			}
+			toggleFolded.toggleFolded(getSelecteds().listIterator());
+		}
 
 	}
+
 	public void doubleClick() {
 		/* If the link exists, follow the link; toggle folded otherwise */
 		if (getSelected().getLink() == null) {
@@ -123,30 +123,30 @@ public class BrowseController extends ViewControllerAdapter {
 		}
 	}
 
-//	public void anotherNodeSelected(MindMapNode n) {
-//		super.anotherNodeSelected(n);
-//		if(n.isRoot()){
-//			return;
-//		}
-//		//Presentation:
-//		setFolded(n, false);
-//		foldOthers(n);
-//	}
-//
-//
-//	private void foldOthers(MindMapNode n) {
-//		if(n.isRoot()){
-//			return;
-//		}
-//		MindMapNode parent = n.getParentNode();
-//		for (Iterator iter = parent.childrenUnfolded(); iter.hasNext();) {
-//			MindMapNode element = (MindMapNode) iter.next();
-//			if(element != n){
-//				setFolded(element, true);
-//			}
-//		}
-//		foldOthers(parent);
-//	}
+	// public void anotherNodeSelected(MindMapNode n) {
+	// super.anotherNodeSelected(n);
+	// if(n.isRoot()){
+	// return;
+	// }
+	// //Presentation:
+	// setFolded(n, false);
+	// foldOthers(n);
+	// }
+	//
+	//
+	// private void foldOthers(MindMapNode n) {
+	// if(n.isRoot()){
+	// return;
+	// }
+	// MindMapNode parent = n.getParentNode();
+	// for (Iterator iter = parent.childrenUnfolded(); iter.hasNext();) {
+	// MindMapNode element = (MindMapNode) iter.next();
+	// if(element != n){
+	// setFolded(element, true);
+	// }
+	// }
+	// foldOthers(parent);
+	// }
 
 	public MindMapNode newNode(Object userObject, MindMap map) {
 		return new BrowseNodeModel(userObject, getFrame(), map);
@@ -204,70 +204,77 @@ public class BrowseController extends ViewControllerAdapter {
 	public JToolBar getModeToolBar() {
 		return getToolBar();
 	}
+
 	BrowseToolBar getToolBar() {
 		return (BrowseToolBar) toolbar;
 	}
 
-//	public void loadURL(String relative) {
-//		// copy from mind map controller:
-//        if (relative.startsWith("#")) {
-//			// inner map link, fc, 12.10.2004
-//			String target = relative.substring(1);
-//			try {
-//				MindMapNode node = getNodeFromID(target);
-//				centerNode(node);
-//				return;
-//			} catch (Exception e) {
-//				// bad luck.
-//				getFrame().out(Tools.expandPlaceholders(getText("link_not_found"), target));
-//				return;
-//			}
-//		}
-//
-//		URL absolute = null;
-//		try {
-//			absolute = new URL(getMap().getURL(), relative);
-//			getFrame().out(absolute.toString());
-//		} catch (MalformedURLException ex) {
-//			freemind.main.Resources.getInstance().logExecption(ex);
-//			getController().errorMessage(
-//					getText("url_error") + " " + ex.getMessage());
-//			// getFrame().err(getText("url_error"));
-//			return;
-//		}
-//
-//		String type = Tools.getExtension(absolute.getFile());
-//		try {
-//			if (type.equals(freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION_WITHOUT_DOT)) {
-//				getFrame().setWaitingCursor(true);
-//				load(absolute);
-//			} else {
-//				getFrame().openDocument(absolute);
-//			}
-//		} catch (Exception ex) {
-//			getController().errorMessage(getText("url_load_error") + absolute);
-//freemind.main.Resources.getInstance().logExecption(			ex);
-//			// for some reason, this exception is thrown anytime...
-//		} finally {
-//			getFrame().setWaitingCursor(false);
-//		}
-//
-//	}
+	// public void loadURL(String relative) {
+	// // copy from mind map controller:
+	// if (relative.startsWith("#")) {
+	// // inner map link, fc, 12.10.2004
+	// String target = relative.substring(1);
+	// try {
+	// MindMapNode node = getNodeFromID(target);
+	// centerNode(node);
+	// return;
+	// } catch (Exception e) {
+	// // bad luck.
+	// getFrame().out(Tools.expandPlaceholders(getText("link_not_found"),
+	// target));
+	// return;
+	// }
+	// }
+	//
+	// URL absolute = null;
+	// try {
+	// absolute = new URL(getMap().getURL(), relative);
+	// getFrame().out(absolute.toString());
+	// } catch (MalformedURLException ex) {
+	// freemind.main.Resources.getInstance().logExecption(ex);
+	// getController().errorMessage(
+	// getText("url_error") + " " + ex.getMessage());
+	// // getFrame().err(getText("url_error"));
+	// return;
+	// }
+	//
+	// String type = Tools.getExtension(absolute.getFile());
+	// try {
+	// if
+	// (type.equals(freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION_WITHOUT_DOT))
+	// {
+	// getFrame().setWaitingCursor(true);
+	// load(absolute);
+	// } else {
+	// getFrame().openDocument(absolute);
+	// }
+	// } catch (Exception ex) {
+	// getController().errorMessage(getText("url_load_error") + absolute);
+	// freemind.main.Resources.getInstance().logExecption( ex);
+	// // for some reason, this exception is thrown anytime...
+	// } finally {
+	// getFrame().setWaitingCursor(false);
+	// }
+	//
+	// }
 
-	public ModeController load(URL url) throws IOException, XMLParseException, URISyntaxException {
-	    ModeController newModeController = super.load(url);
-	    // decorator pattern.
-	    ((BrowseToolBar) newModeController.getModeToolBar()).setURLField(url.toString());
-	    return newModeController;
+	public ModeController load(URL url) throws IOException, XMLParseException,
+			URISyntaxException {
+		ModeController newModeController = super.load(url);
+		// decorator pattern.
+		((BrowseToolBar) newModeController.getModeToolBar()).setURLField(url
+				.toString());
+		return newModeController;
 	}
 
 	public ModeController load(File url) throws IOException {
 		ModeController newModeController = super.load(url);
 		// decorator pattern.
-		((BrowseToolBar) newModeController.getModeToolBar()).setURLField(Tools.fileToUrl(url).toString());
+		((BrowseToolBar) newModeController.getModeToolBar()).setURLField(Tools
+				.fileToUrl(url).toString());
 		return newModeController;
 	}
-	
+
 	public void newMap(MindMap mapModel) {
 		setNoteIcon(mapModel.getRootNode());
 		super.newMap(mapModel);
@@ -275,19 +282,19 @@ public class BrowseController extends ViewControllerAdapter {
 
 	private void setNoteIcon(MindMapNode node) {
 		String noteText = node.getNoteText();
-		if(noteText != null && ! noteText.equals("")){
-            // icon
-            if (noteIcon == null) {
-                noteIcon = new ImageIcon(getController()
-                        .getResource("images/knotes.png"));
-            }
-            node.setStateIcon(NodeNoteBase.NODE_NOTE_ICON, noteIcon); 			
+		if (noteText != null && !noteText.equals("")) {
+			// icon
+			if (noteIcon == null) {
+				noteIcon = new ImageIcon(getController().getResource(
+						"images/knotes.png"));
+			}
+			node.setStateIcon(NodeNoteBase.NODE_NOTE_ICON, noteIcon);
 		}
 		ListIterator children = node.childrenUnfolded();
-		while(children.hasNext()){
-			setNoteIcon((MindMapNode)children.next());
+		while (children.hasNext()) {
+			setNoteIcon((MindMapNode) children.next());
 		}
-	
+
 	}
 
 	/**
@@ -317,8 +324,9 @@ public class BrowseController extends ViewControllerAdapter {
 
 	/*
 	 * (non-Javadoc)
-	 *
-	 * @see freemind.modes.ModeController#updateMenus(freemind.controller.StructuredMenuHolder)
+	 * 
+	 * @see freemind.modes.ModeController#updateMenus(freemind.controller.
+	 * StructuredMenuHolder)
 	 */
 	public void updateMenus(StructuredMenuHolder holder) {
 		add(holder, MenuBar.EDIT_MENU + "/find/find", find, "keystroke_find");
@@ -336,7 +344,7 @@ public class BrowseController extends ViewControllerAdapter {
 	public HookFactory getHookFactory() {
 		return mBrowseHookFactory;
 	}
-	
+
 	public XMLElement createXMLElement() {
 		return new BrowseXMLElement(this);
 	}

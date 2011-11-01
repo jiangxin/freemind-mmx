@@ -31,7 +31,7 @@ import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 
 /**
  * @author foltin
- *
+ * 
  */
 public class RemoveReminderHook extends MindMapNodeHookAdapter {
 
@@ -46,10 +46,11 @@ public class RemoveReminderHook extends MindMapNodeHookAdapter {
 	public void invoke(MindMapNode node) {
 		super.invoke(node);
 		ReminderHookBase hook = TimeManagementOrganizer.getHook(node);
-		if(hook != null) {
+		if (hook != null) {
 			List selected = Arrays.asList(new MindMapNode[] { node });
 			// adding the hook the second time, it is removed.
-			getMindMapController().addHook(node, selected, TimeManagement.REMINDER_HOOK_NAME);
+			getMindMapController().addHook(node, selected,
+					TimeManagement.REMINDER_HOOK_NAME);
 		}
 	}
 }

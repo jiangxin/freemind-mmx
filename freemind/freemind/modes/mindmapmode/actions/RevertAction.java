@@ -25,7 +25,6 @@ package freemind.modes.mindmapmode.actions;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 
@@ -33,7 +32,6 @@ import javax.swing.JOptionPane;
 
 import freemind.controller.actions.generated.instance.RevertXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
@@ -42,16 +40,16 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 /**
  * Reverts the map to the saved version. In Xml, the old map is stored as xml
  * and as an undo action, the new map is stored, too.
- *
+ * 
  * Moreover, the filename of the doAction is set to the appropriate map file's
  * name. The undo action has no file name associated.
- *
+ * 
  * The action goes like this: close the actual map and open the given Xml/File.
  * If only a Xml string is given, a temporary file name is created, the xml
  * stored into and this map is opened instead of the actual.
- *
+ * 
  * @author foltin
- *
+ * 
  */
 public class RevertAction extends FreemindAction implements ActorXml {
 
@@ -68,20 +66,22 @@ public class RevertAction extends FreemindAction implements ActorXml {
 
 	/*
 	 * (non-Javadoc)
-	 *
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent arg0) {
 		try {
 			File file = mindMapController.getMap().getFile();
-            if(file == null) {
-                JOptionPane.showMessageDialog(mindMapController.getView(), mindMapController
-                        .getText("map_not_saved"), "FreeMind", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
+			if (file == null) {
+				JOptionPane.showMessageDialog(mindMapController.getView(),
+						mindMapController.getText("map_not_saved"), "FreeMind",
+						JOptionPane.ERROR_MESSAGE);
+				return;
+			}
 			RevertXmlAction doAction = createRevertXmlAction(file);
-			RevertXmlAction undoAction = createRevertXmlAction(mindMapController
-					.getMap(), null, file.getName());
+			RevertXmlAction undoAction = createRevertXmlAction(
+					mindMapController.getMap(), null, file.getName());
 			mindMapController.getActionFactory().startTransaction(
 					this.getClass().getName());
 			mindMapController.getActionFactory().executeAction(
@@ -94,23 +94,24 @@ public class RevertAction extends FreemindAction implements ActorXml {
 
 	}
 
-    public void openXmlInsteadOfMap(String xmlFileContent) {
-        try {
-            RevertXmlAction doAction = createRevertXmlAction(xmlFileContent, null, null);
-            RevertXmlAction undoAction = createRevertXmlAction(mindMapController
-                    .getMap(), null, null);
-            mindMapController.getActionFactory().startTransaction(
-                    this.getClass().getName());
-            mindMapController.getActionFactory().executeAction(
-                    new ActionPair(doAction, undoAction));
-            mindMapController.getActionFactory().endTransaction(
-                    this.getClass().getName());
-        } catch (IOException e) {
-            freemind.main.Resources.getInstance().logException(e);
-        }
-    }
-	public RevertXmlAction createRevertXmlAction(File file)
-			throws IOException {
+	public void openXmlInsteadOfMap(String xmlFileContent) {
+		try {
+			RevertXmlAction doAction = createRevertXmlAction(xmlFileContent,
+					null, null);
+			RevertXmlAction undoAction = createRevertXmlAction(
+					mindMapController.getMap(), null, null);
+			mindMapController.getActionFactory().startTransaction(
+					this.getClass().getName());
+			mindMapController.getActionFactory().executeAction(
+					new ActionPair(doAction, undoAction));
+			mindMapController.getActionFactory().endTransaction(
+					this.getClass().getName());
+		} catch (IOException e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
+	}
+
+	public RevertXmlAction createRevertXmlAction(File file) throws IOException {
 		String fileName = file.getAbsolutePath();
 		FileReader f = new FileReader(file);
 		StringBuffer buffer = new StringBuffer();
@@ -120,8 +121,8 @@ public class RevertAction extends FreemindAction implements ActorXml {
 		return createRevertXmlAction(buffer.toString(), fileName, null);
 	}
 
-	public RevertXmlAction createRevertXmlAction(MindMap map, String fileName, String filePrefix)
-			throws IOException {
+	public RevertXmlAction createRevertXmlAction(MindMap map, String fileName,
+			String filePrefix) throws IOException {
 		StringWriter writer = new StringWriter();
 		map.getXml(writer);
 		return createRevertXmlAction(writer.getBuffer().toString(), fileName,
@@ -129,10 +130,12 @@ public class RevertAction extends FreemindAction implements ActorXml {
 	}
 
 	/**
-	 * @param filePrefix is used to generate the name of the reverted map in case that fileName is null.
+	 * @param filePrefix
+	 *            is used to generate the name of the reverted map in case that
+	 *            fileName is null.
 	 */
 	public RevertXmlAction createRevertXmlAction(String xmlPackedFile,
-			String fileName, String filePrefix)  {
+			String fileName, String filePrefix) {
 		RevertXmlAction revertXmlAction = new RevertXmlAction();
 		revertXmlAction.setLocalFileName(fileName);
 		revertXmlAction.setMap(xmlPackedFile);
@@ -142,8 +145,10 @@ public class RevertAction extends FreemindAction implements ActorXml {
 
 	/*
 	 * (non-Javadoc)
-	 *
-	 * @see freemind.controller.actions.ActorXml#act(freemind.controller.actions.generated.instance.XmlAction)
+	 * 
+	 * @see
+	 * freemind.controller.actions.ActorXml#act(freemind.controller.actions.
+	 * generated.instance.XmlAction)
 	 */
 	public void act(XmlAction action) {
 		if (action instanceof RevertXmlAction) {
@@ -153,10 +158,12 @@ public class RevertAction extends FreemindAction implements ActorXml {
 				// close the old map.
 				mindMapController.getController().close(true);
 				if (revertAction.getLocalFileName() != null) {
-					mindMapController.load(new File(revertAction.getLocalFileName()));
+					mindMapController.load(new File(revertAction
+							.getLocalFileName()));
 				} else {
 					// the map is given by xml. we store it and open it.
-					String filePrefix = mindMapController.getText("freemind_reverted");
+					String filePrefix = mindMapController
+							.getText("freemind_reverted");
 					if (revertAction.getFilePrefix() != null) {
 						filePrefix = revertAction.getFilePrefix();
 					}
@@ -171,7 +178,7 @@ public class RevertAction extends FreemindAction implements ActorXml {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see freemind.controller.actions.ActorXml#getDoActionClass()
 	 */
 	public Class getDoActionClass() {

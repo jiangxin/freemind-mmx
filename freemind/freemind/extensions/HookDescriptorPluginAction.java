@@ -34,52 +34,55 @@ import freemind.controller.actions.generated.instance.PluginMode;
 import freemind.controller.actions.generated.instance.PluginProperty;
 import freemind.main.FreeMindMain;
 
-
-/** This is an information class that holds all outer properties
- *  of a hook, i.e. all contents of the XML description file.
- *  
- *  Don't use this class for anything except for the implementation
- *  of a HookFactory.
+/**
+ * This is an information class that holds all outer properties of a hook, i.e.
+ * all contents of the XML description file.
+ * 
+ * Don't use this class for anything except for the implementation of a
+ * HookFactory.
+ * 
  * @author foltin
- *
+ * 
  */
-public class HookDescriptorPluginAction  extends HookDescriptorBase {
+public class HookDescriptorPluginAction extends HookDescriptorBase {
 	private Properties properties;
 	public Vector menuPositions;
 	private Vector modes;
 	private PluginAction pluginAction;
-	public HookDescriptorPluginAction(FreeMindMain frame, String xmlPluginFile, Plugin pluginBase, PluginAction pluginAction) {
+
+	public HookDescriptorPluginAction(FreeMindMain frame, String xmlPluginFile,
+			Plugin pluginBase, PluginAction pluginAction) {
 		super(pluginBase, frame, xmlPluginFile);
 		this.pluginAction = pluginAction;
-		if (pluginAction.getName() == null) {	
+		if (pluginAction.getName() == null) {
 			pluginAction.setName(pluginAction.getLabel());
 		}
 		menuPositions = new Vector();
 		properties = new Properties();
 		modes = new Vector();
-		for (Iterator i = pluginAction.getListChoiceList().iterator(); i.hasNext();) {
-		    Object obj = i.next();
-            if (obj instanceof PluginMenu) {
-                PluginMenu menu = (PluginMenu) obj;
-                menuPositions.add(menu.getLocation());
-            }
-            if (obj instanceof PluginProperty) {
-                PluginProperty property = (PluginProperty) obj;
-                properties.put(property.getName(), property.getValue());
-            }
-            if (obj instanceof PluginMode) {
-                PluginMode mode = (PluginMode) obj;
-                modes.add(mode.getClassName());
-            }
+		for (Iterator i = pluginAction.getListChoiceList().iterator(); i
+				.hasNext();) {
+			Object obj = i.next();
+			if (obj instanceof PluginMenu) {
+				PluginMenu menu = (PluginMenu) obj;
+				menuPositions.add(menu.getLocation());
+			}
+			if (obj instanceof PluginProperty) {
+				PluginProperty property = (PluginProperty) obj;
+				properties.put(property.getName(), property.getValue());
+			}
+			if (obj instanceof PluginMode) {
+				PluginMode mode = (PluginMode) obj;
+				modes.add(mode.getClassName());
+			}
 		}
 	}
+
 	public String toString() {
-		return "[HookDescriptor props="
-			+ properties
-			+ ", menu positions="
-			+ menuPositions
-			+ "]";
+		return "[HookDescriptor props=" + properties + ", menu positions="
+				+ menuPositions + "]";
 	}
+
 	public HookInstanciationMethod getInstanciationMethod() {
 		if (pluginAction.getInstanciation() != null) {
 			HashMap allInstMethods = HookInstanciationMethod
@@ -94,38 +97,47 @@ public class HookDescriptorPluginAction  extends HookDescriptorBase {
 		// this is an error case?
 		return HookInstanciationMethod.Other;
 	}
+
 	public Vector getModes() {
 		return modes;
 	}
+
 	public String getBaseClass() {
 		return pluginAction.getBase();
 	}
+
 	public String getName() {
 		return getFromResourceIfNecessary(pluginAction.getName());
 	}
+
 	public String getClassName() {
 		return pluginAction.getClassName();
 	}
+
 	public String getDocumentation() {
 		return getFromResourceIfNecessary(pluginAction.getDocumentation());
 	}
+
 	public String getIconPath() {
 		return pluginAction.getIconPath();
 	}
+
 	public String getKeyStroke() {
 		return getFromPropertiesIfNecessary(pluginAction.getKeyStroke());
 	}
+
 	/**
 	 */
 	public Properties getProperties() {
 		return properties;
 	}
+
 	/**
-	 * @return whether or not the plugin can be on/off and this
-	 * should be displayed in the menus.
+	 * @return whether or not the plugin can be on/off and this should be
+	 *         displayed in the menus.
 	 */
 	public boolean isSelectable() {
 		return pluginAction.getIsSelectable();
 	}
-	
+
 }

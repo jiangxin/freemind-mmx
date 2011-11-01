@@ -39,58 +39,65 @@ import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 public class NodeColorAction extends FreemindAction implements ActorXml {
-    private final MindMapController controller;
+	private final MindMapController controller;
 
-    public NodeColorAction(MindMapController controller) {
-        super("node_color", (String)null, controller);
-        this.controller = controller;
-        controller.getActionFactory().registerActor(this, getDoActionClass());
-    }
+	public NodeColorAction(MindMapController controller) {
+		super("node_color", (String) null, controller);
+		this.controller = controller;
+		controller.getActionFactory().registerActor(this, getDoActionClass());
+	}
 
-    public void actionPerformed(ActionEvent e) {
-        Color color = Controller.showCommonJColorChooserDialog(controller
-                .getView().getSelected(), controller.getText("choose_node_color"), controller.getSelected()
-                .getColor());
-        if (color == null) {
-            return;
-        }
-        for (ListIterator it = controller.getSelecteds().listIterator(); it
-                .hasNext();) {
-            MindMapNodeModel selected = (MindMapNodeModel) it.next();
-            setNodeColor(selected, color); 
-        }
-    }
-    
-    public void setNodeColor(MindMapNode node, Color color) {
-		NodeColorFormatAction doAction = createNodeColorFormatAction(node, color);
-        NodeColorFormatAction undoAction = createNodeColorFormatAction(node, node.getColor());
-        controller.getActionFactory().startTransaction(this.getClass().getName());
-        controller.getActionFactory().executeAction(new ActionPair(doAction, undoAction));
-        controller.getActionFactory().endTransaction(this.getClass().getName());
-    }
+	public void actionPerformed(ActionEvent e) {
+		Color color = Controller.showCommonJColorChooserDialog(controller
+				.getView().getSelected(), controller
+				.getText("choose_node_color"), controller.getSelected()
+				.getColor());
+		if (color == null) {
+			return;
+		}
+		for (ListIterator it = controller.getSelecteds().listIterator(); it
+				.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel) it.next();
+			setNodeColor(selected, color);
+		}
+	}
 
-    public NodeColorFormatAction createNodeColorFormatAction(MindMapNode node, Color color)  {
+	public void setNodeColor(MindMapNode node, Color color) {
+		NodeColorFormatAction doAction = createNodeColorFormatAction(node,
+				color);
+		NodeColorFormatAction undoAction = createNodeColorFormatAction(node,
+				node.getColor());
+		controller.getActionFactory().startTransaction(
+				this.getClass().getName());
+		controller.getActionFactory().executeAction(
+				new ActionPair(doAction, undoAction));
+		controller.getActionFactory().endTransaction(this.getClass().getName());
+	}
+
+	public NodeColorFormatAction createNodeColorFormatAction(MindMapNode node,
+			Color color) {
 		NodeColorFormatAction nodeAction = new NodeColorFormatAction();
 		nodeAction.setNode(node.getObjectId(controller));
-	    nodeAction.setColor(Tools.colorToXml(color));
+		nodeAction.setColor(Tools.colorToXml(color));
 		return nodeAction;
-    }
-    
-    public void act(XmlAction action) {
+	}
+
+	public void act(XmlAction action) {
 		if (action instanceof NodeColorFormatAction) {
 			NodeColorFormatAction nodeColorAction = (NodeColorFormatAction) action;
 			Color color = Tools.xmlToColor(nodeColorAction.getColor());
-			MindMapNode node = controller.getNodeFromID(nodeColorAction.getNode());
-			Color oldColor = node.getColor() ;
+			MindMapNode node = controller.getNodeFromID(nodeColorAction
+					.getNode());
+			Color oldColor = node.getColor();
 			if (!Tools.safeEquals(color, oldColor)) {
-                node.setColor(color); // null
-                controller.nodeChanged(node);
-            }
+				node.setColor(color); // null
+				controller.nodeChanged(node);
+			}
 		}
-   }
+	}
 
-    public Class getDoActionClass() {
-        return NodeColorFormatAction.class;
-    }
+	public Class getDoActionClass() {
+		return NodeColorFormatAction.class;
+	}
 
 }

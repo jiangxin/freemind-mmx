@@ -27,42 +27,42 @@ import freemind.modes.mindmapmode.MindMapController;
 
 /**
  * Normal Permanent... enhanced by the getMindMapController method.
- *  */
+ * */
 public class PermanentMindMapNodeHookAdapter extends PermanentNodeHookAdapter {
 
-    /**
+	/**
      *
      */
-    public PermanentMindMapNodeHookAdapter() {
-        super();
+	public PermanentMindMapNodeHookAdapter() {
+		super();
 
-    }
+	}
 
-    public MindMapController getMindMapController(){
-        return (MindMapController) getController();
-    }
+	public MindMapController getMindMapController() {
+		return (MindMapController) getController();
+	}
 
-    /**
-     * @param child the child node the hook should be propagated to.
-     * @return returns the new hook or null if there is already such a hook.
+	/**
+	 * @param child
+	 *            the child node the hook should be propagated to.
+	 * @return returns the new hook or null if there is already such a hook.
+	 */
+	protected PermanentNodeHook propagate(MindMapNode child) {
+		PermanentNodeHook hook = (PermanentNodeHook) getMindMapController()
+				.createNodeHook(getName(), child, getMap());
+		// invocation:
+		child.invokeHook(hook);
+		return hook;
+	}
+
+	/**
      */
-    protected PermanentNodeHook propagate(MindMapNode child) {
-        PermanentNodeHook hook = (PermanentNodeHook) getMindMapController().createNodeHook(getName(), child, getMap());
-        // invocation:
-        child.invokeHook(hook);
-        return hook;
-    }
+	protected void setToolTip(String key, String value) {
+		setToolTip(getNode(), key, value);
+	}
 
-
-    /**
-     */
-    protected void setToolTip(String key, String value) {
-        setToolTip(getNode(), key, value);
-    }
-    protected void setToolTip(MindMapNode node, String key, String value) {
-        getMindMapController().setToolTip(node, key, value);
-    }
-
+	protected void setToolTip(MindMapNode node, String key, String value) {
+		getMindMapController().setToolTip(node, key, value);
+	}
 
 }
-

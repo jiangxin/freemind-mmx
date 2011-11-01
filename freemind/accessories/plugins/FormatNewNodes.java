@@ -39,7 +39,9 @@ import freemind.modes.mindmapmode.actions.xml.ActionFilter;
 import freemind.modes.mindmapmode.actions.xml.ActionHandler;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
-/** This plugin formats new nodes using the formats given to former nodes.
+/**
+ * This plugin formats new nodes using the formats given to former nodes.
+ * 
  * @author foltin
  */
 public class FormatNewNodes implements ActionHandler, ActionFilter,
@@ -81,9 +83,8 @@ public class FormatNewNodes implements ActionHandler, ActionFilter,
 	private void detectFormatChanges(XmlAction doAction) {
 		if (doAction instanceof CompoundAction) {
 			CompoundAction compAction = (CompoundAction) doAction;
-			for (Iterator i = compAction
-					.getListChoiceList()
-					.iterator(); i.hasNext();) {
+			for (Iterator i = compAction.getListChoiceList().iterator(); i
+					.hasNext();) {
 				XmlAction childAction = (XmlAction) i.next();
 				detectFormatChanges(childAction);
 			}
@@ -101,16 +102,16 @@ public class FormatNewNodes implements ActionHandler, ActionFilter,
 
 	public ActionPair filterAction(ActionPair pair) {
 		if (pair.getDoAction() instanceof NewNodeAction) {
-			NewNodeAction newNodeAction = (NewNodeAction) pair
-					.getDoAction();
+			NewNodeAction newNodeAction = (NewNodeAction) pair.getDoAction();
 			// add to a compound the newNodeAction and the other formats we
 			// have:
-			CompoundAction compound =  new CompoundAction();
+			CompoundAction compound = new CompoundAction();
 			compound.addChoice(newNodeAction);
 			for (Iterator i = formatActions.values().iterator(); i.hasNext();) {
 				NodeAction formatAction = (NodeAction) i.next();
 				// deep copy:
-				FormatNodeAction copiedFormatAction = (FormatNodeAction) controller.unMarshall(controller.marshall(formatAction));
+				FormatNodeAction copiedFormatAction = (FormatNodeAction) controller
+						.unMarshall(controller.marshall(formatAction));
 				copiedFormatAction.setNode(newNodeAction.getNewId());
 				compound.addChoice(copiedFormatAction);
 			}

@@ -27,7 +27,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -42,7 +41,6 @@ import javax.xml.transform.stream.StreamSource;
 
 import freemind.extensions.ExportHook;
 import freemind.extensions.ModeControllerHookAdapter;
-import freemind.main.Tools;
 import freemind.main.XMLParseException;
 
 /**
@@ -50,94 +48,98 @@ import freemind.main.XMLParseException;
  */
 public class ImportMindmanagerFiles extends ModeControllerHookAdapter {
 
-    public ImportMindmanagerFiles() {
-        super();
+	public ImportMindmanagerFiles() {
+		super();
 
-    }
+	}
 
-    public void startupMapHook() {
-        super.startupMapHook();
-        String type = "mmap";
-        Container component = getController().getFrame().getContentPane();
-        JFileChooser chooser = new JFileChooser();
-        chooser.addChoosableFileFilter(new ExportHook.ImageFilter(type, null /*
-                                                                                 * No
-                                                                                 * description
-                                                                                 * so
-                                                                                 * far
-                                                                                 */));
-        File mmFile = getController().getMap().getFile();
-        if (mmFile != null && mmFile.getParentFile() != null) {
-            chooser.setSelectedFile(mmFile.getParentFile());
-        }
-        int returnVal = chooser.showOpenDialog(component);
-        if (returnVal != JFileChooser.APPROVE_OPTION) { // not ok pressed
-            return;
-        }
+	public void startupMapHook() {
+		super.startupMapHook();
+		String type = "mmap";
+		Container component = getController().getFrame().getContentPane();
+		JFileChooser chooser = new JFileChooser();
+		chooser.addChoosableFileFilter(new ExportHook.ImageFilter(type, null /*
+																			 * No
+																			 * description
+																			 * so
+																			 * far
+																			 */));
+		File mmFile = getController().getMap().getFile();
+		if (mmFile != null && mmFile.getParentFile() != null) {
+			chooser.setSelectedFile(mmFile.getParentFile());
+		}
+		int returnVal = chooser.showOpenDialog(component);
+		if (returnVal != JFileChooser.APPROVE_OPTION) { // not ok pressed
+			return;
+		}
 
-        // |= Pressed O.K.
-        File chosenFile = chooser.getSelectedFile();
-        importMindmanagerFile(chosenFile);
+		// |= Pressed O.K.
+		File chosenFile = chooser.getSelectedFile();
+		importMindmanagerFile(chosenFile);
 
-    }
+	}
 
-    private void importMindmanagerFile(File file) {
-        // from e455. Retrieving a Compressed File from a ZIP File
-        // http://javaalmanac.com/egs/java.util.zip/GetZip.html
-        try {
-            // Open the ZIP file
-            ZipInputStream in = new ZipInputStream(new FileInputStream(file));
+	private void importMindmanagerFile(File file) {
+		// from e455. Retrieving a Compressed File from a ZIP File
+		// http://javaalmanac.com/egs/java.util.zip/GetZip.html
+		try {
+			// Open the ZIP file
+			ZipInputStream in = new ZipInputStream(new FileInputStream(file));
 
-            while (in.available() != 0) {
-                ZipEntry entry = in.getNextEntry();
-                if (!entry.getName().equals("Document.xml")) {
-                    continue;
-                }
+			while (in.available() != 0) {
+				ZipEntry entry = in.getNextEntry();
+				if (!entry.getName().equals("Document.xml")) {
+					continue;
+				}
 
-                // now apply the transformation:
-                // search for xslt file:
-                String xsltFileName = "accessories/mindmanager2mm.xsl";
-                URL xsltUrl = getResource(xsltFileName);
-                if (xsltUrl == null) {
-                    logger.severe("Can't find " + xsltFileName
-                            + " as resource.");
-                    throw new IllegalArgumentException("Can't find "
-                            + xsltFileName + " as resource.");
-                }
-                InputStream xsltFile = xsltUrl.openStream();
-                String xml = transForm(new StreamSource(in), xsltFile);
-                if (xml != null) {
-                    // now start a new map with this string:
-                    File tempFile = File.createTempFile(file.getName(), freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION, file.getParentFile());
-                    FileWriter fw = new FileWriter(tempFile);
-                    fw.write(xml);
-                    fw.close();
-                    getController().load(tempFile);
-                }
-                break;
-            }
-        } catch (IOException e) {
-            freemind.main.Resources.getInstance().logException(e);
-        } catch (XMLParseException e) {
-        	freemind.main.Resources.getInstance().logException(e);
-        }
-    }
+				// now apply the transformation:
+				// search for xslt file:
+				String xsltFileName = "accessories/mindmanager2mm.xsl";
+				URL xsltUrl = getResource(xsltFileName);
+				if (xsltUrl == null) {
+					logger.severe("Can't find " + xsltFileName
+							+ " as resource.");
+					throw new IllegalArgumentException("Can't find "
+							+ xsltFileName + " as resource.");
+				}
+				InputStream xsltFile = xsltUrl.openStream();
+				String xml = transForm(new StreamSource(in), xsltFile);
+				if (xml != null) {
+					// now start a new map with this string:
+					File tempFile = File
+							.createTempFile(
+									file.getName(),
+									freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION,
+									file.getParentFile());
+					FileWriter fw = new FileWriter(tempFile);
+					fw.write(xml);
+					fw.close();
+					getController().load(tempFile);
+				}
+				break;
+			}
+		} catch (IOException e) {
+			freemind.main.Resources.getInstance().logException(e);
+		} catch (XMLParseException e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
+	}
 
-    public String transForm(Source xmlSource, InputStream xsltStream) {
-        Source xsltSource = new StreamSource(xsltStream);
-        StringWriter writer = new StringWriter();
-        Result result = new StreamResult(writer);
+	public String transForm(Source xmlSource, InputStream xsltStream) {
+		Source xsltSource = new StreamSource(xsltStream);
+		StringWriter writer = new StringWriter();
+		Result result = new StreamResult(writer);
 
-        // create an instance of TransformerFactory
-        try {
-            TransformerFactory transFact = TransformerFactory.newInstance();
-            Transformer trans = transFact.newTransformer(xsltSource);
-            trans.transform(xmlSource, result);
-        } catch (Exception e) {
-            freemind.main.Resources.getInstance().logException(e);
-            return null;
-        }
-        return writer.toString();
-    }
+		// create an instance of TransformerFactory
+		try {
+			TransformerFactory transFact = TransformerFactory.newInstance();
+			Transformer trans = transFact.newTransformer(xsltSource);
+			trans.transform(xmlSource, result);
+		} catch (Exception e) {
+			freemind.main.Resources.getInstance().logException(e);
+			return null;
+		}
+		return writer.toString();
+	}
 
 }

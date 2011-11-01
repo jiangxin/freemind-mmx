@@ -35,9 +35,7 @@ import javax.swing.JLabel;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 
-
-public class ComboProperty extends PropertyBean implements
-		PropertyControl {
+public class ComboProperty extends PropertyBean implements PropertyControl {
 	String description;
 
 	String label;
@@ -47,10 +45,11 @@ public class ComboProperty extends PropertyBean implements
 	private Vector possibleValues;
 
 	/**
-	 * @param pTranslator TODO
+	 * @param pTranslator
+	 *            TODO
 	 */
-	public ComboProperty(String description, String label,
-			String[] possibles, TextTranslator pTranslator) {
+	public ComboProperty(String description, String label, String[] possibles,
+			TextTranslator pTranslator) {
 		super();
 		this.description = description;
 		this.label = label;
@@ -61,28 +60,30 @@ public class ComboProperty extends PropertyBean implements
 			possibleTranslations.add(pTranslator.getText(key));
 		}
 		mComboBox.setModel(new DefaultComboBoxModel(possibleTranslations));
-		mComboBox.addActionListener(new ActionListener(){
+		mComboBox.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent pE)
-            {
-                firePropertyChangeEvent();
-            }});
+			public void actionPerformed(ActionEvent pE) {
+				firePropertyChangeEvent();
+			}
+		});
 	}
 
-	public ComboProperty(String description, String label,
-			String[] possibles, List possibleTranslations) {
+	public ComboProperty(String description, String label, String[] possibles,
+			List possibleTranslations) {
 		this.description = description;
 		this.label = label;
 		fillPossibleValues(possibles);
-		mComboBox.setModel(new DefaultComboBoxModel(new Vector(possibleTranslations)));
+		mComboBox.setModel(new DefaultComboBoxModel(new Vector(
+				possibleTranslations)));
 	}
 
-	public ComboProperty(String description, String label,
-			List possibles, List possibleTranslations) {
+	public ComboProperty(String description, String label, List possibles,
+			List possibleTranslations) {
 		this.description = description;
 		this.label = label;
 		fillPossibleValues(possibles);
-		mComboBox.setModel(new DefaultComboBoxModel(new Vector(possibleTranslations)));
+		mComboBox.setModel(new DefaultComboBoxModel(new Vector(
+				possibleTranslations)));
 	}
 
 	/**
@@ -98,15 +99,17 @@ public class ComboProperty extends PropertyBean implements
 		possibleValues.addAll(possibles);
 	}
 
-	/** If your combo base changes, call this method to update the values.
-	 *  The old selected value is not selected, but the first in the list.
-	 *  Thus, you should call this method only shortly before setting the
-	 *  value with setValue.
+	/**
+	 * If your combo base changes, call this method to update the values. The
+	 * old selected value is not selected, but the first in the list. Thus, you
+	 * should call this method only shortly before setting the value with
+	 * setValue.
 	 */
 	public void updateComboBoxEntries(List possibles, List possibleTranslations) {
-		mComboBox.setModel(new DefaultComboBoxModel(new Vector(possibleTranslations)));
+		mComboBox.setModel(new DefaultComboBoxModel(new Vector(
+				possibleTranslations)));
 		fillPossibleValues(possibles);
-		if (possibles.size()>0) {
+		if (possibles.size() > 0) {
 			mComboBox.setSelectedIndex(0);
 		}
 	}
@@ -123,10 +126,12 @@ public class ComboProperty extends PropertyBean implements
 		if (possibleValues.contains(value)) {
 			mComboBox.setSelectedIndex(possibleValues.indexOf(value));
 		} else {
-			System.err.println("Can't set the value:" + value + " into the combo box "+getLabel()+"/"+getDescription());
-            if(mComboBox.getModel().getSize()>0) {
-                mComboBox.setSelectedIndex(0);
-            }
+			System.err.println("Can't set the value:" + value
+					+ " into the combo box " + getLabel() + "/"
+					+ getDescription());
+			if (mComboBox.getModel().getSize() > 0) {
+				mComboBox.setSelectedIndex(0);
+			}
 		}
 	}
 
@@ -135,14 +140,13 @@ public class ComboProperty extends PropertyBean implements
 	}
 
 	public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
-		JLabel label = builder
-				.append(pTranslator.getText(getLabel()), mComboBox);
+		JLabel label = builder.append(pTranslator.getText(getLabel()),
+				mComboBox);
 		label.setToolTipText(pTranslator.getText(getDescription()));
 	}
 
-    public void setEnabled(boolean pEnabled) {
-        mComboBox.setEnabled(pEnabled);
-    }
-
+	public void setEnabled(boolean pEnabled) {
+		mComboBox.setEnabled(pEnabled);
+	}
 
 }

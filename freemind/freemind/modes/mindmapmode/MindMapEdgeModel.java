@@ -21,15 +21,13 @@
 package freemind.modes.mindmapmode;
 
 import freemind.main.FreeMindMain;
-import freemind.main.Tools;
-import freemind.main.XMLElement;
 import freemind.modes.EdgeAdapter;
 import freemind.modes.MindMapNode;
 
 public class MindMapEdgeModel extends EdgeAdapter {
 
-    public MindMapEdgeModel(MindMapNode node,FreeMindMain frame) {
-	super(node,frame);
-    }
+	public MindMapEdgeModel(MindMapNode node, FreeMindMain frame) {
+		super(node, frame);
+	}
 
 }

@@ -19,11 +19,11 @@
 /* $Id: NodeNoteBase.java,v 1.1.2.2.2.10 2008/06/08 21:23:13 dpolivaev Exp $ */
 package freemind.modes.common.plugins;
 
-
 /**
  * Not used anymore.
+ * 
  * @author foltin
- *
+ * 
  */
 public abstract class NodeNoteBase {
 

@@ -52,7 +52,7 @@ public class JMonthChooser extends JPanel implements ItemListener,
 		ChangeListener {
 	public static final String MONTH_PROPERTY = "month";
 
-    private static final long serialVersionUID = -2028361332231218527L;
+	private static final long serialVersionUID = -2028361332231218527L;
 
 	/** true, if the month chooser has a spinner component */
 	protected boolean hasSpinner;
@@ -111,8 +111,8 @@ public class JMonthChooser extends JPanel implements ItemListener,
 
 				public Dimension getPreferredSize() {
 					Dimension size = super.getPreferredSize();
-					return new Dimension(size.width, textField
-							.getPreferredSize().height);
+					return new Dimension(size.width,
+							textField.getPreferredSize().height);
 				}
 			};
 			spinner.addChangeListener(this);
@@ -362,11 +362,12 @@ public class JMonthChooser extends JPanel implements ItemListener,
 		return hasSpinner;
 	}
 
-    /**
-     * Sets the font for this component.
-     *
-     * @param font the desired <code>Font</code> for this component
-     */
+	/**
+	 * Sets the font for this component.
+	 * 
+	 * @param font
+	 *            the desired <code>Font</code> for this component
+	 */
 	public void setFont(Font font) {
 		if (comboBox != null) {
 			comboBox.setFont(font);

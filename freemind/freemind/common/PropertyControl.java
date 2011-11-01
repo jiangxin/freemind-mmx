@@ -31,6 +31,6 @@ public interface PropertyControl {
 	String getLabel();
 
 	void layout(DefaultFormBuilder builder, TextTranslator pTranslator);
-    
-    void setEnabled(boolean pEnabled);
+
+	void setEnabled(boolean pEnabled);
 }

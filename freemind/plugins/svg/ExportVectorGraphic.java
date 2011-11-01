@@ -54,14 +54,14 @@ import freemind.view.mindmapview.NodeView;
 
 /**
  * @author foltin
- *
+ * 
  */
-public class ExportVectorGraphic extends ExportHook{
+public class ExportVectorGraphic extends ExportHook {
 
 	/**
 	 */
 	protected SVGGraphics2D fillSVGGraphics2D(MapView view) {
-//		NodeAdapter root = (NodeAdapter) getController().getMap().getRoot();
+		// NodeAdapter root = (NodeAdapter) getController().getMap().getRoot();
 		SVGGraphics2D g2d = createSvgGraphics2D();
 		try {
 			view.preparePrinting();
@@ -76,9 +76,10 @@ public class ExportVectorGraphic extends ExportHook{
 		} finally {
 			view.endPrinting();
 		}
-		//		g2d.setColor(Color.BLACK);
-//		g2d.setStroke(new BasicStroke(3));
-//		g2d.drawRect(innerBounds.x, innerBounds.y, innerBounds.width - 2, innerBounds.height - 2);
+		// g2d.setColor(Color.BLACK);
+		// g2d.setStroke(new BasicStroke(3));
+		// g2d.drawRect(innerBounds.x, innerBounds.y, innerBounds.width - 2,
+		// innerBounds.height - 2);
 		return g2d;
 	}
 
@@ -86,10 +87,11 @@ public class ExportVectorGraphic extends ExportHook{
 		SVGGraphics2D g2d = createSvgGraphics2D();
 		try {
 			view.preparePrinting();
-			Rectangle innerBounds = null;;
+			Rectangle innerBounds = null;
+			;
 			for (Iterator it = pNode.getViewers().iterator(); it.hasNext();) {
 				NodeView nodeView = (NodeView) it.next();
-				if(innerBounds == null) {
+				if (innerBounds == null) {
 					innerBounds = nodeView.getInnerBounds();
 				} else {
 					innerBounds.add(nodeView.getInnerBounds());
@@ -108,56 +110,62 @@ public class ExportVectorGraphic extends ExportHook{
 		} finally {
 			view.endPrinting();
 		}
-		//		g2d.setColor(Color.BLACK);
-//		g2d.setStroke(new BasicStroke(3));
-//		g2d.drawRect(innerBounds.x, innerBounds.y, innerBounds.width - 2, innerBounds.height - 2);
+		// g2d.setColor(Color.BLACK);
+		// g2d.setStroke(new BasicStroke(3));
+		// g2d.drawRect(innerBounds.x, innerBounds.y, innerBounds.width - 2,
+		// innerBounds.height - 2);
 		return g2d;
 	}
-	
+
 	public SVGGraphics2D createSvgGraphics2D() {
-		DOMImplementation impl = GenericDOMImplementation.getDOMImplementation();
+		DOMImplementation impl = GenericDOMImplementation
+				.getDOMImplementation();
 		String namespaceURI = SVGConstants.SVG_NAMESPACE_URI;
 		Document domFactory = impl.createDocument(namespaceURI, "svg", null);
 		SVGGeneratorContext ctx = SVGGeneratorContext.createDefault(domFactory);
 		ctx.setEmbeddedFontsOn(true);
-		GraphicContextDefaults defaults
-		    = new GraphicContextDefaults();
+		GraphicContextDefaults defaults = new GraphicContextDefaults();
 		defaults.setFont(new Font("Arial", Font.PLAIN, 12));
 		ctx.setGraphicContextDefaults(defaults);
 		ctx.setPrecision(12);
 
 		SVGGraphics2D g2d = new SVGGraphics2D(ctx, false);
-		// This prevents the "null incompatible with text-specific antialiasing enable key" error
-		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_DEFAULT);
+		// This prevents the
+		// "null incompatible with text-specific antialiasing enable key" error
+		g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+				RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				RenderingHints.VALUE_ANTIALIAS_DEFAULT);
 		return g2d;
 	}
 
-    public void transForm(Source xmlSource, InputStream xsltStream, File resultFile, String areaCode)
-    {
-        //System.out.println("set xsl");
-       Source xsltSource =  new StreamSource(xsltStream);
-        //System.out.println("set result");
-       Result result = new StreamResult(resultFile);
+	public void transForm(Source xmlSource, InputStream xsltStream,
+			File resultFile, String areaCode) {
+		// System.out.println("set xsl");
+		Source xsltSource = new StreamSource(xsltStream);
+		// System.out.println("set result");
+		Result result = new StreamResult(resultFile);
 
-       // create an instance of TransformerFactory
-       try{
-           //System.out.println("make transform instance");
-       TransformerFactory transFact = TransformerFactory.newInstance(  );
+		// create an instance of TransformerFactory
+		try {
+			// System.out.println("make transform instance");
+			TransformerFactory transFact = TransformerFactory.newInstance();
 
-       Transformer trans = transFact.newTransformer(xsltSource);
-       // set parameter:
-       // relative directory <filename>_files
-       trans.setParameter("destination_dir", resultFile.getName()+"_files/");
-       trans.setParameter("area_code", areaCode);
-       trans.setParameter("folding_type", getController().getFrame().getProperty("html_export_folding"));
-       trans.transform(xmlSource, result);
-       }
-       catch(Exception e){
-       //System.err.println("error applying the xslt file "+e);
-       freemind.main.Resources.getInstance().logException(e);
-       };
-      return ;
-      }
+			Transformer trans = transFact.newTransformer(xsltSource);
+			// set parameter:
+			// relative directory <filename>_files
+			trans.setParameter("destination_dir", resultFile.getName()
+					+ "_files/");
+			trans.setParameter("area_code", areaCode);
+			trans.setParameter("folding_type", getController().getFrame()
+					.getProperty("html_export_folding"));
+			trans.transform(xmlSource, result);
+		} catch (Exception e) {
+			// System.err.println("error applying the xslt file "+e);
+			freemind.main.Resources.getInstance().logException(e);
+		}
+		;
+		return;
+	}
 
 }

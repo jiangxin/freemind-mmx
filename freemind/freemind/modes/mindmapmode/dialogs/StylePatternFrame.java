@@ -77,7 +77,7 @@ import freemind.modes.mindmapmode.actions.IconAction;
 
 /**
  * @author foltin
- *
+ * 
  */
 public class StylePatternFrame extends JPanel implements TextTranslator,
 		PropertyChangeListener {
@@ -104,57 +104,57 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 
 	private static final String SET_RESOURCE = "set_property_text";
 
-	private static final String SET_NODE_BACKGROUND_COLOR= SET_RESOURCE;
+	private static final String SET_NODE_BACKGROUND_COLOR = SET_RESOURCE;
 
 	private static final String NODE_COLOR = "nodecolor";
 
-	private static final String SET_NODE_COLOR= SET_RESOURCE;
+	private static final String SET_NODE_COLOR = SET_RESOURCE;
 
-	private static final String SET_NODE_STYLE= SET_RESOURCE;
+	private static final String SET_NODE_STYLE = SET_RESOURCE;
 
 	private static final String NODE_STYLE = "nodestyle";
 
 	private static final String NODE_FONT_NAME = "nodefontname";
 
-	private static final String SET_NODE_FONT_NAME= SET_RESOURCE;
+	private static final String SET_NODE_FONT_NAME = SET_RESOURCE;
 
 	private static final String NODE_FONT_SIZE = "nodefontsize";
 
-	private static final String SET_NODE_FONT_SIZE= SET_RESOURCE;
+	private static final String SET_NODE_FONT_SIZE = SET_RESOURCE;
 
 	private static final String NODE_FONT_BOLD = "nodefontbold";
 
-	private static final String SET_NODE_FONT_BOLD= SET_RESOURCE;
+	private static final String SET_NODE_FONT_BOLD = SET_RESOURCE;
 
 	private static final String NODE_FONT_ITALIC = "nodefontitalic";
 
-	private static final String SET_NODE_FONT_ITALIC= SET_RESOURCE;
+	private static final String SET_NODE_FONT_ITALIC = SET_RESOURCE;
 
-	private static final String SET_NODE_TEXT= SET_RESOURCE;
+	private static final String SET_NODE_TEXT = SET_RESOURCE;
 
 	private static final String NODE_TEXT = "nodetext";
 
-	private static final String SET_EDGE_WIDTH= SET_RESOURCE;
+	private static final String SET_EDGE_WIDTH = SET_RESOURCE;
 
 	private static final String EDGE_WIDTH = "edgewidth";
 
-	private static final String SET_EDGE_STYLE= SET_RESOURCE;
+	private static final String SET_EDGE_STYLE = SET_RESOURCE;
 
 	private static final String EDGE_STYLE = "edgestyle";
 
-	private static final String SET_EDGE_COLOR= SET_RESOURCE;
+	private static final String SET_EDGE_COLOR = SET_RESOURCE;
 
 	private static final String EDGE_COLOR = "edgecolor";
 
 	private static final String CLEAR_ALL_SETTERS = "clear_all_setters";
 
-	private static final String SET_ICON= SET_RESOURCE;
+	private static final String SET_ICON = SET_RESOURCE;
 
 	private static final String ICON = "icon";
 
 	private static final String NODE_NAME = "patternname";
 
-	private static final String SET_CHILD_PATTERN= SET_RESOURCE;
+	private static final String SET_CHILD_PATTERN = SET_RESOURCE;
 
 	private static final String CHILD_PATTERN = "childpattern";
 
@@ -219,9 +219,9 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 	private ComboProperty mChildPattern;
 
 	private ThreeCheckBoxProperty mSetScriptPattern;
-	
+
 	private ScriptEditorProperty mScriptPattern;
-	
+
 	private StringProperty mName;
 
 	private Vector mIconInformationVector;
@@ -297,7 +297,6 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 
 	private List mPatternList;
 
-
 	private Vector getControls() {
 		Vector controls = new Vector();
 		controls.add(new SeparatorProperty("General"));
@@ -322,16 +321,19 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 		mSetNodeColor = new ThreeCheckBoxProperty(SET_NODE_COLOR + ".tooltip",
 				SET_NODE_COLOR);
 		controls.add(mSetNodeColor);
-		FreeMind fmMain = (FreeMind)mMindMapController.getFrame();
+		FreeMind fmMain = (FreeMind) mMindMapController.getFrame();
 		mNodeColor = new ColorProperty(NODE_COLOR + ".tooltip", NODE_COLOR,
-				fmMain.getDefaultProperty(FreeMind.RESOURCES_NODE_TEXT_COLOR), this);
+				fmMain.getDefaultProperty(FreeMind.RESOURCES_NODE_TEXT_COLOR),
+				this);
 		controls.add(mNodeColor);
 		mSetNodeBackgroundColor = new ThreeCheckBoxProperty(
 				SET_NODE_BACKGROUND_COLOR + ".tooltip",
 				SET_NODE_BACKGROUND_COLOR);
 		controls.add(mSetNodeBackgroundColor);
 		mNodeBackgroundColor = new ColorProperty(NODE_BACKGROUND_COLOR
-				+ ".tooltip", NODE_BACKGROUND_COLOR, fmMain.getDefaultProperty(FreeMind.RESOURCES_BACKGROUND_COLOR), this);
+				+ ".tooltip", NODE_BACKGROUND_COLOR,
+				fmMain.getDefaultProperty(FreeMind.RESOURCES_BACKGROUND_COLOR),
+				this);
 		controls.add(mNodeBackgroundColor);
 		controls.add(new SeparatorProperty("NodeStyles"));
 		mSetNodeStyle = new ThreeCheckBoxProperty(SET_NODE_STYLE + ".tooltip",
@@ -350,8 +352,8 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 		}
 		mSetIcon = new ThreeCheckBoxProperty(SET_ICON + ".tooltip", SET_ICON);
 		controls.add(mSetIcon);
-		mIcon = new IconProperty(ICON + ".tooltip", ICON, mMindMapController
-				.getFrame(), mIconInformationVector);
+		mIcon = new IconProperty(ICON + ".tooltip", ICON,
+				mMindMapController.getFrame(), mIconInformationVector);
 		controls.add(mIcon);
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("NodeFont"));
@@ -455,38 +457,43 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 	}
 
 	public void setPattern(Pattern pattern) {
-		FreeMind fmMain = (FreeMind)mMindMapController.getFrame();
+		FreeMind fmMain = (FreeMind) mMindMapController.getFrame();
 		setPatternControls(pattern.getPatternNodeColor(), mSetNodeColor,
-				mNodeColor, fmMain.getDefaultProperty(FreeMind.RESOURCES_NODE_TEXT_COLOR));
+				mNodeColor,
+				fmMain.getDefaultProperty(FreeMind.RESOURCES_NODE_TEXT_COLOR));
 		setPatternControls(pattern.getPatternNodeBackgroundColor(),
-				mSetNodeBackgroundColor, mNodeBackgroundColor, fmMain.getDefaultProperty(FreeMind.RESOURCES_BACKGROUND_COLOR));
+				mSetNodeBackgroundColor, mNodeBackgroundColor,
+				fmMain.getDefaultProperty(FreeMind.RESOURCES_BACKGROUND_COLOR));
 		setPatternControls(pattern.getPatternNodeStyle(), mSetNodeStyle,
 				mNodeStyle, MindMapNode.STYLE_AS_PARENT);
 		setPatternControls(pattern.getPatternNodeText(), mSetNodeText,
 				mNodeText, "");
 		setPatternControls(pattern.getPatternEdgeColor(), mSetEdgeColor,
-				mEdgeColor, fmMain.getDefaultProperty(FreeMind.RESOURCES_EDGE_COLOR));
+				mEdgeColor,
+				fmMain.getDefaultProperty(FreeMind.RESOURCES_EDGE_COLOR));
 		setPatternControls(pattern.getPatternEdgeStyle(), mSetEdgeStyle,
 				mEdgeStyle, EDGE_STYLES[0]);
 		setPatternControls(pattern.getPatternEdgeWidth(), mSetEdgeWidth,
 				mEdgeWidth, EDGE_WIDTHS[0], new EdgeWidthTransformer());
 		setPatternControls(pattern.getPatternNodeFontName(), mSetNodeFontName,
-				mNodeFontName, mMindMapController.getController().getDefaultFontFamilyName());		
+				mNodeFontName, mMindMapController.getController()
+						.getDefaultFontFamilyName());
 		setPatternControls(pattern.getPatternNodeFontSize(), mSetNodeFontSize,
 				mNodeFontSize, sizes[0]);
 		setPatternControls(pattern.getPatternNodeFontBold(), mSetNodeFontBold,
 				mNodeFontBold, BooleanProperty.TRUE_VALUE);
 		setPatternControls(pattern.getPatternNodeFontItalic(),
 				mSetNodeFontItalic, mNodeFontItalic, BooleanProperty.TRUE_VALUE);
-		MindIcon firstInfo = (MindIcon) mIconInformationVector
-				.get(0);
+		MindIcon firstInfo = (MindIcon) mIconInformationVector.get(0);
 		setPatternControls(pattern.getPatternIcon(), mSetIcon, mIcon,
 				firstInfo.getName());
-		setPatternControls(pattern.getPatternScript(), mSetScriptPattern, mScriptPattern,
-				"");
+		setPatternControls(pattern.getPatternScript(), mSetScriptPattern,
+				mScriptPattern, "");
 		if (StylePatternFrameType.WITH_NAME_AND_CHILDS.equals(mType)) {
 			mName.setValue(pattern.getName());
-			setPatternControls(pattern.getPatternChild(), mSetChildPattern,
+			setPatternControls(
+					pattern.getPatternChild(),
+					mSetChildPattern,
 					mChildPattern,
 					(mPatternList.size() > 0) ? ((Pattern) mPatternList.get(0))
 							.getName() : null);
@@ -594,10 +601,9 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 	public Pattern getResultPattern(Pattern pattern) {
 		pattern.setPatternNodeColor((PatternNodeColor) getPatternResult(
 				new PatternNodeColor(), mSetNodeColor, mNodeColor));
-		pattern
-				.setPatternNodeBackgroundColor((PatternNodeBackgroundColor) getPatternResult(
-						new PatternNodeBackgroundColor(),
-						mSetNodeBackgroundColor, mNodeBackgroundColor));
+		pattern.setPatternNodeBackgroundColor((PatternNodeBackgroundColor) getPatternResult(
+				new PatternNodeBackgroundColor(), mSetNodeBackgroundColor,
+				mNodeBackgroundColor));
 		pattern.setPatternNodeStyle((PatternNodeStyle) getPatternResult(
 				new PatternNodeStyle(), mSetNodeStyle, mNodeStyle));
 		pattern.setPatternNodeText((PatternNodeText) getPatternResult(
@@ -617,10 +623,9 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 				new PatternNodeFontSize(), mSetNodeFontSize, mNodeFontSize));
 		pattern.setPatternNodeFontBold((PatternNodeFontBold) getPatternResult(
 				new PatternNodeFontBold(), mSetNodeFontBold, mNodeFontBold));
-		pattern
-				.setPatternNodeFontItalic((PatternNodeFontItalic) getPatternResult(
-						new PatternNodeFontItalic(), mSetNodeFontItalic,
-						mNodeFontItalic));
+		pattern.setPatternNodeFontItalic((PatternNodeFontItalic) getPatternResult(
+				new PatternNodeFontItalic(), mSetNodeFontItalic,
+				mNodeFontItalic));
 		pattern.setPatternIcon((PatternIcon) getPatternResult(
 				new PatternIcon(), mSetIcon, mIcon));
 		pattern.setPatternScript((PatternScript) getPatternResult(
@@ -663,8 +668,8 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 	}
 
 	/**
-	 * Used to enable/disable the attribute controls,
-	 * if the check boxes are changed.
+	 * Used to enable/disable the attribute controls, if the check boxes are
+	 * changed.
 	 */
 	public void propertyChange(PropertyChangeEvent pEvt) {
 		// System.out.println("Propagation of "+ pEvt.getPropertyName()
@@ -684,7 +689,7 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 
 	/**
 	 * For the child pattern box, the list is set here.
-	 *
+	 * 
 	 */
 	public void setPatternList(List patternList) {
 		this.mPatternList = patternList;

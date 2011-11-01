@@ -19,15 +19,12 @@
 /* $Id: NodeNoteViewer.java,v 1.1.2.1.2.14 2008/08/15 10:01:24 dpolivaev Exp $ */
 package freemind.modes.browsemode;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import freemind.modes.ControllerAdapter;
@@ -47,8 +44,8 @@ public class NodeNoteViewer extends NodeNoteBase implements
 	private JLabel noteViewer;
 
 	private final ControllerAdapter mBrowseController;
-	
-    private static ImageIcon noteIcon = null;
+
+	private static ImageIcon noteIcon = null;
 
 	public NodeNoteViewer(ControllerAdapter pBrowseController) {
 		mBrowseController = pBrowseController;
@@ -72,9 +69,10 @@ public class NodeNoteViewer extends NodeNoteBase implements
 
 	public void onSelectHook(NodeView pNode) {
 		String noteText = pNode.getModel().getNoteText();
-		if(noteText != null && !noteText.equals("")){
-//			 logger.info("Panel added");
-			mBrowseController.getFrame().insertComponentIntoSplitPane(getNoteViewerComponent(noteText));
+		if (noteText != null && !noteText.equals("")) {
+			// logger.info("Panel added");
+			mBrowseController.getFrame().insertComponentIntoSplitPane(
+					getNoteViewerComponent(noteText));
 			noteViewer.setText(noteText != null ? noteText : "");
 		}
 	}
@@ -85,16 +83,15 @@ public class NodeNoteViewer extends NodeNoteBase implements
 	public void onUpdateNodeHook(MindMapNode pNode) {
 		setStateIcon(pNode, true);
 	}
-	
-	/** Copied from NodeNoteRegistration.*/
-    protected void setStateIcon(MindMapNode node, boolean enabled) {
-        // icon
-        if (noteIcon == null) {
-            noteIcon = new ImageIcon(mBrowseController
-                    .getResource("images/knotes.png"));
-        }
-        node.setStateIcon(NODE_NOTE_ICON, (enabled) ? noteIcon
-                : null);
-    }
+
+	/** Copied from NodeNoteRegistration. */
+	protected void setStateIcon(MindMapNode node, boolean enabled) {
+		// icon
+		if (noteIcon == null) {
+			noteIcon = new ImageIcon(
+					mBrowseController.getResource("images/knotes.png"));
+		}
+		node.setStateIcon(NODE_NOTE_ICON, (enabled) ? noteIcon : null);
+	}
 
 }

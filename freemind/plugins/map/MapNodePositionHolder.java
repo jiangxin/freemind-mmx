@@ -29,13 +29,11 @@ import javax.swing.ImageIcon;
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 
 import freemind.extensions.HookRegistration;
-import freemind.main.FreeMind;
 import freemind.main.Resources;
 import freemind.main.XMLElement;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
-import freemind.modes.common.plugins.NodeNoteBase;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
 
@@ -71,7 +69,9 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 		setStateIcon(pNode, true);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see freemind.extensions.PermanentNodeHookAdapter#shutdownMapHook()
 	 */
 	public void shutdownMapHook() {
@@ -79,7 +79,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 		((Registration) getPluginBaseClass()).deregisterMapNode(this);
 		super.shutdownMapHook();
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -99,10 +99,10 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	}
 
 	protected void setStateIcon(MindMapNode node, boolean enabled) {
-        node.setStateIcon(NODE_MAP_LOCATION_ICON, (enabled) ? getMapLocationIcon()
-                : null);
-    }
-	
+		node.setStateIcon(NODE_MAP_LOCATION_ICON,
+				(enabled) ? getMapLocationIcon() : null);
+	}
+
 	/**
 	 * @param pDouble
 	 * @return
@@ -163,16 +163,20 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 
 	public static interface MapNodePositionListener {
 		void registerMapNode(MapNodePositionHolder pMapNodePositionHolder);
+
 		void deregisterMapNode(MapNodePositionHolder pMapNodePositionHolder);
 	}
-	
+
 	public static class Registration implements HookRegistration {
 
-		/* Collects MapNodePositionHolder. This is necessary to be able to display them all efficiently.*/
+		/*
+		 * Collects MapNodePositionHolder. This is necessary to be able to
+		 * display them all efficiently.
+		 */
 		private HashSet/* MapNodePositionHolder s */mMapNodePositionHolders = new HashSet();
 
 		private HashSet mMapNodePositionListeners = new HashSet();
-		
+
 		private final MindMapController controller;
 
 		private final MindMap mMap;
@@ -193,8 +197,10 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 
 		public void registerMapNode(MapNodePositionHolder pMapNodePositionHolder) {
 			mMapNodePositionHolders.add(pMapNodePositionHolder);
-			for (Iterator it = mMapNodePositionListeners.iterator(); it.hasNext();) {
-				MapNodePositionListener listener = (MapNodePositionListener) it.next();
+			for (Iterator it = mMapNodePositionListeners.iterator(); it
+					.hasNext();) {
+				MapNodePositionListener listener = (MapNodePositionListener) it
+						.next();
 				try {
 					listener.registerMapNode(pMapNodePositionHolder);
 				} catch (Exception e) {
@@ -207,10 +213,13 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 			return mMapNodePositionHolders;
 		}
 
-		public void deregisterMapNode(MapNodePositionHolder pMapNodePositionHolder) {
+		public void deregisterMapNode(
+				MapNodePositionHolder pMapNodePositionHolder) {
 			mMapNodePositionHolders.remove(pMapNodePositionHolder);
-			for (Iterator it = mMapNodePositionListeners.iterator(); it.hasNext();) {
-				MapNodePositionListener listener = (MapNodePositionListener) it.next();
+			for (Iterator it = mMapNodePositionListeners.iterator(); it
+					.hasNext();) {
+				MapNodePositionListener listener = (MapNodePositionListener) it
+						.next();
 				try {
 					listener.deregisterMapNode(pMapNodePositionHolder);
 				} catch (Exception e) {
@@ -218,10 +227,14 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 				}
 			}
 		}
-		public void registerMapNodePositionListener(MapNodePositionListener pMapNodePositionListener) {
+
+		public void registerMapNodePositionListener(
+				MapNodePositionListener pMapNodePositionListener) {
 			mMapNodePositionListeners.add(pMapNodePositionListener);
 		}
-		public void deregisterMapNodePositionListener(MapNodePositionListener pMapNodePositionListener) {
+
+		public void deregisterMapNodePositionListener(
+				MapNodePositionListener pMapNodePositionListener) {
 			mMapNodePositionListeners.remove(pMapNodePositionListener);
 		}
 	}
@@ -249,17 +262,17 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	public void setZoom(int pZoom) {
 		mZoom = pZoom;
 	}
-	
+
 	public MindMapNode getNode() {
 		return super.getNode();
 	}
 
 	public static ImageIcon getMapLocationIcon() {
-        // icon
-        if (sMapLocationIcon == null) {
-            sMapLocationIcon = new ImageIcon(Resources.getInstance()
-                    .getResource("images/map_location.png"));
-        }
+		// icon
+		if (sMapLocationIcon == null) {
+			sMapLocationIcon = new ImageIcon(Resources.getInstance()
+					.getResource("images/map_location.png"));
+		}
 		return sMapLocationIcon;
 	}
 

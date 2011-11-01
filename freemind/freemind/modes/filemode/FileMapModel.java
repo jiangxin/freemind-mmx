@@ -34,129 +34,137 @@ import freemind.modes.ModeController;
 
 public class FileMapModel extends MapAdapter {
 
-    private MindMapLinkRegistry linkRegistry;
+	private MindMapLinkRegistry linkRegistry;
 
-    //
-    // Constructors
-    //
+	//
+	// Constructors
+	//
 
-    public FileMapModel(FreeMindMain frame, ModeController modeController) {
-        this(new File(File.separator), frame, modeController);
-    }
+	public FileMapModel(FreeMindMain frame, ModeController modeController) {
+		this(new File(File.separator), frame, modeController);
+	}
 
-    public FileMapModel( File root , FreeMindMain frame, ModeController modeController) {
-        super(frame, modeController);
-        setRoot(new FileNodeModel(root,getFrame(), this));
-        getRootNode().setFolded(false);
- 		linkRegistry = new LinkRegistryAdapter();
-    }
+	public FileMapModel(File root, FreeMindMain frame,
+			ModeController modeController) {
+		super(frame, modeController);
+		setRoot(new FileNodeModel(root, getFrame(), this));
+		getRootNode().setFolded(false);
+		linkRegistry = new LinkRegistryAdapter();
+	}
 
-    //
-    // Other methods
-    //
-    public MindMapLinkRegistry getLinkRegistry() {
-        return linkRegistry;
-    }
+	//
+	// Other methods
+	//
+	public MindMapLinkRegistry getLinkRegistry() {
+		return linkRegistry;
+	}
 
-    //
-    // Other methods
-    //
-    public boolean save(File file) {
-    	return true;
-    }
+	//
+	// Other methods
+	//
+	public boolean save(File file) {
+		return true;
+	}
 
-    /**
+	/**
      *
      */
 
-    public void destroy() {
-        /* fc, 8.8.2004: don't call super.destroy as this method tries to remove the hooks recursively.
-         * This must fail. */
-        //super.destroy();
-    	cancelFileChangeObservationTimer();
-    }
-    public void load(URL file) {
-    }
+	public void destroy() {
+		/*
+		 * fc, 8.8.2004: don't call super.destroy as this method tries to remove
+		 * the hooks recursively. This must fail.
+		 */
+		// super.destroy();
+		cancelFileChangeObservationTimer();
+	}
 
-    public boolean isSaved() {
-	return true;
-    }
+	public void load(URL file) {
+	}
 
-    public String toString() {
-	return "File: "+getRoot().toString();
-    }
+	public boolean isSaved() {
+		return true;
+	}
 
-    public void changeNode(MindMapNode node, String newText) {
-// 	File file = ((FileNodeModel)node).getFile();
-// 	File newFile = new File(file.getParentFile(), newText);
-// 	file.renameTo(newFile);
-// 	System.out.println(file);
-// 	FileNodeModel parent = (FileNodeModel)node.getParent();
-// 	//	removeNodeFromParent(node);
+	public String toString() {
+		return "File: " + getRoot().toString();
+	}
 
-// 	insertNodeInto(new FileNodeModel(newFile),parent,0);
+	public void changeNode(MindMapNode node, String newText) {
+		// File file = ((FileNodeModel)node).getFile();
+		// File newFile = new File(file.getParentFile(), newText);
+		// file.renameTo(newFile);
+		// System.out.println(file);
+		// FileNodeModel parent = (FileNodeModel)node.getParent();
+		// // removeNodeFromParent(node);
 
+		// insertNodeInto(new FileNodeModel(newFile),parent,0);
 
-// 	nodeChanged(node);
-    }
+		// nodeChanged(node);
+	}
 
-    /* (non-Javadoc)
-     * @see freemind.modes.MindMap#setLinkInclinationChanged()
-     */
-    public void setLinkInclinationChanged() {
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see freemind.modes.MindMap#setLinkInclinationChanged()
+	 */
+	public void setLinkInclinationChanged() {
+	}
 
-    /* (non-Javadoc)
-     * @see freemind.modes.MindMap#getXml(java.io.Writer)
-     */
-    public void getXml(Writer fileout) throws IOException {
-        // nothing.
-        //FIXME: Implement me if you need me.
-        throw new RuntimeException("Unimplemented method called.");
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see freemind.modes.MindMap#getXml(java.io.Writer)
+	 */
+	public void getXml(Writer fileout) throws IOException {
+		// nothing.
+		// FIXME: Implement me if you need me.
+		throw new RuntimeException("Unimplemented method called.");
+	}
 
-    /* (non-Javadoc)
-     * @see freemind.modes.MindMap#getFilteredXml(java.io.Writer)
-     */
-    public void getFilteredXml(Writer fileout) throws IOException {
-        // nothing.
-        //FIXME: Implement me if you need me.
-        throw new RuntimeException("Unimplemented method called.");
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see freemind.modes.MindMap#getFilteredXml(java.io.Writer)
+	 */
+	public void getFilteredXml(Writer fileout) throws IOException {
+		// nothing.
+		// FIXME: Implement me if you need me.
+		throw new RuntimeException("Unimplemented method called.");
+	}
 
 }
 
-
 // public class FileSystemModel extends AbstractTreeTableModel
-//                              implements TreeTableModel {
+// implements TreeTableModel {
 
-//     // The the returned file length for directories.
-//     public static final Integer ZERO = new Integer(0);
+// // The the returned file length for directories.
+// public static final Integer ZERO = new Integer(0);
 
-//     //
-//     // Some convenience methods.
-//     //
+// //
+// // Some convenience methods.
+// //
 
-//     protected File getFile(Object node) {
-// 	FileNode fileNode = ((FileNode)node);
-// 	return fileNode.getFile();
-//     }
+// protected File getFile(Object node) {
+// FileNode fileNode = ((FileNode)node);
+// return fileNode.getFile();
+// }
 
-//     protected Object[] getChildren(Object node) {
-// 	FileNode fileNode = ((FileNode)node);
-// 	return fileNode.getChildren();
-//     }
+// protected Object[] getChildren(Object node) {
+// FileNode fileNode = ((FileNode)node);
+// return fileNode.getChildren();
+// }
 
-//     //
-//     // The TreeModel interface
-//     //
+// //
+// // The TreeModel interface
+// //
 
-//     public int getChildCount(Object node) {
-// 	Object[] children = getChildren(node);
-// 	return (children == null) ? 0 : children.length;
-//     }
+// public int getChildCount(Object node) {
+// Object[] children = getChildren(node);
+// return (children == null) ? 0 : children.length;
+// }
 
-//     public Object getChild(Object node, int i) {
-// 	return getChildren(node)[i];
-//     }
+// public Object getChild(Object node, int i) {
+// return getChildren(node)[i];
+// }
 // }

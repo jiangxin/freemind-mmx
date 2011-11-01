@@ -19,81 +19,91 @@
 /*$Id: LastOpenedList.java,v 1.8.18.2.2.2 2008/04/11 16:58:31 christianfoltin Exp $*/
 package freemind.controller;
 
-import freemind.main.Tools;
-import freemind.main.XMLParseException;
-import freemind.view.MapModule;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.StringTokenizer;
+
+import freemind.main.Tools;
+import freemind.main.XMLParseException;
+import freemind.view.MapModule;
 
 /**
- * This class manages a list of the maps that were opened last.
- * It aims to provide persistence for the last recent maps.
- * Maps should be shown in the format:"mode\:key",ie."Mindmap\:/home/joerg/freemind.mm"
+ * This class manages a list of the maps that were opened last. It aims to
+ * provide persistence for the last recent maps. Maps should be shown in the
+ * format:"mode\:key",ie."Mindmap\:/home/joerg/freemind.mm"
  */
 public class LastOpenedList {
-    private Controller mController;
-    private int maxEntries = 25; // is rewritten from property anyway
-    /**
-     * Contains Restore strings.
-     */
-    private List lastOpenedList = new LinkedList();
-    /**
-     * Contains Restore string => map name (map.toString()).
-     */
-    private Map mRestorableToMapName = new HashMap();
+	private Controller mController;
+	private int maxEntries = 25; // is rewritten from property anyway
+	/**
+	 * Contains Restore strings.
+	 */
+	private List lastOpenedList = new LinkedList();
+	/**
+	 * Contains Restore string => map name (map.toString()).
+	 */
+	private Map mRestorableToMapName = new HashMap();
 
-    LastOpenedList(Controller c, String restored) {
-        this.mController=c;
-        maxEntries = new Integer(c.getFrame().getProperty("last_opened_list_length")).intValue();
-	load(restored);
-    }
-
-    void mapOpened(MapModule mapModule) {
-	if (mapModule==null || mapModule.getModel()==null) return;
-	String restoreString = mapModule.getModel().getRestorable();
-	if (restoreString==null) return;
-	if (lastOpenedList.contains(restoreString)) {
-	    lastOpenedList.remove(restoreString);
+	LastOpenedList(Controller c, String restored) {
+		this.mController = c;
+		maxEntries = new Integer(c.getFrame().getProperty(
+				"last_opened_list_length")).intValue();
+		load(restored);
 	}
-	lastOpenedList.add(0,restoreString);
-	mRestorableToMapName.put(restoreString,mapModule.toString());
 
-	while (lastOpenedList.size()>maxEntries) {
-	    lastOpenedList.remove(lastOpenedList.size()-1); //remove last elt
+	void mapOpened(MapModule mapModule) {
+		if (mapModule == null || mapModule.getModel() == null)
+			return;
+		String restoreString = mapModule.getModel().getRestorable();
+		if (restoreString == null)
+			return;
+		if (lastOpenedList.contains(restoreString)) {
+			lastOpenedList.remove(restoreString);
+		}
+		lastOpenedList.add(0, restoreString);
+		mRestorableToMapName.put(restoreString, mapModule.toString());
+
+		while (lastOpenedList.size() > maxEntries) {
+			lastOpenedList.remove(lastOpenedList.size() - 1); // remove last elt
+		}
 	}
-    }
 
-    void mapClosed(MapModule map) {
-	//	hash.remove(map.getModel().getRestoreable());
-	//not needed
-    }
-
-    /** fc, 8.8.2004: This method returns a string representation of this class. */
-    String save() {
- 	String str = new String();
-	for(ListIterator it=listIterator();it.hasNext();) {
-	    str=str.concat((String)it.next()+";");
+	void mapClosed(MapModule map) {
+		// hash.remove(map.getModel().getRestoreable());
+		// not needed
 	}
-	return str;
-    }
 
-    /**
+	/** fc, 8.8.2004: This method returns a string representation of this class. */
+	String save() {
+		String str = new String();
+		for (ListIterator it = listIterator(); it.hasNext();) {
+			str = str.concat((String) it.next() + ";");
+		}
+		return str;
+	}
+
+	/**
      * 
      */
-    void load(String data) {
-        // Take care that there are no ";" in restorable names!
-	if (data != null) {
-	    StringTokenizer token = new StringTokenizer(data,";");
-	    while (token.hasMoreTokens())
-		lastOpenedList.add(token.nextToken());
+	void load(String data) {
+		// Take care that there are no ";" in restorable names!
+		if (data != null) {
+			StringTokenizer token = new StringTokenizer(data, ";");
+			while (token.hasMoreTokens())
+				lastOpenedList.add(token.nextToken());
+		}
 	}
-    }
 
-    public boolean open(String restoreable) throws FileNotFoundException, XMLParseException, MalformedURLException, IOException, URISyntaxException {
+	public boolean open(String restoreable) throws FileNotFoundException,
+			XMLParseException, MalformedURLException, IOException,
+			URISyntaxException {
 		boolean changedToMapModule = mController.getMapModuleManager()
 				.tryToChangeToMapModule(
 						(String) mRestorableToMapName.get(restoreable));
@@ -107,8 +117,8 @@ public class LastOpenedList {
 		}
 		return false;
 	}
-	
-    ListIterator listIterator () {
-	return lastOpenedList.listIterator();
-    }
+
+	ListIterator listIterator() {
+		return lastOpenedList.listIterator();
+	}
 }

@@ -27,36 +27,35 @@ import java.util.logging.Logger;
 import javax.swing.JComboBox;
 
 public class MainToolBar extends FreeMindToolBar {
-    private JComboBox zoom;	    
-    Controller controller;
-    String userDefinedZoom;
-    private static Logger logger= null;
-    FreeMindToolBar mInnerToolBar;
-    
-    
-    public MainToolBar(final Controller controller) {
-    	super();
-        this.setRollover(true);
-        this.controller = controller;
-        mInnerToolBar = new FreeMindToolBar();
-        if(logger == null) {
-            logger = controller.getFrame().getLogger(this.getClass().getName());
-        }
-        userDefinedZoom = controller.getResourceString("user_defined_zoom");
+	private JComboBox zoom;
+	Controller controller;
+	String userDefinedZoom;
+	private static Logger logger = null;
+	FreeMindToolBar mInnerToolBar;
+
+	public MainToolBar(final Controller controller) {
+		super();
+		this.setRollover(true);
+		this.controller = controller;
+		mInnerToolBar = new FreeMindToolBar();
+		if (logger == null) {
+			logger = controller.getFrame().getLogger(this.getClass().getName());
+		}
+		userDefinedZoom = controller.getResourceString("user_defined_zoom");
 
 		mInnerToolBar.add(controller.navigationPreviousMap);
 		mInnerToolBar.add(controller.navigationNextMap);
 		mInnerToolBar.add(controller.printDirect);
 		mInnerToolBar.add(controller.showFilterToolbarAction);
 
-        zoom = new JComboBox(controller.getZooms());
-        zoom.setSelectedItem("100%");
-        zoom.addItem(userDefinedZoom);
-        // Focus fix.
-        zoom.setFocusable(false);
-//        mInnerToolBar.add(zoom);
-        this.add(mInnerToolBar);
-        add(zoom);
+		zoom = new JComboBox(controller.getZooms());
+		zoom.setSelectedItem("100%");
+		zoom.addItem(userDefinedZoom);
+		// Focus fix.
+		zoom.setFocusable(false);
+		// mInnerToolBar.add(zoom);
+		this.add(mInnerToolBar);
+		add(zoom);
 		zoom.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				// todo: dialog with user zoom value, if user zoom is chosen.
@@ -68,16 +67,16 @@ public class MainToolBar extends FreeMindToolBar {
 		});
 	}
 
-    public void activate(boolean visible) {
-    	if(visible){
-    		this.remove(mInnerToolBar);
-    		this.add(mInnerToolBar);
-    	} else {
-    		this.remove(mInnerToolBar);
-    	}
-    }
-    
-    private void setZoomByItem(Object item) {
+	public void activate(boolean visible) {
+		if (visible) {
+			this.remove(mInnerToolBar);
+			this.add(mInnerToolBar);
+		} else {
+			this.remove(mInnerToolBar);
+		}
+	}
+
+	private void setZoomByItem(Object item) {
 		if (((String) item).equals(userDefinedZoom))
 			return; // nothing to do...
 		// remove '%' sign
@@ -86,14 +85,14 @@ public class MainToolBar extends FreeMindToolBar {
 	}
 
 	private float getZoomValue(Object item) {
-		String dirty = (String)item;
-		  String cleaned = dirty.substring(0,dirty.length()-1);
-		  //change representation ("125" to 1.25)
-		  final float zoomValue = Integer.parseInt(cleaned,10)/100F;
+		String dirty = (String) item;
+		String cleaned = dirty.substring(0, dirty.length() - 1);
+		// change representation ("125" to 1.25)
+		final float zoomValue = Integer.parseInt(cleaned, 10) / 100F;
 		return zoomValue;
 	}
 
-    public void zoomOut() {
+	public void zoomOut() {
 		final float currentZoomIndex = getCurrentZoomIndex();
 		if (currentZoomIndex > 0) {
 			setZoomByItem(zoom.getItemAt((int) (currentZoomIndex - 0.5f)));
@@ -103,12 +102,12 @@ public class MainToolBar extends FreeMindToolBar {
 	private float getCurrentZoomIndex() {
 		final int selectedIndex = zoom.getSelectedIndex();
 		final int itemCount = zoom.getItemCount();
-		if(selectedIndex != itemCount - 1){
+		if (selectedIndex != itemCount - 1) {
 			return selectedIndex;
 		}
 		final float userZoom = controller.getView().getZoom();
-		for(int i = 0; i < itemCount - 1; i++){
-			if (userZoom < getZoomValue(zoom.getItemAt(i))){
+		for (int i = 0; i < itemCount - 1; i++) {
+			if (userZoom < getZoomValue(zoom.getItemAt(i))) {
 				return i - 0.5f;
 			}
 		}
@@ -122,24 +121,27 @@ public class MainToolBar extends FreeMindToolBar {
 		}
 	}
 
-    public String getItemForZoom(float f) {
-       return (int)(f*100F)+"%"; }
+	public String getItemForZoom(float f) {
+		return (int) (f * 100F) + "%";
+	}
 
-    public void setZoomComboBox(float f) {
-        logger.fine("setZoomComboBox is called with "+f+".");
-        String toBeFound = getItemForZoom(f);
-        for(int i = 0; i < zoom.getItemCount(); ++i) {
-            if(toBeFound.equals((String) zoom.getItemAt(i))) {
-                // found
-                zoom.setSelectedItem(toBeFound);
-                return;
-            }
-        }
-        zoom.setSelectedItem(userDefinedZoom);
-    }
+	public void setZoomComboBox(float f) {
+		logger.fine("setZoomComboBox is called with " + f + ".");
+		String toBeFound = getItemForZoom(f);
+		for (int i = 0; i < zoom.getItemCount(); ++i) {
+			if (toBeFound.equals((String) zoom.getItemAt(i))) {
+				// found
+				zoom.setSelectedItem(toBeFound);
+				return;
+			}
+		}
+		zoom.setSelectedItem(userDefinedZoom);
+	}
 
-    public void setAllActions(boolean enabled) {
-	if (zoom != null) {
-           zoom.setEnabled(enabled); }}
+	public void setAllActions(boolean enabled) {
+		if (zoom != null) {
+			zoom.setEnabled(enabled);
+		}
+	}
 
 }

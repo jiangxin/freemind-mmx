@@ -35,35 +35,36 @@ public class BrowseToolBar extends JToolBar {
 	public static final String BROWSE_URL_STORAGE_KEY = "browse_url_storage";
 
 	private ControllerAdapter c;
-    private PersistentEditableComboBox urlfield = null;
+	private PersistentEditableComboBox urlfield = null;
 
-    public BrowseToolBar(ControllerAdapter controller) {
+	public BrowseToolBar(ControllerAdapter controller) {
 
-	this.c=controller;
-	urlfield = new PersistentEditableComboBox(controller, BROWSE_URL_STORAGE_KEY);
-        this.setRollover(true);
+		this.c = controller;
+		urlfield = new PersistentEditableComboBox(controller,
+				BROWSE_URL_STORAGE_KEY);
+		this.setRollover(true);
 
-	urlfield.addActionListener(new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			String urlText = urlfield.getText();
-			if("".equals(urlText) || e.getActionCommand().equals("comboBoxEdited"))
-				return;
-		    try {
-                c.load(new URL(urlText));
-            } catch (Exception e1) {
-                freemind.main.Resources.getInstance().logException(e1);
-                //FIXME: Give a good error message.
-                c.getController().errorMessage(e1);
-            }
-		}
-	    });
+		urlfield.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String urlText = urlfield.getText();
+				if ("".equals(urlText)
+						|| e.getActionCommand().equals("comboBoxEdited"))
+					return;
+				try {
+					c.load(new URL(urlText));
+				} catch (Exception e1) {
+					freemind.main.Resources.getInstance().logException(e1);
+					// FIXME: Give a good error message.
+					c.getController().errorMessage(e1);
+				}
+			}
+		});
 
+		add(new JLabel("URL:"));
+		add(urlfield);
+	}
 
-	add(new JLabel("URL:"));
-	add(urlfield);
-    }
-
-    void setURLField (String text) {
-	urlfield.setText(text);
-    }
+	void setURLField(String text) {
+		urlfield.setText(text);
+	}
 }

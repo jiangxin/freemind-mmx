@@ -58,12 +58,14 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		Vector mindMapNodes = getMindMapNodes();
 		logger.info("Clones for nodes: " + Tools.listToString(mindMapNodes));
 		// now, construct the plugin for those nodes:
-		for (Iterator itPastedNodes = mindMapNodes.iterator(); itPastedNodes.hasNext();) {
+		for (Iterator itPastedNodes = mindMapNodes.iterator(); itPastedNodes
+				.hasNext();) {
 			MindMapNode copiedNode = (MindMapNode) itPastedNodes.next();
 			ClonePlugin clonePlugin = null;
-			// now, we need to look if it is a clone of somebody (chain: source -> clone -> clone)
+			// now, we need to look if it is a clone of somebody (chain: source
+			// -> clone -> clone)
 			ShadowClonePlugin shadowHook = getShadowHook(copiedNode);
-			if(shadowHook != null) {
+			if (shadowHook != null) {
 				// found. get the original
 				copiedNode = shadowHook.getOriginalNode();
 			}
@@ -87,7 +89,8 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 					addNewClone(copiedNode, pNode, copy);
 					return;
 				} else {
-					// ok, we have a clone without shadow nodes. We remove the old hook:
+					// ok, we have a clone without shadow nodes. We remove the
+					// old hook:
 					addHook(copiedNode);
 					// and create a new fresh one.
 				}
@@ -103,16 +106,15 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		// first copy, as the hook shouldn't be copied....
 		Transferable copy = getMindMapController().copy(pOriginalNode, true);
 		Vector selecteds = Tools.getVectorWithSingleElement(pOriginalNode);
-		getMindMapController().addHook(pOriginalNode,
-				selecteds,
+		getMindMapController().addHook(pOriginalNode, selecteds,
 				ClonePlugin.PLUGIN_LABEL);
 		return copy;
 	}
 
-	public void addNewClone(MindMapNode originalNode, MindMapNode pDestinationNode, Transferable copy) {
+	public void addNewClone(MindMapNode originalNode,
+			MindMapNode pDestinationNode, Transferable copy) {
 		String originalNodeId = getMindMapController().getNodeID(originalNode);
-		logger.info("Original node " + originalNode + ", id "
-				+ originalNodeId);
+		logger.info("Original node " + originalNode + ", id " + originalNodeId);
 		if (originalNode.isRoot()) {
 			throw new IllegalArgumentException("Root can't be cloned");
 		}
@@ -129,7 +131,8 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		// how to get the clone node now?
 		String cloneNodeId = null;
 		MindMapNode cloneNode = null;
-		for (Iterator it = pDestinationNode.getChildren().iterator(); it.hasNext();) {
+		for (Iterator it = pDestinationNode.getChildren().iterator(); it
+				.hasNext();) {
 			MindMapNode child = (MindMapNode) it.next();
 			String childId = getMindMapController().getNodeID(child);
 			logger.info("Checking " + child + " to be the new node, id "
@@ -171,10 +174,10 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		}
 		return null;
 	}
-	
+
 	public static ShadowClonePlugin getShadowHook(MindMapNode cloneNode) {
 		for (Iterator it2 = cloneNode.getActivatedHooks().iterator(); it2
-		.hasNext();) {
+				.hasNext();) {
 			PermanentNodeHook hook = (PermanentNodeHook) it2.next();
 			if (hook instanceof ShadowClonePlugin) {
 				ShadowClonePlugin cloneHook = (ShadowClonePlugin) hook;
@@ -183,7 +186,7 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		}
 		return null;
 	}
-	
+
 	public Vector getMindMapNodes() {
 		return ((Registration) getPluginBaseClass()).getMindMapNodes();
 	}
@@ -191,8 +194,8 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 	public static class Registration implements HookRegistration,
 			MenuItemEnabledListener {
 
-		private HashSet/* String */ mOriginalNodeIds = new HashSet();
-		
+		private HashSet/* String */mOriginalNodeIds = new HashSet();
+
 		private final MindMapController controller;
 
 		private final MindMap mMap;
@@ -209,7 +212,7 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 			if (controller == null)
 				return false;
 			Vector mindMapNodes = getMindMapNodes();
-//			logger.warning("Nodes " + Tools.listToString(mindMapNodes));
+			// logger.warning("Nodes " + Tools.listToString(mindMapNodes));
 			return !mindMapNodes.isEmpty();
 		}
 
@@ -232,8 +235,8 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 						mindMapNodes.add(node);
 					}
 				} catch (Exception e) {
-//                                    e.printStackTrace();
-//					freemind.main.Resources.getInstance().logException(e);
+					// e.printStackTrace();
+					// freemind.main.Resources.getInstance().logException(e);
 				}
 			}
 			return mindMapNodes;
@@ -242,6 +245,7 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		public void registerOriginal(String pOriginalNodeId) {
 			mOriginalNodeIds.add(pOriginalNodeId);
 		}
+
 		public HashSet getOriginalNodeIds() {
 			return mOriginalNodeIds;
 		}

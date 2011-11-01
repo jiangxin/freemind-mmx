@@ -34,43 +34,54 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 /**
  * @author foltin
- *
+ * 
  */
 public class CompoundActionHandler extends AbstractAction implements ActorXml {
 
-    private MindMapController c;
-    public CompoundActionHandler(MindMapController c) {
-        this.c = c;
-        this.c.getActionFactory().registerActor(this, getDoActionClass());
-    }
-    /* (non-Javadoc)
-     * @see freemind.controller.actions.ActorXml#act(freemind.controller.actions.generated.instance.XmlAction)
-     */
-    public void act(XmlAction action) {
+	private MindMapController c;
+
+	public CompoundActionHandler(MindMapController c) {
+		this.c = c;
+		this.c.getActionFactory().registerActor(this, getDoActionClass());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.controller.actions.ActorXml#act(freemind.controller.actions.
+	 * generated.instance.XmlAction)
+	 */
+	public void act(XmlAction action) {
 		CompoundAction compound = (CompoundAction) action;
 		Object[] actions = compound.getListChoiceList().toArray();
 		for (int i = 0; i < actions.length; i++) {
-		    Object obj = actions[i];
-		    if (obj instanceof XmlAction) {
-                XmlAction xmlAction = (XmlAction) obj;
-    			ActorXml actor = c.getActionFactory().getActor(xmlAction);
-    			actor.act(xmlAction);
-            }
-        }
-    }
+			Object obj = actions[i];
+			if (obj instanceof XmlAction) {
+				XmlAction xmlAction = (XmlAction) obj;
+				ActorXml actor = c.getActionFactory().getActor(xmlAction);
+				actor.act(xmlAction);
+			}
+		}
+	}
 
-    /* (non-Javadoc)
-     * @see freemind.controller.actions.ActorXml#getDoActionClass()
-     */
-    public Class getDoActionClass() {
-        return CompoundAction.class;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see freemind.controller.actions.ActorXml#getDoActionClass()
+	 */
+	public Class getDoActionClass() {
+		return CompoundAction.class;
+	}
 
-    /* (non-Javadoc)
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent arg0) {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	public void actionPerformed(ActionEvent arg0) {
 
-    }
+	}
 
 }

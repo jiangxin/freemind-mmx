@@ -21,13 +21,12 @@
 package freemind.modes.filemode;
 
 import freemind.main.FreeMindMain;
-import freemind.modes.MindMapNode;
 import freemind.modes.EdgeAdapter;
-
+import freemind.modes.MindMapNode;
 
 public class FileEdgeModel extends EdgeAdapter {
 
-    public FileEdgeModel(MindMapNode node, FreeMindMain frame) {
-	super(node,frame);
-    }
+	public FileEdgeModel(MindMapNode node, FreeMindMain frame) {
+		super(node, frame);
+	}
 }

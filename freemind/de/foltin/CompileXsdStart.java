@@ -48,8 +48,8 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class CompileXsdStart extends DefaultHandler {
 	public static final String FREEMIND_PACKAGE = "freemind.controller.actions.generated.instance";
-	private static final String DESTINATION_DIR = "binding/src/"  + FREEMIND_PACKAGE.replace('.',
-			File.separatorChar) ;
+	private static final String DESTINATION_DIR = "binding/src/"
+			+ FREEMIND_PACKAGE.replace('.', File.separatorChar);
 	private static final String FREEMIND_ACTIONS_XSD = "freemind_actions.xsd";
 	private static final String KEY_PACKAGE = "000_KEY_PACKAGE";
 	private static final String FILE_START = "010_start";
@@ -68,12 +68,31 @@ public class CompileXsdStart extends DefaultHandler {
 
 	private final InputStream mInputStream;
 	private XsdHandler mCurrentHandler;
-	private TreeSet/*<String>*/ mKeyOrder = new TreeSet/*<String>*/();
-	private HashMap/*<String, HashMap<String, String> >*/ mClassMap = new HashMap/*<String, HashMap<String, String> >*/();
+	private TreeSet/* <String> */mKeyOrder = new TreeSet/* <String> */();
+	private HashMap/* <String, HashMap<String, String> > */mClassMap = new HashMap/*
+																					 * <
+																					 * String
+																					 * ,
+																					 * HashMap
+																					 * <
+																					 * String
+																					 * ,
+																					 * String
+																					 * >
+																					 * >
+																					 */();
 	private StringBuffer mBindingXml = new StringBuffer();
 
-	private HashMap/*<String, ElementTypes>*/ mElementMap = new HashMap/*<String, ElementTypes>*/();
-	private HashMap/*<String, String>*/ mTypeMap = new HashMap/*<String, String>*/();
+	private HashMap/* <String, ElementTypes> */mElementMap = new HashMap/*
+																		 * <String
+																		 * ,
+																		 * ElementTypes
+																		 * >
+																		 */();
+	private HashMap/* <String, String> */mTypeMap = new HashMap/*
+																 * <String,
+																 * String>
+																 */();
 
 	private class ElementTypes {
 
@@ -87,6 +106,7 @@ public class CompileXsdStart extends DefaultHandler {
 			return mEnumerationId;
 		}
 	};
+
 	public final int Schema_Id = 0;
 	public final int ComplexType_Id = 1;
 	public final int Sequence_Id = 2;
@@ -97,7 +117,7 @@ public class CompileXsdStart extends DefaultHandler {
 	public final int Extension_Id = 7;
 	public final int SimpleType_Id = 8;
 	public final int Restriction_Id = 9;
-	public final int Enumeration_Id = 10; 
+	public final int Enumeration_Id = 10;
 	public final int Group_Id = 11;
 	ElementTypes Schema = new ElementTypes(Schema_Id);
 	ElementTypes ComplexType = new ElementTypes(ComplexType_Id);
@@ -109,23 +129,23 @@ public class CompileXsdStart extends DefaultHandler {
 	ElementTypes Extension = new ElementTypes(Extension_Id);
 	ElementTypes SimpleType = new ElementTypes(SimpleType_Id);
 	ElementTypes Restriction = new ElementTypes(Restriction_Id);
-	ElementTypes Enumeration = new ElementTypes(Enumeration_Id); 
+	ElementTypes Enumeration = new ElementTypes(Enumeration_Id);
 	ElementTypes Group = new ElementTypes(Group_Id);
 
 	public CompileXsdStart(InputStream pInputStream) {
 		mInputStream = pInputStream;
-		mElementMap.put("xs:schema", /*ElementTypes.*/Schema);
-		mElementMap.put("xs:complexType", /*ElementTypes.*/ComplexType);
-		mElementMap.put("xs:complexContent", /*ElementTypes.*/ComplexContent);
-		mElementMap.put("xs:element", /*ElementTypes.*/Element);
-		mElementMap.put("xs:extension", /*ElementTypes.*/Extension);
-		mElementMap.put("xs:choice", /*ElementTypes.*/Choice);
-		mElementMap.put("xs:sequence", /*ElementTypes.*/Sequence);
-		mElementMap.put("xs:attribute", /*ElementTypes.*/Attribute);
-		mElementMap.put("xs:simpleType", /*ElementTypes.*/SimpleType);
-		mElementMap.put("xs:restriction", /*ElementTypes.*/Restriction);
-		mElementMap.put("xs:enumeration", /*ElementTypes.*/Enumeration);
-		mElementMap.put("xs:group", /*ElementTypes.*/Group);
+		mElementMap.put("xs:schema", /* ElementTypes. */Schema);
+		mElementMap.put("xs:complexType", /* ElementTypes. */ComplexType);
+		mElementMap.put("xs:complexContent", /* ElementTypes. */ComplexContent);
+		mElementMap.put("xs:element", /* ElementTypes. */Element);
+		mElementMap.put("xs:extension", /* ElementTypes. */Extension);
+		mElementMap.put("xs:choice", /* ElementTypes. */Choice);
+		mElementMap.put("xs:sequence", /* ElementTypes. */Sequence);
+		mElementMap.put("xs:attribute", /* ElementTypes. */Attribute);
+		mElementMap.put("xs:simpleType", /* ElementTypes. */SimpleType);
+		mElementMap.put("xs:restriction", /* ElementTypes. */Restriction);
+		mElementMap.put("xs:enumeration", /* ElementTypes. */Enumeration);
+		mElementMap.put("xs:group", /* ElementTypes. */Group);
 
 		mTypeMap.put("xs:long", "long");
 		mTypeMap.put("xs:int", "int");
@@ -144,17 +164,18 @@ public class CompileXsdStart extends DefaultHandler {
 	private void print() throws Exception {
 		File dir = new File(DESTINATION_DIR);
 		dir.mkdirs();
-//		for (String className : mClassMap.keySet()) {
+		// for (String className : mClassMap.keySet()) {
 		for (Iterator it = mClassMap.keySet().iterator(); it.hasNext();) {
 			String className = (String) it.next();
 			// special handling for strange group tag.
 			if (className == null)
 				continue;
-			HashMap/*<String, String>*/ classMap = (HashMap) mClassMap.get(className);
+			HashMap/* <String, String> */classMap = (HashMap) mClassMap
+					.get(className);
 			// System.out.println("\nClass:" + keys);
 			FileOutputStream fs = new FileOutputStream(DESTINATION_DIR + "/"
 					+ className + ".java");
-//			for (String orderString : mKeyOrder) {
+			// for (String orderString : mKeyOrder) {
 			for (Iterator it2 = mKeyOrder.iterator(); it2.hasNext();) {
 				String orderString = (String) it2.next();
 				if (classMap.containsKey(orderString)) {
@@ -205,14 +226,14 @@ public class CompileXsdStart extends DefaultHandler {
 				return null;
 		}
 
-		HashMap/*<String, String>*/ getClassMap() {
+		HashMap/* <String, String> */getClassMap() {
 			String className = getClassName();
 			return createClass(className);
 		}
 
 		protected void appendToClassMap(String key, String value) {
 			mKeyOrder.add(key);
-			HashMap/*<String, String>*/ classMap = getClassMap();
+			HashMap/* <String, String> */classMap = getClassMap();
 
 			if (classMap.containsKey(key)) {
 				classMap.put(key, classMap.get(key) + value);
@@ -230,7 +251,7 @@ public class CompileXsdStart extends DefaultHandler {
 			if (mExtendsClassName != null) {
 				return mExtendsClassName;
 			}
-			if(mParent == null) {
+			if (mParent == null) {
 				return null;
 			}
 			return mParent.getExtendsClassName();
@@ -240,7 +261,6 @@ public class CompileXsdStart extends DefaultHandler {
 
 		}
 
-		
 		public void startElement(String pUri, String pLocalName, String pName,
 				Attributes pAttributes) throws SAXException {
 			super.startElement(pUri, pLocalName, pName, pAttributes);
@@ -299,7 +319,6 @@ public class CompileXsdStart extends DefaultHandler {
 			return new ComplexTypeHandler(this);
 		}
 
-		
 		public void endElement(String pUri, String pLocalName, String pName)
 				throws SAXException {
 			super.endElement(pUri, pLocalName, pName);
@@ -317,7 +336,7 @@ public class CompileXsdStart extends DefaultHandler {
 			mKeyOrder.add(KEY_CLASS_END);
 			String rawName = arg1.getValue("name");
 			String name = getNameFromXml(rawName);
-			HashMap/*<String, String>*/ class1 = createClass(name);
+			HashMap/* <String, String> */class1 = createClass(name);
 			mClassName = name;
 			class1.put(FILE_START, "/* " + name + "...*/\n");
 			class1.put(KEY_PACKAGE, "package " + FREEMIND_PACKAGE + ";\n");
@@ -336,7 +355,6 @@ public class CompileXsdStart extends DefaultHandler {
 			super(pParent);
 		}
 
-		
 		public void startElement(String arg0, Attributes arg1) {
 			super.startElement(arg0, arg1);
 			String base = arg1.getValue("base");
@@ -354,10 +372,8 @@ public class CompileXsdStart extends DefaultHandler {
 					complexHandler.mExtendsClassName = mExtendsClassName;
 				}
 				xsdHandlerHierarchy = xsdHandlerHierarchy.mParent;
-			}
-			while(xsdHandlerHierarchy != null);
-				
-			
+			} while (xsdHandlerHierarchy != null);
+
 		}
 	}
 
@@ -377,7 +393,6 @@ public class CompileXsdStart extends DefaultHandler {
 			// TODO Auto-generated constructor stub
 		}
 
-		
 		protected XsdHandler createElementHandler() {
 			// TODO Auto-generated method stub
 			return new ChoiceElementHandler(this);
@@ -387,7 +402,6 @@ public class CompileXsdStart extends DefaultHandler {
 			return isSingleChoice;
 		}
 
-		
 		public void startElement(String arg0, Attributes arg1) {
 			// TODO Auto-generated method stub
 			super.startElement(arg0, arg1);
@@ -396,43 +410,41 @@ public class CompileXsdStart extends DefaultHandler {
 				isSingleChoice = true;
 				appendToClassMap(
 						KEY_CLASS_SINGLE_CHOICE,
-						"  public void addChoice(Object choice) {\n" +
-						"    choiceList.add(choice);\n" +
-						"  }\n" +
-						"\n" +
-						"  public void addAtChoice(int position, Object choice) {\n" +
-						"    choiceList.add(position, choice);\n" +
-						"  }\n" +
-						"\n" +
-						"  public void setAtChoice(int position, Object choice) {\n" +
-						"    choiceList.set(position, choice);\n" +
-						"  }\n" +
-						"  public Object getChoice(int index) {\n" +
-						"    return (Object)choiceList.get( index );\n" +
-						"  }\n" +
-						"\n" +
-						"  public int sizeChoiceList() {\n" +
-						"    return choiceList.size();\n" +
-						"  }\n" +
-						"\n" +
-						"  public void clearChoiceList() {\n" +
-						"    choiceList.clear();\n" +
-						"  }\n" +
-						"\n" +
-						"  public java.util.List getListChoiceList() {\n" +
-						"    return java.util.Collections.unmodifiableList(choiceList);\n" +
-						"  }\n" +
-						"\n" +
-						"  protected ArrayList choiceList = new ArrayList();\n" +
-						"\n" +
-						"");
+						"  public void addChoice(Object choice) {\n"
+								+ "    choiceList.add(choice);\n"
+								+ "  }\n"
+								+ "\n"
+								+ "  public void addAtChoice(int position, Object choice) {\n"
+								+ "    choiceList.add(position, choice);\n"
+								+ "  }\n"
+								+ "\n"
+								+ "  public void setAtChoice(int position, Object choice) {\n"
+								+ "    choiceList.set(position, choice);\n"
+								+ "  }\n"
+								+ "  public Object getChoice(int index) {\n"
+								+ "    return (Object)choiceList.get( index );\n"
+								+ "  }\n"
+								+ "\n"
+								+ "  public int sizeChoiceList() {\n"
+								+ "    return choiceList.size();\n"
+								+ "  }\n"
+								+ "\n"
+								+ "  public void clearChoiceList() {\n"
+								+ "    choiceList.clear();\n"
+								+ "  }\n"
+								+ "\n"
+								+ "  public java.util.List getListChoiceList() {\n"
+								+ "    return java.util.Collections.unmodifiableList(choiceList);\n"
+								+ "  }\n"
+								+ "\n"
+								+ "  protected ArrayList choiceList = new ArrayList();\n"
+								+ "\n" + "");
 				addArrayListImport();
 				mBindingXml
 						.append("    <collection field='choiceList' ordered='false'>\n");
 			}
 		}
 
-		
 		public void endElement(String arg0, String arg1, String arg2)
 				throws SAXException {
 			if (isSingleChoice) {
@@ -458,7 +470,6 @@ public class CompileXsdStart extends DefaultHandler {
 			}
 		}
 
-		
 		public void startElement(String arg0, Attributes arg1) {
 			// TODO Auto-generated method stub
 			super.startElement(arg0, arg1);
@@ -495,7 +506,6 @@ public class CompileXsdStart extends DefaultHandler {
 			super(pParent);
 		}
 
-		
 		public void startElement(String arg0, String arg1, String arg2,
 				Attributes arg3) throws SAXException {
 			// super.startElement(arg0, arg1, arg2, arg3);
@@ -511,7 +521,6 @@ public class CompileXsdStart extends DefaultHandler {
 			// TODO Auto-generated constructor stub
 		}
 
-		
 		protected XsdHandler createElementHandler() {
 			// TODO Auto-generated method stub
 			return new SequenceElementHandler(this);
@@ -526,7 +535,6 @@ public class CompileXsdStart extends DefaultHandler {
 			// TODO Auto-generated constructor stub
 		}
 
-		
 		public void startElement(String arg0, Attributes arg1) {
 			// TODO Auto-generated method stub
 			super.startElement(arg0, arg1);
@@ -559,52 +567,47 @@ public class CompileXsdStart extends DefaultHandler {
 								+ "    this." + memberName + " = value;\n"
 								+ "  }\n\n");
 				String optReq = "optional";
-				if(minOccurs != null && minOccurs.trim().equals("1")){
+				if (minOccurs != null && minOccurs.trim().equals("1")) {
 					optReq = "required";
 				}
 				if (isRef) {
-					mBindingXml.append("      <structure field=\"" + memberName + "\" usage=\""
-							+ optReq + "\" map-as=\"" + FREEMIND_PACKAGE + "." + type + "\"/>\n");
+					mBindingXml.append("      <structure field=\"" + memberName
+							+ "\" usage=\"" + optReq + "\" map-as=\""
+							+ FREEMIND_PACKAGE + "." + type + "\"/>\n");
 				} else {
 					mBindingXml.append("      <value name=\"" + rawName
 							+ "\" field=\"" + memberName + "\" usage=\""
-							+ optReq + "\"/>\n");					
+							+ optReq + "\"/>\n");
 				}
 			} else {
 				// list ref:
-				appendToClassMap(KEY_CLASS_SEQUENCE, "  public void add" + name+ "(" + name + " " + memberName + ") {\n" 
-						+ "    "+ memberName + "List.add(" + memberName + ");\n" 
-						+ "  }\n" 
-						 + "\n" 
-						 + "  public void addAt" + name+ "(int position, " + name + " " + memberName + ") {\n" 
-						+ "    " + memberName + "List.add(position, "+ memberName + ");\n" 
-						 + "  }\n" 
-						 + "\n" 
-						 + "  public "+ name + " get" + name + "(int index) {\n" 
-						+ "    return (" + name + ")" + memberName+ "List.get( index );\n" 
-						 + "  }\n" 
-						 + "\n" 
-						 + "  public void removeFrom" + name + "ElementAt(int index) {\n" 
-						 + "    "  + memberName+ "List.remove( index );\n" 
-						 + "  }\n" 
-						 + "\n" 
-						+ "  public int size" + name + "List() {\n" 
-						+ "    return " + memberName + "List.size();\n" 
-						+ "  }\n" 
-						 + "\n" 
-						 + "  public void clear" + name+ "List() {\n" 
-						 + "    " + memberName+ "List.clear();\n" 
-						 + "  }\n" 
-						 + "\n" 
-						+ "  public java.util.List getList" + name+ "List() {\n" 
-						+ "    return java.util.Collections.unmodifiableList("+ memberName + "List);\n" 
-						 + "  }\n" 
-						+ "    protected ArrayList " + memberName+ "List = new ArrayList();\n\n" 
-						);
+				appendToClassMap(KEY_CLASS_SEQUENCE, "  public void add" + name
+						+ "(" + name + " " + memberName + ") {\n" + "    "
+						+ memberName + "List.add(" + memberName + ");\n"
+						+ "  }\n" + "\n" + "  public void addAt" + name
+						+ "(int position, " + name + " " + memberName + ") {\n"
+						+ "    " + memberName + "List.add(position, "
+						+ memberName + ");\n" + "  }\n" + "\n" + "  public "
+						+ name + " get" + name + "(int index) {\n"
+						+ "    return (" + name + ")" + memberName
+						+ "List.get( index );\n" + "  }\n" + "\n"
+						+ "  public void removeFrom" + name
+						+ "ElementAt(int index) {\n" + "    " + memberName
+						+ "List.remove( index );\n" + "  }\n" + "\n"
+						+ "  public int size" + name + "List() {\n"
+						+ "    return " + memberName + "List.size();\n"
+						+ "  }\n" + "\n" + "  public void clear" + name
+						+ "List() {\n" + "    " + memberName
+						+ "List.clear();\n" + "  }\n" + "\n"
+						+ "  public java.util.List getList" + name
+						+ "List() {\n"
+						+ "    return java.util.Collections.unmodifiableList("
+						+ memberName + "List);\n" + "  }\n"
+						+ "    protected ArrayList " + memberName
+						+ "List = new ArrayList();\n\n");
 				addArrayListImport();
-				mBindingXml.append("    <collection field=\""
-						+ memberName + "List\">\n"
-						+ "      <structure map-as=\""
+				mBindingXml.append("    <collection field=\"" + memberName
+						+ "List\">\n" + "      <structure map-as=\""
 						+ FREEMIND_PACKAGE + "." + name + "\"/>\n"
 						+ "    </collection>\n");
 			}
@@ -621,7 +624,6 @@ public class CompileXsdStart extends DefaultHandler {
 			super(pParent);
 		}
 
-		
 		public void startElement(String arg0, Attributes arg1) {
 			super.startElement(arg0, arg1);
 			if (getClassName() == null) {
@@ -634,17 +636,18 @@ public class CompileXsdStart extends DefaultHandler {
 			}
 		}
 
-		
 		public void endElement(String arg0, String arg1, String arg2)
 				throws SAXException {
 			if (mIsClassDefinedHere) {
 				String extendString = "";
-				if(getExtendsClassName() != null) {
-					extendString = " extends=\"" + FREEMIND_PACKAGE + "." + getExtendsClassName() + "\"";
+				if (getExtendsClassName() != null) {
+					extendString = " extends=\"" + FREEMIND_PACKAGE + "."
+							+ getExtendsClassName() + "\"";
 				}
 				mBindingXml.append("  </mapping>\n" + "  <mapping name=\""
-						+ mRawName + "\"" + extendString + " class=\"" + FREEMIND_PACKAGE + "."
-						+ mClassName + "\"><structure map-as=\"" + mRawName
+						+ mRawName + "\"" + extendString + " class=\""
+						+ FREEMIND_PACKAGE + "." + mClassName
+						+ "\"><structure map-as=\"" + mRawName
 						+ "_type\"/></mapping>\n" + "\n");
 			}
 			super.endElement(arg0, arg1, arg2);
@@ -665,7 +668,6 @@ public class CompileXsdStart extends DefaultHandler {
 			super(pParent);
 		}
 
-		
 		public void startElement(String arg0, Attributes arg1) {
 			// TODO Auto-generated method stub
 			super.startElement(arg0, arg1);
@@ -687,7 +689,7 @@ public class CompileXsdStart extends DefaultHandler {
 					+ " = value;\n" + "  }\n");
 			mBindingXml.append("    <value name='" + rawName + "' field='"
 					+ memberName + "' " + "usage='"
-					+ (("required".equals(usage)) ?  "required" : "optional")
+					+ (("required".equals(usage)) ? "required" : "optional")
 					+ "' "
 					+ (("0".equals(minOccurs)) ? "" : "style='attribute'")
 					+ "/>\n");
@@ -700,11 +702,11 @@ public class CompileXsdStart extends DefaultHandler {
 		mCurrentHandler.endElement(pUri, pLocalName, pName);
 	}
 
-	public HashMap/*<String, String>*/ createClass(String pName) {
+	public HashMap/* <String, String> */createClass(String pName) {
 		if (mClassMap.containsKey(pName)) {
 			return (HashMap) mClassMap.get(pName);
 		}
-		HashMap/*<String, String>*/ newValue = new HashMap/*<String, String>*/();
+		HashMap/* <String, String> */newValue = new HashMap/* <String, String> */();
 		mClassMap.put(pName, newValue);
 		return newValue;
 	}

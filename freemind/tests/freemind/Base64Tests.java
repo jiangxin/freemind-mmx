@@ -23,28 +23,25 @@
 
 package tests.freemind;
 
-import java.io.File;
-import java.net.URL;
-
 import freemind.main.Base64Coding;
 
 /**
  * @author foltin
- *
+ * 
  */
 public class Base64Tests extends FreeMindTestBase {
 	public void testDifferentBase64ers() throws Exception {
 		String input = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		String output = Base64Coding.encode64(input.getBytes());
 		System.out.println(output);
-//		byte[] output2 = CommonsCodecBase64.encodeBase64(input.getBytes());
-//		String string2 = new String(output2);
-//		System.out.println(string2);
+		// byte[] output2 = CommonsCodecBase64.encodeBase64(input.getBytes());
+		// String string2 = new String(output2);
+		// System.out.println(string2);
 		String expected = "YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXpBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWg==";
 		assertEquals(expected, output);
-		
+
 		String back = new String(Base64Coding.decode64(output));
 		assertEquals(input, back);
 	}
-	
+
 }

@@ -39,52 +39,52 @@ import freemind.main.Tools;
 
 /** */
 public class JTripleCalendar extends JPanel implements PropertyChangeListener {
-    
-    private JCalendar calendarWidget;
-    private JLabel leftLabel;
-    private JLabel rightLabel;
-    private JInfoPanel leftPanel;
-    private JInfoPanel rightPanel;
 
-    public JTripleCalendar(){
-        this.setName("JTripleCalendar");
-        GridLayout gridLayout = new GridLayout(3,1);
-        gridLayout.setHgap(50);
-        setLayout(gridLayout);
-        leftPanel = createInfoPanel();
-        leftPanel.getCalendarWidget().addPropertyChangeListener(this);
-        rightPanel = createInfoPanel();
-        rightPanel.getCalendarWidget().addPropertyChangeListener(this);
-        add(leftPanel);
-        calendarWidget = new JCalendar();
-        calendarWidget.addPropertyChangeListener(this);
-        add(calendarWidget);
-        add(rightPanel);
-        
-    }
+	private JCalendar calendarWidget;
+	private JLabel leftLabel;
+	private JLabel rightLabel;
+	private JInfoPanel leftPanel;
+	private JInfoPanel rightPanel;
 
-    private static class JInfoPanel extends JPanel {
-//        private JLabel monthYearLabel;
-        private JDayChooser dayChooser;
-        private JMonthChooser monthChooser;
-        private JYearChooser yearChooser;
+	public JTripleCalendar() {
+		this.setName("JTripleCalendar");
+		GridLayout gridLayout = new GridLayout(3, 1);
+		gridLayout.setHgap(50);
+		setLayout(gridLayout);
+		leftPanel = createInfoPanel();
+		leftPanel.getCalendarWidget().addPropertyChangeListener(this);
+		rightPanel = createInfoPanel();
+		rightPanel.getCalendarWidget().addPropertyChangeListener(this);
+		add(leftPanel);
+		calendarWidget = new JCalendar();
+		calendarWidget.addPropertyChangeListener(this);
+		add(calendarWidget);
+		add(rightPanel);
 
-        public JInfoPanel() {
-            this.setLayout(new BorderLayout());
-            
-            JPanel monthYearPanel = new JPanel();
-            monthYearPanel.setLayout(new BorderLayout());
-            
-//            monthYearLabel = new JLabel("MM.YYYY");
-//            monthYearPanel.add(monthYearLabel, BorderLayout.CENTER);
-//            monthYearPanel.setBorder(BorderFactory.createEmptyBorder());
-            monthChooser = new JMonthChooser();
-            monthChooser.setEnabled(false);
-            yearChooser = new JYearChooser();
-            yearChooser.setEnabled(false);
-            monthYearPanel.add(monthChooser, BorderLayout.WEST);
-            monthYearPanel.add(yearChooser, BorderLayout.CENTER);
-            
+	}
+
+	private static class JInfoPanel extends JPanel {
+		// private JLabel monthYearLabel;
+		private JDayChooser dayChooser;
+		private JMonthChooser monthChooser;
+		private JYearChooser yearChooser;
+
+		public JInfoPanel() {
+			this.setLayout(new BorderLayout());
+
+			JPanel monthYearPanel = new JPanel();
+			monthYearPanel.setLayout(new BorderLayout());
+
+			// monthYearLabel = new JLabel("MM.YYYY");
+			// monthYearPanel.add(monthYearLabel, BorderLayout.CENTER);
+			// monthYearPanel.setBorder(BorderFactory.createEmptyBorder());
+			monthChooser = new JMonthChooser();
+			monthChooser.setEnabled(false);
+			yearChooser = new JYearChooser();
+			yearChooser.setEnabled(false);
+			monthYearPanel.add(monthChooser, BorderLayout.WEST);
+			monthYearPanel.add(yearChooser, BorderLayout.CENTER);
+
 			dayChooser = new JDayChooser(true) {
 				protected void init() {
 					super.init();
@@ -97,53 +97,55 @@ public class JTripleCalendar extends JPanel implements PropertyChangeListener {
 					days[index].setFocusable(false);
 				}
 			};
-            dayChooser.setEnabled(true);
-            /** This is needed as sometimes the current selected date is equal to the one, 
-             * the user presses. Thus, without this statement, no property change event
-             * is issued.*/
-            dayChooser.setAlwaysFireDayProperty(true);
-            this.add(monthYearPanel, BorderLayout.NORTH);
-            this.add(dayChooser, BorderLayout.CENTER);
-        }
-        
-        public void setDate(Calendar calendar) {
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            monthChooser.setMonth(month);
-            yearChooser.setYear(year);
-            //            monthYearLabel.setText(toMonthYearLabelString(calendar));
-            dayChooser.setYear(year);
-            dayChooser.setMonth(month);
-            // this is not necessary, I think.
-            dayChooser.setEnabled(true);
-        }
-        
-        /**
-    	 * Returns the calendar property.
-    	 * 
-    	 * @return the value of the calendar property.
-    	 */
-    	public Calendar getCalendar() {
-    		return dayChooser.calendar;
-    	}
-    	
-    	public JDayChooser getCalendarWidget() {
-    		return dayChooser;
-    	}
-    }
-    
-    private JInfoPanel createInfoPanel() {
-        JInfoPanel panel = new JInfoPanel();
-        return panel;
-    }
-    
-    public static void main(String[] args) {
-    	Resources.createInstance(new FreeMindMainMock());
-        final JFrame frame = new JFrame("JTripleCalendar");
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        final JTripleCalendar jcalendar = new JTripleCalendar();
-        frame.getContentPane().add(jcalendar);
-        frame.pack();
+			dayChooser.setEnabled(true);
+			/**
+			 * This is needed as sometimes the current selected date is equal to
+			 * the one, the user presses. Thus, without this statement, no
+			 * property change event is issued.
+			 */
+			dayChooser.setAlwaysFireDayProperty(true);
+			this.add(monthYearPanel, BorderLayout.NORTH);
+			this.add(dayChooser, BorderLayout.CENTER);
+		}
+
+		public void setDate(Calendar calendar) {
+			int year = calendar.get(Calendar.YEAR);
+			int month = calendar.get(Calendar.MONTH);
+			monthChooser.setMonth(month);
+			yearChooser.setYear(year);
+			// monthYearLabel.setText(toMonthYearLabelString(calendar));
+			dayChooser.setYear(year);
+			dayChooser.setMonth(month);
+			// this is not necessary, I think.
+			dayChooser.setEnabled(true);
+		}
+
+		/**
+		 * Returns the calendar property.
+		 * 
+		 * @return the value of the calendar property.
+		 */
+		public Calendar getCalendar() {
+			return dayChooser.calendar;
+		}
+
+		public JDayChooser getCalendarWidget() {
+			return dayChooser;
+		}
+	}
+
+	private JInfoPanel createInfoPanel() {
+		JInfoPanel panel = new JInfoPanel();
+		return panel;
+	}
+
+	public static void main(String[] args) {
+		Resources.createInstance(new FreeMindMainMock());
+		final JFrame frame = new JFrame("JTripleCalendar");
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		final JTripleCalendar jcalendar = new JTripleCalendar();
+		frame.getContentPane().add(jcalendar);
+		frame.pack();
 		// focus fix after startup.
 		frame.addWindowFocusListener(new WindowAdapter() {
 
@@ -153,28 +155,29 @@ public class JTripleCalendar extends JPanel implements PropertyChangeListener {
 			}
 		});
 
-        frame.setVisible(true);
+		frame.setVisible(true);
 
-    }
+	}
 
-    public void propertyChange(PropertyChangeEvent evt) {
-    	if(evt.getSource() == calendarWidget) {
-            Calendar gregorianCalendar = (Calendar) calendarWidget.getCalendar().clone();
-            propagateDate(gregorianCalendar);
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getSource() == calendarWidget) {
+			Calendar gregorianCalendar = (Calendar) calendarWidget
+					.getCalendar().clone();
+			propagateDate(gregorianCalendar);
 		} else {
 			if (Tools.safeEquals(evt.getPropertyName(),
 					JDayChooser.DAY_PROPERTY)) {
 				checkForDateChange(evt, leftPanel);
 				checkForDateChange(evt, rightPanel);
-    		} 
-    		
-    	}
-    }
+			}
+
+		}
+	}
 
 	public void checkForDateChange(PropertyChangeEvent evt, JInfoPanel pPanel) {
 		if (evt.getSource() == pPanel.getCalendarWidget()) {
-			Calendar gregorianCalendar = (Calendar) pPanel
-					.getCalendar().clone();
+			Calendar gregorianCalendar = (Calendar) pPanel.getCalendar()
+					.clone();
 			gregorianCalendar.set(Calendar.DAY_OF_MONTH,
 					((Integer) evt.getNewValue()).intValue());
 			calendarWidget.setDate(gregorianCalendar.getTime());
@@ -189,26 +192,25 @@ public class JTripleCalendar extends JPanel implements PropertyChangeListener {
 		rightPanel.setDate(gregorianCalendar);
 	}
 
+	public Calendar getCalendar() {
+		return calendarWidget.getCalendar();
+	}
 
-   public Calendar getCalendar() {
-        return calendarWidget.getCalendar();
-    }
+	public Date getDate() {
+		return calendarWidget.getDate();
+	}
 
-    public Date getDate() {
-        return calendarWidget.getDate();
-    }
+	public JDayChooser getDayChooser() {
+		return calendarWidget.getDayChooser();
+	}
 
-    public JDayChooser getDayChooser() {
-        return calendarWidget.getDayChooser();
-    }
+	public void setDate(Date date) {
+		calendarWidget.setDate(date);
+	}
 
-    public void setDate(Date date) {
-        calendarWidget.setDate(date);
-    }
-
-    public void setCalendar(Calendar c) {
-        calendarWidget.setCalendar(c);
-    }
+	public void setCalendar(Calendar c) {
+		calendarWidget.setCalendar(c);
+	}
 
 	public JYearChooser getYearChooser() {
 		return calendarWidget.getYearChooser();

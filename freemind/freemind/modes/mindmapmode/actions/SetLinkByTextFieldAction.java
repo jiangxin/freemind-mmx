@@ -39,56 +39,57 @@ import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class SetLinkByTextFieldAction extends FreemindAction implements ActorXml{
-    private final MindMapController controller;
+public class SetLinkByTextFieldAction extends FreemindAction implements
+		ActorXml {
+	private final MindMapController controller;
 
-    public SetLinkByTextFieldAction(MindMapController controller) {
-        super("set_link_by_textfield", (String) null, controller);
-        this.controller = controller;
-        addActor(this);
-    }
+	public SetLinkByTextFieldAction(MindMapController controller) {
+		super("set_link_by_textfield", (String) null, controller);
+		this.controller = controller;
+		addActor(this);
+	}
 
-    public void actionPerformed(ActionEvent e) {
-        String inputValue = JOptionPane.showInputDialog(
-        		controller.getView().getSelected(), 
-        		controller.getText("edit_link_manually"), 
-        		controller.getSelected().getLink());
-        if (inputValue != null) {
-            if (inputValue.equals("")) {
-                inputValue = null; // In case of no entry unset link
-            }
-            setLink(controller.getSelected(),inputValue);
-        }
-    }
+	public void actionPerformed(ActionEvent e) {
+		String inputValue = JOptionPane.showInputDialog(controller.getView()
+				.getSelected(), controller.getText("edit_link_manually"),
+				controller.getSelected().getLink());
+		if (inputValue != null) {
+			if (inputValue.equals("")) {
+				inputValue = null; // In case of no entry unset link
+			}
+			setLink(controller.getSelected(), inputValue);
+		}
+	}
 
-    public void setLink(MindMapNode node, String link) {
-        controller.getActionFactory().startTransaction(
-                (String) getValue(NAME));
-        controller.getActionFactory().executeAction(
-                getActionPair(node, link));
-        controller.getActionFactory().endTransaction(
-               (String) getValue(NAME));
-    }
+	public void setLink(MindMapNode node, String link) {
+		controller.getActionFactory().startTransaction((String) getValue(NAME));
+		controller.getActionFactory().executeAction(getActionPair(node, link));
+		controller.getActionFactory().endTransaction((String) getValue(NAME));
+	}
 
-    public void act(XmlAction action) {
-        if (action instanceof AddLinkXmlAction) {
-            AddLinkXmlAction linkAction = (AddLinkXmlAction) action;
-            NodeAdapter node = controller.getNodeFromID(linkAction.getNode());
-            node.setLink(linkAction.getDestination());
-            controller.nodeChanged(node);
-        }
-    }
+	public void act(XmlAction action) {
+		if (action instanceof AddLinkXmlAction) {
+			AddLinkXmlAction linkAction = (AddLinkXmlAction) action;
+			NodeAdapter node = controller.getNodeFromID(linkAction.getNode());
+			node.setLink(linkAction.getDestination());
+			controller.nodeChanged(node);
+		}
+	}
 
-    public Class getDoActionClass() {
-        return AddLinkXmlAction.class;
-    }
-    private ActionPair getActionPair(MindMapNode node, String link) {
-        return new ActionPair(createAddLinkXmlAction(node, link), createAddLinkXmlAction(node, node.getLink()));
-    }
-    private AddLinkXmlAction createAddLinkXmlAction(MindMapNode node, String link) {
-        AddLinkXmlAction action = new AddLinkXmlAction();
-        action.setNode(node.getObjectId(controller));
-        action.setDestination(link);
-        return action;
-    }
+	public Class getDoActionClass() {
+		return AddLinkXmlAction.class;
+	}
+
+	private ActionPair getActionPair(MindMapNode node, String link) {
+		return new ActionPair(createAddLinkXmlAction(node, link),
+				createAddLinkXmlAction(node, node.getLink()));
+	}
+
+	private AddLinkXmlAction createAddLinkXmlAction(MindMapNode node,
+			String link) {
+		AddLinkXmlAction action = new AddLinkXmlAction();
+		action.setNode(node.getObjectId(controller));
+		action.setDestination(link);
+		return action;
+	}
 }

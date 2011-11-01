@@ -31,142 +31,141 @@ import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
-import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 
-
 /**
- * This class represents a single Node of a Tree. It contains direct handles 
- * to its parent and children and to its view.
+ * This class represents a single Node of a Tree. It contains direct handles to
+ * its parent and children and to its view.
  */
 public class FileNodeModel extends NodeAdapter {
-    private File file;
-    private Color color;
-	
-    //
-    //  Constructors
-    //
+	private File file;
+	private Color color;
 
-    public FileNodeModel( File file, FreeMindMain frame , MindMap map) {
-	super(frame, map);
-	setEdge(new FileEdgeModel(this,getFrame()));
-	this.file = file;
-	setFolded(!file.isFile());
-    }
+	//
+	// Constructors
+	//
 
-    //Overwritten get Methods
-    public String getStyle() {
- 	    return MindMapNode.STYLE_FORK;
-		//        // This condition shows the code is not quite logical:
-		//        // ordinary file should not be considered folded and 
-		//        // therefore the clause !isLeaf() should not be necessary.       
-		//       if (isFolded()) { // && !isLeaf()) {
-		//	    return MindMapNode.STYLE_BUBBLE;
-		//	} else {
-		// 	    return MindMapNode.STYLE_FORK;
-		//	}
-    }
-    /*
-	if (file.isFile()) {
-	    return MindMapNode.STYLE_FORK;
-	} else {
-	    return MindMapNode.STYLE_BUBBLE;
+	public FileNodeModel(File file, FreeMindMain frame, MindMap map) {
+		super(frame, map);
+		setEdge(new FileEdgeModel(this, getFrame()));
+		this.file = file;
+		setFolded(!file.isFile());
 	}
-    }
-    */
 
-    File getFile() {
-	return file;
-    }
-
-    /**
-     * This could be a nice feature. Improve it!
-     */
-    public Color getColor() {
-	if (color == null) {
-
-	    //float hue = (float)getFile().length() / 100000;
-	    // float hue = 6.3F;
-	   //  if (hue > 1) {
-// 		hue = 1;
-// 	    }
-	    //	    color = Color.getHSBColor(hue,0.5F, 0.5F);
-// 	    int red = (int)(1 / (getFile().length()+1) * 255);
-// 	    color = new Color(red,0,0);
-	    color = isLeaf() ? Color.BLACK: Color.GRAY;
+	// Overwritten get Methods
+	public String getStyle() {
+		return MindMapNode.STYLE_FORK;
+		// // This condition shows the code is not quite logical:
+		// // ordinary file should not be considered folded and
+		// // therefore the clause !isLeaf() should not be necessary.
+		// if (isFolded()) { // && !isLeaf()) {
+		// return MindMapNode.STYLE_BUBBLE;
+		// } else {
+		// return MindMapNode.STYLE_FORK;
+		// }
 	}
-	return color;
-    }
 
-//     void setFile(File file) {
-// 	this.file = file;
-//     }
+	/*
+	 * if (file.isFile()) { return MindMapNode.STYLE_FORK; } else { return
+	 * MindMapNode.STYLE_BUBBLE; } }
+	 */
 
-    public String toString() {
-	String name = file.getName();
-	if (name.equals("")) {
-	    name = "Root";
+	File getFile() {
+		return file;
 	}
-	return name;
-    }
 
-    public String getText() {
-    	return toString();
-    }
+	/**
+	 * This could be a nice feature. Improve it!
+	 */
+	public Color getColor() {
+		if (color == null) {
 
-   public boolean hasChildren() {
-        return !file.isFile() || (children != null && !children.isEmpty()); }
+			// float hue = (float)getFile().length() / 100000;
+			// float hue = 6.3F;
+			// if (hue > 1) {
+			// hue = 1;
+			// }
+			// color = Color.getHSBColor(hue,0.5F, 0.5F);
+			// int red = (int)(1 / (getFile().length()+1) * 255);
+			// color = new Color(red,0,0);
+			color = isLeaf() ? Color.BLACK : Color.GRAY;
+		}
+		return color;
+	}
 
-    /**
+	// void setFile(File file) {
+	// this.file = file;
+	// }
+
+	public String toString() {
+		String name = file.getName();
+		if (name.equals("")) {
+			name = "Root";
+		}
+		return name;
+	}
+
+	public String getText() {
+		return toString();
+	}
+
+	public boolean hasChildren() {
+		return !file.isFile() || (children != null && !children.isEmpty());
+	}
+
+	/**
      * 
      */
-    public ListIterator childrenFolded() {
-	if (!isRoot()) {
-	    if (isFolded() || isLeaf()) {
-                return Collections.EMPTY_LIST.listIterator();
-		//return null;//Empty Enumeration
-	    }
-	}
-        return childrenUnfolded();
-    }
-   
-    public ListIterator childrenUnfolded() {
-        if (children != null) {
-	    return children.listIterator(); 
-	}
-        // Create new nodes by reading children from file system
-	try {
-	    String[] files = file.list();
-	    if (files != null) {
-		children = new LinkedList();
-
-		String path = file.getPath();
-		for(int i = 0; i < files.length; i++) {
-		    File childFile = new File(path, files[i]);
-		    if (!childFile.isHidden()) {
-			final FileNodeModel fileNodeModel = new FileNodeModel(childFile,getFrame(), getMap());
-			fileNodeModel.setLeft(isNewChildLeft());
-			insert(fileNodeModel,getChildCount());
-		    }
+	public ListIterator childrenFolded() {
+		if (!isRoot()) {
+			if (isFolded() || isLeaf()) {
+				return Collections.EMPTY_LIST.listIterator();
+				// return null;//Empty Enumeration
+			}
 		}
-	    }
-	} catch (SecurityException se) {}
-	//return children.listIterator(); 
-        return children != null ? children.listIterator() 
-           : Collections.EMPTY_LIST.listIterator(); }
+		return childrenUnfolded();
+	}
 
-    public boolean isLeaf() {
-	return file.isFile();
-    }
+	public ListIterator childrenUnfolded() {
+		if (children != null) {
+			return children.listIterator();
+		}
+		// Create new nodes by reading children from file system
+		try {
+			String[] files = file.list();
+			if (files != null) {
+				children = new LinkedList();
 
-    public String getLink() {
-    	try {
+				String path = file.getPath();
+				for (int i = 0; i < files.length; i++) {
+					File childFile = new File(path, files[i]);
+					if (!childFile.isHidden()) {
+						final FileNodeModel fileNodeModel = new FileNodeModel(
+								childFile, getFrame(), getMap());
+						fileNodeModel.setLeft(isNewChildLeft());
+						insert(fileNodeModel, getChildCount());
+					}
+				}
+			}
+		} catch (SecurityException se) {
+		}
+		// return children.listIterator();
+		return children != null ? children.listIterator()
+				: Collections.EMPTY_LIST.listIterator();
+	}
+
+	public boolean isLeaf() {
+		return file.isFile();
+	}
+
+	public String getLink() {
+		try {
 			return Tools.fileToUrl(file).toString();
 		} catch (MalformedURLException e) {
 			freemind.main.Resources.getInstance().logException(e);
 		}
 		return file.toString();
-    }
+	}
 
 	public boolean isWriteable() {
 		return false;

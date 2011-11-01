@@ -27,12 +27,11 @@ import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 
-import freemind.modes.MindMapNode;
 import freemind.view.mindmapview.NodeView;
 
 /**
  * @author foltin
- *
+ * 
  */
 public class CommonToggleChildrenFoldedAction extends AbstractAction {
 
@@ -47,10 +46,11 @@ public class CommonToggleChildrenFoldedAction extends AbstractAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-        NodeView selected = modeController.getSelectedView();
-        modeController.toggleFolded.toggleFolded(selected.getModel().childrenUnfolded());
-        modeController.getView().selectAsTheOnlyOneSelected(selected);
-        modeController.getController().obtainFocusForSelected();
+		NodeView selected = modeController.getSelectedView();
+		modeController.toggleFolded.toggleFolded(selected.getModel()
+				.childrenUnfolded());
+		modeController.getView().selectAsTheOnlyOneSelected(selected);
+		modeController.getController().obtainFocusForSelected();
 	}
 
 }

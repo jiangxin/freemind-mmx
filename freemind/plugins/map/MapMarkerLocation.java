@@ -41,9 +41,9 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 		MindMapNode node = mNodePositionHolder.getNode();
 		// TODO: Listener, if the text changes...
 		setText(node.getText());
-//		setFont(node.getFont());
+		// setFont(node.getFont());
 		setForeground(node.getColor());
-//		setBackground(Color.WHITE);
+		// setBackground(Color.WHITE);
 	}
 
 	public double getLat() {
@@ -62,7 +62,7 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 		g.setColor(getForeground());
 		g.drawOval(position.x - size_h, position.y - size_h, size, size);
 		g.setColor(Color.WHITE);
-		int node_y = position.y; //+ size;
+		int node_y = position.y; // + size;
 		int node_x = position.x;
 		g.fillRect(node_x, node_y, this.getWidth(), this.getHeight());
 		g.setColor(Color.BLACK);

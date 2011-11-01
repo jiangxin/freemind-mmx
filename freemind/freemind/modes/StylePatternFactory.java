@@ -69,8 +69,9 @@ public class StylePatternFactory {
 	}
 
 	/**
-	 *            the result is written to, and it is closed afterwards
-	 *            List of Pattern elements.
+	 * the result is written to, and it is closed afterwards List of Pattern
+	 * elements.
+	 * 
 	 * @throws Exception
 	 */
 	public static void savePatterns(Writer writer, List listOfPatterns)
@@ -166,24 +167,26 @@ public class StylePatternFactory {
 						+ translator.getText("PatternToString.backgroundColor");
 			}
 		}
-		result = addSubPatternToString(translator, result, pPattern.getPatternNodeFontSize(),
+		result = addSubPatternToString(translator, result,
+				pPattern.getPatternNodeFontSize(),
 				"PatternToString.NodeFontSize");
-		result = addSubPatternToString(translator, result, pPattern.getPatternNodeFontName(),
-		"PatternToString.FontName");
-		result = addSubPatternToString(translator, result, pPattern.getPatternNodeFontBold(),
-		"PatternToString.FontBold");
-		result = addSubPatternToString(translator, result, pPattern.getPatternNodeFontItalic(),
-		"PatternToString.FontItalic");
-		result = addSubPatternToString(translator, result, pPattern.getPatternEdgeStyle(),
-		"PatternToString.EdgeStyle");
-		result = addSubPatternToString(translator, result, pPattern.getPatternEdgeColor(),
-		"PatternToString.EdgeColor");
-		result = addSubPatternToString(translator, result, pPattern.getPatternEdgeWidth(),
-		"PatternToString.EdgeWidth");
-		result = addSubPatternToString(translator, result, pPattern.getPatternIcon(),
-		"PatternToString.Icon");
-		result = addSubPatternToString(translator, result, pPattern.getPatternChild(),
-		"PatternToString.Child");
+		result = addSubPatternToString(translator, result,
+				pPattern.getPatternNodeFontName(), "PatternToString.FontName");
+		result = addSubPatternToString(translator, result,
+				pPattern.getPatternNodeFontBold(), "PatternToString.FontBold");
+		result = addSubPatternToString(translator, result,
+				pPattern.getPatternNodeFontItalic(),
+				"PatternToString.FontItalic");
+		result = addSubPatternToString(translator, result,
+				pPattern.getPatternEdgeStyle(), "PatternToString.EdgeStyle");
+		result = addSubPatternToString(translator, result,
+				pPattern.getPatternEdgeColor(), "PatternToString.EdgeColor");
+		result = addSubPatternToString(translator, result,
+				pPattern.getPatternEdgeWidth(), "PatternToString.EdgeWidth");
+		result = addSubPatternToString(translator, result,
+				pPattern.getPatternIcon(), "PatternToString.Icon");
+		result = addSubPatternToString(translator, result,
+				pPattern.getPatternChild(), "PatternToString.Child");
 		return result;
 	}
 
@@ -192,11 +195,9 @@ public class StylePatternFactory {
 		if (patternType != null) {
 			result = addSeparatorIfNecessary(result);
 			if (patternType.getValue() == null) {
-				result += "-"
-						+ translator.getText(patternString);
+				result += "-" + translator.getText(patternString);
 			} else {
-				result += "+"
-						+ translator.getText(patternString) + " "
+				result += "+" + translator.getText(patternString) + " "
 						+ patternType.getValue();
 			}
 		}
@@ -222,50 +223,77 @@ public class StylePatternFactory {
 		return pat;
 	}
 
-    private static final String PATTERNS_DUMMY = "<patterns/>";
+	private static final String PATTERNS_DUMMY = "<patterns/>";
+
 	public static Patterns getPatternsFromString(String patterns) {
-	    String patternsString = patterns;
-	    if (patternsString == null) {
-	        patternsString = PATTERNS_DUMMY;
-	    }
-	    Patterns pat = (Patterns) XmlBindingTools.getInstance().unMarshall(
-	            patternsString);
-	    return pat;
+		String patternsString = patterns;
+		if (patternsString == null) {
+			patternsString = PATTERNS_DUMMY;
+		}
+		Patterns pat = (Patterns) XmlBindingTools.getInstance().unMarshall(
+				patternsString);
+		return pat;
 	}
 
-	/** Build the intersection of two patterns. Only, if the 
-	 *  property is the same, or both properties are
-	 *  to be removed, it is kept, otherwise it is set to 'don't touch'. 
+	/**
+	 * Build the intersection of two patterns. Only, if the property is the
+	 * same, or both properties are to be removed, it is kept, otherwise it is
+	 * set to 'don't touch'.
 	 */
-	public static Pattern intersectPattern(Pattern p1, Pattern p2){
+	public static Pattern intersectPattern(Pattern p1, Pattern p2) {
 		Pattern result = new Pattern();
-		result.setPatternEdgeColor((PatternEdgeColor) processPatternProperties(p1.getPatternEdgeColor(), p2.getPatternEdgeColor(), new PatternEdgeColor()));
-		result.setPatternEdgeStyle((PatternEdgeStyle) processPatternProperties(p1.getPatternEdgeStyle(), p2.getPatternEdgeStyle(), new PatternEdgeStyle()));
-		result.setPatternEdgeWidth((PatternEdgeWidth) processPatternProperties(p1.getPatternEdgeWidth(), p2.getPatternEdgeWidth(), new PatternEdgeWidth()));
-		result.setPatternIcon((PatternIcon) processPatternProperties(p1.getPatternIcon(), p2.getPatternIcon(), new PatternIcon()));
-		result.setPatternNodeBackgroundColor((PatternNodeBackgroundColor) processPatternProperties(p1.getPatternNodeBackgroundColor(), p2.getPatternNodeBackgroundColor(), new PatternNodeBackgroundColor()));
-		result.setPatternNodeColor((PatternNodeColor) processPatternProperties(p1.getPatternNodeColor(), p2.getPatternNodeColor(), new PatternNodeColor()));
-		result.setPatternNodeFontBold((PatternNodeFontBold) processPatternProperties(p1.getPatternNodeFontBold(), p2.getPatternNodeFontBold(), new PatternNodeFontBold()));
-		result.setPatternNodeFontItalic((PatternNodeFontItalic) processPatternProperties(p1.getPatternNodeFontItalic(), p2.getPatternNodeFontItalic(), new PatternNodeFontItalic()));
-		result.setPatternNodeFontName((PatternNodeFontName) processPatternProperties(p1.getPatternNodeFontName(), p2.getPatternNodeFontName(), new PatternNodeFontName()));
-		result.setPatternNodeFontSize((PatternNodeFontSize) processPatternProperties(p1.getPatternNodeFontSize(), p2.getPatternNodeFontSize(), new PatternNodeFontSize()));
-		result.setPatternNodeStyle((PatternNodeStyle) processPatternProperties(p1.getPatternNodeStyle(), p2.getPatternNodeStyle(), new PatternNodeStyle()));
+		result.setPatternEdgeColor((PatternEdgeColor) processPatternProperties(
+				p1.getPatternEdgeColor(), p2.getPatternEdgeColor(),
+				new PatternEdgeColor()));
+		result.setPatternEdgeStyle((PatternEdgeStyle) processPatternProperties(
+				p1.getPatternEdgeStyle(), p2.getPatternEdgeStyle(),
+				new PatternEdgeStyle()));
+		result.setPatternEdgeWidth((PatternEdgeWidth) processPatternProperties(
+				p1.getPatternEdgeWidth(), p2.getPatternEdgeWidth(),
+				new PatternEdgeWidth()));
+		result.setPatternIcon((PatternIcon) processPatternProperties(
+				p1.getPatternIcon(), p2.getPatternIcon(), new PatternIcon()));
+		result.setPatternNodeBackgroundColor((PatternNodeBackgroundColor) processPatternProperties(
+				p1.getPatternNodeBackgroundColor(),
+				p2.getPatternNodeBackgroundColor(),
+				new PatternNodeBackgroundColor()));
+		result.setPatternNodeColor((PatternNodeColor) processPatternProperties(
+				p1.getPatternNodeColor(), p2.getPatternNodeColor(),
+				new PatternNodeColor()));
+		result.setPatternNodeFontBold((PatternNodeFontBold) processPatternProperties(
+				p1.getPatternNodeFontBold(), p2.getPatternNodeFontBold(),
+				new PatternNodeFontBold()));
+		result.setPatternNodeFontItalic((PatternNodeFontItalic) processPatternProperties(
+				p1.getPatternNodeFontItalic(), p2.getPatternNodeFontItalic(),
+				new PatternNodeFontItalic()));
+		result.setPatternNodeFontName((PatternNodeFontName) processPatternProperties(
+				p1.getPatternNodeFontName(), p2.getPatternNodeFontName(),
+				new PatternNodeFontName()));
+		result.setPatternNodeFontSize((PatternNodeFontSize) processPatternProperties(
+				p1.getPatternNodeFontSize(), p2.getPatternNodeFontSize(),
+				new PatternNodeFontSize()));
+		result.setPatternNodeStyle((PatternNodeStyle) processPatternProperties(
+				p1.getPatternNodeStyle(), p2.getPatternNodeStyle(),
+				new PatternNodeStyle()));
 		return result;
 	}
 
-	private static PatternPropertyBase processPatternProperties(PatternPropertyBase prop1, PatternPropertyBase prop2, PatternPropertyBase destination) {
-		if(prop1 == null || prop2 == null){
+	private static PatternPropertyBase processPatternProperties(
+			PatternPropertyBase prop1, PatternPropertyBase prop2,
+			PatternPropertyBase destination) {
+		if (prop1 == null || prop2 == null) {
 			return null;
 		}
 		// both delete the value or both have the same value:
-		if(Tools.safeEquals(prop1.getValue(), prop2.getValue())){
+		if (Tools.safeEquals(prop1.getValue(), prop2.getValue())) {
 			destination.setValue(prop1.getValue());
 			return destination;
 		}
 		return null;
 	}
 
-	public static Pattern createPatternFromSelected(MindMapNode focussed, List selected) {
+	public static Pattern createPatternFromSelected(MindMapNode focussed,
+			List selected) {
 		Pattern nodePattern = createPatternFromNode(focussed);
 		for (Iterator iter = selected.iterator(); iter.hasNext();) {
 			MindMapNode node = (MindMapNode) iter.next();
@@ -274,5 +302,5 @@ public class StylePatternFactory {
 		}
 		return nodePattern;
 	}
-	
+
 }

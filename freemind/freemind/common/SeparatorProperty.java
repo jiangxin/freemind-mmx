@@ -44,10 +44,9 @@ public class SeparatorProperty implements PropertyControl {
 	public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
 		builder.appendSeparator(pTranslator.getText("separator." + getLabel()));
 	}
-    
-    public void setEnabled(boolean pEnabled) {
-      
-    }
 
+	public void setEnabled(boolean pEnabled) {
+
+	}
 
 }

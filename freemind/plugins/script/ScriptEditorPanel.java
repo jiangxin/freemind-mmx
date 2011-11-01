@@ -65,11 +65,11 @@ import freemind.main.Tools;
 /**
  * @author foltin TODO:
  *         <ul>
- *         <li> </li>
- *         <li>new script/delete script buttons </li>
- *         <li>rename script button </li>
- *         <li>undo feature? </li>
- *         <li>show line/column numbers in status bar </li>
+ *         <li></li>
+ *         <li>new script/delete script buttons</li>
+ *         <li>rename script button</li>
+ *         <li>undo feature?</li>
+ *         <li>show line/column numbers in status bar</li>
  *         </ul>
  */
 public class ScriptEditorPanel extends JDialog {
@@ -317,13 +317,12 @@ public class ScriptEditorPanel extends JDialog {
 				try {
 					int lineOfOffset = mScriptTextField
 							.getLineOfOffset(caretPosition);
-					mStatus
-							.setText("Line: "
-									+ (lineOfOffset + 1)
-									+ ", Column: "
-									+ (caretPosition
-											- mScriptTextField
-													.getLineStartOffset(lineOfOffset) + 1));
+					mStatus.setText("Line: "
+							+ (lineOfOffset + 1)
+							+ ", Column: "
+							+ (caretPosition
+									- mScriptTextField
+											.getLineStartOffset(lineOfOffset) + 1));
 				} catch (BadLocationException e) {
 					freemind.main.Resources.getInstance().logException(e);
 				}
@@ -335,25 +334,27 @@ public class ScriptEditorPanel extends JDialog {
 		// menu:
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu();
-		Tools.setLabelAndMnemonic(menu, pFrame
-				.getResourceString("plugins/ScriptEditor.menu_actions"));
+		Tools.setLabelAndMnemonic(menu,
+				pFrame.getResourceString("plugins/ScriptEditor.menu_actions"));
 		if (pHasNewScriptFunctionality) {
-			addAction(menu, new NewScriptAction(pFrame
-					.getResourceString("plugins/ScriptEditor.new_script")));
+			addAction(
+					menu,
+					new NewScriptAction(
+							pFrame.getResourceString("plugins/ScriptEditor.new_script")));
 		}
-		mRunAction = new RunAction(pFrame
-				.getResourceString("plugins/ScriptEditor.run"));
+		mRunAction = new RunAction(
+				pFrame.getResourceString("plugins/ScriptEditor.run"));
 		mRunAction.setEnabled(false);
 		addAction(menu, mRunAction);
-		mSignAction = new SignAction(pFrame
-				.getResourceString("plugins/ScriptEditor.sign"));
+		mSignAction = new SignAction(
+				pFrame.getResourceString("plugins/ScriptEditor.sign"));
 		mSignAction.setEnabled(false);
 		addAction(menu, mSignAction);
-		AbstractAction cancelAction = new CancelAction(pFrame
-				.getResourceString("plugins/ScriptEditor.cancel"));
+		AbstractAction cancelAction = new CancelAction(
+				pFrame.getResourceString("plugins/ScriptEditor.cancel"));
 		addAction(menu, cancelAction);
-		AbstractAction exitAction = new ExitAction(pFrame
-				.getResourceString("plugins/ScriptEditor.exit"));
+		AbstractAction exitAction = new ExitAction(
+				pFrame.getResourceString("plugins/ScriptEditor.exit"));
 		addAction(menu, exitAction);
 		menuBar.add(menu);
 		this.setJMenuBar(menuBar);
@@ -373,8 +374,8 @@ public class ScriptEditorPanel extends JDialog {
 
 	private void addAction(JMenu menu, AbstractAction action) {
 		JMenuItem item = menu.add(action);
-		Tools.setLabelAndMnemonic(item, (String) action
-				.getValue(AbstractAction.NAME));
+		Tools.setLabelAndMnemonic(item,
+				(String) action.getValue(AbstractAction.NAME));
 		item.setIcon(new BlindIcon(StructuredMenuHolder.ICON_SIZE));
 	}
 
@@ -456,8 +457,9 @@ public class ScriptEditorPanel extends JDialog {
 							.getDefaultRootElement();
 					Element element4 = element3.getElement(pLineNumber - 1);
 					if (element4 != null) {
-						mScriptTextField.select(((int) element4
-								.getStartOffset()), element4.getEndOffset());
+						mScriptTextField.select(
+								((int) element4.getStartOffset()),
+								element4.getEndOffset());
 					}
 				}
 			}

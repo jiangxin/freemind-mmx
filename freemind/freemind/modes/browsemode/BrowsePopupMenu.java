@@ -29,21 +29,23 @@ import freemind.modes.ControllerAdapter;
 
 public class BrowsePopupMenu extends JPopupMenu {
 
-    private ControllerAdapter c;
+	private ControllerAdapter c;
 
-    protected void add(Action action, String keystroke) { 
-       JMenuItem item = add(action);
-       item.setAccelerator(KeyStroke.getKeyStroke(c.getFrame().getAdjustableProperty(keystroke))); }
+	protected void add(Action action, String keystroke) {
+		JMenuItem item = add(action);
+		item.setAccelerator(KeyStroke.getKeyStroke(c.getFrame()
+				.getAdjustableProperty(keystroke)));
+	}
 
-    public BrowsePopupMenu(BrowseController c) {
-	this.c = c;
-        add(c.find, "keystroke_find");
-        add(c.findNext, "keystroke_find_next");
-        add(c.followLink, "keystroke_follow_link");
+	public BrowsePopupMenu(BrowseController c) {
+		this.c = c;
+		add(c.find, "keystroke_find");
+		add(c.findNext, "keystroke_find_next");
+		add(c.followLink, "keystroke_follow_link");
 
-        addSeparator();
-      
-        add(c.toggleFolded, "keystroke_toggle_folded");
-        add(c.toggleChildrenFolded, "keystroke_toggle_children_folded");
-    }
+		addSeparator();
+
+		add(c.toggleFolded, "keystroke_toggle_folded");
+		add(c.toggleChildrenFolded, "keystroke_toggle_children_folded");
+	}
 }

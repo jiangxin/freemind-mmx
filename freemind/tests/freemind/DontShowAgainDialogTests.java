@@ -27,71 +27,92 @@ import javax.swing.JFrame;
 
 import freemind.common.OptionalDontShowMeAgainDialog;
 import freemind.common.TextTranslator;
-import freemind.controller.Controller;
 
 /**
  * @author foltin
- *
+ * 
  */
 public class DontShowAgainDialogTests extends FreeMindTestBase {
 	public void testDialog() throws Exception {
 		int showResult;
 		JFrame frame = new JFrame();
 		frame.setVisible(true);
-		showResult = new OptionalDontShowMeAgainDialog(frame, frame, "message", "title", new TextTranslator(){
+		showResult = new OptionalDontShowMeAgainDialog(frame, frame, "message",
+				"title", new TextTranslator() {
 
-			public String getText(String pKey) {
-				return "?"+pKey+"?";
-			}}, new OptionalDontShowMeAgainDialog.DontShowPropertyHandler(){
+					public String getText(String pKey) {
+						return "?" + pKey + "?";
+					}
+				}, new OptionalDontShowMeAgainDialog.DontShowPropertyHandler() {
 
-				public String getProperty() {
-					return "";
-				}
+					public String getProperty() {
+						return "";
+					}
 
-				public void setProperty(String pValue) {
-					System.out.println("Property Result: '" + pValue + "'");
-				}}, OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED).show().getResult();
+					public void setProperty(String pValue) {
+						System.out.println("Property Result: '" + pValue + "'");
+					}
+				}, OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED)
+				.show().getResult();
 		System.out.println(showResult);
-		showResult = new OptionalDontShowMeAgainDialog(frame, frame, "message NO SHOW", "title", new TextTranslator(){
-			
-			public String getText(String pKey) {
-				return "?"+pKey+"?";
-			}}, new OptionalDontShowMeAgainDialog.DontShowPropertyHandler(){
-				
-				public String getProperty() {
-					return "true";
-				}
-				
-				public void setProperty(String pValue) {
-					System.out.println("Property Result: '" + pValue + "'");
-				}}, OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED).show().getResult();
+		showResult = new OptionalDontShowMeAgainDialog(frame, frame,
+				"message NO SHOW", "title", new TextTranslator() {
+
+					public String getText(String pKey) {
+						return "?" + pKey + "?";
+					}
+				}, new OptionalDontShowMeAgainDialog.DontShowPropertyHandler() {
+
+					public String getProperty() {
+						return "true";
+					}
+
+					public void setProperty(String pValue) {
+						System.out.println("Property Result: '" + pValue + "'");
+					}
+				}, OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED)
+				.show().getResult();
 		System.out.println(showResult);
-		showResult = new OptionalDontShowMeAgainDialog(frame, frame, "message NO SHOW", "title", new TextTranslator(){
-			
-			public String getText(String pKey) {
-				return "?"+pKey+"?";
-			}}, new OptionalDontShowMeAgainDialog.DontShowPropertyHandler(){
-				
-				public String getProperty() {
-					return "false";
-				}
-				
-				public void setProperty(String pValue) {
-					System.out.println("Property Result: '" + pValue + "'");
-				}}, OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED).show().getResult();
-		showResult = new OptionalDontShowMeAgainDialog(frame, frame, "message remind", "title", new TextTranslator(){
-			
-			public String getText(String pKey) {
-				return "?"+pKey+"?";
-			}}, new OptionalDontShowMeAgainDialog.DontShowPropertyHandler(){
-				
-				public String getProperty() {
-					return "";
-				}
-				
-				public void setProperty(String pValue) {
-					System.out.println("Property Result: '" + pValue + "'");
-				}}, OptionalDontShowMeAgainDialog.BOTH_OK_AND_CANCEL_OPTIONS_ARE_STORED).show().getResult();
+		showResult = new OptionalDontShowMeAgainDialog(frame, frame,
+				"message NO SHOW", "title", new TextTranslator() {
+
+					public String getText(String pKey) {
+						return "?" + pKey + "?";
+					}
+				}, new OptionalDontShowMeAgainDialog.DontShowPropertyHandler() {
+
+					public String getProperty() {
+						return "false";
+					}
+
+					public void setProperty(String pValue) {
+						System.out.println("Property Result: '" + pValue + "'");
+					}
+				}, OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED)
+				.show().getResult();
+		showResult = new OptionalDontShowMeAgainDialog(
+				frame,
+				frame,
+				"message remind",
+				"title",
+				new TextTranslator() {
+
+					public String getText(String pKey) {
+						return "?" + pKey + "?";
+					}
+				},
+				new OptionalDontShowMeAgainDialog.DontShowPropertyHandler() {
+
+					public String getProperty() {
+						return "";
+					}
+
+					public void setProperty(String pValue) {
+						System.out.println("Property Result: '" + pValue + "'");
+					}
+				},
+				OptionalDontShowMeAgainDialog.BOTH_OK_AND_CANCEL_OPTIONS_ARE_STORED)
+				.show().getResult();
 		System.out.println(showResult);
 	}
 

@@ -36,78 +36,91 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 /**
  * @author foltin
- *
+ * 
  */
-public class ChangeArrowLinkEndPoints extends FreemindAction  implements ActorXml {
-    private MindMapController controller;
+public class ChangeArrowLinkEndPoints extends FreemindAction implements
+		ActorXml {
+	private MindMapController controller;
 
 	public ChangeArrowLinkEndPoints(MindMapController modeController) {
-        //fixme: icon wrong
-		super("change_link_arrows", "images/designer.png",  modeController);
-        this.controller = modeController;
-        addActor(this);
-    }
+		// fixme: icon wrong
+		super("change_link_arrows", "images/designer.png", modeController);
+		this.controller = modeController;
+		addActor(this);
+	}
 
 	public void setArrowLinkEndPoints(MindMapArrowLink link, Point startPoint,
-			Point endPoint){
-        controller.getActionFactory().startTransaction(
-                (String) getValue(NAME));
-        controller.getActionFactory().executeAction(
-                getActionPair(link, startPoint, endPoint));
-        controller.getActionFactory().endTransaction(
-                (String) getValue(NAME));
+			Point endPoint) {
+		controller.getActionFactory().startTransaction((String) getValue(NAME));
+		controller.getActionFactory().executeAction(
+				getActionPair(link, startPoint, endPoint));
+		controller.getActionFactory().endTransaction((String) getValue(NAME));
 
 	}
 
 	/**
 	 */
-	private ActionPair getActionPair(MindMapArrowLink link, Point startPoint, Point endPoint) {
-		return new ActionPair(createArrowLinkPointXmlAction(link, startPoint, endPoint),
-				createArrowLinkPointXmlAction(link, link.getStartInclination(), link.getEndInclination()));
+	private ActionPair getActionPair(MindMapArrowLink link, Point startPoint,
+			Point endPoint) {
+		return new ActionPair(createArrowLinkPointXmlAction(link, startPoint,
+				endPoint), createArrowLinkPointXmlAction(link,
+				link.getStartInclination(), link.getEndInclination()));
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.controller.actions.ActorXml#act(freemind.controller.actions.generated.instance.XmlAction)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.controller.actions.ActorXml#act(freemind.controller.actions.
+	 * generated.instance.XmlAction)
 	 */
 	public void act(XmlAction action) {
 		if (action instanceof ArrowLinkPointXmlAction) {
 			ArrowLinkPointXmlAction pointAction = (ArrowLinkPointXmlAction) action;
-            MindMapArrowLink link = (MindMapArrowLink) getLinkRegistry().getLinkForID(pointAction.getId());
-            link.setStartInclination(Tools.xmlToPoint(pointAction.getStartPoint()));
-            link.setEndInclination(Tools.xmlToPoint(pointAction.getEndPoint()));
-	        controller.nodeChanged(link.getSource());
-	        controller.nodeChanged(link.getTarget());
+			MindMapArrowLink link = (MindMapArrowLink) getLinkRegistry()
+					.getLinkForID(pointAction.getId());
+			link.setStartInclination(Tools.xmlToPoint(pointAction
+					.getStartPoint()));
+			link.setEndInclination(Tools.xmlToPoint(pointAction.getEndPoint()));
+			controller.nodeChanged(link.getSource());
+			controller.nodeChanged(link.getTarget());
 		}
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see freemind.controller.actions.ActorXml#getDoActionClass()
 	 */
 	public Class getDoActionClass() {
 		return ArrowLinkPointXmlAction.class;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent arg0) {
 		// TODO Auto-generated method stub
 
 	}
-    private ArrowLinkPointXmlAction createArrowLinkPointXmlAction(MindMapArrowLink arrowLink,
-            Point startPoint, Point endPoint){
-        ArrowLinkPointXmlAction action = new ArrowLinkPointXmlAction();
-        action.setStartPoint(Tools.PointToXml(startPoint));
-        action.setEndPoint(Tools.PointToXml(endPoint));
-        action.setId(arrowLink.getUniqueID());
-        return action;
-    }
-    /**
-     */
-    private MindMapLinkRegistry getLinkRegistry() {
-        return controller.getMap().getLinkRegistry();
-    }
 
+	private ArrowLinkPointXmlAction createArrowLinkPointXmlAction(
+			MindMapArrowLink arrowLink, Point startPoint, Point endPoint) {
+		ArrowLinkPointXmlAction action = new ArrowLinkPointXmlAction();
+		action.setStartPoint(Tools.PointToXml(startPoint));
+		action.setEndPoint(Tools.PointToXml(endPoint));
+		action.setId(arrowLink.getUniqueID());
+		return action;
+	}
+
+	/**
+     */
+	private MindMapLinkRegistry getLinkRegistry() {
+		return controller.getMap().getLinkRegistry();
+	}
 
 }

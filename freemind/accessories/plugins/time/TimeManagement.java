@@ -33,7 +33,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.DateFormat;
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
@@ -65,7 +64,7 @@ import freemind.view.MapModule;
 
 /**
  * @author foltin
- *
+ * 
  */
 public class TimeManagement extends MindMapHookAdapter implements
 		PropertyChangeListener, ActionListener, MapModuleChangeObserver {
@@ -85,26 +84,29 @@ public class TimeManagement extends MindMapHookAdapter implements
 	private JTextField minuteField;
 
 	private MindMapController mController;
-	
+
 	private static TimeManagement sCurrentlyOpenTimeManagement = null;
 
 	public void startupMapHook() {
 		super.startupMapHook();
-		if(sCurrentlyOpenTimeManagement != null) {
-			sCurrentlyOpenTimeManagement.dialog.getContentPane().setVisible(true);
+		if (sCurrentlyOpenTimeManagement != null) {
+			sCurrentlyOpenTimeManagement.dialog.getContentPane().setVisible(
+					true);
 			return;
 		}
 		sCurrentlyOpenTimeManagement = this;
 		this.mController = getMindMapController();
 		mController.getController().getMapModuleManager().addListener(this);
-		dialog = new JDialog(mController.getFrame().getJFrame(), false /* not modal */);
-		dialog
-				.setTitle(getResourceString("plugins/TimeManagement.xml_WindowTitle"));
+		dialog = new JDialog(mController.getFrame().getJFrame(), false /*
+																		 * not
+																		 * modal
+																		 */);
+		dialog.setTitle(getResourceString("plugins/TimeManagement.xml_WindowTitle"));
 		dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		dialog.addWindowListener(new WindowAdapter(){
-		    public void windowClosing(WindowEvent event) {
-		        disposeDialog();
-		    }
+		dialog.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent event) {
+				disposeDialog();
+			}
 		});
 		Action action = new AbstractAction() {
 
@@ -138,19 +140,21 @@ public class TimeManagement extends MindMapHookAdapter implements
 			gb2.gridy = 2;
 			gb2.fill = GridBagConstraints.HORIZONTAL;
 			JButton appendButton = new JButton();
-			Tools.setLabelAndMnemonic(appendButton, getResourceString("plugins/TimeManagement.xml_appendButton"));
+			Tools.setLabelAndMnemonic(
+					appendButton,
+					getResourceString("plugins/TimeManagement.xml_appendButton"));
 			appendButton.addActionListener(new ActionListener() {
 
 				public void actionPerformed(ActionEvent arg0) {
-//					disposeDialog();
+					// disposeDialog();
 					for (Iterator i = mController.getSelecteds().iterator(); i
 							.hasNext();) {
 						MindMapNode element = (MindMapNode) i.next();
 						DateFormat df = DateFormat
 								.getDateInstance(DateFormat.SHORT);
 						String dateAsString = df.format(getCalendarDate());
-                        mController.setNodeText(element,
-								element.getText() + " " + dateAsString);
+						mController.setNodeText(element, element.getText()
+								+ " " + dateAsString);
 					}
 
 				}
@@ -163,7 +167,9 @@ public class TimeManagement extends MindMapHookAdapter implements
 			gb2.gridy = 2;
 			gb2.fill = GridBagConstraints.HORIZONTAL;
 			JButton reminderButton = new JButton();
-			Tools.setLabelAndMnemonic(reminderButton, getResourceString("plugins/TimeManagement.xml_reminderButton"));
+			Tools.setLabelAndMnemonic(
+					reminderButton,
+					getResourceString("plugins/TimeManagement.xml_reminderButton"));
 			reminderButton
 					.setToolTipText(getResourceString("plugins/TimeManagement.xml_reminderButton_tooltip"));
 
@@ -176,7 +182,9 @@ public class TimeManagement extends MindMapHookAdapter implements
 			gb2.gridy = 2;
 			gb2.fill = GridBagConstraints.HORIZONTAL;
 			JButton reminderButton = new JButton();
-			Tools.setLabelAndMnemonic(reminderButton, getResourceString("plugins/TimeManagement.xml_removeReminderButton"));
+			Tools.setLabelAndMnemonic(
+					reminderButton,
+					getResourceString("plugins/TimeManagement.xml_removeReminderButton"));
 			reminderButton
 					.setToolTipText(getResourceString("plugins/TimeManagement.xml_removeReminderButton_tooltip"));
 			reminderButton.addActionListener(new RemoveReminders());
@@ -188,7 +196,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 			gb2.gridy = 2;
 			gb2.fill = GridBagConstraints.HORIZONTAL;
 			JButton todayButton = new JButton();
-			Tools.setLabelAndMnemonic(todayButton, 
+			Tools.setLabelAndMnemonic(todayButton,
 					getResourceString("plugins/TimeManagement.xml_todayButton"));
 			todayButton.addActionListener(new ActionListener() {
 
@@ -262,9 +270,8 @@ public class TimeManagement extends MindMapHookAdapter implements
 				gb2.gridy = 0;
 				gb2.fill = GridBagConstraints.HORIZONTAL;
 				timePanel
-						.add(
-								new JLabel(
-										getResourceString("plugins/TimeManagement.xml_minute")),
+						.add(new JLabel(
+								getResourceString("plugins/TimeManagement.xml_minute")),
 								gb2);
 			}
 			{
@@ -298,7 +305,8 @@ public class TimeManagement extends MindMapHookAdapter implements
 					.hasNext();) {
 				MindMapNode node = (MindMapNode) i.next();
 
-				ReminderHookBase alreadyPresentHook = TimeManagementOrganizer.getHook(node);
+				ReminderHookBase alreadyPresentHook = TimeManagementOrganizer
+						.getHook(node);
 				if (alreadyPresentHook != null) {
 					addHook(node); // means remove hook, as it is already
 					// present.
@@ -311,11 +319,11 @@ public class TimeManagement extends MindMapHookAdapter implements
 		Date date = getCalendarDate();
 		// add permanent node hook to the nodes and this hook checks
 		// permanently.
-		for (Iterator i = mController.getSelecteds().iterator(); i
-				.hasNext();) {
+		for (Iterator i = mController.getSelecteds().iterator(); i.hasNext();) {
 			MindMapNode node = (MindMapNode) i.next();
 
-			ReminderHookBase alreadyPresentHook = TimeManagementOrganizer.getHook(node);
+			ReminderHookBase alreadyPresentHook = TimeManagementOrganizer
+					.getHook(node);
 			if (alreadyPresentHook != null) {
 				// already present:
 				Object[] messageArguments = {
@@ -329,7 +337,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 						JOptionPane.YES_NO_OPTION);
 				if (result == JOptionPane.NO_OPTION)
 					return;
-				//here, the old has to be removed and the new one installed.
+				// here, the old has to be removed and the new one installed.
 				addHook(node); // means remove hook, as it is already present.
 
 			}
@@ -345,14 +353,15 @@ public class TimeManagement extends MindMapHookAdapter implements
 			node.invokeHook(rh);
 			mController.nodeChanged(node);
 		}
-//		disposeDialog();
+		// disposeDialog();
 	}
 
 	/**
 	 */
 	private void addHook(MindMapNode node) {
 		// add the hook:
-        mController.addHook(node, Tools.getVectorWithSingleElement(node), REMINDER_HOOK_NAME);
+		mController.addHook(node, Tools.getVectorWithSingleElement(node),
+				REMINDER_HOOK_NAME);
 	}
 
 	/**

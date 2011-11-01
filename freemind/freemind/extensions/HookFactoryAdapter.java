@@ -27,10 +27,9 @@ import java.util.Iterator;
 
 import freemind.modes.MindMapNode;
 
-
 /**
  * @author foltin
- *
+ * 
  */
 public abstract class HookFactoryAdapter implements HookFactory {
 
@@ -59,16 +58,20 @@ public abstract class HookFactoryAdapter implements HookFactory {
 		return null;
 	}
 
-	/** See getRegistrations. The registration makes sense for the 
-	 * factory, as the factory observes every object creation. <br>
-	 * Moreover, the factory can tell other hooks it creates, who is its
-	 * base plugin. 
+	/**
+	 * See getRegistrations. The registration makes sense for the factory, as
+	 * the factory observes every object creation. <br>
+	 * Moreover, the factory can tell other hooks it creates, who is its base
+	 * plugin.
 	 * 
 	 */
-	public void registerRegistrationContainer(HookFactory.RegistrationContainer container, HookRegistration instanciatedRegistrationObject) {
+	public void registerRegistrationContainer(
+			HookFactory.RegistrationContainer container,
+			HookRegistration instanciatedRegistrationObject) {
 		// registration only for pluginBases.
 		if (container.isPluginBase) {
-			allRegistrationInstances.put(container.correspondingPlugin.getLabel(),
+			allRegistrationInstances.put(
+					container.correspondingPlugin.getLabel(),
 					instanciatedRegistrationObject);
 		}
 	}
@@ -76,6 +79,5 @@ public abstract class HookFactoryAdapter implements HookFactory {
 	public void deregisterAllRegistrationContainer() {
 		allRegistrationInstances.clear();
 	}
-
 
 }

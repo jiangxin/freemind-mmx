@@ -28,33 +28,35 @@ import freemind.modes.MindMap;
 import freemind.modes.NodeAdapter;
 
 /**
- * This class represents a single Node of a Tree. It contains direct handles 
- * to its parent and children and to its view.
+ * This class represents a single Node of a Tree. It contains direct handles to
+ * its parent and children and to its view.
  */
 public class BrowseNodeModel extends NodeAdapter {
-	
-    //
-    //  Constructors
-    //
 
-    public BrowseNodeModel(FreeMindMain frame, MindMap map) {
-	super(frame, map);
-	children = new LinkedList();
-	setEdge(new BrowseEdgeModel(this,getFrame())); }
-	    
-    public BrowseNodeModel( Object userObject, FreeMindMain frame, MindMap map ) {
-	super(userObject, frame, map);
-	children = new LinkedList();
-	setEdge(new BrowseEdgeModel(this,getFrame())); }
+	//
+	// Constructors
+	//
 
-    //
-    // The mandatory load and save methods
-    //
+	public BrowseNodeModel(FreeMindMain frame, MindMap map) {
+		super(frame, map);
+		children = new LinkedList();
+		setEdge(new BrowseEdgeModel(this, getFrame()));
+	}
 
-    //NanoXML save method
-    public XMLElement save() {
-	return null;
-    }
+	public BrowseNodeModel(Object userObject, FreeMindMain frame, MindMap map) {
+		super(userObject, frame, map);
+		children = new LinkedList();
+		setEdge(new BrowseEdgeModel(this, getFrame()));
+	}
+
+	//
+	// The mandatory load and save methods
+	//
+
+	// NanoXML save method
+	public XMLElement save() {
+		return null;
+	}
 
 	public boolean isWriteable() {
 		return false;

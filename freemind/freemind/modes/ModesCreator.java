@@ -54,7 +54,7 @@ public class ModesCreator {
 	}
 
 	public Set getAllModes() {
-		if(logger==null) {
+		if (logger == null) {
 			logger = c.getFrame().getLogger(this.getClass().getName());
 		}
 		if (mCreatedModes == null) {
@@ -75,9 +75,9 @@ public class ModesCreator {
 		return modesTranslation.keySet();
 	}
 
-
-	/** Creates a new ModeController.
-	 *
+	/**
+	 * Creates a new ModeController.
+	 * 
 	 */
 	public Mode getMode(String modeAlias) {
 		getAllModes();
@@ -89,13 +89,13 @@ public class ModesCreator {
 			try {
 				Mode mode = null;
 				mode = (Mode) Class.forName(modeName).newInstance();
-				logger.info("Initializing mode "+ modeAlias );
+				logger.info("Initializing mode " + modeAlias);
 				mode.init(c);
-				logger.info("Done: Initializing mode "+ modeAlias );
+				logger.info("Done: Initializing mode " + modeAlias);
 				mCreatedModes.put(modeName, mode);
 			} catch (Exception ex) {
 				logger.severe("Mode " + modeName + " could not be loaded.");
-freemind.main.Resources.getInstance().logException(				ex);
+				freemind.main.Resources.getInstance().logException(ex);
 			}
 		}
 		return (Mode) mCreatedModes.get(modeName);

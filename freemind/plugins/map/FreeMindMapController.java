@@ -38,7 +38,6 @@ import javax.swing.Action;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
@@ -55,23 +54,21 @@ import freemind.modes.mindmapmode.MindMapController;
  * mouse button and zooming by double click or by mouse wheel.
  * 
  * @author Jan Peter Stotz
- *
- * FreeMind Extensions:
- * - Move with button 1 (consistency with FreeMind UI) OK
- * - Single click for Set Cursor OK
- * - Mouse Wheel: Zoom OK
- * - Control-Mouse Wheel: ?
- * - (Right click +) Menu: popup menu mit
- *   * If right click, then the cursor is set to that position (consistency with FM-UI)
- *   * Place node(s) ==> the node gets a {@link MapMarkerLocation} here. The position, the position of the map
- *     and the zoom is stored in the node.
- *   * 
- *   
- *   Node Extra Menu Items:
- *   * Show node(s) in Map ==> Chooses the best view for the nodes and selects them. 
+ * 
+ *         FreeMind Extensions: - Move with button 1 (consistency with FreeMind
+ *         UI) OK - Single click for Set Cursor OK - Mouse Wheel: Zoom OK -
+ *         Control-Mouse Wheel: ? - (Right click +) Menu: popup menu mit * If
+ *         right click, then the cursor is set to that position (consistency
+ *         with FM-UI) * Place node(s) ==> the node gets a
+ *         {@link MapMarkerLocation} here. The position, the position of the map
+ *         and the zoom is stored in the node. *
+ * 
+ *         Node Extra Menu Items: * Show node(s) in Map ==> Chooses the best
+ *         view for the nodes and selects them.
  * 
  * 
- * FIXME: On undo place node, the position is gone. (Undo action contains the initial zeros, I guess).
+ *         FIXME: On undo place node, the position is gone. (Undo action
+ *         contains the initial zeros, I guess).
  */
 public class FreeMindMapController extends JMapController implements
 		MouseListener, MouseMotionListener, MouseWheelListener {
@@ -81,11 +78,12 @@ public class FreeMindMapController extends JMapController implements
 	 * @date 31.10.2011
 	 */
 	private final class PlaceNodeAction extends AbstractAction {
-		
+
 		public PlaceNodeAction() {
-			super(getText("MapControllerPopupDialog.place"), MapNodePositionHolder.getMapLocationIcon());
+			super(getText("MapControllerPopupDialog.place"),
+					MapNodePositionHolder.getMapLocationIcon());
 		}
-		
+
 		public void actionPerformed(ActionEvent actionEvent) {
 			placeNodes(actionEvent);
 		}
@@ -96,35 +94,35 @@ public class FreeMindMapController extends JMapController implements
 	 * @date 31.10.2011
 	 */
 	private final class RemovePlaceNodeAction extends AbstractAction {
-		
+
 		public RemovePlaceNodeAction() {
 			super(getText("MapControllerPopupDialog.removeplace"));
 		}
-		
+
 		public void actionPerformed(ActionEvent actionEvent) {
 			removePlaceNodes(actionEvent);
 		}
 	}
-	
+
 	/**
 	 * @author foltin
 	 * @date 31.10.2011
 	 */
 	private final class ShowNodeAction extends AbstractAction {
-		
+
 		public ShowNodeAction() {
 			super(getText("MapControllerPopupDialog.show_nodes"));
 		}
-		
+
 		public void actionPerformed(ActionEvent actionEvent) {
 			showNode(actionEvent);
 		}
 	}
-	
+
 	JCursorMapViewer getMap() {
 		return (JCursorMapViewer) map;
 	}
-	
+
 	private static final int MOUSE_BUTTONS_MASK = MouseEvent.BUTTON3_DOWN_MASK
 			| MouseEvent.BUTTON1_DOWN_MASK | MouseEvent.BUTTON2_DOWN_MASK;
 
@@ -132,13 +130,14 @@ public class FreeMindMapController extends JMapController implements
 			| MouseEvent.BUTTON1_DOWN_MASK;
 	private static final int MAC_MOUSE_BUTTON1_MASK = MouseEvent.BUTTON1_DOWN_MASK;
 
-	private JPopupMenu mPopupMenu= new JPopupMenu();
+	private JPopupMenu mPopupMenu = new JPopupMenu();
 
 	private final MindMapController mMindMapController;
 
 	private final JDialog mMapDialog;
-	
-	public FreeMindMapController(JMapViewer map, MindMapController pMindMapController, JDialog pMapDialog) {
+
+	public FreeMindMapController(JMapViewer map,
+			MindMapController pMindMapController, JDialog pMapDialog) {
 		super(map);
 		mMindMapController = pMindMapController;
 		mMapDialog = pMapDialog;
@@ -169,10 +168,10 @@ public class FreeMindMapController extends JMapController implements
 	protected void placeNodes(ActionEvent pActionEvent) {
 		MindMapNode selected = mMindMapController.getSelected();
 		MapNodePositionHolder hook = getHook(selected);
-		if(hook == null) { 
+		if (hook == null) {
 			hook = addHookToNode(selected);
 		}
-		if(hook != null) {
+		if (hook != null) {
 			// set parameters:
 			// FIXME: Make undoable.
 			hook.setMapCenter(map.getPosition());
@@ -187,11 +186,11 @@ public class FreeMindMapController extends JMapController implements
 	public void removePlaceNodes(ActionEvent pActionEvent) {
 		MindMapNode selected = mMindMapController.getSelected();
 		MapNodePositionHolder hook = getHook(selected);
-		if(hook != null) {
+		if (hook != null) {
 			// double add == remove
 			addHookToNode(selected);
 		}
-		
+
 	}
 
 	/**
@@ -200,25 +199,25 @@ public class FreeMindMapController extends JMapController implements
 	public void showNode(ActionEvent pActionEvent) {
 		MindMapNode selected = mMindMapController.getSelected();
 		MapNodePositionHolder hook = getHook(selected);
-		if(hook != null) {
+		if (hook != null) {
 			// move map:
 			Coordinate mapCenter = hook.getMapCenter();
-			map.setDisplayPositionByLatLon(mapCenter.getLat(), mapCenter.getLon(), hook.getZoom());
+			map.setDisplayPositionByLatLon(mapCenter.getLat(),
+					mapCenter.getLon(), hook.getZoom());
 			getMap().setCursorPosition(hook.getPosition());
 		}
-		
+
 	}
-	
+
 	public MapNodePositionHolder addHookToNode(MindMapNode selected) {
 		MapNodePositionHolder hook;
 		List selecteds = Arrays.asList(new MindMapNode[] { selected });
-		mMindMapController.addHook(selected, selecteds, MapNodePositionHolder.NODE_MAP_HOOK_NAME);
+		mMindMapController.addHook(selected, selecteds,
+				MapNodePositionHolder.NODE_MAP_HOOK_NAME);
 		hook = getHook(selected);
 		return hook;
 	}
 
-
-	
 	/**
 	 */
 	public MapNodePositionHolder getHook(MindMapNode node) {
@@ -231,9 +230,9 @@ public class FreeMindMapController extends JMapController implements
 		return null;
 	}
 
-
-	
-	/** Translate String
+	/**
+	 * Translate String
+	 * 
 	 * @param pString
 	 * @return
 	 */
@@ -263,18 +262,19 @@ public class FreeMindMapController extends JMapController implements
 				int diffx = lastDragPoint.x - p.x;
 				int diffy = lastDragPoint.y - p.y;
 				map.moveMap(diffx, diffy);
-//				System.out.println("Move to " + map.getPosition() + " with zoom " + map.getZoom() );
+				// System.out.println("Move to " + map.getPosition() +
+				// " with zoom " + map.getZoom() );
 			}
 			lastDragPoint = p;
 		}
 	}
 
 	public void mouseClicked(MouseEvent e) {
-    	// is button 1?
-    	if(e.getButton() == MouseEvent.BUTTON1|| isPlatformOsx()
-			&& e.getModifiersEx() == MAC_MOUSE_BUTTON1_MASK) {
-    		setCursorPosition(e);
-    	}
+		// is button 1?
+		if (e.getButton() == MouseEvent.BUTTON1 || isPlatformOsx()
+				&& e.getModifiersEx() == MAC_MOUSE_BUTTON1_MASK) {
+			setCursorPosition(e);
+		}
 	}
 
 	public void setCursorPosition(MouseEvent e) {
@@ -282,10 +282,10 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void mousePressed(MouseEvent e) {
-        showPopupMenu(e);
-        if (e.isConsumed()) {
-        	return;
-        }
+		showPopupMenu(e);
+		if (e.isConsumed()) {
+			return;
+		}
 		if (e.getButton() == movementMouseButton || isPlatformOsx()
 				&& e.getModifiersEx() == MAC_MOUSE_BUTTON1_MASK) {
 			lastDragPoint = null;
@@ -294,7 +294,8 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	/**
-	 * @param e event.
+	 * @param e
+	 *            event.
 	 */
 	private void showPopupMenu(MouseEvent e) {
 		if (e.isPopupTrigger()) {
@@ -307,14 +308,14 @@ public class FreeMindMapController extends JMapController implements
 				e.consume();
 			}
 		}
-		
+
 	}
 
 	public void mouseReleased(MouseEvent e) {
-        showPopupMenu(e);
-        if (e.isConsumed()) {
-            return;
-        }
+		showPopupMenu(e);
+		if (e.isConsumed()) {
+			return;
+		}
 
 		if (e.getButton() == movementMouseButton || isPlatformOsx()
 				&& e.getButton() == MouseEvent.BUTTON1) {
@@ -349,7 +350,7 @@ public class FreeMindMapController extends JMapController implements
 	public JPopupMenu getPopupMenu() {
 		return mPopupMenu;
 	}
-	
+
 	/**
 	 * Sets the mouse button that is used for moving the map. Possible values
 	 * are:
@@ -408,7 +409,7 @@ public class FreeMindMapController extends JMapController implements
 			if (!movementEnabled || !isMoving)
 				return;
 			// Is only the selected mouse button pressed?
-			if (e.getModifiersEx() == 0 /* MouseEvent.CTRL_DOWN_MASK */ ) {
+			if (e.getModifiersEx() == 0 /* MouseEvent.CTRL_DOWN_MASK */) {
 				Point p = e.getPoint();
 				if (lastDragPoint != null) {
 					int diffx = lastDragPoint.x - p.x;

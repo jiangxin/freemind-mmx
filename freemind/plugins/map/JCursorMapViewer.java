@@ -27,7 +27,6 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseEvent;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -36,7 +35,6 @@ import javax.swing.Timer;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
-import org.openstreetmap.gui.jmapviewer.MemoryTileCache;
 
 import freemind.modes.mindmapmode.MindMapController;
 
@@ -53,13 +51,15 @@ final class JCursorMapViewer extends JMapViewer {
 	private FreeMindMapController mFreeMindMapController;
 
 	/**
-	 * @param pMindMapController 
-	 * @param pMapDialog 
+	 * @param pMindMapController
+	 * @param pMapDialog
 	 * 
 	 */
-	public JCursorMapViewer(MindMapController pMindMapController, JDialog pMapDialog) {
-        super(new FileTileCache(), 4);
-        mFreeMindMapController = new FreeMindMapController(this, pMindMapController, pMapDialog);
+	public JCursorMapViewer(MindMapController pMindMapController,
+			JDialog pMapDialog) {
+		super(new FileTileCache(), 4);
+		mFreeMindMapController = new FreeMindMapController(this,
+				pMindMapController, pMapDialog);
 		Action updateCursorAction = new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
 				mShowCursor = !mShowCursor;
@@ -99,22 +99,25 @@ final class JCursorMapViewer extends JMapViewer {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		// do cursor
-		if(mUseCursor && mShowCursor) {
-	        Point position = getMapPosition(mCursorPosition.getLat(), mCursorPosition.getLon());
-	        if (position != null) {
-	            int size_h = 15;
-	            if (g instanceof Graphics2D) {
+		if (mUseCursor && mShowCursor) {
+			Point position = getMapPosition(mCursorPosition.getLat(),
+					mCursorPosition.getLon());
+			if (position != null) {
+				int size_h = 15;
+				if (g instanceof Graphics2D) {
 					Graphics2D g2d = (Graphics2D) g;
 					Stroke oldStroke = g2d.getStroke();
 					Color oldColor = g2d.getColor();
 					g2d.setStroke(mStroke);
 					g2d.setColor(Color.RED);
-					g2d.drawLine(position.x - size_h, position.y, position.x + size_h, position.y);
-					g2d.drawLine(position.x, position.y - size_h, position.x, position.y + size_h);
+					g2d.drawLine(position.x - size_h, position.y, position.x
+							+ size_h, position.y);
+					g2d.drawLine(position.x, position.y - size_h, position.x,
+							position.y + size_h);
 					g2d.setColor(oldColor);
 					g2d.setStroke(oldStroke);
 				}
-	        }
+			}
 
 		}
 	}

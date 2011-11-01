@@ -45,51 +45,50 @@ import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Resources;
 
 /**
- * @author foltin
- * Singleton
+ * @author foltin Singleton
  */
 public class XmlBindingTools {
 
 	private static XmlBindingTools instance;
-    private static IBindingFactory mBindingFactory;
+	private static IBindingFactory mBindingFactory;
 
-
-    private XmlBindingTools() {
+	private XmlBindingTools() {
 	}
 
 	public static XmlBindingTools getInstance() {
-		if(instance == null) {
+		if (instance == null) {
 			instance = new XmlBindingTools();
-            try {
-                mBindingFactory = BindingDirectory.getFactory(XmlAction.class);
-            } catch (JiBXException e) {
-                freemind.main.Resources.getInstance().logException(e);
-            }
+			try {
+				mBindingFactory = BindingDirectory.getFactory(XmlAction.class);
+			} catch (JiBXException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
 
 		}
 		return instance;
 	}
 
-	
 	public IMarshallingContext createMarshaller() {
-        try {
-            return mBindingFactory.createMarshallingContext();
-        } catch (JiBXException e) {
-            freemind.main.Resources.getInstance().logException(e);
-            return null;
-        }
+		try {
+			return mBindingFactory.createMarshallingContext();
+		} catch (JiBXException e) {
+			freemind.main.Resources.getInstance().logException(e);
+			return null;
+		}
 	}
-	
+
 	public IUnmarshallingContext createUnmarshaller() {
-        try {
-            return  mBindingFactory.createUnmarshallingContext();
-        } catch (JiBXException e) {
-            freemind.main.Resources.getInstance().logException(e);
-            return null;
-        }
+		try {
+			return mBindingFactory.createUnmarshallingContext();
+		} catch (JiBXException e) {
+			freemind.main.Resources.getInstance().logException(e);
+			return null;
+		}
 	}
-	
-	public void storeDialogPositions(Controller controller, JDialog dialog, WindowConfigurationStorage storage, String window_preference_storage_property) {
+
+	public void storeDialogPositions(Controller controller, JDialog dialog,
+			WindowConfigurationStorage storage,
+			String window_preference_storage_property) {
 		storage.setX((dialog.getX()));
 		storage.setY((dialog.getY()));
 		storage.setWidth((dialog.getWidth()));
@@ -99,21 +98,25 @@ public class XmlBindingTools {
 		controller.setProperty(window_preference_storage_property, result);
 	}
 
-	public WindowConfigurationStorage decorateDialog(Controller controller, JDialog dialog, String window_preference_storage_property) {
-		String marshalled = controller.getProperty(window_preference_storage_property);
+	public WindowConfigurationStorage decorateDialog(Controller controller,
+			JDialog dialog, String window_preference_storage_property) {
+		String marshalled = controller
+				.getProperty(window_preference_storage_property);
 		WindowConfigurationStorage result = decorateDialog(marshalled, dialog);
 		return result;
 	}
-	
-    public WindowConfigurationStorage decorateDialog(String marshalled, JDialog dialog) {
-//		String unmarshalled = controller.getProperty(
-//		        propertyName);
+
+	public WindowConfigurationStorage decorateDialog(String marshalled,
+			JDialog dialog) {
+		// String unmarshalled = controller.getProperty(
+		// propertyName);
 		if (marshalled != null) {
 			WindowConfigurationStorage storage = (WindowConfigurationStorage) unMarshall(marshalled);
 			if (storage != null) {
 				// Check that location is on current screen.
 				Dimension screenSize;
-				if(Resources.getInstance().getBoolProperty("place_dialogs_on_first_screen")) {
+				if (Resources.getInstance().getBoolProperty(
+						"place_dialogs_on_first_screen")) {
 					Toolkit defaultToolkit = Toolkit.getDefaultToolkit();
 					screenSize = defaultToolkit.getScreenSize();
 				} else {
@@ -122,58 +125,58 @@ public class XmlBindingTools {
 					screenSize.width = Integer.MAX_VALUE;
 				}
 				int delta = 20;
-				dialog.setLocation(Math.min(storage.getX(), screenSize.width-delta),
-						Math.min(storage.getY(), screenSize.height-delta));
-				dialog.setSize(new Dimension(storage.getWidth(), storage.getHeight()));
+				dialog.setLocation(
+						Math.min(storage.getX(), screenSize.width - delta),
+						Math.min(storage.getY(), screenSize.height - delta));
+				dialog.setSize(new Dimension(storage.getWidth(), storage
+						.getHeight()));
 				return storage;
 			}
 		}
-		
+
 		// set standard dialog size of no size is stored
 		final Frame rootFrame = JOptionPane.getFrameForComponent(dialog);
 		final Dimension prefSize = rootFrame.getSize();
-		prefSize.width = prefSize.width * 3 / 4; 
-		prefSize.height = prefSize.height * 3 / 4; 
+		prefSize.width = prefSize.width * 3 / 4;
+		prefSize.height = prefSize.height * 3 / 4;
 		dialog.setSize(prefSize);
 		return null;
-    }
-
+	}
 
 	public String marshall(XmlAction action) {
-        // marshall:
-        //marshal to StringBuffer:
-        StringWriter writer = new StringWriter();
-        IMarshallingContext m = XmlBindingTools.getInstance().createMarshaller();
-        try {
-            m.marshalDocument(action, "UTF-8", null,
-                    writer);
-        } catch (JiBXException e) {
-            freemind.main.Resources.getInstance().logException(e);
-            return null;
-        }
-        String result = writer.toString();
-        return result;
+		// marshall:
+		// marshal to StringBuffer:
+		StringWriter writer = new StringWriter();
+		IMarshallingContext m = XmlBindingTools.getInstance()
+				.createMarshaller();
+		try {
+			m.marshalDocument(action, "UTF-8", null, writer);
+		} catch (JiBXException e) {
+			freemind.main.Resources.getInstance().logException(e);
+			return null;
+		}
+		String result = writer.toString();
+		return result;
 
 	}
 
 	public XmlAction unMarshall(String inputString) {
-		return unMarshall(new StringReader( inputString ));
+		return unMarshall(new StringReader(inputString));
 	}
 
-    /**
+	/**
      */
-    public XmlAction unMarshall(Reader reader) {
-        try {
+	public XmlAction unMarshall(Reader reader) {
+		try {
 			// unmarshall:
-            IUnmarshallingContext u = XmlBindingTools.getInstance().createUnmarshaller();
-            XmlAction doAction = (XmlAction) u.unmarshalDocument
-            ( reader  , null);
+			IUnmarshallingContext u = XmlBindingTools.getInstance()
+					.createUnmarshaller();
+			XmlAction doAction = (XmlAction) u.unmarshalDocument(reader, null);
 			return doAction;
 		} catch (JiBXException e) {
-            freemind.main.Resources.getInstance().logException(e);
-            return null;
-        }
-    }
-
+			freemind.main.Resources.getInstance().logException(e);
+			return null;
+		}
+	}
 
 }

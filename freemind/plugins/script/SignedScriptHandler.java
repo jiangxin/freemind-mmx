@@ -52,7 +52,7 @@ public class SignedScriptHandler {
 
 	public static final String FREEMIND_SCRIPT_KEY_NAME = "FreeMindScriptKey";
 	private static final String SIGN_PREFIX = "//SIGN:";
-	/** This is for / /SIGN(keyname):signature*/
+	/** This is for / /SIGN(keyname):signature */
 	private static final String SIGN_PREFIX_REGEXP = "//SIGN\\((.*?)\\):(.*)";
 
 	public static class ScriptContents {
@@ -62,21 +62,23 @@ public class SignedScriptHandler {
 		private static Pattern sSignWithKeyPattern = null;
 
 		public ScriptContents() {
-			if(sSignWithKeyPattern == null)
+			if (sSignWithKeyPattern == null)
 				sSignWithKeyPattern = Pattern.compile(SIGN_PREFIX_REGEXP);
 		}
-		
+
 		public ScriptContents(String pScript) {
 			this();
 			int indexOfSignaturePrefix = pScript.lastIndexOf(SIGN_PREFIX);
-			int indexOfSignature = indexOfSignaturePrefix + SIGN_PREFIX.length();
-			if (indexOfSignaturePrefix > 0 && pScript.length() > indexOfSignature) {
+			int indexOfSignature = indexOfSignaturePrefix
+					+ SIGN_PREFIX.length();
+			if (indexOfSignaturePrefix > 0
+					&& pScript.length() > indexOfSignature) {
 				mSignature = pScript.substring(indexOfSignature);
 				mScript = pScript.substring(0, indexOfSignaturePrefix);
 				mKeyName = null;
 			} else {
 				Matcher matcher = sSignWithKeyPattern.matcher(pScript);
-				if (matcher.find()){
+				if (matcher.find()) {
 					mScript = pScript.substring(0, matcher.start());
 					mKeyName = matcher.group(1);
 					mSignature = matcher.group(2);
@@ -87,7 +89,7 @@ public class SignedScriptHandler {
 				}
 			}
 		}
-		
+
 		public String toString() {
 			String prefix;
 			if (mKeyName != null)
@@ -130,8 +132,8 @@ public class SignedScriptHandler {
 			FreeMindMain pFrame) {
 		ScriptContents content = new ScriptContents(pScript);
 		// it is assumed, that keystore and key password are identical.
-		EnterPasswordDialog pwdDialog = new EnterPasswordDialog(pFrame
-				.getJFrame(), pTranslator, false);
+		EnterPasswordDialog pwdDialog = new EnterPasswordDialog(
+				pFrame.getJFrame(), pTranslator, false);
 		pwdDialog.setModal(true);
 		pwdDialog.setVisible(true);
 		if (pwdDialog.getResult() == EnterPasswordDialog.CANCEL) {
@@ -142,10 +144,11 @@ public class SignedScriptHandler {
 		try {
 			Signature instance = Signature.getInstance("SHA1withDSA");
 			String keyName = FREEMIND_SCRIPT_KEY_NAME;
-			String propertyKeyName = Resources.getInstance().getProperty(FreeMind.RESOURCES_SCRIPT_USER_KEY_NAME_FOR_SIGNING);
+			String propertyKeyName = Resources.getInstance().getProperty(
+					FreeMind.RESOURCES_SCRIPT_USER_KEY_NAME_FOR_SIGNING);
 			if (content.mKeyName != null) {
 				keyName = content.mKeyName;
-			} else if(propertyKeyName != null && propertyKeyName.length() > 0){
+			} else if (propertyKeyName != null && propertyKeyName.length() > 0) {
 				content.mKeyName = propertyKeyName;
 				keyName = content.mKeyName;
 			}
@@ -169,8 +172,8 @@ public class SignedScriptHandler {
 				Signature instanceVerify = Signature.getInstance("SHA1withDSA");
 				if (content.mKeyName == null) {
 					/**
-					 * This is the FreeMind public key. keytool -v -rfc -exportcert
-					 * -alias freemindscriptkey
+					 * This is the FreeMind public key. keytool -v -rfc
+					 * -exportcert -alias freemindscriptkey
 					 */
 					String cer = "-----BEGIN CERTIFICATE-----\n"
 							+ "MIIDKDCCAuWgAwIBAgIESAY2ADALBgcqhkjOOAQDBQAwdzELMAkGA1UEBhMCREUxCzAJBgNVBAgT"
@@ -204,7 +207,8 @@ public class SignedScriptHandler {
 					}
 				} else {
 					initializeKeystore(null);
-					instanceVerify.initVerify(mKeyStore.getCertificate(content.mKeyName));
+					instanceVerify.initVerify(mKeyStore
+							.getCertificate(content.mKeyName));
 				}
 				instanceVerify.update(content.mScript.getBytes());
 				boolean verify = instanceVerify.verify(Tools

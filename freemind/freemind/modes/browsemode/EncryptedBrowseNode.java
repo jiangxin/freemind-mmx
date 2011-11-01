@@ -29,8 +29,8 @@ import java.util.HashMap;
 import javax.swing.ImageIcon;
 
 import freemind.main.FreeMindMain;
-import freemind.main.XMLParseException;
 import freemind.main.Tools.SingleDesEncrypter;
+import freemind.main.XMLParseException;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindIcon;
@@ -40,7 +40,7 @@ import freemind.modes.common.dialogs.EnterPasswordDialog;
 
 /**
  * @author foltin
- *
+ * 
  */
 public class EncryptedBrowseNode extends BrowseNodeModel {
 
@@ -91,20 +91,21 @@ public class EncryptedBrowseNode extends BrowseNodeModel {
 			return;
 		}
 		ControllerAdapter browseController = (ControllerAdapter) mModeController;
-        // get password:
-        final EnterPasswordDialog pwdDialog = new EnterPasswordDialog(
-                null, browseController, false);
-        pwdDialog.setModal(true);
-        pwdDialog.show();
-        if (pwdDialog.getResult() == EnterPasswordDialog.CANCEL) {
-            return;
-        }
-		SingleDesEncrypter encrypter = new SingleDesEncrypter(pwdDialog.getPassword());
+		// get password:
+		final EnterPasswordDialog pwdDialog = new EnterPasswordDialog(null,
+				browseController, false);
+		pwdDialog.setModal(true);
+		pwdDialog.show();
+		if (pwdDialog.getResult() == EnterPasswordDialog.CANCEL) {
+			return;
+		}
+		SingleDesEncrypter encrypter = new SingleDesEncrypter(
+				pwdDialog.getPassword());
 		// Decrypt
 		String decrypted = encrypter.decrypt(encryptedContent);
 		if (decrypted == null)
 			return;
-    	HashMap IDToTarget = new HashMap();
+		HashMap IDToTarget = new HashMap();
 		String[] childs = decrypted.split(ModeController.NODESEPARATOR);
 		// and now? paste it:
 		for (int i = childs.length - 1; i >= 0; i--) {
@@ -114,11 +115,13 @@ public class EncryptedBrowseNode extends BrowseNodeModel {
 			if (string.length() == 0)
 				continue;
 			try {
-				NodeAdapter node = (NodeAdapter) browseController.createNodeTreeFromXml(new StringReader(string), IDToTarget);
+				NodeAdapter node = (NodeAdapter) browseController
+						.createNodeTreeFromXml(new StringReader(string),
+								IDToTarget);
 				// now, the import is finished. We can inform others about
 				// the new nodes:
-                browseController.insertNodeInto(node, this);
-                MapAdapter model = browseController.getModel();
+				browseController.insertNodeInto(node, this);
+				MapAdapter model = browseController.getModel();
 				browseController.invokeHooksRecursively(node, model);
 				super.setFolded(folded);
 				browseController.nodeChanged(this);
@@ -126,10 +129,10 @@ public class EncryptedBrowseNode extends BrowseNodeModel {
 				isDecrypted = true;
 				updateIcon();
 			} catch (XMLParseException e) {
-freemind.main.Resources.getInstance().logException(				e);
+				freemind.main.Resources.getInstance().logException(e);
 				return;
 			} catch (IOException e) {
-freemind.main.Resources.getInstance().logException(				e);
+				freemind.main.Resources.getInstance().logException(e);
 				return;
 			}
 		}

@@ -29,53 +29,52 @@ import freemind.modes.ModeController;
 
 public class SchemeMode extends Mode {
 
-    private Controller c;
-    private SchemeController modecontroller;
-    private JToolBar toolbar;
-    private static final String MODENAME = "Scheme";
-    private static boolean isRunning = false;
+	private Controller c;
+	private SchemeController modecontroller;
+	private JToolBar toolbar;
+	private static final String MODENAME = "Scheme";
+	private static boolean isRunning = false;
 
-    public SchemeMode() {
-    }
-
-    public void init(Controller c) {
-	this.c = c;
-	modecontroller = new SchemeController(this);
-	toolbar = new SchemeToolBar(modecontroller);
-    }
-
-    public String toString() {
-	return MODENAME;
-    }
-
-    /**
-     * Called whenever this mode is chosen in the program.
-     * (updates Actions etc.)
-     */
-    public void activate() {
-	if (!isRunning) {
-	    getDefaultModeController().newMap();
-	    isRunning = true;
-	} else {
-            c.getMapModuleManager().changeToMapOfMode(this);
+	public SchemeMode() {
 	}
-    }
 
-    public void restore(String restoreable) {
-    }
+	public void init(Controller c) {
+		this.c = c;
+		modecontroller = new SchemeController(this);
+		toolbar = new SchemeToolBar(modecontroller);
+	}
 
-    public Controller getController() {
-	return c;
-    }
+	public String toString() {
+		return MODENAME;
+	}
 
-    public ModeController getDefaultModeController() {
-	return modecontroller;
-    }
+	/**
+	 * Called whenever this mode is chosen in the program. (updates Actions
+	 * etc.)
+	 */
+	public void activate() {
+		if (!isRunning) {
+			getDefaultModeController().newMap();
+			isRunning = true;
+		} else {
+			c.getMapModuleManager().changeToMapOfMode(this);
+		}
+	}
 
+	public void restore(String restoreable) {
+	}
 
-    public FreeMindMain getFrame() {
-	return c.getFrame();
-    }
+	public Controller getController() {
+		return c;
+	}
+
+	public ModeController getDefaultModeController() {
+		return modecontroller;
+	}
+
+	public FreeMindMain getFrame() {
+		return c.getFrame();
+	}
 
 	public ModeController createModeController() {
 		return new SchemeController(this);

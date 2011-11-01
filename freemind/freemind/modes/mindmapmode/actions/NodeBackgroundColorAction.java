@@ -39,75 +39,86 @@ import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class NodeBackgroundColorAction extends FreemindAction implements ActorXml {
-    private final MindMapController controller;
+public class NodeBackgroundColorAction extends FreemindAction implements
+		ActorXml {
+	private final MindMapController controller;
 
-    public NodeBackgroundColorAction(MindMapController controller) {
-        super("node_background_color", (String)null, controller);
-        this.controller = controller;
-        addActor(this);
-    }
+	public NodeBackgroundColorAction(MindMapController controller) {
+		super("node_background_color", (String) null, controller);
+		this.controller = controller;
+		addActor(this);
+	}
 
-    
-    
-    public void actionPerformed(ActionEvent e) {
-        Color color = Controller.showCommonJColorChooserDialog(controller
-                .getView().getSelected(), controller.getText("choose_node_background_color"), controller.getSelected()
-                .getBackgroundColor());
-        if (color == null) {
-            return;
-        }
-        for (ListIterator it = controller.getSelecteds().listIterator(); it
-                .hasNext();) {
-            MindMapNodeModel selected = (MindMapNodeModel) it.next();
-            setNodeBackgroundColor(selected, color); 
-        }
-    }
-    
-    public static class RemoveNodeBackgroundColorAction extends NodeGeneralAction {
+	public void actionPerformed(ActionEvent e) {
+		Color color = Controller.showCommonJColorChooserDialog(controller
+				.getView().getSelected(), controller
+				.getText("choose_node_background_color"), controller
+				.getSelected().getBackgroundColor());
+		if (color == null) {
+			return;
+		}
+		for (ListIterator it = controller.getSelecteds().listIterator(); it
+				.hasNext();) {
+			MindMapNodeModel selected = (MindMapNodeModel) it.next();
+			setNodeBackgroundColor(selected, color);
+		}
+	}
 
-    	private final MindMapController controller;
-		public RemoveNodeBackgroundColorAction(final MindMapController controller) {
-            super(controller, "remove_node_background_color", (String)null);
-            this.controller = controller;
-            setSingleNodeOperation(new SingleNodeOperation(){
+	public static class RemoveNodeBackgroundColorAction extends
+			NodeGeneralAction {
+
+		private final MindMapController controller;
+
+		public RemoveNodeBackgroundColorAction(
+				final MindMapController controller) {
+			super(controller, "remove_node_background_color", (String) null);
+			this.controller = controller;
+			setSingleNodeOperation(new SingleNodeOperation() {
 
 				public void apply(MindMapMapModel map, MindMapNodeModel node) {
 					controller.setNodeBackgroundColor(node, null);
-				}});
-        }
-    	
-    }
-    public void setNodeBackgroundColor(MindMapNode node, Color color) {
-		NodeBackgroundColorFormatAction doAction = createNodeBackgroundColorFormatAction(node, color);
-        NodeBackgroundColorFormatAction undoAction = createNodeBackgroundColorFormatAction(node, node.getBackgroundColor());
-        controller.getActionFactory().startTransaction(this.getClass().getName());
-        controller.getActionFactory().executeAction(new ActionPair(doAction, undoAction));
-        controller.getActionFactory().endTransaction(this.getClass().getName());
-    }
+				}
+			});
+		}
 
-    public NodeBackgroundColorFormatAction createNodeBackgroundColorFormatAction(MindMapNode node, Color color) {
+	}
+
+	public void setNodeBackgroundColor(MindMapNode node, Color color) {
+		NodeBackgroundColorFormatAction doAction = createNodeBackgroundColorFormatAction(
+				node, color);
+		NodeBackgroundColorFormatAction undoAction = createNodeBackgroundColorFormatAction(
+				node, node.getBackgroundColor());
+		controller.getActionFactory().startTransaction(
+				this.getClass().getName());
+		controller.getActionFactory().executeAction(
+				new ActionPair(doAction, undoAction));
+		controller.getActionFactory().endTransaction(this.getClass().getName());
+	}
+
+	public NodeBackgroundColorFormatAction createNodeBackgroundColorFormatAction(
+			MindMapNode node, Color color) {
 		NodeBackgroundColorFormatAction nodeAction = new NodeBackgroundColorFormatAction();
 		nodeAction.setNode(node.getObjectId(controller));
 		nodeAction.setColor(Tools.colorToXml(color));
 		return nodeAction;
-    }
-    
-    public void act(XmlAction action) {
+	}
+
+	public void act(XmlAction action) {
 		if (action instanceof NodeBackgroundColorFormatAction) {
 			NodeBackgroundColorFormatAction nodeColorAction = (NodeBackgroundColorFormatAction) action;
 			Color color = Tools.xmlToColor(nodeColorAction.getColor());
-			MindMapNode node = controller.getNodeFromID(nodeColorAction.getNode());
-			Color oldColor = node.getBackgroundColor() ;
+			MindMapNode node = controller.getNodeFromID(nodeColorAction
+					.getNode());
+			Color oldColor = node.getBackgroundColor();
 			if (!Tools.safeEquals(color, oldColor)) {
-                node.setBackgroundColor(color); // null
-                controller.nodeChanged(node);
-            }
+				node.setBackgroundColor(color); // null
+				controller.nodeChanged(node);
+			}
 		}
-   }
+	}
 
-    public Class getDoActionClass() {
-        return NodeBackgroundColorFormatAction.class;
-    }
+	public Class getDoActionClass() {
+		return NodeBackgroundColorFormatAction.class;
+	}
 
 }

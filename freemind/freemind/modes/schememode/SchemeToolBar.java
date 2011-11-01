@@ -20,23 +20,23 @@
 
 package freemind.modes.schememode;
 
-import javax.swing.JToolBar;
 import javax.swing.JButton;
+import javax.swing.JToolBar;
 
 public class SchemeToolBar extends JToolBar {
 
-    private SchemeController c;
+	private SchemeController c;
 
-    public SchemeToolBar(SchemeController controller) {
-	this.c=controller;
-        this.setRollover(true);
+	public SchemeToolBar(SchemeController controller) {
+		this.c = controller;
+		this.setRollover(true);
 
-	JButton button;
+		JButton button;
 
-	button = add(c.newMap);
-	button = add(c.open);
-	button = add(c.save);
-	button = add(c.saveAs);
-	button = add(c.evaluate);
-    }
+		button = add(c.newMap);
+		button = add(c.open);
+		button = add(c.save);
+		button = add(c.saveAs);
+		button = add(c.evaluate);
+	}
 }

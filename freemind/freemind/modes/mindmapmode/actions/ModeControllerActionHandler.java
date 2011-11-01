@@ -30,33 +30,46 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 /**
  * @author foltin
- *
+ * 
  */
 public class ModeControllerActionHandler implements ActionHandler {
 
-
 	private ActionFactory factory;
-	public ModeControllerActionHandler(ActionFactory factory){
+
+	public ModeControllerActionHandler(ActionFactory factory) {
 		this.factory = factory;
 	}
-	/* (non-Javadoc)
-	 * @see freemind.controller.actions.ActionHandler#executeAction(freemind.controller.actions.ActionPair)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.controller.actions.ActionHandler#executeAction(freemind.controller
+	 * .actions.ActionPair)
 	 */
 	public void executeAction(XmlAction action) {
 		ActorXml actor = factory.getActor(action);
 		// exception handling is done by the caller.
-        actor.act(action);
+		actor.act(action);
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.controller.actions.ActionHandler#startTransaction(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.controller.actions.ActionHandler#startTransaction(java.lang.
+	 * String)
 	 */
 	public void startTransaction(String name) {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.controller.actions.ActionHandler#endTransaction(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.controller.actions.ActionHandler#endTransaction(java.lang.String
+	 * )
 	 */
 	public void endTransaction(String name) {
 

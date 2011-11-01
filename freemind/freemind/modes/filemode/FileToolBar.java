@@ -20,22 +20,22 @@
 
 package freemind.modes.filemode;
 
-import javax.swing.JToolBar;
 import javax.swing.JButton;
+import javax.swing.JToolBar;
 
 public class FileToolBar extends JToolBar {
 
-    private FileController c;
+	private FileController c;
 
-    public FileToolBar(FileController controller) {
-	this.c=controller;
-        this.setRollover(true);
+	public FileToolBar(FileController controller) {
+		this.c = controller;
+		this.setRollover(true);
 
-	JButton button;
+		JButton button;
 
-	button = add(c.newMap);
- 	button.setText("");
+		button = add(c.newMap);
+		button.setText("");
 
-	button = add(c.center);
-    }
+		button = add(c.center);
+	}
 }

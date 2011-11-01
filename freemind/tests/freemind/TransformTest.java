@@ -52,8 +52,7 @@ public class TransformTest extends FreeMindTestBase {
 	public void testExportHtml() throws Exception {
 		String mapFileToBeExported = TESTMAP_MM;
 		String destinationFileName = "/tmp/test1.html";
-		Properties properties = getProperties(
-				EXPORT_WITH_XSLT_XML,
+		Properties properties = getProperties(EXPORT_WITH_XSLT_XML,
 				"accessories/plugins/ExportWithXSLT_HTML.properties");
 		doExportWithExportPlugin(mapFileToBeExported, destinationFileName,
 				properties);
@@ -62,8 +61,7 @@ public class TransformTest extends FreeMindTestBase {
 	public void testExportHtmlWithImage() throws Exception {
 		String mapFileToBeExported = TESTMAP_MM;
 		String destinationFileName = "/tmp/test2.html";
-		Properties properties = getProperties(
-				EXPORT_WITH_XSLT_XML,
+		Properties properties = getProperties(EXPORT_WITH_XSLT_XML,
 				"accessories/plugins/ExportWithXSLT_HTML3.properties");
 		doExportWithExportPlugin(mapFileToBeExported, destinationFileName,
 				properties);
@@ -72,8 +70,7 @@ public class TransformTest extends FreeMindTestBase {
 	public void testExportHtmlApplet() throws Exception {
 		String mapFileToBeExported = TESTMAP_MM;
 		String destinationFileName = "/tmp/test_applet.html";
-		Properties properties = getProperties(
-				EXPORT_WITH_XSLT_XML,
+		Properties properties = getProperties(EXPORT_WITH_XSLT_XML,
 				"accessories/plugins/ExportWithXSLT_Applet.properties");
 		doExportWithExportPlugin(mapFileToBeExported, destinationFileName,
 				properties);
@@ -82,8 +79,7 @@ public class TransformTest extends FreeMindTestBase {
 	public void testExportHtmlFlash() throws Exception {
 		String mapFileToBeExported = TESTMAP_MM;
 		String destinationFileName = "/tmp/test_flash.html";
-		Properties properties = getProperties(
-				EXPORT_WITH_XSLT_XML,
+		Properties properties = getProperties(EXPORT_WITH_XSLT_XML,
 				"accessories/plugins/ExportWithXSLT_Flash.properties");
 		doExportWithExportPlugin(mapFileToBeExported, destinationFileName,
 				properties);
@@ -92,14 +88,13 @@ public class TransformTest extends FreeMindTestBase {
 	public void testExportOoo() throws Exception {
 		String mapFileToBeExported = TESTMAP_MM;
 		String destinationFileName = "/tmp/test_ooo.odt";
-		Properties properties = getProperties(
-				EXPORT_TO_OOO,
+		Properties properties = getProperties(EXPORT_TO_OOO,
 				"accessories/plugins/ExportToOoWriter.properties");
 
 		doExportWithOooPlugin(mapFileToBeExported, destinationFileName,
 				properties);
 	}
-	
+
 	private Properties getProperties(String xmlPluginFile, String pluginLabel)
 			throws Exception {
 		Properties properties = new Properties();
@@ -107,7 +102,7 @@ public class TransformTest extends FreeMindTestBase {
 				.createUnmarshaller();
 
 		URL pluginURL = ClassLoader.getSystemResource(xmlPluginFile);
-		assertNotNull("file " + xmlPluginFile + " found" , pluginURL);
+		assertNotNull("file " + xmlPluginFile + " found", pluginURL);
 		// unmarshal xml:
 		Plugin plugin = null;
 		InputStream in = pluginURL.openStream();
@@ -135,26 +130,26 @@ public class TransformTest extends FreeMindTestBase {
 	}
 
 	private void doExportWithExportPlugin(String mapFileToBeExported,
-			String destinationFileName, Properties properties)
-			throws Exception {
+			String destinationFileName, Properties properties) throws Exception {
 		InputStream xmlSource = ClassLoader.getSystemResource(
 				mapFileToBeExported).openStream();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		Tools.copyStream(xmlSource, out, true);
 		ExportWithXSLT exportHook = new ExportWithXSLT();
-		MindMapControllerMock controller = new MindMapControllerMock(mFreeMindMain, out
-				.toString());
+		MindMapControllerMock controller = new MindMapControllerMock(
+				mFreeMindMain, out.toString());
 		exportHook.setController(controller);
 
 		exportHook.setProperties(properties);
 		File destinationFile = new File(destinationFileName);
 		exportHook.transform(destinationFile);
-		assertTrue("File " + destinationFile + " exists?", destinationFile
-				.exists());
+		assertTrue("File " + destinationFile + " exists?",
+				destinationFile.exists());
 	}
+
 	private void doExportWithOooPlugin(String mapFileToBeExported,
 			String destinationFileName, Properties properties)
-	throws IOException {
+			throws IOException {
 		InputStream xmlSource = ClassLoader.getSystemResource(
 				mapFileToBeExported).openStream();
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -162,14 +157,13 @@ public class TransformTest extends FreeMindTestBase {
 		ExportToOoWriter exportHook = new ExportToOoWriter();
 		exportHook.setController(new MindMapControllerMock(mFreeMindMain, out
 				.toString()));
-		
+
 		exportHook.setProperties(properties);
 		File destinationFile = new File(destinationFileName);
 		boolean result = exportHook.exportToOoWriter(destinationFile);
-		assertTrue("File " + destinationFile + " exists?", destinationFile
-				.exists());
+		assertTrue("File " + destinationFile + " exists?",
+				destinationFile.exists());
 		assertTrue("No error during export", result);
 	}
-
 
 }

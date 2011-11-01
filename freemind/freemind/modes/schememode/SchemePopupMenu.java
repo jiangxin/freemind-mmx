@@ -24,16 +24,12 @@ import javax.swing.JPopupMenu;
 
 public class SchemePopupMenu extends JPopupMenu {
 
-    private SchemeController c;
+	private SchemeController c;
 
-    public SchemePopupMenu(SchemeController c) {
-	this.c = c;
-	
-	//Node menu
-	this.add(c.evaluate);
-    }
+	public SchemePopupMenu(SchemeController c) {
+		this.c = c;
+
+		// Node menu
+		this.add(c.evaluate);
+	}
 }
-
-			   
-			   
-			   

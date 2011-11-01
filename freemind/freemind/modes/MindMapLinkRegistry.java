@@ -20,49 +20,76 @@
 
 package freemind.modes;
 
-import freemind.modes.MindMapNode;
-import freemind.modes.MindMapLink;
 import java.util.Vector;
 
-/** Interface for the registry, which manages the ids of nodes and the existing links in a map.
-    Thus, this interface is bound to a map model, because other maps have a different registry.*/
+/**
+ * Interface for the registry, which manages the ids of nodes and the existing
+ * links in a map. Thus, this interface is bound to a map model, because other
+ * maps have a different registry.
+ */
 public interface MindMapLinkRegistry {
-    public void registerLinkTarget(MindMapNode target);
-    /** The second variant of the main method. The difference is that here an ID is proposed, but has not to be taken, though.
-    */
-    public String registerLinkTarget(MindMapNode target, String proposedID);
-    public void deregisterLinkTarget(MindMapNode target)
-        throws java.lang.IllegalArgumentException;
+	public void registerLinkTarget(MindMapNode target);
 
-    public String getLabel(MindMapNode target);
-    /** Reverses the getLabel method: searches for a node with the id given as the argument.*/
-    public MindMapNode getTargetForID(String ID);
-    /** This can be used, if the id has to be known, before a node can be labled. */
-    public String generateUniqueID(String proposedID);
-    public void   registerLink(MindMapLink link);
-    public void deregisterLink(MindMapLink link);
-    /** Reverses the getUniqueID method: searches for a link with the id given as the argument.*/
-    public MindMapLink getLinkForID(String ID);
-    /** This can be used, if the id has to be known, before a link can be labled. */
-    public String generateUniqueLinkID(String proposedID);
+	/**
+	 * The second variant of the main method. The difference is that here an ID
+	 * is proposed, but has not to be taken, though.
+	 */
+	public String registerLinkTarget(MindMapNode target, String proposedID);
 
-    /** Removes links to all nodes beginning from target with its children.*/
-    public void        cutNode(MindMapNode target);
-    /** Clears the set of recent cut nodes.*/
-    public void clearCuttedNodeBuffer();
-    /** @return returns all links that have been cut out recently.*/
-    public Vector /* of MindMapLink s*/  getCuttedLinks(String oldTargetID);
-// fc, 9.8.: apparently not used.
-//    /** Returns a Vector of Nodes that point to the given node.*/
-//    public Vector /* of MindMapNode s */ getAllSources(MindMapNode target);
-    /** @return returns all links from or to this node.*/
-    public Vector /* of MindMapLink s */ getAllLinks(MindMapNode node);
-    /** @return returns all links to this node.*/
-    public Vector /* of MindMapLink s */ getAllLinksIntoMe(MindMapNode target);
-    /** @return returns all links from this node.*/
-    public Vector /* of MindMapLink s */ getAllLinksFromMe(MindMapNode source);
+	public void deregisterLinkTarget(MindMapNode target)
+			throws java.lang.IllegalArgumentException;
 
-    public void registerLocalHyperlinkId(String pTargetId);
-    public boolean isTargetOfLocalHyperlinks(String pTargetId);
+	public String getLabel(MindMapNode target);
+
+	/**
+	 * Reverses the getLabel method: searches for a node with the id given as
+	 * the argument.
+	 */
+	public MindMapNode getTargetForID(String ID);
+
+	/**
+	 * This can be used, if the id has to be known, before a node can be labled.
+	 */
+	public String generateUniqueID(String proposedID);
+
+	public void registerLink(MindMapLink link);
+
+	public void deregisterLink(MindMapLink link);
+
+	/**
+	 * Reverses the getUniqueID method: searches for a link with the id given as
+	 * the argument.
+	 */
+	public MindMapLink getLinkForID(String ID);
+
+	/**
+	 * This can be used, if the id has to be known, before a link can be labled.
+	 */
+	public String generateUniqueLinkID(String proposedID);
+
+	/** Removes links to all nodes beginning from target with its children. */
+	public void cutNode(MindMapNode target);
+
+	/** Clears the set of recent cut nodes. */
+	public void clearCuttedNodeBuffer();
+
+	/** @return returns all links that have been cut out recently. */
+	public Vector /* of MindMapLink s */getCuttedLinks(String oldTargetID);
+
+	// fc, 9.8.: apparently not used.
+	// /** Returns a Vector of Nodes that point to the given node.*/
+	// public Vector /* of MindMapNode s */ getAllSources(MindMapNode target);
+	/** @return returns all links from or to this node. */
+	public Vector /* of MindMapLink s */getAllLinks(MindMapNode node);
+
+	/** @return returns all links to this node. */
+	public Vector /* of MindMapLink s */getAllLinksIntoMe(MindMapNode target);
+
+	/** @return returns all links from this node. */
+	public Vector /* of MindMapLink s */getAllLinksFromMe(MindMapNode source);
+
+	public void registerLocalHyperlinkId(String pTargetId);
+
+	public boolean isTargetOfLocalHyperlinks(String pTargetId);
 
 }

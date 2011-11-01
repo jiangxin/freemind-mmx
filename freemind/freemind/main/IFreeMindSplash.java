@@ -24,14 +24,14 @@ import javax.swing.ImageIcon;
 
 public interface IFreeMindSplash {
 
-    public abstract FeedBack getFeedBack();
+	public abstract FeedBack getFeedBack();
 
-    public abstract void close();
+	public abstract void close();
 
-    public abstract void setVisible(boolean pB);
-    
-    public abstract ImageIcon getWindowIcon();
+	public abstract void setVisible(boolean pB);
 
+	public abstract ImageIcon getWindowIcon();
 
 }
-//    private static java.util.logging.Logger logger = freemind.main.Resources.getInstance().getLogger(IFreeMindSplash.class.getName());
+// private static java.util.logging.Logger logger =
+// freemind.main.Resources.getInstance().getLogger(IFreeMindSplash.class.getName());

@@ -68,21 +68,22 @@ public class LastStateStorageManagement {
 	public String getXml() {
 		return Tools.marshall(mLastStatesMap);
 	}
-	
-	public void clearTabIndices(){
+
+	public void clearTabIndices() {
 		for (Iterator it = mLastStatesMap.getListMindmapLastStateStorageList()
 				.iterator(); it.hasNext();) {
 			MindmapLastStateStorage store = (MindmapLastStateStorage) it.next();
 			store.setTabIndex(-1);
 		}
 	}
-	
+
 	public void changeOrAdd(MindmapLastStateStorage pStore) {
 		boolean found = false;
 		for (Iterator it = mLastStatesMap.getListMindmapLastStateStorageList()
 				.iterator(); it.hasNext();) {
 			MindmapLastStateStorage store = (MindmapLastStateStorage) it.next();
-			if (Tools.safeEquals(pStore.getRestorableName(), store.getRestorableName())) {
+			if (Tools.safeEquals(pStore.getRestorableName(),
+					store.getRestorableName())) {
 				// deep copy
 				store.setLastZoom(pStore.getLastZoom());
 				store.setLastSelected(pStore.getLastSelected());
@@ -149,32 +150,33 @@ public class LastStateStorageManagement {
 		}
 		return null;
 	}
-	
+
 	public List getLastOpenList() {
 		Vector ret = new Vector();
-		for (Iterator it = mLastStatesMap.getListMindmapLastStateStorageList().iterator(); it.hasNext();) {
+		for (Iterator it = mLastStatesMap.getListMindmapLastStateStorageList()
+				.iterator(); it.hasNext();) {
 			MindmapLastStateStorage store = (MindmapLastStateStorage) it.next();
-			if(store.getTabIndex()>= 0){
+			if (store.getTabIndex() >= 0) {
 				ret.add(store);
 			}
 		}
 		Collections.sort(ret, new Comparator() {
-			
+
 			public int compare(Object arg0, Object arg1) {
 				MindmapLastStateStorage store0 = (MindmapLastStateStorage) arg0;
 				MindmapLastStateStorage store1 = (MindmapLastStateStorage) arg1;
-				return store0.getTabIndex()-store1.getTabIndex();
+				return store0.getTabIndex() - store1.getTabIndex();
 			}
 		});
 		return ret;
 	}
-	
+
 	public int getLastFocussedTab() {
 		return mLastStatesMap.getLastFocusedTab();
 	}
-	
+
 	public void setLastFocussedTab(int pIndex) {
 		mLastStatesMap.setLastFocusedTab(pIndex);
 	}
-	
+
 }

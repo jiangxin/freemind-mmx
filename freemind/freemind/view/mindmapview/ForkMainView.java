@@ -23,112 +23,108 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
 
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 
-class ForkMainView extends MainView{
-    public void paint(Graphics graphics) {
-        Graphics2D g = (Graphics2D)graphics;
-        
-        final NodeView nodeView = getNodeView();
-        final MindMapNode model = nodeView.getModel();
-        if (model==null) return;
-        
-    	Object renderingHint = getController().setEdgesRenderingHint(g);
-        paintSelected(g);
-        paintDragOver(g);
-        
-        int edgeWidth = model.getEdge().getWidth();
-        if(edgeWidth==0) {
-        	edgeWidth = 1;
-        }
-        Color oldColor = g.getColor();
-        //Draw a standard node
-        g.setColor(model.getEdge().getColor());
-        g.drawLine(0,          
-                getHeight()-edgeWidth/2-1,
-                getWidth(), 
-                getHeight()-edgeWidth/2-1);
-        g.setColor(oldColor);
-        Tools.restoreAntialiasing(g, renderingHint);
-        super.paint(g);
-    }
+class ForkMainView extends MainView {
+	public void paint(Graphics graphics) {
+		Graphics2D g = (Graphics2D) graphics;
 
-    void paintFoldingMark(NodeView nodeView, Graphics2D g, Point p) {
-        final int zoomedFoldingSymbolHalfWidth = getZoomedFoldingSymbolHalfWidth();
-        if(nodeView.isLeft()){
-            p.x -= zoomedFoldingSymbolHalfWidth;
-        }
-        else{
-            p.x += zoomedFoldingSymbolHalfWidth;
-        }
-        super.paintFoldingMark(nodeView, g, p);
-    }
-    
-    protected int getMainViewWidthWithFoldingMark( )
-    {
-        int width = getWidth();
-        if(getNodeView().getModel().isFolded()){
-            width += getZoomedFoldingSymbolHalfWidth() * 2 + getZoomedFoldingSymbolHalfWidth();
-        }
-        return width;
-    }
+		final NodeView nodeView = getNodeView();
+		final MindMapNode model = nodeView.getModel();
+		if (model == null)
+			return;
 
-    protected int getMainViewHeightWithFoldingMark()
-    {
-        int height = getHeight();
-        if(getNodeView().getModel().isFolded()){
-            height += getZoomedFoldingSymbolHalfWidth();
-        }
-        return height;
-    }
+		Object renderingHint = getController().setEdgesRenderingHint(g);
+		paintSelected(g);
+		paintDragOver(g);
 
-    public int getDeltaX(){
-        if(getNodeView().getModel().isFolded() && getNodeView().isLeft()){
-            return super.getDeltaX()+ getZoomedFoldingSymbolHalfWidth() * 3;
-        }
-        return super.getDeltaX();
-    }
-    
-    /* (non-Javadoc)
-     * @see freemind.view.mindmapview.NodeView#getStyle()
-     */
-    String getStyle() {
-        return MindMapNode.STYLE_FORK;
-    }
-    /**
-     * Returns the relative position of the Edge
-     */
-    int getAlignment() {
-        return NodeView.ALIGN_BOTTOM;
-    }
-
-    
-    Point getLeftPoint() {
-        int edgeWidth = getNodeView().getModel().getEdge().getWidth();
-        if(edgeWidth==0) {
-        	edgeWidth = 1;
-        }
-        Point in= new Point(0, getHeight() - edgeWidth/2 - 1);
-        return in;
+		int edgeWidth = model.getEdge().getWidth();
+		if (edgeWidth == 0) {
+			edgeWidth = 1;
+		}
+		Color oldColor = g.getColor();
+		// Draw a standard node
+		g.setColor(model.getEdge().getColor());
+		g.drawLine(0, getHeight() - edgeWidth / 2 - 1, getWidth(), getHeight()
+				- edgeWidth / 2 - 1);
+		g.setColor(oldColor);
+		Tools.restoreAntialiasing(g, renderingHint);
+		super.paint(g);
 	}
 
-    Point getCenterPoint() {
-        Point in= new Point(getWidth()/2, getHeight()/2);
-        return in;
-    }
-    
-    Point getRightPoint() {
-        int edgeWidth = getNodeView().getModel().getEdge().getWidth();
-        if(edgeWidth==0) {
-        	edgeWidth = 1;
-        }
-        Point in= new Point(getWidth()-1, getHeight() - edgeWidth/2 - 1);
-        return in;
-    }
+	void paintFoldingMark(NodeView nodeView, Graphics2D g, Point p) {
+		final int zoomedFoldingSymbolHalfWidth = getZoomedFoldingSymbolHalfWidth();
+		if (nodeView.isLeft()) {
+			p.x -= zoomedFoldingSymbolHalfWidth;
+		} else {
+			p.x += zoomedFoldingSymbolHalfWidth;
+		}
+		super.paintFoldingMark(nodeView, g, p);
+	}
 
-    
+	protected int getMainViewWidthWithFoldingMark() {
+		int width = getWidth();
+		if (getNodeView().getModel().isFolded()) {
+			width += getZoomedFoldingSymbolHalfWidth() * 2
+					+ getZoomedFoldingSymbolHalfWidth();
+		}
+		return width;
+	}
+
+	protected int getMainViewHeightWithFoldingMark() {
+		int height = getHeight();
+		if (getNodeView().getModel().isFolded()) {
+			height += getZoomedFoldingSymbolHalfWidth();
+		}
+		return height;
+	}
+
+	public int getDeltaX() {
+		if (getNodeView().getModel().isFolded() && getNodeView().isLeft()) {
+			return super.getDeltaX() + getZoomedFoldingSymbolHalfWidth() * 3;
+		}
+		return super.getDeltaX();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see freemind.view.mindmapview.NodeView#getStyle()
+	 */
+	String getStyle() {
+		return MindMapNode.STYLE_FORK;
+	}
+
+	/**
+	 * Returns the relative position of the Edge
+	 */
+	int getAlignment() {
+		return NodeView.ALIGN_BOTTOM;
+	}
+
+	Point getLeftPoint() {
+		int edgeWidth = getNodeView().getModel().getEdge().getWidth();
+		if (edgeWidth == 0) {
+			edgeWidth = 1;
+		}
+		Point in = new Point(0, getHeight() - edgeWidth / 2 - 1);
+		return in;
+	}
+
+	Point getCenterPoint() {
+		Point in = new Point(getWidth() / 2, getHeight() / 2);
+		return in;
+	}
+
+	Point getRightPoint() {
+		int edgeWidth = getNodeView().getModel().getEdge().getWidth();
+		if (edgeWidth == 0) {
+			edgeWidth = 1;
+		}
+		Point in = new Point(getWidth() - 1, getHeight() - edgeWidth / 2 - 1);
+		return in;
+	}
+
 }

@@ -22,7 +22,6 @@ package accessories.plugins;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 
 import javax.swing.JOptionPane;
 
@@ -49,7 +48,7 @@ public class ManagePatterns extends MindMapHookAdapter {
 		FreeMind frame = (FreeMind) getController().getFrame();
 		ManagePatternsPopupDialog formatDialog = new ManagePatternsPopupDialog(
 				frame.getJFrame(), getMindMapController());
-//		formatDialog.pack();
+		// formatDialog.pack();
 		formatDialog.setModal(true);
 		formatDialog.setVisible(true);
 		// process result:
@@ -57,14 +56,13 @@ public class ManagePatterns extends MindMapHookAdapter {
 			try {
 				// Save patterns in private pattern list:
 				File patternFile = getController().getFrame().getPatternsFile();
-				StylePatternFactory.savePatterns(new FileWriter(patternFile), formatDialog
-						.getPatternList());
+				StylePatternFactory.savePatterns(new FileWriter(patternFile),
+						formatDialog.getPatternList());
 				getMindMapController().loadPatterns(
 						getMindMapController().getPatternReader());
 				// TODO: seems to be a bad hack:
-				getMindMapController().getFrame()
-						.getFreeMindMenuBar().updateMenus(
-								getMindMapController());
+				getMindMapController().getFrame().getFreeMindMenuBar()
+						.updateMenus(getMindMapController());
 			} catch (Exception e) {
 				JOptionPane.showMessageDialog(null, e.getLocalizedMessage());
 			}

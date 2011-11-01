@@ -37,130 +37,129 @@ import freemind.controller.BlindIcon;
 import freemind.main.Resources;
 
 public class ThreeCheckBoxProperty extends PropertyBean implements
-        PropertyControl {
-    protected String mFalseValue = "false";
+		PropertyControl {
+	protected String mFalseValue = "false";
 
-    protected String mTrueValue = "true";
+	protected String mTrueValue = "true";
 
-    protected String mDontTouchValue = "don_t_touch";
+	protected String mDontTouchValue = "don_t_touch";
 
-    static public final String FALSE_VALUE = "false";
-    
-    static public final String TRUE_VALUE = "true";
-    
-    public static final String DON_T_TOUCH_VALUE = "don_t_touch";
+	static public final String FALSE_VALUE = "false";
 
-    protected static final int DON_T_TOUCH_VALUE_INT = 2;
+	static public final String TRUE_VALUE = "true";
 
-    protected static final int TRUE_VALUE_INT = 0;
+	public static final String DON_T_TOUCH_VALUE = "don_t_touch";
 
-    protected static final int FALSE_VALUE_INT = 1;
+	protected static final int DON_T_TOUCH_VALUE_INT = 2;
 
-    private static final ImageIcon PLUS_IMAGE = new ImageIcon(
-    		Resources.getInstance().getResource("images/edit_add.png"));
+	protected static final int TRUE_VALUE_INT = 0;
 
-	private static final ImageIcon MINUS_IMAGE = new ImageIcon(
-			Resources.getInstance().getResource("images/edit_remove.png"));
-	
+	protected static final int FALSE_VALUE_INT = 1;
 
-    private static final Icon NO_IMAGE = new BlindIcon(15);
+	private static final ImageIcon PLUS_IMAGE = new ImageIcon(Resources
+			.getInstance().getResource("images/edit_add.png"));
 
-    String description;
+	private static final ImageIcon MINUS_IMAGE = new ImageIcon(Resources
+			.getInstance().getResource("images/edit_remove.png"));
 
-    String label;
+	private static final Icon NO_IMAGE = new BlindIcon(15);
 
-    int state = 0;
+	String description;
 
-    JButton mButton = new JButton();
+	String label;
 
-    /**
+	int state = 0;
+
+	JButton mButton = new JButton();
+
+	/**
      */
-    public ThreeCheckBoxProperty(String description, String label) {
-        super();
-        this.description = description;
-        this.label = label;
-//        setState(0);
-        mButton.addActionListener(new ActionListener() {
+	public ThreeCheckBoxProperty(String description, String label) {
+		super();
+		this.description = description;
+		this.label = label;
+		// setState(0);
+		mButton.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent e) {
-                setState((getState() + 1) % 3);
-                firePropertyChangeEvent();
-            }
+			public void actionPerformed(ActionEvent e) {
+				setState((getState() + 1) % 3);
+				firePropertyChangeEvent();
+			}
 
-        });
-    }
+		});
+	}
 
-    private int getState() {
-        return state;
-    }
+	private int getState() {
+		return state;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public String getLabel() {
-        return label;
-    }
+	public String getLabel() {
+		return label;
+	}
 
-    public void setValue(String value) {
-        if (value == null
-                || !(value.toLowerCase().equals(mTrueValue)
-                        || value.toLowerCase().equals(mFalseValue) || value
-                        .toLowerCase().equals(mDontTouchValue))) {
-            throw new IllegalArgumentException("Cannot set a boolean to "
-                    + value);
-        }
-        setState(transformString(value));
-    }
+	public void setValue(String value) {
+		if (value == null
+				|| !(value.toLowerCase().equals(mTrueValue)
+						|| value.toLowerCase().equals(mFalseValue) || value
+						.toLowerCase().equals(mDontTouchValue))) {
+			throw new IllegalArgumentException("Cannot set a boolean to "
+					+ value);
+		}
+		setState(transformString(value));
+	}
 
-    private int transformString(String string) {
-        if (string == null) {
-            return DON_T_TOUCH_VALUE_INT;
-        }
-        if (string.toLowerCase().equals(mTrueValue)) {
-            return TRUE_VALUE_INT;
-        }
-        if (string.toLowerCase().equals(mFalseValue)) {
-            return FALSE_VALUE_INT;
-        }
-        return DON_T_TOUCH_VALUE_INT;
-    }
+	private int transformString(String string) {
+		if (string == null) {
+			return DON_T_TOUCH_VALUE_INT;
+		}
+		if (string.toLowerCase().equals(mTrueValue)) {
+			return TRUE_VALUE_INT;
+		}
+		if (string.toLowerCase().equals(mFalseValue)) {
+			return FALSE_VALUE_INT;
+		}
+		return DON_T_TOUCH_VALUE_INT;
+	}
 
-    public String getValue() {
-        switch (state) {
-        case TRUE_VALUE_INT:
-            return mTrueValue;
-        case FALSE_VALUE_INT:
-            return mFalseValue;
-        case DON_T_TOUCH_VALUE_INT:
-            return mDontTouchValue;
-        }
-        return null;
-    }
+	public String getValue() {
+		switch (state) {
+		case TRUE_VALUE_INT:
+			return mTrueValue;
+		case FALSE_VALUE_INT:
+			return mFalseValue;
+		case DON_T_TOUCH_VALUE_INT:
+			return mDontTouchValue;
+		}
+		return null;
+	}
 
-    public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
-        JLabel label = builder.append(pTranslator.getText(getLabel()), mButton);
-        String tooltiptext = pTranslator.getText(getDescription());
+	public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
+		JLabel label = builder.append(pTranslator.getText(getLabel()), mButton);
+		String tooltiptext = pTranslator.getText(getDescription());
 		label.setToolTipText(tooltiptext);
-        mButton.setToolTipText(tooltiptext);
-    }
+		mButton.setToolTipText(tooltiptext);
+	}
 
-    public void setEnabled(boolean pEnabled) {
-        mButton.setEnabled(pEnabled);
-    }
+	public void setEnabled(boolean pEnabled) {
+		mButton.setEnabled(pEnabled);
+	}
 
-    /**
+	/**
      * 
      */
-    protected void setState(int newState) {
-        state = newState;
-        Icon[] icons;
-        icons = new Icon[3]; //{MINUS_IMAGE, PLUS_IMAGE, NO_IMAGE};
-        icons[TRUE_VALUE_INT] = PLUS_IMAGE;
-        icons[FALSE_VALUE_INT] = MINUS_IMAGE;
-        icons[DON_T_TOUCH_VALUE_INT] = NO_IMAGE;
-		//        mButton.setText(DISPLAY_VALUES[state]);
-        mButton.setIcon(icons[state]);
-    }
+	protected void setState(int newState) {
+		state = newState;
+		Icon[] icons;
+		icons = new Icon[3]; // {MINUS_IMAGE, PLUS_IMAGE, NO_IMAGE};
+		icons[TRUE_VALUE_INT] = PLUS_IMAGE;
+		icons[FALSE_VALUE_INT] = MINUS_IMAGE;
+		icons[DON_T_TOUCH_VALUE_INT] = NO_IMAGE;
+		// mButton.setText(DISPLAY_VALUES[state]);
+		mButton.setIcon(icons[state]);
+	}
 
 }

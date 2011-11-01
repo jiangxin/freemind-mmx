@@ -20,14 +20,8 @@
 
 package freemind.controller;
 
-import java.awt.dnd.DropTargetListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.Externalizable;
-
-import javax.swing.KeyStroke;
-
-import freemind.main.Tools;
 
 /**
  * The KeyListener which belongs to the node and cares for Events like C-D
@@ -35,36 +29,36 @@ import freemind.main.Tools;
  */
 public class NodeKeyListener implements KeyListener {
 
-    private Controller c;
+	private Controller c;
 
-    private KeyListener mListener;
+	private KeyListener mListener;
 
-    public NodeKeyListener(Controller controller) {
-        c = controller;
-    }
+	public NodeKeyListener(Controller controller) {
+		c = controller;
+	}
 
-    public void register(KeyListener listener) {
-        this.mListener = listener;
+	public void register(KeyListener listener) {
+		this.mListener = listener;
 
-    }
+	}
 
-    public void deregister() {
-        mListener = null;
-    }
+	public void deregister() {
+		mListener = null;
+	}
 
-    public void keyPressed(KeyEvent e) {
-        if (mListener != null)
-            mListener.keyPressed(e);
-    }
+	public void keyPressed(KeyEvent e) {
+		if (mListener != null)
+			mListener.keyPressed(e);
+	}
 
-    public void keyReleased(KeyEvent e) {
-        if (mListener != null)
-            mListener.keyReleased(e);
-    }
+	public void keyReleased(KeyEvent e) {
+		if (mListener != null)
+			mListener.keyReleased(e);
+	}
 
-    public void keyTyped(KeyEvent e) {
-        if (mListener != null)
-            mListener.keyTyped(e);
-    }
+	public void keyTyped(KeyEvent e) {
+		if (mListener != null)
+			mListener.keyTyped(e);
+	}
 
 }

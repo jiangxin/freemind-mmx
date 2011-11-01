@@ -44,27 +44,27 @@ public class FontProperty extends PropertyBean implements PropertyControl {
 
 	JComboBox mFontComboBox = new JComboBox();
 
-    private String[] mAvailableFontFamilyNames;
+	private String[] mAvailableFontFamilyNames;
 
 	/**
-	 *            TODO
-	 *            TODO
+	 * TODO TODO
 	 */
 	public FontProperty(String description, String label,
 			TextTranslator pTranslator) {
 		super();
 		this.description = description;
 		this.label = label;
-		mTranslator = pTranslator;        
-        mAvailableFontFamilyNames = GraphicsEnvironment.getLocalGraphicsEnvironment().
-                     getAvailableFontFamilyNames();
-        mFontComboBox.setModel(new DefaultComboBoxModel(mAvailableFontFamilyNames));
-        mFontComboBox.addActionListener(new ActionListener(){
+		mTranslator = pTranslator;
+		mAvailableFontFamilyNames = GraphicsEnvironment
+				.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+		mFontComboBox.setModel(new DefaultComboBoxModel(
+				mAvailableFontFamilyNames));
+		mFontComboBox.addActionListener(new ActionListener() {
 
-            public void actionPerformed(ActionEvent pE)
-            {
-                firePropertyChangeEvent();
-            }});
+			public void actionPerformed(ActionEvent pE) {
+				firePropertyChangeEvent();
+			}
+		});
 	}
 
 	public String getDescription() {
@@ -76,34 +76,32 @@ public class FontProperty extends PropertyBean implements PropertyControl {
 	}
 
 	public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
-		JLabel label = builder.append(pTranslator.getText(getLabel()), mFontComboBox);
+		JLabel label = builder.append(pTranslator.getText(getLabel()),
+				mFontComboBox);
 		label.setToolTipText(pTranslator.getText(getDescription()));
 
 	}
 
-    public void setValue(String pValue)
-    {
-        for (int i = 0; i < mAvailableFontFamilyNames.length; i++) {
-            String fontName = mAvailableFontFamilyNames[i];
-            if(fontName.equals(pValue)) {
-                mFontComboBox.setSelectedIndex(i);
-                return;
-            }
-        }
-        System.err.println("Unknown value:" + pValue);
-        if(mFontComboBox.getModel().getSize()>0) {
-            mFontComboBox.setSelectedIndex(0);
-        }
-    }
+	public void setValue(String pValue) {
+		for (int i = 0; i < mAvailableFontFamilyNames.length; i++) {
+			String fontName = mAvailableFontFamilyNames[i];
+			if (fontName.equals(pValue)) {
+				mFontComboBox.setSelectedIndex(i);
+				return;
+			}
+		}
+		System.err.println("Unknown value:" + pValue);
+		if (mFontComboBox.getModel().getSize() > 0) {
+			mFontComboBox.setSelectedIndex(0);
+		}
+	}
 
-    public String getValue()
-    {
-        return mAvailableFontFamilyNames[mFontComboBox.getSelectedIndex()];
-    }
+	public String getValue() {
+		return mAvailableFontFamilyNames[mFontComboBox.getSelectedIndex()];
+	}
 
-    public void setEnabled(boolean pEnabled) {
-        mFontComboBox.setEnabled(pEnabled);
-    }
+	public void setEnabled(boolean pEnabled) {
+		mFontComboBox.setEnabled(pEnabled);
+	}
 
-    
 }

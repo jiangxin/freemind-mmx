@@ -25,7 +25,7 @@ package freemind.modes.mindmapmode.actions;
 
 /**
  * @author foltin
- *
+ * 
  */
 public interface HookAction {
 	String getHookName();

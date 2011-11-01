@@ -32,7 +32,7 @@ import javax.swing.ImageIcon;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 
-/** Follow a graphical link (AKA connector) action.*/
+/** Follow a graphical link (AKA connector) action. */
 public class GotoLinkNodeAction extends AbstractAction {
 	MindMapNode source;
 

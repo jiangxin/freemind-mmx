@@ -31,33 +31,34 @@ import freemind.modes.mindmapmode.MindMapController;
 
 /**
  * @author foltin
- *
+ * 
  */
-public class AddLocalLinkAction extends FreemindAction  {
+public class AddLocalLinkAction extends FreemindAction {
 
-    private final MindMapController modeController;
+	private final MindMapController modeController;
 
-    /**
+	/**
      */
-    public AddLocalLinkAction(MindMapController modeController) {
-        super("add_local_link", "images/LinkLocal.png",  modeController);
-        this.modeController = modeController;
-    }
+	public AddLocalLinkAction(MindMapController modeController) {
+		super("add_local_link", "images/LinkLocal.png", modeController);
+		this.modeController = modeController;
+	}
 
-    public void actionPerformed(ActionEvent e) {
-        // assert that at least two nodes are selected. draw an arrow link in between.
-        List selecteds = modeController.getSelecteds();
-        if(selecteds.size()< 2) {
-            modeController.getController().errorMessage(modeController.getText("less_than_two_selected_nodes"));
-            return;
-        }
-        MindMapNode target = (MindMapNode) selecteds.get(0);
-        String targetId = (target).getObjectId(modeController);
-        for (int i = 1; i < selecteds.size(); i++) {
-        	MindMapNode source = (MindMapNode) selecteds.get(i);
-			modeController.setLink(source, "#"+targetId);
-        }
-    }
-
+	public void actionPerformed(ActionEvent e) {
+		// assert that at least two nodes are selected. draw an arrow link in
+		// between.
+		List selecteds = modeController.getSelecteds();
+		if (selecteds.size() < 2) {
+			modeController.getController().errorMessage(
+					modeController.getText("less_than_two_selected_nodes"));
+			return;
+		}
+		MindMapNode target = (MindMapNode) selecteds.get(0);
+		String targetId = (target).getObjectId(modeController);
+		for (int i = 1; i < selecteds.size(); i++) {
+			MindMapNode source = (MindMapNode) selecteds.get(i);
+			modeController.setLink(source, "#" + targetId);
+		}
+	}
 
 }

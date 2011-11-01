@@ -25,12 +25,11 @@ package freemind.controller;
 import javax.swing.Action;
 import javax.swing.JMenuItem;
 
-
 public interface MenuItemEnabledListener {
-		/**
-		 * @param pItem
-		 * @param pAction
-		 * @return true, if the menu item should be accessible. False otherwise.
-		 */
-		boolean isEnabled(JMenuItem pItem, Action pAction);
+	/**
+	 * @param pItem
+	 * @param pAction
+	 * @return true, if the menu item should be accessible. False otherwise.
+	 */
+	boolean isEnabled(JMenuItem pItem, Action pAction);
 }

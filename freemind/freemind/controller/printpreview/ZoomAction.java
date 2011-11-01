@@ -21,22 +21,21 @@
 package freemind.controller.printpreview;
 
 import java.awt.event.ActionEvent;
+
 import javax.swing.AbstractAction;
 
 class ZoomAction extends AbstractAction {
-    public ZoomAction(Preview preview, double zoomStep) {
-        super();
-        this.preview = preview;
-        this.zoomStep = zoomStep;
-    }
-    
-    public void actionPerformed(ActionEvent e) {
-        preview.changeZoom(zoomStep);
-        preview.repaint();
-    }
-    
-    protected Preview preview;
-    protected double zoomStep;
+	public ZoomAction(Preview preview, double zoomStep) {
+		super();
+		this.preview = preview;
+		this.zoomStep = zoomStep;
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		preview.changeZoom(zoomStep);
+		preview.repaint();
+	}
+
+	protected Preview preview;
+	protected double zoomStep;
 }
-
-

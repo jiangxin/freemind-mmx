@@ -49,9 +49,9 @@ public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see freemind.extensions.NodeHook#invoke(freemind.modes.MindMapNode,
-	 *      java.util.List)
+	 * java.util.List)
 	 */
 	public void invoke(MindMapNode rootNode) {
 		// we dont need node.
@@ -94,26 +94,28 @@ public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
 			}
 		}
 
-        // collect node ids:
-        String selectedNodeId = selectedNode.getObjectId(getController());
-        // WORKAROUND: Make target of local hyperlinks for the case, that ids are not stored persistently.
-        getMap().getLinkRegistry().registerLocalHyperlinkId(selectedNodeId);
-        Vector selectedNodesId = new Vector();
-        for (Iterator iter = selectedNodes.iterator(); iter.hasNext();)
-        {
-            MindMapNode node = (MindMapNode) iter.next();
-            String nodeId = node.getObjectId(getController());
-            // WORKAROUND: Make target of local hyperlinks for the case, that ids are not stored persistently.
-            getMap().getLinkRegistry().registerLocalHyperlinkId(nodeId);
+		// collect node ids:
+		String selectedNodeId = selectedNode.getObjectId(getController());
+		// WORKAROUND: Make target of local hyperlinks for the case, that ids
+		// are not stored persistently.
+		getMap().getLinkRegistry().registerLocalHyperlinkId(selectedNodeId);
+		Vector selectedNodesId = new Vector();
+		for (Iterator iter = selectedNodes.iterator(); iter.hasNext();) {
+			MindMapNode node = (MindMapNode) iter.next();
+			String nodeId = node.getObjectId(getController());
+			// WORKAROUND: Make target of local hyperlinks for the case, that
+			// ids are not stored persistently.
+			getMap().getLinkRegistry().registerLocalHyperlinkId(nodeId);
 			selectedNodesId.add(nodeId);
-        }
+		}
 
 		if (upwards) {
 			if (selectedParent.isRoot()) {
 				// change side of the items:
 				boolean isLeft = selectedNode.isLeft();
 				Transferable copy = getMindMapController().cut(selectedNodes);
-				getMindMapController().paste(copy, selectedParent, false, !isLeft);
+				getMindMapController().paste(copy, selectedParent, false,
+						!isLeft);
 				select(selectedNodeId, selectedNodesId);
 				return;
 			}
@@ -136,38 +138,43 @@ public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
 			int ownPosition = selectedParent.getChildPosition(selectedNode);
 			// find node above the own nodes:
 			MindMapNode directSibling = null;
-			for(int i = ownPosition - 1; i >= 0; --i) {
-				MindMapNode sibling = (MindMapNode) selectedParent.getChildAt(i);
-				if((! selectedNodes.contains(sibling)) &&
-                        selectedNode.isLeft() == sibling.isLeft()){
+			for (int i = ownPosition - 1; i >= 0; --i) {
+				MindMapNode sibling = (MindMapNode) selectedParent
+						.getChildAt(i);
+				if ((!selectedNodes.contains(sibling))
+						&& selectedNode.isLeft() == sibling.isLeft()) {
 					directSibling = sibling;
 					break;
 				}
 			}
-            if(directSibling == null) {
-                // start searching for a sibling after the selected block:
-                for(int i = ownPosition + 1; i < selectedParent.getChildCount() ; ++i) {
-                    MindMapNode sibling = (MindMapNode) selectedParent.getChildAt(i);
-                    if((! selectedNodes.contains(sibling)) &&
-                            selectedNode.isLeft() == sibling.isLeft()){
-                        directSibling = sibling;
-                        break;
-                    }
-                }
-            }
-			if(directSibling != null){
+			if (directSibling == null) {
+				// start searching for a sibling after the selected block:
+				for (int i = ownPosition + 1; i < selectedParent
+						.getChildCount(); ++i) {
+					MindMapNode sibling = (MindMapNode) selectedParent
+							.getChildAt(i);
+					if ((!selectedNodes.contains(sibling))
+							&& selectedNode.isLeft() == sibling.isLeft()) {
+						directSibling = sibling;
+						break;
+					}
+				}
+			}
+			if (directSibling != null) {
 				// sibling on the same side found:
 				Transferable copy = getMindMapController().cut(selectedNodes);
-				getMindMapController().paste(copy, directSibling, false, directSibling.isLeft());
+				getMindMapController().paste(copy, directSibling, false,
+						directSibling.isLeft());
 				select(selectedNodeId, selectedNodesId);
 				return;
-            }
+			}
 		}
 	}
 
 	private void select(String selectedNodeId, List selectedNodesIds) {
 		// get new nodes by object id:
-		MindMapNode newInstanceOfSelectedNode = getMindMapController().getNodeFromID(selectedNodeId);
+		MindMapNode newInstanceOfSelectedNode = getMindMapController()
+				.getNodeFromID(selectedNodeId);
 		List newSelecteds = new LinkedList();
 		for (Iterator iter = selectedNodesIds.iterator(); iter.hasNext();) {
 			String nodeId = (String) iter.next();

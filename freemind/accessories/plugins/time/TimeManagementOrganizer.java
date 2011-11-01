@@ -36,21 +36,24 @@ import freemind.modes.ModeController;
 import freemind.modes.common.plugins.ReminderHookBase;
 import freemind.modes.mindmapmode.actions.NodeHookAction;
 
-/** Enables the encrypt/decrypt menu item only if the map/node is encrypted.
+/**
+ * Enables the encrypt/decrypt menu item only if the map/node is encrypted.
+ * 
  * @author foltin
- *
+ * 
  */
-public class TimeManagementOrganizer implements HookRegistration, MenuItemEnabledListener {
+public class TimeManagementOrganizer implements HookRegistration,
+		MenuItemEnabledListener {
 
-    private final ModeController controller;
-    private final MindMap mMap;
-    private final java.util.logging.Logger logger;
+	private final ModeController controller;
+	private final MindMap mMap;
+	private final java.util.logging.Logger logger;
 
-    public TimeManagementOrganizer(ModeController controller, MindMap map) {
-        this.controller = controller;
-        mMap = map;
-        logger = controller.getFrame().getLogger(this.getClass().getName());
-    }
+	public TimeManagementOrganizer(ModeController controller, MindMap map) {
+		this.controller = controller;
+		mMap = map;
+		logger = controller.getFrame().getLogger(this.getClass().getName());
+	}
 
 	public void register() {
 	}
@@ -58,17 +61,22 @@ public class TimeManagementOrganizer implements HookRegistration, MenuItemEnable
 	public void deRegister() {
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.controller.MenuItemEnabledListener#isEnabled(javax.swing.JMenuItem, javax.swing.Action)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.controller.MenuItemEnabledListener#isEnabled(javax.swing.JMenuItem
+	 * , javax.swing.Action)
 	 */
 	public boolean isEnabled(JMenuItem item, Action action) {
 		if (action instanceof NodeHookAction) {
 			String hookName = ((NodeHookAction) action).getHookName();
 			if (hookName.equals("plugins/time/RemoveReminderHook.java")) {
 				boolean visible = false;
-				for (Iterator i = controller.getSelecteds().iterator(); i.hasNext();) {
+				for (Iterator i = controller.getSelecteds().iterator(); i
+						.hasNext();) {
 					MindMapNode node = (MindMapNode) i.next();
-					if(TimeManagementOrganizer.getHook(node)!= null) {
+					if (TimeManagementOrganizer.getHook(node) != null) {
 						visible = true;
 					}
 				}
@@ -77,7 +85,6 @@ public class TimeManagementOrganizer implements HookRegistration, MenuItemEnable
 		}
 		return true;
 	}
-	
 
 	/**
 	 */

@@ -23,12 +23,7 @@
 
 package freemind.modes.mindmapmode;
 
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.logging.Logger;
-
-import javax.swing.JPopupMenu;
-import javax.swing.event.MenuListener;
 
 import freemind.controller.FreeMindPopupMenu;
 import freemind.controller.StructuredMenuHolder;
@@ -54,9 +49,9 @@ public class MindMapPopupMenu extends FreeMindPopupMenu {
 	public void update(StructuredMenuHolder holder) {
 		this.removeAll();
 		c.createPatternSubMenu(holder, MINDMAPMODE_POPUP);
-		c.addIconsToMenu(holder, MINDMAPMODE_POPUP+"icons/");
+		c.addIconsToMenu(holder, MINDMAPMODE_POPUP + "icons/");
 		holder.updateMenus(this, MINDMAPMODE_POPUP);
-		
+
 	}
 
 }

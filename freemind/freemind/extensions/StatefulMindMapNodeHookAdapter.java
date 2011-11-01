@@ -2,8 +2,8 @@ package freemind.extensions;
 
 import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
 
-abstract public class StatefulMindMapNodeHookAdapter extends PermanentMindMapNodeHookAdapter
-		implements StatefulNodeHook {
+abstract public class StatefulMindMapNodeHookAdapter extends
+		PermanentMindMapNodeHookAdapter implements StatefulNodeHook {
 
 	public String getContent() {
 		return getContent(null);
@@ -18,7 +18,8 @@ abstract public class StatefulMindMapNodeHookAdapter extends PermanentMindMapNod
 	}
 
 	public void setContentUndoable(String key, String content) {
-		getMindMapController().undoableHookContentActor.performAction(getNode(), getName(), key, content);
+		getMindMapController().undoableHookContentActor.performAction(
+				getNode(), getName(), key, content);
 	}
 
 }

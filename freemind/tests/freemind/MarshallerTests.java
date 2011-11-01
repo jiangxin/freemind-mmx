@@ -39,11 +39,11 @@ public class MarshallerTests extends FreeMindTestBase {
 		testPattern.setPatternChild(patternChild);
 		testPattern.setName("test");
 		String marshall = XmlBindingTools.getInstance().marshall(testPattern);
-//		System.out.println(marshall);
+		// System.out.println(marshall);
 		Pattern testPatternUnmarshalled = (Pattern) XmlBindingTools
 				.getInstance().unMarshall(marshall);
-		assertEquals("Newline is correctly marshalled?" + marshall, testPattern
-				.getName(), testPatternUnmarshalled.getName());
+		assertEquals("Newline is correctly marshalled?" + marshall,
+				testPattern.getName(), testPatternUnmarshalled.getName());
 		assertEquals("Newline is correctly marshalled?" + marshall, testPattern
 				.getPatternChild().getValue(), testPatternUnmarshalled
 				.getPatternChild().getValue());

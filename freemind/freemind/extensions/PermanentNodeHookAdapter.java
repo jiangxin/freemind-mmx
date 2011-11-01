@@ -1,22 +1,22 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
-*Copyright (C) 2000-2006 Joerg Mueller, Daniel Polansky, Christian Foltin, Dimitri Polivaev and others.
-*
-*See COPYING for Details
-*
-*This program is free software; you can redistribute it and/or
-*modify it under the terms of the GNU General Public License
-*as published by the Free Software Foundation; either version 2
-*of the License, or (at your option) any later version.
-*
-*This program is distributed in the hope that it will be useful,
-*but WITHOUT ANY WARRANTY; without even the implied warranty of
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*GNU General Public License for more details.
-*
-*You should have received a copy of the GNU General Public License
-*along with this program; if not, write to the Free Software
-*Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ *Copyright (C) 2000-2006 Joerg Mueller, Daniel Polansky, Christian Foltin, Dimitri Polivaev and others.
+ *
+ *See COPYING for Details
+ *
+ *This program is free software; you can redistribute it and/or
+ *modify it under the terms of the GNU General Public License
+ *as published by the Free Software Foundation; either version 2
+ *of the License, or (at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program; if not, write to the Free Software
+ *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
 /*
  * Created on 06.03.2004
  *
@@ -34,27 +34,26 @@ import freemind.view.mindmapview.NodeView;
 
 /**
  * @author foltin
- *
- * To change the template for this generated type comment go to
- * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
+ * 
+ *         To change the template for this generated type comment go to
+ *         Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
-public class PermanentNodeHookAdapter
-	extends NodeHookAdapter
-	implements PermanentNodeHook {
+public class PermanentNodeHookAdapter extends NodeHookAdapter implements
+		PermanentNodeHook {
 
-		// Logging: 
-		// private static java.util.logging.Logger logger;
+	// Logging:
+	// private static java.util.logging.Logger logger;
 
 	/**
 	 */
 	public PermanentNodeHookAdapter() {
 		super();
-//		if(logger == null)
-//			logger = ((ControllerAdapter)getController()).getFrame().getLogger(this.getClass().getName());
+		// if(logger == null)
+		// logger =
+		// ((ControllerAdapter)getController()).getFrame().getLogger(this.getClass().getName());
 	}
 
-
-    /*
+	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see freemind.modes.NodeHook#shutdownMapHook()
@@ -66,53 +65,70 @@ public class PermanentNodeHookAdapter
 		super.shutdownMapHook();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see freemind.modes.NodeHook#onUpdateNodeHook()
 	 */
 	public void onUpdateNodeHook() {
 		logger.finest("onUpdateNodeHook");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see freemind.modes.NodeHook#onUpdateChildrenHook()
 	 */
 	public void onUpdateChildrenHook(MindMapNode updatedNode) {
 		logger.finest("onUpdateChildrenHook");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see freemind.modes.NodeHook#onAddChild(freemind.modes.MindMapNode)
 	 */
 	public void onAddChild(MindMapNode newChildNode) {
 		logger.finest("onAddChild");
 	}
 
-    public void onNewChild(MindMapNode newChildNode) {
+	public void onNewChild(MindMapNode newChildNode) {
 		logger.finest("onNewChild");
-    }
-	/* (non-Javadoc)
-	 * @see freemind.extensions.PermanentNodeHook#onRemoveChild(freemind.modes.MindMapNode)
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see freemind.extensions.PermanentNodeHook#onRemoveChild(freemind.modes.
+	 * MindMapNode)
 	 */
 	public void onRemoveChild(MindMapNode oldChildNode) {
 		logger.finest("onRemoveChild");
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see freemind.extensions.PermanentNodeHook#save(freemind.main.XMLElement)
 	 */
 	public void save(XMLElement xml) {
 		String saveName = getName();
-		//saveName=saveName.replace(File.separatorChar, '/');
+		// saveName=saveName.replace(File.separatorChar, '/');
 		xml.setAttribute("name", saveName);
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.extensions.PermanentNodeHook#loadFrom(freemind.main.XMLElement)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.extensions.PermanentNodeHook#loadFrom(freemind.main.XMLElement)
 	 */
 	public void loadFrom(XMLElement child) {
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see freemind.modes.NodeHook#onSelectHook()
 	 */
 	public void onSelectHook(NodeView nodeView) {
@@ -120,19 +136,24 @@ public class PermanentNodeHookAdapter
 
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see freemind.extensions.PermanentNodeHook#onDeselectHook()
 	 */
 	public void onDeselectHook(NodeView nodeView) {
 		logger.finest("onDeselectHook");
 	}
 
-    /* (non-Javadoc)
-     * @see freemind.extensions.PermanentNodeHook#onAddChildren(freemind.modes.MindMapNode)
-     */
-    public void onAddChildren(MindMapNode addedChild) {
-        logger.finest("onAddChildren");
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see freemind.extensions.PermanentNodeHook#onAddChildren(freemind.modes.
+	 * MindMapNode)
+	 */
+	public void onAddChildren(MindMapNode addedChild) {
+		logger.finest("onAddChildren");
+	}
 
 	public static final String PARAMETERS = "Parameters";
 
@@ -161,21 +182,17 @@ public class PermanentNodeHookAdapter
 			child.setAttribute(key, value);
 		}
 		xml.addChild(child);
-	
+
 	}
 
-    public void onRemoveChildren(MindMapNode oldChildNode, MindMapNode oldDad) {
+	public void onRemoveChildren(MindMapNode oldChildNode, MindMapNode oldDad) {
 		logger.finest("onRemoveChildren");
-    }
-
+	}
 
 	public void onViewCreatedHook(NodeView nodeView) {
 	}
 
-
 	public void onViewRemovedHook(NodeView nodeView) {
 	}
-
-
 
 }

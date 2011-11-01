@@ -38,14 +38,14 @@ public class PersistentEditableComboBox extends JComboBox {
 
 	private final String pStorageKey;
 
-	public PersistentEditableComboBox(ModeController modeController, String storageKey) {
+	public PersistentEditableComboBox(ModeController modeController,
+			String storageKey) {
 		this.mModeController = modeController;
 		this.pStorageKey = storageKey;
 		setEditable(true);
 
 		addUrl("", false);
-		String storedUrls = mModeController.getFrame().getProperty(
-				pStorageKey);
+		String storedUrls = mModeController.getFrame().getProperty(pStorageKey);
 		if (storedUrls != null) {
 			String[] array = storedUrls.split("\t");
 			for (int i = 0; i < array.length; i++) {
@@ -89,8 +89,8 @@ public class PersistentEditableComboBox extends JComboBox {
 				resultBuffer.append(element);
 				resultBuffer.append("\t");
 			}
-			mModeController.getFrame().setProperty(
-					pStorageKey, resultBuffer.toString());
+			mModeController.getFrame().setProperty(pStorageKey,
+					resultBuffer.toString());
 		}
 		return true;
 	};

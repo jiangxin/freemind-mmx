@@ -48,21 +48,23 @@ import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
-import freemind.view.mindmapview.NodeView;
 
-
-public class NodeHookAction extends FreemindAction implements HookAction, ActorXml, MenuItemEnabledListener, MenuItemSelectedListener {
+public class NodeHookAction extends FreemindAction implements HookAction,
+		ActorXml, MenuItemEnabledListener, MenuItemSelectedListener {
 	String _hookName;
 	MindMapController mMindMapController;
+
 	public MindMapController getController() {
 		return mMindMapController;
 	}
+
 	private static Logger logger;
+
 	public NodeHookAction(String hookName, MindMapController controller) {
 		super(hookName, (ImageIcon) null, null);
 		this._hookName = hookName;
 		this.mMindMapController = controller;
-		if(logger == null)
+		if (logger == null)
 			logger = controller.getFrame().getLogger(this.getClass().getName());
 		controller.getActionFactory().registerActor(this, getDoActionClass());
 	}
@@ -70,62 +72,72 @@ public class NodeHookAction extends FreemindAction implements HookAction, ActorX
 	public void actionPerformed(ActionEvent arg0) {
 		// check, which method of invocation:
 		//
-	    mMindMapController.getFrame().setWaitingCursor(true);
-		invoke(mMindMapController.getSelected(), mMindMapController.getSelecteds());
-	    mMindMapController.getFrame().setWaitingCursor(false);
+		mMindMapController.getFrame().setWaitingCursor(true);
+		invoke(mMindMapController.getSelected(),
+				mMindMapController.getSelecteds());
+		mMindMapController.getFrame().setWaitingCursor(false);
 	}
-
-
 
 	public void addHook(MindMapNode focussed, List selecteds, String hookName) {
-	    HookNodeAction doAction = createHookNodeAction(focussed, selecteds, hookName);
+		HookNodeAction doAction = createHookNodeAction(focussed, selecteds,
+				hookName);
 
-        XmlAction undoAction=null;
-        // this is the non operation:
-        undoAction = new CompoundAction();
-	    if (getInstanciationMethod(hookName).isPermanent()) {
-            // double application = remove.
-            undoAction = createHookNodeUndoAction(focussed,
-                    selecteds, hookName);
-        }
-	    if (getInstanciationMethod(hookName).isUndoable()) {
-	        getController().getActionFactory().startTransaction((String) getValue(NAME));
-			getController().getActionFactory().executeAction(new ActionPair(doAction, undoAction));
-	        getController().getActionFactory().endTransaction((String) getValue(NAME));
-        } else {
-            // direct invocation without undo and such stuff.
-            invoke(focussed, selecteds, hookName);
-        }
+		XmlAction undoAction = null;
+		// this is the non operation:
+		undoAction = new CompoundAction();
+		if (getInstanciationMethod(hookName).isPermanent()) {
+			// double application = remove.
+			undoAction = createHookNodeUndoAction(focussed, selecteds, hookName);
+		}
+		if (getInstanciationMethod(hookName).isUndoable()) {
+			getController().getActionFactory().startTransaction(
+					(String) getValue(NAME));
+			getController().getActionFactory().executeAction(
+					new ActionPair(doAction, undoAction));
+			getController().getActionFactory().endTransaction(
+					(String) getValue(NAME));
+		} else {
+			// direct invocation without undo and such stuff.
+			invoke(focussed, selecteds, hookName);
+		}
 	}
 
-	private XmlAction createHookNodeUndoAction(MindMapNode focussed, List selecteds, String hookName) {
+	private XmlAction createHookNodeUndoAction(MindMapNode focussed,
+			List selecteds, String hookName) {
 		CompoundAction undoAction = new CompoundAction();
-		undoAction.addChoice(createHookNodeAction(focussed, selecteds, hookName));
+		undoAction
+				.addChoice(createHookNodeAction(focussed, selecteds, hookName));
 		HookInstanciationMethod instMethod = getInstanciationMethod(hookName);
 		// get destination nodes
-		Collection destinationNodes = instMethod.getDestinationNodes(mMindMapController, focussed, selecteds);
-		MindMapNode adaptedFocussedNode = instMethod.getCenterNode(mMindMapController, focussed, selecteds);
+		Collection destinationNodes = instMethod.getDestinationNodes(
+				mMindMapController, focussed, selecteds);
+		MindMapNode adaptedFocussedNode = instMethod.getCenterNode(
+				mMindMapController, focussed, selecteds);
 		// test if hook already present
-		if(instMethod.isAlreadyPresent(mMindMapController, hookName, adaptedFocussedNode)){
+		if (instMethod.isAlreadyPresent(mMindMapController, hookName,
+				adaptedFocussedNode)) {
 			// remove the hook:
 			for (Iterator i = destinationNodes.iterator(); i.hasNext();) {
 				MindMapNode currentDestinationNode = (MindMapNode) i.next();
 				// find the hook in the current node, if present:
-				for (Iterator j = currentDestinationNode.getActivatedHooks().iterator(); j
-				.hasNext();) {
+				for (Iterator j = currentDestinationNode.getActivatedHooks()
+						.iterator(); j.hasNext();) {
 					PermanentNodeHook hook = (PermanentNodeHook) j.next();
-					if(hook.getName().equals(hookName)) {
-						if(hook instanceof StatefulNodeHook){
-							StatefulNodeHook stateHook = (StatefulNodeHook)hook;
-							XmlAction choice = getController().undoableHookContentActor.createHookContentNodeAction(focussed, hookName, null, stateHook.getContent());
+					if (hook.getName().equals(hookName)) {
+						if (hook instanceof StatefulNodeHook) {
+							StatefulNodeHook stateHook = (StatefulNodeHook) hook;
+							XmlAction choice = getController().undoableHookContentActor
+									.createHookContentNodeAction(focussed,
+											hookName, null,
+											stateHook.getContent());
 							undoAction.addChoice(choice);
 						}
 					}
-					/* fc, 30.7.2004:
-					 * we have to break. otherwise the collection is modified
-					 * at two points (i.e., the collection is not valid anymore after removing
-					 * one element).
-					 * But this is no problem, as there exist only "once" plugins currently.
+					/*
+					 * fc, 30.7.2004: we have to break. otherwise the collection
+					 * is modified at two points (i.e., the collection is not
+					 * valid anymore after removing one element). But this is no
+					 * problem, as there exist only "once" plugins currently.
 					 */
 					break;
 				}
@@ -135,32 +147,36 @@ public class NodeHookAction extends FreemindAction implements HookAction, ActorX
 	}
 
 	public void invoke(MindMapNode focussed, List selecteds) {
-	    addHook(focussed, selecteds, _hookName);
+		addHook(focussed, selecteds, _hookName);
 	}
 
 	private void invoke(MindMapNode focussed, List selecteds, String hookName) {
 		logger.finest("invoke(selecteds) called.");
 		HookInstanciationMethod instMethod = getInstanciationMethod(hookName);
 		// get destination nodes
-		Collection destinationNodes = instMethod.getDestinationNodes(mMindMapController, focussed, selecteds);
-		MindMapNode adaptedFocussedNode = instMethod.getCenterNode(mMindMapController, focussed, selecteds);
+		Collection destinationNodes = instMethod.getDestinationNodes(
+				mMindMapController, focussed, selecteds);
+		MindMapNode adaptedFocussedNode = instMethod.getCenterNode(
+				mMindMapController, focussed, selecteds);
 		// test if hook already present
-		if(instMethod.isAlreadyPresent(mMindMapController, hookName, adaptedFocussedNode)){
+		if (instMethod.isAlreadyPresent(mMindMapController, hookName,
+				adaptedFocussedNode)) {
 			// remove the hook:
 			for (Iterator i = destinationNodes.iterator(); i.hasNext();) {
 				MindMapNode currentDestinationNode = (MindMapNode) i.next();
 				// find the hook ini the current node, if present:
-				for (Iterator j = currentDestinationNode.getActivatedHooks().iterator(); j
-						.hasNext();) {
+				for (Iterator j = currentDestinationNode.getActivatedHooks()
+						.iterator(); j.hasNext();) {
 					PermanentNodeHook hook = (PermanentNodeHook) j.next();
-					if(hook.getName().equals(hookName)) {
+					if (hook.getName().equals(hookName)) {
 						currentDestinationNode.removeHook(hook);
 						mMindMapController.nodeChanged(currentDestinationNode);
-						/* fc, 30.7.2004:
-						 * we have to break. otherwise the collection is modified
-						 * at two points (i.e., the collection is not valid anymore after removing
-						 * one element).
-						 * But this is no problem, as there exist only "once" plugins currently.
+						/*
+						 * fc, 30.7.2004: we have to break. otherwise the
+						 * collection is modified at two points (i.e., the
+						 * collection is not valid anymore after removing one
+						 * element). But this is no problem, as there exist only
+						 * "once" plugins currently.
 						 */
 						break;
 					}
@@ -170,52 +186,57 @@ public class NodeHookAction extends FreemindAction implements HookAction, ActorX
 			// add the hook
 			for (Iterator it = destinationNodes.iterator(); it.hasNext();) {
 				MindMapNode currentDestinationNode = (MindMapNode) it.next();
-				NodeHook hook = mMindMapController
-						.createNodeHook(hookName, currentDestinationNode, mMindMapController.getMap());
-				logger.finest("created hook "+hookName);
+				NodeHook hook = mMindMapController.createNodeHook(hookName,
+						currentDestinationNode, mMindMapController.getMap());
+				logger.finest("created hook " + hookName);
 				// call invoke.
 				currentDestinationNode.invokeHook(hook);
 				if (hook instanceof PermanentNodeHook) {
 					PermanentNodeHook permHook = (PermanentNodeHook) hook;
-					logger.finest("This is a permanent hook "+ hookName);
+					logger.finest("This is a permanent hook " + hookName);
 					// the focussed receives the focus:
 					if (currentDestinationNode == adaptedFocussedNode) {
-						permHook.onSelectHook(mMindMapController.getNodeView(currentDestinationNode));
+						permHook.onSelectHook(mMindMapController
+								.getNodeView(currentDestinationNode));
 					}
-					// using this method, the map is dirty now. This is important to
+					// using this method, the map is dirty now. This is
+					// important to
 					// guarantee, that the hooks are saved.
 					mMindMapController.nodeChanged(currentDestinationNode);
 				}
 			}
-			finishInvocation(focussed, selecteds, adaptedFocussedNode, destinationNodes);
+			finishInvocation(focussed, selecteds, adaptedFocussedNode,
+					destinationNodes);
 		}
 	}
 
-
 	/**
-	 * @param focussed The real focussed node
-	 * @param selecteds The list of selected nodes
-	 * @param adaptedFocussedNode The calculated focussed node (if the hook specifies, that
-	 * the hook should apply to root, then this is the root node).
-	 * @param destinationNodes The calculated list of selected nodes (see last)
+	 * @param focussed
+	 *            The real focussed node
+	 * @param selecteds
+	 *            The list of selected nodes
+	 * @param adaptedFocussedNode
+	 *            The calculated focussed node (if the hook specifies, that the
+	 *            hook should apply to root, then this is the root node).
+	 * @param destinationNodes
+	 *            The calculated list of selected nodes (see last)
 	 */
 	private void finishInvocation(MindMapNode focussed, List selecteds,
 			MindMapNode adaptedFocussedNode, Collection destinationNodes) {
 		// restore selection only, if nothing selected.
-		if(getController().getView().getSelecteds().size() == 0) {
+		if (getController().getView().getSelecteds().size() == 0) {
 			// select all destination nodes:
 			getController().select(focussed, selecteds);
 		}
 	}
-
-
 
 	/**
 	 */
 	private HookInstanciationMethod getInstanciationMethod(String hookName) {
 		HookFactory factory = getHookFactory();
 		// determine instanciation method
-		HookInstanciationMethod instMethod = factory.getInstanciationMethod(hookName);
+		HookInstanciationMethod instMethod = factory
+				.getInstanciationMethod(hookName);
 		return instMethod;
 	}
 
@@ -226,16 +247,20 @@ public class NodeHookAction extends FreemindAction implements HookAction, ActorX
 		return factory;
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.controller.MenuItemEnabledListener#isEnabled(javax.swing.JMenuItem, javax.swing.Action)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.controller.MenuItemEnabledListener#isEnabled(javax.swing.JMenuItem
+	 * , javax.swing.Action)
 	 */
 	public boolean isEnabled(JMenuItem item, Action action) {
-		if(mMindMapController.getView() == null){
+		if (mMindMapController.getView() == null) {
 			return false;
 		}
 		HookFactory factory = getHookFactory();
 		Object baseClass = factory.getPluginBaseClass(_hookName);
-		if(baseClass != null) {
+		if (baseClass != null) {
 			if (baseClass instanceof MenuItemEnabledListener) {
 				MenuItemEnabledListener listener = (MenuItemEnabledListener) baseClass;
 				return listener.isEnabled(item, action);
@@ -245,36 +270,39 @@ public class NodeHookAction extends FreemindAction implements HookAction, ActorX
 		return true;
 	}
 
-	public HookNodeAction createHookNodeAction(MindMapNode focussed, List selecteds, String hookName) {
-	    HookNodeAction hookNodeAction = new HookNodeAction();
-        hookNodeAction.setNode(focussed.getObjectId(getController()));
-        hookNodeAction.setHookName(hookName);
-        // selectedNodes list
-        for (Iterator i = selecteds.iterator(); i.hasNext();) {
-            MindMapNode node = (MindMapNode) i.next();
-            NodeListMember nodeListMember = new NodeListMember();
-            nodeListMember.setNode(node.getObjectId(getController()));
-            hookNodeAction.addNodeListMember(nodeListMember);
-        }
-        return hookNodeAction;
+	public HookNodeAction createHookNodeAction(MindMapNode focussed,
+			List selecteds, String hookName) {
+		HookNodeAction hookNodeAction = new HookNodeAction();
+		hookNodeAction.setNode(focussed.getObjectId(getController()));
+		hookNodeAction.setHookName(hookName);
+		// selectedNodes list
+		for (Iterator i = selecteds.iterator(); i.hasNext();) {
+			MindMapNode node = (MindMapNode) i.next();
+			NodeListMember nodeListMember = new NodeListMember();
+			nodeListMember.setNode(node.getObjectId(getController()));
+			hookNodeAction.addNodeListMember(nodeListMember);
+		}
+		return hookNodeAction;
 	}
 
 	public void act(XmlAction action) {
-        if (action instanceof HookNodeAction) {
-            HookNodeAction hookNodeAction = (HookNodeAction) action;
-            MindMapNode selected = getController().getNodeFromID(hookNodeAction.getNode());
-            Vector selecteds = new Vector();
-            for (Iterator i = hookNodeAction.getListNodeListMemberList().iterator(); i.hasNext();) {
-                NodeListMember node = (NodeListMember) i.next();
-                selecteds.add(getController().getNodeFromID(node.getNode()));
-            }
-            invoke(selected, selecteds, hookNodeAction.getHookName());
-        }
-    }
+		if (action instanceof HookNodeAction) {
+			HookNodeAction hookNodeAction = (HookNodeAction) action;
+			MindMapNode selected = getController().getNodeFromID(
+					hookNodeAction.getNode());
+			Vector selecteds = new Vector();
+			for (Iterator i = hookNodeAction.getListNodeListMemberList()
+					.iterator(); i.hasNext();) {
+				NodeListMember node = (NodeListMember) i.next();
+				selecteds.add(getController().getNodeFromID(node.getNode()));
+			}
+			invoke(selected, selecteds, hookNodeAction.getHookName());
+		}
+	}
 
-    public Class getDoActionClass() {
-        return HookNodeAction.class;
-    }
+	public Class getDoActionClass() {
+		return HookNodeAction.class;
+	}
 
 	/**
 	 */
@@ -308,19 +336,23 @@ public class NodeHookAction extends FreemindAction implements HookAction, ActorX
 
 	public void removeHook(MindMapNode pFocussed, List pSelecteds,
 			String pHookName) {
-	    HookNodeAction undoAction = createHookNodeAction(pFocussed, pSelecteds, pHookName);
+		HookNodeAction undoAction = createHookNodeAction(pFocussed, pSelecteds,
+				pHookName);
 
-        XmlAction doAction=null;
-        // this is the non operation:
-        doAction = new CompoundAction();
-	    if (getInstanciationMethod(pHookName).isPermanent()) {
-            // double application = remove.
-            doAction = createHookNodeUndoAction(pFocussed,
-                    pSelecteds, pHookName);
-        }
-        getController().getActionFactory().startTransaction((String) getValue(NAME));
-		getController().getActionFactory().executeAction(new ActionPair(undoAction, doAction));
-        getController().getActionFactory().endTransaction((String) getValue(NAME));
+		XmlAction doAction = null;
+		// this is the non operation:
+		doAction = new CompoundAction();
+		if (getInstanciationMethod(pHookName).isPermanent()) {
+			// double application = remove.
+			doAction = createHookNodeUndoAction(pFocussed, pSelecteds,
+					pHookName);
+		}
+		getController().getActionFactory().startTransaction(
+				(String) getValue(NAME));
+		getController().getActionFactory().executeAction(
+				new ActionPair(undoAction, doAction));
+		getController().getActionFactory().endTransaction(
+				(String) getValue(NAME));
 	}
 
 }

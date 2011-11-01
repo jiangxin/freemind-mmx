@@ -27,8 +27,8 @@ import freemind.main.Tools;
 /**
  * @author Andy
  * 
- * Class is responsible for a dialog to input all pdf export parameters like 
- * page orientation or format
+ *         Class is responsible for a dialog to input all pdf export parameters
+ *         like page orientation or format
  */
 public class ExportPdfDialog extends JDialog {
 
@@ -72,7 +72,8 @@ public class ExportPdfDialog extends JDialog {
 
 	/**
 	 * 
-	 * @return the format of the page format as text "A3","A4" defined in ExportPdfPapers
+	 * @return the format of the page format as text "A3","A4" defined in
+	 *         ExportPdfPapers
 	 */
 	public String getFormat() {
 		return format;
@@ -118,15 +119,14 @@ public class ExportPdfDialog extends JDialog {
 		listBox = new JComboBox(formatsCollection);
 		listBox.setEditable(false);
 		listBox.setPreferredSize(new Dimension(100, 25));
-		
 
 		// Page orientation
 		birdButtonLandscape = new JRadioButton("Landscape");
-		birdButtonLandscape.setMnemonic(KeyEvent.VK_L);		
+		birdButtonLandscape.setMnemonic(KeyEvent.VK_L);
 		birdButtonLandscape.setSelected(true);
 
 		birdButtonPortrait = new JRadioButton("Portrait");
-		birdButtonPortrait.setMnemonic(KeyEvent.VK_P);		
+		birdButtonPortrait.setMnemonic(KeyEvent.VK_P);
 
 		group = new ButtonGroup();
 		group.add(birdButtonLandscape);
@@ -143,7 +143,7 @@ public class ExportPdfDialog extends JDialog {
 		});
 		jOKButton.setText("OK");
 
-		//panels and layout
+		// panels and layout
 		JPanel panel1 = new JPanel();
 		panel1.setBorder(BorderFactory.createTitledBorder("Paper"));
 
@@ -174,20 +174,19 @@ public class ExportPdfDialog extends JDialog {
 		c.gridy = 1;
 		panel.add(jOKButton, c);
 
-		//set default user values
+		// set default user values
 		initDefaults();
-		
-		//add escape action
+
+		// add escape action
 		freemind.main.Tools.addEscapeActionToDialog(this);
 
-		//finish dialog
+		// finish dialog
 		this.setLocationRelativeTo(this.getParent());
 		this.setContentPane(panel);
 		this.getRootPane().setDefaultButton(jOKButton);
 
 		this.pack();
 
-		
 	}
 
 	/**

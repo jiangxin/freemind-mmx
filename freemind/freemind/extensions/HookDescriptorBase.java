@@ -33,7 +33,6 @@ import java.util.Vector;
 
 import freemind.controller.actions.generated.instance.Plugin;
 import freemind.controller.actions.generated.instance.PluginClasspath;
-import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 
@@ -151,9 +150,10 @@ public class HookDescriptorBase {
 			for (Iterator i = pluginClasspathList.iterator(); i.hasNext();) {
 				PluginClasspath classPath = (PluginClasspath) i.next();
 				String jarString = classPath.getJar();
-//				if(jarString.startsWith(FREEMIND_BASE_DIR_STRING)){
-//					jarString = frame.getFreemindBaseDir() + jarString.substring(FREEMIND_BASE_DIR_STRING.length());
-//				}
+				// if(jarString.startsWith(FREEMIND_BASE_DIR_STRING)){
+				// jarString = frame.getFreemindBaseDir() +
+				// jarString.substring(FREEMIND_BASE_DIR_STRING.length());
+				// }
 				// new version of classpath resolution suggested by ewl under
 				// patch [ 1154510 ] Be able to give absolute classpath entries
 				// in plugin.xml

@@ -47,7 +47,8 @@ import freemind.modes.mindmapmode.dialogs.StylePatternFrame;
 import freemind.modes.mindmapmode.dialogs.StylePatternFrame.StylePatternFrameType;
 
 /** */
-public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, KeyListener {
+public class ChooseFormatPopupDialog extends JDialog implements TextTranslator,
+		KeyListener {
 
 	public static final int CANCEL = -1;
 
@@ -68,8 +69,9 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 	private StylePatternFrame mStylePatternFrame;
 
 	/**
-	 * This constructor is used, if you need the user to enter a pattern generally.
-	 *
+	 * This constructor is used, if you need the user to enter a pattern
+	 * generally.
+	 * 
 	 */
 	public ChooseFormatPopupDialog(JFrame caller, MindMapController controller,
 			String dialogTitle, Pattern pattern) {
@@ -77,20 +79,19 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 		this.mController = controller;
 		initialize(dialogTitle);
 		mStylePatternFrame.setPattern(pattern);
-        mStylePatternFrame.addListeners();
+		mStylePatternFrame.addListeners();
 	}
 
 	/**
 	 * This method initializes this
-	 *
+	 * 
 	 * @return void
 	 */
 	private void initialize(String dialogTitle) {
 
-		this.setTitle(mController
-				.getText(dialogTitle));
+		this.setTitle(mController.getText(dialogTitle));
 		JPanel contentPane = getJContentPane();
-        this.setContentPane(contentPane);
+		this.setContentPane(contentPane);
 		setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent we) {
@@ -101,7 +102,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 		Action action = new AbstractAction() {
 
 			public void actionPerformed(ActionEvent arg0) {
-		        cancelPressed();
+				cancelPressed();
 			}
 		};
 		Tools.addEscapeActionToDialog(this, action);
@@ -112,7 +113,8 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 
 	private void close() {
 		WindowConfigurationStorage storage = new WindowConfigurationStorage();
-		mController.storeDialogPositions(this, storage, WINDOW_PREFERENCE_STORAGE_PROPERTY);
+		mController.storeDialogPositions(this, storage,
+				WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		setVisible(false);
 		this.dispose();
 	}
@@ -129,7 +131,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 
 	/**
 	 * This method initializes jContentPane
-	 *
+	 * 
 	 * @return javax.swing.JPanel
 	 */
 	private javax.swing.JPanel getJContentPane() {
@@ -140,22 +142,26 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 			 * public GridBagConstraints(int gridx, int gridy, int gridwidth,
 			 * int gridheight, double weightx, double weighty, int anchor, int
 			 * fill, Insets insets, int ipadx, int ipady)
-			 *
 			 */
-			jContentPane.add(new JScrollPane(getStylePatternFrame()), new GridBagConstraints(0, 0, 2, 1,
-					2.0, 8.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,0,0,0), 0, 0));
+			jContentPane.add(new JScrollPane(getStylePatternFrame()),
+					new GridBagConstraints(0, 0, 2, 1, 2.0, 8.0,
+							GridBagConstraints.WEST, GridBagConstraints.BOTH,
+							new Insets(0, 0, 0, 0), 0, 0));
 			jContentPane.add(getJOKButton(), new GridBagConstraints(0, 1, 1, 1,
-					1.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0, 0));
-			jContentPane.add(getJCancelButton(), new GridBagConstraints(1, 1, 1, 1,
-					1.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE, new Insets(0,0,0,0), 0, 0));
+					1.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE,
+					new Insets(0, 0, 0, 0), 0, 0));
+			jContentPane.add(getJCancelButton(), new GridBagConstraints(1, 1,
+					1, 1, 1.0, 0.0, GridBagConstraints.EAST,
+					GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 			getRootPane().setDefaultButton(getJOKButton());
 		}
 		return jContentPane;
 	}
 
 	private Component getStylePatternFrame() {
-		if(mStylePatternFrame == null) {
-			mStylePatternFrame = new StylePatternFrame(this, mController, StylePatternFrameType.WITHOUT_NAME_AND_CHILDS);
+		if (mStylePatternFrame == null) {
+			mStylePatternFrame = new StylePatternFrame(this, mController,
+					StylePatternFrameType.WITHOUT_NAME_AND_CHILDS);
 			mStylePatternFrame.init();
 
 		}
@@ -164,7 +170,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 
 	/**
 	 * This method initializes jButton
-	 *
+	 * 
 	 * @return javax.swing.JButton
 	 */
 	private JButton getJOKButton() {
@@ -186,7 +192,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 
 	/**
 	 * This method initializes jButton1
-	 *
+	 * 
 	 * @return javax.swing.JButton
 	 */
 	private JButton getJCancelButton() {
@@ -198,7 +204,8 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 					cancelPressed();
 				}
 			});
-			Tools.setLabelAndMnemonic(jCancelButton, mController.getText(("cancel")));
+			Tools.setLabelAndMnemonic(jCancelButton,
+					mController.getText(("cancel")));
 		}
 		return jCancelButton;
 	}
@@ -211,7 +218,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 	}
 
 	public String getText(String pKey) {
-        return mController.getText(pKey);
+		return mController.getText(pKey);
 	}
 
 	public Pattern getPattern() {
@@ -219,12 +226,12 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 	}
 
 	public Pattern getPattern(Pattern copyIntoPattern) {
-	    return mStylePatternFrame.getResultPattern(copyIntoPattern);
+		return mStylePatternFrame.getResultPattern(copyIntoPattern);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
 	 */
 	public void keyPressed(KeyEvent keyEvent) {
@@ -239,7 +246,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
 	 */
 	public void keyReleased(KeyEvent keyEvent) {
@@ -248,7 +255,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator, 
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
 	 */
 	public void keyTyped(KeyEvent keyEvent) {

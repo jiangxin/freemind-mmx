@@ -36,74 +36,77 @@ import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
-public class NodeStyleAction extends NodeGeneralAction implements NodeActorXml, MenuItemSelectedListener {
-    private final String mStyle;
+public class NodeStyleAction extends NodeGeneralAction implements NodeActorXml,
+		MenuItemSelectedListener {
+	private final String mStyle;
 
+	public NodeStyleAction(MindMapController controller, String style) {
+		super(controller, style, null);
+		this.mStyle = style;
+		addActor(this);
+	}
 
-    public NodeStyleAction(MindMapController controller, String style) {
-        super(controller, style, null);
-        this.mStyle = style;
-        addActor(this);
-    }
-
-    public ActionPair apply(MindMap model, MindMapNode node)
-            {
-    	String newStyle = null;
-    	MindMapNode selected = modeController.getSelected();
-    	if(selected.hasStyle() && Tools.safeEquals(mStyle, selected.getStyle())) {
-    		newStyle = null;
-    	} else {
-    		newStyle = mStyle;
-    	}
-		return getActionPair(node, newStyle);
-    }
-
-    public Class getDoActionClass() {
-        return NodeStyleFormatAction.class;
-    }
-
-    public void setStyle(MindMapNode node, String style) {
-        modeController.getActionFactory().startTransaction(
-                (String) getValue(NAME));
-        modeController.getActionFactory().executeAction(
-                getActionPair(node, style));
-        modeController.getActionFactory().endTransaction(
-                (String) getValue(NAME));
-        
-    }
-
-    private ActionPair getActionPair(MindMapNode targetNode, String style)
-             {
-        NodeStyleFormatAction styleAction = createNodeStyleFormatAction(targetNode, style);
-        NodeStyleFormatAction undoStyleAction = createNodeStyleFormatAction(targetNode, targetNode.getStyle());
-        return new ActionPair(styleAction, undoStyleAction);
-    }
-
-    private NodeStyleFormatAction createNodeStyleFormatAction(MindMapNode selected, String style)
-            {
-        NodeStyleFormatAction nodeStyleAction = new NodeStyleFormatAction();
-        nodeStyleAction.setNode(getNodeID(selected));
-        nodeStyleAction.setStyle(style);
-        return nodeStyleAction;
-    }
-
-        public void act(XmlAction action) {
-            if (action instanceof NodeStyleFormatAction) {
-                NodeStyleFormatAction nodeStyleAction = (NodeStyleFormatAction) action;
-                MindMapNode node = getNodeFromID(nodeStyleAction.getNode());
-                String style = nodeStyleAction.getStyle();
-                if(!Tools.safeEquals(node.hasStyle()?node.getStyle():null, style)) {
-//                    logger.info("Setting style of " + node + " to "+ style + " and was " + node.getStyle());
-                    node.setStyle(style);
-                    modeController.nodeStyleChanged(node);
-                }
-            }
-        }
-
-		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
-			MindMapNode selected = modeController.getSelected();
-			if(!selected.hasStyle())
-				return false;
-			return Tools.safeEquals(mStyle,selected.getStyle());
+	public ActionPair apply(MindMap model, MindMapNode node) {
+		String newStyle = null;
+		MindMapNode selected = modeController.getSelected();
+		if (selected.hasStyle()
+				&& Tools.safeEquals(mStyle, selected.getStyle())) {
+			newStyle = null;
+		} else {
+			newStyle = mStyle;
 		}
+		return getActionPair(node, newStyle);
+	}
+
+	public Class getDoActionClass() {
+		return NodeStyleFormatAction.class;
+	}
+
+	public void setStyle(MindMapNode node, String style) {
+		modeController.getActionFactory().startTransaction(
+				(String) getValue(NAME));
+		modeController.getActionFactory().executeAction(
+				getActionPair(node, style));
+		modeController.getActionFactory().endTransaction(
+				(String) getValue(NAME));
+
+	}
+
+	private ActionPair getActionPair(MindMapNode targetNode, String style) {
+		NodeStyleFormatAction styleAction = createNodeStyleFormatAction(
+				targetNode, style);
+		NodeStyleFormatAction undoStyleAction = createNodeStyleFormatAction(
+				targetNode, targetNode.getStyle());
+		return new ActionPair(styleAction, undoStyleAction);
+	}
+
+	private NodeStyleFormatAction createNodeStyleFormatAction(
+			MindMapNode selected, String style) {
+		NodeStyleFormatAction nodeStyleAction = new NodeStyleFormatAction();
+		nodeStyleAction.setNode(getNodeID(selected));
+		nodeStyleAction.setStyle(style);
+		return nodeStyleAction;
+	}
+
+	public void act(XmlAction action) {
+		if (action instanceof NodeStyleFormatAction) {
+			NodeStyleFormatAction nodeStyleAction = (NodeStyleFormatAction) action;
+			MindMapNode node = getNodeFromID(nodeStyleAction.getNode());
+			String style = nodeStyleAction.getStyle();
+			if (!Tools.safeEquals(node.hasStyle() ? node.getStyle() : null,
+					style)) {
+				// logger.info("Setting style of " + node + " to "+ style +
+				// " and was " + node.getStyle());
+				node.setStyle(style);
+				modeController.nodeStyleChanged(node);
+			}
+		}
+	}
+
+	public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
+		MindMapNode selected = modeController.getSelected();
+		if (!selected.hasStyle())
+			return false;
+		return Tools.safeEquals(mStyle, selected.getStyle());
+	}
 }

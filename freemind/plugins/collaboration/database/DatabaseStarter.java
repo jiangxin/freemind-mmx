@@ -42,7 +42,8 @@ import freemind.view.mindmapview.NodeView;
  * @author foltin
  * 
  */
-public class DatabaseStarter extends DatabaseBasics implements PermanentNodeHook, DontSaveMarker {
+public class DatabaseStarter extends DatabaseBasics implements
+		PermanentNodeHook, DontSaveMarker {
 
 	private File mTempDbFile;
 
@@ -56,8 +57,7 @@ public class DatabaseStarter extends DatabaseBasics implements PermanentNodeHook
 		final StringProperty passwordProperty = new StringProperty(
 				PASSWORD_DESCRIPTION, PASSWORD);
 		final StringProperty passwordProperty2 = new StringProperty(
-				PASSWORD_VERIFICATION_DESCRIPTION,
-				PASSWORD_VERIFICATION);
+				PASSWORD_VERIFICATION_DESCRIPTION, PASSWORD_VERIFICATION);
 		// StringProperty bindProperty = new StringProperty(
 		// "IP address of the local machine, or 0.0.0.0 if ", "Host");
 		final NumberProperty portProperty = getPortProperty();
@@ -81,19 +81,17 @@ public class DatabaseStarter extends DatabaseBasics implements PermanentNodeHook
 		// start server:
 		logger.info("Start server...");
 		try {
-			mTempDbFile = File.createTempFile(
-					"collaboration_database", ".hsqldb", new File(controller
-							.getFrame().getFreemindDirectory()));
-//			mTempDbFile.deleteOnExit();
+			mTempDbFile = File.createTempFile("collaboration_database",
+					".hsqldb", new File(controller.getFrame()
+							.getFreemindDirectory()));
+			// mTempDbFile.deleteOnExit();
 			logger.info("Start server in file " + mTempDbFile);
 			Thread server = new Thread(new Runnable() {
 
 				public void run() {
-					org.hsqldb.Server
-							.main(new String[] { "-database.0",
-									"file:" + mTempDbFile, "-dbname.0", "xdb",
-									"-port", portProperty.getValue(),
-									"-no_system_exit", "true" });
+					org.hsqldb.Server.main(new String[] { "-database.0",
+							"file:" + mTempDbFile, "-dbname.0", "xdb", "-port",
+							portProperty.getValue(), "-no_system_exit", "true" });
 				}
 			});
 			server.start();
@@ -121,8 +119,6 @@ public class DatabaseStarter extends DatabaseBasics implements PermanentNodeHook
 		}
 	}
 
-	
-
 	public void loadFrom(XMLElement pChild) {
 		// this plugin should not be saved.
 	}
@@ -141,8 +137,8 @@ public class DatabaseStarter extends DatabaseBasics implements PermanentNodeHook
 			// remove temporary files:
 			logger.info("Remove temporary database files.");
 			mTempDbFile.delete();
-			new File(mTempDbFile.getAbsoluteFile()+".script").delete();
-			new File(mTempDbFile.getAbsoluteFile()+".properties").delete();
+			new File(mTempDbFile.getAbsoluteFile() + ".script").delete();
+			new File(mTempDbFile.getAbsoluteFile() + ".properties").delete();
 		}
 		super.shutdownMapHook();
 	}
@@ -179,8 +175,6 @@ public class DatabaseStarter extends DatabaseBasics implements PermanentNodeHook
 
 	public void onViewRemovedHook(NodeView pNodeView) {
 	}
-
-
 
 	public Integer getRole() {
 		return ROLE_MASTER;

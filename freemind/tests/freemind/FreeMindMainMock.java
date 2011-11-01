@@ -43,124 +43,124 @@ import freemind.view.mindmapview.MapView;
 /** */
 public class FreeMindMainMock implements FreeMindMain {
 
-    private Properties mProperties;
+	private Properties mProperties;
 
 	/**
      * 
      */
-    public FreeMindMainMock() {
-        super();
+	public FreeMindMainMock() {
+		super();
 		mProperties = new FreeMindStarter().readDefaultPreferences();
-        Resources.createInstance(this);
+		Resources.createInstance(this);
 
-    }
+	}
 
-    public JFrame getJFrame() {
-        return null;
-    }
+	public JFrame getJFrame() {
+		return null;
+	}
 
-    public boolean isApplet() {
-        return false;
-    }
+	public boolean isApplet() {
+		return false;
+	}
 
-    public MapView getView() {
-        return null;
-    }
+	public MapView getView() {
+		return null;
+	}
 
-    public void setView(MapView view) {
-    }
+	public void setView(MapView view) {
+	}
 
-    public Controller getController() {
-        return null;
-    }
+	public Controller getController() {
+		return null;
+	}
 
-    public void setWaitingCursor(boolean waiting) {
-    }
+	public void setWaitingCursor(boolean waiting) {
+	}
 
-    public File getPatternsFile() {
-        return null;
-    }
+	public File getPatternsFile() {
+		return null;
+	}
 
-    public MenuBar getFreeMindMenuBar() {
-        return null;
-    }
+	public MenuBar getFreeMindMenuBar() {
+		return null;
+	}
 
-    public ResourceBundle getResources() {
-        return null;
-    }
+	public ResourceBundle getResources() {
+		return null;
+	}
 
-    public String getResourceString(String key) {
-        return key;
-    }
+	public String getResourceString(String key) {
+		return key;
+	}
 
-    public String getResourceString(String key, String resource) {
-        return key;
-    }
-    
-    public Container getContentPane() {
-        return null;
-    }
+	public String getResourceString(String key, String resource) {
+		return key;
+	}
 
-    public void out(String msg) {
-    }
+	public Container getContentPane() {
+		return null;
+	}
 
-    public void err(String msg) {
-    }
+	public void out(String msg) {
+	}
 
-    public void openDocument(URL location) throws Exception {
-    }
+	public void err(String msg) {
+	}
 
-    public void repaint() {
-    }
+	public void openDocument(URL location) throws Exception {
+	}
 
-    public URL getResource(String name) {
-        return ClassLoader.getSystemResource(name);
-    }
+	public void repaint() {
+	}
 
-    public int getIntProperty(String key, int defaultValue) {
+	public URL getResource(String name) {
+		return ClassLoader.getSystemResource(name);
+	}
+
+	public int getIntProperty(String key, int defaultValue) {
 		try {
 			return Integer.parseInt(getProperty(key));
 		} catch (NumberFormatException nfe) {
 			return defaultValue;
 		}
-    }
+	}
 
-    public Properties getProperties() {
-        return mProperties;
-    }
+	public Properties getProperties() {
+		return mProperties;
+	}
 
-    public String getProperty(String key) {
-    	return mProperties.getProperty(key);
-    }
+	public String getProperty(String key) {
+		return mProperties.getProperty(key);
+	}
 
-    public void setProperty(String key, String value) {
-    }
+	public void setProperty(String key, String value) {
+	}
 
-    public void saveProperties(boolean pIsShutdown) {
-    }
+	public void saveProperties(boolean pIsShutdown) {
+	}
 
-    public String getFreemindDirectory() {
-        return ".";
-    }
+	public String getFreemindDirectory() {
+		return ".";
+	}
 
-    public JLayeredPane getLayeredPane() {
-        return null;
-    }
+	public JLayeredPane getLayeredPane() {
+		return null;
+	}
 
-    public void setTitle(String title) {
-    }
+	public void setTitle(String title) {
+	}
 
-    public int getWinHeight() {
-        return 0;
-    }
+	public int getWinHeight() {
+		return 0;
+	}
 
-    public int getWinWidth() {
-        return 0;
-    }
+	public int getWinWidth() {
+		return 0;
+	}
 
-    public int getWinState() {
-        return 0;
-    }
+	public int getWinState() {
+		return 0;
+	}
 
 	public int getWinX() {
 		return 0;
@@ -171,13 +171,13 @@ public class FreeMindMainMock implements FreeMindMain {
 	}
 
 	public VersionInformation getFreemindVersion() {
-        return new VersionInformation(1,0,0,FreeMindMain.VERSION_TYPE_ALPHA,42);
-    }
+		return new VersionInformation(1, 0, 0, FreeMindMain.VERSION_TYPE_ALPHA,
+				42);
+	}
 
-    public Logger getLogger(String forClass) {
-        return java.util.logging.Logger.getLogger(forClass);
-    }
-
+	public Logger getLogger(String forClass) {
+		return java.util.logging.Logger.getLogger(forClass);
+	}
 
 	public ClassLoader getFreeMindClassLoader() {
 		return this.getClass().getClassLoader();
@@ -194,7 +194,7 @@ public class FreeMindMainMock implements FreeMindMain {
 
 	public void setDefaultProperty(String pKey, String pValue) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public JSplitPane insertComponentIntoSplitPane(JComponent pMindMapComponent) {
@@ -204,7 +204,7 @@ public class FreeMindMainMock implements FreeMindMain {
 
 	public void removeSplitPane() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public JComponent getContentComponent() {
@@ -218,8 +218,7 @@ public class FreeMindMainMock implements FreeMindMain {
 	public void registerStartupDoneListener(
 			StartupDoneListener pStartupDoneListener) {
 		// TODO Auto-generated method stub
-		
-	}
-	
-}
 
+	}
+
+}

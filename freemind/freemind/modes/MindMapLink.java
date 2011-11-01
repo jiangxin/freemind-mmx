@@ -20,28 +20,26 @@
 
 package freemind.modes;
 
-import freemind.modes.MindMapLine;
-import freemind.modes.MindMapNode;
-import java.awt.Color;
-import java.awt.Stroke;
 
 public interface MindMapLink extends MindMapLine {
 
-    //     public Color getColor();
-    //     public String getStyle();
-    //     public Stroke getStroke();
-    //     public int getWidth();
-    //     public String toString();
+	// public Color getColor();
+	// public String getStyle();
+	// public Stroke getStroke();
+	// public int getWidth();
+	// public String toString();
 
-    String getDestinationLabel();
-    String getReferenceText();
+	String getDestinationLabel();
 
-    MindMapNode getTarget();
-    MindMapNode getSource();
-    
-    /** The id is automatically set on creation. Is saved and restored. */
-    String getUniqueID();
-    
-//     public Object clone();
+	String getReferenceText();
+
+	MindMapNode getTarget();
+
+	MindMapNode getSource();
+
+	/** The id is automatically set on creation. Is saved and restored. */
+	String getUniqueID();
+
+	// public Object clone();
 
 }

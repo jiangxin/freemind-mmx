@@ -19,6 +19,7 @@
 /*$Id: LinkAdapter.java,v 1.3.18.2.4.1 2007/05/06 21:12:19 christianfoltin Exp $*/
 
 package freemind.modes;
+
 import java.awt.Color;
 
 import freemind.controller.Controller;
@@ -29,69 +30,91 @@ import freemind.preferences.FreemindPropertyListener;
 
 public abstract class LinkAdapter extends LineAdapter implements MindMapLink {
 
-    public static final String RESOURCES_STANDARDLINKSTYLE = "standardlinkstyle";
+	public static final String RESOURCES_STANDARDLINKSTYLE = "standardlinkstyle";
 	private static Color standardColor = null;
-    private static String standardStyle = null;
-    private static LinkAdapterListener listener = null;
+	private static String standardStyle = null;
+	private static LinkAdapterListener listener = null;
 
-    String destinationLabel;
-    String referenceText;
-    MindMapNode source;
-    private String uniqueID;
+	String destinationLabel;
+	String referenceText;
+	MindMapNode source;
+	private String uniqueID;
 
-    public LinkAdapter(MindMapNode source,MindMapNode target,FreeMindMain frame)  {
-        super(target, frame);
-        this.source=source;
-        destinationLabel = null;
-        referenceText = null;
-        if(listener == null) {
-            listener = new LinkAdapterListener(); 
-            Controller.addPropertyChangeListener(listener);
-        }
-    }
+	public LinkAdapter(MindMapNode source, MindMapNode target,
+			FreeMindMain frame) {
+		super(target, frame);
+		this.source = source;
+		destinationLabel = null;
+		referenceText = null;
+		if (listener == null) {
+			listener = new LinkAdapterListener();
+			Controller.addPropertyChangeListener(listener);
+		}
+	}
 
-    public String getDestinationLabel() { return destinationLabel; }
-    public String getReferenceText(){ return referenceText; }
-    public MindMapNode getSource() { return source;}
-    
-    public void setSource(MindMapNode source) {this.source=source;}
-    public void setDestinationLabel(String destinationLabel) { this.destinationLabel = destinationLabel; }
-    public void setReferenceText(String referenceText) { this.referenceText = referenceText; }
+	public String getDestinationLabel() {
+		return destinationLabel;
+	}
 
-//     public Object clone() {
-//         try {
-//             return super.clone();
-//         } catch(java.lang.CloneNotSupportedException e) {
-//             return null;
-//         }
-//     }
+	public String getReferenceText() {
+		return referenceText;
+	}
 
+	public MindMapNode getSource() {
+		return source;
+	}
 
-    /**
-     * @return Returns the uniqueID.
-     */
-    public String getUniqueID() {
-        return uniqueID;
-    }
-    /**
-     * @param uniqueID The uniqueID to set.
-     */
-    public void setUniqueID(String uniqueID) {
-        this.uniqueID = uniqueID;
-    }
-    protected Color getStandardColor() {
-        return standardColor;
-    }
-    protected void setStandardColor(Color standardColor) {
-        LinkAdapter.standardColor = standardColor;
-    }
-    protected String getStandardStyle() {
-        return standardStyle;
-    }
-    protected void setStandardStyle(String standardStyle) {
-        LinkAdapter.standardStyle = standardStyle;
-    }
-    
+	public void setSource(MindMapNode source) {
+		this.source = source;
+	}
+
+	public void setDestinationLabel(String destinationLabel) {
+		this.destinationLabel = destinationLabel;
+	}
+
+	public void setReferenceText(String referenceText) {
+		this.referenceText = referenceText;
+	}
+
+	// public Object clone() {
+	// try {
+	// return super.clone();
+	// } catch(java.lang.CloneNotSupportedException e) {
+	// return null;
+	// }
+	// }
+
+	/**
+	 * @return Returns the uniqueID.
+	 */
+	public String getUniqueID() {
+		return uniqueID;
+	}
+
+	/**
+	 * @param uniqueID
+	 *            The uniqueID to set.
+	 */
+	public void setUniqueID(String uniqueID) {
+		this.uniqueID = uniqueID;
+	}
+
+	protected Color getStandardColor() {
+		return standardColor;
+	}
+
+	protected void setStandardColor(Color standardColor) {
+		LinkAdapter.standardColor = standardColor;
+	}
+
+	protected String getStandardStyle() {
+		return standardStyle;
+	}
+
+	protected void setStandardStyle(String standardStyle) {
+		LinkAdapter.standardStyle = standardStyle;
+	}
+
 	protected String getStandardColorPropertyString() {
 		return FreeMind.RESOURCES_LINK_COLOR;
 	}
@@ -99,16 +122,17 @@ public abstract class LinkAdapter extends LineAdapter implements MindMapLink {
 	protected String getStandardStylePropertyString() {
 		return RESOURCES_STANDARDLINKSTYLE;
 	}
-    
-	protected static class LinkAdapterListener implements FreemindPropertyListener {
-        public void propertyChanged(String propertyName,
-                String newValue, String oldValue) {
-            if (propertyName.equals(FreeMind.RESOURCES_LINK_COLOR)) {
-                LinkAdapter.standardColor = Tools.xmlToColor(newValue);
-            }
-            if (propertyName.equals(RESOURCES_STANDARDLINKSTYLE)) {
-                LinkAdapter.standardStyle = newValue;
-            }
-        }
-    }
+
+	protected static class LinkAdapterListener implements
+			FreemindPropertyListener {
+		public void propertyChanged(String propertyName, String newValue,
+				String oldValue) {
+			if (propertyName.equals(FreeMind.RESOURCES_LINK_COLOR)) {
+				LinkAdapter.standardColor = Tools.xmlToColor(newValue);
+			}
+			if (propertyName.equals(RESOURCES_STANDARDLINKSTYLE)) {
+				LinkAdapter.standardStyle = newValue;
+			}
+		}
+	}
 }

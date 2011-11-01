@@ -22,191 +22,184 @@ package freemind.view.mindmapview;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Insets;
 import java.awt.LayoutManager;
-import java.awt.RenderingHints;
 
-import javax.swing.Box;
 import javax.swing.JComponent;
 
 import freemind.modes.EdgeAdapter;
 import freemind.modes.MindMapNode;
 
 class NodeViewFactory {
-	
-	private static class ContentPane extends JComponent{
+
+	private static class ContentPane extends JComponent {
 		static private LayoutManager layoutManager = new ContentPaneLayout();
 
-		ContentPane(){
-			setLayout(layoutManager );
+		ContentPane() {
+			setLayout(layoutManager);
 		}
 	}
-	
-	private static class ContentPaneLayout implements LayoutManager{
-	
+
+	private static class ContentPaneLayout implements LayoutManager {
+
 		public void addLayoutComponent(String name, Component comp) {
 		}
-	
+
 		public void layoutContainer(Container parent) {
 			final int componentCount = parent.getComponentCount();
 			final int width = parent.getWidth();
 			int y = 0;
-			for(int i = 0; i < componentCount; i++){
+			for (int i = 0; i < componentCount; i++) {
 				final Component component = parent.getComponent(i);
-				if(component.isVisible()){
-					final Dimension preferredCompSize = component.getPreferredSize();
-					if(component instanceof MainView){
-						component.setBounds(0, y, width, preferredCompSize.height);
-					}
-					else{
-						int x = (int)(component.getAlignmentX() * (width - preferredCompSize.width));
-						component.setBounds(x, y, preferredCompSize.width, preferredCompSize.height);
+				if (component.isVisible()) {
+					final Dimension preferredCompSize = component
+							.getPreferredSize();
+					if (component instanceof MainView) {
+						component.setBounds(0, y, width,
+								preferredCompSize.height);
+					} else {
+						int x = (int) (component.getAlignmentX() * (width - preferredCompSize.width));
+						component.setBounds(x, y, preferredCompSize.width,
+								preferredCompSize.height);
 					}
 					y += preferredCompSize.height;
 				}
 			}
 		}
-	
+
 		public Dimension minimumLayoutSize(Container parent) {
 			return preferredLayoutSize(parent);
 		}
-	
+
 		public Dimension preferredLayoutSize(Container parent) {
 			final Dimension prefSize = new Dimension(0, 0);
 			final int componentCount = parent.getComponentCount();
-			for(int i = 0; i < componentCount; i++){
+			for (int i = 0; i < componentCount; i++) {
 				final Component component = parent.getComponent(i);
-				if(component.isVisible()){
-					final Dimension preferredCompSize = component.getPreferredSize();
+				if (component.isVisible()) {
+					final Dimension preferredCompSize = component
+							.getPreferredSize();
 					prefSize.height += preferredCompSize.height;
-					prefSize.width = Math.max(prefSize.width, preferredCompSize.width);
+					prefSize.width = Math.max(prefSize.width,
+							preferredCompSize.width);
 				}
 			}
 			return prefSize;
 		}
-	
+
 		public void removeLayoutComponent(Component comp) {
 		}
-		
+
 	}
 
-    private static NodeViewFactory factory;
-    private EdgeView sharpBezierEdgeView;
-    private EdgeView sharpLinearEdgeView;
-    private EdgeView bezierEdgeView;
-    private EdgeView linearEdgeView;
+	private static NodeViewFactory factory;
+	private EdgeView sharpBezierEdgeView;
+	private EdgeView sharpLinearEdgeView;
+	private EdgeView bezierEdgeView;
+	private EdgeView linearEdgeView;
 
-    //Singleton
-    private NodeViewFactory(){
-        
-    }
-    
-    
-    static NodeViewFactory getInstance(){
-        if(factory == null){
-            factory = new NodeViewFactory();
-        }
-        return factory;
-    }
-    
-    EdgeView getEdge(NodeView newView) {
-        final String edgeStyle = newView.getModel().getEdge().getStyle();
+	// Singleton
+	private NodeViewFactory() {
+
+	}
+
+	static NodeViewFactory getInstance() {
+		if (factory == null) {
+			factory = new NodeViewFactory();
+		}
+		return factory;
+	}
+
+	EdgeView getEdge(NodeView newView) {
+		final String edgeStyle = newView.getModel().getEdge().getStyle();
 		if (edgeStyle.equals(EdgeAdapter.EDGESTYLE_LINEAR)) {
-            return getLinearEdgeView();
-        } else if (edgeStyle.equals(EdgeAdapter.EDGESTYLE_BEZIER)) {
-            return getBezierEdgeView();
-        } else if (edgeStyle.equals(EdgeAdapter.EDGESTYLE_SHARP_LINEAR)) {
-            return getSharpEdgeView();
-        } else if (edgeStyle.equals(EdgeAdapter.EDGESTYLE_SHARP_BEZIER)) {
-            return getSharpBezierEdgeView();
-        } else {
-            System.err.println("Unknown Edge Type.");
-            return getLinearEdgeView();
-        }
-    }
+			return getLinearEdgeView();
+		} else if (edgeStyle.equals(EdgeAdapter.EDGESTYLE_BEZIER)) {
+			return getBezierEdgeView();
+		} else if (edgeStyle.equals(EdgeAdapter.EDGESTYLE_SHARP_LINEAR)) {
+			return getSharpEdgeView();
+		} else if (edgeStyle.equals(EdgeAdapter.EDGESTYLE_SHARP_BEZIER)) {
+			return getSharpBezierEdgeView();
+		} else {
+			System.err.println("Unknown Edge Type.");
+			return getLinearEdgeView();
+		}
+	}
 
-    private EdgeView getSharpBezierEdgeView() {
-        if(sharpBezierEdgeView == null){
-            sharpBezierEdgeView = new SharpBezierEdgeView();
-        }
-        return sharpBezierEdgeView;
-    }
+	private EdgeView getSharpBezierEdgeView() {
+		if (sharpBezierEdgeView == null) {
+			sharpBezierEdgeView = new SharpBezierEdgeView();
+		}
+		return sharpBezierEdgeView;
+	}
 
-    private EdgeView getSharpEdgeView() {
-        if(sharpLinearEdgeView == null){
-            sharpLinearEdgeView = new SharpLinearEdgeView();
-        }
-        return sharpLinearEdgeView;
-    }
+	private EdgeView getSharpEdgeView() {
+		if (sharpLinearEdgeView == null) {
+			sharpLinearEdgeView = new SharpLinearEdgeView();
+		}
+		return sharpLinearEdgeView;
+	}
 
-    private EdgeView getBezierEdgeView() {
-        if(bezierEdgeView == null){
-            bezierEdgeView = new BezierEdgeView();
-        }
-        return bezierEdgeView;
-    }
+	private EdgeView getBezierEdgeView() {
+		if (bezierEdgeView == null) {
+			bezierEdgeView = new BezierEdgeView();
+		}
+		return bezierEdgeView;
+	}
 
-    private EdgeView getLinearEdgeView() {
-        if(linearEdgeView == null){
-            linearEdgeView = new LinearEdgeView();
-        }
-        return linearEdgeView;
-    }
+	private EdgeView getLinearEdgeView() {
+		if (linearEdgeView == null) {
+			linearEdgeView = new LinearEdgeView();
+		}
+		return linearEdgeView;
+	}
 
+	/**
+	 * Factory method which creates the right NodeView for the model.
+	 */
+	NodeView newNodeView(MindMapNode model, int position, MapView map,
+			Container parent) {
+		NodeView newView = new NodeView(model, position, map, parent);
 
-    /**
-     * Factory method which creates the right NodeView for the model.
-     */
-    NodeView newNodeView(MindMapNode model, int position, MapView map, Container parent) {
-        NodeView newView = new NodeView( model, position, map, parent);
-        
-        if (model.isRoot()) {
-        	final MainView mainView = new RootMainView(); 
-            newView.setMainView(mainView);
-            newView.setLayout(VerticalRootNodeViewLayout.getInstance());
-            
-        } else { 
-		    newView.setMainView(newMainView(model));
-            if(newView.isLeft()){
-                newView.setLayout(LeftNodeViewLayout.getInstance());
-            }
-            else{
-                newView.setLayout(RightNodeViewLayout.getInstance());
-            }
-        }
-        
-        model.addViewer(newView);
-        newView.update();
-        fireNodeViewCreated(newView);
-        return newView;
-    }
+		if (model.isRoot()) {
+			final MainView mainView = new RootMainView();
+			newView.setMainView(mainView);
+			newView.setLayout(VerticalRootNodeViewLayout.getInstance());
 
+		} else {
+			newView.setMainView(newMainView(model));
+			if (newView.isLeft()) {
+				newView.setLayout(LeftNodeViewLayout.getInstance());
+			} else {
+				newView.setLayout(RightNodeViewLayout.getInstance());
+			}
+		}
+
+		model.addViewer(newView);
+		newView.update();
+		fireNodeViewCreated(newView);
+		return newView;
+	}
 
 	MainView newMainView(MindMapNode model) {
 		if (model.isRoot()) {
-        	return new RootMainView();             
-        } 
-		if (model.getStyle().equals(MindMapNode.STYLE_FORK) ){
-			return new ForkMainView(); 
+			return new RootMainView();
 		}
-		else if (model.getStyle().equals(MindMapNode.STYLE_BUBBLE)) {
-			return new BubbleMainView(); 
-		}
-		else {
-		    System.err.println("Tried to create a NodeView of unknown Style.");
-		    return new ForkMainView(); 
+		if (model.getStyle().equals(MindMapNode.STYLE_FORK)) {
+			return new ForkMainView();
+		} else if (model.getStyle().equals(MindMapNode.STYLE_BUBBLE)) {
+			return new BubbleMainView();
+		} else {
+			System.err.println("Tried to create a NodeView of unknown Style.");
+			return new ForkMainView();
 		}
 	}
 
-
-    private void fireNodeViewCreated(NodeView newView) {
-		newView.getMap().getModel().getModeController().onViewCreatedHook(newView);		
+	private void fireNodeViewCreated(NodeView newView) {
+		newView.getMap().getModel().getModeController()
+				.onViewCreatedHook(newView);
 	}
-
 
 	JComponent newContentPane(NodeView view) {
-        return new ContentPane();
-    }
+		return new ContentPane();
+	}
 }

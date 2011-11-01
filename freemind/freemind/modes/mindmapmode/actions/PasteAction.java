@@ -74,812 +74,861 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 public class PasteAction extends AbstractAction implements ActorXml {
 
-    private static java.util.logging.Logger logger;
-    private List newNodes; // only for Transferable with mindMapNodesFlavor
-    private final MindMapController mMindMapController;
+	private static java.util.logging.Logger logger;
+	private List newNodes; // only for Transferable with mindMapNodesFlavor
+	private final MindMapController mMindMapController;
 
-    public PasteAction(MindMapController pMindMapController) {
-        super(pMindMapController.getText("paste"), new ImageIcon(
-                pMindMapController.getResource("images/editpaste.png")));
-        this.mMindMapController = pMindMapController;
-        if (logger == null) {
-            logger = mMindMapController.getFrame().getLogger(
-                    this.getClass().getName());
-        }
+	public PasteAction(MindMapController pMindMapController) {
+		super(pMindMapController.getText("paste"), new ImageIcon(
+				pMindMapController.getResource("images/editpaste.png")));
+		this.mMindMapController = pMindMapController;
+		if (logger == null) {
+			logger = mMindMapController.getFrame().getLogger(
+					this.getClass().getName());
+		}
 
-        setEnabled(false);
-        this.mMindMapController.getActionFactory().registerActor(this,
-                getDoActionClass());
+		setEnabled(false);
+		this.mMindMapController.getActionFactory().registerActor(this,
+				getDoActionClass());
 
-    }
+	}
 
-    public void actionPerformed(ActionEvent e) {
-        this.mMindMapController.paste(
-                this.mMindMapController.getClipboardContents(),
-                this.mMindMapController.getView().getSelected().getModel());
-    }
+	public void actionPerformed(ActionEvent e) {
+		this.mMindMapController.paste(
+				this.mMindMapController.getClipboardContents(),
+				this.mMindMapController.getView().getSelected().getModel());
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * freemind.controller.actions.ActorXml#act(freemind.controller.actions.
-     * generated.instance.XmlAction)
-     */
-    public void act(XmlAction action) {
-        PasteNodeAction pasteAction = (PasteNodeAction) action;
-        _paste(getTransferable(pasteAction.getTransferableContent()),
-                mMindMapController.getNodeFromID(pasteAction.getNode()),
-                pasteAction.getAsSibling(), pasteAction.getIsLeft());
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.controller.actions.ActorXml#act(freemind.controller.actions.
+	 * generated.instance.XmlAction)
+	 */
+	public void act(XmlAction action) {
+		PasteNodeAction pasteAction = (PasteNodeAction) action;
+		_paste(getTransferable(pasteAction.getTransferableContent()),
+				mMindMapController.getNodeFromID(pasteAction.getNode()),
+				pasteAction.getAsSibling(), pasteAction.getIsLeft());
+	}
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see freemind.controller.actions.ActorXml#getDoActionClass()
-     */
-    public Class getDoActionClass() {
-        return PasteNodeAction.class;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see freemind.controller.actions.ActorXml#getDoActionClass()
+	 */
+	public Class getDoActionClass() {
+		return PasteNodeAction.class;
+	}
 
-    public PasteNodeAction getPasteNodeAction(Transferable t,
-            NodeCoordinate coord) {
-        PasteNodeAction pasteAction = new PasteNodeAction();
-        pasteAction.setNode(mMindMapController.getNodeID(coord.target));
-        pasteAction.setTransferableContent(getTransferableContent(t));
-        pasteAction.setAsSibling(coord.asSibling);
-        pasteAction.setIsLeft(coord.isLeft);
-        return pasteAction;
-    }
+	public PasteNodeAction getPasteNodeAction(Transferable t,
+			NodeCoordinate coord) {
+		PasteNodeAction pasteAction = new PasteNodeAction();
+		pasteAction.setNode(mMindMapController.getNodeID(coord.target));
+		pasteAction.setTransferableContent(getTransferableContent(t));
+		pasteAction.setAsSibling(coord.asSibling);
+		pasteAction.setIsLeft(coord.isLeft);
+		return pasteAction;
+	}
 
-    /** URGENT: Change this method. */
-    public void paste(MindMapNode node, MindMapNode parent) {
-        if (node != null) {
-            insertNodeInto(node, parent);
-            mMindMapController.nodeStructureChanged(parent);
-        }
-    }
+	/** URGENT: Change this method. */
+	public void paste(MindMapNode node, MindMapNode parent) {
+		if (node != null) {
+			insertNodeInto(node, parent);
+			mMindMapController.nodeStructureChanged(parent);
+		}
+	}
 
-    /**
-     * @param t
-     *            the content
-     * @param target
-     *            where to add the content
-     * @param asSibling
-     *            if true, the content is added beside the target, otherwise as
-     *            new children
-     * @param isLeft
-     *            if something is pasted as a sibling to root, it must be
-     *            decided on which side of root
-     * @return true, if successfully executed.
-     */
-    public boolean paste(Transferable t, MindMapNode target, boolean asSibling,
-            boolean isLeft) {
-        pasteAction = getPasteNodeAction(t, new NodeCoordinate(target,
-                asSibling, isLeft));
-        undoAction = new CompoundAction();
-        // Undo-action
-        mMindMapController.getActionFactory().startTransaction("paste");
-        boolean result = mMindMapController.getActionFactory().executeAction(
-                new ActionPair(pasteAction, undoAction));
-        mMindMapController.getActionFactory().endTransaction("paste");
-        return result;
-    }
+	/**
+	 * @param t
+	 *            the content
+	 * @param target
+	 *            where to add the content
+	 * @param asSibling
+	 *            if true, the content is added beside the target, otherwise as
+	 *            new children
+	 * @param isLeft
+	 *            if something is pasted as a sibling to root, it must be
+	 *            decided on which side of root
+	 * @return true, if successfully executed.
+	 */
+	public boolean paste(Transferable t, MindMapNode target, boolean asSibling,
+			boolean isLeft) {
+		pasteAction = getPasteNodeAction(t, new NodeCoordinate(target,
+				asSibling, isLeft));
+		undoAction = new CompoundAction();
+		// Undo-action
+		mMindMapController.getActionFactory().startTransaction("paste");
+		boolean result = mMindMapController.getActionFactory().executeAction(
+				new ActionPair(pasteAction, undoAction));
+		mMindMapController.getActionFactory().endTransaction("paste");
+		return result;
+	}
 
-    private void addMindMapNodesFlavor() {
-        if (pasteAction == null) {
-            return;
-        }
-        final TransferableContent transferableContent = pasteAction.getTransferableContent();
-        if (transferableContent.getTransferable() == null) {
-            final List nodes = new LinkedList();
-            final ListIterator listIterator = undoAction.getListChoiceList().listIterator(undoAction.sizeChoiceList());
-            while (listIterator.hasPrevious()) {
-                CutNodeAction cutAction = (CutNodeAction) listIterator.previous();
-                NodeAdapter node = mMindMapController.getNodeFromID(cutAction.getNode());
-                nodes.add(node);
-            }
-            try {
-                String transferable = mMindMapController.createForNodesFlavor(
-                        nodes, true);
-                transferableContent.setTransferable(transferable);
-                transferableContent.setTransferableAsDrop(null);
-                transferableContent.setTransferableAsHtml(null);
-                transferableContent.setTransferableAsPlainText(null);
-                transferableContent.setTransferableAsRTF(null);
-            } catch (UnsupportedFlavorException e) {
-                freemind.main.Resources.getInstance().logException(e);
-            } catch (IOException e) {
-                freemind.main.Resources.getInstance().logException(e);
-            }
-        }
+	private void addMindMapNodesFlavor() {
+		if (pasteAction == null) {
+			return;
+		}
+		final TransferableContent transferableContent = pasteAction
+				.getTransferableContent();
+		if (transferableContent.getTransferable() == null) {
+			final List nodes = new LinkedList();
+			final ListIterator listIterator = undoAction.getListChoiceList()
+					.listIterator(undoAction.sizeChoiceList());
+			while (listIterator.hasPrevious()) {
+				CutNodeAction cutAction = (CutNodeAction) listIterator
+						.previous();
+				NodeAdapter node = mMindMapController.getNodeFromID(cutAction
+						.getNode());
+				nodes.add(node);
+			}
+			try {
+				String transferable = mMindMapController.createForNodesFlavor(
+						nodes, true);
+				transferableContent.setTransferable(transferable);
+				transferableContent.setTransferableAsDrop(null);
+				transferableContent.setTransferableAsHtml(null);
+				transferableContent.setTransferableAsPlainText(null);
+				transferableContent.setTransferableAsRTF(null);
+			} catch (UnsupportedFlavorException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			} catch (IOException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+		}
 
-    }
+	}
 
-    public static class NodeCoordinate {
+	public static class NodeCoordinate {
 
-        public MindMapNode target;
-        public boolean asSibling;
-        public boolean isLeft;
+		public MindMapNode target;
+		public boolean asSibling;
+		public boolean isLeft;
 
-        public NodeCoordinate(MindMapNode target, boolean asSibling,
-                boolean isLeft) {
-            this.target = target;
-            this.asSibling = asSibling;
-            this.isLeft = isLeft;
-        }
+		public NodeCoordinate(MindMapNode target, boolean asSibling,
+				boolean isLeft) {
+			this.target = target;
+			this.asSibling = asSibling;
+			this.isLeft = isLeft;
+		}
 
-        public MindMapNode getNode() {
-            if (asSibling) {
-                MindMapNode parentNode = target.getParentNode();
-                return (MindMapNode) parentNode.getChildAt(parentNode.getChildPosition(target) - 1);
-            } else {
-                logger.finest("getChildCount = " + target.getChildCount()
-                        + ", target = " + target);
-                return (MindMapNode) target.getChildAt(target.getChildCount() - 1);
-            }
-        }
+		public MindMapNode getNode() {
+			if (asSibling) {
+				MindMapNode parentNode = target.getParentNode();
+				return (MindMapNode) parentNode.getChildAt(parentNode
+						.getChildPosition(target) - 1);
+			} else {
+				logger.finest("getChildCount = " + target.getChildCount()
+						+ ", target = " + target);
+				return (MindMapNode) target
+						.getChildAt(target.getChildCount() - 1);
+			}
+		}
 
-        public NodeCoordinate(MindMapNode node, boolean isLeft) {
-            this.isLeft = isLeft;
-            MindMapNode parentNode = node.getParentNode();
-            int childPosition = parentNode.getChildPosition(node);
-            if (childPosition == parentNode.getChildCount() - 1) {
-                target = parentNode;
-                asSibling = false;
-            } else {
-                target = (MindMapNode) parentNode.getChildAt(childPosition + 1);
-                asSibling = true;
-            }
-        }
-    }
+		public NodeCoordinate(MindMapNode node, boolean isLeft) {
+			this.isLeft = isLeft;
+			MindMapNode parentNode = node.getParentNode();
+			int childPosition = parentNode.getChildPosition(node);
+			if (childPosition == parentNode.getChildCount() - 1) {
+				target = parentNode;
+				asSibling = false;
+			} else {
+				target = (MindMapNode) parentNode.getChildAt(childPosition + 1);
+				asSibling = true;
+			}
+		}
+	}
 
-    private interface DataFlavorHandler {
+	private interface DataFlavorHandler {
 
-        void paste(Object TransferData, MindMapNode target, boolean asSibling,
-                boolean isLeft, Transferable t)
-                throws UnsupportedFlavorException, IOException;
+		void paste(Object TransferData, MindMapNode target, boolean asSibling,
+				boolean isLeft, Transferable t)
+				throws UnsupportedFlavorException, IOException;
 
-        DataFlavor getDataFlavor();
-    }
+		DataFlavor getDataFlavor();
+	}
 
-    private class FileListFlavorHandler implements DataFlavorHandler {
+	private class FileListFlavorHandler implements DataFlavorHandler {
 
-        public void paste(Object TransferData, MindMapNode target,
-                boolean asSibling, boolean isLeft, Transferable t) {
-            // TODO: Does not correctly interpret asSibling.
-            List fileList = (List) TransferData;
-            for (ListIterator it = fileList.listIterator(); it.hasNext();) {
-                File file = (File) it.next();
-                MindMapNode node = mMindMapController.newNode(file.getName(),
-                        target.getMap());
-                node.setLeft(isLeft);
-                node.setLink(file.getAbsolutePath());
-                insertNodeInto((MindMapNodeModel) node, target, asSibling,
-                        isLeft, false);
-                addUndoAction(node);
-            }
-        }
+		public void paste(Object TransferData, MindMapNode target,
+				boolean asSibling, boolean isLeft, Transferable t) {
+			// TODO: Does not correctly interpret asSibling.
+			List fileList = (List) TransferData;
+			for (ListIterator it = fileList.listIterator(); it.hasNext();) {
+				File file = (File) it.next();
+				MindMapNode node = mMindMapController.newNode(file.getName(),
+						target.getMap());
+				node.setLeft(isLeft);
+				node.setLink(file.getAbsolutePath());
+				insertNodeInto((MindMapNodeModel) node, target, asSibling,
+						isLeft, false);
+				addUndoAction(node);
+			}
+		}
 
-        public DataFlavor getDataFlavor() {
-            return MindMapNodesSelection.fileListFlavor;
-        }
-    }
+		public DataFlavor getDataFlavor() {
+			return MindMapNodesSelection.fileListFlavor;
+		}
+	}
 
-    private class MindMapNodesFlavorHandler implements DataFlavorHandler {
+	private class MindMapNodesFlavorHandler implements DataFlavorHandler {
 
-        public void paste(Object TransferData, MindMapNode target,
-                boolean asSibling, boolean isLeft, Transferable t) {
-            String textFromClipboard = (String) TransferData;
-            if (textFromClipboard != null) {
-                String[] textLines = textFromClipboard.split(ModeController.NODESEPARATOR);
-                if (textLines.length > 1) {
-                    mMindMapController.getFrame().setWaitingCursor(true);
-                }
-                // and now? paste it:
-                String mapContent = MindMapMapModel.MAP_INITIAL_START
-                        + FreeMind.XML_VERSION + "\"><node TEXT=\"DUMMY\">";
-                for (int j = 0; j < textLines.length; j++) {
-                    mapContent += textLines[j];
-                }
-                mapContent += "</node></map>";
-//				logger.info("Pasting " + mapContent);
-                try {
-                    MindMapNode node = mMindMapController.getMindMapMapModel().loadTree(
-                            new MindMapMapModel.StringReaderCreator(
-                            mapContent), false);
-                    int index = 0;
-                    for (ListIterator i = node.childrenUnfolded(); i.hasNext();) {
-                        MindMapNodeModel importNode = (MindMapNodeModel) i.next();
-                        insertNodeInto(importNode, target, asSibling, isLeft,
-                                true);
-                        addUndoAction(importNode);
-                    }
-                    for (ListIterator i = node.childrenUnfolded(); i.hasNext();) {
-                        MindMapNodeModel importNode = (MindMapNodeModel) i.next();
-                        mMindMapController.invokeHooksRecursively(importNode,
-                                mMindMapController.getModel());
-                    }
-                } catch (Exception e) {
-                    // TODO Auto-generated catch block
-                    freemind.main.Resources.getInstance().logException(e);
-                }
-            }
-        }
+		public void paste(Object TransferData, MindMapNode target,
+				boolean asSibling, boolean isLeft, Transferable t) {
+			String textFromClipboard = (String) TransferData;
+			if (textFromClipboard != null) {
+				String[] textLines = textFromClipboard
+						.split(ModeController.NODESEPARATOR);
+				if (textLines.length > 1) {
+					mMindMapController.getFrame().setWaitingCursor(true);
+				}
+				// and now? paste it:
+				String mapContent = MindMapMapModel.MAP_INITIAL_START
+						+ FreeMind.XML_VERSION + "\"><node TEXT=\"DUMMY\">";
+				for (int j = 0; j < textLines.length; j++) {
+					mapContent += textLines[j];
+				}
+				mapContent += "</node></map>";
+				// logger.info("Pasting " + mapContent);
+				try {
+					MindMapNode node = mMindMapController.getMindMapMapModel()
+							.loadTree(
+									new MindMapMapModel.StringReaderCreator(
+											mapContent), false);
+					int index = 0;
+					for (ListIterator i = node.childrenUnfolded(); i.hasNext();) {
+						MindMapNodeModel importNode = (MindMapNodeModel) i
+								.next();
+						insertNodeInto(importNode, target, asSibling, isLeft,
+								true);
+						addUndoAction(importNode);
+					}
+					for (ListIterator i = node.childrenUnfolded(); i.hasNext();) {
+						MindMapNodeModel importNode = (MindMapNodeModel) i
+								.next();
+						mMindMapController.invokeHooksRecursively(importNode,
+								mMindMapController.getModel());
+					}
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					freemind.main.Resources.getInstance().logException(e);
+				}
+			}
+		}
 
-        public DataFlavor getDataFlavor() {
-            return MindMapNodesSelection.mindMapNodesFlavor;
-        }
-    }
-    private static final Pattern HREF_PATTERN = Pattern.compile("<html>\\s*<body>\\s*<a\\s+href=\"([^>]+)\">(.*)</a>\\s*</body>\\s*</html>");
+		public DataFlavor getDataFlavor() {
+			return MindMapNodesSelection.mindMapNodesFlavor;
+		}
+	}
 
-    private class DirectHtmlFlavorHandler implements DataFlavorHandler {
+	private static final Pattern HREF_PATTERN = Pattern
+			.compile("<html>\\s*<body>\\s*<a\\s+href=\"([^>]+)\">(.*)</a>\\s*</body>\\s*</html>");
 
-        public void paste(Object transferData, MindMapNode target,
-                boolean asSibling, boolean isLeft, Transferable t)
-                throws UnsupportedFlavorException, IOException {
-            String textFromClipboard = (String) transferData;
-            // workaround for java decoding bug
-            // http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6740877
-            if (textFromClipboard.charAt(0) == 65533) {
-                throw new UnsupportedFlavorException(
-                        MindMapNodesSelection.htmlFlavor);
-            }
-            // ^ This outputs transfer data to standard output. I don't know
-            // why.
-            // { Alternative pasting of HTML
-            mMindMapController.getFrame().setWaitingCursor(true);
-            textFromClipboard = textFromClipboard.replaceFirst("(?i)(?s)<head>.*</head>", "").replaceFirst("(?i)(?s)^.*<html[^>]*>", "<html>").replaceFirst("(?i)(?s)<body [^>]*>", "<body>").replaceAll("(?i)(?s)<script.*?>.*?</script>", "").replaceAll("(?i)(?s)</?tbody.*?>", ""). // Java HTML Editor
-                    // does not like
-                    // the tag.
-                    replaceAll("(?i)(?s)<!--.*?-->", ""). // Java HTML Editor
-                    // shows comments in
-                    // not very nice
-                    // manner.
-                    replaceAll("(?i)(?s)</?o[^>]*>", ""); // Java HTML Editor
-            // does not like
-            // Microsoft Word's
-            // <o> tag.
+	private class DirectHtmlFlavorHandler implements DataFlavorHandler {
 
-            if (Tools.safeEquals(
-                    mMindMapController.getFrame().getProperty(
-                    "cut_out_pictures_when_pasting_html"), "true")) {
-                textFromClipboard = textFromClipboard.replaceAll(
-                        "(?i)(?s)<img[^>]*>", "");
-            } // Cut out images.
+		public void paste(Object transferData, MindMapNode target,
+				boolean asSibling, boolean isLeft, Transferable t)
+				throws UnsupportedFlavorException, IOException {
+			String textFromClipboard = (String) transferData;
+			// workaround for java decoding bug
+			// http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6740877
+			if (textFromClipboard.charAt(0) == 65533) {
+				throw new UnsupportedFlavorException(
+						MindMapNodesSelection.htmlFlavor);
+			}
+			// ^ This outputs transfer data to standard output. I don't know
+			// why.
+			// { Alternative pasting of HTML
+			mMindMapController.getFrame().setWaitingCursor(true);
+			textFromClipboard = textFromClipboard
+					.replaceFirst("(?i)(?s)<head>.*</head>", "")
+					.replaceFirst("(?i)(?s)^.*<html[^>]*>", "<html>")
+					.replaceFirst("(?i)(?s)<body [^>]*>", "<body>")
+					.replaceAll("(?i)(?s)<script.*?>.*?</script>", "")
+					.replaceAll("(?i)(?s)</?tbody.*?>", ""). // Java HTML Editor
+					// does not like
+					// the tag.
+					replaceAll("(?i)(?s)<!--.*?-->", ""). // Java HTML Editor
+					// shows comments in
+					// not very nice
+					// manner.
+					replaceAll("(?i)(?s)</?o[^>]*>", ""); // Java HTML Editor
+			// does not like
+			// Microsoft Word's
+			// <o> tag.
 
-            textFromClipboard = HtmlTools.unescapeHTMLUnicodeEntity(textFromClipboard);
+			if (Tools.safeEquals(
+					mMindMapController.getFrame().getProperty(
+							"cut_out_pictures_when_pasting_html"), "true")) {
+				textFromClipboard = textFromClipboard.replaceAll(
+						"(?i)(?s)<img[^>]*>", "");
+			} // Cut out images.
 
-            MindMapNode node = mMindMapController.newNode(textFromClipboard,
-                    mMindMapController.getMap());
-            // if only one <a>...</a> element found, set link
-            Matcher m = HREF_PATTERN.matcher(textFromClipboard);
-            if (m.matches()) {
-                final String body = m.group(2);
-                if (!body.matches(".*<\\s*a.*")) {
-                    final String href = m.group(1);
-                    node.setLink(href);
-                }
-            }
+			textFromClipboard = HtmlTools
+					.unescapeHTMLUnicodeEntity(textFromClipboard);
 
-            insertNodeInto(node, target);
-            addUndoAction(node);
-            mMindMapController.getFrame().setWaitingCursor(false);
-        }
+			MindMapNode node = mMindMapController.newNode(textFromClipboard,
+					mMindMapController.getMap());
+			// if only one <a>...</a> element found, set link
+			Matcher m = HREF_PATTERN.matcher(textFromClipboard);
+			if (m.matches()) {
+				final String body = m.group(2);
+				if (!body.matches(".*<\\s*a.*")) {
+					final String href = m.group(1);
+					node.setLink(href);
+				}
+			}
 
-        public DataFlavor getDataFlavor() {
-            return MindMapNodesSelection.htmlFlavor;
-        }
-    }
+			insertNodeInto(node, target);
+			addUndoAction(node);
+			mMindMapController.getFrame().setWaitingCursor(false);
+		}
 
-    private class HtmlFlavorHandler implements DataFlavorHandler {
+		public DataFlavor getDataFlavor() {
+			return MindMapNodesSelection.htmlFlavor;
+		}
+	}
 
-        public void paste(Object TransferData, MindMapNode target,
-                boolean asSibling, boolean isLeft, Transferable t)
-                throws UnsupportedFlavorException, IOException {
-            // System.err.println("htmlFlavor");
-            String textFromClipboard = (String) TransferData;
-            // ^ This outputs transfer data to standard output. I don't know
-            // why.
-            MindMapNode pastedNode = pasteStringWithoutRedisplay(t, target,
-                    asSibling, isLeft);
+	private class HtmlFlavorHandler implements DataFlavorHandler {
 
-            textFromClipboard = textFromClipboard.replaceAll("<!--.*?-->", ""); // remove
-            // HTML
-            // comment
-            String[] links = textFromClipboard.split("<[aA][^>]*[hH][rR][eE][fF]=\"");
+		public void paste(Object TransferData, MindMapNode target,
+				boolean asSibling, boolean isLeft, Transferable t)
+				throws UnsupportedFlavorException, IOException {
+			// System.err.println("htmlFlavor");
+			String textFromClipboard = (String) TransferData;
+			// ^ This outputs transfer data to standard output. I don't know
+			// why.
+			MindMapNode pastedNode = pasteStringWithoutRedisplay(t, target,
+					asSibling, isLeft);
 
-            MindMapNode linkParentNode = null;
-            URL referenceURL = null;
-            boolean baseUrlCanceled = false;
+			textFromClipboard = textFromClipboard.replaceAll("<!--.*?-->", ""); // remove
+			// HTML
+			// comment
+			String[] links = textFromClipboard
+					.split("<[aA][^>]*[hH][rR][eE][fF]=\"");
 
-            for (int i = 1; i < links.length; i++) {
-                String link = links[i].substring(0, links[i].indexOf("\""));
-                String textWithHtml = links[i].replaceAll("^[^>]*>", "").replaceAll("</[aA]>[\\s\\S]*", "");
-                String text = HtmlTools.toXMLUnescapedText(textWithHtml.replaceAll("\\n", "").replaceAll("<[^>]*>", "").trim());
-                if (text.equals("")) {
-                    text = link;
-                }
-                URL linkURL = null;
-                try {
-                    linkURL = new URL(link);
-                } catch (MalformedURLException ex) {
-                    try {
-                        // Either invalid URL or relative URL
-                        if (referenceURL == null && !baseUrlCanceled) {
-                            String referenceURLString = JOptionPane.showInputDialog(mMindMapController.getView().getSelected(),
-                                    mMindMapController.getText("enter_base_url"));
-                            if (referenceURLString == null) {
-                                baseUrlCanceled = true;
-                            } else {
-                                referenceURL = new URL(referenceURLString);
-                            }
-                        }
-                        linkURL = new URL(referenceURL, link);
-                    } catch (MalformedURLException ex2) {
-                    }
-                }
-                if (linkURL != null) {
-                    if (links.length == 2 & pastedNode != null) {
-                        // pastedNode != null iff the number of pasted lines is
-                        // one
-                        // The firts element in links[] array is never a link,
-                        // therefore
-                        // the condition links.length == 2 actually says
-                        // "there is one link".
-                        // Set link directly into node
-                        ((MindMapNodeModel) pastedNode).setLink(linkURL.toString());
-                        break;
-                    }
-                    if (linkParentNode == null) {
-                        linkParentNode = mMindMapController.newNode("Links",
-                                target.getMap());
-                        linkParentNode.setLeft(target.isNewChildLeft());
-                        // Here we cannot set bold, because linkParentNode.font
-                        // is null
-                        insertNodeInto(linkParentNode, target);
-                        ((NodeAdapter) linkParentNode).setBold(true);
-                    }
-                    MindMapNode linkNode = mMindMapController.newNode(text,
-                            target.getMap());
-                    linkNode.setLink(linkURL.toString());
-                    insertNodeInto(linkNode, linkParentNode);
-                }
-            }
-        }
+			MindMapNode linkParentNode = null;
+			URL referenceURL = null;
+			boolean baseUrlCanceled = false;
 
-        public DataFlavor getDataFlavor() {
-            return MindMapNodesSelection.htmlFlavor;
-        }
-    }
+			for (int i = 1; i < links.length; i++) {
+				String link = links[i].substring(0, links[i].indexOf("\""));
+				String textWithHtml = links[i].replaceAll("^[^>]*>", "")
+						.replaceAll("</[aA]>[\\s\\S]*", "");
+				String text = HtmlTools
+						.toXMLUnescapedText(textWithHtml.replaceAll("\\n", "")
+								.replaceAll("<[^>]*>", "").trim());
+				if (text.equals("")) {
+					text = link;
+				}
+				URL linkURL = null;
+				try {
+					linkURL = new URL(link);
+				} catch (MalformedURLException ex) {
+					try {
+						// Either invalid URL or relative URL
+						if (referenceURL == null && !baseUrlCanceled) {
+							String referenceURLString = JOptionPane
+									.showInputDialog(mMindMapController
+											.getView().getSelected(),
+											mMindMapController
+													.getText("enter_base_url"));
+							if (referenceURLString == null) {
+								baseUrlCanceled = true;
+							} else {
+								referenceURL = new URL(referenceURLString);
+							}
+						}
+						linkURL = new URL(referenceURL, link);
+					} catch (MalformedURLException ex2) {
+					}
+				}
+				if (linkURL != null) {
+					if (links.length == 2 & pastedNode != null) {
+						// pastedNode != null iff the number of pasted lines is
+						// one
+						// The firts element in links[] array is never a link,
+						// therefore
+						// the condition links.length == 2 actually says
+						// "there is one link".
+						// Set link directly into node
+						((MindMapNodeModel) pastedNode).setLink(linkURL
+								.toString());
+						break;
+					}
+					if (linkParentNode == null) {
+						linkParentNode = mMindMapController.newNode("Links",
+								target.getMap());
+						linkParentNode.setLeft(target.isNewChildLeft());
+						// Here we cannot set bold, because linkParentNode.font
+						// is null
+						insertNodeInto(linkParentNode, target);
+						((NodeAdapter) linkParentNode).setBold(true);
+					}
+					MindMapNode linkNode = mMindMapController.newNode(text,
+							target.getMap());
+					linkNode.setLink(linkURL.toString());
+					insertNodeInto(linkNode, linkParentNode);
+				}
+			}
+		}
 
-    private class StringFlavorHandler implements DataFlavorHandler {
+		public DataFlavor getDataFlavor() {
+			return MindMapNodesSelection.htmlFlavor;
+		}
+	}
 
-        public void paste(Object TransferData, MindMapNode target,
-                boolean asSibling, boolean isLeft, Transferable t)
-                throws UnsupportedFlavorException, IOException {
-            // System.err.println("stringFlavor");
-            pasteStringWithoutRedisplay(t, target, asSibling, isLeft);
-        }
+	private class StringFlavorHandler implements DataFlavorHandler {
 
-        public DataFlavor getDataFlavor() {
-            return DataFlavor.stringFlavor;
-        }
-    }
+		public void paste(Object TransferData, MindMapNode target,
+				boolean asSibling, boolean isLeft, Transferable t)
+				throws UnsupportedFlavorException, IOException {
+			// System.err.println("stringFlavor");
+			pasteStringWithoutRedisplay(t, target, asSibling, isLeft);
+		}
 
-    private class ImageFlavorHandler implements DataFlavorHandler {
+		public DataFlavor getDataFlavor() {
+			return DataFlavor.stringFlavor;
+		}
+	}
 
-        public void paste(Object transferData, MindMapNode target,
-                boolean asSibling, boolean isLeft, Transferable t)
-                throws UnsupportedFlavorException, IOException {
-            logger.info("imageFlavor");
+	private class ImageFlavorHandler implements DataFlavorHandler {
 
-            mMindMapController.getFrame().setWaitingCursor(true);
+		public void paste(Object transferData, MindMapNode target,
+				boolean asSibling, boolean isLeft, Transferable t)
+				throws UnsupportedFlavorException, IOException {
+			logger.info("imageFlavor");
 
-           /* BufferedImage img = null;
-            try {
-                img = ImageIO.read(new File("image.jpg"));
-            } catch (IOException e) {
-            }*/
-            
-            String imgfile=""+transferData;
-            
-            String strText = "<html><body><img src=\"file:///" + imgfile + "\"/></body></html>";
+			mMindMapController.getFrame().setWaitingCursor(true);
 
-            MindMapNode node = mMindMapController.newNode(strText,
-                    mMindMapController.getMap());
-            // if only one <a>...</a> element found, set link
+			/*
+			 * BufferedImage img = null; try { img = ImageIO.read(new
+			 * File("image.jpg")); } catch (IOException e) { }
+			 */
 
+			String imgfile = "" + transferData;
 
-            insertNodeInto(node, target);
-            addUndoAction(node);
-            mMindMapController.getFrame().setWaitingCursor(false);
+			String strText = "<html><body><img src=\"file:///" + imgfile
+					+ "\"/></body></html>";
 
-        }
+			MindMapNode node = mMindMapController.newNode(strText,
+					mMindMapController.getMap());
+			// if only one <a>...</a> element found, set link
 
-        public DataFlavor getDataFlavor() {
-            return DataFlavor.imageFlavor;
-        }
-    }
+			insertNodeInto(node, target);
+			addUndoAction(node);
+			mMindMapController.getFrame().setWaitingCursor(false);
 
+		}
 
-    /*
+		public DataFlavor getDataFlavor() {
+			return DataFlavor.imageFlavor;
+		}
+	}
+
+	/*
      *
      */
-    private void _paste(Transferable t, MindMapNode target, boolean asSibling,
-            boolean isLeft) {
-        if (t == null) {
-            return;
-        }
-        try {
-            // Uncomment to print obtained data flavors
+	private void _paste(Transferable t, MindMapNode target, boolean asSibling,
+			boolean isLeft) {
+		if (t == null) {
+			return;
+		}
+		try {
+			// Uncomment to print obtained data flavors
 
-            /*
-             * DataFlavor[] fl = t.getTransferDataFlavors(); for (int i = 0; i <
-             * fl.length; i++) { System.out.println(fl[i]); }
-             */
-            if (newNodes == null) {
-                newNodes = new LinkedList();
-            }
-            newNodes.clear();
-            DataFlavorHandler[] dataFlavorHandlerList = getFlavorHandlers();
-            for (int i = 0; i < dataFlavorHandlerList.length; i++) {
-                DataFlavorHandler handler = dataFlavorHandlerList[i];
-                DataFlavor flavor = handler.getDataFlavor();
-                if (t.isDataFlavorSupported(flavor)) {
-                    try {
-                        handler.paste(t.getTransferData(flavor), target,
-                                asSibling, isLeft, t);
-                        break;
-                    } catch (UnsupportedFlavorException e) {
-                    }
-                }
-            }
-            for (ListIterator e = newNodes.listIterator(); e.hasNext();) {
-                final MindMapNodeModel child = (MindMapNodeModel) e.next();
-                mMindMapController.getAttributeController().performRegistrySubtreeAttributes(child);
-            }
-            // pMindMapController.nodeStructureChanged((MindMapNode) (asSibling
-            // ? target.getParent() : target));
+			/*
+			 * DataFlavor[] fl = t.getTransferDataFlavors(); for (int i = 0; i <
+			 * fl.length; i++) { System.out.println(fl[i]); }
+			 */
+			if (newNodes == null) {
+				newNodes = new LinkedList();
+			}
+			newNodes.clear();
+			DataFlavorHandler[] dataFlavorHandlerList = getFlavorHandlers();
+			for (int i = 0; i < dataFlavorHandlerList.length; i++) {
+				DataFlavorHandler handler = dataFlavorHandlerList[i];
+				DataFlavor flavor = handler.getDataFlavor();
+				if (t.isDataFlavorSupported(flavor)) {
+					try {
+						handler.paste(t.getTransferData(flavor), target,
+								asSibling, isLeft, t);
+						break;
+					} catch (UnsupportedFlavorException e) {
+					}
+				}
+			}
+			for (ListIterator e = newNodes.listIterator(); e.hasNext();) {
+				final MindMapNodeModel child = (MindMapNodeModel) e.next();
+				mMindMapController.getAttributeController()
+						.performRegistrySubtreeAttributes(child);
+			}
+			// pMindMapController.nodeStructureChanged((MindMapNode) (asSibling
+			// ? target.getParent() : target));
 
-            // add information about the new nodes ID:
-            addMindMapNodesFlavor();
-        } catch (IOException e) {
-            Resources.getInstance().logException(e);
-        } finally {
-            undoAction = null;
-            pasteAction = null;
-            mMindMapController.getFrame().setWaitingCursor(false);
-        }
-    }
+			// add information about the new nodes ID:
+			addMindMapNodesFlavor();
+		} catch (IOException e) {
+			Resources.getInstance().logException(e);
+		} finally {
+			undoAction = null;
+			pasteAction = null;
+			mMindMapController.getFrame().setWaitingCursor(false);
+		}
+	}
 
-    /**
+	/**
      */
-    private DataFlavorHandler[] getFlavorHandlers() {
-        DataFlavorHandler[] dataFlavorHandlerList = new DataFlavorHandler[]{
-            new ImageFlavorHandler(), new FileListFlavorHandler(), new MindMapNodesFlavorHandler(),
-            new DirectHtmlFlavorHandler(), // %%% Make dependent on an
-            // option?
-            // new HtmlFlavorHandler(),
-            new StringFlavorHandler()};
-        return dataFlavorHandlerList;
-    }
+	private DataFlavorHandler[] getFlavorHandlers() {
+		DataFlavorHandler[] dataFlavorHandlerList = new DataFlavorHandler[] {
+				new ImageFlavorHandler(), new FileListFlavorHandler(),
+				new MindMapNodesFlavorHandler(), new DirectHtmlFlavorHandler(), // %%%
+																				// Make
+																				// dependent
+																				// on
+																				// an
+				// option?
+				// new HtmlFlavorHandler(),
+				new StringFlavorHandler() };
+		return dataFlavorHandlerList;
+	}
 
-    public MindMapNodeModel pasteXMLWithoutRedisplay(String pasted,
-            MindMapNode target, boolean asSibling, boolean changeSide,
-            boolean isLeft, HashMap pIDToTarget) throws XMLParseException {
-        // Call nodeStructureChanged(target) after this function.
-        logger.fine("Pasting " + pasted + " to " + target);
-        try {
-            MindMapNodeModel node = (MindMapNodeModel) mMindMapController.createNodeTreeFromXml(new StringReader(pasted),
-                    pIDToTarget);
-            insertNodeInto(node, target, asSibling, isLeft, changeSide);
-            mMindMapController.invokeHooksRecursively(node,
-                    mMindMapController.getModel());
-            return node;
-        } catch (IOException ee) {
-            freemind.main.Resources.getInstance().logException(ee);
-            return null;
-        }
-    }
+	public MindMapNodeModel pasteXMLWithoutRedisplay(String pasted,
+			MindMapNode target, boolean asSibling, boolean changeSide,
+			boolean isLeft, HashMap pIDToTarget) throws XMLParseException {
+		// Call nodeStructureChanged(target) after this function.
+		logger.fine("Pasting " + pasted + " to " + target);
+		try {
+			MindMapNodeModel node = (MindMapNodeModel) mMindMapController
+					.createNodeTreeFromXml(new StringReader(pasted),
+							pIDToTarget);
+			insertNodeInto(node, target, asSibling, isLeft, changeSide);
+			mMindMapController.invokeHooksRecursively(node,
+					mMindMapController.getModel());
+			return node;
+		} catch (IOException ee) {
+			freemind.main.Resources.getInstance().logException(ee);
+			return null;
+		}
+	}
 
-    private void insertNodeInto(MindMapNodeModel node, MindMapNode target,
-            boolean asSibling, boolean isLeft, boolean changeSide) {
-        MindMapNode parent;
-        if (asSibling) {
-            parent = target.getParentNode();
-        } else {
-            parent = target;
-        }
-        if (changeSide) {
-            node.setParent(parent);
-            node.setLeft(isLeft);
-        }
-        // now, the import is finished. We can inform others about the new
-        // nodes:
-        if (asSibling) {
-            insertNodeInto(node, parent, parent.getChildPosition(target));
-        } else {
-            insertNodeInto(node, target);
-        }
-    }
-    static final Pattern nonLinkCharacter = Pattern.compile("[ \n()'\",;]");
-    private CompoundAction undoAction;
-    private PasteNodeAction pasteAction;
+	private void insertNodeInto(MindMapNodeModel node, MindMapNode target,
+			boolean asSibling, boolean isLeft, boolean changeSide) {
+		MindMapNode parent;
+		if (asSibling) {
+			parent = target.getParentNode();
+		} else {
+			parent = target;
+		}
+		if (changeSide) {
+			node.setParent(parent);
+			node.setLeft(isLeft);
+		}
+		// now, the import is finished. We can inform others about the new
+		// nodes:
+		if (asSibling) {
+			insertNodeInto(node, parent, parent.getChildPosition(target));
+		} else {
+			insertNodeInto(node, target);
+		}
+	}
 
-    /**
-     * Paste String (as opposed to other flavours)
-     * 
-     * Split the text into lines; determine the new tree structure by the number
-     * of leading spaces in lines. In case that trimmed line starts with
-     * protocol (http:, https:, ftp:), create a link with the same content.
-     * 
-     * If there was only one line to be pasted, return the pasted node, null
-     * otherwise.
-     * 
-     * @param isLeft
-     *            TODO
+	static final Pattern nonLinkCharacter = Pattern.compile("[ \n()'\",;]");
+	private CompoundAction undoAction;
+	private PasteNodeAction pasteAction;
+
+	/**
+	 * Paste String (as opposed to other flavours)
+	 * 
+	 * Split the text into lines; determine the new tree structure by the number
+	 * of leading spaces in lines. In case that trimmed line starts with
+	 * protocol (http:, https:, ftp:), create a link with the same content.
+	 * 
+	 * If there was only one line to be pasted, return the pasted node, null
+	 * otherwise.
+	 * 
+	 * @param isLeft
+	 *            TODO
+	 */
+	private MindMapNode pasteStringWithoutRedisplay(Transferable t,
+			MindMapNode parent, boolean asSibling, boolean isLeft)
+			throws UnsupportedFlavorException, IOException {
+
+		String textFromClipboard = (String) t
+				.getTransferData(DataFlavor.stringFlavor);
+		Pattern mailPattern = Pattern.compile("([^@ <>\\*']+@[^@ <>\\*']+)");
+
+		String[] textLines = textFromClipboard.split("\n");
+
+		if (textLines.length > 1) {
+			mMindMapController.getFrame().setWaitingCursor(true);
+		}
+
+		MindMapNode realParent = null;
+		if (asSibling) {
+			// When pasting as sibling, we use virtual node as parent. When the
+			// pasting to
+			// virtual node is completed, we insert the children of that virtual
+			// node to
+			// the parent of real parent.
+			realParent = parent;
+			parent = new MindMapNodeModel(mMindMapController.getFrame(),
+					mMindMapController.getMap());
+		}
+
+		ArrayList parentNodes = new ArrayList();
+		ArrayList parentNodesDepths = new ArrayList();
+
+		parentNodes.add(parent);
+		parentNodesDepths.add(new Integer(-1));
+
+		String[] linkPrefixes = { "http://", "ftp://", "https://" };
+
+		MindMapNode pastedNode = null;
+
+		for (int i = 0; i < textLines.length; ++i) {
+			String text = textLines[i];
+			text = text.replaceAll("\t", "        ");
+			if (text.matches(" *")) {
+				continue;
+			}
+
+			int depth = 0;
+			while (depth < text.length() && text.charAt(depth) == ' ') {
+				++depth;
+			}
+			String visibleText = text.trim();
+
+			// If the text is a recognizable link (e.g.
+			// http://www.google.com/index.html),
+			// make it more readable by look nicer by cutting off obvious prefix
+			// and other
+			// transforamtions.
+
+			if (visibleText.matches("^http://(www\\.)?[^ ]*$")) {
+				visibleText = visibleText.replaceAll("^http://(www\\.)?", "")
+						.replaceAll("(/|\\.[^\\./\\?]*)$", "")
+						.replaceAll("((\\.[^\\./]*\\?)|\\?)[^/]*$", " ? ...")
+						.replaceAll("_|%20", " ");
+				String[] textParts = visibleText.split("/");
+				visibleText = "";
+				for (int textPartIdx = 0; textPartIdx < textParts.length; textPartIdx++) {
+					if (textPartIdx > 0) {
+						visibleText += " > ";
+					}
+					visibleText += textPartIdx == 0 ? textParts[textPartIdx]
+							: Tools.firstLetterCapitalized(textParts[textPartIdx]
+									.replaceAll("^~*", ""));
+				}
+			}
+
+			MindMapNode node = mMindMapController.newNode(visibleText,
+					parent.getMap());
+			if (textLines.length == 1) {
+				pastedNode = node;
+			}
+
+			// Heuristically determine, if there is a mail.
+
+			Matcher mailMatcher = mailPattern.matcher(visibleText);
+			if (mailMatcher.find()) {
+				node.setLink("mailto:" + mailMatcher.group());
+			}
+
+			// Heuristically determine, if there is a link. Because this is
+			// heuristic, it is probable that it can be improved to include
+			// some matches or exclude some matches.
+
+			for (int j = 0; j < linkPrefixes.length; j++) {
+				int linkStart = text.indexOf(linkPrefixes[j]);
+				if (linkStart != -1) {
+					int linkEnd = linkStart;
+					while (linkEnd < text.length()
+							&& !nonLinkCharacter.matcher(
+									text.substring(linkEnd, linkEnd + 1))
+									.matches()) {
+						linkEnd++;
+					}
+					node.setLink(text.substring(linkStart, linkEnd));
+				}
+			}
+
+			// Determine parent among candidate parents
+			// Change the array of candidate parents accordingly
+
+			for (int j = parentNodes.size() - 1; j >= 0; --j) {
+				if (depth > ((Integer) parentNodesDepths.get(j)).intValue()) {
+					for (int k = j + 1; k < parentNodes.size(); ++k) {
+						MindMapNode n = (MindMapNode) parentNodes.get(k);
+						if (n.getParentNode() == parent) {
+							addUndoAction(n);
+						}
+						parentNodes.remove(k);
+						parentNodesDepths.remove(k);
+					}
+					MindMapNode target = (MindMapNode) parentNodes.get(j);
+					node.setLeft(isLeft);
+					insertNodeInto(node, target);
+					parentNodes.add(node);
+					parentNodesDepths.add(new Integer(depth));
+					break;
+				}
+			}
+		}
+
+		for (int k = 0; k < parentNodes.size(); ++k) {
+			MindMapNode n = (MindMapNode) parentNodes.get(k);
+			if (n.getParentNode() == parent) {
+				addUndoAction(n);
+			}
+		}
+		return pastedNode;
+	}
+
+	/**
      */
-    private MindMapNode pasteStringWithoutRedisplay(Transferable t,
-            MindMapNode parent, boolean asSibling, boolean isLeft)
-            throws UnsupportedFlavorException, IOException {
+	private void insertNodeInto(MindMapNodeModel node, MindMapNode parent, int i) {
+		mMindMapController.insertNodeInto(node, parent, i);
+	}
 
-        String textFromClipboard = (String) t.getTransferData(DataFlavor.stringFlavor);
-        Pattern mailPattern = Pattern.compile("([^@ <>\\*']+@[^@ <>\\*']+)");
+	private void insertNodeInto(MindMapNode node, MindMapNode parent) {
+		mMindMapController.insertNodeInto(node, parent);
+	}
 
-        String[] textLines = textFromClipboard.split("\n");
+	private TransferableContent getTransferableContent(Transferable t) {
 
-        if (textLines.length > 1) {
-            mMindMapController.getFrame().setWaitingCursor(true);
-        }
+		try {
+			TransferableContent trans = new TransferableContent();
+			if (t.isDataFlavorSupported(MindMapNodesSelection.mindMapNodesFlavor)) {
+				String textFromClipboard;
+				textFromClipboard = (String) t
+						.getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
+				trans.setTransferable(textFromClipboard);
+			}
+			if (t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+				String textFromClipboard;
+				textFromClipboard = (String) t
+						.getTransferData(DataFlavor.stringFlavor);
+				trans.setTransferableAsPlainText(textFromClipboard);
+			}
+			if (t.isDataFlavorSupported(MindMapNodesSelection.rtfFlavor)) {
+				// byte[] textFromClipboard = (byte[])
+				// t.getTransferData(MindMapNodesSelection.rtfFlavor);
+				// trans.setTransferableAsRTF(textFromClipboard.toString());
+			}
+			if (t.isDataFlavorSupported(MindMapNodesSelection.htmlFlavor)) {
+				String textFromClipboard;
+				textFromClipboard = (String) t
+						.getTransferData(MindMapNodesSelection.htmlFlavor);
+				trans.setTransferableAsHtml(textFromClipboard);
+			}
+			if (t.isDataFlavorSupported(MindMapNodesSelection.fileListFlavor)) {
+				/*
+				 * Since the JAXB-generated interface TransferableContent
+				 * doesn't supply a setTranserableAsFileList method, we have to
+				 * get the fileList, clear it, and then set it to the new value.
+				 */
+				List fileList = (List) t
+						.getTransferData(MindMapNodesSelection.fileListFlavor);
+				for (Iterator iter = fileList.iterator(); iter.hasNext();) {
+					File fileName = (File) iter.next();
+					TransferableFile transferableFile = new TransferableFile();
+					transferableFile.setFileName(fileName.getAbsolutePath());
+					trans.addTransferableFile(transferableFile);
+				}
+			}
+			if (t.isDataFlavorSupported(DataFlavor.imageFlavor) == true) {
+				logger.info("image...");
 
-        MindMapNode realParent = null;
-        if (asSibling) {
-            // When pasting as sibling, we use virtual node as parent. When the
-            // pasting to
-            // virtual node is completed, we insert the children of that virtual
-            // node to
-            // the parent of real parent.
-            realParent = parent;
-            parent = new MindMapNodeModel(mMindMapController.getFrame(),
-                    mMindMapController.getMap());
-        }
+				// create clipboard object
+				Clipboard clipboard = Toolkit.getDefaultToolkit()
+						.getSystemClipboard();
+				try {
+					// Get data from clipboard and assign it to an image.
+					// clipboard.getData() returns an object, so we need to cast
+					// it to a BufferdImage.
+					BufferedImage image = (BufferedImage) clipboard
+							.getData(DataFlavor.imageFlavor);
 
-        ArrayList parentNodes = new ArrayList();
-        ArrayList parentNodesDepths = new ArrayList();
+					TransferableImage timg = new TransferableImage();
 
-        parentNodes.add(parent);
-        parentNodesDepths.add(new Integer(-1));
-
-        String[] linkPrefixes = {"http://", "ftp://", "https://"};
-
-        MindMapNode pastedNode = null;
-
-        for (int i = 0; i < textLines.length; ++i) {
-            String text = textLines[i];
-            text = text.replaceAll("\t", "        ");
-            if (text.matches(" *")) {
-                continue;
-            }
-
-            int depth = 0;
-            while (depth < text.length() && text.charAt(depth) == ' ') {
-                ++depth;
-            }
-            String visibleText = text.trim();
-
-            // If the text is a recognizable link (e.g.
-            // http://www.google.com/index.html),
-            // make it more readable by look nicer by cutting off obvious prefix
-            // and other
-            // transforamtions.
-
-            if (visibleText.matches("^http://(www\\.)?[^ ]*$")) {
-                visibleText = visibleText.replaceAll("^http://(www\\.)?", "").replaceAll("(/|\\.[^\\./\\?]*)$", "").replaceAll("((\\.[^\\./]*\\?)|\\?)[^/]*$", " ? ...").replaceAll("_|%20", " ");
-                String[] textParts = visibleText.split("/");
-                visibleText = "";
-                for (int textPartIdx = 0; textPartIdx < textParts.length; textPartIdx++) {
-                    if (textPartIdx > 0) {
-                        visibleText += " > ";
-                    }
-                    visibleText += textPartIdx == 0 ? textParts[textPartIdx]
-                            : Tools.firstLetterCapitalized(textParts[textPartIdx].replaceAll("^~*", ""));
-                }
-            }
-
-            MindMapNode node = mMindMapController.newNode(visibleText,
-                    parent.getMap());
-            if (textLines.length == 1) {
-                pastedNode = node;
-            }
-
-            // Heuristically determine, if there is a mail.
-
-            Matcher mailMatcher = mailPattern.matcher(visibleText);
-            if (mailMatcher.find()) {
-                node.setLink("mailto:" + mailMatcher.group());
-            }
-
-            // Heuristically determine, if there is a link. Because this is
-            // heuristic, it is probable that it can be improved to include
-            // some matches or exclude some matches.
-
-            for (int j = 0; j < linkPrefixes.length; j++) {
-                int linkStart = text.indexOf(linkPrefixes[j]);
-                if (linkStart != -1) {
-                    int linkEnd = linkStart;
-                    while (linkEnd < text.length()
-                            && !nonLinkCharacter.matcher(
-                            text.substring(linkEnd, linkEnd + 1)).matches()) {
-                        linkEnd++;
-                    }
-                    node.setLink(text.substring(linkStart, linkEnd));
-                }
-            }
-
-            // Determine parent among candidate parents
-            // Change the array of candidate parents accordingly
-
-            for (int j = parentNodes.size() - 1; j >= 0; --j) {
-                if (depth > ((Integer) parentNodesDepths.get(j)).intValue()) {
-                    for (int k = j + 1; k < parentNodes.size(); ++k) {
-                        MindMapNode n = (MindMapNode) parentNodes.get(k);
-                        if (n.getParentNode() == parent) {
-                            addUndoAction(n);
-                        }
-                        parentNodes.remove(k);
-                        parentNodesDepths.remove(k);
-                    }
-                    MindMapNode target = (MindMapNode) parentNodes.get(j);
-                    node.setLeft(isLeft);
-                    insertNodeInto(node, target);
-                    parentNodes.add(node);
-                    parentNodesDepths.add(new Integer(depth));
-                    break;
-                }
-            }
-        }
-
-        for (int k = 0; k < parentNodes.size(); ++k) {
-            MindMapNode n = (MindMapNode) parentNodes.get(k);
-            if (n.getParentNode() == parent) {
-                addUndoAction(n);
-            }
-        }
-        return pastedNode;
-    }
-
-    /**
-     */
-    private void insertNodeInto(MindMapNodeModel node, MindMapNode parent, int i) {
-        mMindMapController.insertNodeInto(node, parent, i);
-    }
-
-    private void insertNodeInto(MindMapNode node, MindMapNode parent) {
-        mMindMapController.insertNodeInto(node, parent);
-    }
-
-    private TransferableContent getTransferableContent(Transferable t) {
-
-        try {
-            TransferableContent trans = new TransferableContent();
-            if (t.isDataFlavorSupported(MindMapNodesSelection.mindMapNodesFlavor)) {
-                String textFromClipboard;
-                textFromClipboard = (String) t.getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
-                trans.setTransferable(textFromClipboard);
-            }
-            if (t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-                String textFromClipboard;
-                textFromClipboard = (String) t.getTransferData(DataFlavor.stringFlavor);
-                trans.setTransferableAsPlainText(textFromClipboard);
-            }
-            if (t.isDataFlavorSupported(MindMapNodesSelection.rtfFlavor)) {
-                // byte[] textFromClipboard = (byte[])
-                // t.getTransferData(MindMapNodesSelection.rtfFlavor);
-                // trans.setTransferableAsRTF(textFromClipboard.toString());
-            }
-            if (t.isDataFlavorSupported(MindMapNodesSelection.htmlFlavor)) {
-                String textFromClipboard;
-                textFromClipboard = (String) t.getTransferData(MindMapNodesSelection.htmlFlavor);
-                trans.setTransferableAsHtml(textFromClipboard);
-            }
-            if (t.isDataFlavorSupported(MindMapNodesSelection.fileListFlavor)) {
-                /*
-                 * Since the JAXB-generated interface TransferableContent
-                 * doesn't supply a setTranserableAsFileList method, we have to
-                 * get the fileList, clear it, and then set it to the new value.
-                 */
-                List fileList = (List) t.getTransferData(MindMapNodesSelection.fileListFlavor);
-                for (Iterator iter = fileList.iterator(); iter.hasNext();) {
-                    File fileName = (File) iter.next();
-                    TransferableFile transferableFile = new TransferableFile();
-                    transferableFile.setFileName(fileName.getAbsolutePath());
-                    trans.addTransferableFile(transferableFile);
-                }
-            }
-            if (t.isDataFlavorSupported(DataFlavor.imageFlavor) == true) {
-                logger.info("image...");
-
-                //create clipboard object
-                Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-                try {
-                    //Get data from clipboard and assign it to an image.
-                    //clipboard.getData() returns an object, so we need to cast it to a BufferdImage.
-                    BufferedImage image = (BufferedImage) clipboard.getData(DataFlavor.imageFlavor);
-
-
-                    TransferableImage timg = new TransferableImage();
-
-                    File mindmapFile = mMindMapController.getMap().getFile();
-                    if(mindmapFile == null) {
-                        JOptionPane.showMessageDialog(mMindMapController.getView(), mMindMapController
-                                .getText("map_not_saved"), "FreeMind", JOptionPane.ERROR_MESSAGE);
-                        return null;
-                    }
+					File mindmapFile = mMindMapController.getMap().getFile();
+					if (mindmapFile == null) {
+						JOptionPane.showMessageDialog(
+								mMindMapController.getView(),
+								mMindMapController.getText("map_not_saved"),
+								"FreeMind", JOptionPane.ERROR_MESSAGE);
+						return null;
+					}
 					File tempFile = File
 							.createTempFile(
-									mindmapFile.getName().replace(FreeMindCommon.FREEMIND_FILE_EXTENSION, "_"),
-									".jpeg",
-									mindmapFile.getParentFile());
+									mindmapFile
+											.getName()
+											.replace(
+													FreeMindCommon.FREEMIND_FILE_EXTENSION,
+													"_"), ".jpeg", mindmapFile
+											.getParentFile());
 
-                    String imgfilepath=tempFile.getAbsolutePath();
-//                    File f=new File("img");
-//                    if(!f.exists() || !f.isDirectory())
-//                    {
-//                        f.mkdir();
-//                    }
-                    timg.setImage(imgfilepath);
+					String imgfilepath = tempFile.getAbsolutePath();
+					// File f=new File("img");
+					// if(!f.exists() || !f.isDirectory())
+					// {
+					// f.mkdir();
+					// }
+					timg.setImage(imgfilepath);
 
-                    trans.addTransferableImage(timg);
+					trans.addTransferableImage(timg);
 
-                    //file that we'll save to disk.
-                    File file = new File(imgfilepath);
+					// file that we'll save to disk.
+					File file = new File(imgfilepath);
 
-                    //class to write image to disk.  You specify the image to be saved, its type,
-                    // and then the file in which to write the image data.
-                    ImageIO.write(image, "jpg", file);
+					// class to write image to disk. You specify the image to be
+					// saved, its type,
+					// and then the file in which to write the image data.
+					ImageIO.write(image, "jpg", file);
 
+					trans.setTransferableAsImage(imgfilepath);
 
-                    trans.setTransferableAsImage(imgfilepath);
+				} // getData throws this.
+				catch (UnsupportedFlavorException ufe) {
+					ufe.printStackTrace();
+				} catch (IOException ioe) {
+					ioe.printStackTrace();
+				}
 
-                } //getData throws this.
-                catch (UnsupportedFlavorException ufe) {
-                    ufe.printStackTrace();
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
-                }
+			}
+			return trans;
+		} catch (UnsupportedFlavorException e) {
+			freemind.main.Resources.getInstance().logException(e);
+		} catch (IOException e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
+		return null;
+	}
 
+	private Transferable getTransferable(TransferableContent trans) {
+		// create Transferable:
+		// Add file list to this selection.
+		Vector fileList = new Vector();
+		for (Iterator iter = trans.getListTransferableFileList().iterator(); iter
+				.hasNext();) {
+			TransferableFile tFile = (TransferableFile) iter.next();
+			fileList.add(new File(tFile.getFileName()));
+		}
+		Transferable copy = new MindMapNodesSelection(trans.getTransferable(),
+				trans.getTransferableAsImage(),
+				trans.getTransferableAsPlainText(),
+				trans.getTransferableAsRTF(), trans.getTransferableAsHtml(),
+				trans.getTransferableAsDrop(), fileList, null);
+		return copy;
+	}
 
-            }
-            return trans;
-        } catch (UnsupportedFlavorException e) {
-            freemind.main.Resources.getInstance().logException(e);
-        } catch (IOException e) {
-            freemind.main.Resources.getInstance().logException(e);
-        }
-        return null;
-    }
-
-    private Transferable getTransferable(TransferableContent trans) {
-        // create Transferable:
-        // Add file list to this selection.
-        Vector fileList = new Vector();
-        for (Iterator iter = trans.getListTransferableFileList().iterator(); iter.hasNext();) {
-            TransferableFile tFile = (TransferableFile) iter.next();
-            fileList.add(new File(tFile.getFileName()));
-        }
-        Transferable copy = new MindMapNodesSelection(trans.getTransferable(),
-                trans.getTransferableAsImage(),
-                trans.getTransferableAsPlainText(),
-                trans.getTransferableAsRTF(), trans.getTransferableAsHtml(),
-                trans.getTransferableAsDrop(), fileList, null);
-        return copy;
-    }
-
-    private void addUndoAction(MindMapNode node) {
-        if (undoAction != null) {
-            CutNodeAction cutNodeAction = mMindMapController.cut.getCutNodeAction(node);
-            undoAction.addAtChoice(0, cutNodeAction);
-        }
-    }
+	private void addUndoAction(MindMapNode node) {
+		if (undoAction != null) {
+			CutNodeAction cutNodeAction = mMindMapController.cut
+					.getCutNodeAction(node);
+			undoAction.addAtChoice(0, cutNodeAction);
+		}
+	}
 }

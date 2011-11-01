@@ -25,34 +25,30 @@ package freemind.preferences.layout;
 //{{{ Imports
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
-//import org.gjt.sp.jedit.Debug;
-//}}}
 
 /**
  * Various hacks to get keyboard event handling to behave in a consistent manner
  * across Java implementations.
- *
+ * 
  * @author Slava Pestov
- * @version $Id: KeyEventWorkaround.java,v 1.1.2.1 2005/05/10 20:55:31 christianfoltin Exp $
+ * @version $Id: KeyEventWorkaround.java,v 1.1.2.1 2005/05/10 20:55:31
+ *          christianfoltin Exp $
  */
-public class KeyEventWorkaround
-{
+public class KeyEventWorkaround {
 	public static final boolean ALT_KEY_PRESSED_DISABLED = false;
 	public static final boolean ALTERNATIVE_DISPATCHER = false;
-	//{{{ processKeyEvent() method
-	public static KeyEvent processKeyEvent(KeyEvent evt)
-	{
+
+	// {{{ processKeyEvent() method
+	public static KeyEvent processKeyEvent(KeyEvent evt) {
 		int keyCode = evt.getKeyCode();
 		char ch = evt.getKeyChar();
 
-		switch(evt.getID())
-		{
-		//{{{ KEY_PRESSED...
+		switch (evt.getID()) {
+		// {{{ KEY_PRESSED...
 		case KeyEvent.KEY_PRESSED:
 			lastKeyTime = evt.getWhen();
 			// get rid of keys we never need to handle
-			switch(keyCode)
-			{
+			switch (keyCode) {
 			case KeyEvent.VK_DEAD_GRAVE:
 			case KeyEvent.VK_DEAD_ACUTE:
 			case KeyEvent.VK_DEAD_CIRCUMFLEX:
@@ -87,42 +83,32 @@ public class KeyEventWorkaround
 				modifiers |= InputEvent.META_MASK;
 				return null;
 			default:
-				if(!evt.isMetaDown())
-				{
-					if(evt.isControlDown()
-						&& evt.isAltDown())
-					{
+				if (!evt.isMetaDown()) {
+					if (evt.isControlDown() && evt.isAltDown()) {
 						lastKeyTime = 0L;
-					}
-					else if(!evt.isControlDown()
-						&& !evt.isAltDown())
-					{
+					} else if (!evt.isControlDown() && !evt.isAltDown()) {
 						lastKeyTime = 0L;
 
-						if(keyCode >= KeyEvent.VK_0
-							&& keyCode <= KeyEvent.VK_9)
-						{
+						if (keyCode >= KeyEvent.VK_0
+								&& keyCode <= KeyEvent.VK_9) {
 							return null;
 						}
 
-						if(keyCode >= KeyEvent.VK_A
-							&& keyCode <= KeyEvent.VK_Z)
-						{
+						if (keyCode >= KeyEvent.VK_A
+								&& keyCode <= KeyEvent.VK_Z) {
 							return null;
 						}
 					}
 				}
 
-				if(ALT_KEY_PRESSED_DISABLED)
-				{
+				if (ALT_KEY_PRESSED_DISABLED) {
 					/* we don't handle key pressed A+ */
 					/* they're too troublesome */
-					if((modifiers & InputEvent.ALT_MASK) != 0)
+					if ((modifiers & InputEvent.ALT_MASK) != 0)
 						return null;
 				}
 
-				switch(keyCode)
-				{
+				switch (keyCode) {
 				case KeyEvent.VK_NUMPAD0:
 				case KeyEvent.VK_NUMPAD1:
 				case KeyEvent.VK_NUMPAD2:
@@ -135,7 +121,7 @@ public class KeyEventWorkaround
 				case KeyEvent.VK_NUMPAD9:
 				case KeyEvent.VK_MULTIPLY:
 				case KeyEvent.VK_ADD:
-				/* case KeyEvent.VK_SEPARATOR: */
+					/* case KeyEvent.VK_SEPARATOR: */
 				case KeyEvent.VK_SUBTRACT:
 				case KeyEvent.VK_DECIMAL:
 				case KeyEvent.VK_DIVIDE:
@@ -148,47 +134,37 @@ public class KeyEventWorkaround
 
 				return evt;
 			}
-		//}}}
-		//{{{ KEY_TYPED...
+			// }}}
+			// {{{ KEY_TYPED...
 		case KeyEvent.KEY_TYPED:
 			// need to let \b through so that backspace will work
 			// in HistoryTextFields
-			if((ch < 0x20 || ch == 0x7f || ch == 0xff)
-				&& ch != '\b' && ch != '\t' && ch != '\n')
-			{
+			if ((ch < 0x20 || ch == 0x7f || ch == 0xff) && ch != '\b'
+					&& ch != '\t' && ch != '\n') {
 				return null;
 			}
 
-			if(evt.getWhen() - lastKeyTime < 750)
-			{
-				if(! ALTERNATIVE_DISPATCHER)
-				{
-					if(((modifiers & InputEvent.CTRL_MASK) != 0
-						^ (modifiers & InputEvent.ALT_MASK) != 0)
-						|| (modifiers & InputEvent.META_MASK) != 0)
-					{
+			if (evt.getWhen() - lastKeyTime < 750) {
+				if (!ALTERNATIVE_DISPATCHER) {
+					if (((modifiers & InputEvent.CTRL_MASK) != 0 ^ (modifiers & InputEvent.ALT_MASK) != 0)
+							|| (modifiers & InputEvent.META_MASK) != 0) {
 						return null;
 					}
 				}
 
 				// if the last key was a numeric keypad key
 				// and NumLock is off, filter it out
-				if(last == LAST_NUMKEYPAD)
-				{
+				if (last == LAST_NUMKEYPAD) {
 					last = LAST_NOTHING;
-					if((ch >= '0' && ch <= '9') || ch == '.'
-						|| ch == '/' || ch == '*'
-						|| ch == '-' || ch == '+')
-					{
+					if ((ch >= '0' && ch <= '9') || ch == '.' || ch == '/'
+							|| ch == '*' || ch == '-' || ch == '+') {
 						return null;
 					}
 				}
 				// Windows JDK workaround
-				else if(last == LAST_ALT)
-				{
+				else if (last == LAST_ALT) {
 					last = LAST_NOTHING;
-					switch(ch)
-					{
+					switch (ch) {
 					case 'B':
 					case 'M':
 					case 'X':
@@ -199,13 +175,9 @@ public class KeyEventWorkaround
 						return null;
 					}
 				}
-			}
-			else
-			{
-				if((modifiers & InputEvent.SHIFT_MASK) != 0)
-				{
-					switch(ch)
-					{
+			} else {
+				if ((modifiers & InputEvent.SHIFT_MASK) != 0) {
+					switch (ch) {
 					case '\n':
 					case '\t':
 						return null;
@@ -215,11 +187,10 @@ public class KeyEventWorkaround
 			}
 
 			return evt;
-		//}}}
-		//{{{ KEY_RELEASED...
+			// }}}
+			// {{{ KEY_RELEASED...
 		case KeyEvent.KEY_RELEASED:
-			switch(keyCode)
-			{
+			switch (keyCode) {
 			case KeyEvent.VK_ALT:
 				modifiers &= ~InputEvent.ALT_MASK;
 				lastKeyTime = evt.getWhen();
@@ -248,38 +219,39 @@ public class KeyEventWorkaround
 			case KeyEvent.VK_PAGE_DOWN:
 			case KeyEvent.VK_END:
 			case KeyEvent.VK_HOME:
-				/* workaround for A+keys producing
-				 * garbage on Windows */
-				if(modifiers == InputEvent.ALT_MASK)
+				/*
+				 * workaround for A+keys producing garbage on Windows
+				 */
+				if (modifiers == InputEvent.ALT_MASK)
 					last = LAST_ALT;
 				break;
 			}
 			return evt;
-		//}}}
+			// }}}
 		default:
 			return evt;
 		}
-	} //}}}
+	} // }}}
 
-	//{{{ numericKeypadKey() method
+	// {{{ numericKeypadKey() method
 	/**
 	 * A workaround for non-working NumLock status in some Java versions.
+	 * 
 	 * @since jEdit 4.0pre8
 	 */
-	public static void numericKeypadKey()
-	{
+	public static void numericKeypadKey() {
 		last = LAST_NOTHING;
-	} //}}}
+	} // }}}
 
-	//{{{ Package-private members
+	// {{{ Package-private members
 	static long lastKeyTime;
 	static int modifiers;
-	//}}}
+	// }}}
 
-	//{{{ Private members
+	// {{{ Private members
 	private static int last;
 	private static final int LAST_NOTHING = 0;
 	private static final int LAST_NUMKEYPAD = 1;
 	private static final int LAST_ALT = 2;
-	//}}}
+	// }}}
 }

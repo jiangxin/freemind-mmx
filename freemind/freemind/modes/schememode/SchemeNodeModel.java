@@ -20,89 +20,97 @@
 
 package freemind.modes.schememode;
 
-import freemind.main.FreeMindMain;
-import freemind.modes.MindMap;
-import freemind.modes.NodeAdapter;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
+import freemind.main.FreeMindMain;
+import freemind.modes.MindMap;
+import freemind.modes.NodeAdapter;
+
 /**
- * This class represents a single Node of a Tree. It contains direct handles 
- * to its parent and children and to its view.
+ * This class represents a single Node of a Tree. It contains direct handles to
+ * its parent and children and to its view.
  */
 public class SchemeNodeModel extends NodeAdapter {
 
-    //
-    //  Constructors
-    //
+	//
+	// Constructors
+	//
 
-    public SchemeNodeModel(FreeMindMain frame, MindMap map) {
-	super(frame, map);
-	children = new LinkedList();
-	setEdge(new SchemeEdgeModel(this,getFrame()));
-    }
-
-    public String toString() {
-	if (this.isRoot()) {
-	    return "Scheme";
-	} else {
-	    String ret = super.toString();
-	    if (ret == "no text") {
-		ret = " ";
-	    }
-	    return ret;
+	public SchemeNodeModel(FreeMindMain frame, MindMap map) {
+		super(frame, map);
+		children = new LinkedList();
+		setEdge(new SchemeEdgeModel(this, getFrame()));
 	}
-    }
 
-    public String getCodeMathStyle() {
-	String code="";
-	if (this.isRoot()) {
-	    ListIterator it = childrenUnfolded();
-	    if (it != null) {
-		while (it.hasNext()) {
-		    code = code +  ((SchemeNodeModel)it.next()).getCodeMathStyle();
+	public String toString() {
+		if (this.isRoot()) {
+			return "Scheme";
+		} else {
+			String ret = super.toString();
+			if (ret == "no text") {
+				ret = " ";
+			}
+			return ret;
 		}
-	    }
-	} else {
-	    code = toString().trim()+" ";
-	    if (getChildCount() > 0) {
-		code = "(" + code;
-		ListIterator it = childrenUnfolded();
-		if (it != null) {
-		    while (it.hasNext()) {
-			code = code + ((SchemeNodeModel)it.next()).getCodeMathStyle();
-		    }
-		}
-		code = code +")";		
-	    }
 	}
-	return code;
-    }
 
-    public String getCodeClassicStyle() {
-	String code="";
-	if (this.isRoot()) {
-	    ListIterator it = childrenUnfolded();
-	    if (it != null) {
-		while (it.hasNext()) {
-		    code = code + ((SchemeNodeModel)it.next()).getCodeClassicStyle() + ",";
+	public String getCodeMathStyle() {
+		String code = "";
+		if (this.isRoot()) {
+			ListIterator it = childrenUnfolded();
+			if (it != null) {
+				while (it.hasNext()) {
+					code = code
+							+ ((SchemeNodeModel) it.next()).getCodeMathStyle();
+				}
+			}
+		} else {
+			code = toString().trim() + " ";
+			if (getChildCount() > 0) {
+				code = "(" + code;
+				ListIterator it = childrenUnfolded();
+				if (it != null) {
+					while (it.hasNext()) {
+						code = code
+								+ ((SchemeNodeModel) it.next())
+										.getCodeMathStyle();
+					}
+				}
+				code = code + ")";
+			}
 		}
-	    }
-	} else {
-	    code = toString().trim();
-	    if(code.equals("")) {
-		code = "(";
-		ListIterator it = childrenUnfolded();
-		if (it != null) {
-		    while (it.hasNext()) {
-			code = code + ((SchemeNodeModel)it.next()).getCodeClassicStyle() + " ";
-		    }
-		}
-		code = code +")";
-	    }
+		return code;
 	}
-	return code;
-    }
+
+	public String getCodeClassicStyle() {
+		String code = "";
+		if (this.isRoot()) {
+			ListIterator it = childrenUnfolded();
+			if (it != null) {
+				while (it.hasNext()) {
+					code = code
+							+ ((SchemeNodeModel) it.next())
+									.getCodeClassicStyle() + ",";
+				}
+			}
+		} else {
+			code = toString().trim();
+			if (code.equals("")) {
+				code = "(";
+				ListIterator it = childrenUnfolded();
+				if (it != null) {
+					while (it.hasNext()) {
+						code = code
+								+ ((SchemeNodeModel) it.next())
+										.getCodeClassicStyle() + " ";
+					}
+				}
+				code = code + ")";
+			}
+		}
+		return code;
+	}
 
 	public boolean isWriteable() {
 		return true;

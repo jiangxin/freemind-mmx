@@ -40,9 +40,10 @@ import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 /**
  * @author foltin
- *
+ * 
  */
-public class CloudAction extends NodeGeneralAction implements NodeActorXml, MenuItemSelectedListener {
+public class CloudAction extends NodeGeneralAction implements NodeActorXml,
+		MenuItemSelectedListener {
 
 	public CloudAction(MindMapController controller) {
 		super(controller, "cloud", "images/Cloud24.gif");
@@ -53,40 +54,37 @@ public class CloudAction extends NodeGeneralAction implements NodeActorXml, Menu
 		return AddCloudXmlAction.class;
 	}
 
-	public ActionPair apply(MindMap model, MindMapNode selected)
-			 {
+	public ActionPair apply(MindMap model, MindMapNode selected) {
 		ActionPair pair = getActionPair(selected, selected.getCloud() == null);
 		return pair;
 	}
 
 	public void setCloud(MindMapNode node, boolean enable) {
 		modeController.getActionFactory().startTransaction(
-        		(String) getValue(NAME));
-        modeController.getActionFactory().executeAction(
-        		getActionPair(node, enable));
-        modeController.getActionFactory().endTransaction(
-        		(String) getValue(NAME));
+				(String) getValue(NAME));
+		modeController.getActionFactory().executeAction(
+				getActionPair(node, enable));
+		modeController.getActionFactory().endTransaction(
+				(String) getValue(NAME));
 
 	}
 
-	private ActionPair getActionPair(MindMapNode selected, boolean enable)
-			 {
+	private ActionPair getActionPair(MindMapNode selected, boolean enable) {
 		AddCloudXmlAction cloudAction = createAddCloudXmlAction(selected,
 				enable, null);
 		AddCloudXmlAction undocloudAction = null;
 		if (selected.getCloud() != null) {
-			undocloudAction = createAddCloudXmlAction(
-					selected, true, selected.getCloud().getColor());
+			undocloudAction = createAddCloudXmlAction(selected, true, selected
+					.getCloud().getColor());
 		} else {
-			undocloudAction = createAddCloudXmlAction(
-					selected, false, null);
+			undocloudAction = createAddCloudXmlAction(selected, false, null);
 
 		}
 		return new ActionPair(cloudAction, undocloudAction);
 	}
 
 	private AddCloudXmlAction createAddCloudXmlAction(MindMapNode selected,
-			boolean enable, Color color)  {
+			boolean enable, Color color) {
 		AddCloudXmlAction nodecloudAction = new AddCloudXmlAction();
 		nodecloudAction.setNode(getNodeID(selected));
 		nodecloudAction.setEnabled(enable);
@@ -100,7 +98,7 @@ public class CloudAction extends NodeGeneralAction implements NodeActorXml, Menu
 			MindMapNode node = getNodeFromID(nodecloudAction.getNode());
 			if ((node.getCloud() == null) == nodecloudAction.getEnabled()) {
 				if (nodecloudAction.getEnabled()) {
-					if(node.isRoot()) {
+					if (node.isRoot()) {
 						return;
 					}
 					node.setCloud(new MindMapCloudModel(node,
@@ -108,7 +106,7 @@ public class CloudAction extends NodeGeneralAction implements NodeActorXml, Menu
 					if (nodecloudAction.getColor() != null) {
 						Color color = Tools.xmlToColor(nodecloudAction
 								.getColor());
-						((MindMapCloudModel)node.getCloud()).setColor(color);
+						((MindMapCloudModel) node.getCloud()).setColor(color);
 					}
 				} else {
 					node.setCloud(null);

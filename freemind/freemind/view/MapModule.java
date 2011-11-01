@@ -20,69 +20,69 @@
 
 package freemind.view;
 
-import freemind.view.mindmapview.MapView;
 import freemind.modes.MindMap;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
+import freemind.view.mindmapview.MapView;
 
 /**
- * This class is the key to one Model/View bundle
- * which represents one map.
+ * This class is the key to one Model/View bundle which represents one map.
  */
 public class MapModule {
-    private String name;
-    private MindMap model;
-    private MapView view;
-    private Mode mode;
-    private ModeController modeController;
-    /** Contains an extension if a map with same file name is already opened.*/
-    private String displayName;
-    private static int unnamedMapsNumber = 1;//used to give unique names to maps
+	private String name;
+	private MindMap model;
+	private MapView view;
+	private Mode mode;
+	private ModeController modeController;
+	/** Contains an extension if a map with same file name is already opened. */
+	private String displayName;
+	private static int unnamedMapsNumber = 1;// used to give unique names to
+												// maps
 
-    public MapModule(MindMap model, MapView view, Mode mode, ModeController modeController) {
-	this.model = model;
-	this.view = view;
-	this.mode = mode;
-	this.modeController = modeController;
-	modeController.setView(view);
-    }
+	public MapModule(MindMap model, MapView view, Mode mode,
+			ModeController modeController) {
+		this.model = model;
+		this.view = view;
+		this.mode = mode;
+		this.modeController = modeController;
+		modeController.setView(view);
+	}
 
-    /**
-     * Returns the String that is used to identify this map.
-     * Important: If the String is changed, other component (ie Controller)
-     * must be notified.
-     */
-    public String toString() {
+	/**
+	 * Returns the String that is used to identify this map. Important: If the
+	 * String is changed, other component (ie Controller) must be notified.
+	 */
+	public String toString() {
 		if (name == null) {
-		    rename();
+			rename();
 		}
 		return name;
-    }
+	}
 
-    public void rename() {
+	public void rename() {
 		if (getModel().toString() != null) {
-		    name = getModel().toString();
+			name = getModel().toString();
 		} else {
-		    name = mode.getController().getFrame().getResourceString("mindmap")
-			       +unnamedMapsNumber++;
+			name = mode.getController().getFrame().getResourceString("mindmap")
+					+ unnamedMapsNumber++;
 		}
-    }
+	}
 
-    public MindMap getModel() {
-	return model;
-    }
+	public MindMap getModel() {
+		return model;
+	}
 
-    public MapView getView() {
-	return view;
-    }
+	public MapView getView() {
+		return view;
+	}
 
-    public Mode getMode() {
-	return mode;
-    }
+	public Mode getMode() {
+		return mode;
+	}
 
-    public void setName(String name) {
-	this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public ModeController getModeController() {
 		return modeController;

@@ -30,92 +30,92 @@ import javax.swing.JPopupMenu;
  * The MouseListener which belongs to MapView
  */
 public class MapMouseMotionListener implements MouseMotionListener,
-        MouseListener {
+		MouseListener {
 
-    public interface MapMouseMotionReceiver {
-        public void mouseDragged(MouseEvent e);
+	public interface MapMouseMotionReceiver {
+		public void mouseDragged(MouseEvent e);
 
-        public void mousePressed(MouseEvent e);
+		public void mousePressed(MouseEvent e);
 
-        public void mouseReleased(MouseEvent e);
-    }
+		public void mouseReleased(MouseEvent e);
+	}
 
-    private MapMouseMotionReceiver mReceiver;
+	private MapMouseMotionReceiver mReceiver;
 
-    private final Controller c;
+	private final Controller c;
 
-    public MapMouseMotionListener(Controller controller) {
-        c = controller;
-    }
+	public MapMouseMotionListener(Controller controller) {
+		c = controller;
+	}
 
-    public void register(MapMouseMotionReceiver receiver) {
-        mReceiver = receiver;
-    }
+	public void register(MapMouseMotionReceiver receiver) {
+		mReceiver = receiver;
+	}
 
-    public void deregister() {
-        mReceiver = null;
-    }
+	public void deregister() {
+		mReceiver = null;
+	}
 
-    private void handlePopup(MouseEvent e) {
-        if (e.isPopupTrigger()) {
-            JPopupMenu popup = null;
-            // detect collision with an element placed on the root pane of the
-            // window.
-            java.lang.Object obj = c.getView().detectCollision(e.getPoint());
-            if (obj != null) {
-                // there is a collision with object obj.
-                // call the modecontroller to give a popup menu for this object
-                popup = c.getModeController().getPopupForModel(obj);
-            }
-            if (popup == null) { // no context popup found:
-                // normal popup:
-                popup = c.getFrame().getFreeMindMenuBar().getMapsPopupMenu();
-            }
-            popup.show(e.getComponent(), e.getX(), e.getY());
-            popup.setVisible(true);
-        }
-    }
+	private void handlePopup(MouseEvent e) {
+		if (e.isPopupTrigger()) {
+			JPopupMenu popup = null;
+			// detect collision with an element placed on the root pane of the
+			// window.
+			java.lang.Object obj = c.getView().detectCollision(e.getPoint());
+			if (obj != null) {
+				// there is a collision with object obj.
+				// call the modecontroller to give a popup menu for this object
+				popup = c.getModeController().getPopupForModel(obj);
+			}
+			if (popup == null) { // no context popup found:
+				// normal popup:
+				popup = c.getFrame().getFreeMindMenuBar().getMapsPopupMenu();
+			}
+			popup.show(e.getComponent(), e.getX(), e.getY());
+			popup.setVisible(true);
+		}
+	}
 
-    public void mouseMoved(MouseEvent e) {
-    }
+	public void mouseMoved(MouseEvent e) {
+	}
 
-    public void mouseDragged(MouseEvent e) {
-        if (mReceiver != null) {
-            mReceiver.mouseDragged(e);
-        }
-    }
+	public void mouseDragged(MouseEvent e) {
+		if (mReceiver != null) {
+			mReceiver.mouseDragged(e);
+		}
+	}
 
-    public void mouseClicked(MouseEvent e) {
-        c.getView().selectAsTheOnlyOneSelected(c.getView().getSelected()); // to
-                                                                            // loose
-                                                                            // the
-                                                                            // focus
-                                                                            // in
-                                                                            // edit
-    }
+	public void mouseClicked(MouseEvent e) {
+		c.getView().selectAsTheOnlyOneSelected(c.getView().getSelected()); // to
+																			// loose
+																			// the
+																			// focus
+																			// in
+																			// edit
+	}
 
-    public void mouseEntered(MouseEvent e) {
-    }
+	public void mouseEntered(MouseEvent e) {
+	}
 
-    public void mouseExited(MouseEvent e) {
-    }
+	public void mouseExited(MouseEvent e) {
+	}
 
-    public void mousePressed(MouseEvent e) {
-        if (e.isPopupTrigger()) { // start the move, when the user press the
-                                    // mouse (PN)
-            handlePopup(e);
-        } else if (mReceiver != null)
-            mReceiver.mousePressed(e);
-        e.consume();
-    }
+	public void mousePressed(MouseEvent e) {
+		if (e.isPopupTrigger()) { // start the move, when the user press the
+									// mouse (PN)
+			handlePopup(e);
+		} else if (mReceiver != null)
+			mReceiver.mousePressed(e);
+		e.consume();
+	}
 
-    public void mouseReleased(MouseEvent e) {
-        if (mReceiver != null) {
-            mReceiver.mouseReleased(e);
-        }
-        handlePopup(e);
-        e.consume();
-        c.getView().setMoveCursor(false); // release the cursor to default
-                                            // (PN)
-    }
+	public void mouseReleased(MouseEvent e) {
+		if (mReceiver != null) {
+			mReceiver.mouseReleased(e);
+		}
+		handlePopup(e);
+		e.consume();
+		c.getView().setMoveCursor(false); // release the cursor to default
+											// (PN)
+	}
 }

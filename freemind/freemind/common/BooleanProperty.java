@@ -25,82 +25,72 @@ package freemind.common;
 
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 
-public class BooleanProperty extends PropertyBean implements PropertyControl
-{
-    static public final String FALSE_VALUE = "false";
+public class BooleanProperty extends PropertyBean implements PropertyControl {
+	static public final String FALSE_VALUE = "false";
 
-    static public final String TRUE_VALUE = "true";
+	static public final String TRUE_VALUE = "true";
 
+	protected String mFalseValue = FALSE_VALUE;
 
-    protected String mFalseValue = FALSE_VALUE;
+	protected String mTrueValue = TRUE_VALUE;
 
-    protected String mTrueValue = TRUE_VALUE;
+	String description;
 
-    String    description;
+	String label;
 
-    String    label;
+	JCheckBox mCheckBox = new JCheckBox();
 
-    JCheckBox mCheckBox = new JCheckBox();
-    /**
+	/**
      */
-    public BooleanProperty(String description, String label)
-    {
-        super();
-        this.description = description;
-        this.label = label;
-        mCheckBox.addItemListener(new ItemListener(){
+	public BooleanProperty(String description, String label) {
+		super();
+		this.description = description;
+		this.label = label;
+		mCheckBox.addItemListener(new ItemListener() {
 
-            public void itemStateChanged(ItemEvent pE)
-            {
-                firePropertyChangeEvent();
-            }});
-    }
+			public void itemStateChanged(ItemEvent pE) {
+				firePropertyChangeEvent();
+			}
+		});
+	}
 
-    public String getDescription()
-    {
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public String getLabel()
-    {
-        return label;
-    }
+	public String getLabel() {
+		return label;
+	}
 
-    public void setValue(String value)
-    {
-        if (value == null
-                || !(value.toLowerCase().equals(mTrueValue) || value.toLowerCase()
-                        .equals(mFalseValue)))
-        {
-            throw new IllegalArgumentException("Cannot set a boolean to '"
-                    + value + "', allowed are " + mTrueValue + " and " + mFalseValue + ".");
-        }
-        mCheckBox.setSelected(value.toLowerCase().equals(mTrueValue));
-    }
+	public void setValue(String value) {
+		if (value == null
+				|| !(value.toLowerCase().equals(mTrueValue) || value
+						.toLowerCase().equals(mFalseValue))) {
+			throw new IllegalArgumentException("Cannot set a boolean to '"
+					+ value + "', allowed are " + mTrueValue + " and "
+					+ mFalseValue + ".");
+		}
+		mCheckBox.setSelected(value.toLowerCase().equals(mTrueValue));
+	}
 
-    public String getValue()
-    {
-        return mCheckBox.isSelected() ? mTrueValue : mFalseValue;
-    }
+	public String getValue() {
+		return mCheckBox.isSelected() ? mTrueValue : mFalseValue;
+	}
 
-    public void layout(DefaultFormBuilder builder, TextTranslator pTranslator)
-    {
-        JLabel label = builder.append(
-                pTranslator.getText(getLabel()),
-                mCheckBox);
-        label.setToolTipText(pTranslator.getText(getDescription()));
-    }
+	public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
+		JLabel label = builder.append(pTranslator.getText(getLabel()),
+				mCheckBox);
+		label.setToolTipText(pTranslator.getText(getDescription()));
+	}
 
-    public void setEnabled(boolean pEnabled) {
-        mCheckBox.setEnabled(pEnabled);
-    }
+	public void setEnabled(boolean pEnabled) {
+		mCheckBox.setEnabled(pEnabled);
+	}
 
 }

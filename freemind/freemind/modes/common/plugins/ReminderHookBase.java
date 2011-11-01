@@ -39,7 +39,7 @@ import freemind.modes.MindMapNode;
 
 /**
  * @author foltin
- *
+ * 
  */
 public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 
@@ -63,7 +63,7 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 
 	private static ImageIcon flagIcon;
 
-	//private Vector dateVector = new Vector();
+	// private Vector dateVector = new Vector();
 
 	/**
 	 *
@@ -113,7 +113,7 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 	 */
 	private void scheduleTimer(MindMapNode node) {
 		scheduleTimer(node, new TimerBlinkTask(false));
-		//		scheduleTimer(node, new CheckReminder(false));
+		// scheduleTimer(node, new CheckReminder(false));
 	}
 
 	private void scheduleTimer(MindMapNode node, TimerTask task) {
@@ -239,7 +239,8 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 
 	protected abstract void nodeRefresh(MindMapNode node);
 
-	protected abstract void setToolTip(MindMapNode node, String key, String value);
+	protected abstract void setToolTip(MindMapNode node, String key,
+			String value);
 
 	public long getRemindUserAt() {
 		return remindUserAt;
@@ -250,16 +251,15 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 	}
 
 	private final String STATE_TOOLTIP = TimerBlinkTask.class.getName()
-	+ "_STATE_";
+			+ "_STATE_";
 
 	private String mStateTooltipName = null;
-	
+
 	public String getStateKey() {
 		if (mStateTooltipName == null) {
 			mStateTooltipName = STATE_TOOLTIP;
-					//+ getNode().getObjectId(getController());
-		}		
+			// + getNode().getObjectId(getController());
+		}
 		return mStateTooltipName;
 	}
 }
-

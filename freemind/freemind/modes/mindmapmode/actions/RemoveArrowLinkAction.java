@@ -43,99 +43,103 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 public class RemoveArrowLinkAction extends FreemindAction implements ActorXml {
 
-    private MindMapArrowLinkModel mArrowLink;
+	private MindMapArrowLinkModel mArrowLink;
 
-    private final MindMapController controller;
+	private final MindMapController controller;
 
-    /**
-     *            can be null
-     *            can be null.
+	/**
+	 * can be null can be null.
+	 */
+	public RemoveArrowLinkAction(MindMapController controller,
+			MindMapArrowLinkModel arrowLink) {
+		super("remove_arrow_link", "images/edittrash.png", controller);
+		this.controller = controller;
+		setArrowLink(arrowLink);
+		if (arrowLink == null) {
+			addActor(this);
+		}
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		removeReference(mArrowLink);
+	}
+
+	public void removeReference(MindMapLink arrowLink) {
+		controller.getActionFactory().startTransaction((String) getValue(NAME));
+		controller.getActionFactory().executeAction(getActionPair(arrowLink));
+		controller.getActionFactory().endTransaction((String) getValue(NAME));
+	}
+
+	/**
      */
-    public RemoveArrowLinkAction(MindMapController controller, MindMapArrowLinkModel arrowLink) {
-        super("remove_arrow_link", "images/edittrash.png", controller);
-        this.controller = controller;
-        setArrowLink(arrowLink);
-        if(arrowLink == null) {
-            addActor(this);
-        }
-    }
+	private ActionPair getActionPair(MindMapLink arrowLink) {
+		return new ActionPair(
+				createRemoveArrowLinkXmlAction(arrowLink.getUniqueID()),
+				createAddArrowLinkXmlAction(arrowLink));
+	}
 
-    public void actionPerformed(ActionEvent e) {
-        removeReference(mArrowLink);
-    }
+	/**
+	 * @return Returns the arrowLink.
+	 */
+	public MindMapArrowLinkModel getArrowLink() {
+		return mArrowLink;
+	}
 
-    public void removeReference(MindMapLink arrowLink) {
-        controller.getActionFactory().startTransaction(
-                (String) getValue(NAME));
-        controller.getActionFactory().executeAction(
-                getActionPair(arrowLink));
-        controller.getActionFactory().endTransaction(
-                (String) getValue(NAME));    }
+	/**
+	 * The arrowLink to set.
+	 */
+	public void setArrowLink(MindMapArrowLinkModel arrowLink) {
+		this.mArrowLink = arrowLink;
+	}
 
-    /**
+	public void act(XmlAction action) {
+		if (action instanceof RemoveArrowLinkXmlAction) {
+			RemoveArrowLinkXmlAction removeAction = (RemoveArrowLinkXmlAction) action;
+			MindMapLink arrowLink = getLinkRegistry().getLinkForID(
+					removeAction.getId());
+			if (arrowLink == null) {
+				// strange: link not found:
+				throw new IllegalArgumentException("Unknown link to id "
+						+ removeAction.getId() + " should be deleted.");
+			}
+			getLinkRegistry().deregisterLink(arrowLink);
+			controller.nodeChanged(arrowLink.getSource());
+			controller.nodeChanged(arrowLink.getTarget());
+		}
+	}
+
+	public Class getDoActionClass() {
+		return RemoveArrowLinkXmlAction.class;
+	}
+
+	/**
      */
-    private ActionPair getActionPair(MindMapLink arrowLink) {
-        return new ActionPair(createRemoveArrowLinkXmlAction(arrowLink.getUniqueID()),
-                createAddArrowLinkXmlAction(arrowLink));
-    }
+	private MindMapLinkRegistry getLinkRegistry() {
+		return controller.getMap().getLinkRegistry();
+	}
 
-    /**
-     * @return Returns the arrowLink.
-     */
-    public MindMapArrowLinkModel getArrowLink() {
-        return mArrowLink;
-    }
+	public RemoveArrowLinkXmlAction createRemoveArrowLinkXmlAction(String id) {
+		RemoveArrowLinkXmlAction action = new RemoveArrowLinkXmlAction();
+		action.setId(id);
+		return action;
+	}
 
-    /**
-     *            The arrowLink to set.
-     */
-    public void setArrowLink(MindMapArrowLinkModel arrowLink) {
-        this.mArrowLink = arrowLink;
-    }
+	public AddArrowLinkXmlAction createAddArrowLinkXmlAction(MindMapLink link) {
+		AddArrowLinkXmlAction action = new AddArrowLinkXmlAction();
+		action.setNode(link.getSource().getObjectId(controller));
+		action.setDestination(link.getTarget().getObjectId(controller));
+		action.setNewId(link.getUniqueID());
+		action.setColor(Tools.colorToXml(link.getColor()));
+		if (link instanceof MindMapArrowLink) {
+			MindMapArrowLink arrowLink = (MindMapArrowLink) link;
+			action.setEndArrow(arrowLink.getEndArrow());
+			action.setEndInclination(Tools.PointToXml(arrowLink
+					.getEndInclination()));
+			action.setStartArrow(arrowLink.getStartArrow());
+			action.setStartInclination(Tools.PointToXml(arrowLink
+					.getStartInclination()));
+		}
+		return action;
+	}
 
-    public void act(XmlAction action) {
-        if (action instanceof RemoveArrowLinkXmlAction) {
-            RemoveArrowLinkXmlAction removeAction = (RemoveArrowLinkXmlAction) action;
-            MindMapLink arrowLink = getLinkRegistry().getLinkForID(removeAction.getId());
-            if(arrowLink == null) {
-                // strange: link not found:
-                throw new IllegalArgumentException("Unknown link to id "+removeAction.getId()+" should be deleted.");
-            }
-            getLinkRegistry().deregisterLink(arrowLink);
-            controller.nodeChanged(arrowLink.getSource());
-            controller.nodeChanged(arrowLink.getTarget());
-        }
-    }
-
-    public Class getDoActionClass() {
-        return RemoveArrowLinkXmlAction.class;
-    }
-
-    /**
-     */
-    private MindMapLinkRegistry getLinkRegistry() {
-        return controller.getMap().getLinkRegistry();
-    }
-
-    public RemoveArrowLinkXmlAction createRemoveArrowLinkXmlAction(String id) {
-        RemoveArrowLinkXmlAction action = new RemoveArrowLinkXmlAction();
-        action.setId(id);
-        return action;
-    }
-    public AddArrowLinkXmlAction createAddArrowLinkXmlAction(MindMapLink link) {
-        AddArrowLinkXmlAction action = new AddArrowLinkXmlAction();
-        action.setNode(link.getSource().getObjectId(controller));
-        action.setDestination(link.getTarget().getObjectId(controller));
-        action.setNewId(link.getUniqueID());
-        action.setColor(Tools.colorToXml(link.getColor()));
-        if (link instanceof MindMapArrowLink) {
-            MindMapArrowLink arrowLink = (MindMapArrowLink) link;
-            action.setEndArrow(arrowLink.getEndArrow());
-            action.setEndInclination(Tools.PointToXml(arrowLink.getEndInclination()));
-            action.setStartArrow(arrowLink.getStartArrow());
-            action.setStartInclination(Tools.PointToXml(arrowLink.getStartInclination()));
-        }
-        return action;
-    }
-    
 }

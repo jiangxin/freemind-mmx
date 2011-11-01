@@ -24,13 +24,14 @@ import freemind.main.XMLElement;
 
 public interface MindMapEdge extends MindMapLine {
 
-//     public Color getColor();
-//     public String getStyle();
-//     public Stroke getStroke();
-//     public int getWidth();
-//     public String toString();
-//     public void setTarget(MindMapNode node);
-    public XMLElement save();
-    // returns false if and only if the style is inherited from parent
+	// public Color getColor();
+	// public String getStyle();
+	// public Stroke getStroke();
+	// public int getWidth();
+	// public String toString();
+	// public void setTarget(MindMapNode node);
+	public XMLElement save();
+
+	// returns false if and only if the style is inherited from parent
 	boolean hasStyle();
 }

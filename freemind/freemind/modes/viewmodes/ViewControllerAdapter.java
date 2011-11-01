@@ -29,10 +29,9 @@ import freemind.main.XMLElement;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
-import freemind.modes.NodeAdapter;
 import freemind.modes.common.CommonNodeKeyListener;
-import freemind.modes.common.CommonToggleFoldedAction;
 import freemind.modes.common.CommonNodeKeyListener.EditHandler;
+import freemind.modes.common.CommonToggleFoldedAction;
 import freemind.modes.common.actions.FindAction;
 import freemind.modes.common.actions.FindAction.FindNextAction;
 import freemind.modes.common.listeners.CommonMouseMotionManager;
@@ -42,7 +41,7 @@ import freemind.view.mindmapview.NodeView;
 
 /**
  * @author foltin
- *
+ * 
  */
 public abstract class ViewControllerAdapter extends ControllerAdapter {
 
@@ -71,52 +70,58 @@ public abstract class ViewControllerAdapter extends ControllerAdapter {
 	}
 
 	public boolean extendSelection(MouseEvent e) {
-		//FIXME: Remove double code
-        NodeView newlySelectedNodeView = ((MainView)e.getComponent()).getNodeView();
-        //MindMapNode newlySelectedNode = newlySelectedNodeView.getModel();
-        boolean extend = e.isControlDown();
-        boolean range = e.isShiftDown();
-        boolean branch = e.isAltGraphDown() || e.isAltDown(); /* windows alt, linux altgraph .... */
-        boolean retValue = false;
+		// FIXME: Remove double code
+		NodeView newlySelectedNodeView = ((MainView) e.getComponent())
+				.getNodeView();
+		// MindMapNode newlySelectedNode = newlySelectedNodeView.getModel();
+		boolean extend = e.isControlDown();
+		boolean range = e.isShiftDown();
+		boolean branch = e.isAltGraphDown() || e.isAltDown(); /*
+															 * windows alt,
+															 * linux altgraph
+															 * ....
+															 */
+		boolean retValue = false;
 
-        if (extend || range || branch || !getView().isSelected(newlySelectedNodeView)) {
-            if (!range) {
-                if (extend)
-                    getView().toggleSelected(newlySelectedNodeView);
-                else
-                    select(newlySelectedNodeView);
-                retValue = true;
-            }
-            else {
-                retValue = getView().selectContinuous(newlySelectedNodeView);
-//                 /* fc, 25.1.2004: replace getView by controller methods.*/
-//                 if (newlySelectedNodeView != getView().getSelected() &&
-//                     newlySelectedNodeView.isSiblingOf(getView().getSelected())) {
-//                     getView().selectContinuous(newlySelectedNodeView);
-//                     retValue = true;
-//                 } else {
-//                     /* if shift was down, but no range can be selected, then the new node is simply selected: */
-//                     if(!getView().isSelected(newlySelectedNodeView)) {
-//                         getView().toggleSelected(newlySelectedNodeView);
-//                         retValue = true;
-//                     }
-            }
-            if(branch) {
-                getView().selectBranch(newlySelectedNodeView, extend);
-                retValue = true;
-            }
-        }
+		if (extend || range || branch
+				|| !getView().isSelected(newlySelectedNodeView)) {
+			if (!range) {
+				if (extend)
+					getView().toggleSelected(newlySelectedNodeView);
+				else
+					select(newlySelectedNodeView);
+				retValue = true;
+			} else {
+				retValue = getView().selectContinuous(newlySelectedNodeView);
+				// /* fc, 25.1.2004: replace getView by controller methods.*/
+				// if (newlySelectedNodeView != getView().getSelected() &&
+				// newlySelectedNodeView.isSiblingOf(getView().getSelected())) {
+				// getView().selectContinuous(newlySelectedNodeView);
+				// retValue = true;
+				// } else {
+				// /* if shift was down, but no range can be selected, then the
+				// new node is simply selected: */
+				// if(!getView().isSelected(newlySelectedNodeView)) {
+				// getView().toggleSelected(newlySelectedNodeView);
+				// retValue = true;
+				// }
+			}
+			if (branch) {
+				getView().selectBranch(newlySelectedNodeView, extend);
+				retValue = true;
+			}
+		}
 
-        if(retValue) {
-            e.consume();
+		if (retValue) {
+			e.consume();
 
-            // Display link in status line
-            String link = newlySelectedNodeView.getModel().getLink();
-            link = (link != null ? link : " ");
-            getController().getFrame().out(link);
-        }
-        return retValue;
-    }
+			// Display link in status line
+			String link = newlySelectedNodeView.getModel().getLink();
+			link = (link != null ? link : " ");
+			getController().getFrame().out(link);
+		}
+		return retValue;
+	}
 
 	public void setFolded(MindMapNode node, boolean folded) {
 		_setFolded(node, folded);
@@ -126,12 +131,16 @@ public abstract class ViewControllerAdapter extends ControllerAdapter {
 		super.startupController();
 		getController().getNodeMouseMotionListener().register(
 				new CommonNodeMouseMotionListener(this));
-		getController().getMapMouseMotionListener().register(new CommonMouseMotionManager(this));
-		getController().getNodeKeyListener().register(new CommonNodeKeyListener(this, new EditHandler(){
+		getController().getMapMouseMotionListener().register(
+				new CommonMouseMotionManager(this));
+		getController().getNodeKeyListener().register(
+				new CommonNodeKeyListener(this, new EditHandler() {
 
-			public void edit(KeyEvent e, boolean addNew, boolean editLong) {
-				// no edit.
-			}}));
+					public void edit(KeyEvent e, boolean addNew,
+							boolean editLong) {
+						// no edit.
+					}
+				}));
 
 	}
 
@@ -142,17 +151,18 @@ public abstract class ViewControllerAdapter extends ControllerAdapter {
 		getController().getNodeKeyListener().deregister();
 	}
 
-    protected void setAllActions(boolean enabled) {
-        super.setAllActions(enabled);
-        find.setEnabled(enabled);
-        findNext.setEnabled(enabled);
-        toggleFolded.setEnabled(enabled);
-        toggleChildrenFolded.setEnabled(enabled);
-    }
-
-	public XMLElement createXMLElement() {
-		throw new IllegalArgumentException("createXMLElement is not defined for "+ this.getClass().getName());
+	protected void setAllActions(boolean enabled) {
+		super.setAllActions(enabled);
+		find.setEnabled(enabled);
+		findNext.setEnabled(enabled);
+		toggleFolded.setEnabled(enabled);
+		toggleChildrenFolded.setEnabled(enabled);
 	}
 
-    
+	public XMLElement createXMLElement() {
+		throw new IllegalArgumentException(
+				"createXMLElement is not defined for "
+						+ this.getClass().getName());
+	}
+
 }

@@ -2,9 +2,9 @@ package tests.freemind;
 
 import java.io.ByteArrayOutputStream;
 
+import junit.framework.TestCase;
 import plugins.script.SignedScriptHandler;
 import plugins.script.SignedScriptHandler.ScriptContents;
-import junit.framework.TestCase;
 
 public class SignedScriptTests extends TestCase {
 	private static final String SCRIPTS_CONTENT = "test";
@@ -20,13 +20,14 @@ public class SignedScriptTests extends TestCase {
 	public void testSignedInitialization() throws Exception {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		SignedScriptHandler signedScriptHandler = new SignedScriptHandler();
-		assertEquals(true, signedScriptHandler.isScriptSigned(SIGNED_SCRIPT, out));
-		assertEquals(true, signedScriptHandler
-				.isScriptSigned(SIGNED_SCRIPT_FREEMIND_KEY, out));
+		assertEquals(true,
+				signedScriptHandler.isScriptSigned(SIGNED_SCRIPT, out));
+		assertEquals(true, signedScriptHandler.isScriptSigned(
+				SIGNED_SCRIPT_FREEMIND_KEY, out));
 		assertEquals(true, signedScriptHandler.isScriptSigned(SIGNED_SCRIPT
 				+ "  \n  ", out));
-		assertEquals(false, signedScriptHandler.isScriptSigned("2"
-				+ SIGNED_SCRIPT, out));
+		assertEquals(false,
+				signedScriptHandler.isScriptSigned("2" + SIGNED_SCRIPT, out));
 	}
 
 	public void testScriptContents() throws Exception {

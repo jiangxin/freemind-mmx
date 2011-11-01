@@ -23,15 +23,11 @@
 /* $Id: DontShowNotificationProperty.java,v 1.1.2.1 2007/08/05 20:33:12 christianfoltin Exp $ */
 package freemind.common;
 
-
-public class DontShowNotificationProperty extends BooleanProperty
-{
-    public DontShowNotificationProperty(String description, String label)
-    {
-        super(description, label);
-        mTrueValue = "true";
-        mFalseValue = "";
-    }
-
+public class DontShowNotificationProperty extends BooleanProperty {
+	public DontShowNotificationProperty(String description, String label) {
+		super(description, label);
+		mTrueValue = "true";
+		mFalseValue = "";
+	}
 
 }

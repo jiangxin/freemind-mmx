@@ -59,7 +59,8 @@ import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 import freemind.view.MapModule;
 
-public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements MapTitleContributor  {
+public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements
+		MapTitleContributor {
 
 	public final static String SLAVE_HOOK_NAME = "plugins/collaboration/database/database_slave_plugin";
 	public final static String SLAVE_STARTER_NAME = "plugins/collaboration/database/database_slave_starter_plugin";
@@ -75,20 +76,26 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements M
 	private static final String PORT_PROPERTY = "plugins.collaboration.database.port";
 	private static final String DATABASE_BASICS_CLASS = "plugins.collaboration.database.DatabaseBasics";
 
-	protected static final String PASSWORD = DATABASE_BASICS_CLASS + ".password";
-	protected static final String PASSWORD_DESCRIPTION = DATABASE_BASICS_CLASS + ".password.description";
+	protected static final String PASSWORD = DATABASE_BASICS_CLASS
+			+ ".password";
+	protected static final String PASSWORD_DESCRIPTION = DATABASE_BASICS_CLASS
+			+ ".password.description";
 
-	protected static final String PASSWORD_VERIFICATION = DATABASE_BASICS_CLASS + ".password_verification";
-	protected static final String PASSWORD_VERIFICATION_DESCRIPTION = DATABASE_BASICS_CLASS + ".password_verification_description";
+	protected static final String PASSWORD_VERIFICATION = DATABASE_BASICS_CLASS
+			+ ".password_verification";
+	protected static final String PASSWORD_VERIFICATION_DESCRIPTION = DATABASE_BASICS_CLASS
+			+ ".password_verification_description";
 
 	protected static final String HOST = DATABASE_BASICS_CLASS + ".host";
-	protected static final String HOST_DESCRIPTION = DATABASE_BASICS_CLASS + ".host.description";
-	
+	protected static final String HOST_DESCRIPTION = DATABASE_BASICS_CLASS
+			+ ".host.description";
+
 	protected static final String PORT = DATABASE_BASICS_CLASS + ".port";
-	protected static final String PORT_DESCRIPTION = DATABASE_BASICS_CLASS + ".port.description";
+	protected static final String PORT_DESCRIPTION = DATABASE_BASICS_CLASS
+			+ ".port.description";
 
 	protected static final String TITLE = DATABASE_BASICS_CLASS + ".title";
-	
+
 	protected static java.util.logging.Logger logger = null;
 	protected UpdateThread mUpdateThread = null;
 
@@ -104,14 +111,15 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements M
 	 * @return ROLE_MASTER OR ROLE_SLAVE
 	 */
 	public abstract Integer getRole();
-	
+
 	public void startupMapHook() {
 		super.startupMapHook();
 		if (logger == null) {
 			logger = freemind.main.Resources.getInstance().getLogger(
 					this.getClass().getName());
 		}
-		getMindMapController().getController().registerMapTitleContributor(this);
+		getMindMapController().getController()
+				.registerMapTitleContributor(this);
 	}
 
 	public void shutdownMapHook() {
@@ -120,13 +128,12 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements M
 		controller.setTitle();
 		super.shutdownMapHook();
 	}
-	
+
 	protected static void togglePermanentHook(MindMapController controller) {
 		MindMapNode rootNode = controller.getRootNode();
 		List selecteds = Arrays.asList(new MindMapNode[] { rootNode });
 		controller.addHook(rootNode, selecteds, SLAVE_HOOK_NAME);
 	}
-	
 
 	protected void setPortProperty(final NumberProperty portProperty) {
 		getMindMapController().getFrame().setProperty(PORT_PROPERTY,
@@ -138,7 +145,8 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements M
 				PORT_DESCRIPTION, PORT, 1024, 32767, 1);
 		// fill values:
 		portProperty.setValue(""
-				+ getMindMapController().getFrame().getIntProperty(PORT_PROPERTY, 9001));
+				+ getMindMapController().getFrame().getIntProperty(
+						PORT_PROPERTY, 9001));
 		return portProperty;
 	}
 
@@ -265,18 +273,18 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements M
 	public String getMapTitle(String pOldTitle, MapModule pMapModule,
 			MindMap pModel) {
 		String title = pOldTitle;
-		if(pModel.getModeController() != getMindMapController()) {
+		if (pModel.getModeController() != getMindMapController()) {
 			return pOldTitle;
 		}
 		String userString = "";
-		if(mUpdateThread != null) {
+		if (mUpdateThread != null) {
 			try {
-				boolean first=true;
+				boolean first = true;
 				Vector users = mUpdateThread.getUsers();
 				for (Iterator it = users.iterator(); it.hasNext();) {
 					String user = (String) it.next();
-					if(first)
-						first=false;
+					if (first)
+						first = false;
 					else
 						userString += ", ";
 					userString += user;
@@ -284,10 +292,14 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements M
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				freemind.main.Resources.getInstance().logException(e);
-				
+
 			}
 		}
-		return pOldTitle+Resources.getInstance().format(TITLE, new Object[]{this.getRole(), this.getHost(), this.getPort(), userString});
+		return pOldTitle
+				+ Resources.getInstance().format(
+						TITLE,
+						new Object[] { this.getRole(), this.getHost(),
+								this.getPort(), userString });
 	}
 
 	public String getPort() {
@@ -297,6 +309,5 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements M
 	public String getHost() {
 		return mUpdateThread.getHost();
 	}
-
 
 }

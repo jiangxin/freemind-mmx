@@ -35,26 +35,26 @@ import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
-
-public class UnderlinedAction extends NodeGeneralAction implements NodeActorXml, MenuItemSelectedListener{
+public class UnderlinedAction extends NodeGeneralAction implements
+		NodeActorXml, MenuItemSelectedListener {
 	private final MindMapController modeController;
+
 	/**
 	 */
 	public UnderlinedAction(MindMapController modeController) {
 		super(modeController, "underlined", "images/Underline24.gif");
 		this.modeController = modeController;
-		addActor(this);			
+		addActor(this);
 	}
 
 	public void act(XmlAction action) {
 		UnderlinedNodeAction underlinedact = (UnderlinedNodeAction) action;
 		NodeAdapter node = getNodeFromID(underlinedact.getNode());
-		if(node.isUnderlined() != underlinedact.getUnderlined()) {
+		if (node.isUnderlined() != underlinedact.getUnderlined()) {
 			node.setUnderlined(underlinedact.getUnderlined());
 			this.modeController.nodeChanged(node);
 		}
 	}
-
 
 	public Class getDoActionClass() {
 		return UnderlinedNodeAction.class;
@@ -66,26 +66,27 @@ public class UnderlinedAction extends NodeGeneralAction implements NodeActorXml,
 		return getActionPair(selected, underlined);
 	}
 
-	private ActionPair getActionPair(MindMapNode selected, boolean underlined)
-		 {
-		UnderlinedNodeAction underlinedAction = toggleUnderlined(selected, !underlined);
-		UnderlinedNodeAction undoUnderlinedAction = toggleUnderlined(selected, underlined);
+	private ActionPair getActionPair(MindMapNode selected, boolean underlined) {
+		UnderlinedNodeAction underlinedAction = toggleUnderlined(selected,
+				!underlined);
+		UnderlinedNodeAction undoUnderlinedAction = toggleUnderlined(selected,
+				underlined);
 		return new ActionPair(underlinedAction, undoUnderlinedAction);
 	}
 
-	private UnderlinedNodeAction toggleUnderlined(MindMapNode selected, boolean underlined)
-		 {
+	private UnderlinedNodeAction toggleUnderlined(MindMapNode selected,
+			boolean underlined) {
 		UnderlinedNodeAction underlinedAction = new UnderlinedNodeAction();
 		underlinedAction.setNode(getNodeID(selected));
 		underlinedAction.setUnderlined(underlined);
 		return underlinedAction;
 	}
 
-	public void setUnderlined(MindMapNode node, boolean  underlined) {
+	public void setUnderlined(MindMapNode node, boolean underlined) {
 		execute(getActionPair(node, underlined));
 	}
 
-    public boolean isSelected(JMenuItem item, Action action) {
+	public boolean isSelected(JMenuItem item, Action action) {
 		return modeController.getSelected().isUnderlined();
-    }
+	}
 }

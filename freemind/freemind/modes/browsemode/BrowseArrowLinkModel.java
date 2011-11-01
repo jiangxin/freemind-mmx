@@ -21,36 +21,38 @@
 package freemind.modes.browsemode;
 
 import freemind.main.FreeMindMain;
-import freemind.modes.MindMapNode;
-import freemind.modes.ArrowLinkAdapter;
-import freemind.main.Tools;
-import java.awt.Color;
-
 import freemind.main.XMLElement;
+import freemind.modes.ArrowLinkAdapter;
+import freemind.modes.MindMapNode;
 import freemind.view.mindmapview.MapView;
 
 public class BrowseArrowLinkModel extends ArrowLinkAdapter {
 
-    public BrowseArrowLinkModel(MindMapNode source,MindMapNode target,FreeMindMain frame) {
-        super(source,target,frame);
-    }
+	public BrowseArrowLinkModel(MindMapNode source, MindMapNode target,
+			FreeMindMain frame) {
+		super(source, target, frame);
+	}
 
-    /* maybe this method is wrong here, but ...*/
-    public Object clone() {
-        return super.clone();
-    }
+	/* maybe this method is wrong here, but ... */
+	public Object clone() {
+		return super.clone();
+	}
 
-    public XMLElement save() {
-        return null;
-    }
+	public XMLElement save() {
+		return null;
+	}
 
-    public String toString() { return "Source="+getSource()+", target="+getTarget(); }
+	public String toString() {
+		return "Source=" + getSource() + ", target=" + getTarget();
+	}
 
-    /**
-     * @see freemind.modes.MindMapArrowLink#changeInclination(MapView, int, int, int, int)
-     */
-    public void changeInclination(MapView map, int oldX, int oldY, int deltaX, int deltaY) {
-        
-    }
+	/**
+	 * @see freemind.modes.MindMapArrowLink#changeInclination(MapView, int, int,
+	 *      int, int)
+	 */
+	public void changeInclination(MapView map, int oldX, int oldY, int deltaX,
+			int deltaY) {
+
+	}
 
 }

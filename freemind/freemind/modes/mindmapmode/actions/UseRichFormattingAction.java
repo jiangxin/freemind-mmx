@@ -34,12 +34,12 @@ public class UseRichFormattingAction extends NodeGeneralAction {
 
 					public void apply(MindMapMapModel map,
 							MindMapNodeModel selected) {
-//						modeController.getController().setProperty(
-//								"use_rich_text_in_new_long_nodes", "true");
+						// modeController.getController().setProperty(
+						// "use_rich_text_in_new_long_nodes", "true");
 						String nodeText = selected.getText();
 						if (!HtmlTools.isHtmlNode(nodeText)) {
-							modeController.setNodeText(selected, HtmlTools
-									.plainToHTML(nodeText));
+							modeController.setNodeText(selected,
+									HtmlTools.plainToHTML(nodeText));
 						}
 					}
 				});

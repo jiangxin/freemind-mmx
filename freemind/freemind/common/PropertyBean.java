@@ -28,9 +28,9 @@ import java.util.Iterator;
 import java.util.Vector;
 
 public abstract class PropertyBean {
-    
-    private Vector mPropertyChangeListeners = new Vector();
-    
+
+	private Vector mPropertyChangeListeners = new Vector();
+
 	/** The key of the property. */
 	public abstract String getLabel();
 
@@ -38,19 +38,20 @@ public abstract class PropertyBean {
 
 	public abstract String getValue();
 
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        mPropertyChangeListeners.add(listener);
-    }
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        mPropertyChangeListeners.remove(listener);
-    }
-    
-    protected void firePropertyChangeEvent() {
-        PropertyChangeEvent evt = new PropertyChangeEvent(this, getLabel(), null, getValue());
-        for (Iterator i = mPropertyChangeListeners.iterator(); i.hasNext();)
-        {
-            PropertyChangeListener listener = (PropertyChangeListener) i.next();
-            listener.propertyChange(evt);
-        }
-    }
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		mPropertyChangeListeners.add(listener);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		mPropertyChangeListeners.remove(listener);
+	}
+
+	protected void firePropertyChangeEvent() {
+		PropertyChangeEvent evt = new PropertyChangeEvent(this, getLabel(),
+				null, getValue());
+		for (Iterator i = mPropertyChangeListeners.iterator(); i.hasNext();) {
+			PropertyChangeListener listener = (PropertyChangeListener) i.next();
+			listener.propertyChange(evt);
+		}
+	}
 }

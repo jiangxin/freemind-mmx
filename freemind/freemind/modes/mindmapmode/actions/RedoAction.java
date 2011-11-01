@@ -28,20 +28,20 @@ import javax.swing.ImageIcon;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
-
 public class RedoAction extends UndoAction {
 	private MindMapController controller;
 
-    public RedoAction(MindMapController controller) {
-		super(controller, controller.getText("redo"), new ImageIcon(controller.getResource("images/redo.png")), controller);
-        this.controller = controller;
+	public RedoAction(MindMapController controller) {
+		super(controller, controller.getText("redo"), new ImageIcon(
+				controller.getResource("images/redo.png")), controller);
+		this.controller = controller;
 	}
 
-    /**
+	/**
      */
-    protected void informUndoPartner(ActionPair pair) {
+	protected void informUndoPartner(ActionPair pair) {
 		this.controller.undo.add(pair.reverse());
 		this.controller.undo.setEnabled(true);
-    }
+	}
 
 }

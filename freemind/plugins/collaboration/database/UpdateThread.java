@@ -54,7 +54,8 @@ import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 public class UpdateThread extends Thread implements ResultHandler,
 		FinalActionFilter {
-	private static final String QUERY_GET_USERS = "SELECT * FROM " + DatabaseBasics.TABLE_USERS;
+	private static final String QUERY_GET_USERS = "SELECT * FROM "
+			+ DatabaseBasics.TABLE_USERS;
 	private static final String QUERY = "SELECT * FROM "
 			+ DatabaseBasics.TABLE_XML_ACTIONS + " WHERE "
 			+ DatabaseBasics.ROW_PK + " >= ?";
@@ -69,6 +70,7 @@ public class UpdateThread extends Thread implements ResultHandler,
 	private PreparedStatement mPrepareStatement;
 	private PreparedStatement mPrepareStatementUsers = null;
 	protected String mPort;
+
 	public String getPort() {
 		return mPort;
 	}
@@ -86,7 +88,6 @@ public class UpdateThread extends Thread implements ResultHandler,
 	}
 
 	protected String mHost;
-
 
 	public UpdateThread(Connection pConnection, MindMapController pController)
 			throws SQLException {
@@ -118,7 +119,7 @@ public class UpdateThread extends Thread implements ResultHandler,
 				logger.fine("Looking for updates... Done.");
 				Thread.sleep(1000);
 				counter--;
-				if(counter<=0) {
+				if (counter <= 0) {
 					counter = 10;
 					mController.getController().setTitle();
 				}
@@ -166,8 +167,7 @@ public class UpdateThread extends Thread implements ResultHandler,
 				long nextPk = rs.getLong(DatabaseBasics.ROW_PK);
 				mPrimaryKey = nextPk + 1;
 				String doAction = rs.getString(DatabaseBasics.ROW_ACTION);
-				String undoAction = rs
-						.getString(DatabaseBasics.ROW_UNDOACTION);
+				String undoAction = rs.getString(DatabaseBasics.ROW_UNDOACTION);
 				String map = rs.getString(DatabaseBasics.ROW_MAP);
 				logger.info("Got the following from database: " + nextPk + ", "
 						+ doAction + ", " + undoAction + ", " + map);
@@ -337,17 +337,17 @@ public class UpdateThread extends Thread implements ResultHandler,
 	}
 
 	public void removeUser() throws SQLException {
-		update("DELETE FROM " + DatabaseBasics.TABLE_USERS + " WHERE " +
-				DatabaseBasics.ROW_USER + " = '"
+		update("DELETE FROM " + DatabaseBasics.TABLE_USERS + " WHERE "
+				+ DatabaseBasics.ROW_USER + " = '"
 				+ escapeQuotations(getUserName()) + "'");
-		
+
 	}
 
 	private String getUserName() {
 		// Get host name
 		String hostname = Tools.getHostName();
 
-		return System.getProperty("user.name")+"@"+hostname;
+		return System.getProperty("user.name") + "@" + hostname;
 	}
 
 	protected void createTables(String pPassword) throws SQLException {
@@ -381,13 +381,14 @@ public class UpdateThread extends Thread implements ResultHandler,
 	}
 
 	public Vector getUsers() throws SQLException {
-		if(mPrepareStatementUsers==null){
-			mPrepareStatementUsers = mConnection.prepareStatement(QUERY_GET_USERS);
+		if (mPrepareStatementUsers == null) {
+			mPrepareStatementUsers = mConnection
+					.prepareStatement(QUERY_GET_USERS);
 		}
 		Vector result = new Vector();
 
 		boolean execute = mPrepareStatementUsers.execute();
-		if(!execute) {
+		if (!execute) {
 			return result;
 		}
 		ResultSet rs = mPrepareStatementUsers.getResultSet();

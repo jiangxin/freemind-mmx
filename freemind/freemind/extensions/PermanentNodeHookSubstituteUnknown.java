@@ -24,32 +24,37 @@ import java.util.Iterator;
 
 import freemind.main.XMLElement;
 
-/** Class saves xml data in case that the corresponding node hook is not present. */
+/**
+ * Class saves xml data in case that the corresponding node hook is not present.
+ */
 public class PermanentNodeHookSubstituteUnknown extends
-        PermanentNodeHookAdapter {
+		PermanentNodeHookAdapter {
 
-    private final String hookName;
-    public PermanentNodeHookSubstituteUnknown(String name){
-        super();
-        hookName = name;
-    }
-     
-    private XMLElement child;
-    public void loadFrom(XMLElement child) {
-        this.child = child;
-        super.loadFrom(child);
-        
-    }
-    public void save(XMLElement xml) {
-        super.save(xml);
-        for (Iterator i = child.getChildren().iterator(); i.hasNext();) {
-            XMLElement childchild = (XMLElement) i.next();
-	        xml.addChild(childchild);
-        }
-    }
-    public String getName() {
-        return hookName;
-    }
+	private final String hookName;
+
+	public PermanentNodeHookSubstituteUnknown(String name) {
+		super();
+		hookName = name;
+	}
+
+	private XMLElement child;
+
+	public void loadFrom(XMLElement child) {
+		this.child = child;
+		super.loadFrom(child);
+
+	}
+
+	public void save(XMLElement xml) {
+		super.save(xml);
+		for (Iterator i = child.getChildren().iterator(); i.hasNext();) {
+			XMLElement childchild = (XMLElement) i.next();
+			xml.addChild(childchild);
+		}
+	}
+
+	public String getName() {
+		return hookName;
+	}
 
 }
-

@@ -31,18 +31,19 @@ import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.view.mindmapview.MapView;
 
-
 public class ToggleChildrenFoldedAction extends AbstractAction {
-    private final MindMapController modeController;
-    public ToggleChildrenFoldedAction(MindMapController modeController) {
-        super(modeController.getText("toggle_children_folded"));
-        this.modeController = modeController;
-    }
-    public void actionPerformed(ActionEvent e) {
-        MindMapNode selected = modeController.getSelected();
-        modeController.toggleFolded.toggleFolded(selected.childrenUnfolded());
-        final MapView mapView = modeController.getView();
-        mapView.selectAsTheOnlyOneSelected(mapView.getNodeView(selected));
-        modeController.getController().obtainFocusForSelected();
-    }
+	private final MindMapController modeController;
+
+	public ToggleChildrenFoldedAction(MindMapController modeController) {
+		super(modeController.getText("toggle_children_folded"));
+		this.modeController = modeController;
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		MindMapNode selected = modeController.getSelected();
+		modeController.toggleFolded.toggleFolded(selected.childrenUnfolded());
+		final MapView mapView = modeController.getView();
+		mapView.selectAsTheOnlyOneSelected(mapView.getNodeView(selected));
+		modeController.getController().obtainFocusForSelected();
+	}
 }

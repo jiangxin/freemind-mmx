@@ -27,14 +27,12 @@ import java.awt.event.ActionListener;
 import java.util.Iterator;
 import java.util.Vector;
 
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 
 import freemind.main.FreeMindMain;
-import freemind.main.Tools;
 import freemind.modes.MindIcon;
 import freemind.modes.common.dialogs.IconSelectionPopupDialog;
 

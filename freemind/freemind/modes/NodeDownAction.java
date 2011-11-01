@@ -29,14 +29,16 @@ import javax.swing.AbstractAction;
 
 import freemind.modes.mindmapmode.MindMapController;
 
-
 public class NodeDownAction extends AbstractAction {
-    private final MindMapController modeController;
-    public NodeDownAction(MindMapController adapter) {
-        super(adapter.getText("node_down"));
-        this.modeController = adapter;
-    }
-    public void actionPerformed(ActionEvent e) {
-        modeController.moveNodes(modeController.getSelected(), modeController.getSelecteds(), 1);
-    }
+	private final MindMapController modeController;
+
+	public NodeDownAction(MindMapController adapter) {
+		super(adapter.getText("node_down"));
+		this.modeController = adapter;
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		modeController.moveNodes(modeController.getSelected(),
+				modeController.getSelecteds(), 1);
+	}
 }

@@ -50,18 +50,19 @@ public class RemoveNote extends MindMapNodeHookAdapter {
 
 	public void invoke(MindMapNode rootNode) {
 		super.invoke(rootNode);
-		int showResult = new OptionalDontShowMeAgainDialog(getMindMapController()
-				.getFrame().getJFrame(), getMindMapController().getSelectedView(),
+		int showResult = new OptionalDontShowMeAgainDialog(
+				getMindMapController().getFrame().getJFrame(),
+				getMindMapController().getSelectedView(),
 				"really_remove_notes", "confirmation", getMindMapController(),
 				new OptionalDontShowMeAgainDialog.StandardPropertyHandler(
 						getMindMapController().getController(),
 						FreeMind.RESOURCES_REMOVE_NOTES_WITHOUT_QUESTION),
 				OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED)
 				.show().getResult();
-		if(showResult != JOptionPane.OK_OPTION) {
+		if (showResult != JOptionPane.OK_OPTION) {
 			return;
 		}
-		
+
 		for (Iterator iterator = getMindMapController().getSelecteds()
 				.iterator(); iterator.hasNext();) {
 			MindMapNode node = (MindMapNode) iterator.next();
@@ -98,8 +99,8 @@ public class RemoveNote extends MindMapNodeHookAdapter {
 			if (controller == null)
 				return false;
 			boolean foundNote = false;
-			for (Iterator iterator = controller.getSelecteds()
-					.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = controller.getSelecteds().iterator(); iterator
+					.hasNext();) {
 				MindMapNode node = (MindMapNode) iterator.next();
 				if (node.getNoteText() != null) {
 					foundNote = true;

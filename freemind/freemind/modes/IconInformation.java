@@ -5,7 +5,10 @@ import javax.swing.KeyStroke;
 
 public interface IconInformation {
 	String getDescription();
+
 	ImageIcon getIcon();
+
 	String getKeystrokeResourceName();
+
 	KeyStroke getKeyStroke();
 }

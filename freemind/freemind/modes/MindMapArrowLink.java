@@ -27,29 +27,41 @@ import freemind.view.mindmapview.MapView;
 
 public interface MindMapArrowLink extends MindMapLink {
 
-    //     public Color getColor();
-    //     public String getStyle();
-    //     public Stroke getStroke();
-    //     public int getWidth();
-    //     public String toString();
+	// public Color getColor();
+	// public String getStyle();
+	// public Stroke getStroke();
+	// public int getWidth();
+	// public String toString();
 
-//     public String getDestinationLabel();
-//     public String getReferenceText();
-    /* for arrows: */
-    public Point getStartInclination(); // the zero is the start point of the line;
-    public Point getEndInclination(); // the zero is the end point of the line;
-	public void  setStartInclination(Point startInclination);
-	public void  setEndInclination(Point endInclination); 
-        /** the type of the start arrow: currently "None" and "Default". */
-    public String getStartArrow(); 
-    /** the type of the end arrow: currently "None" and "Default". */
-    public String getEndArrow();
-    /**
-     * @param map TODO
-     */
-    public void changeInclination(MapView map, int originX, int originY, int deltaX, int deltaY);
-    public void showControlPoints(boolean bShowControlPointsFlag);
+	// public String getDestinationLabel();
+	// public String getReferenceText();
+	/* for arrows: */
+	public Point getStartInclination(); // the zero is the start point of the
+										// line;
+
+	public Point getEndInclination(); // the zero is the end point of the line;
+
+	public void setStartInclination(Point startInclination);
+
+	public void setEndInclination(Point endInclination);
+
+	/** the type of the start arrow: currently "None" and "Default". */
+	public String getStartArrow();
+
+	/** the type of the end arrow: currently "None" and "Default". */
+	public String getEndArrow();
+
+	/**
+	 * @param map
+	 *            TODO
+	 */
+	public void changeInclination(MapView map, int originX, int originY,
+			int deltaX, int deltaY);
+
+	public void showControlPoints(boolean bShowControlPointsFlag);
+
 	public boolean getShowControlPointsFlag();
-    public XMLElement save();
+
+	public XMLElement save();
 
 }

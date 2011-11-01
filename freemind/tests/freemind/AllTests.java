@@ -28,29 +28,26 @@ import tests.freemind.findreplace.FindTextTests;
 /** */
 public class AllTests {
 
-    public static void main(String[] args)
-    {
-        TestResult result = junit.textui.TestRunner.run(suite());
-        if (!result.wasSuccessful())
-            System.exit(1);
-    }
+	public static void main(String[] args) {
+		TestResult result = junit.textui.TestRunner.run(suite());
+		if (!result.wasSuccessful())
+			System.exit(1);
+	}
 
-    public static Test suite()
-    {
-        TestSuite suite = new TestSuite("AllTests");
-        // $JUnit-BEGIN$
-        suite.addTest(new TestSuite(Base64Tests.class));
-        suite.addTest(new TestSuite(FindTextTests.class));
-        suite.addTest(new TestSuite(HtmlConversionTests.class));
-        suite.addTest(new TestSuite(TransformTest.class));
-        suite.addTest(new TestSuite(MarshallerTests.class));
-        suite.addTest(new TestSuite(SignedScriptTests.class));
-        suite.addTest(new TestSuite(LastStorageManagementTests.class));
-        suite.addTest(new TestSuite(ToolsTests.class));
-        suite.addTest(new TestSuite(ExportTests.class));
-        // $JUnit-END$
-        return suite;
-    }
+	public static Test suite() {
+		TestSuite suite = new TestSuite("AllTests");
+		// $JUnit-BEGIN$
+		suite.addTest(new TestSuite(Base64Tests.class));
+		suite.addTest(new TestSuite(FindTextTests.class));
+		suite.addTest(new TestSuite(HtmlConversionTests.class));
+		suite.addTest(new TestSuite(TransformTest.class));
+		suite.addTest(new TestSuite(MarshallerTests.class));
+		suite.addTest(new TestSuite(SignedScriptTests.class));
+		suite.addTest(new TestSuite(LastStorageManagementTests.class));
+		suite.addTest(new TestSuite(ToolsTests.class));
+		suite.addTest(new TestSuite(ExportTests.class));
+		// $JUnit-END$
+		return suite;
+	}
 
 }
-

@@ -19,16 +19,12 @@
 /*$Id: NodeHookAdapter.java,v 1.1.4.4.2.2 2007/04/21 15:11:20 dpolivaev Exp $*/
 package freemind.extensions;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 
 /**
  * @author christianfoltin
- *
+ * 
  * */
 public abstract class NodeHookAdapter extends HookAdapter implements NodeHook {
 
@@ -45,7 +41,9 @@ public abstract class NodeHookAdapter extends HookAdapter implements NodeHook {
 		super();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see freemind.modes.NodeHook#invoke()
 	 */
 	public void invoke(MindMapNode node) {
@@ -73,10 +71,8 @@ public abstract class NodeHookAdapter extends HookAdapter implements NodeHook {
 	/**
 	 */
 	protected void nodeChanged(MindMapNode node) {
-	    getController().nodeChanged(node);
+		getController().nodeChanged(node);
 	}
-
-	
 
 	/**
 	 */

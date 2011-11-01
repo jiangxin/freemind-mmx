@@ -44,7 +44,7 @@ import javax.swing.JPanel;
 public class JCalendar extends JPanel implements PropertyChangeListener {
 	public static final String DATE_PROPERTY = "date";
 
-    private static final long serialVersionUID = 8913369762644440133L;
+	private static final long serialVersionUID = 8913369762644440133L;
 
 	private Calendar calendar;
 
@@ -167,7 +167,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
 	 * @param weekOfYearVisible
 	 *            true, if weeks of year shall be visible
 	 */
-	public JCalendar(Date date, Locale locale, boolean monthSpinner, boolean weekOfYearVisible) {
+	public JCalendar(Date date, Locale locale, boolean monthSpinner,
+			boolean weekOfYearVisible) {
 
 		setName("JCalendar");
 
@@ -203,8 +204,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
 		monthChooser.addPropertyChangeListener(this);
 		yearChooser.setDayChooser(dayChooser);
 		yearChooser.addPropertyChangeListener(this);
-        dayChooser.setYearChooser(yearChooser);
-        dayChooser.setMonthChooser(monthChooser);
+		dayChooser.setYearChooser(yearChooser);
+		dayChooser.setMonthChooser(monthChooser);
 		add(monthYearPanel, BorderLayout.NORTH);
 		add(dayChooser, BorderLayout.CENTER);
 
@@ -302,9 +303,11 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
 			Calendar c = (Calendar) calendar.clone();
 
 			if (evt.getPropertyName().equals(JDayChooser.DAY_PROPERTY)) {
-				c.set(Calendar.DAY_OF_MONTH, ((Integer) evt.getNewValue()).intValue());
+				c.set(Calendar.DAY_OF_MONTH,
+						((Integer) evt.getNewValue()).intValue());
 				setCalendar(c, false);
-			} else if (evt.getPropertyName().equals(JMonthChooser.MONTH_PROPERTY)) {
+			} else if (evt.getPropertyName().equals(
+					JMonthChooser.MONTH_PROPERTY)) {
 				c.set(Calendar.MONTH, ((Integer) evt.getNewValue()).intValue());
 				setCalendar(c, false);
 			} else if (evt.getPropertyName().equals(JYearChooser.YEAR_PROPERTY)) {
@@ -336,8 +339,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
 	 * 
 	 * @param c
 	 *            the new calendar
-	 * @throws NullPointerException -
-	 *             if c is null;
+	 * @throws NullPointerException
+	 *             - if c is null;
 	 * @see #getCalendar
 	 */
 	public void setCalendar(Calendar c) {
@@ -351,8 +354,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
 	 *            the new calendar value
 	 * @param update
 	 *            the new calendar value
-	 * @throws NullPointerException -
-	 *             if c is null;
+	 * @throws NullPointerException
+	 *             - if c is null;
 	 */
 	private void setCalendar(Calendar c, boolean update) {
 		if (c == null) {
@@ -474,7 +477,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
 	 * @param decorationBackgroundVisible
 	 *            true, if the decoration background should be visible.
 	 */
-	public void setDecorationBackgroundVisible(boolean decorationBackgroundVisible) {
+	public void setDecorationBackgroundVisible(
+			boolean decorationBackgroundVisible) {
 		dayChooser.setDecorationBackgroundVisible(decorationBackgroundVisible);
 		setLocale(locale); // hack for doing complete new layout :)
 	}
@@ -570,8 +574,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
 	 * 
 	 * @param date
 	 *            the new date.
-	 * @throws NullPointerException -
-	 *             if tha date is null
+	 * @throws NullPointerException
+	 *             - if tha date is null
 	 */
 	public void setDate(Date date) {
 		Date oldDate = calendar.getTime();
@@ -589,8 +593,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
 	}
 
 	/**
-	 * Sets a valid date range for selectable dates. If max is before
-	 * min, the default range with no limitation is set.
+	 * Sets a valid date range for selectable dates. If max is before min, the
+	 * default range with no limitation is set.
 	 * 
 	 * @param min
 	 *            the minimum selectable date or null (then the minimum date is
@@ -624,7 +628,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
 	/**
 	 * Sets the maximum selectable date.
 	 * 
-	 * @param max maximum selectable date
+	 * @param max
+	 *            maximum selectable date
 	 */
 	public void setMaxSelectableDate(Date max) {
 		dayChooser.setMaxSelectableDate(max);
@@ -633,7 +638,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
 	/**
 	 * Sets the minimum selectable date.
 	 * 
-	 * @param min minimum selectable date
+	 * @param min
+	 *            minimum selectable date
 	 */
 	public void setMinSelectableDate(Date min) {
 		dayChooser.setMinSelectableDate(min);

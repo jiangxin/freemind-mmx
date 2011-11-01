@@ -25,32 +25,33 @@ import junit.framework.TestCase;
 /** */
 public class FreeMindTestBase extends TestCase {
 
-    protected FreeMindMainMock mFreeMindMain;
+	protected FreeMindMainMock mFreeMindMain;
 
-    /**
+	/**
      * 
      */
-    public FreeMindTestBase() {
-        super();
+	public FreeMindTestBase() {
+		super();
 
-    }
+	}
 
-    /**
+	/**
      */
-    public FreeMindTestBase(String arg0) {
-        super(arg0);
+	public FreeMindTestBase(String arg0) {
+		super(arg0);
 
-    }
-    
-    protected void setUp() throws Exception {
-        super.setUp();
-        mFreeMindMain = new FreeMindMainMock();
-    }
+	}
 
-    public FreeMindMainMock getFrame() {
-        return mFreeMindMain;
-    }
+	protected void setUp() throws Exception {
+		super.setUp();
+		mFreeMindMain = new FreeMindMainMock();
+	}
+
+	public FreeMindMainMock getFrame() {
+		return mFreeMindMain;
+	}
 
 }
 
-//    private static java.util.logging.Logger logger = freemind.main.Resources.getInstance().getLogger(FreeMindTestBase.class.getName());
+// private static java.util.logging.Logger logger =
+// freemind.main.Resources.getInstance().getLogger(FreeMindTestBase.class.getName());

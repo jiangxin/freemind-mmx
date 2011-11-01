@@ -25,7 +25,6 @@ package freemind.controller;
 import javax.swing.Action;
 import javax.swing.JMenuItem;
 
-
 public interface MenuItemSelectedListener {
 	boolean isSelected(JMenuItem checkItem, Action action);
 }

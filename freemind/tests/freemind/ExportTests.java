@@ -68,16 +68,17 @@ public class ExportTests extends FreeMindTestBase {
 		};
 		fm.add(parent, BorderLayout.CENTER);
 		IndependantMapViewCreator creator = new IndependantMapViewCreator();
-		MapView mapView = creator.createMapViewForFile(TESTMAP_MM, parent, mFreeMindMain);
+		MapView mapView = creator.createMapViewForFile(TESTMAP_MM, parent,
+				mFreeMindMain);
 		parent.add(mapView, BorderLayout.CENTER);
 		mapView.doLayout();
 		Rectangle innerBounds = mapView.getInnerBounds();
 		Rectangle bounds = mapView.getBounds();
 		dim.y = bounds.y + innerBounds.y;
-//		System.out.println(bounds);
-//		System.out.println(innerBounds);
+		// System.out.println(bounds);
+		// System.out.println(innerBounds);
 		fm.setBounds(mapView.getInnerBounds());
-		
+
 		fm.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		fm.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent event) {

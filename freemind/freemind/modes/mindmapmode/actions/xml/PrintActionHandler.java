@@ -24,53 +24,62 @@
 package freemind.modes.mindmapmode.actions.xml;
 
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.main.Tools;
 import freemind.modes.mindmapmode.MindMapController;
 
 /**
  * @author foltin
- *
+ * 
  */
 public class PrintActionHandler implements ActionHandler {
 
-
-    private MindMapController c;
-
+	private MindMapController c;
 
 	// Logging:
 	private static java.util.logging.Logger logger;
 
-    /**
+	/**
 	 *
 	 */
 	public PrintActionHandler(MindMapController c) {
 		super();
 		this.c = c;
-		if(logger == null)
+		if (logger == null)
 			logger = c.getFrame().getLogger(this.getClass().getName());
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.controller.actions.ActionHandler#startTransaction(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.controller.actions.ActionHandler#startTransaction(java.lang.
+	 * String)
 	 */
 	public void startTransaction(String name) {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.controller.actions.ActionHandler#endTransaction(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.controller.actions.ActionHandler#endTransaction(java.lang.String
+	 * )
 	 */
 	public void endTransaction(String name) {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.controller.actions.ActionHandler#executeAction(freemind.controller.actions.ActionPair)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.controller.actions.ActionHandler#executeAction(freemind.controller
+	 * .actions.ActionPair)
 	 */
 	public void executeAction(XmlAction action) {
 		String s = c.marshall(action);
 		logger.info(s);
-//		Tools.printStackTrace();
+		// Tools.printStackTrace();
 	}
 
 }

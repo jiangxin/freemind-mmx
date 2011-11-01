@@ -25,8 +25,6 @@ package freemind.extensions;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.AbstractAction;
-
 import freemind.controller.actions.generated.instance.Plugin;
 import freemind.modes.MindMapNode;
 
@@ -34,11 +32,11 @@ public interface HookFactory {
 
 	public static class RegistrationContainer {
 		public Class hookRegistrationClass;
-	
+
 		public boolean isPluginBase;
-	
+
 		public Plugin correspondingPlugin;
-	
+
 		public RegistrationContainer() {
 		}
 	}
@@ -92,10 +90,11 @@ public interface HookFactory {
 	 */
 	public abstract List getRegistrations();
 
-	/** See getRegistrations. The registration makes sense for the 
-	 * factory, as the factory observes every object creation. <br>
-	 * Moreover, the factory can tell other hooks it creates, who is its
-	 * base plugin. 
+	/**
+	 * See getRegistrations. The registration makes sense for the factory, as
+	 * the factory observes every object creation. <br>
+	 * Moreover, the factory can tell other hooks it creates, who is its base
+	 * plugin.
 	 * 
 	 */
 	public abstract void registerRegistrationContainer(
@@ -104,11 +103,12 @@ public interface HookFactory {
 
 	public abstract void deregisterAllRegistrationContainer();
 
-	/** A plugin base class is a common registration class of multiple 
-	 *  plugins. It is useful to embrace several related plugins 
-	 *  (example: EncryptedNote -> Registration).
-	 * @return the base class if declared and successfully instanciated
-	 * or NULL.
+	/**
+	 * A plugin base class is a common registration class of multiple plugins.
+	 * It is useful to embrace several related plugins (example: EncryptedNote
+	 * -> Registration).
+	 * 
+	 * @return the base class if declared and successfully instanciated or NULL.
 	 */
 	public abstract Object getPluginBaseClass(String hookName);
 

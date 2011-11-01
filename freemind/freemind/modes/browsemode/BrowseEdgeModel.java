@@ -20,28 +20,28 @@
 
 package freemind.modes.browsemode;
 
-import freemind.main.FreeMindMain;
-import freemind.modes.MindMapNode;
-import freemind.modes.EdgeAdapter;
 import java.awt.Color;
 
+import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
+import freemind.modes.EdgeAdapter;
+import freemind.modes.MindMapNode;
 
 public class BrowseEdgeModel extends EdgeAdapter {
 
-    public BrowseEdgeModel(MindMapNode node,FreeMindMain frame) {
-	super(node,frame);
-    }
+	public BrowseEdgeModel(MindMapNode node, FreeMindMain frame) {
+		super(node, frame);
+	}
 
-    public XMLElement save() {
-	return null;
-    }
+	public XMLElement save() {
+		return null;
+	}
 
-    public void setColor(Color color) {
-	super.setColor(color);
-    }
+	public void setColor(Color color) {
+		super.setColor(color);
+	}
 
-    public void setStyle(String style) {
-	super.setStyle(style);
-    }
+	public void setStyle(String style) {
+		super.setStyle(style);
+	}
 }

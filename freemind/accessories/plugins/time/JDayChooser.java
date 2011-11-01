@@ -33,9 +33,7 @@ import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
-
 import java.text.DateFormatSymbols;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -53,10 +51,11 @@ import javax.swing.UIManager;
  * @version $LastChangedRevision: 104 $
  * @version $LastChangedDate: 2006-06-04 15:20:45 +0200 (So, 04 Jun 2006) $
  */
-public class JDayChooser extends JPanel implements ActionListener, KeyListener, FocusListener {
+public class JDayChooser extends JPanel implements ActionListener, KeyListener,
+		FocusListener {
 	public static final String DAY_PROPERTY = "day";
 
-    private static final long serialVersionUID = 5876398337018781820L;
+	private static final long serialVersionUID = 5876398337018781820L;
 
 	protected JButton[] days;
 
@@ -110,18 +109,18 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 
 	protected int maxDayCharacters;
 
-    protected JMonthChooser monthChooser = null;
-    protected JYearChooser yearChooser = null;
-    
+	protected JMonthChooser monthChooser = null;
+	protected JYearChooser yearChooser = null;
+
 	public void setMonthChooser(JMonthChooser monthChooser) {
-        this.monthChooser = monthChooser;
-    }
+		this.monthChooser = monthChooser;
+	}
 
-    public void setYearChooser(JYearChooser yearChooser) {
-        this.yearChooser = yearChooser;
-    }
+	public void setYearChooser(JYearChooser yearChooser) {
+		this.yearChooser = yearChooser;
+	}
 
-    /**
+	/**
 	 * Default JDayChooser constructor.
 	 */
 	public JDayChooser() {
@@ -170,7 +169,8 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 						private static final long serialVersionUID = -7433645992591669725L;
 
 						public void paint(Graphics g) {
-							if ("Windows".equals(UIManager.getLookAndFeel().getID())) {
+							if ("Windows".equals(UIManager.getLookAndFeel()
+									.getID())) {
 								// this is a hack to get the background painted
 								// when using Windows Look & Feel
 								if (selectedDay == this) {
@@ -263,7 +263,8 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 		for (int i = 0; i < 7; i++) {
 			if (maxDayCharacters > 0 && maxDayCharacters < 5) {
 				if (dayNames[day].length() >= maxDayCharacters) {
-					dayNames[day] = dayNames[day].substring(0, maxDayCharacters);
+					dayNames[day] = dayNames[day]
+							.substring(0, maxDayCharacters);
 				}
 			}
 
@@ -376,8 +377,10 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 			days[i + n + 7].setText(Integer.toString(n + 1));
 			days[i + n + 7].setVisible(true);
 
-			if ((tmpCalendar.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR))
-					&& (tmpCalendar.get(Calendar.YEAR) == today.get(Calendar.YEAR))) {
+			if ((tmpCalendar.get(Calendar.DAY_OF_YEAR) == today
+					.get(Calendar.DAY_OF_YEAR))
+					&& (tmpCalendar.get(Calendar.YEAR) == today
+							.get(Calendar.YEAR))) {
 				days[i + n + 7].setForeground(sundayForeground);
 			} else {
 				days[i + n + 7].setForeground(foregroundColor);
@@ -405,7 +408,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 			days[k].setVisible(false);
 			days[k].setText("");
 		}
-		
+
 		drawWeeks();
 	}
 
@@ -516,7 +519,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 	public void setMonth(int month) {
 		int maxDays = getDaysInMonth();
 		calendar.set(Calendar.MONTH, month);
-		if(maxDays == day) {
+		if (maxDays == day) {
 			day = getDaysInMonth();
 		}
 
@@ -565,7 +568,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 	 * @param font
 	 *            the new font
 	 */
-	public void setFont(Font font) {		
+	public void setFont(Font font) {
 		if (days != null) {
 			for (int i = 0; i < 49; i++) {
 				days[i].setFont(font);
@@ -649,13 +652,13 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 	 *            the KeyEvent
 	 */
 	public void keyPressed(KeyEvent e) {
-//        System.out.println("KEY " + e);
-		
+		// System.out.println("KEY " + e);
+
 		int newDay = getDay();
-		switch(e.getKeyCode()){
+		switch (e.getKeyCode()) {
 		case KeyEvent.VK_UP:
 			newDay -= 7;
-			break;		
+			break;
 		case KeyEvent.VK_DOWN:
 			newDay += 7;
 			break;
@@ -679,18 +682,18 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 			break;
 		}
 
-        if ((newDay >= 1) && (newDay <= getDaysInMonth())) {
+		if ((newDay >= 1) && (newDay <= getDaysInMonth())) {
 			setDay(newDay);
-		} else if(monthChooser != null && yearChooser != null){
-            GregorianCalendar tempCalendar = getTemporaryCalendar();
-            tempCalendar.set(Calendar.DAY_OF_MONTH, newDay);
-            int month = tempCalendar.get(Calendar.MONTH);
-            int year = tempCalendar.get(Calendar.YEAR);
-            int day = tempCalendar.get(Calendar.DAY_OF_MONTH);
-            yearChooser.setYear(year);
-            monthChooser.setMonth(month);
-            this.setDay(day);
-        }
+		} else if (monthChooser != null && yearChooser != null) {
+			GregorianCalendar tempCalendar = getTemporaryCalendar();
+			tempCalendar.set(Calendar.DAY_OF_MONTH, newDay);
+			int month = tempCalendar.get(Calendar.MONTH);
+			int year = tempCalendar.get(Calendar.YEAR);
+			int day = tempCalendar.get(Calendar.DAY_OF_MONTH);
+			yearChooser.setYear(year);
+			monthChooser.setMonth(month);
+			this.setDay(day);
+		}
 	}
 
 	private int diffMonth(int pMonthDiff) {
@@ -698,11 +701,12 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 		tempCalendar.add(Calendar.MONTH, pMonthDiff);
 		int max = tempCalendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 		int dayMonth = tempCalendar.get(Calendar.DAY_OF_MONTH);
-		return (pMonthDiff>0)?(dayMonth):(-max + dayMonth);
+		return (pMonthDiff > 0) ? (dayMonth) : (-max + dayMonth);
 	}
 
 	public GregorianCalendar getTemporaryCalendar() {
-		GregorianCalendar tempCalendar = new GregorianCalendar(yearChooser.getYear(), monthChooser.getMonth(), getDay());
+		GregorianCalendar tempCalendar = new GregorianCalendar(
+				yearChooser.getYear(), monthChooser.getMonth(), getDay());
 		return tempCalendar;
 	}
 
@@ -885,7 +889,8 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 	 * @param decorationBackgroundVisible
 	 *            true, if the decoration background shall be painted.
 	 */
-	public void setDecorationBackgroundVisible(boolean decorationBackgroundVisible) {
+	public void setDecorationBackgroundVisible(
+			boolean decorationBackgroundVisible) {
 		this.decorationBackgroundVisible = decorationBackgroundVisible;
 		initDecorations();
 	}
@@ -983,9 +988,11 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 	}
 
 	/**
-	 * Sets the maximum selectable date. If null, the date 01\01\9999 will be set instead.
+	 * Sets the maximum selectable date. If null, the date 01\01\9999 will be
+	 * set instead.
 	 * 
-	 * @param max the maximum selectable date
+	 * @param max
+	 *            the maximum selectable date
 	 * 
 	 * @return the maximum selectable date
 	 */
@@ -1000,9 +1007,11 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
 	}
 
 	/**
-	 * Sets the minimum selectable date. If null, the date 01\01\0001 will be set instead.
+	 * Sets the minimum selectable date. If null, the date 01\01\0001 will be
+	 * set instead.
 	 * 
-	 * @param min the minimum selectable date
+	 * @param min
+	 *            the minimum selectable date
 	 * 
 	 * @return the minimum selectable date
 	 */

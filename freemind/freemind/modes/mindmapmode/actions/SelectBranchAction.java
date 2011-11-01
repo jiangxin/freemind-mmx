@@ -25,19 +25,18 @@ import java.awt.event.ActionEvent;
 import freemind.modes.mindmapmode.MindMapController;
 
 /** */
-public class SelectBranchAction  extends FreemindAction {
+public class SelectBranchAction extends FreemindAction {
 
-
-    /**
+	/**
      *
      */
-    public SelectBranchAction(final MindMapController modeController) {
-        super("select_branch", (String) null, modeController);
-    }
+	public SelectBranchAction(final MindMapController modeController) {
+		super("select_branch", (String) null, modeController);
+	}
 
-    public void actionPerformed(ActionEvent e) {
-        getMindMapController().selectBranch(getMindMapController().getSelectedView(), true /* = extend*/);
-    }
+	public void actionPerformed(ActionEvent e) {
+		getMindMapController().selectBranch(
+				getMindMapController().getSelectedView(), true /* = extend */);
+	}
 
 }
-

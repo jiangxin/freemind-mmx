@@ -23,14 +23,14 @@
 
 package freemind.extensions;
 
-
 /**
  * @author foltin
- *
+ * 
  */
 public interface HookRegistration {
-    
-    void register();
-    void deRegister();
+
+	void register();
+
+	void deRegister();
 
 }

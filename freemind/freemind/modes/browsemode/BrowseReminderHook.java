@@ -27,7 +27,7 @@ import freemind.modes.common.plugins.ReminderHookBase;
 
 /**
  * @author foltin
- *
+ * 
  */
 public class BrowseReminderHook extends ReminderHookBase {
 
@@ -38,20 +38,28 @@ public class BrowseReminderHook extends ReminderHookBase {
 		super();
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.modes.common.plugins.ReminderHookBase#nodeRefresh(freemind.modes.MindMapNode)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.modes.common.plugins.ReminderHookBase#nodeRefresh(freemind.modes
+	 * .MindMapNode)
 	 */
 	protected void nodeRefresh(MindMapNode node) {
 		getController().nodeChanged(node);
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.modes.common.plugins.ReminderHookBase#setToolTip(freemind.modes.MindMapNode, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.modes.common.plugins.ReminderHookBase#setToolTip(freemind.modes
+	 * .MindMapNode, java.lang.String, java.lang.String)
 	 */
 	protected void setToolTip(MindMapNode node, String key, String value) {
-		//FIXME: Duplicated code.
-        node.setToolTip(key, value);
-        nodeRefresh(node);
+		// FIXME: Duplicated code.
+		node.setToolTip(key, value);
+		nodeRefresh(node);
 	}
 
 }

@@ -31,22 +31,26 @@ import freemind.extensions.HookFactory;
 import freemind.extensions.ModeControllerHook;
 import freemind.modes.mindmapmode.MindMapController;
 
-public class MindMapControllerHookAction extends AbstractAction implements HookAction{
-    String mHookName;
-    MindMapController mindMapController;
-    public MindMapControllerHookAction(String hookName, MindMapController mindMapController) {
-        super(hookName);
-        this.mHookName = hookName;
-        this.mindMapController = mindMapController;
-    }
+public class MindMapControllerHookAction extends AbstractAction implements
+		HookAction {
+	String mHookName;
+	MindMapController mindMapController;
 
-    public void actionPerformed(ActionEvent arg0) {
-        HookFactory hookFactory = mindMapController.getHookFactory();
-        // two different invocation methods:single or selecteds
-        ModeControllerHook hook = hookFactory.createModeControllerHook(mHookName);
-        hook.setController(mindMapController);
-        mindMapController.invokeHook(hook);
-    }
+	public MindMapControllerHookAction(String hookName,
+			MindMapController mindMapController) {
+		super(hookName);
+		this.mHookName = hookName;
+		this.mindMapController = mindMapController;
+	}
+
+	public void actionPerformed(ActionEvent arg0) {
+		HookFactory hookFactory = mindMapController.getHookFactory();
+		// two different invocation methods:single or selecteds
+		ModeControllerHook hook = hookFactory
+				.createModeControllerHook(mHookName);
+		hook.setController(mindMapController);
+		mindMapController.invokeHook(hook);
+	}
 
 	public String getHookName() {
 		return mHookName;

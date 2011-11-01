@@ -39,129 +39,136 @@ import freemind.modes.ModeController;
 
 public class SchemeMapModel extends MapAdapter {
 
-    //
-    // Constructors
-    //
+	//
+	// Constructors
+	//
 
-    public SchemeMapModel(FreeMindMain frame, ModeController modeController) {
-	super(frame, modeController);
-	setRoot(new SchemeNodeModel(getFrame(), this));
-    }
-
-    //
-    // Other methods
-    //
-    public boolean save(File file) {
-	try {
-	    setFile(file);
-	    setSaved(true);
-
-	    //Generating output Stream
-	    BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file) ) );
-
-	    fileout.write( getCode() );
-	    fileout.close();
-        return true;
-
-	} catch(Exception e) {
-	    System.err.println("Error in SchemeMapModel.save: ");
-	    freemind.main.Resources.getInstance().logException(e);
-	    return false;
+	public SchemeMapModel(FreeMindMain frame, ModeController modeController) {
+		super(frame, modeController);
+		setRoot(new SchemeNodeModel(getFrame(), this));
 	}
-    }
 
-    public void load(URL url) throws FileNotFoundException {
-        File file = new File(url.getFile());
-	setFile(file);
-	setRoot(new SchemeNodeModel(getFrame(), this));
+	//
+	// Other methods
+	//
+	public boolean save(File file) {
+		try {
+			setFile(file);
+			setSaved(true);
 
-	try {
-	    loadMathStyle(new InputStreamReader(new FileInputStream(file)));
-	} catch (IOException ex) {
-	}
-    }
+			// Generating output Stream
+			BufferedWriter fileout = new BufferedWriter(new OutputStreamWriter(
+					new FileOutputStream(file)));
 
-    public void loadMathStyle(Reader re) throws IOException{
-	StreamTokenizer tok = new StreamTokenizer(re);
-	tok.resetSyntax();
-	tok.whitespaceChars(0, 32);
-	tok.wordChars(33, 255);
-	tok.ordinaryChars('(',')');
+			fileout.write(getCode());
+			fileout.close();
+			return true;
 
-	//commentChar('/');
-	tok.commentChar(';');//59 is ';'
-	//	tok.quoteChar('"');
-	//	quoteChar('\'');	//	tok.eolIsSignificant(true);
-
-	SchemeNodeModel node = (SchemeNodeModel)getRoot();
-	while (tok.nextToken() != StreamTokenizer.TT_EOF) {
-	    if (tok.ttype == 40) {    //"("
-		//		System.out.println("Token starts with (");
-		SchemeNodeModel newNode = new SchemeNodeModel(getFrame(), this);
-		insertNodeInto(newNode, node, node.getChildCount());
-		node = newNode;
-	    } else if (tok.ttype == 41) {    //")"
-		//		System.out.println("Token starts with )");
-		if (node.getParent() != null) {//this should not be necessary, if this happens, the code is wrong
-		    node = (SchemeNodeModel)node.getParent();
+		} catch (Exception e) {
+			System.err.println("Error in SchemeMapModel.save: ");
+			freemind.main.Resources.getInstance().logException(e);
+			return false;
 		}
-	    } else if (tok.ttype == StreamTokenizer.TT_WORD) {
-		String token = tok.sval.trim();
+	}
 
-		if (node.toString().equals(" ") && node.getChildCount() == 0) {
-		    node.setUserObject(token);
+	public void load(URL url) throws FileNotFoundException {
+		File file = new File(url.getFile());
+		setFile(file);
+		setRoot(new SchemeNodeModel(getFrame(), this));
+
+		try {
+			loadMathStyle(new InputStreamReader(new FileInputStream(file)));
+		} catch (IOException ex) {
+		}
+	}
+
+	public void loadMathStyle(Reader re) throws IOException {
+		StreamTokenizer tok = new StreamTokenizer(re);
+		tok.resetSyntax();
+		tok.whitespaceChars(0, 32);
+		tok.wordChars(33, 255);
+		tok.ordinaryChars('(', ')');
+
+		// commentChar('/');
+		tok.commentChar(';');// 59 is ';'
+		// tok.quoteChar('"');
+		// quoteChar('\''); // tok.eolIsSignificant(true);
+
+		SchemeNodeModel node = (SchemeNodeModel) getRoot();
+		while (tok.nextToken() != StreamTokenizer.TT_EOF) {
+			if (tok.ttype == 40) { // "("
+				// System.out.println("Token starts with (");
+				SchemeNodeModel newNode = new SchemeNodeModel(getFrame(), this);
+				insertNodeInto(newNode, node, node.getChildCount());
+				node = newNode;
+			} else if (tok.ttype == 41) { // ")"
+				// System.out.println("Token starts with )");
+				if (node.getParent() != null) {// this should not be necessary,
+												// if this happens, the code is
+												// wrong
+					node = (SchemeNodeModel) node.getParent();
+				}
+			} else if (tok.ttype == StreamTokenizer.TT_WORD) {
+				String token = tok.sval.trim();
+
+				if (node.toString().equals(" ") && node.getChildCount() == 0) {
+					node.setUserObject(token);
+				} else {
+					SchemeNodeModel newNode = new SchemeNodeModel(getFrame(),
+							this);
+					insertNodeInto(newNode, node, node.getChildCount());
+					newNode.setUserObject(token);
+				}
+			}/*
+			 * else if (tok.ttype == tok.TT_NUMBER) { String token =
+			 * Double.toString(tok.nval);
+			 * 
+			 * if (node.toString().equals("")) { node.setUserObject(token); }
+			 * else { SchemeNodeModel newNode = new SchemeNodeModel(getFrame());
+			 * insertNodeInto(newNode,node,node.getChildCount());
+			 * newNode.setUserObject(token); } }
+			 */
+		}
+	}
+
+	/**
+	 * This method returns the scheme code that is represented by this map as a
+	 * plain string.
+	 */
+	public String getCode() {
+		return ((SchemeNodeModel) getRoot()).getCodeMathStyle();
+	}
+
+	// public boolean isSaved() {
+	// return true;
+	// }
+
+	public String toString() {
+		if (getFile() == null) {
+			return null;
 		} else {
-		    SchemeNodeModel newNode = new SchemeNodeModel(getFrame(), this);
-		    insertNodeInto(newNode, node, node.getChildCount());
-		    newNode.setUserObject(token);
+			return getFile().getName();
 		}
-	    }/* else if (tok.ttype == tok.TT_NUMBER) {
-		String token = Double.toString(tok.nval);
-
-		if (node.toString().equals("")) {
-		    node.setUserObject(token);
-		} else {
-		    SchemeNodeModel newNode = new SchemeNodeModel(getFrame());
-		    insertNodeInto(newNode,node,node.getChildCount());
-		    newNode.setUserObject(token);
-		}
-		}*/
 	}
-    }
 
-    /**
-     * This method returns the scheme code that is represented by
-     * this map as a plain string.
-     */
-    public String getCode() {
-	return ((SchemeNodeModel)getRoot()).getCodeMathStyle();
-    }
-
-    //    public boolean isSaved() {
-    //	return true;
-    //    }
-
-    public String toString() {
-	if (getFile() == null) {
-	    return null;
-	} else {
-	    return getFile().getName();
-	}
-    }
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see freemind.modes.MindMap#getXml(java.io.Writer)
 	 */
 	public void getXml(Writer fileout) throws IOException {
 		fileout.write(getCode());
 	}
-    /* (non-Javadoc)
-     * @see freemind.modes.MindMap#getFilteredXml(java.io.Writer)
-     */
-    public void getFilteredXml(Writer fileout) throws IOException {
-        // nothing.
-        //FIXME: Implement me if you need me.
-        throw new RuntimeException("Unimplemented method called.");
-    }
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see freemind.modes.MindMap#getFilteredXml(java.io.Writer)
+	 */
+	public void getFilteredXml(Writer fileout) throws IOException {
+		// nothing.
+		// FIXME: Implement me if you need me.
+		throw new RuntimeException("Unimplemented method called.");
+	}
 
 }

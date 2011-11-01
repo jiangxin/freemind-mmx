@@ -66,9 +66,9 @@ public class PasteAsPlainTextAction extends AbstractAction {
 			try {
 				String plainText = (String) clipboardContents
 						.getTransferData(DataFlavor.stringFlavor);
-				// sometimes these (for XML illegal) characters occur 
+				// sometimes these (for XML illegal) characters occur
 				plainText = plainText.replaceAll("\0", "");
-				logger.info("Pasting string " + plainText );
+				logger.info("Pasting string " + plainText);
 				// paste.
 				MindMapNode selected = mMindMapController.getSelected();
 				MindMapNode newNode = mMindMapController.addNewNode(selected,
@@ -83,7 +83,8 @@ public class PasteAsPlainTextAction extends AbstractAction {
 			}
 		} else {
 			// not supported message.
-			logger.warning("String flavor not supported for transferable " + clipboardContents);
+			logger.warning("String flavor not supported for transferable "
+					+ clipboardContents);
 		}
 	}
 

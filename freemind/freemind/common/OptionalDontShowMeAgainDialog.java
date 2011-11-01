@@ -41,7 +41,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
 import freemind.controller.Controller;
-import freemind.main.FreeMind;
 import freemind.main.Resources;
 import freemind.main.Tools;
 
@@ -67,38 +66,44 @@ public class OptionalDontShowMeAgainDialog {
 
 	public interface DontShowPropertyHandler {
 		/**
-		 * @return accepted are the following values as return values:
-		 * * "" (means: show this dialog)
-		 * * "true" (means: the answer was ok and I want to remember that).
-		 * * "false" (means: the answer was cancel and I want to remember that).
+		 * @return accepted are the following values as return values: * ""
+		 *         (means: show this dialog) * "true" (means: the answer was ok
+		 *         and I want to remember that). * "false" (means: the answer
+		 *         was cancel and I want to remember that).
 		 */
 		String getProperty();
+
 		void setProperty(String pValue);
 	}
-	
+
 	/**
 	 * Standard property handler, if you have a controller and a property.
-	 *
+	 * 
 	 */
-	public static class StandardPropertyHandler implements DontShowPropertyHandler {
+	public static class StandardPropertyHandler implements
+			DontShowPropertyHandler {
 		private final Controller mController;
 		private String mPropertyName;
 
-		public StandardPropertyHandler(Controller pController, String pPropertyName){
+		public StandardPropertyHandler(Controller pController,
+				String pPropertyName) {
 			mController = pController;
 			mPropertyName = pPropertyName;
-			
+
 		}
+
 		public String getProperty() {
 			return mController.getProperty(mPropertyName);
 		}
-		
+
 		public void setProperty(String pValue) {
 			mController.setProperty(mPropertyName, pValue);
 		}
 	}
-	public OptionalDontShowMeAgainDialog(JFrame pFrame, Component pComponent, String pMessageId,
-			String pTitleId, TextTranslator pTextTranslator, DontShowPropertyHandler pDontShowPropertyHandler, int pMessageType) {
+
+	public OptionalDontShowMeAgainDialog(JFrame pFrame, Component pComponent,
+			String pMessageId, String pTitleId, TextTranslator pTextTranslator,
+			DontShowPropertyHandler pDontShowPropertyHandler, int pMessageType) {
 		mComponent = pComponent;
 		mParent = pFrame;
 		mMessageId = pMessageId;
@@ -115,14 +120,13 @@ public class OptionalDontShowMeAgainDialog {
 		return mResult;
 	}
 
-
 	public OptionalDontShowMeAgainDialog show() {
 		String property = mDontShowPropertyHandler.getProperty();
-		if(Tools.safeEquals(property, "true")) {
+		if (Tools.safeEquals(property, "true")) {
 			mResult = JOptionPane.OK_OPTION;
 			return this;
 		}
-		if(Tools.safeEquals(property, "false")) {
+		if (Tools.safeEquals(property, "false")) {
 			mResult = JOptionPane.CANCEL_OPTION;
 			return this;
 		}
@@ -149,41 +153,50 @@ public class OptionalDontShowMeAgainDialog {
 			}
 		});
 		mDialog.getContentPane().setLayout(new GridBagLayout());
-		mDialog.getContentPane().add(new JLabel(mTextTranslator.getText(mMessageId)),
+		mDialog.getContentPane().add(
+				new JLabel(mTextTranslator.getText(mMessageId)),
 				new GridBagConstraints(1, 0, 1, 1, 10.0, 4.0,
 						GridBagConstraints.WEST, GridBagConstraints.BOTH,
 						new Insets(5, 5, 0, 0), 0, 10));
-		//TODO: Replace by usual java question mark.
-		ImageIcon questionMark = new ImageIcon(Resources.getInstance().getResource("images/icons/help.png"));
-		mDialog.getContentPane().add(new JLabel(questionMark), new GridBagConstraints(0, 0, 1, 2, 1.0,
-				2.0, GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(
-						5, 5, 0, 0), 0, 0));
+		// TODO: Replace by usual java question mark.
+		ImageIcon questionMark = new ImageIcon(Resources.getInstance()
+				.getResource("images/icons/help.png"));
+		mDialog.getContentPane().add(
+				new JLabel(questionMark),
+				new GridBagConstraints(0, 0, 1, 2, 1.0, 2.0,
+						GridBagConstraints.WEST, GridBagConstraints.BOTH,
+						new Insets(5, 5, 0, 0), 0, 0));
 		String boxString;
-		if(mMessageType == ONLY_OK_SELECTION_IS_STORED) {
-			boxString = "OptionalDontShowMeAgainDialog.dontShowAgain";			
+		if (mMessageType == ONLY_OK_SELECTION_IS_STORED) {
+			boxString = "OptionalDontShowMeAgainDialog.dontShowAgain";
 		} else {
 			boxString = "OptionalDontShowMeAgainDialog.rememberMyDescision";
 		}
-		mDontShowAgainBox = new JCheckBox(mTextTranslator
-				.getText(boxString));
+		mDontShowAgainBox = new JCheckBox(mTextTranslator.getText(boxString));
 		Tools.setLabelAndMnemonic(mDontShowAgainBox, null);
-		mDialog.getContentPane().add(mDontShowAgainBox, new GridBagConstraints(0, 2, 3, 1, 1.0, 1.0,
-				GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5,
-						0, 0), 0, 0));
-		JButton okButton = new JButton(mTextTranslator
-				.getText("OptionalDontShowMeAgainDialog.ok"));
+		mDialog.getContentPane().add(
+				mDontShowAgainBox,
+				new GridBagConstraints(0, 2, 3, 1, 1.0, 1.0,
+						GridBagConstraints.WEST, GridBagConstraints.BOTH,
+						new Insets(5, 5, 0, 0), 0, 0));
+		JButton okButton = new JButton(
+				mTextTranslator.getText("OptionalDontShowMeAgainDialog.ok"));
 		Tools.setLabelAndMnemonic(okButton, null);
 		okButton.addActionListener(okAction);
-		mDialog.getContentPane().add(okButton, new GridBagConstraints(2, 3, 1, 1, 1.0, 1.0,
-				GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5,
-						0, 0), 0, 0));
-		JButton cancelButton = new JButton(mTextTranslator
-				.getText("OptionalDontShowMeAgainDialog.cancel"));
+		mDialog.getContentPane().add(
+				okButton,
+				new GridBagConstraints(2, 3, 1, 1, 1.0, 1.0,
+						GridBagConstraints.WEST, GridBagConstraints.BOTH,
+						new Insets(5, 5, 0, 0), 0, 0));
+		JButton cancelButton = new JButton(
+				mTextTranslator.getText("OptionalDontShowMeAgainDialog.cancel"));
 		Tools.setLabelAndMnemonic(cancelButton, null);
 		cancelButton.addActionListener(cancelAction);
-		mDialog.getContentPane().add(cancelButton, new GridBagConstraints(3, 3, 1, 1, 1.0, 1.0,
-				GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5, 5,
-						0, 0), 0, 0));
+		mDialog.getContentPane().add(
+				cancelButton,
+				new GridBagConstraints(3, 3, 1, 1, 1.0, 1.0,
+						GridBagConstraints.WEST, GridBagConstraints.BOTH,
+						new Insets(5, 5, 0, 0), 0, 0));
 		mDialog.getRootPane().setDefaultButton(okButton);
 		mDialog.pack();
 		Tools.setDialogLocationRelativeTo(mDialog, mComponent);
@@ -193,13 +206,15 @@ public class OptionalDontShowMeAgainDialog {
 
 	private void close(int pResult) {
 		mResult = pResult;
-		if(mDontShowAgainBox.isSelected()){
-			if(mMessageType == ONLY_OK_SELECTION_IS_STORED) {
+		if (mDontShowAgainBox.isSelected()) {
+			if (mMessageType == ONLY_OK_SELECTION_IS_STORED) {
 				if (mResult == JOptionPane.OK_OPTION) {
 					mDontShowPropertyHandler.setProperty("true");
 				}
 			} else {
-				mDontShowPropertyHandler.setProperty((mResult==JOptionPane.OK_OPTION)?"true":"false");
+				mDontShowPropertyHandler
+						.setProperty((mResult == JOptionPane.OK_OPTION) ? "true"
+								: "false");
 			}
 		} else {
 			mDontShowPropertyHandler.setProperty("");

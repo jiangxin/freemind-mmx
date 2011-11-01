@@ -33,7 +33,7 @@ import freemind.modes.mindmapmode.actions.FreemindAction;
 
 /**
  * @author foltin
- *
+ * 
  */
 public abstract class AbstractXmlAction extends FreemindAction {
 
@@ -41,24 +41,29 @@ public abstract class AbstractXmlAction extends FreemindAction {
 
 	private MindMapController controller;
 
-
-	protected AbstractXmlAction(String name, Icon icon, MindMapController controller) {
+	protected AbstractXmlAction(String name, Icon icon,
+			MindMapController controller) {
 		super(name, icon, controller);
 		this.controller = controller;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	final public void actionPerformed(ActionEvent arg0) {
-		getActionFactory().startTransaction((String) getValue(Action.SHORT_DESCRIPTION));
+		getActionFactory().startTransaction(
+				(String) getValue(Action.SHORT_DESCRIPTION));
 		xmlActionPerformed(arg0);
-		getActionFactory().endTransaction((String) getValue(Action.SHORT_DESCRIPTION));
+		getActionFactory().endTransaction(
+				(String) getValue(Action.SHORT_DESCRIPTION));
 	}
 
 	/**
 	 */
-	protected abstract void xmlActionPerformed(ActionEvent arg0) ;
+	protected abstract void xmlActionPerformed(ActionEvent arg0);
 
 	/**
 	 *

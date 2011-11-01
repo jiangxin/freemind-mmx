@@ -1,22 +1,22 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
-*Copyright (C) 2000-2006 Joerg Mueller, Daniel Polansky, Christian Foltin, Dimitri Polivaev and others.
-*
-*See COPYING for Details
-*
-*This program is free software; you can redistribute it and/or
-*modify it under the terms of the GNU General Public License
-*as published by the Free Software Foundation; either version 2
-*of the License, or (at your option) any later version.
-*
-*This program is distributed in the hope that it will be useful,
-*but WITHOUT ANY WARRANTY; without even the implied warranty of
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*GNU General Public License for more details.
-*
-*You should have received a copy of the GNU General Public License
-*along with this program; if not, write to the Free Software
-*Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ *Copyright (C) 2000-2006 Joerg Mueller, Daniel Polansky, Christian Foltin, Dimitri Polivaev and others.
+ *
+ *See COPYING for Details
+ *
+ *This program is free software; you can redistribute it and/or
+ *modify it under the terms of the GNU General Public License
+ *as published by the Free Software Foundation; either version 2
+ *of the License, or (at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program; if not, write to the Free Software
+ *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
 /*
  * Created on 16.05.2004
  *
@@ -40,10 +40,7 @@ class PathBBox {
 		double movx = 0;
 		double movy = 0;
 		double cpx0, cpy0, cpx1, cpy1, endx, endy;
-		for (PathIterator pi = s.getPathIterator(null);
-			 !pi.isDone();
-			 pi.next())
-		{
+		for (PathIterator pi = s.getPathIterator(null); !pi.isDone(); pi.next()) {
 			int type = pi.currentSegment(coords);
 			switch (pi.currentSegment(coords)) {
 			case PathIterator.SEG_MOVETO:
@@ -88,13 +85,13 @@ class PathBBox {
 				endy = coords[5];
 				int num = findCubicZeros(coords, curx, cpx0, cpx1, endx);
 				for (int i = 0; i < num; i++) {
-					accumCubic(bounds, coords[i],
-							   curx, cury, cpx0, cpy0, cpx1, cpy1, endx, endy);
+					accumCubic(bounds, coords[i], curx, cury, cpx0, cpy0, cpx1,
+							cpy1, endx, endy);
 				}
 				num = findCubicZeros(coords, cury, cpy0, cpy1, endy);
 				for (int i = 0; i < num; i++) {
-					accumCubic(bounds, coords[i],
-							   curx, cury, cpx0, cpy0, cpx1, cpy1, endx, endy);
+					accumCubic(bounds, coords[i], curx, cury, cpx0, cpy0, cpx1,
+							cpy1, endx, endy);
 				}
 				curx = endx;
 				cury = endy;
@@ -107,9 +104,8 @@ class PathBBox {
 				break;
 			}
 		}
-		return new Rectangle2D.Double(bounds[0], bounds[1],
-									  bounds[2] - bounds[0],
-									  bounds[3] - bounds[1]);
+		return new Rectangle2D.Double(bounds[0], bounds[1], bounds[2]
+				- bounds[0], bounds[3] - bounds[1]);
 	}
 
 	private static void accum(double[] bounds, double x, double y) {
@@ -129,24 +125,19 @@ class PathBBox {
 		// deriv[1] = 2 * (cur - cp - cp + end);
 		// Since we really want the zero, we can calculate that in one step:
 		// zero = -deriv[0] / deriv[1]
-		return - (cp + cp - cur - cur) / (2.0 * (cur - cp - cp + end));
+		return -(cp + cp - cur - cur) / (2.0 * (cur - cp - cp + end));
 	}
 
-	private static void accumQuad(double bounds[], double t,
-								  double curx, double cury,
-								  double cpx0, double cpy0,
-								  double endx, double endy)
-	{
-		double u = (1-t);
-		double x = curx*u*u + 2.0*cpx0*t*u + endx*t*t;
-		double y = cury*u*u + 2.0*cpy0*t*u + endy*t*t;
+	private static void accumQuad(double bounds[], double t, double curx,
+			double cury, double cpx0, double cpy0, double endx, double endy) {
+		double u = (1 - t);
+		double x = curx * u * u + 2.0 * cpx0 * t * u + endx * t * t;
+		double y = cury * u * u + 2.0 * cpy0 * t * u + endy * t * t;
 		accum(bounds, x, y);
 	}
 
-	private static int findCubicZeros(double zeros[],
-									  double cur, double cp0,
-									  double cp1, double end)
-	{
+	private static int findCubicZeros(double zeros[], double cur, double cp0,
+			double cp1, double end) {
 		// The polynomial form of the Cubic is:
 		// eqn[0] = cur;
 		// eqn[1] = (cp0 - cur) * 3.0;
@@ -168,15 +159,14 @@ class PathBBox {
 		return ret;
 	}
 
-	private static void accumCubic(double bounds[], double t,
-								   double curx, double cury,
-								   double cpx0, double cpy0,
-								   double cpx1, double cpy1,
-								   double endx, double endy)
-	{
-		double u = (1-t);
-		double x = curx*u*u*u + 3.0*cpx0*t*u*u + 3.0*cpx1*t*t*u + endx*t*t*t;
-		double y = cury*u*u*u + 3.0*cpy0*t*u*u + 3.0*cpy1*t*t*u + endy*t*t*t;
+	private static void accumCubic(double bounds[], double t, double curx,
+			double cury, double cpx0, double cpy0, double cpx1, double cpy1,
+			double endx, double endy) {
+		double u = (1 - t);
+		double x = curx * u * u * u + 3.0 * cpx0 * t * u * u + 3.0 * cpx1 * t
+				* t * u + endx * t * t * t;
+		double y = cury * u * u * u + 3.0 * cpy0 * t * u * u + 3.0 * cpy1 * t
+				* t * u + endy * t * t * t;
 		accum(bounds, x, y);
 	}
 }

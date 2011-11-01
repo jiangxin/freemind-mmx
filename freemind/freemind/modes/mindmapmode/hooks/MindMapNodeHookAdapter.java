@@ -26,18 +26,17 @@ import freemind.modes.mindmapmode.MindMapController;
 /** */
 public class MindMapNodeHookAdapter extends NodeHookAdapter {
 
-    /**
+	/**
      *
      */
-    public MindMapNodeHookAdapter() {
-        super();
+	public MindMapNodeHookAdapter() {
+		super();
 
-    }
+	}
 
-    public MindMapController getMindMapController() {
-        return (MindMapController) getController();
+	public MindMapController getMindMapController() {
+		return (MindMapController) getController();
 
-    }
+	}
 
 }
-

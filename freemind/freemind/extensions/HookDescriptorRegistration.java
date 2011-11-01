@@ -30,20 +30,21 @@ import freemind.main.FreeMindMain;
 
 /**
  * @author foltin
- *
+ * 
  */
 public class HookDescriptorRegistration extends HookDescriptorBase {
 
 	private final PluginRegistration mRegistration;
 
-	public HookDescriptorRegistration(FreeMindMain frame, String xmlPluginFile, Plugin pluginBase, PluginRegistration pRegistration) {
+	public HookDescriptorRegistration(FreeMindMain frame, String xmlPluginFile,
+			Plugin pluginBase, PluginRegistration pRegistration) {
 		super(pluginBase, frame, xmlPluginFile);
 		mRegistration = pRegistration;
 	}
 
-//	public PluginRegistration getPluginRegistration() {
-//		return mRegistration;
-//	}
+	// public PluginRegistration getPluginRegistration() {
+	// return mRegistration;
+	// }
 
 	public String getClassName() {
 		return mRegistration.getClassName();

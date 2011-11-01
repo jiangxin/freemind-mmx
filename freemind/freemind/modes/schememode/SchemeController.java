@@ -43,102 +43,110 @@ import freemind.modes.viewmodes.ViewControllerAdapter;
 
 public class SchemeController extends ViewControllerAdapter {
 
-    Action newMap = new NewMapAction(this);
-    Action open = new OpenAction(this);
-    Action save = new SaveAction(this);
-    Action saveAs = new SaveAsAction(this);
-    Action evaluate = new EvaluateAction();
-//    Action edit = new EditAction(this);
-    private JPopupMenu popupmenu = new SchemePopupMenu(this);
+	Action newMap = new NewMapAction(this);
+	Action open = new OpenAction(this);
+	Action save = new SaveAction(this);
+	Action saveAs = new SaveAsAction(this);
+	Action evaluate = new EvaluateAction();
+	// Action edit = new EditAction(this);
+	private JPopupMenu popupmenu = new SchemePopupMenu(this);
 
-    public SchemeController(Mode mode) {
-	super(mode);
-    }
+	public SchemeController(Mode mode) {
+		super(mode);
+	}
 
-    public MapAdapter newModel(ModeController modeController) {
-	return new SchemeMapModel(getFrame(), modeController);
-    }
+	public MapAdapter newModel(ModeController modeController) {
+		return new SchemeMapModel(getFrame(), modeController);
+	}
 
-    public MindMapNode newNode(Object userObject, MindMap map) {
-    	return new SchemeNodeModel(getFrame(), map);
-        }
+	public MindMapNode newNode(Object userObject, MindMap map) {
+		return new SchemeNodeModel(getFrame(), map);
+	}
 
-//    //private
-//    private MindMap getModel() {
-// 	return (MindMap)getController().getModel();
-//    }
-
+	// //private
+	// private MindMap getModel() {
+	// return (MindMap)getController().getModel();
+	// }
 
 	public boolean saveAs() {
 		JFileChooser chooser = null;
-		if ((getMap().getFile() != null) && (getMap().getFile().getParentFile() != null)) {
+		if ((getMap().getFile() != null)
+				&& (getMap().getFile().getParentFile() != null)) {
 			chooser = new JFileChooser(getMap().getFile().getParentFile());
 		} else {
 			chooser = new JFileChooser();
 		}
-		//chooser.setLocale(currentLocale);
+		// chooser.setLocale(currentLocale);
 		if (getFileFilter() != null) {
 			chooser.addChoosableFileFilter(getFileFilter());
 		}
 		int returnVal = chooser.showSaveDialog(getView());
-		if (returnVal==JFileChooser.APPROVE_OPTION) {//ok pressed
+		if (returnVal == JFileChooser.APPROVE_OPTION) {// ok pressed
 			File f = chooser.getSelectedFile();
-			//Force the extension to be .mm
-			//      String ext = Tools.getExtension(f.getName());
-			//      if(!ext.equals(freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION_WITHOUT_DOT)) {
-			//          f = new File(f.getParent(),f.getName()+freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION);
-			//      }
+			// Force the extension to be .mm
+			// String ext = Tools.getExtension(f.getName());
+			// if(!ext.equals(freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION_WITHOUT_DOT))
+			// {
+			// f = new
+			// File(f.getParent(),f.getName()+freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION);
+			// }
 			save(f);
-			//Update the name of the map
+			// Update the name of the map
 			updateMapModuleName();
 			return true;
 		}
 		return false;
 	}
 
-
-    public JPopupMenu getPopupMenu() {
-      return this.popupmenu;
-    }
-
-    private class EvaluateAction extends AbstractAction {
-	EvaluateAction() {
-	    super(getController().getResourceString("scheme_evaluate"));
+	public JPopupMenu getPopupMenu() {
+		return this.popupmenu;
 	}
-	public void actionPerformed(ActionEvent e) {
-	    String rawCode = ((SchemeMapModel)getMap()).getCode().trim();
-	    System.out.println(rawCode);
-	    StringTokenizer code = new StringTokenizer(rawCode,",");
-	    String output = "Output: \n";
-	    //	    while(code.hasMoreTokens()) {
-	    //		output = output + (SI.eval(code.nextToken()).toString())+"\n";
-	    //	    }
-	    JOptionPane.showMessageDialog(getView(),output);
+
+	private class EvaluateAction extends AbstractAction {
+		EvaluateAction() {
+			super(getController().getResourceString("scheme_evaluate"));
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			String rawCode = ((SchemeMapModel) getMap()).getCode().trim();
+			System.out.println(rawCode);
+			StringTokenizer code = new StringTokenizer(rawCode, ",");
+			String output = "Output: \n";
+			// while(code.hasMoreTokens()) {
+			// output = output + (SI.eval(code.nextToken()).toString())+"\n";
+			// }
+			JOptionPane.showMessageDialog(getView(), output);
+		}
 	}
-    }
-    /* (non-Javadoc)
-     * @see freemind.modes.ModeController#updateMenus(freemind.controller.StructuredMenuHolder)
-     */
-    public void updateMenus(StructuredMenuHolder holder) {
-		holder.addAction(newMap, MenuBar.FILE_MENU+"open/new");
-		holder.addAction(open, MenuBar.FILE_MENU+"open/open");
-		holder.addAction(save, MenuBar.FILE_MENU+"open/save");
-		holder.addAction(saveAs, MenuBar.FILE_MENU+"open/saveAs");
 
-//		JMenuItem editItem = holder.addAction(edit, MenuBar.EDIT_MENU+"edit/editItem");
-//		editItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getAdjustableProperty("keystroke_edit")));
-//		JMenuItem addNewItem = holder.addAction(addNew, MenuBar.EDIT_MENU+"edit/newItem");
-//		addNewItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getAdjustableProperty("keystroke_add")));
-		//JMenuItem removeItem = holder.addAction(remove, MenuBar.EDIT_MENU+"edit/removeItem");
-		//removeItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getAdjustableProperty("keystroke_remove")));
-		holder.addAction(evaluate, MenuBar.EDIT_MENU+"edit/evaluate");
-		holder.addAction(toggleFolded, MenuBar.EDIT_MENU+"edit/toggleFolded");
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see freemind.modes.ModeController#updateMenus(freemind.controller.
+	 * StructuredMenuHolder)
+	 */
+	public void updateMenus(StructuredMenuHolder holder) {
+		holder.addAction(newMap, MenuBar.FILE_MENU + "open/new");
+		holder.addAction(open, MenuBar.FILE_MENU + "open/open");
+		holder.addAction(save, MenuBar.FILE_MENU + "open/save");
+		holder.addAction(saveAs, MenuBar.FILE_MENU + "open/saveAs");
 
+		// JMenuItem editItem = holder.addAction(edit,
+		// MenuBar.EDIT_MENU+"edit/editItem");
+		// editItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getAdjustableProperty("keystroke_edit")));
+		// JMenuItem addNewItem = holder.addAction(addNew,
+		// MenuBar.EDIT_MENU+"edit/newItem");
+		// addNewItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getAdjustableProperty("keystroke_add")));
+		// JMenuItem removeItem = holder.addAction(remove,
+		// MenuBar.EDIT_MENU+"edit/removeItem");
+		// removeItem.setAccelerator(KeyStroke.getKeyStroke(getFrame().getAdjustableProperty("keystroke_remove")));
+		holder.addAction(evaluate, MenuBar.EDIT_MENU + "edit/evaluate");
+		holder.addAction(toggleFolded, MenuBar.EDIT_MENU + "edit/toggleFolded");
 
-    }
+	}
+
 	public HookFactory getHookFactory() {
 		throw new IllegalArgumentException("Not implemented yet.");
 	}
-
 
 }

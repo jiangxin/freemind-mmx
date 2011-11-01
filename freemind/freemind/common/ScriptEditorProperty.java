@@ -86,7 +86,8 @@ public class ScriptEditorProperty extends PropertyBean implements
 	}
 
 	public String getValue() {
-		return HtmlTools.unicodeToHTMLUnicodeEntity(HtmlTools.toXMLEscapedText(script));
+		return HtmlTools.unicodeToHTMLUnicodeEntity(HtmlTools
+				.toXMLEscapedText(script));
 	}
 
 	public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
@@ -117,8 +118,9 @@ public class ScriptEditorProperty extends PropertyBean implements
 		if (result == null) {
 			result = "";
 		}
-		script = HtmlTools.toXMLUnescapedText(HtmlTools.unescapeHTMLUnicodeEntity(result));
-		logger.fine("Setting script to " +script);
+		script = HtmlTools.toXMLUnescapedText(HtmlTools
+				.unescapeHTMLUnicodeEntity(result));
+		logger.fine("Setting script to " + script);
 		mButton.setText(script);
 	}
 

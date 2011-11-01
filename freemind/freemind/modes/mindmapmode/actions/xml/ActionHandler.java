@@ -27,7 +27,7 @@ import freemind.controller.actions.generated.instance.XmlAction;
 
 /**
  * @author foltin
- *
+ * 
  */
 public interface ActionHandler {
 

@@ -32,14 +32,12 @@ import javax.swing.table.TableModel;
 
 import accessories.plugins.time.TimeList.NodeHolder;
 
-
 /**
  * @author foltin
- *
+ * 
  */
 public class FlatNodeTableFilterModel extends AbstractTableModel {
 
-	
 	private final TableModel mTableModel;
 	private String mFilterRegexp;
 	/**
@@ -47,18 +45,19 @@ public class FlatNodeTableFilterModel extends AbstractTableModel {
 	 */
 	private ArrayList mIndexArray;
 	private Pattern mPattern;
-    /**
-     * The column that contains the NodeHolder items
-     */
-    private final int mNodeTextColumn;
 	/**
-	 * @param node_text_column 
+	 * The column that contains the NodeHolder items
+	 */
+	private final int mNodeTextColumn;
+
+	/**
+	 * @param node_text_column
 	 * 
 	 */
 	public FlatNodeTableFilterModel(TableModel tableModel, int node_text_column) {
 		super();
 		this.mTableModel = tableModel;
-        this.mNodeTextColumn = node_text_column;
+		this.mNodeTextColumn = node_text_column;
 		tableModel.addTableModelListener(new TableModelHandler());
 		resetFilter();
 	}
@@ -67,34 +66,39 @@ public class FlatNodeTableFilterModel extends AbstractTableModel {
 		setFilter(".*");
 	}
 
-	public void setFilter(String filterRegexp){
+	public void setFilter(String filterRegexp) {
 		this.mFilterRegexp = filterRegexp;
-//		System.out.println("Setting filter to '"+mFilterRegexp+"'");
+		// System.out.println("Setting filter to '"+mFilterRegexp+"'");
 		mPattern = Pattern.compile(mFilterRegexp, Pattern.CASE_INSENSITIVE);
 		updateIndexArray();
 		fireTableDataChanged();
 	}
-	
+
 	private void updateIndexArray() {
 		ArrayList newIndexArray = new ArrayList();
 		for (int i = 0; i < mTableModel.getRowCount(); i++) {
-			 NodeHolder nodeContent = (NodeHolder) mTableModel.getValueAt(i, mNodeTextColumn);
-			 if(mPattern.matcher(nodeContent.toString()).matches()) {
-				 // add index to array:
-				 newIndexArray.add(new Integer(i));
-			 }
+			NodeHolder nodeContent = (NodeHolder) mTableModel.getValueAt(i,
+					mNodeTextColumn);
+			if (mPattern.matcher(nodeContent.toString()).matches()) {
+				// add index to array:
+				newIndexArray.add(new Integer(i));
+			}
 		}
 		mIndexArray = newIndexArray;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.swing.table.TableModel#getRowCount()
 	 */
 	public int getRowCount() {
 		return mIndexArray.size();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.swing.table.TableModel#getColumnCount()
 	 */
 	public int getColumnCount() {
@@ -104,26 +108,28 @@ public class FlatNodeTableFilterModel extends AbstractTableModel {
 	public String getColumnName(int pColumnIndex) {
 		return mTableModel.getColumnName(pColumnIndex);
 	}
-	
+
 	public Class getColumnClass(int arg0) {
 		return mTableModel.getColumnClass(arg0);
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see javax.swing.table.TableModel#getValueAt(int, int)
 	 */
 	public Object getValueAt(int row, int column) {
-		if(row < 0 || row >= getRowCount()) {
-			throw new IllegalArgumentException("Illegal Row specified: "+row);
+		if (row < 0 || row >= getRowCount()) {
+			throw new IllegalArgumentException("Illegal Row specified: " + row);
 		}
-		int origRow = ((Integer)mIndexArray.get(row)).intValue();
+		int origRow = ((Integer) mIndexArray.get(row)).intValue();
 		return mTableModel.getValueAt(origRow, column);
 	}
 
-    private class TableModelHandler implements TableModelListener {
+	private class TableModelHandler implements TableModelListener {
 
 		public void tableChanged(TableModelEvent arg0) {
 			fireTableDataChanged();
 		}
-    }
+	}
 }

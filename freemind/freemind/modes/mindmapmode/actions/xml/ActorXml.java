@@ -27,10 +27,9 @@ import freemind.controller.actions.generated.instance.XmlAction;
 
 /**
  * @author foltin
- *
+ * 
  */
 public interface ActorXml {
-
 
 	public void act(XmlAction action);
 

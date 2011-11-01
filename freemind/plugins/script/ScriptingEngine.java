@@ -152,8 +152,8 @@ public class ScriptingEngine extends MindMapHookAdapter {
 		// ask user if first script:
 		FreeMindMain frame = pMindMapController.getFrame();
 		if (!pAlreadyAScriptExecuted.getValue()) {
-			int showResult = new OptionalDontShowMeAgainDialog(frame
-					.getJFrame(), pMindMapController.getSelectedView(),
+			int showResult = new OptionalDontShowMeAgainDialog(
+					frame.getJFrame(), pMindMapController.getSelectedView(),
 					"really_execute_script", "confirmation",
 					pMindMapController,
 					new OptionalDontShowMeAgainDialog.StandardPropertyHandler(
@@ -229,37 +229,44 @@ public class ScriptingEngine extends MindMapHookAdapter {
 				.getSecurityManager();
 		try {
 			System.setOut(pOutStream);
-			// copied from freeplane from http://freeplane.bzr.sourceforge.net/bzr/freeplane/freeplane_program/release_branches/1_0_x/annotate/head%3A/freeplane_plugin_script/src/org/freeplane/plugin/script/ScriptingEngine.java
+			// copied from freeplane from
+			// http://freeplane.bzr.sourceforge.net/bzr/freeplane/freeplane_program/release_branches/1_0_x/annotate/head%3A/freeplane_plugin_script/src/org/freeplane/plugin/script/ScriptingEngine.java
 			final GroovyShell shell = new GroovyShell(binding) {
 				/**
-				 * Evaluates some script against the current Binding and returns the result
-				 *
-				 * @param in       the stream reading the script
-				 * @param fileName is the logical file name of the script (which is used to create the class name of the script)
+				 * Evaluates some script against the current Binding and returns
+				 * the result
+				 * 
+				 * @param in
+				 *            the stream reading the script
+				 * @param fileName
+				 *            is the logical file name of the script (which is
+				 *            used to create the class name of the script)
 				 */
-				public Object evaluate(final InputStream in, final String fileName) throws CompilationFailedException {
+				public Object evaluate(final InputStream in,
+						final String fileName)
+						throws CompilationFailedException {
 					Script script = null;
 					try {
 						script = parse(in, fileName);
-						securityManager.setFinalSecurityManager(scriptingSecurityManager);
+						securityManager
+								.setFinalSecurityManager(scriptingSecurityManager);
 						return script.run();
-					}
-					finally {
+					} finally {
 						if (script != null) {
 							InvokerHelper.removeClass(script.getClass());
-							// setting the same security manager the second time causes it to be
+							// setting the same security manager the second time
+							// causes it to be
 							// removed.
-							securityManager.setFinalSecurityManager(scriptingSecurityManager);
+							securityManager
+									.setFinalSecurityManager(scriptingSecurityManager);
 						}
 					}
 				}
 			};
 			value = shell.evaluate(script);
-		}
-		catch (final GroovyRuntimeException e) {
+		} catch (final GroovyRuntimeException e) {
 			e1 = e;
-		}
-		catch (final Throwable e) {
+		} catch (final Throwable e) {
 			e2 = e;
 		} finally {
 			System.setOut(oldOut);
@@ -267,18 +274,15 @@ public class ScriptingEngine extends MindMapHookAdapter {
 			frame.setProperty(
 					FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_ASKING,
 					executeWithoutAsking);
-			frame
-					.setProperty(
-							FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_FILE_RESTRICTION,
-							executeWithoutFileRestriction);
-			frame
-					.setProperty(
-							FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_NETWORK_RESTRICTION,
-							executeWithoutNetworkRestriction);
-			frame
-					.setProperty(
-							FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_EXEC_RESTRICTION,
-							executeWithoutExecRestriction);
+			frame.setProperty(
+					FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_FILE_RESTRICTION,
+					executeWithoutFileRestriction);
+			frame.setProperty(
+					FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_NETWORK_RESTRICTION,
+					executeWithoutNetworkRestriction);
+			frame.setProperty(
+					FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_EXEC_RESTRICTION,
+					executeWithoutExecRestriction);
 			frame.setProperty(FreeMind.RESOURCES_SIGNED_SCRIPT_ARE_TRUSTED,
 					signedScriptsWithoutRestriction);
 		}
@@ -327,8 +331,8 @@ public class ScriptingEngine extends MindMapHookAdapter {
 			if (assignTo == null) {
 				pMindMapController.setNodeText(node, value.toString());
 			} else {
-				pMindMapController.editAttribute(node, assignTo, value
-						.toString());
+				pMindMapController.editAttribute(node, assignTo,
+						value.toString());
 			}
 		}
 		return true;

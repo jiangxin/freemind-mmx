@@ -20,7 +20,6 @@
 
 package freemind.modes.browsemode;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -30,141 +29,156 @@ import java.security.AccessControlException;
 import java.util.HashMap;
 
 import freemind.main.FreeMindMain;
-import freemind.modes.ControllerAdapter;
 import freemind.modes.LinkRegistryAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.ModeController;
 
-
 public class BrowseMapModel extends MapAdapter {
 
-    private URL url;
-    private MindMapLinkRegistry linkRegistry;
+	private URL url;
+	private MindMapLinkRegistry linkRegistry;
 
-    //
-    // Constructors
-    //
-    public BrowseMapModel(FreeMindMain frame, ModeController modeController) {
-        this(null, frame, modeController);
-    }
-
-    public BrowseMapModel( BrowseNodeModel root, FreeMindMain frame, ModeController modeController ) {
-        super(frame, modeController);
-        if(root != null)
-            setRoot(root);
-        else
-           setRoot(new BrowseNodeModel(getFrame().getResourceString("new_mindmap"), getFrame(), modeController.getMap()));
-        // register new LinkRegistryAdapter
-        linkRegistry = new LinkRegistryAdapter();
-    }
-
-    //
-    // Other methods
-    //
-    public MindMapLinkRegistry getLinkRegistry() {
-        return linkRegistry;
-    }
-
-    public String toString() {
-	if (getURL() == null) {
-	    return null;
-	} else {
-	    return getURL().toString();
+	//
+	// Constructors
+	//
+	public BrowseMapModel(FreeMindMain frame, ModeController modeController) {
+		this(null, frame, modeController);
 	}
-    }
 
-    public File getFile() {
-	return null;
-    }
-
-    protected void setFile() {
-    }
-
-
-    /**
-       * Get the value of url.
-       * @return Value of url.
-       */
-    public URL getURL() {
-       return url;}
-
-    /**
-       * Set the value of url.
-       * @param v  Value to assign to url.
-       */
-    public void setURL(URL  v) {this.url = v;}
-
-
-    public boolean save(File file) {
-    	return true;
-    }
-
-    public boolean isSaved() {
-	return true;
-    }
-
-    public void load(URL url) throws IOException{
-	setURL(url);
-	BrowseNodeModel root = loadTree(url);
-	if (root != null) {
-	    setRoot(root);
-	} else {
-	    // System.err.println("Err:"+root.toString());
-	    throw new IOException();
+	public BrowseMapModel(BrowseNodeModel root, FreeMindMain frame,
+			ModeController modeController) {
+		super(frame, modeController);
+		if (root != null)
+			setRoot(root);
+		else
+			setRoot(new BrowseNodeModel(getFrame().getResourceString(
+					"new_mindmap"), getFrame(), modeController.getMap()));
+		// register new LinkRegistryAdapter
+		linkRegistry = new LinkRegistryAdapter();
 	}
-    }
 
-    BrowseNodeModel loadTree(URL url) {
-	BrowseNodeModel root = null;
-
-        InputStreamReader urlStreamReader = null;
-
-        try {
-           urlStreamReader = new InputStreamReader( url.openStream() ); }
-        catch (AccessControlException ex) {
-           getFrame().getController().errorMessage("Could not open URL "+url.toString()+". Access Denied.");
-           System.err.println(ex);
-           return null; }
-        catch (Exception ex) {
-           getFrame().getController().errorMessage("Could not open URL "+url.toString()+".");
-           System.err.println(ex);
-           // freemind.main.Resources.getInstance().logExecption(ex);
-           return null;
-        }
-
-	try {
-    	HashMap IDToTarget = new HashMap();
-		root = (BrowseNodeModel) getModeController().createNodeTreeFromXml(urlStreamReader, IDToTarget);
-	    urlStreamReader.close();
-	    return root;
-	} catch (Exception ex) {
-	    System.err.println(ex);
-	    return null;
+	//
+	// Other methods
+	//
+	public MindMapLinkRegistry getLinkRegistry() {
+		return linkRegistry;
 	}
-    }
 
-    /* (non-Javadoc)
-     * @see freemind.modes.MindMap#setLinkInclinationChanged()
-     */
-    public void setLinkInclinationChanged() {
-    }
+	public String toString() {
+		if (getURL() == null) {
+			return null;
+		} else {
+			return getURL().toString();
+		}
+	}
 
-	/* (non-Javadoc)
+	public File getFile() {
+		return null;
+	}
+
+	protected void setFile() {
+	}
+
+	/**
+	 * Get the value of url.
+	 * 
+	 * @return Value of url.
+	 */
+	public URL getURL() {
+		return url;
+	}
+
+	/**
+	 * Set the value of url.
+	 * 
+	 * @param v
+	 *            Value to assign to url.
+	 */
+	public void setURL(URL v) {
+		this.url = v;
+	}
+
+	public boolean save(File file) {
+		return true;
+	}
+
+	public boolean isSaved() {
+		return true;
+	}
+
+	public void load(URL url) throws IOException {
+		setURL(url);
+		BrowseNodeModel root = loadTree(url);
+		if (root != null) {
+			setRoot(root);
+		} else {
+			// System.err.println("Err:"+root.toString());
+			throw new IOException();
+		}
+	}
+
+	BrowseNodeModel loadTree(URL url) {
+		BrowseNodeModel root = null;
+
+		InputStreamReader urlStreamReader = null;
+
+		try {
+			urlStreamReader = new InputStreamReader(url.openStream());
+		} catch (AccessControlException ex) {
+			getFrame().getController()
+					.errorMessage(
+							"Could not open URL " + url.toString()
+									+ ". Access Denied.");
+			System.err.println(ex);
+			return null;
+		} catch (Exception ex) {
+			getFrame().getController().errorMessage(
+					"Could not open URL " + url.toString() + ".");
+			System.err.println(ex);
+			// freemind.main.Resources.getInstance().logExecption(ex);
+			return null;
+		}
+
+		try {
+			HashMap IDToTarget = new HashMap();
+			root = (BrowseNodeModel) getModeController().createNodeTreeFromXml(
+					urlStreamReader, IDToTarget);
+			urlStreamReader.close();
+			return root;
+		} catch (Exception ex) {
+			System.err.println(ex);
+			return null;
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see freemind.modes.MindMap#setLinkInclinationChanged()
+	 */
+	public void setLinkInclinationChanged() {
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see freemind.modes.MindMap#getXml(java.io.Writer)
 	 */
-    public void getXml(Writer fileout) throws IOException {
-        // nothing.
-        //FIXME: Implement me if you need me.
-        throw new RuntimeException("Unimplemented method called.");
-    }
+	public void getXml(Writer fileout) throws IOException {
+		// nothing.
+		// FIXME: Implement me if you need me.
+		throw new RuntimeException("Unimplemented method called.");
+	}
 
-    /* (non-Javadoc)
-     * @see freemind.modes.MindMap#getFilteredXml(java.io.Writer)
-     */
-    public void getFilteredXml(Writer fileout) throws IOException {
-        // nothing.
-        //FIXME: Implement me if you need me.
-        throw new RuntimeException("Unimplemented method called.");
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see freemind.modes.MindMap#getFilteredXml(java.io.Writer)
+	 */
+	public void getFilteredXml(Writer fileout) throws IOException {
+		// nothing.
+		// FIXME: Implement me if you need me.
+		throw new RuntimeException("Unimplemented method called.");
+	}
 }

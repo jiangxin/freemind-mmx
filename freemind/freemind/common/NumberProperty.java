@@ -23,7 +23,6 @@
 package freemind.common;
 
 import javax.swing.JLabel;
-import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
@@ -31,76 +30,74 @@ import javax.swing.event.ChangeListener;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
 
-public class NumberProperty extends PropertyBean implements
-	PropertyControl {
-	    String description;
-//	    JSlider slider;
-	    String label;
-        private JSpinner spinner;
-        private final int min;
-        private final int max;
-        private final int step;
-	    
-	    /**
+public class NumberProperty extends PropertyBean implements PropertyControl {
+	String description;
+	// JSlider slider;
+	String label;
+	private JSpinner spinner;
+	private final int min;
+	private final int max;
+	private final int step;
+
+	/**
 	     */
-	    public NumberProperty(String description, String label, int min, int max, int step) {
-	        this.min = min;
-            this.max = max;
-            this.step = step;
-            //	        slider = new JSlider(JSlider.HORIZONTAL, 5, 1000, 100);
-	        spinner = new JSpinner(
-              new SpinnerNumberModel(min, min, max, step));
+	public NumberProperty(String description, String label, int min, int max,
+			int step) {
+		this.min = min;
+		this.max = max;
+		this.step = step;
+		// slider = new JSlider(JSlider.HORIZONTAL, 5, 1000, 100);
+		spinner = new JSpinner(new SpinnerNumberModel(min, min, max, step));
 
-	        this.description = description;
-	        this.label = label;
-            spinner.addChangeListener(new ChangeListener(){
+		this.description = description;
+		this.label = label;
+		spinner.addChangeListener(new ChangeListener() {
 
-                public void stateChanged(ChangeEvent pE)
-                {
-                    firePropertyChangeEvent();
-                }});
+			public void stateChanged(ChangeEvent pE) {
+				firePropertyChangeEvent();
+			}
+		});
 
-	    }
-	    
-	    public String getDescription() {
-	        return description;
-	    }
-	    
-	    public String getLabel() {
-	        return label;
-	    }
-	    
-	    public void setValue(String value) {
-            int intValue = min;
-            try {
-            	int parsedIntValue = Integer.parseInt(value);
-				intValue = parsedIntValue;
-                int stepModul = (intValue-min) % step;
-                if(intValue < min || intValue > max || (stepModul != 0)) {
-                    System.err.println("Actual value of property " + getLabel() + " is not in the allowed range: "+ value);
-                    intValue = min;
-                }
-            } catch(NumberFormatException e){
-                freemind.main.Resources.getInstance().logException(e);
-            }
-            spinner.setValue(new Integer(intValue));
-	    }
-	    
-	    public String getValue() {
-	        return spinner.getValue().toString();
-	    }
-	    
-	    public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
-//	        JLabel label = builder
-//	        .append(pTranslator.getText(getLabel()), slider);
-	        JLabel label = builder
-	        .append(pTranslator.getText(getLabel()), spinner);
-	        label.setToolTipText(pTranslator.getText(getDescription()));
-	    }
-	    
-        public void setEnabled(boolean pEnabled) {
-            spinner.setEnabled(pEnabled);
-        }
-
-        
 	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setValue(String value) {
+		int intValue = min;
+		try {
+			int parsedIntValue = Integer.parseInt(value);
+			intValue = parsedIntValue;
+			int stepModul = (intValue - min) % step;
+			if (intValue < min || intValue > max || (stepModul != 0)) {
+				System.err.println("Actual value of property " + getLabel()
+						+ " is not in the allowed range: " + value);
+				intValue = min;
+			}
+		} catch (NumberFormatException e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
+		spinner.setValue(new Integer(intValue));
+	}
+
+	public String getValue() {
+		return spinner.getValue().toString();
+	}
+
+	public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
+		// JLabel label = builder
+		// .append(pTranslator.getText(getLabel()), slider);
+		JLabel label = builder.append(pTranslator.getText(getLabel()), spinner);
+		label.setToolTipText(pTranslator.getText(getDescription()));
+	}
+
+	public void setEnabled(boolean pEnabled) {
+		spinner.setEnabled(pEnabled);
+	}
+
+}

@@ -48,121 +48,126 @@ import freemind.view.mindmapview.MapView;
 
 /**
  * @author foltin
- *
+ * 
  */
 public class ExportPdf extends ExportVectorGraphic {
 	ExportPdfPapers papers = new ExportPdfPapers();
 
-    public void startupMapHook() {
-        super.startupMapHook();
+	public void startupMapHook() {
+		super.startupMapHook();
 		boolean nodeExport = Tools.safeEquals("node",
 				getResourceString("export_type"));
 		MindMapNode selectedNode = getController().getSelected();
 		String nameExtension = null;
-		if(nodeExport){
+		if (nodeExport) {
 			nameExtension = " " + selectedNode.getShortText(getController());
 		}
 		File chosenFile = chooseFile("pdf",
-                getResourceString("export_pdf_text"), nameExtension);
-        if (chosenFile == null) {
-            return;
-        }
-        HashMap transcodingHints = choosePaper();
-        if(transcodingHints == null) {
-        	return;
-        }
-        getController().getFrame().setWaitingCursor(true);
-        try {
+				getResourceString("export_pdf_text"), nameExtension);
+		if (chosenFile == null) {
+			return;
+		}
+		HashMap transcodingHints = choosePaper();
+		if (transcodingHints == null) {
+			return;
+		}
+		getController().getFrame().setWaitingCursor(true);
+		try {
 			exportAsPdf(nodeExport, selectedNode, chosenFile, transcodingHints);
-	        getController().getFrame().openDocument(Tools.fileToUrl(chosenFile));
-        } catch (Exception e) {
-            freemind.main.Resources.getInstance().logException(e);
-            JOptionPane.showMessageDialog(getController().getFrame().getContentPane(), e.getLocalizedMessage(), null, JOptionPane.ERROR_MESSAGE);
-        }
-        getController().getFrame().setWaitingCursor(false);
-    }
+			getController().getFrame()
+					.openDocument(Tools.fileToUrl(chosenFile));
+		} catch (Exception e) {
+			freemind.main.Resources.getInstance().logException(e);
+			JOptionPane.showMessageDialog(getController().getFrame()
+					.getContentPane(), e.getLocalizedMessage(), null,
+					JOptionPane.ERROR_MESSAGE);
+		}
+		getController().getFrame().setWaitingCursor(false);
+	}
 
-    /**
-     * @return a map PDFTranscoder->value.
-     */
-    public HashMap choosePaper(){
-    	HashMap retValue = new HashMap();
-		//user dialog			
-        String[] paperNames =papers.getPaperNames();
-		Controller controller= this.getController().getController();		
-		ExportPdfDialog dialog=new ExportPdfDialog(getController().getFrame().getJFrame(),paperNames,controller);
-		dialog.setVisible(true);			
+	/**
+	 * @return a map PDFTranscoder->value.
+	 */
+	public HashMap choosePaper() {
+		HashMap retValue = new HashMap();
+		// user dialog
+		String[] paperNames = papers.getPaperNames();
+		Controller controller = this.getController().getController();
+		ExportPdfDialog dialog = new ExportPdfDialog(getController().getFrame()
+				.getJFrame(), paperNames, controller);
+		dialog.setVisible(true);
 
 		// canceled?
-		if(!dialog.getResult()) {
+		if (!dialog.getResult()) {
 			return null;
 		}
-		
-		//get user input for format
+
+		// get user input for format
 		int orientation = dialog.getOrientation();
-		String format=dialog.getFormat();
-		logger.info("Paper format=" + format);		
-						
-		//set page format
-		PageFormat pageFormat=new PageFormat();		
-		pageFormat.setOrientation(orientation);		
+		String format = dialog.getFormat();
+		logger.info("Paper format=" + format);
+
+		// set page format
+		PageFormat pageFormat = new PageFormat();
+		pageFormat.setOrientation(orientation);
 		Paper paper = papers.determinePaper(format);
-		if(paper != null)
-		{			
+		if (paper != null) {
 			pageFormat.setPaper(paper);
-	    
-			if(pageFormat.getOrientation() == PageFormat.PORTRAIT)
-			{
+
+			if (pageFormat.getOrientation() == PageFormat.PORTRAIT) {
 				logger.info("Orientation: Portrait");
-				//portrait
-				retValue.put(PDFTranscoder.KEY_HEIGHT, new Float(pageFormat.getPaper().getHeight()));
-				retValue.put(PDFTranscoder.KEY_WIDTH, new Float(pageFormat.getPaper().getWidth()));				
-			}
-			else 
-			{
+				// portrait
+				retValue.put(PDFTranscoder.KEY_HEIGHT, new Float(pageFormat
+						.getPaper().getHeight()));
+				retValue.put(PDFTranscoder.KEY_WIDTH, new Float(pageFormat
+						.getPaper().getWidth()));
+			} else {
 				logger.info("Orientation: Landscape");
-				//landscape
-				retValue.put(PDFTranscoder.KEY_HEIGHT, new Float(pageFormat.getPaper().getWidth()));
-				retValue.put(PDFTranscoder.KEY_WIDTH, new Float(pageFormat.getPaper().getHeight()));
+				// landscape
+				retValue.put(PDFTranscoder.KEY_HEIGHT, new Float(pageFormat
+						.getPaper().getWidth()));
+				retValue.put(PDFTranscoder.KEY_WIDTH, new Float(pageFormat
+						.getPaper().getHeight()));
 			}
-		}
-		else
-		{
+		} else {
 			logger.severe("Paper == null");
 		}
 		return retValue;
-    }
-    
-    /** For compatibility with groovy export scripts. */
-    public boolean exportAsPdf(boolean nodeExport, MindMapNode selectedNode,
-    		File chosenFile) throws Exception {
-    	return exportAsPdf(nodeExport, selectedNode, chosenFile, null);
-    }
+	}
 
-    public boolean exportAsPdf(boolean nodeExport, MindMapNode selectedNode,
+	/** For compatibility with groovy export scripts. */
+	public boolean exportAsPdf(boolean nodeExport, MindMapNode selectedNode,
+			File chosenFile) throws Exception {
+		return exportAsPdf(nodeExport, selectedNode, chosenFile, null);
+	}
+
+	public boolean exportAsPdf(boolean nodeExport, MindMapNode selectedNode,
 			File chosenFile, HashMap pTranscoderHints) throws Exception {
-        MapView view = getController().getView();
-        if (view == null)
-            return false;
+		MapView view = getController().getView();
+		if (view == null)
+			return false;
 
-        SVGGraphics2D g2d;
-        if(nodeExport) {
-        	g2d = fillSVGGraphics2D(view, selectedNode);
-        } else {
+		SVGGraphics2D g2d;
+		if (nodeExport) {
+			g2d = fillSVGGraphics2D(view, selectedNode);
+		} else {
 			g2d = fillSVGGraphics2D(view);
-        }
+		}
 
-        PDFTranscoder pdfTranscoder = new PDFTranscoder();
-        /*
+		PDFTranscoder pdfTranscoder = new PDFTranscoder();
+		/*
 		 * according to
-		 * https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1921334&group_id=7118
+		 * https://sourceforge.net/tracker/?func=detail&atid=107118&
+		 * aid=1921334&group_id=7118
 		 * 
-		 * Submitted By: Frank Spangenberg (f_spangenberg) Summary: Large
-		 * mind maps produce invalid PDF
+		 * Submitted By: Frank Spangenberg (f_spangenberg) Summary: Large mind
+		 * maps produce invalid PDF
 		 */
-        pdfTranscoder.addTranscodingHint(PDFTranscoder.KEY_MAX_HEIGHT, new Float(19200));
-        pdfTranscoder.addTranscodingHint(PDFTranscoder.KEY_MAX_WIDTH, new Float(19200));
-        if (pTranscoderHints != null) {
+		pdfTranscoder.addTranscodingHint(PDFTranscoder.KEY_MAX_HEIGHT,
+				new Float(19200));
+		pdfTranscoder.addTranscodingHint(PDFTranscoder.KEY_MAX_WIDTH,
+				new Float(19200));
+		if (pTranscoderHints != null) {
 			for (Iterator it = pTranscoderHints.keySet().iterator(); it
 					.hasNext();) {
 				Key key = (Key) it.next();
@@ -170,21 +175,20 @@ public class ExportPdf extends ExportVectorGraphic {
 						.addTranscodingHint(key, pTranscoderHints.get(key));
 			}
 		}
-		/* end patch*/
-        Document doc = g2d.getDOMFactory();
-        Element rootE = doc.getDocumentElement();
-        g2d.getRoot(rootE);
-        TranscoderInput input = new TranscoderInput(doc);
-        final FileOutputStream ostream = new FileOutputStream(chosenFile);
-        final BufferedOutputStream bufStream = new BufferedOutputStream(ostream);
+		/* end patch */
+		Document doc = g2d.getDOMFactory();
+		Element rootE = doc.getDocumentElement();
+		g2d.getRoot(rootE);
+		TranscoderInput input = new TranscoderInput(doc);
+		final FileOutputStream ostream = new FileOutputStream(chosenFile);
+		final BufferedOutputStream bufStream = new BufferedOutputStream(ostream);
 		TranscoderOutput output = new TranscoderOutput(bufStream);
-        // save the image
-        pdfTranscoder.transcode(input, output);
-        // flush and close the stream then exit
-        ostream.flush();
-        ostream.close();
-        return true;
+		// save the image
+		pdfTranscoder.transcode(input, output);
+		// flush and close the stream then exit
+		ostream.flush();
+		ostream.close();
+		return true;
 	}
-
 
 }

@@ -22,9 +22,9 @@
 /* $Id: FreemindPropertyListener.java,v 1.1.2.3.2.1 2006/04/05 21:26:31 dpolivaev Exp $ */
 package freemind.preferences;
 
-
 /**
- * Is issued by the OptionPanel when the user accepted a change of its preferences.
+ * Is issued by the OptionPanel when the user accepted a change of its
+ * preferences.
  */
 public interface FreemindPropertyListener {
 	void propertyChanged(String propertyName, String newValue, String oldValue);
