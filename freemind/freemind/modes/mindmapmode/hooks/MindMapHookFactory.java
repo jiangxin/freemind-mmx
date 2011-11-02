@@ -38,6 +38,7 @@ import org.jibx.runtime.IUnmarshallingContext;
 import freemind.common.XmlBindingTools;
 import freemind.controller.actions.generated.instance.Plugin;
 import freemind.controller.actions.generated.instance.PluginAction;
+import freemind.controller.actions.generated.instance.PluginClasspath;
 import freemind.controller.actions.generated.instance.PluginMode;
 import freemind.controller.actions.generated.instance.PluginRegistration;
 import freemind.extensions.HookDescriptorPluginAction;
@@ -222,11 +223,16 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 			MindMapHook hook = (MindMapHook) hookClass.newInstance();
 			decorateHook(hookName, descriptor, hook);
 			return hook;
-		} catch (Exception e) {
+		} catch (Throwable e) {
+			String path = "";
+			for (Iterator it = descriptor.getPluginClasspath().iterator(); it.hasNext();) {
+				PluginClasspath plPath = (PluginClasspath) it.next();
+				path += plPath.getJar() + ";";
+			}
 			freemind.main.Resources.getInstance().logException(
 					e,
 					"Error occurred loading hook: " + descriptor.getClassName()
-							+ "\nException:");
+							+ "\nClasspath: " + path + "\nException:");
 			return null;
 		}
 	}

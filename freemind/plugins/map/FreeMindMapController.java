@@ -30,7 +30,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -45,9 +44,10 @@ import org.openstreetmap.gui.jmapviewer.JMapController;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 
 import freemind.controller.StructuredMenuHolder;
-import freemind.extensions.PermanentNodeHook;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.NodeActorXml;
+import freemind.modes.mindmapmode.actions.NodeGeneralAction;
 
 /**
  * Default map controller which implements map moving by pressing the right
@@ -72,7 +72,7 @@ import freemind.modes.mindmapmode.MindMapController;
  */
 public class FreeMindMapController extends JMapController implements
 		MouseListener, MouseMotionListener, MouseWheelListener {
-
+//extends NodeGeneralAction implements NodeActorXml
 	/**
 	 * @author foltin
 	 * @date 31.10.2011
@@ -167,16 +167,13 @@ public class FreeMindMapController extends JMapController implements
 	 */
 	protected void placeNodes(ActionEvent pActionEvent) {
 		MindMapNode selected = mMindMapController.getSelected();
-		MapNodePositionHolder hook = getHook(selected);
+		MapNodePositionHolder hook = MapNodePositionHolder.getHook(selected);
 		if (hook == null) {
 			hook = addHookToNode(selected);
 		}
 		if (hook != null) {
 			// set parameters:
-			// FIXME: Make undoable.
-			hook.setMapCenter(map.getPosition());
-			hook.setPosition(getMap().getCursorPosition());
-			hook.setZoom(map.getZoom());
+			hook.changePosition(hook, getMap().getCursorPosition(), map.getPosition(), map.getZoom());
 		}
 	}
 
@@ -185,7 +182,7 @@ public class FreeMindMapController extends JMapController implements
 	 */
 	public void removePlaceNodes(ActionEvent pActionEvent) {
 		MindMapNode selected = mMindMapController.getSelected();
-		MapNodePositionHolder hook = getHook(selected);
+		MapNodePositionHolder hook = MapNodePositionHolder.getHook(selected);
 		if (hook != null) {
 			// double add == remove
 			addHookToNode(selected);
@@ -198,7 +195,7 @@ public class FreeMindMapController extends JMapController implements
 	 */
 	public void showNode(ActionEvent pActionEvent) {
 		MindMapNode selected = mMindMapController.getSelected();
-		MapNodePositionHolder hook = getHook(selected);
+		MapNodePositionHolder hook = MapNodePositionHolder.getHook(selected);
 		if (hook != null) {
 			// move map:
 			Coordinate mapCenter = hook.getMapCenter();
@@ -214,20 +211,8 @@ public class FreeMindMapController extends JMapController implements
 		List selecteds = Arrays.asList(new MindMapNode[] { selected });
 		mMindMapController.addHook(selected, selecteds,
 				MapNodePositionHolder.NODE_MAP_HOOK_NAME);
-		hook = getHook(selected);
+		hook = MapNodePositionHolder.getHook(selected);
 		return hook;
-	}
-
-	/**
-	 */
-	public MapNodePositionHolder getHook(MindMapNode node) {
-		for (Iterator j = node.getActivatedHooks().iterator(); j.hasNext();) {
-			PermanentNodeHook element = (PermanentNodeHook) j.next();
-			if (element instanceof MapNodePositionHolder) {
-				return (MapNodePositionHolder) element;
-			}
-		}
-		return null;
 	}
 
 	/**

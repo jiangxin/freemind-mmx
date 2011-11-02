@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<plugin	label="plugins/ExportPdf">
+<plugin	label="plugins/MapViewer">
 	<plugin_classpath jar="map/JMapViewer.jar"/>
 	<plugin_classpath jar="map/map_plugin.jar"/>
 	<plugin_action 

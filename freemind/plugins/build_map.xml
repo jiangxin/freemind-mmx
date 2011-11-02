@@ -6,7 +6,7 @@
 	<property name="plugin.jar" value="map_plugin.jar" />
 	<property name="plugin.zip" value="map_plugin-${ver}.zip" />
 	<property name="additional.lib" value="${local.plugin.dir}/JMapViewer.jar:${local.plugin.dir}/map_plugin.jar"/>
-	<property name="additional.lib.pattern" value="${plugin.dir}/*.jarry"/>
+	<property name="additional.lib.pattern" value="${plugin.dir}/JMapViewer.jar"/>
 
 	<import file="build_import.xml" />
 

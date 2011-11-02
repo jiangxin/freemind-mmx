@@ -208,8 +208,8 @@ public class MapDialog extends MindMapHookAdapter implements
 		MapWindowConfigurationStorage storage = (MapWindowConfigurationStorage) getMindMapController()
 				.decorateDialog(mMapDialog, WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		if (storage != null) {
-			map.setDisplayPositionByLatLon(storage.getLatitude(),
-					storage.getLongitude(), storage.getZoom());
+			map.setDisplayPositionByLatLon(storage.getMapCenterLatitude(),
+					storage.getMapCenterLongitude(), storage.getZoom());
 			map.setCursorPosition(new Coordinate(storage.getCursorLatitude(),
 					storage.getCursorLongitude()));
 		}
@@ -250,11 +250,11 @@ public class MapDialog extends MindMapHookAdapter implements
 		// Set coordinates
 		storage.setZoom(map.getZoom());
 		Coordinate position = map.getPosition();
-		storage.setLongitude((float) position.getLon());
-		storage.setLatitude((float) position.getLat());
+		storage.setMapCenterLongitude( position.getLon());
+		storage.setMapCenterLatitude( position.getLat());
 		Coordinate cursorPosition = map.getCursorPosition();
-		storage.setCursorLongitude((float) cursorPosition.getLon());
-		storage.setCursorLatitude((float) cursorPosition.getLat());
+		storage.setCursorLongitude( cursorPosition.getLon());
+		storage.setCursorLatitude( cursorPosition.getLat());
 		getMindMapController().storeDialogPositions(mMapDialog, storage,
 				WINDOW_PREFERENCE_STORAGE_PROPERTY);
 

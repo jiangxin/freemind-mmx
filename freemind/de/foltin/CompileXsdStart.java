@@ -152,6 +152,7 @@ public class CompileXsdStart extends DefaultHandler {
 		mTypeMap.put("xs:string", "String");
 		mTypeMap.put("xs:boolean", "boolean");
 		mTypeMap.put("xs:float", "float");
+		mTypeMap.put("xs:double", "double");
 	}
 
 	public static void main(String[] args) throws Exception {
