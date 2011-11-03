@@ -30,6 +30,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
@@ -42,6 +43,10 @@ import javax.swing.JPopupMenu;
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapController;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
+import org.openstreetmap.gui.jmapviewer.OsmMercator;
+import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
+import org.openstreetmap.gui.jmapviewer.interfaces.MapPolygon;
+import org.openstreetmap.gui.jmapviewer.interfaces.MapRectangle;
 
 import freemind.controller.StructuredMenuHolder;
 import freemind.modes.MindMapNode;
@@ -72,7 +77,6 @@ import freemind.modes.mindmapmode.actions.NodeGeneralAction;
  */
 public class FreeMindMapController extends JMapController implements
 		MouseListener, MouseMotionListener, MouseWheelListener {
-//extends NodeGeneralAction implements NodeActorXml
 	/**
 	 * @author foltin
 	 * @date 31.10.2011
@@ -195,17 +199,60 @@ public class FreeMindMapController extends JMapController implements
 	 */
 	public void showNode(ActionEvent pActionEvent) {
 		MindMapNode selected = mMindMapController.getSelected();
-		MapNodePositionHolder hook = MapNodePositionHolder.getHook(selected);
-		if (hook != null) {
-			// move map:
-			Coordinate mapCenter = hook.getMapCenter();
-			map.setDisplayPositionByLatLon(mapCenter.getLat(),
-					mapCenter.getLon(), hook.getZoom());
-			getMap().setCursorPosition(hook.getPosition());
+		List selecteds = mMindMapController.getSelecteds();
+		if(selecteds.size() == 1) {
+			MapNodePositionHolder hook = MapNodePositionHolder.getHook(selected);
+			
+			if (hook != null) {
+				getMap().setCursorPosition(hook.getPosition());
+				// move map:
+				Coordinate mapCenter = hook.getMapCenter();
+				map.setDisplayPositionByLatLon(mapCenter.getLat(),
+						mapCenter.getLon(), hook.getZoom());
+			}			
+			return;
 		}
+		// find common center. Code adapted from JMapViewer.
+		int x_min = Integer.MAX_VALUE;
+		int y_min = Integer.MAX_VALUE;
+		int x_max = Integer.MIN_VALUE;
+		int y_max = Integer.MIN_VALUE;
+		int mapZoomMax = getMap().getTileController().getTileSource().getMaxZoom();
+		for (Iterator it = selecteds.iterator(); it.hasNext();) {
+			MindMapNode node = (MindMapNode) it.next();
+			MapNodePositionHolder hook = MapNodePositionHolder.getHook(node);
+
+			if (hook != null) {
+				int x = OsmMercator.LonToX(hook.getPosition().getLon(), mapZoomMax);
+				int y = OsmMercator.LatToY(hook.getPosition().getLat(), mapZoomMax);
+				x_max = Math.max(x_max, x);
+				y_max = Math.max(y_max, y);
+				x_min = Math.min(x_min, x);
+				y_min = Math.min(y_min, y);
+				if(node == selected) {
+					getMap().setCursorPosition(hook.getPosition());
+				}
+			}
+		}
+		int height = Math.max(0, getMap().getHeight());
+		int width = Math.max(0, getMap().getWidth());
+		int newZoom = mapZoomMax;
+		int x = x_max - x_min;
+		int y = y_max - y_min;
+		while (x > width || y > height) {
+			newZoom--;
+			x >>= 1;
+			y >>= 1;
+		}
+		x = x_min + (x_max - x_min) / 2;
+		y = y_min + (y_max - y_min) / 2;
+		int z = 1 << (mapZoomMax - newZoom);
+		x /= z;
+		y /= z;
+		getMap().setDisplayPosition(x, y, newZoom);
 
 	}
-
+	
 	public MapNodePositionHolder addHookToNode(MindMapNode selected) {
 		MapNodePositionHolder hook;
 		List selecteds = Arrays.asList(new MindMapNode[] { selected });

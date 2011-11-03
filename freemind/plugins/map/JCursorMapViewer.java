@@ -35,6 +35,7 @@ import javax.swing.Timer;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
+import org.openstreetmap.gui.jmapviewer.TileController;
 
 import freemind.modes.mindmapmode.MindMapController;
 
@@ -120,6 +121,10 @@ final class JCursorMapViewer extends JMapViewer {
 			}
 
 		}
+	}
+	
+	public TileController getTileController() {
+		return tileController;
 	}
 
 }
