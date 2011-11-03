@@ -319,6 +319,8 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 							.getCursorLatitude(), placeAction
 							.getCursorLongitude()));
 					hook.setZoom(placeAction.getZoom());
+					// TODO: Only, if values really changed.
+					controller.nodeChanged(node);
 				} else {
 					throw new IllegalArgumentException(
 							"MapNodePositionHolder to node id "

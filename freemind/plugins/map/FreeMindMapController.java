@@ -202,7 +202,6 @@ public class FreeMindMapController extends JMapController implements
 		List selecteds = mMindMapController.getSelecteds();
 		if(selecteds.size() == 1) {
 			MapNodePositionHolder hook = MapNodePositionHolder.getHook(selected);
-			
 			if (hook != null) {
 				getMap().setCursorPosition(hook.getPosition());
 				// move map:
