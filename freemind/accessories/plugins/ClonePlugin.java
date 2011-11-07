@@ -205,7 +205,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 				return;
 			}
 		}
-		getMindMapController().registerNodeSelectionListener(this);
+		getMindMapController().registerNodeSelectionListener(this, false);
 		getMindMapController().registerNodeLifetimeListener(this);
 		for (Iterator it = cloneNodes.iterator(); it.hasNext();) {
 			MindMapNode cloneNode = (MindMapNode) it.next();

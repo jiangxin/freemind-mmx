@@ -233,7 +233,13 @@ public interface ModeController extends TextTranslator {
 		void onSelectionChange(NodeView pNode, boolean pIsSelected);
 	}
 
-	void registerNodeSelectionListener(NodeSelectionListener listener);
+	/**
+	 * @param listener
+	 * @param pCallWithCurrentSelection if true, the methods for focused and selected nodes
+	 * are called directly with the current selection. Otherwise, the first selection change
+	 * would provoke the first call to the given listener.
+	 */
+	void registerNodeSelectionListener(NodeSelectionListener listener, boolean pCallWithCurrentSelection);
 
 	void deregisterNodeSelectionListener(NodeSelectionListener listener);
 

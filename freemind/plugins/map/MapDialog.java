@@ -203,7 +203,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		}
 		((Registration) getPluginBaseClass())
 				.registerMapNodePositionListener(this);
-		getMindMapController().registerNodeSelectionListener(this);
+		getMindMapController().registerNodeSelectionListener(this, true);
 		
 		map.setCursorPosition(new Coordinate(49.8, 8.8));
 		map.setUseCursor(true);

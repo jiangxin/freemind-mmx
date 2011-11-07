@@ -544,7 +544,7 @@ public class MindMapControllerMock implements ModeController {
 	 * freemind.modes.ModeController#registerNodeSelectionListener(freemind.
 	 * modes.ModeController.NodeSelectionListener)
 	 */
-	public void registerNodeSelectionListener(NodeSelectionListener listener) {
+	public void registerNodeSelectionListener(NodeSelectionListener listener, boolean pCallWithCurrentSelection) {
 		// TODO Auto-generated method stub
 
 	}

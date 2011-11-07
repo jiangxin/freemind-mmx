@@ -78,7 +78,7 @@ public class BrowseController extends ViewControllerAdapter {
 		toolbar = new BrowseToolBar(this);
 		setAllActions(false);
 		// for displaying notes.
-		registerNodeSelectionListener(new NodeNoteViewer(this));
+		registerNodeSelectionListener(new NodeNoteViewer(this), false);
 	}
 
 	public void startupController() {

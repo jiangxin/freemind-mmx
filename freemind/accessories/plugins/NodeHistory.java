@@ -134,7 +134,7 @@ public class NodeHistory extends MindMapNodeHookAdapter {
 		}
 
 		public void register() {
-			controller.registerNodeSelectionListener(this);
+			controller.registerNodeSelectionListener(this, false);
 		}
 
 		public void deRegister() {

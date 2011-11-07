@@ -293,8 +293,23 @@ public abstract class ControllerAdapter implements ModeController {
 		}
 	}
 
-	public void registerNodeSelectionListener(NodeSelectionListener listener) {
+	public void registerNodeSelectionListener(NodeSelectionListener listener, boolean pCallWithCurrentSelection) {
 		mNodeSelectionListeners.add(listener);
+		if(pCallWithCurrentSelection) {
+			try {
+				listener.onFocusNode(getSelectedView());
+			} catch (Exception e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+			for (Iterator it = getView().getSelecteds().iterator(); it.hasNext();) {
+				NodeView view = (NodeView) it.next();
+				try {
+					listener.onSelectionChange(view, true);
+				} catch (Exception e) {
+					freemind.main.Resources.getInstance().logException(e);
+				}
+			}
+		}
 	}
 
 	public void deregisterNodeSelectionListener(NodeSelectionListener listener) {

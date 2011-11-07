@@ -226,7 +226,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 				}
 				mLastContentEmpty = editorContentEmpty;
 			}
-			controller.registerNodeSelectionListener(this);
+			controller.registerNodeSelectionListener(this, false);
 			editorPane.setCaretPosition(caretPosition);
 			editorPane.setSelectionEnd(selectionEnd);
 			editorPane.setSelectionStart(selectionStart);
@@ -323,7 +323,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 			showNotesPanel();
 		}
 		mNotesManager = new NotesManager();
-		controller.registerNodeSelectionListener(mNotesManager);
+		controller.registerNodeSelectionListener(mNotesManager, false);
 		controller.registerNodeLifetimeListener(mNotesManager);
 		mNoteDocumentListener = new NoteDocumentListener();
 	}
