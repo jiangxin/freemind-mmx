@@ -252,14 +252,14 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	/**
 	 * Is sent when a node is selected.
 	 */
-	public void onSelectHook(NodeView node) {
+	public void onFocusNode(NodeView node) {
 		markShadowNode(node, true);
 	}
 
 	/**
 	 * Is sent when a node is deselected.
 	 */
-	public void onDeselectHook(NodeView node) {
+	public void onLostFocusNode(NodeView node) {
 		markShadowNode(node, false);
 	}
 
@@ -490,6 +490,14 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		mCloneNodeIds.remove(getMindMapController().getNodeID(pCloneNode));
 		clearCloneCache();
 		registerPlugin();
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.ModeController.NodeSelectionListener#onSelectionChange(freemind.modes.MindMapNode, boolean)
+	 */
+	public void onSelectionChange(NodeView pNode, boolean pIsSelected) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

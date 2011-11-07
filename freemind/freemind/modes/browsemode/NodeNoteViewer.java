@@ -63,11 +63,11 @@ public class NodeNoteViewer extends NodeNoteBase implements
 		return noteScrollPane;
 	}
 
-	public void onDeselectHook(NodeView pNode) {
+	public void onLostFocusNode(NodeView pNode) {
 		mBrowseController.getFrame().removeSplitPane();
 	}
 
-	public void onSelectHook(NodeView pNode) {
+	public void onFocusNode(NodeView pNode) {
 		String noteText = pNode.getModel().getNoteText();
 		if (noteText != null && !noteText.equals("")) {
 			// logger.info("Panel added");
@@ -92,6 +92,12 @@ public class NodeNoteViewer extends NodeNoteBase implements
 					mBrowseController.getResource("images/knotes.png"));
 		}
 		node.setStateIcon(NODE_NOTE_ICON, (enabled) ? noteIcon : null);
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.ModeController.NodeSelectionListener#onSelectionChange(freemind.modes.MindMapNode, boolean)
+	 */
+	public void onSelectionChange(NodeView pNode, boolean pIsSelected) {
 	}
 
 }

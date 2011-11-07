@@ -131,7 +131,7 @@ public class PermanentNodeHookAdapter extends NodeHookAdapter implements
 	 * 
 	 * @see freemind.modes.NodeHook#onSelectHook()
 	 */
-	public void onSelectHook(NodeView nodeView) {
+	public void onFocusNode(NodeView nodeView) {
 		logger.finest("onSelectHook");
 
 	}
@@ -141,7 +141,7 @@ public class PermanentNodeHookAdapter extends NodeHookAdapter implements
 	 * 
 	 * @see freemind.extensions.PermanentNodeHook#onDeselectHook()
 	 */
-	public void onDeselectHook(NodeView nodeView) {
+	public void onLostFocusNode(NodeView nodeView) {
 		logger.finest("onDeselectHook");
 	}
 

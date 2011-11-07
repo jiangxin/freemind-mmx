@@ -489,7 +489,7 @@ public class MindMapControllerMock implements ModeController {
 	 * @see
 	 * freemind.modes.ModeController#onDeselectHook(freemind.modes.MindMapNode)
 	 */
-	public void onDeselectHook(NodeView node) {
+	public void onFocusNode(NodeView node) {
 		// TODO Auto-generated method stub
 
 	}
@@ -500,7 +500,7 @@ public class MindMapControllerMock implements ModeController {
 	 * @see
 	 * freemind.modes.ModeController#onSelectHook(freemind.modes.MindMapNode)
 	 */
-	public void onSelectHook(NodeView node) {
+	public void onLostFocusNode(NodeView node) {
 		// TODO Auto-generated method stub
 
 	}
@@ -763,5 +763,11 @@ public class MindMapControllerMock implements ModeController {
 	public MapModule getMapModule() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.ModeController#changeSelection(freemind.view.mindmapview.NodeView, boolean)
+	 */
+	public void changeSelection(NodeView pNode, boolean pIsSelected) {
 	}
 }

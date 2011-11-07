@@ -32,6 +32,7 @@ import freemind.modes.MindMapNode;
 public class MapMarkerLocation extends JLabel implements MapMarker {
 
 	private final MapNodePositionHolder mNodePositionHolder;
+	private boolean mSelected = false;
 
 	/**
 	 * @param pNodePositionHolder
@@ -61,7 +62,11 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 		g.fillOval(position.x - size_h, position.y - size_h, size, size);
 		g.setColor(getForeground());
 		g.drawOval(position.x - size_h, position.y - size_h, size, size);
-		g.setColor(Color.WHITE);
+		if (mSelected) {
+			g.setColor(Color.GRAY);
+		} else {
+			g.setColor(Color.WHITE);
+		}
 		int node_y = position.y; // + size;
 		int node_x = position.x;
 		g.fillRect(node_x, node_y, this.getWidth(), this.getHeight());
@@ -77,6 +82,13 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 		return "MapMarkerLocation for node "
 				+ mNodePositionHolder.getNode().getText() + " at " + getLat()
 				+ " " + getLon();
+	}
+
+	/**
+	 * @param pSel
+	 */
+	public void setSelected(boolean pSelected) {
+		mSelected  = pSelected;
 	}
 
 }

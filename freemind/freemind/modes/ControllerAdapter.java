@@ -226,22 +226,22 @@ public abstract class ControllerAdapter implements ModeController {
 		}
 	}
 
-	public void onSelectHook(NodeView node) {
+	public void onLostFocusNode(NodeView node) {
 		// select the new node:
 		for (Iterator iter = mNodeSelectionListeners.iterator(); iter.hasNext();) {
 			NodeSelectionListener listener = (NodeSelectionListener) iter
 					.next();
-			listener.onSelectHook(node);
+			listener.onFocusNode(node);
 		}
 		for (Iterator i = node.getModel().getActivatedHooks().iterator(); i
 				.hasNext();) {
 			PermanentNodeHook hook = (PermanentNodeHook) i.next();
-			hook.onSelectHook(node);
+			hook.onFocusNode(node);
 		}
 
 	}
 
-	public void onDeselectHook(NodeView node) {
+	public void onFocusNode(NodeView node) {
 		try {
 			// deselect the old node:
 			HashSet copy = new HashSet(mNodeSelectionListeners);
@@ -250,17 +250,31 @@ public abstract class ControllerAdapter implements ModeController {
 			for (Iterator iter = copy.iterator(); iter.hasNext();) {
 				NodeSelectionListener listener = (NodeSelectionListener) iter
 						.next();
-				listener.onDeselectHook(node);
+				listener.onLostFocusNode(node);
 			}
 			for (Iterator i = node.getModel().getActivatedHooks().iterator(); i
 					.hasNext();) {
 				PermanentNodeHook hook = (PermanentNodeHook) i.next();
-				hook.onDeselectHook(node);
+				hook.onLostFocusNode(node);
 			}
 		} catch (RuntimeException e) {
 			logger.log(Level.SEVERE, "Error in node selection listeners", e);
 		}
 
+	}
+
+	public void changeSelection(NodeView pNode, boolean pIsSelected) {
+		try {
+			HashSet copy = new HashSet(mNodeSelectionListeners);
+			for (Iterator iter = copy.iterator(); iter.hasNext();) {
+				NodeSelectionListener listener = (NodeSelectionListener) iter
+						.next();
+				listener.onSelectionChange(pNode, pIsSelected);
+			}
+		} catch (RuntimeException e) {
+			logger.log(Level.SEVERE, "Error in node selection listeners", e);
+		}
+		
 	}
 
 	public void onViewCreatedHook(NodeView node) {
@@ -967,18 +981,18 @@ public abstract class ControllerAdapter implements ModeController {
 	 * @see freemind.modes.ModeController#setVisible(boolean)
 	 */
 	public void setVisible(boolean visible) {
+		NodeView node = getSelectedView();
 		if (visible) {
-			NodeView node = getSelectedView();
-			onSelectHook(node);
+			onLostFocusNode(node);
 		} else {
-			NodeView node = getSelectedView();
 			// bug fix, fc 18.5.2004. This should not be here.
 			if (node != null) {
-				onDeselectHook(node);
+				onFocusNode(node);
 			}
 			// TODO: fc, 21.5.07 Do we need this?
 			// getView().getRootPane().requestFocus();
 		}
+		changeSelection(node, !visible);
 	}
 
 	/**

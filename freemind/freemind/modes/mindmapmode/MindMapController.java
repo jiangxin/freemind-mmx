@@ -789,8 +789,8 @@ public class MindMapController extends ControllerAdapter implements
 		}
 	}
 
-	public void onSelectHook(NodeView n) {
-		super.onSelectHook(n);
+	public void onLostFocusNode(NodeView n) {
+		super.onLostFocusNode(n);
 		updateToolbar(n.getModel());
 	}
 

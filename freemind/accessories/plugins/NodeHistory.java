@@ -141,10 +141,10 @@ public class NodeHistory extends MindMapNodeHookAdapter {
 			controller.deregisterNodeSelectionListener(this);
 		}
 
-		public void onDeselectHook(NodeView pNode) {
+		public void onLostFocusNode(NodeView pNode) {
 		}
 
-		public void onSelectHook(NodeView pNode) {
+		public void onFocusNode(NodeView pNode) {
 			/*******************************************************************
 			 * don't denote positions, if somebody navigates through them. *
 			 */
@@ -193,6 +193,12 @@ public class NodeHistory extends MindMapNodeHookAdapter {
 			} else {
 				return sCurrentPosition < sNodeVector.size();
 			}
+		}
+
+		/* (non-Javadoc)
+		 * @see freemind.modes.ModeController.NodeSelectionListener#onSelectionChange(freemind.modes.MindMapNode, boolean)
+		 */
+		public void onSelectionChange(NodeView pNode, boolean pIsSelected) {
 		}
 
 	}

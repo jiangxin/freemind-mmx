@@ -188,12 +188,12 @@ public interface ModeController extends TextTranslator {
 	/**
 	 * Is called when a node is selected.
 	 */
-	void onSelectHook(NodeView node);
+	void onLostFocusNode(NodeView node);
 
 	/**
 	 * Is called when a node is deselected.
 	 */
-	void onDeselectHook(NodeView node);
+	void onFocusNode(NodeView node);
 
 	void onViewCreatedHook(NodeView newView);
 
@@ -208,14 +208,15 @@ public interface ModeController extends TextTranslator {
 		void onUpdateNodeHook(MindMapNode node);
 
 		/**
-		 * Is sent when a node is selected.
+		 * Is sent when a node is focused (this means, that it is *the* selected node, 
+		 * there may only be one!).
 		 */
-		void onSelectHook(NodeView node);
+		void onFocusNode(NodeView node);
 
 		/**
-		 * Is sent when a node is deselected.
+		 * Is sent when a node has lost its focus (see {@link onSelectHook()}).
 		 */
-		void onDeselectHook(NodeView node);
+		void onLostFocusNode(NodeView node);
 
 		/**
 		 * Is issued before a node is saved (eg. to save its notes, too, even if
@@ -223,6 +224,13 @@ public interface ModeController extends TextTranslator {
 		 */
 		void onSaveNode(MindMapNode node);
 
+		/**
+		 * Informs whether or not the node belongs to the group of selected
+		 * nodes (in contrast to the focused node above).
+		 * @param pNode
+		 * @param pIsSelected true, if the node is selected now.
+		 */
+		void onSelectionChange(NodeView pNode, boolean pIsSelected);
 	}
 
 	void registerNodeSelectionListener(NodeSelectionListener listener);
@@ -369,5 +377,12 @@ public interface ModeController extends TextTranslator {
 	JFileChooser getFileChooser(FileFilter filter);
 
 	void setView(MapView pView);
+
+	/**
+	 * @see NodeSelectionListener
+	 * @param pNode
+	 * @param pIsSelected
+	 */
+	void changeSelection(NodeView pNode, boolean pIsSelected);
 
 }

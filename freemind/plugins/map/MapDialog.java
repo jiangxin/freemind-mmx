@@ -39,10 +39,13 @@ import plugins.map.MapNodePositionHolder.Registration;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.actions.generated.instance.MapWindowConfigurationStorage;
 import freemind.main.Tools;
+import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
+import freemind.modes.ModeController.NodeSelectionListener;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
 import freemind.view.MapModule;
+import freemind.view.mindmapview.NodeView;
 
 /**
  * 
@@ -53,7 +56,7 @@ import freemind.view.MapModule;
  */
 public class MapDialog extends MindMapHookAdapter implements
 		JMapViewerEventListener, MapModuleChangeObserver,
-		MapNodePositionListener {
+		MapNodePositionListener, NodeSelectionListener {
 
 	private static final long serialVersionUID = 1L;
 
@@ -200,7 +203,8 @@ public class MapDialog extends MindMapHookAdapter implements
 		}
 		((Registration) getPluginBaseClass())
 				.registerMapNodePositionListener(this);
-
+		getMindMapController().registerNodeSelectionListener(this);
+		
 		map.setCursorPosition(new Coordinate(49.8, 8.8));
 		map.setUseCursor(true);
 		// restore preferences:
@@ -245,6 +249,8 @@ public class MapDialog extends MindMapHookAdapter implements
 			// on close, it is null. Why?
 			registration.deregisterMapNodePositionListener(this);
 		}
+		getMindMapController().deregisterNodeSelectionListener(this);
+
 		// store window positions:
 		MapWindowConfigurationStorage storage = new MapWindowConfigurationStorage();
 		// Set coordinates
@@ -367,5 +373,50 @@ public class MapDialog extends MindMapHookAdapter implements
 			map.removeMapMarker(marker);
 		}
 
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.ModeController.NodeSelectionListener#onUpdateNodeHook(freemind.modes.MindMapNode)
+	 */
+	public void onUpdateNodeHook(MindMapNode pNode) {
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.ModeController.NodeSelectionListener#onSelectHook(freemind.view.mindmapview.NodeView)
+	 */
+	public void onFocusNode(NodeView pNode) {
+	}
+
+	public void selectMapPosition(NodeView pNode, boolean sel) {
+		// test for map position:
+		MapNodePositionHolder hook = MapNodePositionHolder.getHook(pNode.getModel());
+		if(hook != null) {
+			if(mMarkerMap.containsKey(hook)) {
+				MapMarkerLocation location = (MapMarkerLocation) mMarkerMap.get(hook);
+				location.setSelected(sel);
+				map.repaint();
+			}
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.ModeController.NodeSelectionListener#onDeselectHook(freemind.view.mindmapview.NodeView)
+	 */
+	public void onLostFocusNode(NodeView pNode) {
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.ModeController.NodeSelectionListener#onSaveNode(freemind.modes.MindMapNode)
+	 */
+	public void onSaveNode(MindMapNode pNode) {
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.ModeController.NodeSelectionListener#onSelectionChange(freemind.modes.MindMapNode, boolean)
+	 */
+	public void onSelectionChange(NodeView pNode, boolean pIsSelected) {
+		selectMapPosition(pNode, pIsSelected);
+		
 	}
 }

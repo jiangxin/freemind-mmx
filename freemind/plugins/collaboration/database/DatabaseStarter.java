@@ -149,7 +149,7 @@ public class DatabaseStarter extends DatabaseBasics implements
 	public void onAddChildren(MindMapNode pAddedChild) {
 	}
 
-	public void onDeselectHook(NodeView pNodeView) {
+	public void onLostFocusNode(NodeView pNodeView) {
 	}
 
 	public void onNewChild(MindMapNode pNewChildNode) {
@@ -161,7 +161,7 @@ public class DatabaseStarter extends DatabaseBasics implements
 	public void onRemoveChildren(MindMapNode pOldChildNode, MindMapNode pOldDad) {
 	}
 
-	public void onSelectHook(NodeView pNodeView) {
+	public void onFocusNode(NodeView pNodeView) {
 	}
 
 	public void onUpdateChildrenHook(MindMapNode pUpdatedNode) {

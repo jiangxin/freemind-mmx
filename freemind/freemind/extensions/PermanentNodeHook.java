@@ -37,12 +37,12 @@ import freemind.view.mindmapview.NodeView;
  */
 public interface PermanentNodeHook extends NodeHook {
 
-	void onSelectHook(NodeView nodeView);
+	void onFocusNode(NodeView nodeView);
 
 	/**
 	 * 
 	 */
-	void onDeselectHook(NodeView nodeView);
+	void onLostFocusNode(NodeView nodeView);
 
 	void onViewCreatedHook(NodeView nodeView);
 

@@ -196,7 +196,7 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 					logger.finest("This is a permanent hook " + hookName);
 					// the focussed receives the focus:
 					if (currentDestinationNode == adaptedFocussedNode) {
-						permHook.onSelectHook(mMindMapController
+						permHook.onFocusNode(mMindMapController
 								.getNodeView(currentDestinationNode));
 					}
 					// using this method, the map is dirty now. This is

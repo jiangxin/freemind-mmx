@@ -361,8 +361,8 @@ public class FormularEditor extends PermanentMindMapNodeHookAdapter {
 	 * 
 	 * @see freemind.extensions.PermanentNodeHook#onDeselectHook()
 	 */
-	public void onDeselectHook(NodeView nodeView) {
-		super.onDeselectHook(nodeView);
+	public void onLostFocusNode(NodeView nodeView) {
+		super.onLostFocusNode(nodeView);
 		shutDownDisplay();
 	}
 
@@ -389,8 +389,8 @@ public class FormularEditor extends PermanentMindMapNodeHookAdapter {
 	 * 
 	 * @see freemind.extensions.PermanentNodeHook#onSelectHook()
 	 */
-	public void onSelectHook(NodeView nodeView) {
-		super.onSelectHook(nodeView);
+	public void onFocusNode(NodeView nodeView) {
+		super.onFocusNode(nodeView);
 		if (panel == null) {
 			// panel:
 			panel = new JPanel(null);

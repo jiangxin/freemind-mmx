@@ -146,7 +146,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 		public NotesManager() {
 		}
 
-		public void onDeselectHook(NodeView node) {
+		public void onLostFocusNode(NodeView node) {
 			// logger.info("onDeselectHook for node " + node +
 			// " and noteViewerComponent=" + noteViewerComponent);
 			noteViewerComponent.getDocument().removeDocumentListener(
@@ -157,7 +157,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 			// getHtmlEditorPanel().setCurrentDocumentContent("Note", "");
 		}
 
-		public void onSelectHook(NodeView nodeView) {
+		public void onFocusNode(NodeView nodeView) {
 			// logger.info("onSelectHook for node " + node +
 			// " and noteViewerComponent=" + noteViewerComponent);
 			this.node = nodeView.getModel();
@@ -242,6 +242,12 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 		}
 
 		public void onPostDeleteNode(MindMapNode pNode, MindMapNode pParent) {
+		}
+
+		/* (non-Javadoc)
+		 * @see freemind.modes.ModeController.NodeSelectionListener#onSelectionChange(freemind.modes.MindMapNode, boolean)
+		 */
+		public void onSelectionChange(NodeView pNode, boolean pIsSelected) {
 		}
 	}
 

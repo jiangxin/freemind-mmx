@@ -167,10 +167,24 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 
 		public void clear() {
 			if (size() > 0) {
-				removeSelectionForHooks(get(0));
+				removeFocusForHooks(get(0));
+			}
+			for (Iterator it = mySelected.iterator(); it.hasNext();) {
+				NodeView view = (NodeView) it.next();
+				changeSelection(view, false);
 			}
 			mySelected.clear();
 			logger.finest("Cleared selected.");
+		}
+
+		/**
+		 * @param pNode
+		 */
+		private void changeSelection(NodeView pNode, boolean pIsSelected) {
+			if (pNode.getModel() == null)
+				return;
+			getModel().getModeController().changeSelection(pNode, pIsSelected);
+			
 		}
 
 		public int size() {
@@ -179,29 +193,31 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 
 		public void remove(NodeView node) {
 			if (mySelected.indexOf(node) == 0) {
-				removeSelectionForHooks(node);
+				removeFocusForHooks(node);
 			}
+			changeSelection(node, false);
 			mySelected.remove(node);
-			logger.finest("Removed selected " + node);
+			logger.finest("Removed focused " + node);
 		}
 
 		public void add(NodeView node) {
 			if (size() > 0) {
-				removeSelectionForHooks(get(0));
+				removeFocusForHooks(get(0));
 			}
 			mySelected.add(0, node);
-			addSelectionForHooks(node);
-			logger.finest("Added selected " + node + "\nAll=" + mySelected);
+			addFocusForHooks(node);
+			changeSelection(node, true);
+			logger.finest("Added focused " + node + "\nAll=" + mySelected);
 		}
 
-		private void removeSelectionForHooks(NodeView node) {
+		private void removeFocusForHooks(NodeView node) {
 			if (node.getModel() == null)
 				return;
-			getModel().getModeController().onDeselectHook(node);
+			getModel().getModeController().onFocusNode(node);
 		}
 
-		private void addSelectionForHooks(NodeView node) {
-			getModel().getModeController().onSelectHook(node);
+		private void addFocusForHooks(NodeView node) {
+			getModel().getModeController().onLostFocusNode(node);
 		}
 
 		public NodeView get(int i) {
@@ -219,7 +235,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 				int pos = mySelected.indexOf(newSelected);
 				if (pos > 0) { // move
 					if (size() > 0) {
-						removeSelectionForHooks(get(0));
+						removeFocusForHooks(get(0));
 					}
 					mySelected.remove(newSelected);
 					mySelected.add(0, newSelected);
@@ -227,7 +243,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 			} else {
 				add(newSelected);
 			}
-			addSelectionForHooks(newSelected);
+			addFocusForHooks(newSelected);
 			logger.finest("MovedToFront selected " + newSelected + "\nAll="
 					+ mySelected);
 		}
