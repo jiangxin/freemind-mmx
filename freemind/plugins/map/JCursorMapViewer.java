@@ -36,6 +36,7 @@ import javax.swing.Timer;
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.TileController;
+import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
 
 import freemind.modes.mindmapmode.MindMapController;
 
@@ -57,8 +58,8 @@ final class JCursorMapViewer extends JMapViewer {
 	 * 
 	 */
 	public JCursorMapViewer(MindMapController pMindMapController,
-			JDialog pMapDialog) {
-		super(new FileTileCache(), 4);
+			JDialog pMapDialog, TileCache pTileCache) {
+		super(pTileCache, 4);
 		mFreeMindMapController = new FreeMindMapController(this,
 				pMindMapController, pMapDialog);
 		Action updateCursorAction = new AbstractAction() {

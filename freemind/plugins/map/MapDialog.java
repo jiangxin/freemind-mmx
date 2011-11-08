@@ -25,10 +25,12 @@ import javax.swing.WindowConstants;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
+import org.openstreetmap.gui.jmapviewer.MemoryTileCache;
 import org.openstreetmap.gui.jmapviewer.OsmFileCacheTileLoader;
 import org.openstreetmap.gui.jmapviewer.OsmTileLoader;
 import org.openstreetmap.gui.jmapviewer.events.JMVCommandEvent;
 import org.openstreetmap.gui.jmapviewer.interfaces.JMapViewerEventListener;
+import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileLoader;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
@@ -38,6 +40,7 @@ import plugins.map.MapNodePositionHolder.MapNodePositionListener;
 import plugins.map.MapNodePositionHolder.Registration;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.actions.generated.instance.MapWindowConfigurationStorage;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
@@ -62,6 +65,8 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	private static final String WINDOW_PREFERENCE_STORAGE_PROPERTY = MapDialog.class
 			.getName();
+
+	private static final String TILE_CACHE_CLASS = "tile_cache_class";
 
 	private JCursorMapViewer map = null;
 
@@ -104,7 +109,17 @@ public class MapDialog extends MindMapHookAdapter implements
 		});
 		mMapDialog.setSize(400, 400);
 
-		map = new JCursorMapViewer(getMindMapController(), mMapDialog);
+		TileCache tileCache = null;
+		String tileCacheClass = Resources.getInstance().getProperty(TILE_CACHE_CLASS);
+		if(Tools.safeEquals(tileCacheClass, "file")) {
+			logger.info("Using file tile cache");
+			tileCache = new FileTileCache();
+		}
+		if(tileCache == null) {
+			logger.info("Using memory tile cache");
+			tileCache = new MemoryTileCache();
+		}
+		map = new JCursorMapViewer(getMindMapController(), mMapDialog, tileCache);
 
 		// Listen to the map viewer for user operations so components will
 		// recieve events and update
