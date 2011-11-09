@@ -20,13 +20,25 @@
 
 package plugins.map;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.RenderedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
+import org.openstreetmap.gui.jmapviewer.OsmMercator;
+import org.openstreetmap.gui.jmapviewer.Tile;
+import org.openstreetmap.gui.jmapviewer.TileController;
+import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
+import org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener;
+import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
+import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource.Mapnik;
 
 import freemind.controller.actions.generated.instance.PlaceNodeXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -61,7 +73,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	private Coordinate mMapCenter = new Coordinate(0, 0);
 	private int mZoom = 1;
 	private static ImageIcon sMapLocationIcon;
-
+	private static int mTemporaryFileCounter = 1;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -72,6 +84,23 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 		super.invoke(pNode);
 		((Registration) getPluginBaseClass()).registerMapNode(this);
 		setStateIcon(pNode, true);
+		TileImage image = ((Registration) getPluginBaseClass()).getImage(mPosition, mZoom);
+		// save image to disk:
+		String filePath = "/tmp/myfile"+ mTemporaryFileCounter+".png";
+		mTemporaryFileCounter++;
+		try {
+			ImageIO.write(image.getImage(), "png", new File(filePath));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			freemind.main.Resources.getInstance().logException(e);
+			
+		}
+
+		String imageTag = "<img src=\"file://"+filePath+"\"/>";
+		setToolTip(NODE_MAP_HOOK_NAME, "<html>" +
+				imageTag + 
+				"</html>");
+		
 	}
 
 	/*
@@ -180,8 +209,29 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 
 		void deregisterMapNode(MapNodePositionHolder pMapNodePositionHolder);
 	}
+	
+	public static class TileImage {
 
-	public static class Registration implements HookRegistration, ActorXml {
+		private final BufferedImage mImage;
+
+		/**
+		 * @param pImage
+		 */
+		public TileImage(BufferedImage pImage) {
+			mImage = pImage;
+		}
+
+		/**
+		 * @return
+		 */
+		public RenderedImage getImage() {
+			// TODO Auto-generated method stub
+			return mImage;
+		}
+		
+	}
+
+	public static class Registration implements HookRegistration, ActorXml, TileLoaderListener {
 
 		private static final String PLUGINS_MAP_NODE_POSITION = MapNodePositionHolder.class
 				.getName();
@@ -200,10 +250,31 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 
 		private final java.util.logging.Logger logger;
 
+		private Mapnik mTileSource;
+
+		private TileController mTileController;
+
+		private FileTileCache mTileCache;
+
 		public Registration(ModeController controller, MindMap map) {
 			this.controller = (MindMapController) controller;
 			mMap = map;
 			logger = controller.getFrame().getLogger(this.getClass().getName());
+		}
+
+		/**
+		 * @param pPosition
+		 */
+		public TileImage getImage(Coordinate pPosition, int pZoom) {
+			/* 
+			 * The map needs not to be open. What now?
+			 */
+			int tileSize = mTileSource.getTileSize();
+	        int x = OsmMercator.LonToX(pPosition.getLon(), pZoom)/tileSize;
+	        int y = OsmMercator.LatToY(pPosition.getLat(), pZoom)/tileSize;
+	        logger.info("Trying to load tile to x=" +x + ", y=" + y + ", zoom=" + pZoom );
+			Tile tile = mTileController.getTile(x, y, pZoom);
+			return new TileImage(tile.getImage());
 		}
 
 		public void deRegister() {
@@ -214,6 +285,9 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 		public void register() {
 			controller.getActionFactory().registerActor(this,
 					getDoActionClass());
+			mTileSource = new OsmTileSource.Mapnik();
+			mTileCache = new FileTileCache();
+			mTileController = new TileController(mTileSource, mTileCache, this);
 		}
 
 		public void registerMapNode(MapNodePositionHolder pMapNodePositionHolder) {
@@ -338,6 +412,19 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 		 */
 		public Class getDoActionClass() {
 			return PlaceNodeXmlAction.class;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener#tileLoadingFinished(org.openstreetmap.gui.jmapviewer.Tile, boolean)
+		 */
+		public void tileLoadingFinished(Tile pTile, boolean pSuccess) {
+		}
+
+		/* (non-Javadoc)
+		 * @see org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener#getTileCache()
+		 */
+		public TileCache getTileCache() {
+			return mTileCache;
 		}
 
 	}
