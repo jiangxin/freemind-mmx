@@ -137,4 +137,8 @@ public class FileTileCache implements TileCache {
 		return getDirectory().list().length;
 	}
 
+	public void setDirectory(String pDirectory) {
+		mDirectory = pDirectory;
+	}
+
 }

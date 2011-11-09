@@ -587,6 +587,71 @@
 	  </xs:complexType>
 	</xs:element>
 
+<!-- <searchresults 
+	timestamp="Tue, 08 Nov 11 22:49:54 -0500" 
+	attribution="Data Copyright OpenStreetMap Contributors, Some Rights Reserved. CC-BY-SA 2.0." 
+	querystring="innsbruck" 
+	polygon="false" 
+	exclude_place_ids="228452,25664166,26135863,25440203" 
+	more_url="http://open.mapquestapi.com/nominatim/v1/search?format=xml&amp;exclude_place_ids=228452,25664166,26135863,25440203&amp;accept-language=&amp;q=innsbruck"
+	>
+  <place 
+  	place_id="228452" 
+  	osm_type="node" 
+  	osm_id="34840064" 
+  	place_rank="16" 
+  	boundingbox="47.2554266357,47.2754304504,11.3827679062,11.4027688599" 
+  	lat="47.2654296" 
+  	lon="11.3927685" 
+  	display_name="Innsbruck, Bezirk Innsbruck-Stadt, Innsbruck-Stadt, Tirol, Österreich, Europe" 
+  	class="place" 
+  	type="city" 
+  	icon="http://open.mapquestapi.com/nominatim/v1/images/mapicons/poi_place_city.p.20.png"
+  />
+
+  -->
+
+	<!-- Nominatim Place -->
+	<xs:element name="place">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+				<xs:attribute name="place_id" use="optional" type="xs:string"/> 
+				<xs:attribute name="osm_type" use="optional" type="xs:string"/> 
+				<xs:attribute name="osm_id" use="optional" type="xs:string"/> 
+				<xs:attribute name="place_rank" use="optional" type="xs:string"/> 
+				<xs:attribute name="boundingbox" use="optional" type="xs:string"/> 
+				<xs:attribute name="lat" use="optional" type="xs:double"/> 
+				<xs:attribute name="lon" use="optional" type="xs:double"/> 
+				<xs:attribute name="display_name" use="optional" type="xs:string"/> 
+				<xs:attribute name="class" use="optional" type="xs:string" id="ClassMember"/> 
+				<xs:attribute name="type" use="optional" type="xs:string"/> 
+				<xs:attribute name="icon" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Nominatim Web Query Response -->
+	<xs:element name="searchresults">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+		          <xs:sequence>
+					  <!-- The places -->
+		    	      <xs:element ref="place" maxOccurs="unbounded" minOccurs="0"/>
+		          </xs:sequence>
+				<xs:attribute name="timestamp" use="optional" type="xs:string"/>
+				<xs:attribute name="attribution" use="optional" type="xs:string"/>
+				<xs:attribute name="querystring" use="optional" type="xs:string"/>
+				<xs:attribute name="polygon" use="optional" type="xs:string"/>
+				<xs:attribute name="exclude_place_ids" use="optional" type="xs:string"/>
+				<xs:attribute name="more_url" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
 
 
 	<!-- Add a permanent hook to a node -->

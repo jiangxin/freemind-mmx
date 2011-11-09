@@ -6,7 +6,7 @@ Changes made in FreeMind 1.0.0 Alpha7
 * Paste as plain text added: you get a single node with the copied text as the paste result.
 * Option added to avoid tooltips for notes. (https://sourceforge.net/projects/freemind/forums/forum/320014/topic/4777695)
 * Initial map support added
-* Tile Cache can be chosen via properties.
+* Tile Cache can be chosen via properties (tile_cache_class).
 
 ===============================
 Changes made in FreeMind 1.0.0 Alpha6
