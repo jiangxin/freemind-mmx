@@ -20,7 +20,12 @@
 
 package plugins.map;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
@@ -203,11 +208,15 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		void deregisterMapNode(MapNodePositionHolder pMapNodePositionHolder);
 	}
 
-	public static class TileImage {
+	public static class TileImage implements ImageObserver {
 
 		private Tile[][] mTiles = null;
 		private boolean mTilesPresent = false;
+		private boolean mImageCreated = false;
 		private BufferedImage mImage;
+		private int mWaitingForCallbacks = 0;
+		private int mDx;
+		private int mDy;
 
 		public TileImage() {
 
@@ -226,8 +235,11 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 					}
 				}
 			}
-			createImage();
-			return true;
+			if(!mImageCreated) {
+				createImage();
+				mImageCreated = true;
+			}
+			return isDrawingDone();
 		}
 
 		/**
@@ -238,15 +250,35 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 			int height = tileImage00.getHeight();
 			int width = tileImage00.getWidth();
 			mImage = new BufferedImage(height * mTiles[0].length, width
-					* mTiles.length, tileImage00.getType());
+					* mTiles.length, BufferedImage.TYPE_INT_RGB);
+			Graphics2D graphics = (Graphics2D) mImage.getGraphics();
 			for (int i = 0; i < mTiles.length; i++) {
 				Tile[] tiles = mTiles[i];
 				for (int j = 0; j < tiles.length; j++) {
 					Tile tile = tiles[j];
-					mImage.setData(tile.getImage().getRaster()
-							.createTranslatedChild(i*height, j*width));
+					boolean done = graphics.drawImage(tile.getImage(), i*height, j*width, this);
+					if(!done) {
+						mWaitingForCallbacks++;
+					}
 				}
 			}
+			if(isDrawingDone()) {
+				drawCross();
+			}
+		}
+
+		public boolean isDrawingDone() {
+			return mWaitingForCallbacks<=0;
+		}
+
+		public void drawCross() {
+			System.out.println("Drawing cross");
+			Graphics2D graphics = (Graphics2D) mImage.getGraphics();
+			graphics.setColor(Color.RED);
+			graphics.setStroke(new BasicStroke(4));
+			int size = 10;
+			graphics.drawLine(mDx-size, mDy, mDx+size, mDy);
+			graphics.drawLine(mDx, mDy-size, mDx, mDy+size);
 		}
 
 		/**
@@ -263,9 +295,13 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		 * @param pZoom
 		 * @param mTileController
 		 * @param pLogger
+		 * @param pDy 
+		 * @param pDx 
 		 */
 		public void setTiles(int pDimension, int pX, int pY, int pZoom,
-				TileController mTileController, Logger pLogger) {
+				TileController mTileController, Logger pLogger, int pDx, int pDy) {
+			mDx = pDx;
+			mDy = pDy;
 			mTiles = new Tile[pDimension][pDimension];
 			for (int i = 0; i < pDimension; ++i) {
 				for (int j = 0; j < pDimension; ++j) {
@@ -276,6 +312,18 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 				}
 			}
 			mTilesPresent = true;
+		}
+
+		/* (non-Javadoc)
+		 * @see java.awt.image.ImageObserver#imageUpdate(java.awt.Image, int, int, int, int, int)
+		 */
+		public boolean imageUpdate(Image pImg, int pInfoflags, int pX, int pY,
+				int pWidth, int pHeight) {
+			mWaitingForCallbacks--;
+			if(isDrawingDone()) {
+				drawCross();
+			}
+			return isDrawingDone();
 		}
 
 	}
@@ -343,7 +391,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 			synchronized (mTileLoaderListeners) {
 				mTileLoaderListeners.put(tileImage, pTileListener);
 			}
-			tileImage.setTiles(3, x, y, pZoom, mTileController, logger);
+			tileImage.setTiles(2, x, y, pZoom, mTileController, logger, dx, dy);
 			return tileImage;
 		}
 
