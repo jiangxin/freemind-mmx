@@ -670,16 +670,17 @@ public class CompileXsdStart extends DefaultHandler {
 		}
 
 		public void startElement(String arg0, Attributes arg1) {
-			// TODO Auto-generated method stub
 			super.startElement(arg0, arg1);
 			String type = arg1.getValue("type");
 			type = getType(type);
 			String rawName = arg1.getValue("name");
 			String usage = arg1.getValue("use");
 			String minOccurs = arg1.getValue("minOccurs");
-			String name = getNameFromXml(rawName);
-			String memberName = name.substring(0, 1).toLowerCase()
-					+ name.substring(1);
+			String name = arg1.getValue("id");
+			if(name == null) {
+				name = getNameFromXml(rawName);
+			}
+			String memberName = decapitalizeFirstLetter(name);
 			appendToClassMap(KEY_CLASS_PRIVATE_MEMBERS, "  protected " + type
 					+ " " + memberName + ";\n");
 			appendToClassMap(KEY_CLASS_GETTERS, "  public " + type + " get"
@@ -694,6 +695,11 @@ public class CompileXsdStart extends DefaultHandler {
 					+ "' "
 					+ (("0".equals(minOccurs)) ? "" : "style='attribute'")
 					+ "/>\n");
+		}
+
+		public String decapitalizeFirstLetter(String name) {
+			return name.substring(0, 1).toLowerCase()
+					+ name.substring(1);
 		}
 
 	}

@@ -55,18 +55,18 @@ import freemind.view.mindmapview.NodeView;
  * Demonstrates the usage of {@link JMapViewer}
  * 
  * @author Jan Peter Stotz
- * 
+ * adapted for FreeMind by Chris.
  */
 public class MapDialog extends MindMapHookAdapter implements
 		JMapViewerEventListener, MapModuleChangeObserver,
 		MapNodePositionListener, NodeSelectionListener {
 
-	private static final long serialVersionUID = 1L;
-
 	private static final String WINDOW_PREFERENCE_STORAGE_PROPERTY = MapDialog.class
 			.getName();
 
 	private static final String TILE_CACHE_CLASS = "tile_cache_class";
+
+	private static final String FILE_TILE_CACHE_DIRECTORY = "file_tile_cache_directory";
 
 	private JCursorMapViewer map = null;
 
@@ -110,23 +110,26 @@ public class MapDialog extends MindMapHookAdapter implements
 		mMapDialog.setSize(400, 400);
 
 		TileCache tileCache = null;
-		String tileCacheClass = Resources.getInstance().getProperty(TILE_CACHE_CLASS);
-		if(Tools.safeEquals(tileCacheClass, "file")) {
+		String tileCacheClass = Resources.getInstance().getProperty(
+				TILE_CACHE_CLASS);
+		if (Tools.safeEquals(tileCacheClass, "file")) {
 			logger.info("Using file tile cache");
 			tileCache = new FileTileCache();
+			((FileTileCache) tileCache).setDirectory(Resources.getInstance()
+					.getProperty(FILE_TILE_CACHE_DIRECTORY));
 		}
-		if(tileCache == null) {
+		if (tileCache == null) {
 			logger.info("Using memory tile cache");
 			tileCache = new MemoryTileCache();
 		}
-		map = new JCursorMapViewer(getMindMapController(), mMapDialog, tileCache);
+		map = new JCursorMapViewer(getMindMapController(), mMapDialog,
+				tileCache);
 
 		// Listen to the map viewer for user operations so components will
-		// recieve events and update
+		// receive events and update
 		map.addJMVListener(this);
 
 		mMapDialog.setLayout(new BorderLayout());
-		// mMapDialog.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		JPanel panel = new JPanel();
 		JPanel helpPanel = new JPanel();
 
@@ -219,7 +222,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		((Registration) getPluginBaseClass())
 				.registerMapNodePositionListener(this);
 		getMindMapController().registerNodeSelectionListener(this, true);
-		
+
 		map.setCursorPosition(new Coordinate(49.8, 8.8));
 		map.setUseCursor(true);
 		// restore preferences:
@@ -271,11 +274,11 @@ public class MapDialog extends MindMapHookAdapter implements
 		// Set coordinates
 		storage.setZoom(map.getZoom());
 		Coordinate position = map.getPosition();
-		storage.setMapCenterLongitude( position.getLon());
-		storage.setMapCenterLatitude( position.getLat());
+		storage.setMapCenterLongitude(position.getLon());
+		storage.setMapCenterLatitude(position.getLat());
 		Coordinate cursorPosition = map.getCursorPosition();
-		storage.setCursorLongitude( cursorPosition.getLon());
-		storage.setCursorLatitude( cursorPosition.getLat());
+		storage.setCursorLongitude(cursorPosition.getLon());
+		storage.setCursorLatitude(cursorPosition.getLat());
 		getMindMapController().storeDialogPositions(mMapDialog, storage,
 				WINDOW_PREFERENCE_STORAGE_PROPERTY);
 
@@ -390,48 +393,70 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.modes.ModeController.NodeSelectionListener#onUpdateNodeHook(freemind.modes.MindMapNode)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.modes.ModeController.NodeSelectionListener#onUpdateNodeHook(
+	 * freemind.modes.MindMapNode)
 	 */
 	public void onUpdateNodeHook(MindMapNode pNode) {
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.modes.ModeController.NodeSelectionListener#onSelectHook(freemind.view.mindmapview.NodeView)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.modes.ModeController.NodeSelectionListener#onSelectHook(freemind
+	 * .view.mindmapview.NodeView)
 	 */
 	public void onFocusNode(NodeView pNode) {
 	}
 
 	public void selectMapPosition(NodeView pNode, boolean sel) {
 		// test for map position:
-		MapNodePositionHolder hook = MapNodePositionHolder.getHook(pNode.getModel());
-		if(hook != null) {
-			if(mMarkerMap.containsKey(hook)) {
-				MapMarkerLocation location = (MapMarkerLocation) mMarkerMap.get(hook);
+		MapNodePositionHolder hook = MapNodePositionHolder.getHook(pNode
+				.getModel());
+		if (hook != null) {
+			if (mMarkerMap.containsKey(hook)) {
+				MapMarkerLocation location = (MapMarkerLocation) mMarkerMap
+						.get(hook);
 				location.setSelected(sel);
 				map.repaint();
 			}
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.modes.ModeController.NodeSelectionListener#onDeselectHook(freemind.view.mindmapview.NodeView)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.modes.ModeController.NodeSelectionListener#onDeselectHook(freemind
+	 * .view.mindmapview.NodeView)
 	 */
 	public void onLostFocusNode(NodeView pNode) {
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.modes.ModeController.NodeSelectionListener#onSaveNode(freemind.modes.MindMapNode)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.modes.ModeController.NodeSelectionListener#onSaveNode(freemind
+	 * .modes.MindMapNode)
 	 */
 	public void onSaveNode(MindMapNode pNode) {
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.modes.ModeController.NodeSelectionListener#onSelectionChange(freemind.modes.MindMapNode, boolean)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.modes.ModeController.NodeSelectionListener#onSelectionChange
+	 * (freemind.modes.MindMapNode, boolean)
 	 */
 	public void onSelectionChange(NodeView pNode, boolean pIsSelected) {
 		selectMapPosition(pNode, pIsSelected);
-		
+
 	}
 }

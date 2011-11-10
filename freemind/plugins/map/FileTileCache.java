@@ -77,7 +77,9 @@ public class FileTileCache implements TileCache {
 			// System.out.println("Loading tile " + tileKey);
 			try {
 				BufferedImage bufferedImage = ImageIO.read(file);
-				return new Tile(pSource, pX, pY, pZ, bufferedImage);
+				Tile loadedTile = new Tile(pSource, pX, pY, pZ, bufferedImage);
+				loadedTile.setLoaded(true);
+				return loadedTile;
 			} catch (IOException e) {
 				freemind.main.Resources.getInstance().logException(e);
 			}
@@ -135,6 +137,10 @@ public class FileTileCache implements TileCache {
 	 */
 	public int getTileCount() {
 		return getDirectory().list().length;
+	}
+
+	public void setDirectory(String pDirectory) {
+		mDirectory = pDirectory;
 	}
 
 }
