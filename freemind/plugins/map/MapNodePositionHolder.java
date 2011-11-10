@@ -357,11 +357,15 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		private FileTileCache mTileCache;
 
 		private boolean mStopMe = false;
+		private boolean mStopped = false;
 
 		public Registration(ModeController controller, MindMap map) {
 			this.controller = (MindMapController) controller;
 			mMap = map;
 			logger = controller.getFrame().getLogger(this.getClass().getName());
+			mTileSource = new OsmTileSource.Mapnik();
+			mTileCache = new FileTileCache();
+			mTileController = new TileController(mTileSource, mTileCache, this);
 		}
 
 		/**
@@ -397,15 +401,22 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 
 		public void deRegister() {
 			controller.getActionFactory().deregisterActor(getDoActionClass());
+			logger.info("Trying to stop " + this);
 			this.mStopMe = true;
+			while(!mStopped) {
+				try {
+					sleep(100);
+				} catch (InterruptedException e) {
+					freemind.main.Resources.getInstance().logException(e);
+				}
+			}
+			logger.info("I'm stopped: " + this);
 		}
 
 		public void register() {
+			mStopMe = false;
 			controller.getActionFactory().registerActor(this,
 					getDoActionClass());
-			mTileSource = new OsmTileSource.Mapnik();
-			mTileCache = new FileTileCache();
-			mTileController = new TileController(mTileSource, mTileCache, this);
 			this.start();
 		}
 
@@ -540,29 +551,32 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		 * tileLoadingFinished(org.openstreetmap.gui.jmapviewer.Tile, boolean)
 		 */
 		public void run() {
+			logger.info("Starting thread.");
+			mStopped = false;
 			while (!mStopMe) {
-				logger.info("Looking for tiles "  + mTileLoaderListeners.size());
-				synchronized (mTileLoaderListeners) {
-					for (Iterator it = mTileLoaderListeners.entrySet()
-							.iterator(); it.hasNext();) {
-						Entry entry = (Entry) it.next();
-						TileImage tileImage = (TileImage) entry.getKey();
-						logger.info("TileImage " + tileImage + " is loaded " + tileImage.isLoaded());
-						if (tileImage.isLoaded()) {
-							((TileLoaderListener) entry.getValue())
-									.tileLoadingFinished(null, true);
-							it.remove();
+				logger.fine("Looking for tiles "  + mTileLoaderListeners.size());
+				try {
+					synchronized (mTileLoaderListeners) {
+						for (Iterator it = mTileLoaderListeners.entrySet()
+								.iterator(); it.hasNext();) {
+							Entry entry = (Entry) it.next();
+							TileImage tileImage = (TileImage) entry.getKey();
+							logger.info("TileImage " + tileImage + " is loaded " + tileImage.isLoaded());
+							if (tileImage.isLoaded()) {
+								((TileLoaderListener) entry.getValue())
+										.tileLoadingFinished(null, true);
+								it.remove();
+							}
 						}
 					}
-				}
-				try {
 					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+				} catch (Exception e) {
 					freemind.main.Resources.getInstance().logException(e);
 					
 				}
 			}
+			logger.info("Stopping thread.");
+			mStopped = true;
 		}
 
 		/*
