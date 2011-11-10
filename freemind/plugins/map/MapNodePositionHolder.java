@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -59,7 +61,8 @@ import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
  * @author foltin
  * @date 27.10.2011
  */
-public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
+public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
+		implements TileLoaderListener {
 	public final static String NODE_MAP_HOOK_NAME = "plugins/map/MapNodePositionHolder.properties";
 	public final static String NODE_MAP_LOCATION_ICON = "node_map_location_icon";
 
@@ -74,6 +77,9 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	private int mZoom = 1;
 	private static ImageIcon sMapLocationIcon;
 	private static int mTemporaryFileCounter = 1;
+	private static String mTemporaryFileCounterLock = "";
+	private TileImage mImage;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -84,23 +90,9 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 		super.invoke(pNode);
 		((Registration) getPluginBaseClass()).registerMapNode(this);
 		setStateIcon(pNode, true);
-		TileImage image = ((Registration) getPluginBaseClass()).getImage(mPosition, mZoom);
-		// save image to disk:
-		String filePath = "/tmp/myfile"+ mTemporaryFileCounter+".png";
-		mTemporaryFileCounter++;
-		try {
-			ImageIO.write(image.getImage(), "png", new File(filePath));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			freemind.main.Resources.getInstance().logException(e);
-			
-		}
+		mImage = ((Registration) getPluginBaseClass()).getImage(mPosition,
+				mZoom, this);
 
-		String imageTag = "<img src=\"file://"+filePath+"\"/>";
-		setToolTip(NODE_MAP_HOOK_NAME, "<html>" +
-				imageTag + 
-				"</html>");
-		
 	}
 
 	/*
@@ -201,37 +193,95 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	 */
 	public void changePosition(MapNodePositionHolder pHolder,
 			Coordinate pPosition, Coordinate pMapCenter, int pZoom) {
-		((Registration) getPluginBaseClass()).changePosition(pHolder, pPosition, pMapCenter, pZoom);
+		((Registration) getPluginBaseClass()).changePosition(pHolder,
+				pPosition, pMapCenter, pZoom);
 	}
-	
+
 	public static interface MapNodePositionListener {
 		void registerMapNode(MapNodePositionHolder pMapNodePositionHolder);
 
 		void deregisterMapNode(MapNodePositionHolder pMapNodePositionHolder);
 	}
-	
+
 	public static class TileImage {
 
-		private final BufferedImage mImage;
+		private Tile[][] mTiles = null;
+		private boolean mTilesPresent = false;
+		private BufferedImage mImage;
+
+		public TileImage() {
+
+		}
+
+		public boolean isLoaded() {
+			if (!mTilesPresent)
+				return false;
+			for (int i = 0; i < mTiles.length; i++) {
+				Tile[] tiles = mTiles[i];
+				for (int j = 0; j < tiles.length; j++) {
+					Tile tile = tiles[j];
+					if (!tile.isLoaded() && !tile.hasError()) {
+						System.out.println("Tile " + tile + " is not loaded:" + tile.getStatus());
+						return false;
+					}
+				}
+			}
+			createImage();
+			return true;
+		}
 
 		/**
-		 * @param pImage
+		 * Is called when all tiles are loaded and creates the common picture.
 		 */
-		public TileImage(BufferedImage pImage) {
-			mImage = pImage;
+		private void createImage() {
+			BufferedImage tileImage00 = mTiles[0][0].getImage();
+			int height = tileImage00.getHeight();
+			int width = tileImage00.getWidth();
+			mImage = new BufferedImage(height * mTiles[0].length, width
+					* mTiles.length, tileImage00.getType());
+			for (int i = 0; i < mTiles.length; i++) {
+				Tile[] tiles = mTiles[i];
+				for (int j = 0; j < tiles.length; j++) {
+					Tile tile = tiles[j];
+					mImage.setData(tile.getImage().getRaster()
+							.createTranslatedChild(i*height, j*width));
+				}
+			}
 		}
 
 		/**
 		 * @return
 		 */
 		public RenderedImage getImage() {
-			// TODO Auto-generated method stub
 			return mImage;
 		}
-		
+
+		/**
+		 * @param pDimension
+		 * @param pX
+		 * @param pY
+		 * @param pZoom
+		 * @param mTileController
+		 * @param pLogger
+		 */
+		public void setTiles(int pDimension, int pX, int pY, int pZoom,
+				TileController mTileController, Logger pLogger) {
+			mTiles = new Tile[pDimension][pDimension];
+			for (int i = 0; i < pDimension; ++i) {
+				for (int j = 0; j < pDimension; ++j) {
+					pLogger.info("Trying to load tile to x=" + (pX+i) + ", y=" + (pY+j)
+							+ ", zoom=" + pZoom);
+					mTiles[i][j] = mTileController.getTile(pX + i, pY + j,
+							pZoom);
+				}
+			}
+			mTilesPresent = true;
+		}
+
 	}
 
-	public static class Registration implements HookRegistration, ActorXml, TileLoaderListener {
+	public static class Registration extends Thread implements
+			HookRegistration, ActorXml, TileLoaderListener {
 
 		private static final String PLUGINS_MAP_NODE_POSITION = MapNodePositionHolder.class
 				.getName();
@@ -243,6 +293,8 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 		private HashSet/* MapNodePositionHolder s */mMapNodePositionHolders = new HashSet();
 
 		private HashSet mMapNodePositionListeners = new HashSet();
+
+		private HashMap mTileLoaderListeners = new HashMap();
 
 		private final MindMapController controller;
 
@@ -256,6 +308,8 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 
 		private FileTileCache mTileCache;
 
+		private boolean mStopMe = false;
+
 		public Registration(ModeController controller, MindMap map) {
 			this.controller = (MindMapController) controller;
 			mMap = map;
@@ -265,21 +319,37 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 		/**
 		 * @param pPosition
 		 */
-		public TileImage getImage(Coordinate pPosition, int pZoom) {
-			/* 
-			 * The map needs not to be open. What now?
-			 */
+		public TileImage getImage(Coordinate pPosition, int pZoom,
+				TileLoaderListener pTileListener) {
 			int tileSize = mTileSource.getTileSize();
-	        int x = OsmMercator.LonToX(pPosition.getLon(), pZoom)/tileSize;
-	        int y = OsmMercator.LatToY(pPosition.getLat(), pZoom)/tileSize;
-	        logger.info("Trying to load tile to x=" +x + ", y=" + y + ", zoom=" + pZoom );
-			Tile tile = mTileController.getTile(x, y, pZoom);
-			return new TileImage(tile.getImage());
+			int exactx = OsmMercator.LonToX(pPosition.getLon(), pZoom);
+			int exacty = OsmMercator.LatToY(pPosition.getLat(), pZoom);
+			int x = exactx / tileSize;
+			int y = exacty / tileSize;
+			// determine other surrounding tiles that are close to the exact
+			// point.
+			int dx = exactx % tileSize;
+			int dy = exacty % tileSize;
+			// determine quadrant of cursor in tile:
+			if (dx < tileSize / 2) {
+				x -= 1;
+				dx += tileSize;
+			}
+			if (dy < tileSize / 2) {
+				y -= 1;
+				dy += tileSize;
+			}
+			TileImage tileImage = new TileImage();
+			synchronized (mTileLoaderListeners) {
+				mTileLoaderListeners.put(tileImage, pTileListener);
+			}
+			tileImage.setTiles(3, x, y, pZoom, mTileController, logger);
+			return tileImage;
 		}
 
 		public void deRegister() {
 			controller.getActionFactory().deregisterActor(getDoActionClass());
-
+			this.mStopMe = true;
 		}
 
 		public void register() {
@@ -288,6 +358,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 			mTileSource = new OsmTileSource.Mapnik();
 			mTileCache = new FileTileCache();
 			mTileController = new TileController(mTileSource, mTileCache, this);
+			this.start();
 		}
 
 		public void registerMapNode(MapNodePositionHolder pMapNodePositionHolder) {
@@ -414,17 +485,54 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 			return PlaceNodeXmlAction.class;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener#
+		 * tileLoadingFinished(org.openstreetmap.gui.jmapviewer.Tile, boolean)
+		 */
+		public void run() {
+			while (!mStopMe) {
+				logger.info("Looking for tiles "  + mTileLoaderListeners.size());
+				synchronized (mTileLoaderListeners) {
+					for (Iterator it = mTileLoaderListeners.entrySet()
+							.iterator(); it.hasNext();) {
+						Entry entry = (Entry) it.next();
+						TileImage tileImage = (TileImage) entry.getKey();
+						logger.info("TileImage " + tileImage + " is loaded " + tileImage.isLoaded());
+						if (tileImage.isLoaded()) {
+							((TileLoaderListener) entry.getValue())
+									.tileLoadingFinished(null, true);
+							it.remove();
+						}
+					}
+				}
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					freemind.main.Resources.getInstance().logException(e);
+					
+				}
+			}
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener#
+		 * getTileCache()
+		 */
+		public TileCache getTileCache() {
+			return mTileCache;
+		}
+
 		/* (non-Javadoc)
 		 * @see org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener#tileLoadingFinished(org.openstreetmap.gui.jmapviewer.Tile, boolean)
 		 */
 		public void tileLoadingFinished(Tile pTile, boolean pSuccess) {
-		}
-
-		/* (non-Javadoc)
-		 * @see org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener#getTileCache()
-		 */
-		public TileCache getTileCache() {
-			return mTileCache;
+			// TODO Auto-generated method stub
+			
 		}
 
 	}
@@ -476,6 +584,45 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 					.getResource("images/map_location.png"));
 		}
 		return sMapLocationIcon;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener#
+	 * tileLoadingFinished(org.openstreetmap.gui.jmapviewer.Tile, boolean)
+	 */
+	public void tileLoadingFinished(Tile pTile, boolean pSuccess) {
+		logger.info("Creating tooltip for " + getNode());
+		// save image to disk:
+		
+		String filePath;
+		synchronized (mTemporaryFileCounterLock) {
+			filePath = "/tmp/myfile" + mTemporaryFileCounter + ".png";
+			mTemporaryFileCounter++;
+		}
+		try {
+			ImageIO.write(mImage.getImage(), "png", new File(filePath));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			freemind.main.Resources.getInstance().logException(e);
+
+		}
+
+		String imageTag = "<img src=\"file://" + filePath + "\"/>";
+		setToolTip(NODE_MAP_HOOK_NAME, "<html>" + imageTag + "</html>");
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener#getTileCache
+	 * ()
+	 */
+	public TileCache getTileCache() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
