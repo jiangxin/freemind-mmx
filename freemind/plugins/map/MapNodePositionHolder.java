@@ -82,6 +82,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 	private int mZoom = 1;
 	private static ImageIcon sMapLocationIcon;
 	private TileImage mImage;
+	private boolean mTooltipRequested = false;
 
 	/*
 	 * (non-Javadoc)
@@ -93,9 +94,11 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		super.invoke(pNode);
 		((Registration) getPluginBaseClass()).registerMapNode(this);
 		setStateIcon(pNode, true);
-		mImage = ((Registration) getPluginBaseClass()).getImageForTooltip(mPosition,
-				mZoom, this);
-
+		if(!mTooltipRequested) {
+			mImage = ((Registration) getPluginBaseClass()).getImageForTooltip(
+					mPosition, mZoom, this);
+			mTooltipRequested = true;
+		}
 	}
 
 	/*
@@ -228,12 +231,13 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 				for (int j = 0; j < tiles.length; j++) {
 					Tile tile = tiles[j];
 					if (!tile.isLoaded() && !tile.hasError()) {
-						System.out.println("Tile " + tile + " is not loaded:" + tile.getStatus());
+						System.out.println("Tile " + tile + " is not loaded:"
+								+ tile.getStatus());
 						return false;
 					}
 				}
 			}
-			if(!mImageCreated) {
+			if (!mImageCreated) {
 				createImage();
 				mImageCreated = true;
 			}
@@ -254,19 +258,20 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 				Tile[] tiles = mTiles[i];
 				for (int j = 0; j < tiles.length; j++) {
 					Tile tile = tiles[j];
-					boolean done = graphics.drawImage(tile.getImage(), i*height, j*width, this);
-					if(!done) {
+					boolean done = graphics.drawImage(tile.getImage(), i
+							* height, j * width, this);
+					if (!done) {
 						mWaitingForCallbacks++;
 					}
 				}
 			}
-			if(isDrawingDone()) {
+			if (isDrawingDone()) {
 				drawCross();
 			}
 		}
 
 		public boolean isDrawingDone() {
-			return mWaitingForCallbacks<=0;
+			return mWaitingForCallbacks <= 0;
 		}
 
 		public void drawCross() {
@@ -274,8 +279,8 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 			graphics.setColor(Color.RED);
 			graphics.setStroke(new BasicStroke(4));
 			int size = 15;
-			graphics.drawLine(mDx-size, mDy, mDx+size, mDy);
-			graphics.drawLine(mDx, mDy-size, mDx, mDy+size);
+			graphics.drawLine(mDx - size, mDy, mDx + size, mDy);
+			graphics.drawLine(mDx, mDy - size, mDx, mDy + size);
 		}
 
 		/**
@@ -292,8 +297,8 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		 * @param pZoom
 		 * @param mTileController
 		 * @param pLogger
-		 * @param pDy 
-		 * @param pDx 
+		 * @param pDy
+		 * @param pDx
 		 */
 		public void setTiles(int pDimension, int pX, int pY, int pZoom,
 				TileController mTileController, Logger pLogger, int pDx, int pDy) {
@@ -302,8 +307,8 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 			mTiles = new Tile[pDimension][pDimension];
 			for (int i = 0; i < pDimension; ++i) {
 				for (int j = 0; j < pDimension; ++j) {
-					pLogger.info("Trying to load tile to x=" + (pX+i) + ", y=" + (pY+j)
-							+ ", zoom=" + pZoom);
+					pLogger.info("Trying to load tile to x=" + (pX + i)
+							+ ", y=" + (pY + j) + ", zoom=" + pZoom);
 					mTiles[i][j] = mTileController.getTile(pX + i, pY + j,
 							pZoom);
 				}
@@ -311,13 +316,16 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 			mTilesPresent = true;
 		}
 
-		/* (non-Javadoc)
-		 * @see java.awt.image.ImageObserver#imageUpdate(java.awt.Image, int, int, int, int, int)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.awt.image.ImageObserver#imageUpdate(java.awt.Image, int,
+		 * int, int, int, int)
 		 */
 		public boolean imageUpdate(Image pImg, int pInfoflags, int pX, int pY,
 				int pWidth, int pHeight) {
 			mWaitingForCallbacks--;
-			if(isDrawingDone()) {
+			if (isDrawingDone()) {
 				drawCross();
 			}
 			return isDrawingDone();
@@ -400,7 +408,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 			controller.getActionFactory().deregisterActor(getDoActionClass());
 			logger.info("Trying to stop " + this);
 			this.mStopMe = true;
-			while(!mStopped) {
+			while (!mStopped) {
 				try {
 					sleep(100);
 				} catch (InterruptedException e) {
@@ -552,14 +560,15 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 			logger.info("Starting thread.");
 			mStopped = false;
 			while (!mStopMe) {
-				logger.fine("Looking for tiles "  + mTileLoaderListeners.size());
+				logger.fine("Looking for tiles " + mTileLoaderListeners.size());
 				try {
 					synchronized (mTileLoaderListeners) {
 						for (Iterator it = mTileLoaderListeners.entrySet()
 								.iterator(); it.hasNext();) {
 							Entry entry = (Entry) it.next();
 							TileImage tileImage = (TileImage) entry.getKey();
-							logger.info("TileImage " + tileImage + " is loaded " + tileImage.isLoaded());
+							logger.info("TileImage " + tileImage
+									+ " is loaded " + tileImage.isLoaded());
 							if (tileImage.isLoaded()) {
 								((TileLoaderListener) entry.getValue())
 										.tileLoadingFinished(null, true);
@@ -570,7 +579,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 					Thread.sleep(100);
 				} catch (Exception e) {
 					freemind.main.Resources.getInstance().logException(e);
-					
+
 				}
 			}
 			logger.info("Stopping thread.");
@@ -587,12 +596,15 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 			return mTileCache;
 		}
 
-		/* (non-Javadoc)
-		 * @see org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener#tileLoadingFinished(org.openstreetmap.gui.jmapviewer.Tile, boolean)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener#
+		 * tileLoadingFinished(org.openstreetmap.gui.jmapviewer.Tile, boolean)
 		 */
 		public void tileLoadingFinished(Tile pTile, boolean pSuccess) {
 			// TODO Auto-generated method stub
-			
+
 		}
 
 	}
@@ -656,12 +668,13 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		logger.info("Creating tooltip for " + getNode());
 		// save image to disk:
 		try {
-			File tempFile = File.createTempFile("node_map_tooltip_",
-					".png", new File(getController().getFrame()
-							.getFreemindDirectory()));
+			File tempFile = File
+					.createTempFile("node_map_tooltip_", ".png", new File(
+							getController().getFrame().getFreemindDirectory()));
 			tempFile.deleteOnExit();
 			ImageIO.write(mImage.getImage(), "png", tempFile);
-			String imageTag = "<img src=\"file://" + tempFile.getAbsolutePath() + "\"/>";
+			String imageTag = "<img src=\"file://" + tempFile.getAbsolutePath()
+					+ "\"/>";
 			setToolTip(NODE_MAP_HOOK_NAME, "<html>" + imageTag + "</html>");
 		} catch (IOException e) {
 			freemind.main.Resources.getInstance().logException(e);
