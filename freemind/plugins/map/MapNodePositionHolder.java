@@ -81,8 +81,6 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 	private Coordinate mMapCenter = new Coordinate(0, 0);
 	private int mZoom = 1;
 	private static ImageIcon sMapLocationIcon;
-	private static int mTemporaryFileCounter = 1;
-	private static String mTemporaryFileCounterLock = "";
 	private TileImage mImage;
 
 	/*
@@ -95,7 +93,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		super.invoke(pNode);
 		((Registration) getPluginBaseClass()).registerMapNode(this);
 		setStateIcon(pNode, true);
-		mImage = ((Registration) getPluginBaseClass()).getImage(mPosition,
+		mImage = ((Registration) getPluginBaseClass()).getImageForTooltip(mPosition,
 				mZoom, this);
 
 	}
@@ -272,11 +270,10 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		}
 
 		public void drawCross() {
-			System.out.println("Drawing cross");
 			Graphics2D graphics = (Graphics2D) mImage.getGraphics();
 			graphics.setColor(Color.RED);
 			graphics.setStroke(new BasicStroke(4));
-			int size = 10;
+			int size = 15;
 			graphics.drawLine(mDx-size, mDy, mDx+size, mDy);
 			graphics.drawLine(mDx, mDy-size, mDx, mDy+size);
 		}
@@ -371,7 +368,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		/**
 		 * @param pPosition
 		 */
-		public TileImage getImage(Coordinate pPosition, int pZoom,
+		public TileImage getImageForTooltip(Coordinate pPosition, int pZoom,
 				TileLoaderListener pTileListener) {
 			int tileSize = mTileSource.getTileSize();
 			int exactx = OsmMercator.LonToX(pPosition.getLon(), pZoom);
@@ -414,6 +411,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		}
 
 		public void register() {
+			logger.info("Start registering " + this);
 			mStopMe = false;
 			controller.getActionFactory().registerActor(this,
 					getDoActionClass());
@@ -657,22 +655,19 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 	public void tileLoadingFinished(Tile pTile, boolean pSuccess) {
 		logger.info("Creating tooltip for " + getNode());
 		// save image to disk:
-		
-		String filePath;
-		synchronized (mTemporaryFileCounterLock) {
-			filePath = "/tmp/myfile" + mTemporaryFileCounter + ".png";
-			mTemporaryFileCounter++;
-		}
 		try {
-			ImageIO.write(mImage.getImage(), "png", new File(filePath));
+			File tempFile = File.createTempFile("node_map_tooltip_",
+					".png", new File(getController().getFrame()
+							.getFreemindDirectory()));
+			tempFile.deleteOnExit();
+			ImageIO.write(mImage.getImage(), "png", tempFile);
+			String imageTag = "<img src=\"file://" + tempFile.getAbsolutePath() + "\"/>";
+			setToolTip(NODE_MAP_HOOK_NAME, "<html>" + imageTag + "</html>");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			freemind.main.Resources.getInstance().logException(e);
 
 		}
 
-		String imageTag = "<img src=\"file://" + filePath + "\"/>";
-		setToolTip(NODE_MAP_HOOK_NAME, "<html>" + imageTag + "</html>");
 	}
 
 	/*
