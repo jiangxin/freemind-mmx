@@ -1043,9 +1043,9 @@ public class Tools {
 		}
 		if (successful) {
 			String content = writer.getBuffer().toString();
-			logger.info("Content before transformation: " + content);
+//			logger.info("Content before transformation: " + content);
 			String replacedContent = Tools.replaceUtf8AndIllegalXmlChars(content);
-			logger.info("Content after transformation: " + replacedContent);
+//			logger.info("Content after transformation: " + replacedContent);
 			return new StringReader(replacedContent);
 		} else {
 			return new StringReader("<map><node TEXT='"
