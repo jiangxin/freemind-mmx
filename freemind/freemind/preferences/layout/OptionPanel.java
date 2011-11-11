@@ -483,7 +483,7 @@ public class OptionPanel implements TextTranslator {
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("files"));
-		controls.add(new StringProperty(null, "last_opened_list_length")); // 25
+		controls.add(new NumberProperty(null, "last_opened_list_length", 0, 200, 1)); // 25
 		controls.add(new BooleanProperty(FreeMindCommon.LOAD_LAST_MAP
 				+ ".tooltip", FreeMindCommon.LOAD_LAST_MAP)); // true
 		controls.add(new BooleanProperty(FreeMind.RESOURCES_DON_T_OPEN_PORT

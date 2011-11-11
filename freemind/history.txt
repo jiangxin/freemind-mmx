@@ -1,4 +1,9 @@
-#===============================
+===============================
+Changes made in FreeMind 1.0.0 Alpha8
+===============================
+* Fixed https://sourceforge.net/projects/freemind/forums/forum/22102/topic/4801690
+
+===============================
 Changes made in FreeMind 1.0.0 Alpha7
 ===============================
 * Change of root node added
@@ -7,6 +12,7 @@ Changes made in FreeMind 1.0.0 Alpha7
 * Option added to avoid tooltips for notes. (https://sourceforge.net/projects/freemind/forums/forum/320014/topic/4777695)
 * Initial map support added
 * Tile Cache can be chosen via properties (tile_cache_class).
+
 
 ===============================
 Changes made in FreeMind 1.0.0 Alpha6
