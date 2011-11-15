@@ -27,6 +27,8 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.awt.image.RenderedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -52,6 +54,7 @@ import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.Resources;
+import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -76,6 +79,9 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 	private static final String XML_STORAGE_MAP_LON = "XML_STORAGE_MAP_LON";
 	private static final String XML_STORAGE_MAP_LAT = "XML_STORAGE_MAP_LAT";
 	private static final String XML_STORAGE_ZOOM = "XML_STORAGE_ZOOM";
+	private static final String XML_STORAGE_MAP_TOOLTIP = "XML_STORAGE_MAP_TOOLTIP";
+	private static final String NODE_MAP_STORE_TOOLTIP = "node_map_store_tooltip";
+	private static final String NODE_MAP_SHOW_TOOLTIP = "node_map_show_tooltip";
 
 	private Coordinate mPosition = new Coordinate(0, 0);
 	private Coordinate mMapCenter = new Coordinate(0, 0);
@@ -83,6 +89,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 	private static ImageIcon sMapLocationIcon;
 	private TileImage mImage;
 	private boolean mTooltipRequested = false;
+	private String mBase64Image;
 
 	/*
 	 * (non-Javadoc)
@@ -94,11 +101,18 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		super.invoke(pNode);
 		((Registration) getPluginBaseClass()).registerMapNode(this);
 		setStateIcon(pNode, true);
-		if(!mTooltipRequested) {
-			mImage = ((Registration) getPluginBaseClass()).getImageForTooltip(
-					mPosition, mZoom, this);
+		if (!mTooltipRequested && Resources.getInstance().getBoolProperty(NODE_MAP_SHOW_TOOLTIP)) {
+			if (mBase64Image != null) {
+				mImage = new TileImage();
+				mImage.load(mBase64Image);
+				createTooltip();
+			} else {
+				mImage = ((Registration) getPluginBaseClass())
+						.getImageForTooltip(mPosition, mZoom, this);
+			}
 			mTooltipRequested = true;
 		}
+
 	}
 
 	/*
@@ -127,6 +141,9 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		values.put(XML_STORAGE_MAP_LON, toString(mMapCenter.getLon()));
 		values.put(XML_STORAGE_MAP_LAT, toString(mMapCenter.getLat()));
 		values.put(XML_STORAGE_ZOOM, toString(mZoom));
+		if(Resources.getInstance().getBoolProperty(NODE_MAP_STORE_TOOLTIP) && mImage != null) {
+			values.put(XML_STORAGE_MAP_TOOLTIP, mImage.save());
+		}
 		saveNameValuePairs(values, xml);
 	}
 
@@ -165,6 +182,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		mMapCenter.setLat(fromString(values.get(XML_STORAGE_MAP_LAT)));
 		mMapCenter.setLon(fromString(values.get(XML_STORAGE_MAP_LON)));
 		mZoom = intFromString(values.get(XML_STORAGE_ZOOM));
+		mBase64Image = (String) values.get(XML_STORAGE_MAP_TOOLTIP);
 	}
 
 	/**
@@ -281,6 +299,30 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 			int size = 15;
 			graphics.drawLine(mDx - size, mDy, mDx + size, mDy);
 			graphics.drawLine(mDx, mDy - size, mDx, mDy + size);
+		}
+
+		public void load(String pCodedImage) {
+			try {
+				mImage = ImageIO.read(new ByteArrayInputStream(Tools
+						.fromBase64(pCodedImage)));
+				mTilesPresent = true;
+				mImageCreated = true;
+			} catch (IOException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+		}
+
+		public String save() {
+			try {
+				ByteArrayOutputStream stream = new ByteArrayOutputStream();
+				ImageIO.write(mImage, "png", stream);
+				stream.close();
+				return Tools.toBase64(stream.toByteArray());
+			} catch (IOException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+			return null;
+
 		}
 
 		/**
@@ -665,6 +707,11 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 	 * tileLoadingFinished(org.openstreetmap.gui.jmapviewer.Tile, boolean)
 	 */
 	public void tileLoadingFinished(Tile pTile, boolean pSuccess) {
+		createTooltip();
+
+	}
+
+	public void createTooltip() {
 		logger.info("Creating tooltip for " + getNode());
 		// save image to disk:
 		try {
@@ -680,7 +727,6 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 			freemind.main.Resources.getInstance().logException(e);
 
 		}
-
 	}
 
 	/*
