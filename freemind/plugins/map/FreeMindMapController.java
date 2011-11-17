@@ -314,7 +314,7 @@ public class FreeMindMapController extends JMapController implements
 	 * @param pTileSource
 	 * @return null, if the string is not found.
 	 */
-	private TileSource getTileSource(String pTileSource) {
+	public TileSource getTileSource(String pTileSource) {
 		logger.info("Searching for tile source " +pTileSource);
 		for (int i = 0; i < mTileSources.length; i++) {
 			TileSource source = mTileSources[i];

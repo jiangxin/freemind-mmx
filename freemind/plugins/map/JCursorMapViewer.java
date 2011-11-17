@@ -72,6 +72,10 @@ final class JCursorMapViewer extends JMapViewer {
 
 	}
 
+	public FreeMindMapController getFreeMindMapController() {
+		return mFreeMindMapController;
+	}
+
 	public boolean isUseCursor() {
 		return mUseCursor;
 	}

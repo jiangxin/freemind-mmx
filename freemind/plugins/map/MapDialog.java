@@ -53,8 +53,7 @@ import freemind.view.mindmapview.NodeView;
  * 
  * Demonstrates the usage of {@link JMapViewer}
  * 
- * @author Jan Peter Stotz
- * adapted for FreeMind by Chris.
+ * @author Jan Peter Stotz adapted for FreeMind by Chris.
  */
 public class MapDialog extends MindMapHookAdapter implements
 		JMapViewerEventListener, MapModuleChangeObserver,
@@ -150,14 +149,6 @@ public class MapDialog extends MindMapHookAdapter implements
 				map.setDisplayToFitMapMarkers();
 			}
 		});
-		JComboBox tileSourceSelector = new JComboBox(new TileSource[] {
-				new OsmTileSource.Mapnik(), new OsmTileSource.TilesAtHome(),
-				new OsmTileSource.CycleMap(), new BingAerialTileSource() });
-		tileSourceSelector.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				map.setTileSource((TileSource) e.getItem());
-			}
-		});
 		JComboBox tileLoaderSelector;
 		try {
 			tileLoaderSelector = new JComboBox(new TileLoader[] {
@@ -172,7 +163,6 @@ public class MapDialog extends MindMapHookAdapter implements
 			}
 		});
 		map.setTileLoader((TileLoader) tileLoaderSelector.getSelectedItem());
-		panel.add(tileSourceSelector);
 		panel.add(tileLoaderSelector);
 		final JCheckBox showMapMarker = new JCheckBox("Map markers visible");
 		showMapMarker.setSelected(map.getMapMarkersVisible());
@@ -233,6 +223,11 @@ public class MapDialog extends MindMapHookAdapter implements
 					storage.getMapCenterLongitude(), storage.getZoom());
 			map.setCursorPosition(new Coordinate(storage.getCursorLatitude(),
 					storage.getCursorLongitude()));
+			TileSource tileSource = map.getFreeMindMapController()
+					.getTileSource(storage.getTileSource());
+			if (tileSource != null) {
+				map.setTileSource(tileSource);
+			}
 		}
 		mMapDialog.setVisible(true);
 
@@ -278,6 +273,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		Coordinate cursorPosition = map.getCursorPosition();
 		storage.setCursorLongitude(cursorPosition.getLon());
 		storage.setCursorLatitude(cursorPosition.getLat());
+		storage.setTileSource(map.getTileController().getTileSource().getClass().getName());
 		getMindMapController().storeDialogPositions(mMapDialog, storage,
 				WINDOW_PREFERENCE_STORAGE_PROPERTY);
 
