@@ -1,4 +1,9 @@
-#===============================
+===============================
+Changes made in FreeMind 1.0.0 Alpha8
+===============================
+* Map positions store its map-source
+
+===============================
 Changes made in FreeMind 1.0.0 Alpha7
 ===============================
 * Change of root node added

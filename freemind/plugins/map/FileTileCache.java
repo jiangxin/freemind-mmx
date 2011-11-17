@@ -33,13 +33,16 @@ import org.openstreetmap.gui.jmapviewer.Tile;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 
+import freemind.main.Resources;
+
 /**
  * @author foltin
  * @date 25.10.2011
+ * TODO: Specify limit and delete longest unused tiles to keep limit.
  */
 public class FileTileCache implements TileCache {
 
-	String mDirectory = "/tmp/osm/";
+	String mDirectory = null;
 
 	MemoryTileCache mMemoryCache = new MemoryTileCache();
 
@@ -49,11 +52,7 @@ public class FileTileCache implements TileCache {
 	 * 
 	 */
 	public FileTileCache() {
-
-		File dir = getDirectory();
-		if (!dir.exists()) {
-			dir.mkdirs();
-		}
+		setDirectory("%/osm");
 	}
 
 	public File getDirectory() {
@@ -73,8 +72,8 @@ public class FileTileCache implements TileCache {
 		}
 		String tileKey = getTileKey(pSource, pX, pY, pZ);
 		File file = getFile(tileKey);
+//		System.out.println("Searching for tile " + tileKey);
 		if (file.exists()) {
-			// System.out.println("Loading tile " + tileKey);
 			try {
 				BufferedImage bufferedImage = ImageIO.read(file);
 				Tile loadedTile = new Tile(pSource, pX, pY, pZ, bufferedImage);
@@ -88,7 +87,7 @@ public class FileTileCache implements TileCache {
 	}
 
 	public File getFile(String tileKey) {
-		File file = new File(mDirectory + "/" + tileKey);
+		File file = new File(mDirectory + File.separator + tileKey);
 		return file;
 	}
 
@@ -140,7 +139,15 @@ public class FileTileCache implements TileCache {
 	}
 
 	public void setDirectory(String pDirectory) {
+		if (pDirectory.startsWith("%/")) {
+			pDirectory = Resources.getInstance().getFreemindDirectory()
+					+ File.separator + pDirectory.substring(2);
+		}
 		mDirectory = pDirectory;
+		File dir = getDirectory();
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
 	}
 
 }

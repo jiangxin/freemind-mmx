@@ -37,7 +37,6 @@ import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
 import plugins.map.MapNodePositionHolder.MapNodePositionListener;
-import plugins.map.MapNodePositionHolder.Registration;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.actions.generated.instance.MapWindowConfigurationStorage;
 import freemind.main.Resources;

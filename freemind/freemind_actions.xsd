@@ -582,6 +582,7 @@
 				<xs:attribute use="optional" name="cursor_longitude" type="xs:double"/>
 				<xs:attribute use="optional" name="cursor_latitude" type="xs:double"/>
 				<xs:attribute use="optional" name="zoom" type="xs:int"/>
+				<xs:attribute use="optional" name="tile_source" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>

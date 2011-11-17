@@ -20,49 +20,23 @@
 
 package plugins.map;
 
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.awt.image.RenderedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map.Entry;
-import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
-import org.openstreetmap.gui.jmapviewer.OsmMercator;
 import org.openstreetmap.gui.jmapviewer.Tile;
-import org.openstreetmap.gui.jmapviewer.TileController;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener;
-import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
-import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource.Mapnik;
 
-import freemind.controller.actions.generated.instance.PlaceNodeXmlAction;
-import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.extensions.HookRegistration;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.Resources;
-import freemind.main.Tools;
 import freemind.main.XMLElement;
-import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
-import freemind.modes.ModeController;
-import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.xml.ActionFactory;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
-import freemind.modes.mindmapmode.actions.xml.ActorXml;
 import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
 
 /**
@@ -79,17 +53,19 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 	private static final String XML_STORAGE_MAP_LON = "XML_STORAGE_MAP_LON";
 	private static final String XML_STORAGE_MAP_LAT = "XML_STORAGE_MAP_LAT";
 	private static final String XML_STORAGE_ZOOM = "XML_STORAGE_ZOOM";
+	private static final String XML_STORAGE_TILE_SOURCE = "XML_STORAGE_TILE_SOURCE";
 	private static final String XML_STORAGE_MAP_TOOLTIP = "XML_STORAGE_MAP_TOOLTIP";
 	private static final String NODE_MAP_STORE_TOOLTIP = "node_map_store_tooltip";
 	private static final String NODE_MAP_SHOW_TOOLTIP = "node_map_show_tooltip";
 
 	private Coordinate mPosition = new Coordinate(0, 0);
 	private Coordinate mMapCenter = new Coordinate(0, 0);
+	private String mTileSource = null;
 	private int mZoom = 1;
 	private static ImageIcon sMapLocationIcon;
 	private TileImage mImage;
 	private boolean mTooltipRequested = false;
-	private String mBase64Image;
+	private String mBase64Image = null;
 
 	/*
 	 * (non-Javadoc)
@@ -107,6 +83,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 				mImage.load(mBase64Image);
 				createTooltip();
 			} else {
+				// order tooltip to be created.
 				mImage = ((Registration) getPluginBaseClass())
 						.getImageForTooltip(mPosition, mZoom, this);
 			}
@@ -141,6 +118,9 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		values.put(XML_STORAGE_MAP_LON, toString(mMapCenter.getLon()));
 		values.put(XML_STORAGE_MAP_LAT, toString(mMapCenter.getLat()));
 		values.put(XML_STORAGE_ZOOM, toString(mZoom));
+		if (mTileSource != null) {
+			values.put(XML_STORAGE_TILE_SOURCE, mTileSource);
+		}
 		if(Resources.getInstance().getBoolProperty(NODE_MAP_STORE_TOOLTIP) && mImage != null) {
 			values.put(XML_STORAGE_MAP_TOOLTIP, mImage.save());
 		}
@@ -182,7 +162,9 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		mMapCenter.setLat(fromString(values.get(XML_STORAGE_MAP_LAT)));
 		mMapCenter.setLon(fromString(values.get(XML_STORAGE_MAP_LON)));
 		mZoom = intFromString(values.get(XML_STORAGE_ZOOM));
+		// if no value stored, the get method returns null.
 		mBase64Image = (String) values.get(XML_STORAGE_MAP_TOOLTIP);
+		mTileSource = (String) values.get(XML_STORAGE_TILE_SOURCE);
 	}
 
 	/**
@@ -213,12 +195,13 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 
 	/**
 	 * Set map position. Is undoable.
+	 * @param pTileSource 
 	 * 
 	 */
 	public void changePosition(MapNodePositionHolder pHolder,
-			Coordinate pPosition, Coordinate pMapCenter, int pZoom) {
+			Coordinate pPosition, Coordinate pMapCenter, int pZoom, String pTileSource) {
 		((Registration) getPluginBaseClass()).changePosition(pHolder,
-				pPosition, pMapCenter, pZoom);
+				pPosition, pMapCenter, pZoom, pTileSource);
 	}
 
 	public static interface MapNodePositionListener {
@@ -227,432 +210,22 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		void deregisterMapNode(MapNodePositionHolder pMapNodePositionHolder);
 	}
 
-	public static class TileImage implements ImageObserver {
-
-		private Tile[][] mTiles = null;
-		private boolean mTilesPresent = false;
-		private boolean mImageCreated = false;
-		private BufferedImage mImage;
-		private int mWaitingForCallbacks = 0;
-		private int mDx;
-		private int mDy;
-
-		public TileImage() {
-
-		}
-
-		public boolean isLoaded() {
-			if (!mTilesPresent)
-				return false;
-			for (int i = 0; i < mTiles.length; i++) {
-				Tile[] tiles = mTiles[i];
-				for (int j = 0; j < tiles.length; j++) {
-					Tile tile = tiles[j];
-					if (!tile.isLoaded() && !tile.hasError()) {
-						System.out.println("Tile " + tile + " is not loaded:"
-								+ tile.getStatus());
-						return false;
-					}
-				}
-			}
-			if (!mImageCreated) {
-				createImage();
-				mImageCreated = true;
-			}
-			return isDrawingDone();
-		}
-
-		/**
-		 * Is called when all tiles are loaded and creates the common picture.
-		 */
-		private void createImage() {
-			BufferedImage tileImage00 = mTiles[0][0].getImage();
-			int height = tileImage00.getHeight();
-			int width = tileImage00.getWidth();
-			mImage = new BufferedImage(height * mTiles[0].length, width
-					* mTiles.length, BufferedImage.TYPE_INT_RGB);
-			Graphics2D graphics = (Graphics2D) mImage.getGraphics();
-			for (int i = 0; i < mTiles.length; i++) {
-				Tile[] tiles = mTiles[i];
-				for (int j = 0; j < tiles.length; j++) {
-					Tile tile = tiles[j];
-					boolean done = graphics.drawImage(tile.getImage(), i
-							* height, j * width, this);
-					if (!done) {
-						mWaitingForCallbacks++;
-					}
-				}
-			}
-			if (isDrawingDone()) {
-				drawCross();
-			}
-		}
-
-		public boolean isDrawingDone() {
-			return mWaitingForCallbacks <= 0;
-		}
-
-		public void drawCross() {
-			Graphics2D graphics = (Graphics2D) mImage.getGraphics();
-			graphics.setColor(Color.RED);
-			graphics.setStroke(new BasicStroke(4));
-			int size = 15;
-			graphics.drawLine(mDx - size, mDy, mDx + size, mDy);
-			graphics.drawLine(mDx, mDy - size, mDx, mDy + size);
-		}
-
-		public void load(String pCodedImage) {
-			try {
-				mImage = ImageIO.read(new ByteArrayInputStream(Tools
-						.fromBase64(pCodedImage)));
-				mTilesPresent = true;
-				mImageCreated = true;
-			} catch (IOException e) {
-				freemind.main.Resources.getInstance().logException(e);
-			}
-		}
-
-		public String save() {
-			try {
-				ByteArrayOutputStream stream = new ByteArrayOutputStream();
-				ImageIO.write(mImage, "png", stream);
-				stream.close();
-				return Tools.toBase64(stream.toByteArray());
-			} catch (IOException e) {
-				freemind.main.Resources.getInstance().logException(e);
-			}
-			return null;
-
-		}
-
-		/**
-		 * @return
-		 */
-		public RenderedImage getImage() {
-			return mImage;
-		}
-
-		/**
-		 * @param pDimension
-		 * @param pX
-		 * @param pY
-		 * @param pZoom
-		 * @param mTileController
-		 * @param pLogger
-		 * @param pDy
-		 * @param pDx
-		 */
-		public void setTiles(int pDimension, int pX, int pY, int pZoom,
-				TileController mTileController, Logger pLogger, int pDx, int pDy) {
-			mDx = pDx;
-			mDy = pDy;
-			mTiles = new Tile[pDimension][pDimension];
-			for (int i = 0; i < pDimension; ++i) {
-				for (int j = 0; j < pDimension; ++j) {
-					pLogger.info("Trying to load tile to x=" + (pX + i)
-							+ ", y=" + (pY + j) + ", zoom=" + pZoom);
-					mTiles[i][j] = mTileController.getTile(pX + i, pY + j,
-							pZoom);
-				}
-			}
-			mTilesPresent = true;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see java.awt.image.ImageObserver#imageUpdate(java.awt.Image, int,
-		 * int, int, int, int)
-		 */
-		public boolean imageUpdate(Image pImg, int pInfoflags, int pX, int pY,
-				int pWidth, int pHeight) {
-			mWaitingForCallbacks--;
-			if (isDrawingDone()) {
-				drawCross();
-			}
-			return isDrawingDone();
-		}
-
-	}
-
-	public static class Registration extends Thread implements
-			HookRegistration, ActorXml, TileLoaderListener {
-
-		private static final String PLUGINS_MAP_NODE_POSITION = MapNodePositionHolder.class
-				.getName();
-
-		/*
-		 * Collects MapNodePositionHolder. This is necessary to be able to
-		 * display them all efficiently.
-		 */
-		private HashSet/* MapNodePositionHolder s */mMapNodePositionHolders = new HashSet();
-
-		private HashSet mMapNodePositionListeners = new HashSet();
-
-		private HashMap mTileLoaderListeners = new HashMap();
-
-		private final MindMapController controller;
-
-		private final MindMap mMap;
-
-		private final java.util.logging.Logger logger;
-
-		private Mapnik mTileSource;
-
-		private TileController mTileController;
-
-		private FileTileCache mTileCache;
-
-		private boolean mStopMe = false;
-		private boolean mStopped = false;
-
-		public Registration(ModeController controller, MindMap map) {
-			this.controller = (MindMapController) controller;
-			mMap = map;
-			logger = controller.getFrame().getLogger(this.getClass().getName());
-			mTileSource = new OsmTileSource.Mapnik();
-			mTileCache = new FileTileCache();
-			mTileController = new TileController(mTileSource, mTileCache, this);
-		}
-
-		/**
-		 * @param pPosition
-		 */
-		public TileImage getImageForTooltip(Coordinate pPosition, int pZoom,
-				TileLoaderListener pTileListener) {
-			int tileSize = mTileSource.getTileSize();
-			int exactx = OsmMercator.LonToX(pPosition.getLon(), pZoom);
-			int exacty = OsmMercator.LatToY(pPosition.getLat(), pZoom);
-			int x = exactx / tileSize;
-			int y = exacty / tileSize;
-			// determine other surrounding tiles that are close to the exact
-			// point.
-			int dx = exactx % tileSize;
-			int dy = exacty % tileSize;
-			// determine quadrant of cursor in tile:
-			if (dx < tileSize / 2) {
-				x -= 1;
-				dx += tileSize;
-			}
-			if (dy < tileSize / 2) {
-				y -= 1;
-				dy += tileSize;
-			}
-			TileImage tileImage = new TileImage();
-			synchronized (mTileLoaderListeners) {
-				mTileLoaderListeners.put(tileImage, pTileListener);
-			}
-			tileImage.setTiles(2, x, y, pZoom, mTileController, logger, dx, dy);
-			return tileImage;
-		}
-
-		public void deRegister() {
-			controller.getActionFactory().deregisterActor(getDoActionClass());
-			logger.info("Trying to stop " + this);
-			this.mStopMe = true;
-			while (!mStopped) {
-				try {
-					sleep(100);
-				} catch (InterruptedException e) {
-					freemind.main.Resources.getInstance().logException(e);
-				}
-			}
-			logger.info("I'm stopped: " + this);
-		}
-
-		public void register() {
-			logger.info("Start registering " + this);
-			mStopMe = false;
-			controller.getActionFactory().registerActor(this,
-					getDoActionClass());
-			this.start();
-		}
-
-		public void registerMapNode(MapNodePositionHolder pMapNodePositionHolder) {
-			mMapNodePositionHolders.add(pMapNodePositionHolder);
-			for (Iterator it = mMapNodePositionListeners.iterator(); it
-					.hasNext();) {
-				MapNodePositionListener listener = (MapNodePositionListener) it
-						.next();
-				try {
-					listener.registerMapNode(pMapNodePositionHolder);
-				} catch (Exception e) {
-					freemind.main.Resources.getInstance().logException(e);
-				}
-			}
-		}
-
-		public HashSet getMapNodePositionHolders() {
-			return mMapNodePositionHolders;
-		}
-
-		public void deregisterMapNode(
-				MapNodePositionHolder pMapNodePositionHolder) {
-			mMapNodePositionHolders.remove(pMapNodePositionHolder);
-			for (Iterator it = mMapNodePositionListeners.iterator(); it
-					.hasNext();) {
-				MapNodePositionListener listener = (MapNodePositionListener) it
-						.next();
-				try {
-					listener.deregisterMapNode(pMapNodePositionHolder);
-				} catch (Exception e) {
-					freemind.main.Resources.getInstance().logException(e);
-				}
-			}
-		}
-
-		public void registerMapNodePositionListener(
-				MapNodePositionListener pMapNodePositionListener) {
-			mMapNodePositionListeners.add(pMapNodePositionListener);
-		}
-
-		public void deregisterMapNodePositionListener(
-				MapNodePositionListener pMapNodePositionListener) {
-			mMapNodePositionListeners.remove(pMapNodePositionListener);
-		}
-
-		/**
-		 * Set map position. Is undoable.
-		 * 
-		 */
-		public void changePosition(MapNodePositionHolder pHolder,
-				Coordinate pPosition, Coordinate pMapCenter, int pZoom) {
-			MindMapNode node = pHolder.getNode();
-			PlaceNodeXmlAction doAction = createPlaceNodeXmlActionAction(node,
-					pPosition, pMapCenter, pZoom);
-			PlaceNodeXmlAction undoAction = createPlaceNodeXmlActionAction(
-					node, pHolder.getPosition(), pHolder.getMapCenter(),
-					pHolder.getZoom());
-			ActionFactory actionFactory = controller.getActionFactory();
-			actionFactory.startTransaction(PLUGINS_MAP_NODE_POSITION);
-			actionFactory.executeAction(new ActionPair(doAction, undoAction));
-			actionFactory.endTransaction(PLUGINS_MAP_NODE_POSITION);
-		}
-
-		/**
-		 * @param pNode
-		 * @param pPosition
-		 * @param pMapCenter
-		 * @param pZoom
-		 * @return
-		 */
-		private PlaceNodeXmlAction createPlaceNodeXmlActionAction(
-				MindMapNode pNode, Coordinate pPosition, Coordinate pMapCenter,
-				int pZoom) {
-			logger.info("Setting position of node " + pNode);
-			PlaceNodeXmlAction action = new PlaceNodeXmlAction();
-			action.setNode(controller.getNodeID(pNode));
-			action.setCursorLatitude(pPosition.getLat());
-			action.setCursorLongitude(pPosition.getLon());
-			action.setMapCenterLatitude(pMapCenter.getLat());
-			action.setMapCenterLongitude(pMapCenter.getLon());
-			action.setZoom(pZoom);
-			return action;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * freemind.modes.mindmapmode.actions.xml.ActorXml#act(freemind.controller
-		 * .actions.generated.instance.XmlAction)
-		 */
-		public void act(XmlAction pAction) {
-			if (pAction instanceof PlaceNodeXmlAction) {
-				PlaceNodeXmlAction placeAction = (PlaceNodeXmlAction) pAction;
-				MindMapNode node = controller.getNodeFromID(placeAction
-						.getNode());
-				MapNodePositionHolder hook = getHook(node);
-				if (hook != null) {
-					hook.setMapCenter(new Coordinate(placeAction
-							.getMapCenterLatitude(), placeAction
-							.getMapCenterLongitude()));
-					hook.setPosition(new Coordinate(placeAction
-							.getCursorLatitude(), placeAction
-							.getCursorLongitude()));
-					hook.setZoom(placeAction.getZoom());
-					// TODO: Only, if values really changed.
-					controller.nodeChanged(node);
-				} else {
-					throw new IllegalArgumentException(
-							"MapNodePositionHolder to node id "
-									+ placeAction.getNode() + " not found.");
-				}
-
-			}
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * freemind.modes.mindmapmode.actions.xml.ActorXml#getDoActionClass()
-		 */
-		public Class getDoActionClass() {
-			return PlaceNodeXmlAction.class;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener#
-		 * tileLoadingFinished(org.openstreetmap.gui.jmapviewer.Tile, boolean)
-		 */
-		public void run() {
-			logger.info("Starting thread.");
-			mStopped = false;
-			while (!mStopMe) {
-				logger.fine("Looking for tiles " + mTileLoaderListeners.size());
-				try {
-					synchronized (mTileLoaderListeners) {
-						for (Iterator it = mTileLoaderListeners.entrySet()
-								.iterator(); it.hasNext();) {
-							Entry entry = (Entry) it.next();
-							TileImage tileImage = (TileImage) entry.getKey();
-							logger.info("TileImage " + tileImage
-									+ " is loaded " + tileImage.isLoaded());
-							if (tileImage.isLoaded()) {
-								((TileLoaderListener) entry.getValue())
-										.tileLoadingFinished(null, true);
-								it.remove();
-							}
-						}
-					}
-					Thread.sleep(100);
-				} catch (Exception e) {
-					freemind.main.Resources.getInstance().logException(e);
-
-				}
-			}
-			logger.info("Stopping thread.");
-			mStopped = true;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener#
-		 * getTileCache()
-		 */
-		public TileCache getTileCache() {
-			return mTileCache;
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener#
-		 * tileLoadingFinished(org.openstreetmap.gui.jmapviewer.Tile, boolean)
-		 */
-		public void tileLoadingFinished(Tile pTile, boolean pSuccess) {
-			// TODO Auto-generated method stub
-
-		}
-
-	}
-
 	public Coordinate getPosition() {
 		return mPosition;
+	}
+
+	/**
+	 * @param pTileSource
+	 */
+	public void setTileSource(String pTileSource) {
+		mTileSource = pTileSource;
+	}
+
+	/**
+	 * @return
+	 */
+	public String getTileSource() {
+		return mTileSource;
 	}
 
 	public void setPosition(Coordinate pPosition) {
