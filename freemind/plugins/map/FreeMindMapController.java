@@ -254,10 +254,7 @@ public class FreeMindMapController extends JMapController implements
 			MapNodePositionHolder hook = MapNodePositionHolder
 					.getHook(selected);
 			if (hook != null) {
-				TileSource tileSource = getTileSource(hook.getTileSource());
-				if (tileSource != null) {
-					map.setTileSource(tileSource);
-				}
+				changeTileSource(hook.getTileSource(), map);
 				getMap().setCursorPosition(hook.getPosition());
 				// move map:
 				Coordinate mapCenter = hook.getMapCenter();
@@ -288,6 +285,7 @@ public class FreeMindMapController extends JMapController implements
 				y_min = Math.min(y_min, y);
 				if (node == selected) {
 					getMap().setCursorPosition(hook.getPosition());
+					changeTileSource(hook.getTileSource(), map);
 				}
 			}
 		}
@@ -312,14 +310,18 @@ public class FreeMindMapController extends JMapController implements
 
 	/**
 	 * @param pTileSource
+	 * @param pMap if found, the map tile source is set. Set null, if you don't want this.
 	 * @return null, if the string is not found.
 	 */
-	public TileSource getTileSource(String pTileSource) {
+	public TileSource changeTileSource(String pTileSource, JMapViewer pMap) {
 		logger.info("Searching for tile source " +pTileSource);
 		for (int i = 0; i < mTileSources.length; i++) {
 			TileSource source = mTileSources[i];
 			if(Tools.safeEquals(source.getClass().getName(), pTileSource)) {
 				logger.info("Found  tile source " +source);
+				if (map != null) {
+					map.setTileSource(source);
+				}
 				return source;
 			}
 		}

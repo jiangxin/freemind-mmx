@@ -25,6 +25,7 @@ package freemind.modes.mindmapmode.actions;
 
 import freemind.controller.actions.generated.instance.FontSizeNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
@@ -64,6 +65,9 @@ public class FontSizeAction extends NodeGeneralAction implements NodeActorXml {
 	/**
      */
 	public void setFontSize(MindMapNode node, String fontSizeValue) {
+		if(Tools.safeEquals(fontSizeValue, node.getFontSize())) {
+			return;
+		}
 		modeController.getActionFactory().startTransaction(
 				(String) getValue(NAME));
 		modeController.getActionFactory().executeAction(

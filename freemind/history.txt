@@ -2,6 +2,7 @@
 Changes made in FreeMind 1.0.0 Alpha8
 ===============================
 * Map positions store its map-source
+* Fixed "Jump to last edit location" in combination with automatic layout.
 
 ===============================
 Changes made in FreeMind 1.0.0 Alpha7

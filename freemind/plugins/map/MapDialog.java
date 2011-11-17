@@ -223,11 +223,8 @@ public class MapDialog extends MindMapHookAdapter implements
 					storage.getMapCenterLongitude(), storage.getZoom());
 			map.setCursorPosition(new Coordinate(storage.getCursorLatitude(),
 					storage.getCursorLongitude()));
-			TileSource tileSource = map.getFreeMindMapController()
-					.getTileSource(storage.getTileSource());
-			if (tileSource != null) {
-				map.setTileSource(tileSource);
-			}
+			map.getFreeMindMapController().changeTileSource(
+					storage.getTileSource(), map);
 		}
 		mMapDialog.setVisible(true);
 
@@ -273,7 +270,8 @@ public class MapDialog extends MindMapHookAdapter implements
 		Coordinate cursorPosition = map.getCursorPosition();
 		storage.setCursorLongitude(cursorPosition.getLon());
 		storage.setCursorLatitude(cursorPosition.getLat());
-		storage.setTileSource(map.getTileController().getTileSource().getClass().getName());
+		storage.setTileSource(map.getTileController().getTileSource()
+				.getClass().getName());
 		getMindMapController().storeDialogPositions(mMapDialog, storage,
 				WINDOW_PREFERENCE_STORAGE_PROPERTY);
 

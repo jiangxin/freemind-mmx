@@ -54,6 +54,9 @@ public class EdgeStyleAction extends NodeGeneralAction implements NodeActorXml {
 	}
 
 	public void setEdgeStyle(MindMapNode node, String style) {
+		if(Tools.safeEquals(style, getStyle(node))) {
+			return;
+		}
 		modeController.getActionFactory().startTransaction(
 				(String) getValue(NAME));
 		modeController.getActionFactory().executeAction(
@@ -66,13 +69,17 @@ public class EdgeStyleAction extends NodeGeneralAction implements NodeActorXml {
 	private ActionPair getActionPair(MindMapNode selected, String style) {
 		EdgeStyleFormatAction styleAction = createNodeStyleFormatAction(
 				selected, style);
+		EdgeStyleFormatAction undoStyleAction = createNodeStyleFormatAction(
+				selected, getStyle(selected));
+		return new ActionPair(styleAction, undoStyleAction);
+	}
+
+	public String getStyle(MindMapNode selected) {
 		String oldStyle = selected.getEdge().getStyle();
 		if (!selected.getEdge().hasStyle()) {
 			oldStyle = null;
 		}
-		EdgeStyleFormatAction undoStyleAction = createNodeStyleFormatAction(
-				selected, oldStyle);
-		return new ActionPair(styleAction, undoStyleAction);
+		return oldStyle;
 	}
 
 	private EdgeStyleFormatAction createNodeStyleFormatAction(

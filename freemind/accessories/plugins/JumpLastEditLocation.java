@@ -60,7 +60,6 @@ public class JumpLastEditLocation extends MindMapNodeHookAdapter {
 	public void invoke(MindMapNode pNode) {
 		super.invoke(pNode);
 		JumpLastEditLocationRegistration base = (JumpLastEditLocationRegistration) getPluginBaseClass();
-		this.logger.info("Currently " + pNode + " to last edit location.");
 		String lastEditLocation = base.getLastEditLocation(pNode);
 		if (lastEditLocation == null) {
 			return;
@@ -156,7 +155,7 @@ public class JumpLastEditLocation extends MindMapNodeHookAdapter {
 				if (mLastEditLocations.size() > 10) {
 					mLastEditLocations.remove(0);
 				}
-				logger.fine("New last edit location: " + lastLocation
+				logger.info("New last edit location: " + lastLocation
 						+ " from " + controller.marshall(doAction));
 			}
 
