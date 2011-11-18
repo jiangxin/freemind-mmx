@@ -30,6 +30,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -154,6 +155,148 @@ public class FreeMindMapController extends JMapController implements
 		}
 	}
 
+	/**
+	 * @author foltin
+	 * @date 31.10.2011
+	 */
+	private abstract class MoveAction extends AbstractAction {
+
+		/**
+		 * @param pText
+		 */
+		public MoveAction(String pText) {
+			super(pText);
+		}
+
+		public void actionPerformed(ActionEvent actionEvent) {
+			logger.fine("Left action!");
+			Coordinate cursorPosition = getMap().getCursorPosition();
+			// get map marker locations:
+			HashSet mapNodePositionHolders = new HashSet(
+					mMapHook.getMapNodePositionHolders());
+			logger.fine("Before removal " + mapNodePositionHolders.size()
+					+ " elements");
+			for (Iterator it = mapNodePositionHolders.iterator(); it.hasNext();) {
+				MapNodePositionHolder holder = (MapNodePositionHolder) it
+						.next();
+				Coordinate pointPosition = holder.getPosition();
+				boolean inDestinationQuadrant = destinationQuadrantCheck(
+						cursorPosition, pointPosition);
+				if (!inDestinationQuadrant || safeEquals(pointPosition, cursorPosition)) {
+					it.remove();
+				}
+			}
+			logger.fine("After removal " + mapNodePositionHolders.size()
+					+ " elements");
+			// now, we have all points on the left angle -45° to 45° and search
+			// for the nearest
+			MapNodePositionHolder nearest = null;
+			double distance = Double.MAX_VALUE;
+			for (Iterator it = mapNodePositionHolders.iterator(); it.hasNext();) {
+				MapNodePositionHolder holder = (MapNodePositionHolder) it
+						.next();
+				double newDist = dist(holder.getPosition(), cursorPosition);
+				logger.fine("Position " + holder + " is " + newDist);
+				if (newDist < distance) {
+					distance = newDist;
+					nearest = holder;
+				}
+			}
+			if (nearest != null) {
+				showNode(nearest);
+			}
+		}
+
+		public boolean destinationQuadrantCheck(Coordinate cursorPosition,
+				Coordinate pointPosition) {
+			int mapZoomMax = getMaxZoom();
+			int x1 = OsmMercator.LonToX(cursorPosition.getLon(), mapZoomMax);
+			int y1 = OsmMercator.LatToY(cursorPosition.getLat(), mapZoomMax);
+			int x2 = OsmMercator.LonToX(pointPosition.getLon(), mapZoomMax);
+			int y2 = OsmMercator.LatToY(pointPosition.getLat(), mapZoomMax);
+			return destinationQuadrantCheck(x1, y1, x2, y2);
+		}
+
+		public abstract boolean destinationQuadrantCheck(int x1, int y1,
+				int x2, int y2);
+
+		/**
+		 * @param pPointPosition
+		 * @param pCursorPosition
+		 * @return
+		 */
+		private boolean safeEquals(Coordinate p1, Coordinate p2) {
+			return (p1 != null && p2 != null && p1.getLon() == p2.getLon() && p1
+					.getLat() == p2.getLat()) || (p1 == null && p2 == null);
+		}
+
+		/**
+		 * @param pPosition
+		 * @param pCursorPosition
+		 * @return
+		 */
+		private double dist(Coordinate p1, Coordinate p2) {
+			return OsmMercator.getDistance(p1.getLat(), p1.getLon(),
+					p2.getLat(), p2.getLon());
+		}
+	}
+
+	private final class MoveLeftAction extends MoveAction {
+		/**
+		 * 
+		 */
+		public MoveLeftAction() {
+			super(getText("MapControllerPopupDialog.moveLeft"));
+		}
+
+		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2) {
+			return x2 < x1 && Math.abs(y2 - y1) < Math.abs(x2 - x1);
+		}
+
+	}
+
+	private final class MoveRightAction extends MoveAction {
+		/**
+		 * 
+		 */
+		public MoveRightAction() {
+			super(getText("MapControllerPopupDialog.moveRight"));
+		}
+
+		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2) {
+			return x2 > x1 && Math.abs(y2 - y1) < Math.abs(x2 - x1);
+		}
+
+	}
+
+	private final class MoveUpAction extends MoveAction {
+		/**
+		 * 
+		 */
+		public MoveUpAction() {
+			super(getText("MapControllerPopupDialog.moveUp"));
+		}
+		
+		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2) {
+			return y2 < y1 && Math.abs(y2 - y1) > Math.abs(x2 - x1);
+		}
+		
+	}
+	
+	private final class MoveDownAction extends MoveAction {
+		/**
+		 * 
+		 */
+		public MoveDownAction() {
+			super(getText("MapControllerPopupDialog.moveDown"));
+		}
+		
+		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2) {
+			return y2 > y1 && Math.abs(y2 - y1) > Math.abs(x2 - x1);
+		}
+		
+	}
+	
 	JCursorMapViewer getMap() {
 		return (JCursorMapViewer) map;
 	}
@@ -172,10 +315,14 @@ public class FreeMindMapController extends JMapController implements
 	private final JDialog mMapDialog;
 
 	protected static java.util.logging.Logger logger = null;
-	
+
+	private final MapDialog mMapHook;
+
 	public FreeMindMapController(JMapViewer map,
-			MindMapController pMindMapController, JDialog pMapDialog) {
+			MindMapController pMindMapController, final JDialog pMapDialog,
+			MapDialog pMapHook) {
 		super(map);
+		mMapHook = pMapHook;
 		if (logger == null) {
 			logger = freemind.main.Resources.getInstance().getLogger(
 					this.getClass().getName());
@@ -211,6 +358,14 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addAction(removePlaceAction, "popup/removeplace");
 		menuHolder.addAction(showAction, "popup/showNode");
 		menuHolder.updateMenus(mPopupMenu, "popup/");
+		Tools.addKeyActionToDialog(pMapDialog, new MoveLeftAction(), "LEFT",
+				"move_left");
+		Tools.addKeyActionToDialog(pMapDialog, new MoveRightAction(), "RIGHT",
+				"move_right");
+		Tools.addKeyActionToDialog(pMapDialog, new MoveUpAction(), "UP",
+				"move_up");
+		Tools.addKeyActionToDialog(pMapDialog, new MoveDownAction(), "DOWN",
+				"move_down");
 	}
 
 	/**
@@ -254,12 +409,7 @@ public class FreeMindMapController extends JMapController implements
 			MapNodePositionHolder hook = MapNodePositionHolder
 					.getHook(selected);
 			if (hook != null) {
-				changeTileSource(hook.getTileSource(), map);
-				getMap().setCursorPosition(hook.getPosition());
-				// move map:
-				Coordinate mapCenter = hook.getMapCenter();
-				map.setDisplayPositionByLatLon(mapCenter.getLat(),
-						mapCenter.getLon(), hook.getZoom());
+				showNode(hook);
 			}
 			return;
 		}
@@ -268,8 +418,7 @@ public class FreeMindMapController extends JMapController implements
 		int y_min = Integer.MAX_VALUE;
 		int x_max = Integer.MIN_VALUE;
 		int y_max = Integer.MIN_VALUE;
-		int mapZoomMax = getMap().getTileController().getTileSource()
-				.getMaxZoom();
+		int mapZoomMax = getMaxZoom();
 		for (Iterator it = selecteds.iterator(); it.hasNext();) {
 			MindMapNode node = (MindMapNode) it.next();
 			MapNodePositionHolder hook = MapNodePositionHolder.getHook(node);
@@ -308,17 +457,32 @@ public class FreeMindMapController extends JMapController implements
 
 	}
 
+	public int getMaxZoom() {
+		return getMap().getTileController().getTileSource().getMaxZoom();
+	}
+
+	public void showNode(MapNodePositionHolder hook) {
+		changeTileSource(hook.getTileSource(), map);
+		getMap().setCursorPosition(hook.getPosition());
+		// move map:
+		Coordinate mapCenter = hook.getMapCenter();
+		map.setDisplayPositionByLatLon(mapCenter.getLat(), mapCenter.getLon(),
+				hook.getZoom());
+	}
+
 	/**
 	 * @param pTileSource
-	 * @param pMap if found, the map tile source is set. Set null, if you don't want this.
+	 * @param pMap
+	 *            if found, the map tile source is set. Set null, if you don't
+	 *            want this.
 	 * @return null, if the string is not found.
 	 */
 	public TileSource changeTileSource(String pTileSource, JMapViewer pMap) {
-		logger.info("Searching for tile source " +pTileSource);
+		logger.info("Searching for tile source " + pTileSource);
 		for (int i = 0; i < mTileSources.length; i++) {
 			TileSource source = mTileSources[i];
-			if(Tools.safeEquals(source.getClass().getName(), pTileSource)) {
-				logger.info("Found  tile source " +source);
+			if (Tools.safeEquals(source.getClass().getName(), pTileSource)) {
+				logger.info("Found  tile source " + source);
 				if (map != null) {
 					map.setTileSource(source);
 				}
@@ -541,4 +705,5 @@ public class FreeMindMapController extends JMapController implements
 		String os = System.getProperty("os.name");
 		return os != null && os.toLowerCase().startsWith("mac os x");
 	}
+
 }

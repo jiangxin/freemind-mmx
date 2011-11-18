@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -121,7 +122,7 @@ public class MapDialog extends MindMapHookAdapter implements
 			tileCache = new MemoryTileCache();
 		}
 		map = new JCursorMapViewer(getMindMapController(), mMapDialog,
-				tileCache);
+				tileCache, this);
 
 		// Listen to the map viewer for user operations so components will
 		// receive events and update
@@ -149,6 +150,7 @@ public class MapDialog extends MindMapHookAdapter implements
 				map.setDisplayToFitMapMarkers();
 			}
 		});
+		button.setFocusable(false);
 		JComboBox tileLoaderSelector;
 		try {
 			tileLoaderSelector = new JComboBox(new TileLoader[] {
@@ -157,6 +159,7 @@ public class MapDialog extends MindMapHookAdapter implements
 			tileLoaderSelector = new JComboBox(
 					new TileLoader[] { new OsmTileLoader(map) });
 		}
+		tileLoaderSelector.setFocusable(false);
 		tileLoaderSelector.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				map.setTileLoader((TileLoader) e.getItem());
@@ -172,6 +175,7 @@ public class MapDialog extends MindMapHookAdapter implements
 				map.setMapMarkerVisible(showMapMarker.isSelected());
 			}
 		});
+		showMapMarker.setFocusable(false);
 		panel.add(showMapMarker);
 		final JCheckBox showTileGrid = new JCheckBox("Tile grid visible");
 		showTileGrid.setSelected(map.isTileGridVisible());
@@ -181,6 +185,7 @@ public class MapDialog extends MindMapHookAdapter implements
 				map.setTileGridVisible(showTileGrid.isSelected());
 			}
 		});
+		showTileGrid.setFocusable(false);
 		panel.add(showTileGrid);
 		final JCheckBox showZoomControls = new JCheckBox("Show zoom controls");
 		showZoomControls.setSelected(map.getZoomContolsVisible());
@@ -190,6 +195,7 @@ public class MapDialog extends MindMapHookAdapter implements
 				map.setZoomContolsVisible(showZoomControls.isSelected());
 			}
 		});
+		showZoomControls.setFocusable(false);
 		panel.add(showZoomControls);
 		panel.add(button);
 
@@ -201,8 +207,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		mMapDialog.add(map, BorderLayout.CENTER);
 
 		// add known markers to the map.
-		HashSet mapNodePositionHolders = ((Registration) getPluginBaseClass())
-				.getMapNodePositionHolders();
+		Set mapNodePositionHolders = getMapNodePositionHolders();
 		for (Iterator it = mapNodePositionHolders.iterator(); it.hasNext();) {
 			MapNodePositionHolder nodePositionHolder = (MapNodePositionHolder) it
 					.next();
@@ -228,6 +233,11 @@ public class MapDialog extends MindMapHookAdapter implements
 		}
 		mMapDialog.setVisible(true);
 
+	}
+
+	public Set getMapNodePositionHolders() {
+		return ((Registration) getPluginBaseClass())
+				.getMapNodePositionHolders();
 	}
 
 	public void addMapMarker(MapNodePositionHolder nodePositionHolder) {

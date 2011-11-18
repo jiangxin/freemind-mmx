@@ -20,10 +20,12 @@
 
 package plugins.map;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.OsmMercator;
@@ -153,8 +155,8 @@ public class Registration extends Thread implements
 		}
 	}
 
-	public HashSet getMapNodePositionHolders() {
-		return mMapNodePositionHolders;
+	public Set getMapNodePositionHolders() {
+		return Collections.unmodifiableSet(mMapNodePositionHolders);
 	}
 
 	public void deregisterMapNode(
