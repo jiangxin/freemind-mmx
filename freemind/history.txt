@@ -1,6 +1,7 @@
 ===============================
 Changes made in FreeMind 1.0.0 Alpha8
 ===============================
+* Fixed https://sourceforge.net/projects/freemind/forums/forum/22102/topic/4801690
 * Map positions store its map-source
 * Fixed "Jump to last edit location" in combination with automatic layout.
 * Map: cursor movements added.
@@ -14,6 +15,7 @@ Changes made in FreeMind 1.0.0 Alpha7
 * Option added to avoid tooltips for notes. (https://sourceforge.net/projects/freemind/forums/forum/320014/topic/4777695)
 * Initial map support added
 * Tile Cache can be chosen via properties (tile_cache_class).
+
 
 ===============================
 Changes made in FreeMind 1.0.0 Alpha6
