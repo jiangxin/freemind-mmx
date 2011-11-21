@@ -9,6 +9,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -87,7 +88,6 @@ public class MapDialog extends MindMapHookAdapter implements
 	 * @see freemind.extensions.HookAdapter#startupMapHook()
 	 */
 	public void startupMapHook() {
-		// TODO Auto-generated method stub
 		super.startupMapHook();
 		mMyMindMapController = super.getMindMapController();
 		getMindMapController().getController().getMapModuleManager()
@@ -108,25 +108,40 @@ public class MapDialog extends MindMapHookAdapter implements
 		});
 		mMapDialog.setSize(400, 400);
 
-		TileCache tileCache = null;
+		
+		
+		map = new JCursorMapViewer(getMindMapController(), mMapDialog,
+				new MemoryTileCache(), this);
+		map.addJMVListener(this);
+		OsmTileLoader loader = null;
 		String tileCacheClass = Resources.getInstance().getProperty(
 				TILE_CACHE_CLASS);
 		if (Tools.safeEquals(tileCacheClass, "file")) {
-			logger.info("Using file tile cache");
-			tileCache = new FileTileCache();
-			((FileTileCache) tileCache).setDirectory(Resources.getInstance()
-					.getProperty(FILE_TILE_CACHE_DIRECTORY));
+			String directory = Resources.getInstance()
+					.getProperty(FILE_TILE_CACHE_DIRECTORY);
+			if (directory.startsWith("%/")) {
+				directory = Resources.getInstance().getFreemindDirectory()
+						+ File.separator + directory.substring(2);
+			}
+			logger.info("Trying to use file cache tile loader with dir " + directory);
+			try {
+				loader = new OsmFileCacheTileLoader(map, new File(directory));
+			} catch (SecurityException e1) {
+				freemind.main.Resources.getInstance().logException(e1);
+				
+			} catch (IOException e1) {
+				freemind.main.Resources.getInstance().logException(e1);
+				
+			}
 		}
-		if (tileCache == null) {
-			logger.info("Using memory tile cache");
-			tileCache = new MemoryTileCache();
+		if (loader == null) {
+			logger.info("Using osm tile loader");
+			loader = new OsmTileLoader(map);
 		}
-		map = new JCursorMapViewer(getMindMapController(), mMapDialog,
-				tileCache, this);
+		map.setTileLoader(loader);
 
 		// Listen to the map viewer for user operations so components will
 		// receive events and update
-		map.addJMVListener(this);
 
 		mMapDialog.setLayout(new BorderLayout());
 		JPanel panel = new JPanel();
@@ -151,22 +166,6 @@ public class MapDialog extends MindMapHookAdapter implements
 			}
 		});
 		button.setFocusable(false);
-		JComboBox tileLoaderSelector;
-		try {
-			tileLoaderSelector = new JComboBox(new TileLoader[] {
-					new OsmFileCacheTileLoader(map), new OsmTileLoader(map) });
-		} catch (IOException e) {
-			tileLoaderSelector = new JComboBox(
-					new TileLoader[] { new OsmTileLoader(map) });
-		}
-		tileLoaderSelector.setFocusable(false);
-		tileLoaderSelector.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				map.setTileLoader((TileLoader) e.getItem());
-			}
-		});
-		map.setTileLoader((TileLoader) tileLoaderSelector.getSelectedItem());
-		panel.add(tileLoaderSelector);
 		final JCheckBox showMapMarker = new JCheckBox("Map markers visible");
 		showMapMarker.setSelected(map.getMapMarkersVisible());
 		showMapMarker.addActionListener(new ActionListener() {
