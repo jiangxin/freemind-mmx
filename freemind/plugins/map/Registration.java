@@ -1,22 +1,22 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
-*Copyright (C) 2000-2011 Joerg Mueller, Daniel Polansky, Christian Foltin, Dimitri Polivaev and others.
-*
-*See COPYING for Details
-*
-*This program is free software; you can redistribute it and/or
-*modify it under the terms of the GNU General Public License
-*as published by the Free Software Foundation; either version 2
-*of the License, or (at your option) any later version.
-*
-*This program is distributed in the hope that it will be useful,
-*but WITHOUT ANY WARRANTY; without even the implied warranty of
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*GNU General Public License for more details.
-*
-*You should have received a copy of the GNU General Public License
-*along with this program; if not, write to the Free Software
-*Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ *Copyright (C) 2000-2011 Joerg Mueller, Daniel Polansky, Christian Foltin, Dimitri Polivaev and others.
+ *
+ *See COPYING for Details
+ *
+ *This program is free software; you can redistribute it and/or
+ *modify it under the terms of the GNU General Public License
+ *as published by the Free Software Foundation; either version 2
+ *of the License, or (at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program; if not, write to the Free Software
+ *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
 
 package plugins.map;
 
@@ -28,11 +28,13 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
+import org.openstreetmap.gui.jmapviewer.MemoryTileCache;
 import org.openstreetmap.gui.jmapviewer.OsmMercator;
 import org.openstreetmap.gui.jmapviewer.Tile;
 import org.openstreetmap.gui.jmapviewer.TileController;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener;
+import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource.Mapnik;
 
@@ -48,15 +50,15 @@ import freemind.modes.mindmapmode.actions.xml.ActionFactory;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class Registration extends Thread implements
-		HookRegistration, ActorXml, TileLoaderListener {
+public class Registration extends Thread implements HookRegistration, ActorXml,
+		TileLoaderListener {
 
 	private static final String PLUGINS_MAP_NODE_POSITION = MapNodePositionHolder.class
 			.getName();
 
 	/*
-	 * Collects MapNodePositionHolder. This is necessary to be able to
-	 * display them all efficiently.
+	 * Collects MapNodePositionHolder. This is necessary to be able to display
+	 * them all efficiently.
 	 */
 	private HashSet/* MapNodePositionHolder s */mMapNodePositionHolders = new HashSet();
 
@@ -70,11 +72,11 @@ public class Registration extends Thread implements
 
 	private final java.util.logging.Logger logger;
 
-	private Mapnik mTileSource;
+	private TileSource mTileSource;
 
 	private TileController mTileController;
 
-	private FileTileCache mTileCache;
+	private MemoryTileCache mTileCache;
 
 	private boolean mStopMe = false;
 	private boolean mStopped = false;
@@ -84,15 +86,22 @@ public class Registration extends Thread implements
 		mMap = map;
 		logger = controller.getFrame().getLogger(this.getClass().getName());
 		mTileSource = new OsmTileSource.Mapnik();
-		mTileCache = new FileTileCache();
+		mTileCache = new MemoryTileCache();
 		mTileController = new TileController(mTileSource, mTileCache, this);
 	}
 
 	/**
 	 * @param pPosition
+	 * @param pTileSource
 	 */
 	public TileImage getImageForTooltip(Coordinate pPosition, int pZoom,
-			TileLoaderListener pTileListener) {
+			String pTileSource) {
+		TileSource tileSource = FreeMindMapController.changeTileSource(
+				pTileSource, null);
+		if (tileSource != null) {
+			mTileSource = tileSource;
+			mTileController.setTileSource(tileSource);
+		}
 		int tileSize = mTileSource.getTileSize();
 		int exactx = OsmMercator.LonToX(pPosition.getLon(), pZoom);
 		int exacty = OsmMercator.LatToY(pPosition.getLat(), pZoom);
@@ -112,10 +121,19 @@ public class Registration extends Thread implements
 			dy += tileSize;
 		}
 		TileImage tileImage = new TileImage();
-		synchronized (mTileLoaderListeners) {
-			mTileLoaderListeners.put(tileImage, pTileListener);
-		}
 		tileImage.setTiles(2, x, y, pZoom, mTileController, logger, dx, dy);
+		// wait for tiles:
+		int timeout = 60;
+		while (timeout-- > 0) {
+			try {
+				if (tileImage.isLoaded() || tileImage.hasErrors()) {
+					break;
+				}
+				Thread.sleep(100);
+			} catch (Exception e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+		}
 		return tileImage;
 	}
 
@@ -136,15 +154,13 @@ public class Registration extends Thread implements
 	public void register() {
 		logger.info("Start registering " + this);
 		mStopMe = false;
-		controller.getActionFactory().registerActor(this,
-				getDoActionClass());
+		controller.getActionFactory().registerActor(this, getDoActionClass());
 		this.start();
 	}
 
 	public void registerMapNode(MapNodePositionHolder pMapNodePositionHolder) {
 		mMapNodePositionHolders.add(pMapNodePositionHolder);
-		for (Iterator it = mMapNodePositionListeners.iterator(); it
-				.hasNext();) {
+		for (Iterator it = mMapNodePositionListeners.iterator(); it.hasNext();) {
 			MapNodePositionListener listener = (MapNodePositionListener) it
 					.next();
 			try {
@@ -159,11 +175,9 @@ public class Registration extends Thread implements
 		return Collections.unmodifiableSet(mMapNodePositionHolders);
 	}
 
-	public void deregisterMapNode(
-			MapNodePositionHolder pMapNodePositionHolder) {
+	public void deregisterMapNode(MapNodePositionHolder pMapNodePositionHolder) {
 		mMapNodePositionHolders.remove(pMapNodePositionHolder);
-		for (Iterator it = mMapNodePositionListeners.iterator(); it
-				.hasNext();) {
+		for (Iterator it = mMapNodePositionListeners.iterator(); it.hasNext();) {
 			MapNodePositionListener listener = (MapNodePositionListener) it
 					.next();
 			try {
@@ -186,16 +200,18 @@ public class Registration extends Thread implements
 
 	/**
 	 * Set map position. Is undoable.
-	 * @param pTileSource 
+	 * 
+	 * @param pTileSource
 	 * 
 	 */
 	public void changePosition(MapNodePositionHolder pHolder,
-			Coordinate pPosition, Coordinate pMapCenter, int pZoom, String pTileSource) {
+			Coordinate pPosition, Coordinate pMapCenter, int pZoom,
+			String pTileSource) {
 		MindMapNode node = pHolder.getNode();
 		PlaceNodeXmlAction doAction = createPlaceNodeXmlActionAction(node,
 				pPosition, pMapCenter, pZoom, pTileSource);
-		PlaceNodeXmlAction undoAction = createPlaceNodeXmlActionAction(
-				node, pHolder.getPosition(), pHolder.getMapCenter(),
+		PlaceNodeXmlAction undoAction = createPlaceNodeXmlActionAction(node,
+				pHolder.getPosition(), pHolder.getMapCenter(),
 				pHolder.getZoom(), pHolder.getTileSource());
 		ActionFactory actionFactory = controller.getActionFactory();
 		actionFactory.startTransaction(PLUGINS_MAP_NODE_POSITION);
@@ -208,7 +224,7 @@ public class Registration extends Thread implements
 	 * @param pPosition
 	 * @param pMapCenter
 	 * @param pZoom
-	 * @param pTileSource 
+	 * @param pTileSource
 	 * @return
 	 */
 	private PlaceNodeXmlAction createPlaceNodeXmlActionAction(
@@ -236,16 +252,15 @@ public class Registration extends Thread implements
 	public void act(XmlAction pAction) {
 		if (pAction instanceof PlaceNodeXmlAction) {
 			PlaceNodeXmlAction placeAction = (PlaceNodeXmlAction) pAction;
-			MindMapNode node = controller.getNodeFromID(placeAction
-					.getNode());
+			MindMapNode node = controller.getNodeFromID(placeAction.getNode());
 			MapNodePositionHolder hook = MapNodePositionHolder.getHook(node);
 			if (hook != null) {
 				hook.setMapCenter(new Coordinate(placeAction
 						.getMapCenterLatitude(), placeAction
 						.getMapCenterLongitude()));
-				hook.setPosition(new Coordinate(placeAction
-						.getCursorLatitude(), placeAction
-						.getCursorLongitude()));
+				hook.setPosition(new Coordinate(
+						placeAction.getCursorLatitude(), placeAction
+								.getCursorLongitude()));
 				hook.setZoom(placeAction.getZoom());
 				hook.setTileSource(placeAction.getTileSource());
 				// TODO: Only, if values really changed.
@@ -262,8 +277,7 @@ public class Registration extends Thread implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * freemind.modes.mindmapmode.actions.xml.ActorXml#getDoActionClass()
+	 * @see freemind.modes.mindmapmode.actions.xml.ActorXml#getDoActionClass()
 	 */
 	public Class getDoActionClass() {
 		return PlaceNodeXmlAction.class;
@@ -286,8 +300,8 @@ public class Registration extends Thread implements
 							.iterator(); it.hasNext();) {
 						Entry entry = (Entry) it.next();
 						TileImage tileImage = (TileImage) entry.getKey();
-						logger.info("TileImage " + tileImage
-								+ " is loaded " + tileImage.isLoaded());
+						logger.info("TileImage " + tileImage + " is loaded "
+								+ tileImage.isLoaded());
 						if (tileImage.isLoaded()) {
 							((TileLoaderListener) entry.getValue())
 									.tileLoadingFinished(null, true);

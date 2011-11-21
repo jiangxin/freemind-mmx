@@ -182,7 +182,8 @@ public class FreeMindMapController extends JMapController implements
 				Coordinate pointPosition = holder.getPosition();
 				boolean inDestinationQuadrant = destinationQuadrantCheck(
 						cursorPosition, pointPosition);
-				if (!inDestinationQuadrant || safeEquals(pointPosition, cursorPosition)) {
+				if (!inDestinationQuadrant
+						|| safeEquals(pointPosition, cursorPosition)) {
 					it.remove();
 				}
 			}
@@ -276,13 +277,13 @@ public class FreeMindMapController extends JMapController implements
 		public MoveUpAction() {
 			super(getText("MapControllerPopupDialog.moveUp"));
 		}
-		
+
 		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2) {
 			return y2 < y1 && Math.abs(y2 - y1) > Math.abs(x2 - x1);
 		}
-		
+
 	}
-	
+
 	private final class MoveDownAction extends MoveAction {
 		/**
 		 * 
@@ -290,13 +291,13 @@ public class FreeMindMapController extends JMapController implements
 		public MoveDownAction() {
 			super(getText("MapControllerPopupDialog.moveDown"));
 		}
-		
+
 		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2) {
 			return y2 > y1 && Math.abs(y2 - y1) > Math.abs(x2 - x1);
 		}
-		
+
 	}
-	
+
 	JCursorMapViewer getMap() {
 		return (JCursorMapViewer) map;
 	}
@@ -314,7 +315,8 @@ public class FreeMindMapController extends JMapController implements
 
 	private final JDialog mMapDialog;
 
-	protected static java.util.logging.Logger logger = null;
+	protected static java.util.logging.Logger logger = freemind.main.Resources.getInstance().getLogger(
+			"plugins.map.FreeMindMapController");
 
 	private final MapDialog mMapHook;
 
@@ -323,15 +325,8 @@ public class FreeMindMapController extends JMapController implements
 			MapDialog pMapHook) {
 		super(map);
 		mMapHook = pMapHook;
-		if (logger == null) {
-			logger = freemind.main.Resources.getInstance().getLogger(
-					this.getClass().getName());
-		}
 		mMindMapController = pMindMapController;
 		mMapDialog = pMapDialog;
-		mTileSources = new TileSource[] { new OsmTileSource.Mapnik(),
-				new OsmTileSource.TilesAtHome(), new OsmTileSource.CycleMap(),
-				new BingAerialTileSource() };
 		Action placeAction = new PlaceNodeAction();
 		Action removePlaceAction = new RemovePlaceNodeAction();
 		Action showAction = new ShowNodeAction();
@@ -477,14 +472,15 @@ public class FreeMindMapController extends JMapController implements
 	 *            want this.
 	 * @return null, if the string is not found.
 	 */
-	public TileSource changeTileSource(String pTileSource, JMapViewer pMap) {
+	public static TileSource changeTileSource(String pTileSource,
+			JMapViewer pMap) {
 		logger.info("Searching for tile source " + pTileSource);
 		for (int i = 0; i < mTileSources.length; i++) {
 			TileSource source = mTileSources[i];
 			if (Tools.safeEquals(source.getClass().getName(), pTileSource)) {
 				logger.info("Found  tile source " + source);
-				if (map != null) {
-					map.setTileSource(source);
+				if (pMap != null) {
+					pMap.setTileSource(source);
 				}
 				return source;
 			}
@@ -523,7 +519,9 @@ public class FreeMindMapController extends JMapController implements
 	private boolean wheelZoomEnabled = true;
 	private boolean doubleClickZoomEnabled = true;
 
-	private TileSource[] mTileSources;
+	private static TileSource[] mTileSources = new TileSource[] {
+			new OsmTileSource.Mapnik(), new OsmTileSource.TilesAtHome(),
+			new OsmTileSource.CycleMap(), new BingAerialTileSource() };
 
 	public void mouseDragged(MouseEvent e) {
 		if (!movementEnabled || !isMoving)

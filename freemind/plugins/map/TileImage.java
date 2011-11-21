@@ -117,7 +117,7 @@ public class TileImage implements ImageObserver {
 		try {
 			mImage = ImageIO.read(new ByteArrayInputStream(Tools
 					.fromBase64(pCodedImage)));
-			mTilesPresent = true;
+			mTilesPresent = false;
 			mImageCreated = true;
 		} catch (IOException e) {
 			freemind.main.Resources.getInstance().logException(e);
@@ -130,7 +130,7 @@ public class TileImage implements ImageObserver {
 			ImageIO.write(mImage, "png", stream);
 			stream.close();
 			return Tools.toBase64(stream.toByteArray());
-		} catch (IOException e) {
+		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
 		}
 		return null;
@@ -183,6 +183,24 @@ public class TileImage implements ImageObserver {
 			drawCross();
 		}
 		return isDrawingDone();
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean hasErrors() {
+		if (!mTilesPresent)
+			return false;
+		for (int i = 0; i < mTiles.length; i++) {
+			Tile[] tiles = mTiles[i];
+			for (int j = 0; j < tiles.length; j++) {
+				Tile tile = tiles[j];
+				if (tile.hasError()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 }

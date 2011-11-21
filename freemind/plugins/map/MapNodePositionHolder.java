@@ -43,8 +43,7 @@ import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
  * @author foltin
  * @date 27.10.2011
  */
-public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
-		implements TileLoaderListener {
+public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	public final static String NODE_MAP_HOOK_NAME = "plugins/map/MapNodePositionHolder.properties";
 	public final static String NODE_MAP_LOCATION_ICON = "node_map_location_icon";
 
@@ -77,15 +76,19 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		super.invoke(pNode);
 		((Registration) getPluginBaseClass()).registerMapNode(this);
 		setStateIcon(pNode, true);
-		if (!mTooltipRequested && Resources.getInstance().getBoolProperty(NODE_MAP_SHOW_TOOLTIP)) {
+		if (!mTooltipRequested
+				&& Resources.getInstance().getBoolProperty(
+						NODE_MAP_SHOW_TOOLTIP)) {
 			if (mBase64Image != null) {
 				mImage = new TileImage();
 				mImage.load(mBase64Image);
-				createTooltip();
 			} else {
 				// order tooltip to be created.
 				mImage = ((Registration) getPluginBaseClass())
-						.getImageForTooltip(mPosition, mZoom, this);
+						.getImageForTooltip(mPosition, mZoom, mTileSource);
+			}
+			if(!mImage.hasErrors()) {
+				createTooltip();
 			}
 			mTooltipRequested = true;
 		}
@@ -121,7 +124,8 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		if (mTileSource != null) {
 			values.put(XML_STORAGE_TILE_SOURCE, mTileSource);
 		}
-		if(Resources.getInstance().getBoolProperty(NODE_MAP_STORE_TOOLTIP) && mImage != null) {
+		if (Resources.getInstance().getBoolProperty(NODE_MAP_STORE_TOOLTIP)
+				&& mImage != null) {
 			values.put(XML_STORAGE_MAP_TOOLTIP, mImage.save());
 		}
 		saveNameValuePairs(values, xml);
@@ -195,11 +199,13 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 
 	/**
 	 * Set map position. Is undoable.
-	 * @param pTileSource 
+	 * 
+	 * @param pTileSource
 	 * 
 	 */
 	public void changePosition(MapNodePositionHolder pHolder,
-			Coordinate pPosition, Coordinate pMapCenter, int pZoom, String pTileSource) {
+			Coordinate pPosition, Coordinate pMapCenter, int pZoom,
+			String pTileSource) {
 		((Registration) getPluginBaseClass()).changePosition(pHolder,
 				pPosition, pMapCenter, pZoom, pTileSource);
 	}
@@ -273,17 +279,6 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 		return sMapLocationIcon;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener#
-	 * tileLoadingFinished(org.openstreetmap.gui.jmapviewer.Tile, boolean)
-	 */
-	public void tileLoadingFinished(Tile pTile, boolean pSuccess) {
-		createTooltip();
-
-	}
-
 	public void createTooltip() {
 		logger.info("Creating tooltip for " + getNode());
 		// save image to disk:
@@ -300,18 +295,6 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter
 			freemind.main.Resources.getInstance().logException(e);
 
 		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener#getTileCache
-	 * ()
-	 */
-	public TileCache getTileCache() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }
