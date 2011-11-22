@@ -5,20 +5,30 @@ package plugins.map;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URL;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
+import javax.swing.AbstractListModel;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
@@ -31,8 +41,11 @@ import org.openstreetmap.gui.jmapviewer.interfaces.JMapViewerEventListener;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource.Mapnik;
 
 import plugins.map.MapNodePositionHolder.MapNodePositionListener;
+import freemind.common.XmlBindingTools;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.actions.generated.instance.MapWindowConfigurationStorage;
+import freemind.controller.actions.generated.instance.Place;
+import freemind.controller.actions.generated.instance.Searchresults;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
@@ -54,13 +67,97 @@ public class MapDialog extends MindMapHookAdapter implements
 		MapNodePositionListener, NodeSelectionListener {
 
 	private final class CloseAction extends AbstractAction {
-		
+
 		public CloseAction() {
 			super(getResourceString("MapDialog_close"));
 		}
-		
+
 		public void actionPerformed(ActionEvent arg0) {
 			disposeDialog();
+		}
+	}
+
+	protected final class SearchResultListModel extends AbstractListModel {
+		private final List mPlaceList;
+
+		// private final List mListeners;
+
+		public SearchResultListModel() {
+			this.mPlaceList = new Vector();
+		}
+
+		public int getSize() {
+			return mPlaceList.size();
+		}
+
+		/**
+		 * @return the name of the place belonging to index.
+		 */
+		public Object getElementAt(int index) {
+			return getPlaceAt(index).getDisplayName();
+		}
+
+		/**
+		 * @return the place belonging to index.
+		 */
+		public Place getPlaceAt(int index) {
+			return ((Place) mPlaceList.get(index));
+		}
+
+		public List getPlaceList() {
+			return Collections.unmodifiableList(mPlaceList);
+		}
+
+		public void removePlace(int index) {
+			if (index < 0 || index >= mPlaceList.size()) {
+				throw new IllegalArgumentException(
+						"try to delete in place list with an index out of range: "
+								+ index);
+			}
+			logger.info("Place "
+					+ ((Place) mPlaceList.get(index)).getDisplayName()
+					+ " should be removed at " + index);
+			mPlaceList.remove(index);
+			fireIntervalRemoved(mPlaceList, index, index);
+		}
+
+		public void addPlace(Place newPlace) {
+			mPlaceList.add(newPlace);
+			int newIndex = mPlaceList.size() - 1;
+			fireIntervalAdded(mPlaceList, newIndex, newIndex);
+		}
+
+		public Place getPlaceByName(String name) {
+			for (Iterator iter = mPlaceList.iterator(); iter.hasNext();) {
+				Place place = (Place) iter.next();
+				if (place.getDisplayName().equals(name)) {
+					return place;
+				}
+			}
+			return null;
+		}
+
+		// public void add(int i, Object object) {
+		// if (object instanceof String) {
+		// String placeName = (String) object;
+		// Place correspondingPlace = getPlaceByName(placeName);
+		// if (correspondingPlace != null) {
+		// addPlace(correspondingPlace, i);
+		// }
+		// }
+		// }
+		//
+		public void remove(int i) {
+			removePlace(i);
+		}
+
+		/**
+		 * 
+		 */
+		public void clear() {
+			for (int i = mPlaceList.size(); i > 0; --i) {
+				removePlace(i - 1);
+			}
 		}
 	}
 
@@ -107,7 +204,8 @@ public class MapDialog extends MindMapHookAdapter implements
 			}
 		});
 		mCloseAction = new CloseAction();
-		// the action title is changed by the following method, thus we create another close action.
+		// the action title is changed by the following method, thus we create
+		// another close action.
 		Tools.addEscapeActionToDialog(mMapDialog, new CloseAction());
 		mMapDialog.setSize(400, 400);
 
@@ -147,26 +245,74 @@ public class MapDialog extends MindMapHookAdapter implements
 		// receive events and update
 
 		mMapDialog.setLayout(new BorderLayout());
-//		JPanel panel = new JPanel();
-//		JPanel helpPanel = new JPanel();
-//
-//		mperpLabelName = new JLabel("Meters/Pixels: ");
-//		mperpLabelValue = new JLabel(format("%s", map.getMeterPerPixel()));
-//
-//		zoomLabel = new JLabel("Zoom: ");
-//		zoomValue = new JLabel(format("%s", map.getZoom()));
-//
-//		mMapDialog.add(panel, BorderLayout.NORTH);
-//		mMapDialog.add(helpPanel, BorderLayout.SOUTH);
-//		JLabel helpLabel = new JLabel("Use left mouse button to move,\n "
-//				+ "mouse wheel to zoom, left click to set cursor.");
-//		helpPanel.add(helpLabel);
-//
-//		panel.add(zoomLabel);
-//		panel.add(zoomValue);
-//		panel.add(mperpLabelName);
-//		panel.add(mperpLabelValue);
+		// JPanel panel = new JPanel();
+		// JPanel helpPanel = new JPanel();
+		//
+		// mperpLabelName = new JLabel("Meters/Pixels: ");
+		// mperpLabelValue = new JLabel(format("%s", map.getMeterPerPixel()));
+		//
+		// zoomLabel = new JLabel("Zoom: ");
+		// zoomValue = new JLabel(format("%s", map.getZoom()));
+		//
+		// mMapDialog.add(panel, BorderLayout.NORTH);
+		// mMapDialog.add(helpPanel, BorderLayout.SOUTH);
+		// JLabel helpLabel = new JLabel("Use left mouse button to move,\n "
+		// + "mouse wheel to zoom, left click to set cursor.");
+		// helpPanel.add(helpLabel);
+		//
+		// panel.add(zoomLabel);
+		// panel.add(zoomValue);
+		// panel.add(mperpLabelName);
+		// panel.add(mperpLabelValue);
 
+		JPanel searchPanel = new JPanel();
+		JLabel label = new JLabel("Search: ");
+		final JTextField searchTerm = new JTextField(15);
+		JPanel searchFieldPanel = new JPanel();
+		searchFieldPanel.add(label);
+		searchFieldPanel.add(searchTerm);
+		final SearchResultListModel dataModel = new SearchResultListModel();
+		final JList resultList = new JList(dataModel);
+		MouseListener mouseListener = new MouseAdapter() {
+		    public void mouseClicked(MouseEvent e) {
+		        if (e.getClickCount() == 2) {
+		            int index = resultList.locationToIndex(e.getPoint());
+		            Place place = dataModel.getPlaceAt(index);
+		            map.setDisplayPositionByLatLon(place.getLat(), place.getLon(), map.getZoom());
+		            map.setCursorPosition(new Coordinate(place.getLat(), place.getLon()));
+		         }
+		    }
+		};
+		resultList.addMouseListener(mouseListener);
+
+		searchTerm.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent pE) {
+				try {
+					URL url = new URI("http",
+							"//nominatim.openstreetmap.org/search?format=xml&q="
+									+ searchTerm.getText(), null).toURL();
+					String result = Tools.getFile(new InputStreamReader(url
+							.openStream()));
+					Searchresults results = (Searchresults) XmlBindingTools
+							.getInstance().unMarshall(result);
+					dataModel.clear();
+					for (Iterator it = results.getListPlaceList().iterator(); it
+							.hasNext();) {
+						Place place = (Place) it.next();
+						dataModel.addPlace(place);
+					}
+
+				} catch (Exception e) {
+					freemind.main.Resources.getInstance().logException(e);
+				}
+
+			}
+		});
+		searchPanel.setLayout(new BorderLayout());
+		searchPanel.add(searchFieldPanel, BorderLayout.NORTH);
+		searchPanel.add(resultList, BorderLayout.CENTER);
+		mMapDialog.add(searchPanel, BorderLayout.NORTH);
 		mMapDialog.add(map, BorderLayout.CENTER);
 
 		// add known markers to the map.
