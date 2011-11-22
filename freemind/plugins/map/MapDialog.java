@@ -53,6 +53,17 @@ public class MapDialog extends MindMapHookAdapter implements
 		JMapViewerEventListener, MapModuleChangeObserver,
 		MapNodePositionListener, NodeSelectionListener {
 
+	private final class CloseAction extends AbstractAction {
+		
+		public CloseAction() {
+			super(getResourceString("MapDialog_close"));
+		}
+		
+		public void actionPerformed(ActionEvent arg0) {
+			disposeDialog();
+		}
+	}
+
 	private static final String WINDOW_PREFERENCE_STORAGE_PROPERTY = MapDialog.class
 			.getName();
 
@@ -74,6 +85,8 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	private HashMap /* < MapNodePositionHolder, MapMarkerLocation > */mMarkerMap = new HashMap();
 
+	private CloseAction mCloseAction;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -93,11 +106,9 @@ public class MapDialog extends MindMapHookAdapter implements
 				disposeDialog();
 			}
 		});
-		Tools.addEscapeActionToDialog(mMapDialog, new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				disposeDialog();
-			}
-		});
+		mCloseAction = new CloseAction();
+		// the action title is changed by the following method, thus we create another close action.
+		Tools.addEscapeActionToDialog(mMapDialog, new CloseAction());
 		mMapDialog.setSize(400, 400);
 
 		map = new JCursorMapViewer(getMindMapController(), mMapDialog,
@@ -136,25 +147,25 @@ public class MapDialog extends MindMapHookAdapter implements
 		// receive events and update
 
 		mMapDialog.setLayout(new BorderLayout());
-		JPanel panel = new JPanel();
-		JPanel helpPanel = new JPanel();
-
-		mperpLabelName = new JLabel("Meters/Pixels: ");
-		mperpLabelValue = new JLabel(format("%s", map.getMeterPerPixel()));
-
-		zoomLabel = new JLabel("Zoom: ");
-		zoomValue = new JLabel(format("%s", map.getZoom()));
-
-		mMapDialog.add(panel, BorderLayout.NORTH);
-		mMapDialog.add(helpPanel, BorderLayout.SOUTH);
-		JLabel helpLabel = new JLabel("Use left mouse button to move,\n "
-				+ "mouse wheel to zoom, left click to set cursor.");
-		helpPanel.add(helpLabel);
-
-		panel.add(zoomLabel);
-		panel.add(zoomValue);
-		panel.add(mperpLabelName);
-		panel.add(mperpLabelValue);
+//		JPanel panel = new JPanel();
+//		JPanel helpPanel = new JPanel();
+//
+//		mperpLabelName = new JLabel("Meters/Pixels: ");
+//		mperpLabelValue = new JLabel(format("%s", map.getMeterPerPixel()));
+//
+//		zoomLabel = new JLabel("Zoom: ");
+//		zoomValue = new JLabel(format("%s", map.getZoom()));
+//
+//		mMapDialog.add(panel, BorderLayout.NORTH);
+//		mMapDialog.add(helpPanel, BorderLayout.SOUTH);
+//		JLabel helpLabel = new JLabel("Use left mouse button to move,\n "
+//				+ "mouse wheel to zoom, left click to set cursor.");
+//		helpPanel.add(helpLabel);
+//
+//		panel.add(zoomLabel);
+//		panel.add(zoomValue);
+//		panel.add(mperpLabelName);
+//		panel.add(mperpLabelValue);
 
 		mMapDialog.add(map, BorderLayout.CENTER);
 
@@ -419,5 +430,9 @@ public class MapDialog extends MindMapHookAdapter implements
 	public void onSelectionChange(NodeView pNode, boolean pIsSelected) {
 		selectMapPosition(pNode, pIsSelected);
 
+	}
+
+	public CloseAction getCloseAction() {
+		return mCloseAction;
 	}
 }

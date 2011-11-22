@@ -410,20 +410,27 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addMenu(mainItem, "main/actions/.");
 		menuHolder.addAction(placeAction, "main/actions/place");
 		menuHolder.addAction(removePlaceAction, "main/actions/removeplace");
-		menuHolder.addAction(removePlaceAction, "main/actions/showNode");
-		menuHolder.addAction(showAction, "main/actions/showNode");
+		menuHolder.addAction(pMapHook.getCloseAction(), "main/actions/close");
 		JMenu viewItem = new JMenu(getText("MapControllerPopupDialog.Views"));
 		menuHolder.addMenu(viewItem, "main/view/.");
+		menuHolder.addAction(showAction, "main/view/showNode");
+		menuHolder.addAction(setDisplayToFitMapMarkers, "main/view/setDisplayToFitMapMarkers");
+		menuHolder.addSeparator("main/view/");
 		for (int i = 0; i < mTileSources.length; i++) {
 			TileSource source = mTileSources[i];
 			menuHolder
 					.addAction(new ChangeTileSource(source), "main/view/" + i);
 		}
 		menuHolder.addSeparator("main/view/");
-		menuHolder.addAction(setDisplayToFitMapMarkers, "main/view/setDisplayToFitMapMarkers");
 		menuHolder.addAction(showMapMarker, "main/view/showMapMarker");
 		menuHolder.addAction(tileGridVisible, "main/view/tileGridVisible");
 		menuHolder.addAction(zoomControlsVisible, "main/view/zoomControlsVisible");
+		JMenu navigationItem = new JMenu(getText("MapControllerPopupDialog.Navigation"));
+		menuHolder.addMenu(navigationItem, "main/navigation/.");
+		menuHolder.addAction(new MoveLeftAction(), "main/navigation/moveLeft");
+		menuHolder.addAction(new MoveRightAction(), "main/navigation/moveRight");
+		menuHolder.addAction(new MoveUpAction(), "main/navigation/moveUp");
+		menuHolder.addAction(new MoveDownAction(), "main/navigation/moveDown");
 		menuHolder.updateMenus(menu, "main/");
 		mMapDialog.setJMenuBar(menu);
 		/* Popup menu */
@@ -431,14 +438,6 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addAction(removePlaceAction, "popup/removeplace");
 		menuHolder.addAction(showAction, "popup/showNode");
 		menuHolder.updateMenus(mPopupMenu, "popup/");
-		Tools.addKeyActionToDialog(pMapDialog, new MoveLeftAction(), "LEFT",
-				"move_left");
-		Tools.addKeyActionToDialog(pMapDialog, new MoveRightAction(), "RIGHT",
-				"move_right");
-		Tools.addKeyActionToDialog(pMapDialog, new MoveUpAction(), "UP",
-				"move_up");
-		Tools.addKeyActionToDialog(pMapDialog, new MoveDownAction(), "DOWN",
-				"move_down");
 	}
 
 	/**
