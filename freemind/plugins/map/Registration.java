@@ -21,10 +21,8 @@
 package plugins.map;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
@@ -36,7 +34,6 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
-import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource.Mapnik;
 
 import plugins.map.MapNodePositionHolder.MapNodePositionListener;
 import freemind.controller.actions.generated.instance.PlaceNodeXmlAction;
@@ -50,7 +47,7 @@ import freemind.modes.mindmapmode.actions.xml.ActionFactory;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class Registration extends Thread implements HookRegistration, ActorXml,
+public class Registration implements HookRegistration, ActorXml,
 		TileLoaderListener {
 
 	private static final String PLUGINS_MAP_NODE_POSITION = MapNodePositionHolder.class
@@ -64,8 +61,6 @@ public class Registration extends Thread implements HookRegistration, ActorXml,
 
 	private HashSet mMapNodePositionListeners = new HashSet();
 
-	private HashMap mTileLoaderListeners = new HashMap();
-
 	private final MindMapController controller;
 
 	private final MindMap mMap;
@@ -77,9 +72,6 @@ public class Registration extends Thread implements HookRegistration, ActorXml,
 	private TileController mTileController;
 
 	private MemoryTileCache mTileCache;
-
-	private boolean mStopMe = false;
-	private boolean mStopped = false;
 
 	public Registration(ModeController controller, MindMap map) {
 		this.controller = (MindMapController) controller;
@@ -139,23 +131,10 @@ public class Registration extends Thread implements HookRegistration, ActorXml,
 
 	public void deRegister() {
 		controller.getActionFactory().deregisterActor(getDoActionClass());
-		logger.info("Trying to stop " + this);
-		this.mStopMe = true;
-		while (!mStopped) {
-			try {
-				sleep(100);
-			} catch (InterruptedException e) {
-				freemind.main.Resources.getInstance().logException(e);
-			}
-		}
-		logger.info("I'm stopped: " + this);
 	}
 
 	public void register() {
-		logger.info("Start registering " + this);
-		mStopMe = false;
 		controller.getActionFactory().registerActor(this, getDoActionClass());
-		this.start();
 	}
 
 	public void registerMapNode(MapNodePositionHolder pMapNodePositionHolder) {
@@ -283,41 +262,6 @@ public class Registration extends Thread implements HookRegistration, ActorXml,
 		return PlaceNodeXmlAction.class;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener#
-	 * tileLoadingFinished(org.openstreetmap.gui.jmapviewer.Tile, boolean)
-	 */
-	public void run() {
-		logger.info("Starting thread.");
-		mStopped = false;
-		while (!mStopMe) {
-			logger.fine("Looking for tiles " + mTileLoaderListeners.size());
-			try {
-				synchronized (mTileLoaderListeners) {
-					for (Iterator it = mTileLoaderListeners.entrySet()
-							.iterator(); it.hasNext();) {
-						Entry entry = (Entry) it.next();
-						TileImage tileImage = (TileImage) entry.getKey();
-						logger.info("TileImage " + tileImage + " is loaded "
-								+ tileImage.isLoaded());
-						if (tileImage.isLoaded()) {
-							((TileLoaderListener) entry.getValue())
-									.tileLoadingFinished(null, true);
-							it.remove();
-						}
-					}
-				}
-				Thread.sleep(100);
-			} catch (Exception e) {
-				freemind.main.Resources.getInstance().logException(e);
-
-			}
-		}
-		logger.info("Stopping thread.");
-		mStopped = true;
-	}
 
 	/*
 	 * (non-Javadoc)
