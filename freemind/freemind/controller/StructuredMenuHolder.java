@@ -100,6 +100,8 @@ public class StructuredMenuHolder {
 	}
 
 	/**
+	 * @param item is an action. If it derives from MenuItemSelectedListener, 
+	 * a check box is used.
 	 */
 	public JMenuItem addAction(Action item, String category) {
 		StringTokenizer tokens = new StringTokenizer(category, "/");

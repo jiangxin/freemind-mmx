@@ -5,21 +5,17 @@ package plugins.map;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -32,11 +28,6 @@ import org.openstreetmap.gui.jmapviewer.OsmFileCacheTileLoader;
 import org.openstreetmap.gui.jmapviewer.OsmTileLoader;
 import org.openstreetmap.gui.jmapviewer.events.JMVCommandEvent;
 import org.openstreetmap.gui.jmapviewer.interfaces.JMapViewerEventListener;
-import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
-import org.openstreetmap.gui.jmapviewer.interfaces.TileLoader;
-import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
-import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
-import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
 import plugins.map.MapNodePositionHolder.MapNodePositionListener;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
@@ -158,45 +149,6 @@ public class MapDialog extends MindMapHookAdapter implements
 		JLabel helpLabel = new JLabel("Use left mouse button to move,\n "
 				+ "mouse wheel to zoom, left click to set cursor.");
 		helpPanel.add(helpLabel);
-		JButton button = new JButton("setDisplayToFitMapMarkers");
-		button.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				map.setDisplayToFitMapMarkers();
-			}
-		});
-		button.setFocusable(false);
-		final JCheckBox showMapMarker = new JCheckBox("Map markers visible");
-		showMapMarker.setSelected(map.getMapMarkersVisible());
-		showMapMarker.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				map.setMapMarkerVisible(showMapMarker.isSelected());
-			}
-		});
-		showMapMarker.setFocusable(false);
-		panel.add(showMapMarker);
-		final JCheckBox showTileGrid = new JCheckBox("Tile grid visible");
-		showTileGrid.setSelected(map.isTileGridVisible());
-		showTileGrid.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				map.setTileGridVisible(showTileGrid.isSelected());
-			}
-		});
-		showTileGrid.setFocusable(false);
-		panel.add(showTileGrid);
-		final JCheckBox showZoomControls = new JCheckBox("Show zoom controls");
-		showZoomControls.setSelected(map.getZoomContolsVisible());
-		showZoomControls.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				map.setZoomContolsVisible(showZoomControls.isSelected());
-			}
-		});
-		showZoomControls.setFocusable(false);
-		panel.add(showZoomControls);
-		panel.add(button);
 
 		panel.add(zoomLabel);
 		panel.add(zoomValue);
