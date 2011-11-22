@@ -28,6 +28,7 @@ import org.openstreetmap.gui.jmapviewer.OsmFileCacheTileLoader;
 import org.openstreetmap.gui.jmapviewer.OsmTileLoader;
 import org.openstreetmap.gui.jmapviewer.events.JMVCommandEvent;
 import org.openstreetmap.gui.jmapviewer.interfaces.JMapViewerEventListener;
+import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource.Mapnik;
 
 import plugins.map.MapNodePositionHolder.MapNodePositionListener;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
@@ -99,30 +100,30 @@ public class MapDialog extends MindMapHookAdapter implements
 		});
 		mMapDialog.setSize(400, 400);
 
-		
-		
 		map = new JCursorMapViewer(getMindMapController(), mMapDialog,
 				new MemoryTileCache(), this);
 		map.addJMVListener(this);
+		FreeMindMapController.changeTileSource(Mapnik.class.getName(), map);
 		OsmTileLoader loader = null;
 		String tileCacheClass = Resources.getInstance().getProperty(
 				TILE_CACHE_CLASS);
 		if (Tools.safeEquals(tileCacheClass, "file")) {
-			String directory = Resources.getInstance()
-					.getProperty(FILE_TILE_CACHE_DIRECTORY);
+			String directory = Resources.getInstance().getProperty(
+					FILE_TILE_CACHE_DIRECTORY);
 			if (directory.startsWith("%/")) {
 				directory = Resources.getInstance().getFreemindDirectory()
 						+ File.separator + directory.substring(2);
 			}
-			logger.info("Trying to use file cache tile loader with dir " + directory);
+			logger.info("Trying to use file cache tile loader with dir "
+					+ directory);
 			try {
 				loader = new OsmFileCacheTileLoader(map, new File(directory));
 			} catch (SecurityException e1) {
 				freemind.main.Resources.getInstance().logException(e1);
-				
+
 			} catch (IOException e1) {
 				freemind.main.Resources.getInstance().logException(e1);
-				
+
 			}
 		}
 		if (loader == null) {
@@ -179,8 +180,11 @@ public class MapDialog extends MindMapHookAdapter implements
 					storage.getMapCenterLongitude(), storage.getZoom());
 			map.setCursorPosition(new Coordinate(storage.getCursorLatitude(),
 					storage.getCursorLongitude()));
-			map.getFreeMindMapController().changeTileSource(
-					storage.getTileSource(), map);
+			FreeMindMapController
+					.changeTileSource(storage.getTileSource(), map);
+			map.setZoomContolsVisible(storage.getZoomControlsVisible());
+			map.setTileGridVisible(storage.getTileGridVisible());
+			map.setMapMarkerVisible(storage.getShowMapMarker());
 		}
 		mMapDialog.setVisible(true);
 
@@ -233,6 +237,9 @@ public class MapDialog extends MindMapHookAdapter implements
 		storage.setCursorLatitude(cursorPosition.getLat());
 		storage.setTileSource(map.getTileController().getTileSource()
 				.getClass().getName());
+		storage.setTileGridVisible(map.isTileGridVisible());
+		storage.setZoomControlsVisible(map.getZoomContolsVisible());
+		storage.setShowMapMarker(map.getMapMarkersVisible());
 		getMindMapController().storeDialogPositions(mMapDialog, storage,
 				WINDOW_PREFERENCE_STORAGE_PROPERTY);
 
