@@ -242,6 +242,7 @@ public class Registration implements HookRegistration, ActorXml,
 								.getCursorLongitude()));
 				hook.setZoom(placeAction.getZoom());
 				hook.setTileSource(placeAction.getTileSource());
+				hook.recreateTooltip();
 				// TODO: Only, if values really changed.
 				controller.nodeChanged(node);
 			} else {

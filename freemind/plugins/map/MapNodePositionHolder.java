@@ -76,6 +76,11 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 		super.invoke(pNode);
 		((Registration) getPluginBaseClass()).registerMapNode(this);
 		setStateIcon(pNode, true);
+		showTooltip();
+
+	}
+
+	public void showTooltip() {
 		if (!mTooltipRequested
 				&& Resources.getInstance().getBoolProperty(
 						NODE_MAP_SHOW_TOOLTIP)) {
@@ -92,7 +97,6 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 			}
 			mTooltipRequested = true;
 		}
-
 	}
 
 	/*
@@ -295,6 +299,16 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 			freemind.main.Resources.getInstance().logException(e);
 
 		}
+	}
+
+	/**
+	 * 
+	 */
+	public void recreateTooltip() {
+		mTooltipRequested = false;
+		mImage = null;
+		mBase64Image = null;
+		showTooltip();
 	}
 
 }
