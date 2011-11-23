@@ -320,13 +320,14 @@ public class MapDialog extends MindMapHookAdapter implements
 			public void actionPerformed(ActionEvent pE) {
 				try {
 					String result;
-					if (false) {
+					if (true) {
 						URL url = new URI("http",
 								"//nominatim.openstreetmap.org/search?format=xml&q="
 										+ mSearchTerm.getText(), null).toURL();
 						result = Tools.getFile(new InputStreamReader(url
 								.openStream()));
 					} else {
+						// only for offline testing:
 						result = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
 								+ "<searchresults timestamp=\"Tue, 08 Nov 11 22:49:54 -0500\" attribution=\"Data Copyright OpenStreetMap Contributors, Some Rights Reserved. CC-BY-SA 2.0.\" querystring=\"innsbruck\" polygon=\"false\" exclude_place_ids=\"228452,25664166,26135863,25440203\" more_url=\"http://open.mapquestapi.com/nominatim/v1/search?format=xml&amp;exclude_place_ids=228452,25664166,26135863,25440203&amp;accept-language=&amp;q=innsbruck\">\n"
 								+ "  <place place_id=\"228452\" osm_type=\"node\" osm_id=\"34840064\" place_rank=\"16\" boundingbox=\"47.2554266357,47.2754304504,11.3827679062,11.4027688599\" lat=\"47.2654296\" lon=\"11.3927685\" display_name=\"Innsbruck, Bezirk Innsbruck-Stadt, Innsbruck-Stadt, Tirol, Österreich, Europe\" class=\"place\" type=\"city\" icon=\"http://open.mapquestapi.com/nominatim/v1/images/mapicons/poi_place_city.p.20.png\"/>\n"
