@@ -188,6 +188,16 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	private CloseAction mCloseAction;
 
+	private JPanel mSearchFieldPanel;
+
+	private JList mResultList;
+
+	private boolean mSearchBarVisible;
+
+	private JPanel mSearchPanel;
+
+	private JTextField mSearchTerm;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -269,31 +279,31 @@ public class MapDialog extends MindMapHookAdapter implements
 		// panel.add(mperpLabelName);
 		// panel.add(mperpLabelValue);
 
-		JPanel searchPanel = new JPanel(new BorderLayout());
+		mSearchPanel = new JPanel(new BorderLayout());
 		JLabel label = new JLabel("Search: ");
-		final JTextField searchTerm = new JTextField(15);
-		JPanel searchFieldPanel = new JPanel();
+		mSearchTerm = new JTextField(15);
+		mSearchFieldPanel = new JPanel();
 		JButton clearButton = new JButton(new ImageIcon(Resources.getInstance()
 				.getResource("images/remove.png")));
 		clearButton.setFocusable(false);
-		searchFieldPanel.add(label, BorderLayout.WEST);
-		searchFieldPanel.add(searchTerm, BorderLayout.CENTER);
-		searchFieldPanel.add(clearButton, BorderLayout.EAST);
+		mSearchFieldPanel.add(label, BorderLayout.WEST);
+		mSearchFieldPanel.add(mSearchTerm, BorderLayout.CENTER);
+		mSearchFieldPanel.add(clearButton, BorderLayout.EAST);
 		final SearchResultListModel dataModel = new SearchResultListModel();
-		final JList resultList = new JList(dataModel);
-		resultList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		resultList.setFocusable(false);
+		mResultList = new JList(dataModel);
+		mResultList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		mResultList.setFocusable(false);
 		clearButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent pE) {
 				dataModel.clear();
-				searchTerm.setText("");
+				mSearchTerm.setText("");
 			}
 		});
 		MouseListener mouseListener = new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					int index = resultList.locationToIndex(e.getPoint());
+					int index = mResultList.locationToIndex(e.getPoint());
 					Place place = dataModel.getPlaceAt(index);
 					map.setDisplayPositionByLatLon(place.getLat(),
 							place.getLon(), map.getZoom());
@@ -302,10 +312,10 @@ public class MapDialog extends MindMapHookAdapter implements
 				}
 			}
 		};
-		resultList.addMouseListener(mouseListener);
+		mResultList.addMouseListener(mouseListener);
 
 		// TODO: Move to FreeMindMapController.
-		searchTerm.addActionListener(new ActionListener() {
+		mSearchTerm.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent pE) {
 				try {
@@ -313,7 +323,7 @@ public class MapDialog extends MindMapHookAdapter implements
 					if (false) {
 						URL url = new URI("http",
 								"//nominatim.openstreetmap.org/search?format=xml&q="
-										+ searchTerm.getText(), null).toURL();
+										+ mSearchTerm.getText(), null).toURL();
 						result = Tools.getFile(new InputStreamReader(url
 								.openStream()));
 					} else {
@@ -340,10 +350,11 @@ public class MapDialog extends MindMapHookAdapter implements
 
 			}
 		});
-		searchPanel.setLayout(new BorderLayout());
-		searchPanel.add(searchFieldPanel, BorderLayout.NORTH);
-		searchPanel.add(new JScrollPane(resultList), BorderLayout.CENTER);
-		mMapDialog.add(searchPanel, BorderLayout.NORTH);
+		mSearchPanel.setLayout(new BorderLayout());
+		mSearchPanel.add(mSearchFieldPanel, BorderLayout.NORTH);
+		mSearchPanel.add(new JScrollPane(mResultList), BorderLayout.CENTER);
+		mSearchBarVisible = true;
+		mMapDialog.add(mSearchPanel, BorderLayout.NORTH);
 		mMapDialog.add(map, BorderLayout.CENTER);
 
 		// add known markers to the map.
@@ -373,9 +384,23 @@ public class MapDialog extends MindMapHookAdapter implements
 			map.setZoomContolsVisible(storage.getZoomControlsVisible());
 			map.setTileGridVisible(storage.getTileGridVisible());
 			map.setMapMarkerVisible(storage.getShowMapMarker());
+			if(!storage.getSearchControlVisible()) {
+				toggleSearchBar();
+			}
 		}
 		mMapDialog.setVisible(true);
 
+	}
+	
+	public void toggleSearchBar() {
+		if(mSearchBarVisible) {
+			mMapDialog.remove(mSearchPanel);
+		} else {
+			mMapDialog.add(mSearchPanel, BorderLayout.NORTH);
+			mSearchTerm.requestFocus();
+		}
+		mMapDialog.validate();
+		mSearchBarVisible = ! mSearchBarVisible;
 	}
 
 	public Set getMapNodePositionHolders() {
@@ -428,6 +453,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		storage.setTileGridVisible(map.isTileGridVisible());
 		storage.setZoomControlsVisible(map.getZoomContolsVisible());
 		storage.setShowMapMarker(map.getMapMarkersVisible());
+		storage.setSearchControlVisible(mSearchBarVisible);
 		getMindMapController().storeDialogPositions(mMapDialog, storage,
 				WINDOW_PREFERENCE_STORAGE_PROPERTY);
 
@@ -611,5 +637,9 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	public CloseAction getCloseAction() {
 		return mCloseAction;
+	}
+
+	public boolean isSearchBarVisible() {
+		return mSearchBarVisible;
 	}
 }

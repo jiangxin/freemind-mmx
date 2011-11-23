@@ -41,6 +41,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapController;
@@ -52,6 +53,7 @@ import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
 import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.StructuredMenuHolder;
+import freemind.main.FreeMind;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
@@ -367,6 +369,22 @@ public class FreeMindMapController extends JMapController implements
 		
 	}
 	
+	private final class SearchControlVisible extends AbstractAction  implements MenuItemSelectedListener{
+		
+		public SearchControlVisible() {
+			super(getText("MapControllerPopupDialog.SearchControlVisible"));
+		}
+		
+		public void actionPerformed(ActionEvent pE) {
+			mMapHook.toggleSearchBar();
+		}
+		
+		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
+			return mMapHook.isSearchBarVisible();
+		}
+		
+	}
+	
 	JCursorMapViewer getMap() {
 		return (JCursorMapViewer) map;
 	}
@@ -403,6 +421,8 @@ public class FreeMindMapController extends JMapController implements
 		Action showMapMarker = new ShowMapMarker();
 		Action tileGridVisible = new TileGridVisible();
 		Action zoomControlsVisible = new ZoomControlsVisible();
+		Action searchControlVisible = new SearchControlVisible();
+
 		/** Menu **/
 		StructuredMenuHolder menuHolder = new StructuredMenuHolder();
 		JMenuBar menu = new JMenuBar();
@@ -422,6 +442,10 @@ public class FreeMindMapController extends JMapController implements
 					.addAction(new ChangeTileSource(source), "main/view/" + i);
 		}
 		menuHolder.addSeparator("main/view/");
+		JMenuItem searchItem = menuHolder.addAction(searchControlVisible, "main/view/showSearchControl");
+		String keyProp = mMindMapController.getFrame()
+				.getProperty("keystroke_plugins/map/MapDialog_toggle_search");
+		searchItem.setAccelerator(KeyStroke.getKeyStroke(keyProp));
 		menuHolder.addAction(showMapMarker, "main/view/showMapMarker");
 		menuHolder.addAction(tileGridVisible, "main/view/tileGridVisible");
 		menuHolder.addAction(zoomControlsVisible, "main/view/zoomControlsVisible");
