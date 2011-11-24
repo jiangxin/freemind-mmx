@@ -2,6 +2,7 @@
 Changes made in FreeMind 1.0.0 Alpha8
 ===============================
 * Fixed https://sourceforge.net/projects/freemind/forums/forum/22102/topic/4801690
+* Added spell checking. Thanks to the author Eike.
 
 ===============================
 Changes made in FreeMind 1.0.0 Alpha7

@@ -29,7 +29,10 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Locale;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -45,6 +48,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.html.HTMLDocument;
 
+import com.inet.jortho.SpellChecker;
 import com.lightdev.app.shtm.SHTMLPanel;
 import com.lightdev.app.shtm.TextResources;
 
@@ -53,6 +57,7 @@ import freemind.controller.actions.generated.instance.EditNoteToNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
 import freemind.main.FreeMind;
+import freemind.main.FreeMindCommon;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
@@ -84,6 +89,8 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 	}
 
 	private static class SouthPanel extends JPanel {
+		private static final long serialVersionUID = -4624762713662343786L;
+
 		public SouthPanel() {
 			super(new BorderLayout());
 			setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
@@ -171,7 +178,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 				// (bug [ freemind-Bugs-2019223 ] Images are not shown in the
 				// Notes view)
 				// => the old method File.toURL() must be used again.
-				document.setBase(node.getMap().getFile().toURL());
+				document.setBase(node.getMap().getFile().toURI().toURL());
 			} catch (Exception e) {
 			}
 
@@ -212,7 +219,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 							.equals(NodeNote.EMPTY_EDITOR_STRING_ALTERNATIVE)
 					|| documentText
 							.equals(NodeNote.EMPTY_EDITOR_STRING_ALTERNATIVE2);
-			String noteText = node.getNoteText();
+			// String noteText = node.getNoteText();
 			// logger.info("Old doc =\n'" +
 			// ((noteText==null)?noteText:noteText.replaceAll("\n", "\\\\n")) +
 			// "', Current document: \n'" + documentText.replaceAll("\n",
@@ -290,6 +297,8 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 	}
 
 	class JumpToMapAction extends AbstractAction {
+		private static final long serialVersionUID = -531070508254258791L;
+
 		public void actionPerformed(ActionEvent e) {
 			if (sPositionToRecover != null) {
 				mSplitPane.setDividerLocation(sPositionToRecover.intValue());
@@ -472,6 +481,23 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 			SHTMLPanel.setResources(new SimplyHtmlResources());
 			htmlEditorPanel = SHTMLPanel.createSHTMLPanel();
 			htmlEditorPanel.setMinimumSize(new Dimension(100, 100));
+
+	        boolean checkSpelling = Resources.getInstance().
+	        		getBoolProperty(FreeMindCommon.CHECK_SPELLING);
+			if (checkSpelling) {
+				try {
+					URL url = null;
+					if (new File ("FreeMind.app/Contents/Resources/Java/").exists()) {
+						url = new URL("file", null, "FreeMind.app/Contents/Resources/Java/");
+					}
+					SpellChecker.registerDictionaries(url,
+//							"en,de,es,fr,it,nl,pl,ru,ar",
+							Locale.getDefault().getLanguage());
+					SpellChecker.register(htmlEditorPanel.getEditorPane());
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return htmlEditorPanel;
 	}

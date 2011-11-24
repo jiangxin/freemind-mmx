@@ -460,6 +460,10 @@ public class OptionPanel implements TextTranslator {
 					}
 				})); // automatic
 
+		controls.add (new BooleanProperty(
+				FreeMindCommon.CHECK_SPELLING + ".tooltip",
+				FreeMindCommon.CHECK_SPELLING)); // true
+
 		// INTERNAL PROPERTY.
 		// controls
 		// .add(new StringProperty(
