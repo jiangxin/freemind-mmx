@@ -51,6 +51,9 @@ public class EdgeWidthAction extends NodeGeneralAction implements NodeActorXml {
 	}
 
 	public void setEdgeWidth(MindMapNode node, int width) {
+		if(width == getWidth(node)) {
+			return;
+		}
 		modeController.getActionFactory().startTransaction(
 				(String) getValue(NAME));
 		modeController.getActionFactory().executeAction(
@@ -64,8 +67,12 @@ public class EdgeWidthAction extends NodeGeneralAction implements NodeActorXml {
 		EdgeWidthFormatAction styleAction = createEdgeWidthFormatAction(
 				selected, width);
 		EdgeWidthFormatAction undoStyleAction = createEdgeWidthFormatAction(
-				selected, ((EdgeAdapter) selected.getEdge()).getRealWidth());
+				selected, getWidth(selected));
 		return new ActionPair(styleAction, undoStyleAction);
+	}
+
+	public int getWidth(MindMapNode selected) {
+		return ((EdgeAdapter) selected.getEdge()).getRealWidth();
 	}
 
 	private EdgeWidthFormatAction createEdgeWidthFormatAction(

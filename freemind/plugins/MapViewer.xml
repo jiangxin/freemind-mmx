@@ -25,7 +25,7 @@
 	</plugin_action>
 
 	<plugin_registration 
-		class_name="plugins.map.MapNodePositionHolder$Registration" 
+		class_name="plugins.map.Registration" 
 		isPluginBase="true">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 	</plugin_registration>

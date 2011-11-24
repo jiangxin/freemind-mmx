@@ -582,6 +582,7 @@
 				<xs:attribute use="optional" name="cursor_longitude" type="xs:double"/>
 				<xs:attribute use="optional" name="cursor_latitude" type="xs:double"/>
 				<xs:attribute use="optional" name="zoom" type="xs:int"/>
+				<xs:attribute use="optional" name="tile_source" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
@@ -938,6 +939,10 @@
 				<xs:attribute use="optional" name="cursor_longitude" type="xs:double"/>
 				<xs:attribute use="optional" name="cursor_latitude" type="xs:double"/>
 				<xs:attribute use="optional" name="zoom" type="xs:int"/>
+				<xs:attribute use="optional" name="tile_source" type="xs:string"/>
+				<xs:attribute use="optional" name="showMapMarker" type="xs:boolean" default="true"/>
+				<xs:attribute use="optional" name="tileGridVisible" type="xs:boolean" default="false"/>
+				<xs:attribute use="optional" name="zoomControlsVisible" type="xs:boolean" default="true"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>

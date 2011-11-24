@@ -5,22 +5,30 @@ package plugins.map;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URL;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
+import javax.swing.AbstractListModel;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
@@ -30,16 +38,14 @@ import org.openstreetmap.gui.jmapviewer.OsmFileCacheTileLoader;
 import org.openstreetmap.gui.jmapviewer.OsmTileLoader;
 import org.openstreetmap.gui.jmapviewer.events.JMVCommandEvent;
 import org.openstreetmap.gui.jmapviewer.interfaces.JMapViewerEventListener;
-import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
-import org.openstreetmap.gui.jmapviewer.interfaces.TileLoader;
-import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
-import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
-import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
+import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource.Mapnik;
 
 import plugins.map.MapNodePositionHolder.MapNodePositionListener;
-import plugins.map.MapNodePositionHolder.Registration;
+import freemind.common.XmlBindingTools;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.actions.generated.instance.MapWindowConfigurationStorage;
+import freemind.controller.actions.generated.instance.Place;
+import freemind.controller.actions.generated.instance.Searchresults;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
@@ -54,12 +60,106 @@ import freemind.view.mindmapview.NodeView;
  * 
  * Demonstrates the usage of {@link JMapViewer}
  * 
- * @author Jan Peter Stotz
- * adapted for FreeMind by Chris.
+ * @author Jan Peter Stotz adapted for FreeMind by Chris.
  */
 public class MapDialog extends MindMapHookAdapter implements
 		JMapViewerEventListener, MapModuleChangeObserver,
 		MapNodePositionListener, NodeSelectionListener {
+
+	private final class CloseAction extends AbstractAction {
+
+		public CloseAction() {
+			super(getResourceString("MapDialog_close"));
+		}
+
+		public void actionPerformed(ActionEvent arg0) {
+			disposeDialog();
+		}
+	}
+
+	protected final class SearchResultListModel extends AbstractListModel {
+		private final List mPlaceList;
+
+		// private final List mListeners;
+
+		public SearchResultListModel() {
+			this.mPlaceList = new Vector();
+		}
+
+		public int getSize() {
+			return mPlaceList.size();
+		}
+
+		/**
+		 * @return the name of the place belonging to index.
+		 */
+		public Object getElementAt(int index) {
+			return getPlaceAt(index).getDisplayName();
+		}
+
+		/**
+		 * @return the place belonging to index.
+		 */
+		public Place getPlaceAt(int index) {
+			return ((Place) mPlaceList.get(index));
+		}
+
+		public List getPlaceList() {
+			return Collections.unmodifiableList(mPlaceList);
+		}
+
+		public void removePlace(int index) {
+			if (index < 0 || index >= mPlaceList.size()) {
+				throw new IllegalArgumentException(
+						"try to delete in place list with an index out of range: "
+								+ index);
+			}
+			logger.info("Place "
+					+ ((Place) mPlaceList.get(index)).getDisplayName()
+					+ " should be removed at " + index);
+			mPlaceList.remove(index);
+			fireIntervalRemoved(mPlaceList, index, index);
+		}
+
+		public void addPlace(Place newPlace) {
+			mPlaceList.add(newPlace);
+			int newIndex = mPlaceList.size() - 1;
+			fireIntervalAdded(mPlaceList, newIndex, newIndex);
+		}
+
+		public Place getPlaceByName(String name) {
+			for (Iterator iter = mPlaceList.iterator(); iter.hasNext();) {
+				Place place = (Place) iter.next();
+				if (place.getDisplayName().equals(name)) {
+					return place;
+				}
+			}
+			return null;
+		}
+
+		// public void add(int i, Object object) {
+		// if (object instanceof String) {
+		// String placeName = (String) object;
+		// Place correspondingPlace = getPlaceByName(placeName);
+		// if (correspondingPlace != null) {
+		// addPlace(correspondingPlace, i);
+		// }
+		// }
+		// }
+		//
+		public void remove(int i) {
+			removePlace(i);
+		}
+
+		/**
+		 * 
+		 */
+		public void clear() {
+			for (int i = mPlaceList.size(); i > 0; --i) {
+				removePlace(i - 1);
+			}
+		}
+	}
 
 	private static final String WINDOW_PREFERENCE_STORAGE_PROPERTY = MapDialog.class
 			.getName();
@@ -82,13 +182,14 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	private HashMap /* < MapNodePositionHolder, MapMarkerLocation > */mMarkerMap = new HashMap();
 
+	private CloseAction mCloseAction;
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see freemind.extensions.HookAdapter#startupMapHook()
 	 */
 	public void startupMapHook() {
-		// TODO Auto-generated method stub
 		super.startupMapHook();
 		mMyMindMapController = super.getMindMapController();
 		getMindMapController().getController().getMapModuleManager()
@@ -102,118 +203,120 @@ public class MapDialog extends MindMapHookAdapter implements
 				disposeDialog();
 			}
 		});
-		Tools.addEscapeActionToDialog(mMapDialog, new AbstractAction() {
-			public void actionPerformed(ActionEvent arg0) {
-				disposeDialog();
-			}
-		});
+		mCloseAction = new CloseAction();
+		// the action title is changed by the following method, thus we create
+		// another close action.
+		Tools.addEscapeActionToDialog(mMapDialog, new CloseAction());
 		mMapDialog.setSize(400, 400);
 
-		TileCache tileCache = null;
+		map = new JCursorMapViewer(getMindMapController(), mMapDialog,
+				new MemoryTileCache(), this);
+		map.addJMVListener(this);
+		FreeMindMapController.changeTileSource(Mapnik.class.getName(), map);
+		OsmTileLoader loader = null;
 		String tileCacheClass = Resources.getInstance().getProperty(
 				TILE_CACHE_CLASS);
 		if (Tools.safeEquals(tileCacheClass, "file")) {
-			logger.info("Using file tile cache");
-			tileCache = new FileTileCache();
-			((FileTileCache) tileCache).setDirectory(Resources.getInstance()
-					.getProperty(FILE_TILE_CACHE_DIRECTORY));
+			String directory = Resources.getInstance().getProperty(
+					FILE_TILE_CACHE_DIRECTORY);
+			if (directory.startsWith("%/")) {
+				directory = Resources.getInstance().getFreemindDirectory()
+						+ File.separator + directory.substring(2);
+			}
+			logger.info("Trying to use file cache tile loader with dir "
+					+ directory);
+			try {
+				loader = new OsmFileCacheTileLoader(map, new File(directory));
+			} catch (SecurityException e1) {
+				freemind.main.Resources.getInstance().logException(e1);
+
+			} catch (IOException e1) {
+				freemind.main.Resources.getInstance().logException(e1);
+
+			}
 		}
-		if (tileCache == null) {
-			logger.info("Using memory tile cache");
-			tileCache = new MemoryTileCache();
+		if (loader == null) {
+			logger.info("Using osm tile loader");
+			loader = new OsmTileLoader(map);
 		}
-		map = new JCursorMapViewer(getMindMapController(), mMapDialog,
-				tileCache);
+		map.setTileLoader(loader);
 
 		// Listen to the map viewer for user operations so components will
 		// receive events and update
-		map.addJMVListener(this);
 
 		mMapDialog.setLayout(new BorderLayout());
-		JPanel panel = new JPanel();
-		JPanel helpPanel = new JPanel();
+		// JPanel panel = new JPanel();
+		// JPanel helpPanel = new JPanel();
+		//
+		// mperpLabelName = new JLabel("Meters/Pixels: ");
+		// mperpLabelValue = new JLabel(format("%s", map.getMeterPerPixel()));
+		//
+		// zoomLabel = new JLabel("Zoom: ");
+		// zoomValue = new JLabel(format("%s", map.getZoom()));
+		//
+		// mMapDialog.add(panel, BorderLayout.NORTH);
+		// mMapDialog.add(helpPanel, BorderLayout.SOUTH);
+		// JLabel helpLabel = new JLabel("Use left mouse button to move,\n "
+		// + "mouse wheel to zoom, left click to set cursor.");
+		// helpPanel.add(helpLabel);
+		//
+		// panel.add(zoomLabel);
+		// panel.add(zoomValue);
+		// panel.add(mperpLabelName);
+		// panel.add(mperpLabelValue);
 
-		mperpLabelName = new JLabel("Meters/Pixels: ");
-		mperpLabelValue = new JLabel(format("%s", map.getMeterPerPixel()));
+		JPanel searchPanel = new JPanel();
+		JLabel label = new JLabel("Search: ");
+		final JTextField searchTerm = new JTextField(15);
+		JPanel searchFieldPanel = new JPanel();
+		searchFieldPanel.add(label);
+		searchFieldPanel.add(searchTerm);
+		final SearchResultListModel dataModel = new SearchResultListModel();
+		final JList resultList = new JList(dataModel);
+		MouseListener mouseListener = new MouseAdapter() {
+		    public void mouseClicked(MouseEvent e) {
+		        if (e.getClickCount() == 2) {
+		            int index = resultList.locationToIndex(e.getPoint());
+		            Place place = dataModel.getPlaceAt(index);
+		            map.setDisplayPositionByLatLon(place.getLat(), place.getLon(), map.getZoom());
+		            map.setCursorPosition(new Coordinate(place.getLat(), place.getLon()));
+		         }
+		    }
+		};
+		resultList.addMouseListener(mouseListener);
 
-		zoomLabel = new JLabel("Zoom: ");
-		zoomValue = new JLabel(format("%s", map.getZoom()));
+		searchTerm.addActionListener(new ActionListener() {
 
-		mMapDialog.add(panel, BorderLayout.NORTH);
-		mMapDialog.add(helpPanel, BorderLayout.SOUTH);
-		JLabel helpLabel = new JLabel("Use left mouse button to move,\n "
-				+ "mouse wheel to zoom, left click to set cursor.");
-		helpPanel.add(helpLabel);
-		JButton button = new JButton("setDisplayToFitMapMarkers");
-		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent pE) {
+				try {
+					URL url = new URI("http",
+							"//nominatim.openstreetmap.org/search?format=xml&q="
+									+ searchTerm.getText(), null).toURL();
+					String result = Tools.getFile(new InputStreamReader(url
+							.openStream()));
+					Searchresults results = (Searchresults) XmlBindingTools
+							.getInstance().unMarshall(result);
+					dataModel.clear();
+					for (Iterator it = results.getListPlaceList().iterator(); it
+							.hasNext();) {
+						Place place = (Place) it.next();
+						dataModel.addPlace(place);
+					}
 
-			public void actionPerformed(ActionEvent e) {
-				map.setDisplayToFitMapMarkers();
+				} catch (Exception e) {
+					freemind.main.Resources.getInstance().logException(e);
+				}
+
 			}
 		});
-		JComboBox tileSourceSelector = new JComboBox(new TileSource[] {
-				new OsmTileSource.Mapnik(), new OsmTileSource.TilesAtHome(),
-				new OsmTileSource.CycleMap(), new BingAerialTileSource() });
-		tileSourceSelector.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				map.setTileSource((TileSource) e.getItem());
-			}
-		});
-		JComboBox tileLoaderSelector;
-		try {
-			tileLoaderSelector = new JComboBox(new TileLoader[] {
-					new OsmFileCacheTileLoader(map), new OsmTileLoader(map) });
-		} catch (IOException e) {
-			tileLoaderSelector = new JComboBox(
-					new TileLoader[] { new OsmTileLoader(map) });
-		}
-		tileLoaderSelector.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				map.setTileLoader((TileLoader) e.getItem());
-			}
-		});
-		map.setTileLoader((TileLoader) tileLoaderSelector.getSelectedItem());
-		panel.add(tileSourceSelector);
-		panel.add(tileLoaderSelector);
-		final JCheckBox showMapMarker = new JCheckBox("Map markers visible");
-		showMapMarker.setSelected(map.getMapMarkersVisible());
-		showMapMarker.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				map.setMapMarkerVisible(showMapMarker.isSelected());
-			}
-		});
-		panel.add(showMapMarker);
-		final JCheckBox showTileGrid = new JCheckBox("Tile grid visible");
-		showTileGrid.setSelected(map.isTileGridVisible());
-		showTileGrid.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				map.setTileGridVisible(showTileGrid.isSelected());
-			}
-		});
-		panel.add(showTileGrid);
-		final JCheckBox showZoomControls = new JCheckBox("Show zoom controls");
-		showZoomControls.setSelected(map.getZoomContolsVisible());
-		showZoomControls.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent e) {
-				map.setZoomContolsVisible(showZoomControls.isSelected());
-			}
-		});
-		panel.add(showZoomControls);
-		panel.add(button);
-
-		panel.add(zoomLabel);
-		panel.add(zoomValue);
-		panel.add(mperpLabelName);
-		panel.add(mperpLabelValue);
-
+		searchPanel.setLayout(new BorderLayout());
+		searchPanel.add(searchFieldPanel, BorderLayout.NORTH);
+		searchPanel.add(resultList, BorderLayout.CENTER);
+		mMapDialog.add(searchPanel, BorderLayout.NORTH);
 		mMapDialog.add(map, BorderLayout.CENTER);
 
 		// add known markers to the map.
-		HashSet mapNodePositionHolders = ((Registration) getPluginBaseClass())
-				.getMapNodePositionHolders();
+		Set mapNodePositionHolders = getMapNodePositionHolders();
 		for (Iterator it = mapNodePositionHolders.iterator(); it.hasNext();) {
 			MapNodePositionHolder nodePositionHolder = (MapNodePositionHolder) it
 					.next();
@@ -234,9 +337,19 @@ public class MapDialog extends MindMapHookAdapter implements
 					storage.getMapCenterLongitude(), storage.getZoom());
 			map.setCursorPosition(new Coordinate(storage.getCursorLatitude(),
 					storage.getCursorLongitude()));
+			FreeMindMapController
+					.changeTileSource(storage.getTileSource(), map);
+			map.setZoomContolsVisible(storage.getZoomControlsVisible());
+			map.setTileGridVisible(storage.getTileGridVisible());
+			map.setMapMarkerVisible(storage.getShowMapMarker());
 		}
 		mMapDialog.setVisible(true);
 
+	}
+
+	public Set getMapNodePositionHolders() {
+		return ((Registration) getPluginBaseClass())
+				.getMapNodePositionHolders();
 	}
 
 	public void addMapMarker(MapNodePositionHolder nodePositionHolder) {
@@ -279,6 +392,11 @@ public class MapDialog extends MindMapHookAdapter implements
 		Coordinate cursorPosition = map.getCursorPosition();
 		storage.setCursorLongitude(cursorPosition.getLon());
 		storage.setCursorLatitude(cursorPosition.getLat());
+		storage.setTileSource(map.getTileController().getTileSource()
+				.getClass().getName());
+		storage.setTileGridVisible(map.isTileGridVisible());
+		storage.setZoomControlsVisible(map.getZoomContolsVisible());
+		storage.setShowMapMarker(map.getMapMarkersVisible());
 		getMindMapController().storeDialogPositions(mMapDialog, storage,
 				WINDOW_PREFERENCE_STORAGE_PROPERTY);
 
@@ -458,5 +576,9 @@ public class MapDialog extends MindMapHookAdapter implements
 	public void onSelectionChange(NodeView pNode, boolean pIsSelected) {
 		selectMapPosition(pNode, pIsSelected);
 
+	}
+
+	public CloseAction getCloseAction() {
+		return mCloseAction;
 	}
 }

@@ -129,7 +129,7 @@ public class FreeMindCommon {
 			try {
 				return languageResources.getString(key);
 			} catch (Exception ex) {
-				logger.severe("Warning - resource string not found:" + key);
+				logger.severe("Warning - resource string not found:\n" + key);
 				return defaultResources.getString(key) + POSTFIX_TRANSLATE_ME;
 			}
 		}

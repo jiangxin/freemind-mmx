@@ -30,6 +30,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,21 +39,23 @@ import javax.swing.Action;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapController;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.OsmMercator;
-import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
-import org.openstreetmap.gui.jmapviewer.interfaces.MapPolygon;
-import org.openstreetmap.gui.jmapviewer.interfaces.MapRectangle;
+import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
+import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
+import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
+import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.StructuredMenuHolder;
+import freemind.main.Resources;
+import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.NodeActorXml;
-import freemind.modes.mindmapmode.actions.NodeGeneralAction;
 
 /**
  * Default map controller which implements map moving by pressing the right
@@ -77,6 +80,44 @@ import freemind.modes.mindmapmode.actions.NodeGeneralAction;
  */
 public class FreeMindMapController extends JMapController implements
 		MouseListener, MouseMotionListener, MouseWheelListener {
+	/**
+	 * @author foltin
+	 * @date 16.11.2011
+	 */
+	public class ChangeTileSource extends AbstractAction implements MenuItemSelectedListener {
+
+		private final TileSource mSource;
+
+		/**
+		 * @param pSource
+		 */
+		public ChangeTileSource(TileSource pSource) {
+			super(Resources.getInstance().getText(
+					"map_ChangeTileSource_" + pSource.getClass().getName()));
+			mSource = pSource;
+
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent
+		 * )
+		 */
+		public void actionPerformed(ActionEvent pE) {
+			map.setTileSource(mSource);
+		}
+
+		/* (non-Javadoc)
+		 * @see freemind.controller.MenuItemSelectedListener#isSelected(javax.swing.JMenuItem, javax.swing.Action)
+		 */
+		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
+			return getTileSource() == mSource;
+		}
+
+	}
+
 	/**
 	 * @author foltin
 	 * @date 31.10.2011
@@ -123,6 +164,209 @@ public class FreeMindMapController extends JMapController implements
 		}
 	}
 
+	/**
+	 * @author foltin
+	 * @date 31.10.2011
+	 */
+	private abstract class MoveAction extends AbstractAction {
+
+		/**
+		 * @param pText
+		 */
+		public MoveAction(String pText) {
+			super(pText);
+		}
+
+		public void actionPerformed(ActionEvent actionEvent) {
+			logger.fine("Left action!");
+			Coordinate cursorPosition = getMap().getCursorPosition();
+			// get map marker locations:
+			HashSet mapNodePositionHolders = new HashSet(
+					mMapHook.getMapNodePositionHolders());
+			logger.fine("Before removal " + mapNodePositionHolders.size()
+					+ " elements");
+			for (Iterator it = mapNodePositionHolders.iterator(); it.hasNext();) {
+				MapNodePositionHolder holder = (MapNodePositionHolder) it
+						.next();
+				Coordinate pointPosition = holder.getPosition();
+				boolean inDestinationQuadrant = destinationQuadrantCheck(
+						cursorPosition, pointPosition);
+				if (!inDestinationQuadrant
+						|| safeEquals(pointPosition, cursorPosition)) {
+					it.remove();
+				}
+			}
+			logger.fine("After removal " + mapNodePositionHolders.size()
+					+ " elements");
+			// now, we have all points on the left angle -45° to 45° and search
+			// for the nearest
+			MapNodePositionHolder nearest = null;
+			double distance = Double.MAX_VALUE;
+			for (Iterator it = mapNodePositionHolders.iterator(); it.hasNext();) {
+				MapNodePositionHolder holder = (MapNodePositionHolder) it
+						.next();
+				double newDist = dist(holder.getPosition(), cursorPosition);
+				logger.fine("Position " + holder + " is " + newDist);
+				if (newDist < distance) {
+					distance = newDist;
+					nearest = holder;
+				}
+			}
+			if (nearest != null) {
+				showNode(nearest);
+			}
+		}
+
+		public boolean destinationQuadrantCheck(Coordinate cursorPosition,
+				Coordinate pointPosition) {
+			int mapZoomMax = getMaxZoom();
+			int x1 = OsmMercator.LonToX(cursorPosition.getLon(), mapZoomMax);
+			int y1 = OsmMercator.LatToY(cursorPosition.getLat(), mapZoomMax);
+			int x2 = OsmMercator.LonToX(pointPosition.getLon(), mapZoomMax);
+			int y2 = OsmMercator.LatToY(pointPosition.getLat(), mapZoomMax);
+			return destinationQuadrantCheck(x1, y1, x2, y2);
+		}
+
+		public abstract boolean destinationQuadrantCheck(int x1, int y1,
+				int x2, int y2);
+
+		/**
+		 * @param pPointPosition
+		 * @param pCursorPosition
+		 * @return
+		 */
+		private boolean safeEquals(Coordinate p1, Coordinate p2) {
+			return (p1 != null && p2 != null && p1.getLon() == p2.getLon() && p1
+					.getLat() == p2.getLat()) || (p1 == null && p2 == null);
+		}
+
+		/**
+		 * @param pPosition
+		 * @param pCursorPosition
+		 * @return
+		 */
+		private double dist(Coordinate p1, Coordinate p2) {
+			return OsmMercator.getDistance(p1.getLat(), p1.getLon(),
+					p2.getLat(), p2.getLon());
+		}
+	}
+
+	private final class MoveLeftAction extends MoveAction {
+		/**
+		 * 
+		 */
+		public MoveLeftAction() {
+			super(getText("MapControllerPopupDialog.moveLeft"));
+		}
+
+		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2) {
+			return x2 < x1 && Math.abs(y2 - y1) < Math.abs(x2 - x1);
+		}
+
+	}
+
+	private final class MoveRightAction extends MoveAction {
+		/**
+		 * 
+		 */
+		public MoveRightAction() {
+			super(getText("MapControllerPopupDialog.moveRight"));
+		}
+
+		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2) {
+			return x2 > x1 && Math.abs(y2 - y1) < Math.abs(x2 - x1);
+		}
+
+	}
+
+	private final class MoveUpAction extends MoveAction {
+		/**
+		 * 
+		 */
+		public MoveUpAction() {
+			super(getText("MapControllerPopupDialog.moveUp"));
+		}
+
+		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2) {
+			return y2 < y1 && Math.abs(y2 - y1) > Math.abs(x2 - x1);
+		}
+
+	}
+
+	private final class MoveDownAction extends MoveAction {
+		/**
+		 * 
+		 */
+		public MoveDownAction() {
+			super(getText("MapControllerPopupDialog.moveDown"));
+		}
+
+		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2) {
+			return y2 > y1 && Math.abs(y2 - y1) > Math.abs(x2 - x1);
+		}
+
+	}
+	
+	private final class SetDisplayToFitMapMarkers extends AbstractAction {
+
+		public SetDisplayToFitMapMarkers() {
+			super(getText("MapControllerPopupDialog.SetDisplayToFitMapMarkers"));
+		}
+		
+		public void actionPerformed(ActionEvent pE) {
+			map.setDisplayToFitMapMarkers();
+		}
+		
+	}
+
+	private final class ShowMapMarker extends AbstractAction  implements MenuItemSelectedListener{
+
+		public ShowMapMarker() {
+			super(getText("MapControllerPopupDialog.ShowMapMarker"));
+		}
+		
+		public void actionPerformed(ActionEvent pE) {
+			map.setMapMarkerVisible(!map.getMapMarkersVisible());
+		}
+		
+		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
+			return map.getMapMarkersVisible();
+		}
+		
+	}
+	
+	private final class TileGridVisible extends AbstractAction  implements MenuItemSelectedListener{
+		
+		public TileGridVisible() {
+			super(getText("MapControllerPopupDialog.TileGridVisible"));
+		}
+		
+		public void actionPerformed(ActionEvent pE) {
+			map.setTileGridVisible(!map.isTileGridVisible());
+		}
+		
+		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
+			return map.isTileGridVisible();
+		}
+		
+	}
+	
+	private final class ZoomControlsVisible extends AbstractAction  implements MenuItemSelectedListener{
+		
+		public ZoomControlsVisible() {
+			super(getText("MapControllerPopupDialog.ZoomControlsVisible"));
+		}
+		
+		public void actionPerformed(ActionEvent pE) {
+			map.setZoomContolsVisible(!map.getZoomContolsVisible());
+		}
+		
+		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
+			return map.getZoomContolsVisible();
+		}
+		
+	}
+	
 	JCursorMapViewer getMap() {
 		return (JCursorMapViewer) map;
 	}
@@ -140,14 +384,25 @@ public class FreeMindMapController extends JMapController implements
 
 	private final JDialog mMapDialog;
 
+	protected static java.util.logging.Logger logger = freemind.main.Resources.getInstance().getLogger(
+			"plugins.map.FreeMindMapController");
+
+	private final MapDialog mMapHook;
+
 	public FreeMindMapController(JMapViewer map,
-			MindMapController pMindMapController, JDialog pMapDialog) {
+			MindMapController pMindMapController, final JDialog pMapDialog,
+			MapDialog pMapHook) {
 		super(map);
+		mMapHook = pMapHook;
 		mMindMapController = pMindMapController;
 		mMapDialog = pMapDialog;
 		Action placeAction = new PlaceNodeAction();
 		Action removePlaceAction = new RemovePlaceNodeAction();
 		Action showAction = new ShowNodeAction();
+		Action setDisplayToFitMapMarkers = new SetDisplayToFitMapMarkers();
+		Action showMapMarker = new ShowMapMarker();
+		Action tileGridVisible = new TileGridVisible();
+		Action zoomControlsVisible = new ZoomControlsVisible();
 		/** Menu **/
 		StructuredMenuHolder menuHolder = new StructuredMenuHolder();
 		JMenuBar menu = new JMenuBar();
@@ -155,8 +410,27 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addMenu(mainItem, "main/actions/.");
 		menuHolder.addAction(placeAction, "main/actions/place");
 		menuHolder.addAction(removePlaceAction, "main/actions/removeplace");
-		menuHolder.addAction(removePlaceAction, "main/actions/showNode");
-		menuHolder.addAction(showAction, "main/actions/showNode");
+		menuHolder.addAction(pMapHook.getCloseAction(), "main/actions/close");
+		JMenu viewItem = new JMenu(getText("MapControllerPopupDialog.Views"));
+		menuHolder.addMenu(viewItem, "main/view/.");
+		menuHolder.addAction(showAction, "main/view/showNode");
+		menuHolder.addAction(setDisplayToFitMapMarkers, "main/view/setDisplayToFitMapMarkers");
+		menuHolder.addSeparator("main/view/");
+		for (int i = 0; i < mTileSources.length; i++) {
+			TileSource source = mTileSources[i];
+			menuHolder
+					.addAction(new ChangeTileSource(source), "main/view/" + i);
+		}
+		menuHolder.addSeparator("main/view/");
+		menuHolder.addAction(showMapMarker, "main/view/showMapMarker");
+		menuHolder.addAction(tileGridVisible, "main/view/tileGridVisible");
+		menuHolder.addAction(zoomControlsVisible, "main/view/zoomControlsVisible");
+		JMenu navigationItem = new JMenu(getText("MapControllerPopupDialog.Navigation"));
+		menuHolder.addMenu(navigationItem, "main/navigation/.");
+		menuHolder.addAction(new MoveLeftAction(), "main/navigation/moveLeft");
+		menuHolder.addAction(new MoveRightAction(), "main/navigation/moveRight");
+		menuHolder.addAction(new MoveUpAction(), "main/navigation/moveUp");
+		menuHolder.addAction(new MoveDownAction(), "main/navigation/moveDown");
 		menuHolder.updateMenus(menu, "main/");
 		mMapDialog.setJMenuBar(menu);
 		/* Popup menu */
@@ -177,8 +451,15 @@ public class FreeMindMapController extends JMapController implements
 		}
 		if (hook != null) {
 			// set parameters:
-			hook.changePosition(hook, getMap().getCursorPosition(), map.getPosition(), map.getZoom());
+			String tileSource = getTileSource()
+					.getClass().getName();
+			hook.changePosition(hook, getMap().getCursorPosition(),
+					map.getPosition(), map.getZoom(), tileSource);
 		}
+	}
+
+	public TileSource getTileSource() {
+		return getMap().getTileController().getTileSource();
 	}
 
 	/**
@@ -200,15 +481,12 @@ public class FreeMindMapController extends JMapController implements
 	public void showNode(ActionEvent pActionEvent) {
 		MindMapNode selected = mMindMapController.getSelected();
 		List selecteds = mMindMapController.getSelecteds();
-		if(selecteds.size() == 1) {
-			MapNodePositionHolder hook = MapNodePositionHolder.getHook(selected);
+		if (selecteds.size() == 1) {
+			MapNodePositionHolder hook = MapNodePositionHolder
+					.getHook(selected);
 			if (hook != null) {
-				getMap().setCursorPosition(hook.getPosition());
-				// move map:
-				Coordinate mapCenter = hook.getMapCenter();
-				map.setDisplayPositionByLatLon(mapCenter.getLat(),
-						mapCenter.getLon(), hook.getZoom());
-			}			
+				showNode(hook);
+			}
 			return;
 		}
 		// find common center. Code adapted from JMapViewer.
@@ -216,20 +494,23 @@ public class FreeMindMapController extends JMapController implements
 		int y_min = Integer.MAX_VALUE;
 		int x_max = Integer.MIN_VALUE;
 		int y_max = Integer.MIN_VALUE;
-		int mapZoomMax = getMap().getTileController().getTileSource().getMaxZoom();
+		int mapZoomMax = getMaxZoom();
 		for (Iterator it = selecteds.iterator(); it.hasNext();) {
 			MindMapNode node = (MindMapNode) it.next();
 			MapNodePositionHolder hook = MapNodePositionHolder.getHook(node);
 
 			if (hook != null) {
-				int x = OsmMercator.LonToX(hook.getPosition().getLon(), mapZoomMax);
-				int y = OsmMercator.LatToY(hook.getPosition().getLat(), mapZoomMax);
+				int x = OsmMercator.LonToX(hook.getPosition().getLon(),
+						mapZoomMax);
+				int y = OsmMercator.LatToY(hook.getPosition().getLat(),
+						mapZoomMax);
 				x_max = Math.max(x_max, x);
 				y_max = Math.max(y_max, y);
 				x_min = Math.min(x_min, x);
 				y_min = Math.min(y_min, y);
-				if(node == selected) {
+				if (node == selected) {
 					getMap().setCursorPosition(hook.getPosition());
+					changeTileSource(hook.getTileSource(), map);
 				}
 			}
 		}
@@ -251,7 +532,43 @@ public class FreeMindMapController extends JMapController implements
 		getMap().setDisplayPosition(x, y, newZoom);
 
 	}
-	
+
+	public int getMaxZoom() {
+		return getTileSource().getMaxZoom();
+	}
+
+	public void showNode(MapNodePositionHolder hook) {
+		changeTileSource(hook.getTileSource(), map);
+		getMap().setCursorPosition(hook.getPosition());
+		// move map:
+		Coordinate mapCenter = hook.getMapCenter();
+		map.setDisplayPositionByLatLon(mapCenter.getLat(), mapCenter.getLon(),
+				hook.getZoom());
+	}
+
+	/**
+	 * @param pTileSource
+	 * @param pMap
+	 *            if found, the map tile source is set. Set null, if you don't
+	 *            want this.
+	 * @return null, if the string is not found.
+	 */
+	public static TileSource changeTileSource(String pTileSource,
+			JMapViewer pMap) {
+		logger.info("Searching for tile source " + pTileSource);
+		for (int i = 0; i < mTileSources.length; i++) {
+			TileSource source = mTileSources[i];
+			if (Tools.safeEquals(source.getClass().getName(), pTileSource)) {
+				logger.info("Found  tile source " + source);
+				if (pMap != null) {
+					pMap.setTileSource(source);
+				}
+				return source;
+			}
+		}
+		return null;
+	}
+
 	public MapNodePositionHolder addHookToNode(MindMapNode selected) {
 		MapNodePositionHolder hook;
 		List selecteds = Arrays.asList(new MindMapNode[] { selected });
@@ -282,6 +599,10 @@ public class FreeMindMapController extends JMapController implements
 
 	private boolean wheelZoomEnabled = true;
 	private boolean doubleClickZoomEnabled = true;
+
+	private static TileSource[] mTileSources = new TileSource[] {
+			new OsmTileSource.Mapnik(), new OsmTileSource.TilesAtHome(),
+			new OsmTileSource.CycleMap(), new BingAerialTileSource() };
 
 	public void mouseDragged(MouseEvent e) {
 		if (!movementEnabled || !isMoving)
@@ -463,4 +784,5 @@ public class FreeMindMapController extends JMapController implements
 		String os = System.getProperty("os.name");
 		return os != null && os.toLowerCase().startsWith("mac os x");
 	}
+
 }

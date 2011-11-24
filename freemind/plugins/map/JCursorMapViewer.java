@@ -51,17 +51,20 @@ final class JCursorMapViewer extends JMapViewer {
 	Coordinate mCursorPosition;
 	Stroke mStroke = new BasicStroke(2);
 	private FreeMindMapController mFreeMindMapController;
+	private final MapDialog mMapHook;
 
 	/**
 	 * @param pMindMapController
 	 * @param pMapDialog
+	 * @param pMapHook 
 	 * 
 	 */
 	public JCursorMapViewer(MindMapController pMindMapController,
-			JDialog pMapDialog, TileCache pTileCache) {
+			JDialog pMapDialog, TileCache pTileCache, MapDialog pMapHook) {
 		super(pTileCache, 4);
+		mMapHook = pMapHook;
 		mFreeMindMapController = new FreeMindMapController(this,
-				pMindMapController, pMapDialog);
+				pMindMapController, pMapDialog, pMapHook);
 		Action updateCursorAction = new AbstractAction() {
 			public void actionPerformed(ActionEvent e) {
 				mShowCursor = !mShowCursor;
@@ -70,6 +73,10 @@ final class JCursorMapViewer extends JMapViewer {
 		};
 		new Timer(1000, updateCursorAction).start();
 
+	}
+
+	public FreeMindMapController getFreeMindMapController() {
+		return mFreeMindMapController;
 	}
 
 	public boolean isUseCursor() {
@@ -128,4 +135,14 @@ final class JCursorMapViewer extends JMapViewer {
 		return tileController;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.openstreetmap.gui.jmapviewer.JMapViewer#initializeZoomSlider()
+	 */
+	protected void initializeZoomSlider() {
+		super.initializeZoomSlider();
+		//focus
+		zoomSlider.setFocusable(false);
+		zoomInButton.setFocusable(false);
+		zoomOutButton.setFocusable(false);
+	}
 }

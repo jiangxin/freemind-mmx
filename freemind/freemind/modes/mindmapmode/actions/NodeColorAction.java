@@ -63,6 +63,9 @@ public class NodeColorAction extends FreemindAction implements ActorXml {
 	}
 
 	public void setNodeColor(MindMapNode node, Color color) {
+		if(Tools.safeEquals(color, node.getColor())) {
+			return;
+		}
 		NodeColorFormatAction doAction = createNodeColorFormatAction(node,
 				color);
 		NodeColorFormatAction undoAction = createNodeColorFormatAction(node,
