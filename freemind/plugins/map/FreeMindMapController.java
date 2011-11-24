@@ -29,6 +29,9 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -51,8 +54,11 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
+import freemind.common.XmlBindingTools;
 import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.StructuredMenuHolder;
+import freemind.controller.actions.generated.instance.Place;
+import freemind.controller.actions.generated.instance.Searchresults;
 import freemind.main.FreeMind;
 import freemind.main.Resources;
 import freemind.main.Tools;
@@ -807,6 +813,56 @@ public class FreeMindMapController extends JMapController implements
 	public static boolean isPlatformOsx() {
 		String os = System.getProperty("os.name");
 		return os != null && os.toLowerCase().startsWith("mac os x");
+	}
+
+	/**
+	 * Action handler for search result handling.
+	 * @param pPlace
+	 */
+	public void setCursorPosition(Place pPlace) {
+		map.setDisplayPositionByLatLon(pPlace.getLat(),
+				pPlace.getLon(), map.getZoom());
+		getMap().setCursorPosition(new Coordinate(pPlace.getLat(), pPlace
+				.getLon()));
+
+	}
+
+	/**
+	 * @param pText
+	 * @return
+	 */
+	public Searchresults getSearchResults(String pText) {
+		String result;
+		Searchresults results = new Searchresults();
+		try {
+			if (true) {
+				URL url = new URI("http",
+						"//nominatim.openstreetmap.org/search?format=xml&q="
+								+ pText, null).toURL();
+				result = Tools.getFile(new InputStreamReader(url.openStream()));
+			} else {
+				// only for offline testing:
+				result = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+						+ "<searchresults timestamp=\"Tue, 08 Nov 11 22:49:54 -0500\" attribution=\"Data Copyright OpenStreetMap Contributors, Some Rights Reserved. CC-BY-SA 2.0.\" querystring=\"innsbruck\" polygon=\"false\" exclude_place_ids=\"228452,25664166,26135863,25440203\" more_url=\"http://open.mapquestapi.com/nominatim/v1/search?format=xml&amp;exclude_place_ids=228452,25664166,26135863,25440203&amp;accept-language=&amp;q=innsbruck\">\n"
+						+ "  <place place_id=\"228452\" osm_type=\"node\" osm_id=\"34840064\" place_rank=\"16\" boundingbox=\"47.2554266357,47.2754304504,11.3827679062,11.4027688599\" lat=\"47.2654296\" lon=\"11.3927685\" display_name=\"Innsbruck, Bezirk Innsbruck-Stadt, Innsbruck-Stadt, Tirol, Österreich, Europe\" class=\"place\" type=\"city\" icon=\"http://open.mapquestapi.com/nominatim/v1/images/mapicons/poi_place_city.p.20.png\"/>\n"
+						+ "  <place place_id=\"25664166\" osm_type=\"way\" osm_id=\"18869490\" place_rank=\"27\" boundingbox=\"43.5348739624023,43.5354156494141,-71.1319198608398,-71.1316146850586\" lat=\"43.5351336524196\" lon=\"-71.1317853486877\" display_name=\"Innsbruck, New Durham, Strafford County, New Hampshire, United States of America\" class=\"highway\" type=\"service\"/>\n"
+						+ "  <place place_id=\"26135863\" osm_type=\"way\" osm_id=\"18777572\" place_rank=\"27\" boundingbox=\"38.6950759887695,38.6965446472168,-91.1586227416992,-91.1520233154297\" lat=\"38.6957456083531\" lon=\"-91.1552550683042\" display_name=\"Innsbruck, Warren, Aspenhoff, Warren County, Missouri, United States of America\" class=\"highway\" type=\"service\"/>\n"
+						+ "  <place place_id=\"25440203\" osm_type=\"way\" osm_id=\"18869491\" place_rank=\"27\" boundingbox=\"43.5335311889648,43.5358810424805,-71.1356735229492,-71.1316146850586\" lat=\"43.5341678362733\" lon=\"-71.1338615946084\" display_name=\"Innsbruck, New Durham, Strafford County, New Hampshire, 03855, United States of America\" class=\"highway\" type=\"service\"/>\n"
+						+ "</searchresults>";
+			}
+			results = (Searchresults) XmlBindingTools.getInstance().unMarshall(
+					result);
+		} catch (Exception e) {
+			freemind.main.Resources.getInstance().logException(e);
+			Place place = new Place();
+			place.setDisplayName(e.toString());
+			place.setOsmType("ERROR");
+			Coordinate cursorPosition = getMap().getCursorPosition();
+			place.setLat(cursorPosition.getLat());
+			place.setLon(cursorPosition.getLon());
+			results.addPlace(place);
+		}
+		return results;
 	}
 
 }

@@ -3,6 +3,7 @@ package plugins.map;
 //License: GPL. Copyright 2008 by Jan Peter Stotz
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -81,7 +82,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		}
 	}
 
-	protected final class SearchResultListModel extends AbstractListModel {
+	public final class SearchResultListModel extends AbstractListModel {
 		private final List mPlaceList;
 
 		// private final List mListeners;
@@ -141,23 +142,10 @@ public class MapDialog extends MindMapHookAdapter implements
 			return null;
 		}
 
-		// public void add(int i, Object object) {
-		// if (object instanceof String) {
-		// String placeName = (String) object;
-		// Place correspondingPlace = getPlaceByName(placeName);
-		// if (correspondingPlace != null) {
-		// addPlace(correspondingPlace, i);
-		// }
-		// }
-		// }
-		//
 		public void remove(int i) {
 			removePlace(i);
 		}
 
-		/**
-		 * 
-		 */
 		public void clear() {
 			for (int i = mPlaceList.size(); i > 0; --i) {
 				removePlace(i - 1);
@@ -197,6 +185,8 @@ public class MapDialog extends MindMapHookAdapter implements
 	private JPanel mSearchPanel;
 
 	private JTextField mSearchTerm;
+
+	private Color mListOriginalBackgroundColor;
 
 	/*
 	 * (non-Javadoc)
@@ -259,38 +249,19 @@ public class MapDialog extends MindMapHookAdapter implements
 		// receive events and update
 
 		mMapDialog.setLayout(new BorderLayout());
-		// JPanel panel = new JPanel();
-		// JPanel helpPanel = new JPanel();
-		//
-		// mperpLabelName = new JLabel("Meters/Pixels: ");
-		// mperpLabelValue = new JLabel(format("%s", map.getMeterPerPixel()));
-		//
-		// zoomLabel = new JLabel("Zoom: ");
-		// zoomValue = new JLabel(format("%s", map.getZoom()));
-		//
-		// mMapDialog.add(panel, BorderLayout.NORTH);
-		// mMapDialog.add(helpPanel, BorderLayout.SOUTH);
-		// JLabel helpLabel = new JLabel("Use left mouse button to move,\n "
-		// + "mouse wheel to zoom, left click to set cursor.");
-		// helpPanel.add(helpLabel);
-		//
-		// panel.add(zoomLabel);
-		// panel.add(zoomValue);
-		// panel.add(mperpLabelName);
-		// panel.add(mperpLabelValue);
-
 		mSearchPanel = new JPanel(new BorderLayout());
-		JLabel label = new JLabel("Search: ");
+		JLabel label = new JLabel(getResourceString("MapDialog_Search"));
 		mSearchTerm = new JTextField(15);
 		mSearchFieldPanel = new JPanel();
 		JButton clearButton = new JButton(new ImageIcon(Resources.getInstance()
-				.getResource("images/remove.png")));
+				.getResource("images/clear_box.png")));
 		clearButton.setFocusable(false);
 		mSearchFieldPanel.add(label, BorderLayout.WEST);
 		mSearchFieldPanel.add(mSearchTerm, BorderLayout.CENTER);
 		mSearchFieldPanel.add(clearButton, BorderLayout.EAST);
 		final SearchResultListModel dataModel = new SearchResultListModel();
 		mResultList = new JList(dataModel);
+		mListOriginalBackgroundColor = mResultList.getBackground();
 		mResultList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		mResultList.setFocusable(false);
 		clearButton.addActionListener(new ActionListener() {
@@ -298,6 +269,7 @@ public class MapDialog extends MindMapHookAdapter implements
 			public void actionPerformed(ActionEvent pE) {
 				dataModel.clear();
 				mSearchTerm.setText("");
+				mResultList.setBackground(mListOriginalBackgroundColor);
 			}
 		});
 		MouseListener mouseListener = new MouseAdapter() {
@@ -305,43 +277,28 @@ public class MapDialog extends MindMapHookAdapter implements
 				if (e.getClickCount() == 2) {
 					int index = mResultList.locationToIndex(e.getPoint());
 					Place place = dataModel.getPlaceAt(index);
-					map.setDisplayPositionByLatLon(place.getLat(),
-							place.getLon(), map.getZoom());
-					map.setCursorPosition(new Coordinate(place.getLat(), place
-							.getLon()));
+					getFreeMindMapController().setCursorPosition(place);
 				}
 			}
 		};
 		mResultList.addMouseListener(mouseListener);
 
-		// TODO: Move to FreeMindMapController.
 		mSearchTerm.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent pE) {
 				try {
-					String result;
-					if (true) {
-						URL url = new URI("http",
-								"//nominatim.openstreetmap.org/search?format=xml&q="
-										+ mSearchTerm.getText(), null).toURL();
-						result = Tools.getFile(new InputStreamReader(url
-								.openStream()));
-					} else {
-						// only for offline testing:
-						result = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-								+ "<searchresults timestamp=\"Tue, 08 Nov 11 22:49:54 -0500\" attribution=\"Data Copyright OpenStreetMap Contributors, Some Rights Reserved. CC-BY-SA 2.0.\" querystring=\"innsbruck\" polygon=\"false\" exclude_place_ids=\"228452,25664166,26135863,25440203\" more_url=\"http://open.mapquestapi.com/nominatim/v1/search?format=xml&amp;exclude_place_ids=228452,25664166,26135863,25440203&amp;accept-language=&amp;q=innsbruck\">\n"
-								+ "  <place place_id=\"228452\" osm_type=\"node\" osm_id=\"34840064\" place_rank=\"16\" boundingbox=\"47.2554266357,47.2754304504,11.3827679062,11.4027688599\" lat=\"47.2654296\" lon=\"11.3927685\" display_name=\"Innsbruck, Bezirk Innsbruck-Stadt, Innsbruck-Stadt, Tirol, Österreich, Europe\" class=\"place\" type=\"city\" icon=\"http://open.mapquestapi.com/nominatim/v1/images/mapicons/poi_place_city.p.20.png\"/>\n"
-								+ "  <place place_id=\"25664166\" osm_type=\"way\" osm_id=\"18869490\" place_rank=\"27\" boundingbox=\"43.5348739624023,43.5354156494141,-71.1319198608398,-71.1316146850586\" lat=\"43.5351336524196\" lon=\"-71.1317853486877\" display_name=\"Innsbruck, New Durham, Strafford County, New Hampshire, United States of America\" class=\"highway\" type=\"service\"/>\n"
-								+ "  <place place_id=\"26135863\" osm_type=\"way\" osm_id=\"18777572\" place_rank=\"27\" boundingbox=\"38.6950759887695,38.6965446472168,-91.1586227416992,-91.1520233154297\" lat=\"38.6957456083531\" lon=\"-91.1552550683042\" display_name=\"Innsbruck, Warren, Aspenhoff, Warren County, Missouri, United States of America\" class=\"highway\" type=\"service\"/>\n"
-								+ "  <place place_id=\"25440203\" osm_type=\"way\" osm_id=\"18869491\" place_rank=\"27\" boundingbox=\"43.5335311889648,43.5358810424805,-71.1356735229492,-71.1316146850586\" lat=\"43.5341678362733\" lon=\"-71.1338615946084\" display_name=\"Innsbruck, New Durham, Strafford County, New Hampshire, 03855, United States of America\" class=\"highway\" type=\"service\"/>\n"
-								+ "</searchresults>";
-					}
-					Searchresults results = (Searchresults) XmlBindingTools
-							.getInstance().unMarshall(result);
+					Searchresults results = getFreeMindMapController()
+							.getSearchResults(mSearchTerm.getText());
 					dataModel.clear();
 					for (Iterator it = results.getListPlaceList().iterator(); it
 							.hasNext();) {
 						Place place = (Place) it.next();
+						// error handling, if the query wasn't successful.
+						if(Tools.safeEquals("ERROR", place.getOsmType())) {
+							mResultList.setBackground(Color.red);
+						} else {
+							mResultList.setBackground(mListOriginalBackgroundColor);
+						}
 						dataModel.addPlace(place);
 					}
 
@@ -385,23 +342,23 @@ public class MapDialog extends MindMapHookAdapter implements
 			map.setZoomContolsVisible(storage.getZoomControlsVisible());
 			map.setTileGridVisible(storage.getTileGridVisible());
 			map.setMapMarkerVisible(storage.getShowMapMarker());
-			if(!storage.getSearchControlVisible()) {
+			if (!storage.getSearchControlVisible()) {
 				toggleSearchBar();
 			}
 		}
 		mMapDialog.setVisible(true);
 
 	}
-	
+
 	public void toggleSearchBar() {
-		if(mSearchBarVisible) {
+		if (mSearchBarVisible) {
 			mMapDialog.remove(mSearchPanel);
 		} else {
 			mMapDialog.add(mSearchPanel, BorderLayout.NORTH);
 			mSearchTerm.requestFocus();
 		}
 		mMapDialog.validate();
-		mSearchBarVisible = ! mSearchBarVisible;
+		mSearchBarVisible = !mSearchBarVisible;
 	}
 
 	public Set getMapNodePositionHolders() {
@@ -426,6 +383,10 @@ public class MapDialog extends MindMapHookAdapter implements
 	 * */
 	public MindMapController getMindMapController() {
 		return mMyMindMapController;
+	}
+
+	public FreeMindMapController getFreeMindMapController() {
+		return map.getFreeMindMapController();
 	}
 
 	/**
