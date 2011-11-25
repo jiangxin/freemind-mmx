@@ -35,11 +35,21 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Locale;
 
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
+import com.inet.jortho.LanguageChangeEvent;
+import com.inet.jortho.LanguageChangeListener;
+import com.inet.jortho.SpellChecker;
+
+import freemind.main.FreeMindCommon;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
@@ -48,10 +58,10 @@ import freemind.modes.ModeController;
  * @author foltin
  * 
  */
-public class EditNodeTextField extends EditNodeBase {
-
+public class EditNodeTextField extends EditNodeBase implements LanguageChangeListener {
+    // TODO collect all spell checking stuff outside this class
+	private static String language = Locale.getDefault().getLanguage();
 	private KeyEvent firstEvent;
-
 	private JTextField textfield;
 
 	public EditNodeTextField(final NodeView node, final String text,
@@ -62,12 +72,8 @@ public class EditNodeTextField extends EditNodeBase {
 	}
 
 	public void show() {
-		textfield = (getText().length() < 8) ? new JTextField(getText(), 8) // Make
-																			// fields
-																			// for
-																			// short
-																			// texts
-																			// editable
+		// Make fields for short texts editable
+		textfield = (getText().length() < 8) ? new JTextField(getText(), 8)
 				: new JTextField(getText());
 
 		// Set textFields's properties
@@ -272,6 +278,27 @@ public class EditNodeTextField extends EditNodeBase {
 		getNode().addComponentListener(textFieldListener);
 		textfield.requestFocus();
 		// Add listeners
+
+		boolean checkSpelling = Resources.getInstance().
+        		getBoolProperty(FreeMindCommon.CHECK_SPELLING);
+		if (checkSpelling) {
+			try {
+				SpellChecker.addLanguageChangeLister(this);
+				// TODO filter languages in dictionaries.properties like this:
+//				String[] languages = "en,de,es,fr,it,nl,pl,ru,ar".split(",");
+//				for (int i = 0; i < languages.length; i++) {
+//					System.out.println(new File("dictionary_" + languages[i] + ".ortho").exists());
+//				}
+				URL url = null;
+				if (new File ("FreeMind.app/Contents/Resources/Java/").exists()) {
+					url = new URL("file", null, "FreeMind.app/Contents/Resources/Java/");
+				}
+				SpellChecker.registerDictionaries(url, language);
+				SpellChecker.register(textfield);
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private void hideMe() {
@@ -280,12 +307,14 @@ public class EditNodeTextField extends EditNodeBase {
 		textfield.removeFocusListener(textFieldListener);
 		textfield.removeKeyListener((KeyListener) textFieldListener);
 		textfield.removeMouseListener((MouseListener) textFieldListener);
-		getNode()
-				.removeComponentListener((ComponentListener) textFieldListener);
+		getNode() .removeComponentListener((ComponentListener) textFieldListener);
 		parent.remove(0);
 		parent.revalidate();
 		parent.repaint(bounds);
 		textFieldListener = null;
 	}
 
+	public void languageChanged(LanguageChangeEvent event) {
+		language = event.getCurrentLocale().getLanguage();
+	}
 }

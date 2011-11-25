@@ -52,8 +52,9 @@
 	</taskdef>
 	<property name="formsLib" location="lib/forms-1.0.5.jar:lib/SimplyHTML/SimplyHTML.jar"/>
 	<property name="simplyHtml" location="lib/SimplyHTML/SimplyHTML.jar"/>
+	<property name="spellLib" location="lib/jortho.jar"/>
 
-	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:${formsLib}:${simplyHtml}"/>
+	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:${formsLib}:${simplyHtml}:${spellLib}"/>
 	<path id="jars.path">
 	  <fileset dir="${src}">
 	    <include name="**/*.jar" />
@@ -209,11 +210,16 @@
 
 	
 	<target name="dist" depends="jar, browser">
-
 		<copy todir="${dist}">
-			<fileset dir="${src}"
-				includes="freemind.bat,freemindw.bat,freemind.sh,license,patterns.xml"
-			/>
+			<fileset dir="${src}">
+				  <include name="freemind.bat"/>
+				  <include name="freemindw.bat"/>
+				  <include name="freemind.sh"/>
+				  <include name="license"/>
+				  <include name="patterns.xml"/>
+				  <include name="dictionaries.properties"/>
+				  <include name="dictionary_??.ortho"/>
+			</fileset>
 		</copy>
 		<chmod file="${dist}/freemind.sh" perm="u+rx"/>
 		<copy todir="${dist}">
@@ -240,6 +246,7 @@
 		<mkdir dir="${dist.lib}" />
 		<copy todir="${dist.lib}">
 			<fileset dir="${src}/lib">
+				<include name="jortho.jar"/>
 				<include name="forms-1.0.5.jar"/>
 				<include name="bindings.jar"/>
 				<include name="jibx/jibx-run.jar"/>
@@ -298,7 +305,6 @@
 		  				    >
 			<jarfileset dir="${dist}">
 				<include name="**/*.jar" />
-				<exclude name="**/CVS" />
 				<exclude name="accessories/**" />
 				<exclude name="plugins/**" />
 				<exclude name="browser/**" />
@@ -308,7 +314,7 @@
 		<copy todir="${dist_macos_contents}/Resources">
 			<fileset dir="${src}/images">
 				<include name="FreeMindWindowIconModern-MM.icns"/>
-			</fileset>		
+			</fileset>
 		</copy>
 		<copy todir="${dist_macos_contents}/Resources/Java">
 			<fileset dir="${dist}">
@@ -318,6 +324,7 @@
 				<include name="plugins/*" />
 				<include name="plugins/**/*" />
 				<include name="doc/*" />
+				<include name="dictionar*" />
 			</fileset>
 		</copy>
 		<!-- Associate Freemind with mm -->
@@ -428,6 +435,7 @@
 				<include name="Resources*"/>
 				<include name="mindmap_menus.xml"/>
 				<include name="**/freemind_version_updater.xslt"/>
+				<include name="dictionar*"/>
 			</fileset>
 		</jar>
 		<ant antfile="${acc_build}" target="jar"/>
@@ -522,6 +530,7 @@
 				<!--<pathelement location="${dist}"/>-->
 				<pathelement location="${FM.jar}"/>
 				<pathelement location="${jibxjar}"/>
+				<pathelement location="${spellLib}"/>
 				<pathelement path="${jibxruntimelibs}"/>
 			</classpath>
 		</java>

@@ -162,6 +162,7 @@ public class FreeMindCommon {
 	}
 
 	public static final String RESOURCE_LANGUAGE = "language";
+    public static final String CHECK_SPELLING = "check_spelling";
 
 	public static final String RESOURCE_ANTIALIAS = "antialias";
 
