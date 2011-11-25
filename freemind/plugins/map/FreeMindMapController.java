@@ -138,7 +138,7 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 		public void actionPerformed(ActionEvent actionEvent) {
-			placeNodes(actionEvent);
+			placeNodes();
 		}
 	}
 
@@ -471,9 +471,8 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	/**
-	 * @param pActionEvent
 	 */
-	protected void placeNodes(ActionEvent pActionEvent) {
+	protected void placeNodes() {
 		MindMapNode selected = mMindMapController.getSelected();
 		MapNodePositionHolder hook = MapNodePositionHolder.getHook(selected);
 		if (hook == null) {
@@ -628,7 +627,6 @@ public class FreeMindMapController extends JMapController implements
 	private int movementMouseButtonMask = MouseEvent.BUTTON1_DOWN_MASK;
 
 	private boolean wheelZoomEnabled = true;
-	private boolean doubleClickZoomEnabled = true;
 
 	private static TileSource[] mTileSources = new TileSource[] {
 			new OsmTileSource.Mapnik(), new OsmTileSource.TilesAtHome(),
@@ -652,8 +650,13 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void mouseClicked(MouseEvent e) {
+        if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
+        	// on double click: set position of node.
+        	placeNodes();
+        	return;
+        }
 		// is button 1?
-		if (e.getButton() == MouseEvent.BUTTON1 || isPlatformOsx()
+		if (e.getButton() == MouseEvent.BUTTON1 || Tools.isMacOsX()
 				&& e.getModifiersEx() == MAC_MOUSE_BUTTON1_MASK) {
 			setCursorPosition(e);
 		}
@@ -668,7 +671,7 @@ public class FreeMindMapController extends JMapController implements
 		if (e.isConsumed()) {
 			return;
 		}
-		if (e.getButton() == movementMouseButton || isPlatformOsx()
+		if (e.getButton() == movementMouseButton || Tools.isMacOsX()
 				&& e.getModifiersEx() == MAC_MOUSE_BUTTON1_MASK) {
 			lastDragPoint = null;
 			isMoving = true;
@@ -699,7 +702,7 @@ public class FreeMindMapController extends JMapController implements
 			return;
 		}
 
-		if (e.getButton() == movementMouseButton || isPlatformOsx()
+		if (e.getButton() == movementMouseButton || Tools.isMacOsX()
 				&& e.getButton() == MouseEvent.BUTTON1) {
 			lastDragPoint = null;
 			isMoving = false;
@@ -769,14 +772,6 @@ public class FreeMindMapController extends JMapController implements
 		this.wheelZoomEnabled = wheelZoomEnabled;
 	}
 
-	public boolean isDoubleClickZoomEnabled() {
-		return doubleClickZoomEnabled;
-	}
-
-	public void setDoubleClickZoomEnabled(boolean doubleClickZoomEnabled) {
-		this.doubleClickZoomEnabled = doubleClickZoomEnabled;
-	}
-
 	public void mouseEntered(MouseEvent e) {
 	}
 
@@ -787,7 +782,7 @@ public class FreeMindMapController extends JMapController implements
 		// Mac OSX simulates with ctrl + mouse 1 the second mouse button hence
 		// no dragging events get fired.
 		//
-		if (isPlatformOsx()) {
+		if (Tools.isMacOsX()) {
 			if (!movementEnabled || !isMoving)
 				return;
 			// Is only the selected mouse button pressed?
@@ -803,16 +798,6 @@ public class FreeMindMapController extends JMapController implements
 
 		}
 
-	}
-
-	/**
-	 * Replies true if we are currently running on OSX
-	 * 
-	 * @return true if we are currently running on OSX
-	 */
-	public static boolean isPlatformOsx() {
-		String os = System.getProperty("os.name");
-		return os != null && os.toLowerCase().startsWith("mac os x");
 	}
 
 	/**

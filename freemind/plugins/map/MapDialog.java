@@ -245,9 +245,6 @@ public class MapDialog extends MindMapHookAdapter implements
 		}
 		map.setTileLoader(loader);
 
-		// Listen to the map viewer for user operations so components will
-		// receive events and update
-
 		mMapDialog.setLayout(new BorderLayout());
 		mSearchPanel = new JPanel(new BorderLayout());
 		JLabel label = new JLabel(getResourceString("MapDialog_Search"));
