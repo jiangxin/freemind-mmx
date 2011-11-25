@@ -1025,8 +1025,6 @@ public abstract class ControllerAdapter implements ModeController {
 	// Node editing
 	//
 
-	private JPopupMenu popupmenu;
-
 	/**
 	 * listener, that blocks the controler if the menu is active (PN) Take care!
 	 * This listener is also used for modelpopups (as for graphical links).
