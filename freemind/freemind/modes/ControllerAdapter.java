@@ -398,14 +398,23 @@ public abstract class ControllerAdapter implements ModeController {
 	 */
 	public ModeController load(URL file) throws FileNotFoundException,
 			IOException, XMLParseException, URISyntaxException {
-		final ModeController newModeController = getMode()
-				.createModeController();
-		final MapAdapter model = newModel(newModeController);
-		model.load(file);
-		newMap(model);
-		model.setSaved(true);
-		restoreMapsLastState(newModeController, model);
-		return newModeController;
+		String mapDisplayName = getController().getMapModuleManager()
+				.checkIfFileIsAlreadyOpened(file);
+		if (null != mapDisplayName) {
+			getController().getMapModuleManager().changeToMapModule(
+					mapDisplayName);
+			return getController().getModeController();
+		} else {
+			final ModeController newModeController = getMode()
+
+			.createModeController();
+			final MapAdapter model = newModel(newModeController);
+			model.load(file);
+			newMap(model);
+			model.setSaved(true);
+			restoreMapsLastState(newModeController, model);
+			return newModeController;
+		}
 	}
 
 	/**
@@ -414,16 +423,15 @@ public abstract class ControllerAdapter implements ModeController {
 	 */
 	public ModeController load(File file) throws FileNotFoundException,
 			IOException {
-		final ModeController newModeController = getMode()
-				.createModeController();
-		final MapAdapter model = newModel(newModeController);
-		model.load(file);
-		logger.info("Start loading " + file);
-		newMap(model);
-		model.setSaved(true);
-		logger.info("Finished loading " + file);
-		restoreMapsLastState(newModeController, model);
-		return newModeController;
+		try {
+			return load(Tools.fileToUrl(file));
+		} catch (XMLParseException e) {
+			freemind.main.Resources.getInstance().logException(e);
+			throw new RuntimeException(e);
+		} catch (URISyntaxException e) {
+			freemind.main.Resources.getInstance().logException(e);
+			throw new RuntimeException(e);
+		}
 	}
 
 	protected void restoreMapsLastState(final ModeController newModeController,

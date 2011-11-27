@@ -452,8 +452,7 @@ public class FilterComposerDialog extends JDialog {
 				}
 				if (attributes.getSelectedIndex() == ICON_POSITION) {
 					simpleCondition.setModel(simpleIconConditionComboBoxModel);
-					simpleCondition.setSelectedIndex(0);
-					simpleCondition.setEnabled(false);
+                    simpleCondition.setEnabled(true);
 					values.setEditable(false);
 					values.setEnabled(true);
 					values.setModel(icons);
