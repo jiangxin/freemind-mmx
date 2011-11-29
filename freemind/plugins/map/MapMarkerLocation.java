@@ -25,12 +25,21 @@ import java.awt.Point;
 
 import javax.swing.JLabel;
 
+import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 
 import freemind.modes.MindMapNode;
 
 public class MapMarkerLocation extends JLabel implements MapMarker {
 
+	/**
+	 * 
+	 */
+	private static final int CIRCLE_RADIUS = 5;
+	/**
+	 * 
+	 */
+	private static final int CIRCLE_DIAMETER = CIRCLE_RADIUS * 2;
 	private final MapNodePositionHolder mNodePositionHolder;
 	private boolean mSelected = false;
 
@@ -56,12 +65,10 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 	}
 
 	public void paint(Graphics g, Point position) {
-		int size_h = 5;
-		int size = size_h * 2;
 		g.setColor(Color.BLACK);
-		g.fillOval(position.x - size_h, position.y - size_h, size, size);
+		g.fillOval(position.x - CIRCLE_RADIUS, position.y - CIRCLE_RADIUS, CIRCLE_DIAMETER, CIRCLE_DIAMETER);
 		g.setColor(getForeground());
-		g.drawOval(position.x - size_h, position.y - size_h, size, size);
+		g.drawOval(position.x - CIRCLE_RADIUS, position.y - CIRCLE_RADIUS, CIRCLE_DIAMETER, CIRCLE_DIAMETER);
 		if (mSelected) {
 			g.setColor(Color.GRAY);
 		} else {
@@ -90,5 +97,15 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 	public void setSelected(boolean pSelected) {
 		mSelected  = pSelected;
 	}
+
+	/**
+	 * @param pX
+	 * @param pY
+	 * @return true, if the map marker is hit by this relative coordinate (eg. 0,0 is likely a hit...).
+	 */
+	public boolean checkHit(int pX, int pY) {
+		return pX >= 0 && pY >= 0 && pX <= getWidth() && pY <= getHeight();
+	}
+
 
 }

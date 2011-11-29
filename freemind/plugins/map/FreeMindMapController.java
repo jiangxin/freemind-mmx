@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -59,7 +60,6 @@ import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.Place;
 import freemind.controller.actions.generated.instance.Searchresults;
-import freemind.main.FreeMind;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
@@ -685,6 +685,21 @@ public class FreeMindMapController extends JMapController implements
 	private void showPopupMenu(MouseEvent e) {
 		if (e.isPopupTrigger()) {
 			JPopupMenu popupmenu = getPopupMenu();
+			// check for hit on map marker:
+			for (Iterator it = mMapHook.getMarkerMap().entrySet().iterator(); it.hasNext();) {
+				Entry holder = (Entry) it.next();
+				MapNodePositionHolder posHolder = (MapNodePositionHolder) holder.getKey();
+				MapMarkerLocation location = (MapMarkerLocation) holder.getValue();
+				Coordinate mousePosition = map.getPosition(new Point(e.getX(), e.getY()));
+				Coordinate locationC = posHolder.getPosition();
+				Point locationXY = map.getMapPosition(locationC, false);
+				Point mousePositionXY = map.getMapPosition(mousePosition, false);
+				if(location.checkHit(mousePositionXY.x-locationXY.x,mousePositionXY.y-locationXY.y)) {
+					popupmenu.show(e.getComponent(), e.getX(), e.getY());
+					e.consume();
+					return;
+				}
+			}
 			if (popupmenu != null) {
 				// popupmenu.addPopupMenuListener( this.popupListenerSingleton
 				// );

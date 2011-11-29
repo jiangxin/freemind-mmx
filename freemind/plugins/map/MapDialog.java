@@ -13,13 +13,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
@@ -46,7 +44,6 @@ import org.openstreetmap.gui.jmapviewer.interfaces.JMapViewerEventListener;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource.Mapnik;
 
 import plugins.map.MapNodePositionHolder.MapNodePositionListener;
-import freemind.common.XmlBindingTools;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.actions.generated.instance.MapWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.Place;
@@ -365,7 +362,7 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	public void addMapMarker(MapNodePositionHolder nodePositionHolder) {
 		Coordinate position = nodePositionHolder.getPosition();
-		logger.info("Adding map position for " + nodePositionHolder.getNode()
+		logger.fine("Adding map position for " + nodePositionHolder.getNode()
 				+ " at " + position);
 		MapMarkerLocation marker = new MapMarkerLocation(nodePositionHolder);
 		marker.setSize(marker.getPreferredSize());
@@ -600,5 +597,12 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	public boolean isSearchBarVisible() {
 		return mSearchBarVisible;
+	}
+
+	/** 
+	 * @return  < MapNodePositionHolder, MapMarkerLocation > 
+	 */
+	public Map getMarkerMap() {
+		return Collections.unmodifiableMap(mMarkerMap);
 	}
 }
