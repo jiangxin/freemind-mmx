@@ -2,11 +2,13 @@
 Changes made in FreeMind 1.0.0 Alpha8
 ===============================
 * Fixed https://sourceforge.net/projects/freemind/forums/forum/22102/topic/4801690
-* Added spell checking. Thanks to the author Eike.
+* Added spell checking. Thanks to the author Eicke.
 * Map positions store its map-source
 * Fixed "Jump to last edit location" in combination with automatic layout.
 * Map: cursor movements added.
 * Search bar added.
+* Patch: filter by "not containing icon", https://sourceforge.net/tracker/?func=detail&atid=307118&aid=3442896&group_id=7118, Thanks to the author!
+* Patch: File > Open should behave like File > Most Recent Files * https://sourceforge.net/tracker/?func=detail&atid=307118&aid=2975476&group_id=7118, Thanks to the author!
 
 ===============================
 Changes made in FreeMind 1.0.0 Alpha7

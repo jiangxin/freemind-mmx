@@ -41,6 +41,7 @@ public class ConditionFactory {
 	static final String FILTER_DOES_NOT_EXIST = "filter_does_not_exist";
 	static final String FILTER_EXIST = "filter_exist";
 	static final String FILTER_CONTAINS = "filter_contains";
+	static final String FILTER_NOT_CONTAINS = "filter_not_contains";
 	static final String FILTER_IS_NOT_EQUAL_TO = "filter_is_not_equal_to";
 	static final String FILTER_IS_EQUAL_TO = "filter_is_equal_to";
 	static final String FILTER_LE = "<=";
@@ -84,6 +85,8 @@ public class ConditionFactory {
 			return AttributeNotExistsCondition.load(element);
 		if (element.getName().equalsIgnoreCase(IconContainedCondition.NAME))
 			return IconContainedCondition.load(element);
+       	if (element.getName().equalsIgnoreCase(IconNotContainedCondition.NAME))
+			return IconNotContainedCondition.load(element);
 		if (element.getName().equalsIgnoreCase(
 				ConditionNotSatisfiedDecorator.NAME)) {
 			return ConditionNotSatisfiedDecorator.load(element);
@@ -150,6 +153,9 @@ public class ConditionFactory {
 		if (attribute.equals(FILTER_ICON)
 				&& simpleCondition.equals(FILTER_CONTAINS))
 			return new IconContainedCondition(value);
+        if (attribute.equals(FILTER_ICON)
+            && simpleCondition.equals(FILTER_NOT_CONTAINS)    )
+            return new IconNotContainedCondition(value);
 		if (attribute.equals(FILTER_NODE)) {
 			return createNodeCondition(simpleCondition, value, ignoreCase);
 		}
@@ -171,7 +177,9 @@ public class ConditionFactory {
 
 	public Object[] getIconConditionNames() {
 		return new NamedObject[] { Resources.getInstance()
-				.createTranslatedString(FILTER_CONTAINS), };
+				.createTranslatedString(FILTER_CONTAINS),                 
+			Resources.getInstance().createTranslatedString(FILTER_NOT_CONTAINS),
+		};
 	}
 
 	public NamedObject[] getAttributeConditionNames() {
