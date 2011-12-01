@@ -63,7 +63,6 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	private int mZoom = 1;
 	private static ImageIcon sMapLocationIcon;
 	private TileImage mImage;
-	private boolean mTooltipRequested = false;
 	private String mBase64Image = null;
 
 	/*
@@ -81,8 +80,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	}
 
 	public void showTooltip() {
-		if (!mTooltipRequested
-				&& Resources.getInstance().getBoolProperty(
+		if (Resources.getInstance().getBoolProperty(
 						NODE_MAP_SHOW_TOOLTIP)) {
 			if (mBase64Image != null) {
 				mImage = new TileImage();
@@ -94,8 +92,10 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 			}
 			if(!mImage.hasErrors()) {
 				createTooltip();
+			} else {
+				mImage = null;
+				logger.warning("Tooltip for node '" + getNode() + "' has errors on creation.");
 			}
-			mTooltipRequested = true;
 		}
 	}
 
@@ -305,7 +305,6 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	 * 
 	 */
 	public void recreateTooltip() {
-		mTooltipRequested = false;
 		mImage = null;
 		mBase64Image = null;
 		showTooltip();

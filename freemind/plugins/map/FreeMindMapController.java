@@ -684,10 +684,17 @@ public class FreeMindMapController extends JMapController implements
 	 */
 	private void newNode(MouseEvent pEvent) {
 		final MindMapNode targetNode = mMindMapController.getSelected();
-		// new sibling:
-		MindMapNode parent = targetNode.getParentNode();
-		int childPosition = parent.getChildPosition(targetNode);
-		childPosition++;
+		int childPosition;
+		MindMapNode parent;
+		if(targetNode.isRoot()) {
+			parent = targetNode;
+			childPosition = 0;
+		} else {
+			// new sibling:
+			parent = targetNode.getParentNode();
+			childPosition = parent.getChildPosition(targetNode);
+			childPosition++;
+		}
 		final MindMapNode newNode = mMindMapController.addNewNode(parent, childPosition, targetNode.isLeft());
 		final NodeView nodeView = mMindMapController.getNodeView(newNode);
 		mMindMapController.select(nodeView);
