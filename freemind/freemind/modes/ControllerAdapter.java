@@ -1162,7 +1162,7 @@ public abstract class ControllerAdapter implements ModeController {
 				.getTargetForID(nodeID);
 		if (node == null) {
 			throw new IllegalArgumentException("Node belonging to the node id "
-					+ nodeID + " not found.");
+					+ nodeID + " not found in map " + getMap().getFile());
 		}
 		return node;
 	}

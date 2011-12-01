@@ -22,6 +22,7 @@ package plugins.map;
 
 //License: GPL. Copyright 2008 by Jan Peter Stotz
 
+import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
@@ -36,6 +37,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 import java.util.Map.Entry;
 
 import javax.swing.AbstractAction;
@@ -45,6 +47,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
@@ -64,6 +67,9 @@ import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.view.mindmapview.EditNodeBase;
+import freemind.view.mindmapview.EditNodeTextField;
+import freemind.view.mindmapview.NodeView;
 
 /**
  * Default map controller which implements map moving by pressing the right
@@ -138,7 +144,7 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 		public void actionPerformed(ActionEvent actionEvent) {
-			placeNodes();
+			placeNodes(mMindMapController.getSelected());
 		}
 	}
 
@@ -471,12 +477,12 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	/**
+	 * @param pSelected 
 	 */
-	protected void placeNodes() {
-		MindMapNode selected = mMindMapController.getSelected();
-		MapNodePositionHolder hook = MapNodePositionHolder.getHook(selected);
+	protected void placeNodes(MindMapNode pSelected) {
+		MapNodePositionHolder hook = MapNodePositionHolder.getHook(pSelected);
 		if (hook == null) {
-			hook = addHookToNode(selected);
+			hook = addHookToNode(pSelected);
 		}
 		if (hook != null) {
 			// set parameters:
@@ -484,6 +490,8 @@ public class FreeMindMapController extends JMapController implements
 					.getClass().getName();
 			hook.changePosition(hook, getMap().getCursorPosition(),
 					map.getPosition(), map.getZoom(), tileSource);
+		} else {
+			logger.warning("Hook not found although it was recently added. Node was " + pSelected);
 		}
 	}
 
@@ -651,8 +659,8 @@ public class FreeMindMapController extends JMapController implements
 
 	public void mouseClicked(MouseEvent e) {
         if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-        	// on double click: set position of node.
-        	placeNodes();
+        	// on double click: new node.
+        	newNode(e);
         	return;
         }
 		// is button 1?
@@ -660,6 +668,53 @@ public class FreeMindMapController extends JMapController implements
 				&& e.getModifiersEx() == MAC_MOUSE_BUTTON1_MASK) {
 			setCursorPosition(e);
 		}
+	}
+
+	/**
+	 * @param pEvent: location
+	 */
+	private void newNode(MouseEvent pEvent) {
+		final MindMapNode targetNode = mMindMapController.getSelected();
+		// new sibling:
+		MindMapNode parent = targetNode.getParentNode();
+		int childPosition = parent.getChildPosition(targetNode);
+		childPosition++;
+		final MindMapNode newNode = mMindMapController.addNewNode(parent, childPosition, targetNode.isLeft());
+		final NodeView nodeView = mMindMapController.getNodeView(newNode);
+		mMindMapController.select(nodeView);
+		map.requestFocus();
+		// inline editing:
+		mMindMapController.setBlocked(true);
+		Point point = pEvent.getPoint();
+		Tools.convertPointToAncestor((Component) pEvent.getSource(), point, map);
+		EditNodeTextField textfield = new EditNodeTextField(nodeView, "",
+				null, mMindMapController, new EditNodeBase.EditControl() {
+
+					public void cancel() {
+						mMindMapController.getView()
+								.selectAsTheOnlyOneSelected(nodeView);
+						mMindMapController.cut(Tools.getVectorWithSingleElement(newNode));
+						mMindMapController.select(mMindMapController.getNodeView(targetNode));
+						endEdit();
+					}
+
+					public void ok(String newText) {
+						mMindMapController.setNodeText(newNode, newText);
+						placeNodes(newNode);
+						endEdit();
+					}
+
+					private void endEdit() {
+						mMindMapController.getController()
+								.obtainFocusForSelected();
+						mMindMapController.setBlocked(false);
+						map.requestFocus();
+					}
+
+					public void split(String newText, int position) {
+					}
+				}, map, point, map);
+		textfield.show();
 	}
 
 	public void setCursorPosition(MouseEvent e) {

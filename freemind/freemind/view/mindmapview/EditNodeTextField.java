@@ -24,6 +24,7 @@
 package freemind.view.mindmapview;
 
 import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -36,6 +37,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
@@ -63,14 +65,30 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 	private static String language = Locale.getDefault().getLanguage();
 	private KeyEvent firstEvent;
 	private JTextField textfield;
+	private JComponent mParent;
+	private Point mPoint;
+	private final JComponent mFocusListener;
 
 	public EditNodeTextField(final NodeView node, final String text,
 			final KeyEvent firstEvent, ModeController controller,
 			EditControl editControl) {
-		super(node, text, controller, editControl);
-		this.firstEvent = firstEvent;
+		this(node, text, firstEvent, controller, editControl, null, null, node);
 	}
 
+	public EditNodeTextField(final NodeView node, final String text,
+			final KeyEvent firstEvent, ModeController controller,
+			EditControl editControl, JComponent pParent, Point pPoint, JComponent pFocusListener) {
+		super(node, text, controller, editControl);
+		this.firstEvent = firstEvent;
+		mParent = pParent;
+		mPoint = pPoint;
+		mFocusListener = pFocusListener;
+		if(mParent == null) {
+			mParent = node.getMap();
+		}
+		
+	}
+	
 	public void show() {
 		// Make fields for short texts editable
 		textfield = (getText().length() < 8) ? new JTextField(getText(), 8)
@@ -87,6 +105,7 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 		// minimal width for input field of leaf or folded node (PN)
 		final int MINIMAL_LEAF_WIDTH = 150;
 		final int MINIMAL_WIDTH = 50;
+		final int MINIMAL_HEIGHT = 20;
 
 		final NodeView nodeView = getNode();
 		final MindMapNode model = nodeView.getModel();
@@ -112,8 +131,12 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 			}
 		}
 
-		textfield.setSize(xSize, nodeView.getMainView().getHeight()
-				+ heightAddition);
+		int ySize = nodeView.getMainView().getHeight()
+				+ heightAddition;
+		if(ySize < MINIMAL_HEIGHT) {
+			ySize = MINIMAL_HEIGHT;
+		}
+		textfield.setSize(xSize, ySize);
 		Font font = nodeView.getTextFont();
 		final MapView mapView = nodeView.getMap();
 		final float zoom = mapView.getZoom();
@@ -248,36 +271,31 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 
 		// Add listeners
 		this.textFieldListener = textFieldListener;
-		textfield.addFocusListener(textFieldListener);
 		textfield.addKeyListener(textFieldListener);
 		textfield.addMouseListener(textFieldListener);
-		// getNode().addComponentListener(textFieldListener);
 
 		// screen positionining ---------------------------------------------
 
 		// SCROLL if necessary
 		getView().scrollNodeToVisible(nodeView, xExtraWidth);
-
-		// NOTE: this must be calculated after scroll because the pane location
-		// changes
-		Point textFieldLocation = new Point();
-
-		Tools.convertPointToAncestor(nodeView.getMainView(), textFieldLocation,
-				mapView);
-		if (xExtraWidth < 0) {
-			textFieldLocation.x += xExtraWidth;
+		if(mPoint==null) {
+			// NOTE: this must be calculated after scroll because the pane location
+			// changes
+			mPoint = new Point();
+	
+			Tools.convertPointToAncestor(nodeView.getMainView(), mPoint,
+					mapView);
+			if (xExtraWidth < 0) {
+				mPoint.x += xExtraWidth;
+			}
+			mPoint.x += xOffset;
+			mPoint.y += yOffset;
 		}
-		textFieldLocation.x += xOffset;
-		textFieldLocation.y += yOffset;
-		textfield.setLocation(textFieldLocation);
+		textfield.setLocation(mPoint);
 
-		mapView.add(textfield, 0);
+		mParent.add(textfield);
 		textfield.repaint();
 		redispatchKeyEvents(textfield, firstEvent);
-
-		getNode().addComponentListener(textFieldListener);
-		textfield.requestFocus();
-		// Add listeners
 
 		boolean checkSpelling = Resources.getInstance().
         		getBoolProperty(FreeMindCommon.CHECK_SPELLING);
@@ -296,9 +314,17 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 				SpellChecker.registerDictionaries(url, language);
 				SpellChecker.register(textfield);
 			} catch (MalformedURLException e) {
-				e.printStackTrace();
+				freemind.main.Resources.getInstance().logException(e);
 			}
 		}
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				// Add listener now, as there are focus changes before.
+				textfield.requestFocus();
+				textfield.addFocusListener(textFieldListener);
+				mFocusListener.addComponentListener(textFieldListener);
+			}
+		});
 	}
 
 	private void hideMe() {
@@ -308,7 +334,7 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 		textfield.removeKeyListener((KeyListener) textFieldListener);
 		textfield.removeMouseListener((MouseListener) textFieldListener);
 		getNode() .removeComponentListener((ComponentListener) textFieldListener);
-		parent.remove(0);
+		parent.remove(textfield);
 		parent.revalidate();
 		parent.repaint(bounds);
 		textFieldListener = null;

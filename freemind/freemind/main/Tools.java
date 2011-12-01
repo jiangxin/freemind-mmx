@@ -1454,6 +1454,8 @@ public class Tools {
 					public void run() {
 					};
 				});
+			} else {
+				logger.warning("Can't wait for event queue, if I'm inside this queue!");
 			}
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);

@@ -105,7 +105,6 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 		final MindMapNode targetNode = target;
 		MindMapNode newNode = null;
 
-		boolean targetIsLeft = true;
 		switch (newNodeMode) {
 		case MindMapController.NEW_SIBLING_BEFORE:
 		case MindMapController.NEW_SIBLING_BEHIND: {
@@ -125,9 +124,7 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 				// fc, 21.8.07: we don't do anything here and get a new child
 				// instead.
 				newNodeMode = MindMapController.NEW_CHILD;
-				// c.getController().errorMessage(c.getText("new_node_as_sibling_not_possible_for_the_root"));
-				// c.setBlocked(false);
-				// return null;
+				//@fallthrough
 			}
 		}
 
