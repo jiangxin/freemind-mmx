@@ -629,19 +629,20 @@ public class FreeMindMapController extends JMapController implements
 
 	private boolean isMoving = false;
 
-	private boolean movementEnabled = true;
+	private boolean mMovementEnabled = true;
+	private boolean mClickEnabled = true;
 
 	private int movementMouseButton = MouseEvent.BUTTON1;
 	private int movementMouseButtonMask = MouseEvent.BUTTON1_DOWN_MASK;
 
-	private boolean wheelZoomEnabled = true;
+	private boolean mWheelZoomEnabled = true;
 
 	private static TileSource[] mTileSources = new TileSource[] {
 			new OsmTileSource.Mapnik(), new OsmTileSource.TilesAtHome(),
 			new OsmTileSource.CycleMap(), new BingAerialTileSource() };
 
 	public void mouseDragged(MouseEvent e) {
-		if (!movementEnabled || !isMoving)
+		if (!mMovementEnabled || !isMoving)
 			return;
 		// Is only the selected mouse button pressed?
 		if ((e.getModifiersEx() & MOUSE_BUTTONS_MASK) == movementMouseButtonMask) {
@@ -658,6 +659,9 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void mouseClicked(MouseEvent e) {
+		if(!mClickEnabled) {
+			return;
+		}
         if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
         	// on double click: new node.
         	newNode(e);
@@ -670,6 +674,11 @@ public class FreeMindMapController extends JMapController implements
 		}
 	}
 
+	private void setMouseControl(boolean pEnable) {
+		setMovementEnabled(pEnable);
+		setWheelZoomEnabled(pEnable);
+		setClickEnabled(pEnable);
+	}
 	/**
 	 * @param pEvent: location
 	 */
@@ -685,6 +694,7 @@ public class FreeMindMapController extends JMapController implements
 		map.requestFocus();
 		// inline editing:
 		mMindMapController.setBlocked(true);
+		setMouseControl(false);
 		Point point = pEvent.getPoint();
 		Tools.convertPointToAncestor((Component) pEvent.getSource(), point, map);
 		EditNodeTextField textfield = new EditNodeTextField(nodeView, "",
@@ -705,6 +715,7 @@ public class FreeMindMapController extends JMapController implements
 					}
 
 					private void endEdit() {
+						setMouseControl(true);
 						mMindMapController.getController()
 								.obtainFocusForSelected();
 						mMindMapController.setBlocked(false);
@@ -722,6 +733,9 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void mousePressed(MouseEvent e) {
+		if(!mClickEnabled) {
+			return;
+		}
 		showPopupMenu(e);
 		if (e.isConsumed()) {
 			return;
@@ -767,6 +781,9 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void mouseReleased(MouseEvent e) {
+		if(!mClickEnabled) {
+			return;
+		}
 		showPopupMenu(e);
 		if (e.isConsumed()) {
 			return;
@@ -780,13 +797,13 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		if (wheelZoomEnabled) {
+		if (mWheelZoomEnabled) {
 			map.setZoom(map.getZoom() - e.getWheelRotation(), e.getPoint());
 		}
 	}
 
 	public boolean isMovementEnabled() {
-		return movementEnabled;
+		return mMovementEnabled;
 	}
 
 	/**
@@ -795,7 +812,7 @@ public class FreeMindMapController extends JMapController implements
 	 * @param movementEnabled
 	 */
 	public void setMovementEnabled(boolean movementEnabled) {
-		this.movementEnabled = movementEnabled;
+		this.mMovementEnabled = movementEnabled;
 	}
 
 	public int getMovementMouseButton() {
@@ -835,11 +852,11 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public boolean isWheelZoomEnabled() {
-		return wheelZoomEnabled;
+		return mWheelZoomEnabled;
 	}
 
 	public void setWheelZoomEnabled(boolean wheelZoomEnabled) {
-		this.wheelZoomEnabled = wheelZoomEnabled;
+		this.mWheelZoomEnabled = wheelZoomEnabled;
 	}
 
 	public void mouseEntered(MouseEvent e) {
@@ -849,11 +866,14 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void mouseMoved(MouseEvent e) {
+		if(!mMovementEnabled) {
+			return;
+		}
 		// Mac OSX simulates with ctrl + mouse 1 the second mouse button hence
 		// no dragging events get fired.
 		//
 		if (Tools.isMacOsX()) {
-			if (!movementEnabled || !isMoving)
+			if (!mMovementEnabled || !isMoving)
 				return;
 			// Is only the selected mouse button pressed?
 			if (e.getModifiersEx() == 0 /* MouseEvent.CTRL_DOWN_MASK */) {
@@ -918,6 +938,14 @@ public class FreeMindMapController extends JMapController implements
 			results.addPlace(place);
 		}
 		return results;
+	}
+
+	public boolean isClickEnabled() {
+		return mClickEnabled;
+	}
+
+	public void setClickEnabled(boolean pClickEnabled) {
+		mClickEnabled = pClickEnabled;
 	}
 
 }
