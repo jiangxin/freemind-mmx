@@ -50,6 +50,7 @@ import com.inet.jortho.LanguageChangeListener;
 import com.inet.jortho.SpellChecker;
 
 import freemind.main.FreeMindCommon;
+import freemind.main.FreeMindMain;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
@@ -302,8 +303,8 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 //					System.out.println(new File("dictionary_" + languages[i] + ".ortho").exists());
 //				}
 				URL url = null;
-				if (new File ("FreeMind.app/Contents/Resources/Java/").exists()) {
-					url = new URL("file", null, "FreeMind.app/Contents/Resources/Java/");
+				if (new File (FreeMindMain.FREE_MIND_APP_CONTENTS_RESOURCES_JAVA).exists()) {
+					url = new URL("file", null, FreeMindMain.FREE_MIND_APP_CONTENTS_RESOURCES_JAVA);
 				}
 				SpellChecker.registerDictionaries(url, language);
 				SpellChecker.register(textfield);
