@@ -52,6 +52,7 @@ final class JCursorMapViewer extends JMapViewer {
 	Stroke mStroke = new BasicStroke(2);
 	private FreeMindMapController mFreeMindMapController;
 	private final MapDialog mMapHook;
+	private boolean mHideFoldedNodes;
 
 	/**
 	 * @param pMindMapController
@@ -144,5 +145,17 @@ final class JCursorMapViewer extends JMapViewer {
 		zoomSlider.setFocusable(false);
 		zoomInButton.setFocusable(false);
 		zoomOutButton.setFocusable(false);
+	}
+
+	/**
+	 * @param pHideFoldedNodes
+	 */
+	public void setHideFoldedNodes(boolean pHideFoldedNodes) {
+		mHideFoldedNodes = pHideFoldedNodes;
+		repaint();
+	}
+
+	public boolean isHideFoldedNodes() {
+		return mHideFoldedNodes;
 	}
 }

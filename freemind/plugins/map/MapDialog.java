@@ -70,6 +70,42 @@ public class MapDialog extends MindMapHookAdapter implements
 		JMapViewerEventListener, MapModuleChangeObserver,
 		MapNodePositionListener, NodeSelectionListener {
 
+	private static final String WINDOW_PREFERENCE_STORAGE_PROPERTY = MapDialog.class
+			.getName();
+
+	private static final String TILE_CACHE_CLASS = "tile_cache_class";
+
+	private static final String FILE_TILE_CACHE_DIRECTORY = "file_tile_cache_directory";
+
+	private JCursorMapViewer map = null;
+
+	private JLabel zoomLabel = null;
+	private JLabel zoomValue = null;
+
+	private JLabel mperpLabelName = null;
+	private JLabel mperpLabelValue = null;
+
+	private MindMapController mMyMindMapController;
+
+	private JDialog mMapDialog;
+
+	private HashMap /* < MapNodePositionHolder, MapMarkerLocation > */mMarkerMap = new HashMap();
+
+	private CloseAction mCloseAction;
+
+	private JPanel mSearchFieldPanel;
+
+	private JList mResultList;
+
+	private boolean mSearchBarVisible;
+
+	private JPanel mSearchPanel;
+
+	private JTextField mSearchTerm;
+
+	private Color mListOriginalBackgroundColor;
+
+
 	private final class CloseAction extends AbstractAction {
 
 		public CloseAction() {
@@ -151,41 +187,6 @@ public class MapDialog extends MindMapHookAdapter implements
 			}
 		}
 	}
-
-	private static final String WINDOW_PREFERENCE_STORAGE_PROPERTY = MapDialog.class
-			.getName();
-
-	private static final String TILE_CACHE_CLASS = "tile_cache_class";
-
-	private static final String FILE_TILE_CACHE_DIRECTORY = "file_tile_cache_directory";
-
-	private JCursorMapViewer map = null;
-
-	private JLabel zoomLabel = null;
-	private JLabel zoomValue = null;
-
-	private JLabel mperpLabelName = null;
-	private JLabel mperpLabelValue = null;
-
-	private MindMapController mMyMindMapController;
-
-	private JDialog mMapDialog;
-
-	private HashMap /* < MapNodePositionHolder, MapMarkerLocation > */mMarkerMap = new HashMap();
-
-	private CloseAction mCloseAction;
-
-	private JPanel mSearchFieldPanel;
-
-	private JList mResultList;
-
-	private boolean mSearchBarVisible;
-
-	private JPanel mSearchPanel;
-
-	private JTextField mSearchTerm;
-
-	private Color mListOriginalBackgroundColor;
 
 	/*
 	 * (non-Javadoc)
@@ -329,6 +330,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		MapWindowConfigurationStorage storage = (MapWindowConfigurationStorage) getMindMapController()
 				.decorateDialog(mMapDialog, WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		if (storage != null) {
+			// TODO: Better would be to store these data per map.
 			map.setDisplayPositionByLatLon(storage.getMapCenterLatitude(),
 					storage.getMapCenterLongitude(), storage.getZoom());
 			map.setCursorPosition(new Coordinate(storage.getCursorLatitude(),
@@ -338,6 +340,7 @@ public class MapDialog extends MindMapHookAdapter implements
 			map.setZoomContolsVisible(storage.getZoomControlsVisible());
 			map.setTileGridVisible(storage.getTileGridVisible());
 			map.setMapMarkerVisible(storage.getShowMapMarker());
+			map.setHideFoldedNodes(storage.getHideFoldedNodes());
 			if (!storage.getSearchControlVisible()) {
 				toggleSearchBar();
 			}
@@ -366,7 +369,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		Coordinate position = nodePositionHolder.getPosition();
 		logger.fine("Adding map position for " + nodePositionHolder.getNode()
 				+ " at " + position);
-		MapMarkerLocation marker = new MapMarkerLocation(nodePositionHolder);
+		MapMarkerLocation marker = new MapMarkerLocation(nodePositionHolder, this);
 		marker.setSize(marker.getPreferredSize());
 		map.addMapMarker(marker);
 		mMarkerMap.put(nodePositionHolder, marker);
@@ -412,6 +415,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		storage.setZoomControlsVisible(map.getZoomContolsVisible());
 		storage.setShowMapMarker(map.getMapMarkersVisible());
 		storage.setSearchControlVisible(mSearchBarVisible);
+		storage.setHideFoldedNodes(map.isHideFoldedNodes());
 		getMindMapController().storeDialogPositions(mMapDialog, storage,
 				WINDOW_PREFERENCE_STORAGE_PROPERTY);
 
@@ -606,5 +610,9 @@ public class MapDialog extends MindMapHookAdapter implements
 	 */
 	public Map getMarkerMap() {
 		return Collections.unmodifiableMap(mMarkerMap);
+	}
+
+	public JCursorMapViewer getMap() {
+		return map;
 	}
 }

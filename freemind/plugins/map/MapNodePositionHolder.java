@@ -56,7 +56,6 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	private static final String XML_STORAGE_MAP_TOOLTIP = "XML_STORAGE_MAP_TOOLTIP";
 	private static final String NODE_MAP_STORE_TOOLTIP = "node_map_store_tooltip";
 	private static final String NODE_MAP_SHOW_TOOLTIP = "node_map_show_tooltip";
-	private static final String NODE_MAP_HIDE_FOLDED_MARKERS = "node_map_hide_folded_markers";
 
 	private Coordinate mPosition = new Coordinate(0, 0);
 	private Coordinate mMapCenter = new Coordinate(0, 0);
@@ -65,7 +64,6 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	private static ImageIcon sMapLocationIcon;
 	private TileImage mImage;
 	private String mBase64Image = null;
-	private static boolean sHideFoldedMarkers;
 
 	/*
 	 * (non-Javadoc)
@@ -78,8 +76,6 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 		((Registration) getPluginBaseClass()).registerMapNode(this);
 		setStateIcon(pNode, true);
 		showTooltip();
-		// read folding property:
-		sHideFoldedMarkers = Resources.getInstance().getBoolProperty(NODE_MAP_HIDE_FOLDED_MARKERS);
 	}
 
 	public void showTooltip() {
@@ -314,14 +310,10 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	}
 
 	/**
-	 * It is possible to hide folded markers. If this is enabled, this method returns true, when folded.
-	 * @return true, if the marker shouln't be displayed.
+	 * @return This method returns true, when a parent of the corresponding node is folded.
 	 */
-	public boolean isHidden() {
-		if(sHideFoldedMarkers)
-			return getNode().hasFoldedParents();
-		else
-			return false;
+	public boolean hasFoldedParents() {
+		return getNode().hasFoldedParents();
 	}
 
 }

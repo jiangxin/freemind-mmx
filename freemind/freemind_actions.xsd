@@ -944,6 +944,7 @@
 				<xs:attribute use="optional" name="tileGridVisible" type="xs:boolean" default="false"/>
 				<xs:attribute use="optional" name="zoomControlsVisible" type="xs:boolean" default="true"/>
 				<xs:attribute use="optional" name="searchControlVisible" type="xs:boolean" default="true"/>
+				<xs:attribute use="optional" name="hideFoldedNodes" type="xs:boolean" default="true"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>

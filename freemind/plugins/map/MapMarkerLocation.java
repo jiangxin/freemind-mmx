@@ -25,7 +25,6 @@ import java.awt.Point;
 
 import javax.swing.JLabel;
 
-import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 
 import freemind.modes.MindMapNode;
@@ -42,12 +41,15 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 	private static final int CIRCLE_DIAMETER = CIRCLE_RADIUS * 2;
 	private final MapNodePositionHolder mNodePositionHolder;
 	private boolean mSelected = false;
+	private final MapDialog mMapDialog;
 
 	/**
 	 * @param pNodePositionHolder
+	 * @param pMapDialog 
 	 */
-	public MapMarkerLocation(MapNodePositionHolder pNodePositionHolder) {
+	public MapMarkerLocation(MapNodePositionHolder pNodePositionHolder, MapDialog pMapDialog) {
 		mNodePositionHolder = pNodePositionHolder;
+		mMapDialog = pMapDialog;
 		MindMapNode node = mNodePositionHolder.getNode();
 		// TODO: Listener, if the text changes...
 		setText(node.getText());
@@ -65,7 +67,7 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 	}
 
 	public void paint(Graphics g, Point position) {
-		if(mNodePositionHolder.isHidden())
+		if(displayMapMarkerLocation())
 			return;
 		
 		g.setColor(Color.BLACK);
@@ -86,6 +88,14 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 		this.paint(g);
 		g.translate(-node_x, -node_y);
 
+	}
+
+	/**
+	 * @return decides whether or not the marker should be displayed. 
+	 * Should be moved to FreeMindMapController, if time.
+	 */
+	public boolean displayMapMarkerLocation() {
+		return mMapDialog.getMap().isHideFoldedNodes() && mNodePositionHolder.hasFoldedParents();
 	}
 
 	public String toString() {
