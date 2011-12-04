@@ -58,6 +58,7 @@ import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindCommon;
+import freemind.main.FreeMindMain;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
@@ -487,8 +488,8 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 			if (checkSpelling) {
 				try {
 					URL url = null;
-					if (new File ("FreeMind.app/Contents/Resources/Java/").exists()) {
-						url = new URL("file", null, "FreeMind.app/Contents/Resources/Java/");
+					if (new File (FreeMindMain.FREE_MIND_APP_CONTENTS_RESOURCES_JAVA).exists()) {
+						url = new URL("file", null, FreeMindMain.FREE_MIND_APP_CONTENTS_RESOURCES_JAVA);
 					}
 					SpellChecker.registerDictionaries(url,
 //							"en,de,es,fr,it,nl,pl,ru,ar",

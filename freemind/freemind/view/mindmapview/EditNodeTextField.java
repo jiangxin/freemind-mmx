@@ -37,7 +37,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
@@ -51,6 +50,7 @@ import com.inet.jortho.LanguageChangeListener;
 import com.inet.jortho.SpellChecker;
 
 import freemind.main.FreeMindCommon;
+import freemind.main.FreeMindMain;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
@@ -64,29 +64,23 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
     // TODO collect all spell checking stuff outside this class
 	private static String language = Locale.getDefault().getLanguage();
 	private KeyEvent firstEvent;
-	private JTextField textfield;
-	private JComponent mParent;
-	private Point mPoint;
+	protected JTextField textfield;
+	protected JComponent mParent;
 	private final JComponent mFocusListener;
 
 	public EditNodeTextField(final NodeView node, final String text,
 			final KeyEvent firstEvent, ModeController controller,
 			EditControl editControl) {
-		this(node, text, firstEvent, controller, editControl, null, null, node);
+		this(node, text, firstEvent, controller, editControl, node.getMap(), node);
 	}
 
 	public EditNodeTextField(final NodeView node, final String text,
 			final KeyEvent firstEvent, ModeController controller,
-			EditControl editControl, JComponent pParent, Point pPoint, JComponent pFocusListener) {
+			EditControl editControl, JComponent pParent, JComponent pFocusListener) {
 		super(node, text, controller, editControl);
 		this.firstEvent = firstEvent;
 		mParent = pParent;
-		mPoint = pPoint;
 		mFocusListener = pFocusListener;
-		if(mParent == null) {
-			mParent = node.getMap();
-		}
-		
 	}
 	
 	public void show() {
@@ -278,6 +272,7 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 
 		// SCROLL if necessary
 		getView().scrollNodeToVisible(nodeView, xExtraWidth);
+		Point mPoint = null;
 		if(mPoint==null) {
 			// NOTE: this must be calculated after scroll because the pane location
 			// changes
@@ -291,9 +286,9 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 			mPoint.x += xOffset;
 			mPoint.y += yOffset;
 		}
-		textfield.setLocation(mPoint);
+		setTextfieldLoaction(mPoint);
 
-		mParent.add(textfield);
+		addTextfield();
 		textfield.repaint();
 		redispatchKeyEvents(textfield, firstEvent);
 
@@ -308,8 +303,8 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 //					System.out.println(new File("dictionary_" + languages[i] + ".ortho").exists());
 //				}
 				URL url = null;
-				if (new File ("FreeMind.app/Contents/Resources/Java/").exists()) {
-					url = new URL("file", null, "FreeMind.app/Contents/Resources/Java/");
+				if (new File (FreeMindMain.FREE_MIND_APP_CONTENTS_RESOURCES_JAVA).exists()) {
+					url = new URL("file", null, FreeMindMain.FREE_MIND_APP_CONTENTS_RESOURCES_JAVA);
 				}
 				SpellChecker.registerDictionaries(url, language);
 				SpellChecker.register(textfield);
@@ -319,12 +314,20 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 		}
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				// Add listener now, as there are focus changes before.
 				textfield.requestFocus();
+				// Add listener now, as there are focus changes before.
 				textfield.addFocusListener(textFieldListener);
 				mFocusListener.addComponentListener(textFieldListener);
 			}
 		});
+	}
+
+	protected void addTextfield() {
+		mParent.add(textfield, 0);
+	}
+
+	protected void setTextfieldLoaction(Point mPoint) {
+		textfield.setLocation(mPoint);
 	}
 
 	private void hideMe() {
@@ -333,7 +336,7 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 		textfield.removeFocusListener(textFieldListener);
 		textfield.removeKeyListener((KeyListener) textFieldListener);
 		textfield.removeMouseListener((MouseListener) textFieldListener);
-		getNode() .removeComponentListener((ComponentListener) textFieldListener);
+		mFocusListener.removeComponentListener((ComponentListener) textFieldListener);
 		parent.remove(textfield);
 		parent.revalidate();
 		parent.repaint(bounds);
