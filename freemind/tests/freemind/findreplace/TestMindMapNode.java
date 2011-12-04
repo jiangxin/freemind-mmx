@@ -66,6 +66,15 @@ final class TestMindMapNode implements MindMapNode {
 		this.text = text;
 	}
 
+	public boolean hasFoldedParents() {
+		if(isRoot())
+			return false;
+		if(getParentNode().isFolded()) {
+			return true;
+		}
+		return getParentNode().hasFoldedParents();
+	}
+
 	public String getObjectId(ModeController controller) {
 		return null;
 	}

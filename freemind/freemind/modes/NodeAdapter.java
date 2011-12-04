@@ -595,6 +595,18 @@ public abstract class NodeAdapter implements MindMapNode {
 		return false;
 	}
 
+	/**
+	 * @return true, if one of its parents is folded. If itself is folded, doesn't matter.
+	 */
+	public boolean hasFoldedParents() {
+		if(isRoot())
+			return false;
+		if(getParentNode().isFolded()) {
+			return true;
+		}
+		return getParentNode().hasFoldedParents();
+	}
+	
 	public void setFolded(boolean folded) {
 		this.folded = folded;
 	}

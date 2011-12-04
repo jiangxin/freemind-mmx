@@ -65,6 +65,9 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 	}
 
 	public void paint(Graphics g, Point position) {
+		if(mNodePositionHolder.isHidden())
+			return;
+		
 		g.setColor(Color.BLACK);
 		g.fillOval(position.x - CIRCLE_RADIUS, position.y - CIRCLE_RADIUS, CIRCLE_DIAMETER, CIRCLE_DIAMETER);
 		g.setColor(getForeground());

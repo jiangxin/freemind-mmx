@@ -425,4 +425,9 @@ public interface MindMapNode extends MutableTreeNode {
 	 * for example).
 	 */
 	boolean isWriteable();
+
+	/**
+	 * @return true, if one of its parents is folded. If itself is folded, doesn't matter.
+	 */
+	boolean hasFoldedParents();
 }
