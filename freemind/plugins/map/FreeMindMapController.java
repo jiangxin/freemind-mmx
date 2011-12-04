@@ -95,6 +95,24 @@ import freemind.view.mindmapview.NodeView;
  */
 public class FreeMindMapController extends JMapController implements
 		MouseListener, MouseMotionListener, MouseWheelListener {
+	private static final int MOUSE_BUTTONS_MASK = MouseEvent.BUTTON3_DOWN_MASK
+			| MouseEvent.BUTTON1_DOWN_MASK | MouseEvent.BUTTON2_DOWN_MASK;
+
+	private static final int MAC_MOUSE_BUTTON3_MASK = MouseEvent.CTRL_DOWN_MASK
+			| MouseEvent.BUTTON1_DOWN_MASK;
+	private static final int MAC_MOUSE_BUTTON1_MASK = MouseEvent.BUTTON1_DOWN_MASK;
+
+	protected static java.util.logging.Logger logger = freemind.main.Resources
+			.getInstance().getLogger("plugins.map.FreeMindMapController");
+	
+	private JPopupMenu mPopupMenu = new JPopupMenu();
+
+	private final MindMapController mMindMapController;
+
+	private final JDialog mMapDialog;
+
+	private final MapDialog mMapHook;
+
 	private final class MapEditTextFieldControl implements
 			EditNodeBase.EditControl {
 		private final NodeView mNodeView;
@@ -471,24 +489,6 @@ public class FreeMindMapController extends JMapController implements
 	JCursorMapViewer getMap() {
 		return (JCursorMapViewer) map;
 	}
-
-	private static final int MOUSE_BUTTONS_MASK = MouseEvent.BUTTON3_DOWN_MASK
-			| MouseEvent.BUTTON1_DOWN_MASK | MouseEvent.BUTTON2_DOWN_MASK;
-
-	private static final int MAC_MOUSE_BUTTON3_MASK = MouseEvent.CTRL_DOWN_MASK
-			| MouseEvent.BUTTON1_DOWN_MASK;
-	private static final int MAC_MOUSE_BUTTON1_MASK = MouseEvent.BUTTON1_DOWN_MASK;
-
-	private JPopupMenu mPopupMenu = new JPopupMenu();
-
-	private final MindMapController mMindMapController;
-
-	private final JDialog mMapDialog;
-
-	protected static java.util.logging.Logger logger = freemind.main.Resources
-			.getInstance().getLogger("plugins.map.FreeMindMapController");
-
-	private final MapDialog mMapHook;
 
 	public FreeMindMapController(JMapViewer map,
 			MindMapController pMindMapController, final JDialog pMapDialog,
