@@ -56,6 +56,8 @@ import freemind.modes.ModeController;
  */
 public class EditNodeBase {
 	abstract static class EditDialog extends JDialog {
+		private static final long serialVersionUID = 6064679828160694117L;
+
 		class DialogWindowListener extends WindowAdapter {
 
 			/*
@@ -78,19 +80,24 @@ public class EditNodeBase {
 		}
 
 		class SubmitAction extends AbstractAction {
+			private static final long serialVersionUID = -859458051986869388L;
+
 			public void actionPerformed(ActionEvent e) {
 				submit();
 			}
-
 		}
 
 		class SplitAction extends AbstractAction {
+			private static final long serialVersionUID = 6876147686811246433L;
+
 			public void actionPerformed(ActionEvent e) {
 				split();
 			}
 		}
 
 		class CancelAction extends AbstractAction {
+			private static final long serialVersionUID = -6277471363654329607L;
+
 			public void actionPerformed(ActionEvent e) {
 				confirmedCancel();
 			}
@@ -230,6 +237,7 @@ public class EditNodeBase {
 	protected FocusListener textFieldListener = null;
 
 	protected class EditCopyAction extends AbstractAction {
+		private static final long serialVersionUID = 5104219263806454592L;
 		private JTextComponent textComponent;
 
 		public EditCopyAction(JTextComponent textComponent) {
@@ -240,18 +248,21 @@ public class EditNodeBase {
 		public void actionPerformed(ActionEvent e) {
 			String selection = textComponent.getSelectedText();
 			if (selection != null) {
-				getClipboard()
-						.setContents(new StringSelection(selection), null);
+				getClipboard().setContents(new StringSelection(selection), null);
 			}
 		}
 	}
 
 	protected class EditPopupMenu extends JPopupMenu {
-		// private JTextComponent textComponent;
+		private static final long serialVersionUID = -6667980271052571216L;
 
 		public EditPopupMenu(JTextComponent textComponent) {
-			// this.textComponent = textComponent;
-			this.add(new EditCopyAction(textComponent));
+			EditCopyAction editCopyAction = new EditCopyAction(textComponent);
+			String selectedText = textComponent.getSelectedText();
+			if (selectedText == null || selectedText.equals("")) {
+				editCopyAction.setEnabled(false);
+			}
+			this.add(editCopyAction);
 		}
 	}
 

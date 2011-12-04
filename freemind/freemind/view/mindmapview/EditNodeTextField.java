@@ -154,8 +154,11 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 		eventSource.setValue(EDIT);
 
 		// listener class
-		class TextFieldListener implements KeyListener, FocusListener,
-				MouseListener, ComponentListener {
+		class TextFieldListener implements
+				KeyListener, FocusListener, MouseListener, ComponentListener
+		{
+			private boolean checkSpelling = Resources.getInstance().
+						getBoolProperty(FreeMindCommon.CHECK_SPELLING);
 
 			public void focusGained(FocusEvent e) {
 			} // focus gained
@@ -232,11 +235,19 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 
 			public void mouseReleased(MouseEvent e) {
 				conditionallyShowPopup(e);
+				if (checkSpelling) {
+					eventSource.setValue(EDIT); // allow focus lost again
+				}
 			}
 
 			private void conditionallyShowPopup(MouseEvent e) {
 				if (e.isPopupTrigger()) {
 					JPopupMenu popupMenu = new EditPopupMenu(textfield);
+					if (checkSpelling) {
+						popupMenu.add(SpellChecker.createCheckerMenu());
+						popupMenu.add(SpellChecker.createLanguagesMenu());
+						eventSource.setValue(CANCEL); // disallow real focus lost
+					}
 					popupMenu.show(e.getComponent(), e.getX(), e.getY());
 					e.consume();
 				}
@@ -307,7 +318,7 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 					url = new URL("file", null, FreeMindMain.FREE_MIND_APP_CONTENTS_RESOURCES_JAVA);
 				}
 				SpellChecker.registerDictionaries(url, language);
-				SpellChecker.register(textfield);
+				SpellChecker.register(textfield, false, true, true);
 			} catch (MalformedURLException e) {
 				freemind.main.Resources.getInstance().logException(e);
 			}
