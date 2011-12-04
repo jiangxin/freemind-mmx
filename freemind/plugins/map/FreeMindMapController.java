@@ -275,7 +275,6 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 		public void actionPerformed(ActionEvent actionEvent) {
-			logger.fine("Left action!");
 			Coordinate cursorPosition = getMap().getCursorPosition();
 			// get map marker locations:
 			HashSet mapNodePositionHolders = new HashSet(
@@ -311,7 +310,8 @@ public class FreeMindMapController extends JMapController implements
 				}
 			}
 			if (nearest != null) {
-				showNode(nearest);
+				// don't change the zoom
+				setCursorPosition(nearest, map.getZoom());
 			}
 		}
 
@@ -543,10 +543,6 @@ public class FreeMindMapController extends JMapController implements
 					.addAction(new ChangeTileSource(source), "main/view/" + i);
 		}
 		menuHolder.addSeparator("main/view/");
-		JMenuItem searchItem = menuHolder.addAction(searchControlVisible,
-				"main/view/showSearchControl");
-		addAccelerator(searchItem,
-				"keystroke_plugins/map/MapDialog_toggle_search");
 		menuHolder.addAction(showMapMarker, "main/view/showMapMarker");
 		menuHolder.addAction(tileGridVisible, "main/view/tileGridVisible");
 		menuHolder.addAction(zoomControlsVisible,
@@ -555,6 +551,10 @@ public class FreeMindMapController extends JMapController implements
 				"main/view/hideFoldedNodes");
 		JMenu navigationItem = new JMenu(
 				getText("MapControllerPopupDialog.Navigation"));
+		JMenuItem searchItem = menuHolder.addAction(searchControlVisible,
+				"main/navigation/showSearchControl");
+		addAccelerator(searchItem,
+				"keystroke_plugins/map/MapDialog_toggle_search");
 		menuHolder.addMenu(navigationItem, "main/navigation/.");
 		addAccelerator(menuHolder.addAction(new MoveLeftAction(),
 				"main/navigation/moveLeft"),
@@ -682,12 +682,17 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void showNode(MapNodePositionHolder hook) {
+		int zoom = hook.getZoom();
 		changeTileSource(hook.getTileSource(), map);
+		setCursorPosition(hook, zoom);
+	}
+
+	public void setCursorPosition(MapNodePositionHolder hook, int zoom) {
 		getMap().setCursorPosition(hook.getPosition());
 		// move map:
 		Coordinate mapCenter = hook.getMapCenter();
 		map.setDisplayPositionByLatLon(mapCenter.getLat(), mapCenter.getLon(),
-				hook.getZoom());
+				zoom);
 	}
 
 	/**
