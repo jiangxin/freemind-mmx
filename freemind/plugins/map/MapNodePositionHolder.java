@@ -53,7 +53,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	private static final String XML_STORAGE_MAP_LAT = "XML_STORAGE_MAP_LAT";
 	private static final String XML_STORAGE_ZOOM = "XML_STORAGE_ZOOM";
 	private static final String XML_STORAGE_TILE_SOURCE = "XML_STORAGE_TILE_SOURCE";
-	private static final String XML_STORAGE_MAP_TOOLTIP = "XML_STORAGE_MAP_TOOLTIP";
+	private static final String XML_STORAGE_MAP_TOOLTIP_LOCATION = "XML_STORAGE_MAP_TOOLTIP_LOCATION";
 	private static final String NODE_MAP_STORE_TOOLTIP = "node_map_store_tooltip";
 	private static final String NODE_MAP_SHOW_TOOLTIP = "node_map_show_tooltip";
 
@@ -62,8 +62,8 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	private String mTileSource = null;
 	private int mZoom = 1;
 	private static ImageIcon sMapLocationIcon;
-	private TileImage mImage;
-	private String mBase64Image = null;
+	private TileImage mTileImage;
+	private String mTooltipLocation = null;
 
 	/*
 	 * (non-Javadoc)
@@ -79,21 +79,18 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	}
 
 	public void showTooltip() {
-		if (Resources.getInstance().getBoolProperty(
-						NODE_MAP_SHOW_TOOLTIP)) {
-			if (mBase64Image != null) {
-				mImage = new TileImage();
-				mImage.load(mBase64Image);
+		if (Resources.getInstance().getBoolProperty(NODE_MAP_SHOW_TOOLTIP)) {
+			if (mTooltipLocation != null) {
+				mTileImage = new TileImage();
+				mTileImage.load(getTooltipLocation());
+				if(mTileImage.isImageCreated()) {
+					addTooltip();
+				} else {
+					// something went wrong. Again.
+					createToolTip();
+				}
 			} else {
-				// order tooltip to be created.
-				mImage = ((Registration) getPluginBaseClass())
-						.getImageForTooltip(mPosition, mZoom, mTileSource);
-			}
-			if(!mImage.hasErrors()) {
-				createTooltip();
-			} else {
-				mImage = null;
-				logger.warning("Tooltip for node '" + getNode() + "' has errors on creation.");
+				createToolTip();
 			}
 		}
 	}
@@ -127,10 +124,11 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 		if (mTileSource != null) {
 			values.put(XML_STORAGE_TILE_SOURCE, mTileSource);
 		}
-		if (Resources.getInstance().getBoolProperty(NODE_MAP_STORE_TOOLTIP)
-				&& mImage != null) {
-			values.put(XML_STORAGE_MAP_TOOLTIP, mImage.save());
-		}
+		values.put(XML_STORAGE_MAP_TOOLTIP_LOCATION, mTooltipLocation);
+//		if (Resources.getInstance().getBoolProperty(NODE_MAP_STORE_TOOLTIP)
+//				&& mImage != null) {
+//			values.put(XML_STORAGE_MAP_TOOLTIP, mImage.save());
+//		}
 		saveNameValuePairs(values, xml);
 	}
 
@@ -170,7 +168,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 		mMapCenter.setLon(fromString(values.get(XML_STORAGE_MAP_LON)));
 		mZoom = intFromString(values.get(XML_STORAGE_ZOOM));
 		// if no value stored, the get method returns null.
-		mBase64Image = (String) values.get(XML_STORAGE_MAP_TOOLTIP);
+		mTooltipLocation = (String) values.get(XML_STORAGE_MAP_TOOLTIP_LOCATION);
 		mTileSource = (String) values.get(XML_STORAGE_TILE_SOURCE);
 	}
 
@@ -211,6 +209,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 			String pTileSource) {
 		((Registration) getPluginBaseClass()).changePosition(pHolder,
 				pPosition, pMapCenter, pZoom, pTileSource);
+		// the changePosition recreates the tooltip...
 	}
 
 	public static interface MapNodePositionListener {
@@ -282,35 +281,84 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 		return sMapLocationIcon;
 	}
 
-	public void createTooltip() {
-		logger.info("Creating tooltip for " + getNode());
-		// save image to disk:
-		try {
-			File tempFile = File
-					.createTempFile("node_map_tooltip_", ".png", new File(
-							getController().getFrame().getFreemindDirectory()));
-			tempFile.deleteOnExit();
-			ImageIO.write(mImage.getImage(), "png", tempFile);
-			String imageTag = "<img src=\"file://" + tempFile.getAbsolutePath()
-					+ "\"/>";
-			setToolTip(NODE_MAP_HOOK_NAME, "<html>" + imageTag + "</html>");
-		} catch (IOException e) {
-			freemind.main.Resources.getInstance().logException(e);
+	public void addTooltip() {
+		String imageTag;
+		imageTag = "<img src=\"file://" + getTooltipLocation().getAbsolutePath()
+				+ "\"/>";
+		setToolTip(NODE_MAP_HOOK_NAME, "<html>" + imageTag + "</html>");
+	}
 
+	public File getTooltipLocation() {
+		if(mTooltipLocation != null) {
+			return new File(mTooltipLocation);
 		}
+		File mapFile = getMap().getFile();
+		File returnValue = null;
+		if (mapFile == null || !Resources.getInstance().getBoolProperty(NODE_MAP_STORE_TOOLTIP)) {
+			try {
+				// Houston, we have a problem
+				logger.warning("Creating tooltip in .freemind directory, "
+						+ "as we don't know, where the map will be stored.");
+				returnValue = File.createTempFile("node_map_tooltip_"
+						+ getNodeId(), ".png", new File(getController()
+						.getFrame().getFreemindDirectory()));
+				// not persistent.
+				returnValue.deleteOnExit();
+				return returnValue;
+			} catch (IOException e) {
+				freemind.main.Resources.getInstance().logException(e);
+				return null;
+			}
+		} else {
+			returnValue =  new File(createTooltipLocation());
+		}
+		mTooltipLocation = returnValue.getPath();
+		return returnValue;
+	}
+	
+	public String createTooltipLocation() {
+		File mapFile = getMap().getFile();
+		return mapFile.getName() + "_map_" + getNodeId()+".png";
+	}
+
+	public void createToolTip() {
+		// order tooltip to be created.
+		mTileImage = ((Registration) getPluginBaseClass())
+				.getImageForTooltip(mPosition, mZoom, mTileSource);
+		if (!mTileImage.hasErrors()) {
+			logger.info("Creating tooltip for " + getNode());
+			// save image to disk:
+			try {
+				File tooltipFile = getTooltipLocation();
+				ImageIO.write(mTileImage.getImage(), "png", tooltipFile);
+				addTooltip();
+			} catch (IOException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+		} else {
+			mTileImage = null;
+			logger.warning("Tooltip for node '" + getNode()
+					+ "' has errors on creation.");
+		}
+	}
+
+	public String getNodeId() {
+		return getMindMapController().getNodeID(getNode());
 	}
 
 	/**
 	 * 
 	 */
 	public void recreateTooltip() {
-		mImage = null;
-		mBase64Image = null;
+		mTooltipLocation = null;
+		// TODO: remove file from disk.
+		mTileImage = null;
 		showTooltip();
 	}
 
 	/**
-	 * @return This method returns true, when a parent of the corresponding node is folded.
+	 * @return This method returns true, when a parent of the corresponding node
+	 *         is folded.
 	 */
 	public boolean hasFoldedParents() {
 		return getNode().hasFoldedParents();

@@ -29,6 +29,8 @@ import java.awt.image.ImageObserver;
 import java.awt.image.RenderedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.logging.Logger;
 
@@ -124,6 +126,16 @@ public class TileImage implements ImageObserver {
 		}
 	}
 
+	public void load(File pFileName) {
+		try {
+			mImage = ImageIO.read(new FileInputStream(pFileName));
+			mTilesPresent = false;
+			mImageCreated = true;
+		} catch (IOException e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
+	}
+	
 	public String save() {
 		try {
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -201,6 +213,10 @@ public class TileImage implements ImageObserver {
 			}
 		}
 		return false;
+	}
+
+	public boolean isImageCreated() {
+		return mImageCreated;
 	}
 
 }

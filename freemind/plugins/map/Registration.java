@@ -80,6 +80,7 @@ public class Registration implements HookRegistration, ActorXml,
 		mTileSource = new OsmTileSource.Mapnik();
 		mTileCache = new MemoryTileCache();
 		mTileController = new TileController(mTileSource, mTileCache, this);
+		mTileController.setTileLoader(MapDialog.createTileLoader(this, logger));
 	}
 
 	/**

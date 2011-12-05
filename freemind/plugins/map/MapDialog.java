@@ -6,15 +6,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -43,6 +40,7 @@ import org.openstreetmap.gui.jmapviewer.OsmFileCacheTileLoader;
 import org.openstreetmap.gui.jmapviewer.OsmTileLoader;
 import org.openstreetmap.gui.jmapviewer.events.JMVCommandEvent;
 import org.openstreetmap.gui.jmapviewer.interfaces.JMapViewerEventListener;
+import org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource.Mapnik;
 
 import plugins.map.MapNodePositionHolder.MapNodePositionListener;
@@ -217,32 +215,7 @@ public class MapDialog extends MindMapHookAdapter implements
 				new MemoryTileCache(), this);
 		map.addJMVListener(this);
 		FreeMindMapController.changeTileSource(Mapnik.class.getName(), map);
-		OsmTileLoader loader = null;
-		String tileCacheClass = Resources.getInstance().getProperty(
-				TILE_CACHE_CLASS);
-		if (Tools.safeEquals(tileCacheClass, "file")) {
-			String directory = Resources.getInstance().getProperty(
-					FILE_TILE_CACHE_DIRECTORY);
-			if (directory.startsWith("%/")) {
-				directory = Resources.getInstance().getFreemindDirectory()
-						+ File.separator + directory.substring(2);
-			}
-			logger.info("Trying to use file cache tile loader with dir "
-					+ directory);
-			try {
-				loader = new OsmFileCacheTileLoader(map, new File(directory));
-			} catch (SecurityException e1) {
-				freemind.main.Resources.getInstance().logException(e1);
-
-			} catch (IOException e1) {
-				freemind.main.Resources.getInstance().logException(e1);
-
-			}
-		}
-		if (loader == null) {
-			logger.info("Using osm tile loader");
-			loader = new OsmTileLoader(map);
-		}
+		OsmTileLoader loader = createTileLoader(map, logger);
 		map.setTileLoader(loader);
 
 		mMapDialog.setLayout(new BorderLayout());
@@ -347,6 +320,32 @@ public class MapDialog extends MindMapHookAdapter implements
 		}
 		mMapDialog.setVisible(true);
 
+	}
+
+	public static OsmTileLoader createTileLoader(TileLoaderListener mMap, java.util.logging.Logger pLogger) {
+		OsmTileLoader loader = null;
+		String tileCacheClass = Resources.getInstance().getProperty(
+				TILE_CACHE_CLASS);
+		if (Tools.safeEquals(tileCacheClass, "file")) {
+			String directory = Resources.getInstance().getProperty(
+					FILE_TILE_CACHE_DIRECTORY);
+			if (directory.startsWith("%/")) {
+				directory = Resources.getInstance().getFreemindDirectory()
+						+ File.separator + directory.substring(2);
+			}
+			pLogger.info("Trying to use file cache tile loader with dir "
+					+ directory);
+			try {
+				loader = new OsmFileCacheTileLoader(mMap, new File(directory));
+			} catch (Exception e1) {
+				freemind.main.Resources.getInstance().logException(e1);
+			}
+		}
+		if (loader == null) {
+			pLogger.info("Using osm tile loader");
+			loader = new OsmTileLoader(mMap);
+		}
+		return loader;
 	}
 
 	public void toggleSearchBar() {
