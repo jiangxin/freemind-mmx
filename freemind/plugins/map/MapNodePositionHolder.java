@@ -282,10 +282,16 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	}
 
 	public void addTooltip() {
+		String imageHtml = getImageHtml();
+		setToolTip(NODE_MAP_HOOK_NAME, imageHtml);
+	}
+
+	public String getImageHtml() {
 		String imageTag;
 		imageTag = "<img src=\"file://" + getTooltipLocation().getAbsolutePath()
 				+ "\"/>";
-		setToolTip(NODE_MAP_HOOK_NAME, "<html><body>" + imageTag + "</body></html>");
+		String imageHtml = "<html><body>" + imageTag + "</body></html>";
+		return imageHtml;
 	}
 
 	public File getTooltipLocation() {

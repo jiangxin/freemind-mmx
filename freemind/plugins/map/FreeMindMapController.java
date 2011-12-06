@@ -49,6 +49,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapController;
@@ -112,6 +114,26 @@ public class FreeMindMapController extends JMapController implements
 	private final JDialog mMapDialog;
 
 	private final MapDialog mMapHook;
+
+	private Point lastDragPoint;
+
+	private boolean isMoving = false;
+
+	private boolean mMovementEnabled = true;
+	private boolean mClickEnabled = true;
+
+	private int movementMouseButton = MouseEvent.BUTTON1;
+	private int movementMouseButtonMask = MouseEvent.BUTTON1_DOWN_MASK;
+
+	private boolean mWheelZoomEnabled = true;
+
+	private JPopupMenu mContextPopupMenu;
+
+	private MapNodePositionHolder mCurrentPopupPositionHolder;
+
+	private static TileSource[] mTileSources = new TileSource[] {
+			new OsmTileSource.Mapnik(), new OsmTileSource.TilesAtHome(),
+			new OsmTileSource.CycleMap(), new BingAerialTileSource() };
 
 	private final class MapEditTextFieldControl implements
 			EditNodeBase.EditControl {
@@ -502,8 +524,33 @@ public class FreeMindMapController extends JMapController implements
 
 	}
 
+	private final class AddMapPictureToNode extends AbstractAction  {
+		
+		public AddMapPictureToNode() {
+			super(getText("MapControllerPopupDialog.AddMapPictureToNode"));
+		}
+		
+		public void actionPerformed(ActionEvent pE) {
+			addMapPictureToNode();
+		}
+				
+	}
+	
 	JCursorMapViewer getMap() {
 		return (JCursorMapViewer) map;
+	}
+
+	/**
+	 * 
+	 */
+	public void addMapPictureToNode() {
+		if(mCurrentPopupPositionHolder == null) {
+			// strange.
+			return;
+		}
+		MindMapNode selected = mCurrentPopupPositionHolder.getNode();
+		MindMapNode addNewNode = mMindMapController.addNewNode(selected, 0, selected.isLeft());
+		mMindMapController.setNodeText(addNewNode, mCurrentPopupPositionHolder.getImageHtml());
 	}
 
 	public FreeMindMapController(JMapViewer map,
@@ -522,6 +569,7 @@ public class FreeMindMapController extends JMapController implements
 		Action zoomControlsVisible = new ZoomControlsVisible();
 		Action searchControlVisible = new SearchControlVisible();
 		Action hideFoldedNodes = new HideFoldedNodes();
+		AddMapPictureToNode addMapPictureToNode = new AddMapPictureToNode();
 
 		/** Menu **/
 		StructuredMenuHolder menuHolder = new StructuredMenuHolder();
@@ -575,6 +623,8 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addAction(removePlaceAction, "popup/removeplace");
 		menuHolder.addAction(showAction, "popup/showNode");
 		menuHolder.updateMenus(mPopupMenu, "popup/");
+		menuHolder.addAction(addMapPictureToNode, "contextPopup/showNode");
+		menuHolder.updateMenus(getContextPopupMenu(), "contextPopup/");
 	}
 
 	public void addAccelerator(JMenuItem searchItem, String key) {
@@ -737,22 +787,6 @@ public class FreeMindMapController extends JMapController implements
 		return mMindMapController.getText(pString);
 	}
 
-	private Point lastDragPoint;
-
-	private boolean isMoving = false;
-
-	private boolean mMovementEnabled = true;
-	private boolean mClickEnabled = true;
-
-	private int movementMouseButton = MouseEvent.BUTTON1;
-	private int movementMouseButtonMask = MouseEvent.BUTTON1_DOWN_MASK;
-
-	private boolean mWheelZoomEnabled = true;
-
-	private static TileSource[] mTileSources = new TileSource[] {
-			new OsmTileSource.Mapnik(), new OsmTileSource.TilesAtHome(),
-			new OsmTileSource.CycleMap(), new BingAerialTileSource() };
-
 	public void mouseDragged(MouseEvent e) {
 		if (!mMovementEnabled || !isMoving)
 			return;
@@ -868,14 +902,13 @@ public class FreeMindMapController extends JMapController implements
 						.getMapPosition(mousePosition, false);
 				if (location.checkHit(mousePositionXY.x - locationXY.x,
 						mousePositionXY.y - locationXY.y)) {
-					popupmenu.show(e.getComponent(), e.getX(), e.getY());
+					mCurrentPopupPositionHolder = posHolder;
+					getContextPopupMenu().show(e.getComponent(), e.getX(), e.getY());
 					e.consume();
 					return;
 				}
 			}
 			if (popupmenu != null) {
-				// popupmenu.addPopupMenuListener( this.popupListenerSingleton
-				// );
 				setCursorPosition(e);
 				popupmenu.show(e.getComponent(), e.getX(), e.getY());
 				e.consume();
@@ -884,6 +917,33 @@ public class FreeMindMapController extends JMapController implements
 
 	}
 
+	/**
+	 * listener, that blocks the controler if the menu is active (PN) Take care!
+	 * This listener is also used for modelpopups (as for graphical links).
+	 */
+	private class ControllerPopupMenuListener implements PopupMenuListener {
+		public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+			setMouseControl(false); // block controller
+		}
+
+		public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+			setMouseControl(true); // unblock controller
+		}
+
+		public void popupMenuCanceled(PopupMenuEvent e) {
+			setMouseControl(true); // unblock controller
+		}
+
+	}
+
+	/**
+	 * Take care! This listener is also used for modelpopups (as for graphical
+	 * links).
+	 */
+	protected final ControllerPopupMenuListener popupListenerSingleton = new ControllerPopupMenuListener();
+
+
+	
 	public void mouseReleased(MouseEvent e) {
 		if (!mClickEnabled) {
 			return;
@@ -927,6 +987,14 @@ public class FreeMindMapController extends JMapController implements
 		return mPopupMenu;
 	}
 
+	public JPopupMenu getContextPopupMenu() {
+		if(mContextPopupMenu == null) {
+			mContextPopupMenu = new JPopupMenu();
+			mContextPopupMenu.addPopupMenuListener(popupListenerSingleton);
+		}
+		return mContextPopupMenu;
+	}
+	
 	/**
 	 * Sets the mouse button that is used for moving the map. Possible values
 	 * are:
