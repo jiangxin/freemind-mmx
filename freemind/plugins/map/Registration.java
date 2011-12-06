@@ -20,6 +20,7 @@
 
 package plugins.map;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,7 +28,9 @@ import java.util.Set;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.MemoryTileCache;
+import org.openstreetmap.gui.jmapviewer.OsmFileCacheTileLoader;
 import org.openstreetmap.gui.jmapviewer.OsmMercator;
+import org.openstreetmap.gui.jmapviewer.OsmTileLoader;
 import org.openstreetmap.gui.jmapviewer.Tile;
 import org.openstreetmap.gui.jmapviewer.TileController;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
@@ -39,6 +42,8 @@ import plugins.map.MapNodePositionHolder.MapNodePositionListener;
 import freemind.controller.actions.generated.instance.PlaceNodeXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
+import freemind.main.Resources;
+import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
@@ -80,7 +85,7 @@ public class Registration implements HookRegistration, ActorXml,
 		mTileSource = new OsmTileSource.Mapnik();
 		mTileCache = new MemoryTileCache();
 		mTileController = new TileController(mTileSource, mTileCache, this);
-		mTileController.setTileLoader(MapDialog.createTileLoader(this, logger));
+		mTileController.setTileLoader(createTileLoader(this));
 	}
 
 	/**
@@ -178,6 +183,32 @@ public class Registration implements HookRegistration, ActorXml,
 		mMapNodePositionListeners.remove(pMapNodePositionListener);
 	}
 
+	public OsmTileLoader createTileLoader(TileLoaderListener mMap) {
+		OsmTileLoader loader = null;
+		String tileCacheClass = Resources.getInstance().getProperty(
+				MapDialog.TILE_CACHE_CLASS);
+		if (Tools.safeEquals(tileCacheClass, "file")) {
+			String directory = Resources.getInstance().getProperty(
+					MapDialog.FILE_TILE_CACHE_DIRECTORY);
+			if (directory.startsWith("%/")) {
+				directory = Resources.getInstance().getFreemindDirectory()
+						+ File.separator + directory.substring(2);
+			}
+			logger.info("Trying to use file cache tile loader with dir "
+					+ directory);
+			try {
+				loader = new OsmFileCacheTileLoader(mMap, new File(directory));
+			} catch (Exception e1) {
+				freemind.main.Resources.getInstance().logException(e1);
+			}
+		}
+		if (loader == null) {
+			logger.info("Using osm tile loader");
+			loader = new OsmTileLoader(mMap);
+		}
+		return loader;
+	}
+	
 	/**
 	 * Set map position. Is undoable.
 	 * 

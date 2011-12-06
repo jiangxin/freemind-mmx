@@ -71,9 +71,9 @@ public class MapDialog extends MindMapHookAdapter implements
 	private static final String WINDOW_PREFERENCE_STORAGE_PROPERTY = MapDialog.class
 			.getName();
 
-	private static final String TILE_CACHE_CLASS = "tile_cache_class";
+	static final String TILE_CACHE_CLASS = "tile_cache_class";
 
-	private static final String FILE_TILE_CACHE_DIRECTORY = "file_tile_cache_directory";
+	static final String FILE_TILE_CACHE_DIRECTORY = "file_tile_cache_directory";
 
 	private JCursorMapViewer map = null;
 
@@ -102,7 +102,6 @@ public class MapDialog extends MindMapHookAdapter implements
 	private JTextField mSearchTerm;
 
 	private Color mListOriginalBackgroundColor;
-
 
 	private final class CloseAction extends AbstractAction {
 
@@ -215,7 +214,7 @@ public class MapDialog extends MindMapHookAdapter implements
 				new MemoryTileCache(), this);
 		map.addJMVListener(this);
 		FreeMindMapController.changeTileSource(Mapnik.class.getName(), map);
-		OsmTileLoader loader = createTileLoader(map, logger);
+		OsmTileLoader loader = getRegistration().createTileLoader(map);
 		map.setTileLoader(loader);
 
 		mMapDialog.setLayout(new BorderLayout());
@@ -264,10 +263,11 @@ public class MapDialog extends MindMapHookAdapter implements
 							.hasNext();) {
 						Place place = (Place) it.next();
 						// error handling, if the query wasn't successful.
-						if(Tools.safeEquals("ERROR", place.getOsmType())) {
+						if (Tools.safeEquals("ERROR", place.getOsmType())) {
 							mResultList.setBackground(Color.red);
 						} else {
-							mResultList.setBackground(mListOriginalBackgroundColor);
+							mResultList
+									.setBackground(mListOriginalBackgroundColor);
 						}
 						dataModel.addPlace(place);
 					}
@@ -292,8 +292,7 @@ public class MapDialog extends MindMapHookAdapter implements
 					.next();
 			addMapMarker(nodePositionHolder);
 		}
-		((Registration) getPluginBaseClass())
-				.registerMapNodePositionListener(this);
+		getRegistration().registerMapNodePositionListener(this);
 		getMindMapController().registerNodeSelectionListener(this, true);
 
 		map.setCursorPosition(new Coordinate(49.8, 8.8));
@@ -322,30 +321,8 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	}
 
-	public static OsmTileLoader createTileLoader(TileLoaderListener mMap, java.util.logging.Logger pLogger) {
-		OsmTileLoader loader = null;
-		String tileCacheClass = Resources.getInstance().getProperty(
-				TILE_CACHE_CLASS);
-		if (Tools.safeEquals(tileCacheClass, "file")) {
-			String directory = Resources.getInstance().getProperty(
-					FILE_TILE_CACHE_DIRECTORY);
-			if (directory.startsWith("%/")) {
-				directory = Resources.getInstance().getFreemindDirectory()
-						+ File.separator + directory.substring(2);
-			}
-			pLogger.info("Trying to use file cache tile loader with dir "
-					+ directory);
-			try {
-				loader = new OsmFileCacheTileLoader(mMap, new File(directory));
-			} catch (Exception e1) {
-				freemind.main.Resources.getInstance().logException(e1);
-			}
-		}
-		if (loader == null) {
-			pLogger.info("Using osm tile loader");
-			loader = new OsmTileLoader(mMap);
-		}
-		return loader;
+	public Registration getRegistration() {
+		return (Registration) getPluginBaseClass();
 	}
 
 	public void toggleSearchBar() {
@@ -360,15 +337,15 @@ public class MapDialog extends MindMapHookAdapter implements
 	}
 
 	public Set getMapNodePositionHolders() {
-		return ((Registration) getPluginBaseClass())
-				.getMapNodePositionHolders();
+		return getRegistration().getMapNodePositionHolders();
 	}
 
 	public void addMapMarker(MapNodePositionHolder nodePositionHolder) {
 		Coordinate position = nodePositionHolder.getPosition();
 		logger.fine("Adding map position for " + nodePositionHolder.getNode()
 				+ " at " + position);
-		MapMarkerLocation marker = new MapMarkerLocation(nodePositionHolder, this);
+		MapMarkerLocation marker = new MapMarkerLocation(nodePositionHolder,
+				this);
 		marker.setSize(marker.getPreferredSize());
 		map.addMapMarker(marker);
 		mMarkerMap.put(nodePositionHolder, marker);
@@ -604,8 +581,8 @@ public class MapDialog extends MindMapHookAdapter implements
 		return mSearchBarVisible;
 	}
 
-	/** 
-	 * @return  < MapNodePositionHolder, MapMarkerLocation > 
+	/**
+	 * @return < MapNodePositionHolder, MapMarkerLocation >
 	 */
 	public Map getMarkerMap() {
 		return Collections.unmodifiableMap(mMarkerMap);
