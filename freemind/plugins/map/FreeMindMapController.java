@@ -279,7 +279,7 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 		public void actionPerformed(ActionEvent actionEvent) {
-			showNode(actionEvent);
+			showNode();
 		}
 	}
 
@@ -536,6 +536,35 @@ public class FreeMindMapController extends JMapController implements
 				
 	}
 	
+	private final class ShowNodeMapInContextMenu extends AbstractAction  {
+		
+		public ShowNodeMapInContextMenu() {
+			super(getText("MapControllerPopupDialog.ShowNodeMapInContextMenu"));
+		}
+		
+		public void actionPerformed(ActionEvent pE) {
+			if(mContextPopupMenu != null) {
+				showNode(mCurrentPopupPositionHolder);
+			}
+		}
+		
+	}
+	
+	private final class SelectNodeInContextMenu extends AbstractAction  {
+		
+		public SelectNodeInContextMenu() {
+			super(getText("MapControllerPopupDialog.SelectNodeInContextMenu"));
+		}
+		
+		public void actionPerformed(ActionEvent pE) {
+			if(mContextPopupMenu != null) {
+				MindMapNode node = mCurrentPopupPositionHolder.getNode();
+				mMindMapController.select(node, Tools.getVectorWithSingleElement(node));
+			}
+		}
+		
+	}
+	
 	JCursorMapViewer getMap() {
 		return (JCursorMapViewer) map;
 	}
@@ -570,6 +599,7 @@ public class FreeMindMapController extends JMapController implements
 		Action searchControlVisible = new SearchControlVisible();
 		Action hideFoldedNodes = new HideFoldedNodes();
 		AddMapPictureToNode addMapPictureToNode = new AddMapPictureToNode();
+		ShowNodeMapInContextMenu showNodeMapInContextMenu = new ShowNodeMapInContextMenu();
 
 		/** Menu **/
 		StructuredMenuHolder menuHolder = new StructuredMenuHolder();
@@ -623,7 +653,9 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addAction(removePlaceAction, "popup/removeplace");
 		menuHolder.addAction(showAction, "popup/showNode");
 		menuHolder.updateMenus(mPopupMenu, "popup/");
-		menuHolder.addAction(addMapPictureToNode, "contextPopup/showNode");
+		menuHolder.addAction(showNodeMapInContextMenu, "contextPopup/showNodeMapInContextMenu");
+		menuHolder.addAction(new SelectNodeInContextMenu(), "contextPopup/SelectNodeInContextMenu");
+		menuHolder.addAction(addMapPictureToNode, "contextPopup/addPictureToNode");
 		menuHolder.updateMenus(getContextPopupMenu(), "contextPopup/");
 	}
 
@@ -670,9 +702,8 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	/**
-	 * @param pActionEvent
 	 */
-	public void showNode(ActionEvent pActionEvent) {
+	public void showNode() {
 		MindMapNode selected = mMindMapController.getSelected();
 		List selecteds = mMindMapController.getSelecteds();
 		if (selecteds.size() == 1) {
