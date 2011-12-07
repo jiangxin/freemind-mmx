@@ -26,9 +26,9 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import freemind.extensions.StatefulMindMapNodeHookAdapter;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
+import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
 import freemind.view.mindmapview.NodeView;
 
 /**
@@ -37,7 +37,7 @@ import freemind.view.mindmapview.NodeView;
  * @file LatexNodeHook.java
  * @package freemind.modes.mindmapmode
  * */
-public class LatexNodeHook extends StatefulMindMapNodeHookAdapter {
+public class LatexNodeHook extends PermanentMindMapNodeHookAdapter {
 	private String equation;
 	private Set viewers;
 

@@ -204,7 +204,6 @@ import freemind.modes.mindmapmode.actions.UsePlainTextAction;
 import freemind.modes.mindmapmode.actions.UseRichFormattingAction;
 import freemind.modes.mindmapmode.actions.xml.ActionFactory;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
-import freemind.modes.mindmapmode.actions.xml.NodeHookUndoableContentActor;
 import freemind.modes.mindmapmode.actions.xml.UndoActionHandler;
 import freemind.modes.mindmapmode.attributeactors.AssignAttributeDialog;
 import freemind.modes.mindmapmode.attributeactors.MindMapModeAttributeController;
@@ -372,7 +371,6 @@ public class MindMapController extends ControllerAdapter implements
 
 	// Extension Actions
 	public Vector iconActions = new Vector(); // fc
-	public NodeHookUndoableContentActor undoableHookContentActor = null;
 
 	FileFilter filefilter = new MindMapFilter();
 
@@ -441,8 +439,8 @@ public class MindMapController extends ControllerAdapter implements
 				new ModeControllerActionHandler(getActionFactory()));
 		getActionFactory().registerUndoHandler(
 				new UndoActionHandler(this, undo, redo));
-		// debug: getActionFactory().registerHandler(new
-		// freemind.modes.mindmapmode.actions.xml.PrintActionHandler(this));
+		// debug: 
+		getActionFactory().registerHandler(new freemind.modes.mindmapmode.actions.xml.PrintActionHandler(this));
 
 		cut = new CutAction(this);
 		paste = new PasteAction(this);
@@ -525,7 +523,6 @@ public class MindMapController extends ControllerAdapter implements
 		selectBranchAction = new SelectBranchAction(this);
 		selectAllAction = new SelectAllAction(this);
 
-		undoableHookContentActor = new NodeHookUndoableContentActor(this);
 	}
 
 	/**

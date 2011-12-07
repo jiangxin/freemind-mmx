@@ -124,11 +124,9 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 		if (mTileSource != null) {
 			values.put(XML_STORAGE_TILE_SOURCE, mTileSource);
 		}
-		values.put(XML_STORAGE_MAP_TOOLTIP_LOCATION, mTooltipLocation);
-//		if (Resources.getInstance().getBoolProperty(NODE_MAP_STORE_TOOLTIP)
-//				&& mImage != null) {
-//			values.put(XML_STORAGE_MAP_TOOLTIP, mImage.save());
-//		}
+		if(mTooltipLocation != null) {
+			values.put(XML_STORAGE_MAP_TOOLTIP_LOCATION, mTooltipLocation);
+		}
 		saveNameValuePairs(values, xml);
 	}
 

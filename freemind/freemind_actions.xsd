@@ -33,7 +33,6 @@
 					<xs:element ref="fold_action"/>
 					<xs:element ref="move_nodes_action"/>
 					<xs:element ref="hook_node_action"/>
-					<xs:element ref="hook_content_node_action"/>
 					<xs:element ref="add_icon_action"/>
 					<xs:element ref="remove_icon_xml_action"/>
 					<xs:element ref="remove_all_icons_xml_action"/>
@@ -554,6 +553,14 @@
 		</xs:complexType>
 	</xs:element>
 
+	<!-- This element is part of a key/value list -->
+	<xs:element name="node_child_parameter">
+		<xs:complexType>
+	      <xs:attribute name="key" use="required" type="xs:string"/>
+	      <xs:attribute name="value" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+
 	<!-- NodeUpAction and NodeDownAction:
 		   The node from node_action is the selected node. -->
 	<xs:element name="move_nodes_action">
@@ -655,36 +662,23 @@
 
 
 
-	<!-- Add a permanent hook to a node -->
+	<!-- Add (and remove(?)) a permanent hook to a node -->
 	<xs:element name="hook_node_action">
-	  <xs:complexType>
-		<xs:complexContent>
-			<xs:extension base="node_action">
-          <xs:sequence>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="node_action">
+					<xs:sequence>
 						<!-- The selected nodes: -->
-    	      <xs:element ref="node_list_member" maxOccurs="unbounded" minOccurs="1"/>
-          </xs:sequence>
-		      <xs:attribute name="hook_name" use="required" type="xs:string"/>
-			</xs:extension>
-		</xs:complexContent>
-	  </xs:complexType>
-	</xs:element>
-
-	<!-- Change hook attribute content-->
-	<xs:element name="hook_content_node_action">
-	  <xs:complexType>
-	  	<xs:complexContent>
-	  		<xs:extension base="node_action">
-	  			<xs:sequence>
-	  				<xs:element name="content" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-	  			</xs:sequence>
-	  			<xs:attribute name="hook_name" use="required"
-	  				type="xs:string" />
-	  			<xs:attribute name="attribute_name" use="optional"
-	  				type="xs:string" />
-	  		</xs:extension>
-	  	</xs:complexContent>
-	  </xs:complexType>
+						<xs:element ref="node_list_member" maxOccurs="unbounded"
+							minOccurs="1" />
+						<!-- The node's paramters -->
+						<xs:element ref="node_child_parameter" maxOccurs="unbounded"
+							minOccurs="0" />
+					</xs:sequence>
+					<xs:attribute name="hook_name" use="required" type="xs:string" />
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
 	</xs:element>
 
 	<!-- Set attribute name Action -->

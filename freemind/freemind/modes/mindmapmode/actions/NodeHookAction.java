@@ -37,13 +37,16 @@ import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.HookNodeAction;
+import freemind.controller.actions.generated.instance.NodeChildParameter;
 import freemind.controller.actions.generated.instance.NodeListMember;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookFactory;
 import freemind.extensions.HookInstanciationMethod;
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
-import freemind.extensions.StatefulNodeHook;
+import freemind.extensions.PermanentNodeHookAdapter;
+import freemind.main.Tools;
+import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
@@ -98,15 +101,16 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 					(String) getValue(NAME));
 		} else {
 			// direct invocation without undo and such stuff.
-			invoke(focussed, selecteds, hookName);
+			invoke(focussed, selecteds, hookName, null);
 		}
 	}
 
 	private XmlAction createHookNodeUndoAction(MindMapNode focussed,
 			List selecteds, String hookName) {
 		CompoundAction undoAction = new CompoundAction();
-		undoAction
-				.addChoice(createHookNodeAction(focussed, selecteds, hookName));
+		HookNodeAction hookNodeAction = createHookNodeAction(focussed,
+				selecteds, hookName);
+		undoAction.addChoice(hookNodeAction);
 		HookInstanciationMethod instMethod = getInstanciationMethod(hookName);
 		// get destination nodes
 		Collection destinationNodes = instMethod.getDestinationNodes(
@@ -124,22 +128,41 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 						.iterator(); j.hasNext();) {
 					PermanentNodeHook hook = (PermanentNodeHook) j.next();
 					if (hook.getName().equals(hookName)) {
-						if (hook instanceof StatefulNodeHook) {
-							StatefulNodeHook stateHook = (StatefulNodeHook) hook;
-							XmlAction choice = getController().undoableHookContentActor
-									.createHookContentNodeAction(focussed,
-											hookName, null,
-											stateHook.getContent());
-							undoAction.addChoice(choice);
+						XMLElement child = new XMLElement();
+						hook.save(child);
+						if (child.countChildren() == 1) {
+							XMLElement parameters = (XMLElement) child
+									.getChildren().firstElement();
+							if (Tools.safeEquals(parameters.getName(),
+									PermanentNodeHookAdapter.PARAMETERS)) {
+								// standard safe mechanism
+								for (Iterator it = parameters
+										.enumerateAttributeNames(); it
+										.hasNext();) {
+									String name = (String) it.next();
+									NodeChildParameter nodeHookChild = new NodeChildParameter();
+									nodeHookChild.setKey(name);
+									nodeHookChild.setValue(parameters
+											.getStringAttribute(name));
+									hookNodeAction
+											.addNodeChildParameter(nodeHookChild);
+								}
+
+							} else {
+								logger.warning("Unusual safe mechanism, implement me.");
+							}
+						} else {
+							logger.warning("Unusual safe mechanism, implement me.");
 						}
+						/*
+						 * fc, 30.7.2004: we have to break. otherwise the
+						 * collection is modified at two points (i.e., the
+						 * collection is not valid anymore after removing one
+						 * element). But this is no problem, as there exist only
+						 * "once" plugins currently.
+						 */
+						break;
 					}
-					/*
-					 * fc, 30.7.2004: we have to break. otherwise the collection
-					 * is modified at two points (i.e., the collection is not
-					 * valid anymore after removing one element). But this is no
-					 * problem, as there exist only "once" plugins currently.
-					 */
-					break;
 				}
 			}
 		}
@@ -150,7 +173,8 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 		addHook(focussed, selecteds, _hookName);
 	}
 
-	private void invoke(MindMapNode focussed, List selecteds, String hookName) {
+	private void invoke(MindMapNode focussed, List selecteds, String hookName,
+			XMLElement pXmlParent) {
 		logger.finest("invoke(selecteds) called.");
 		HookInstanciationMethod instMethod = getInstanciationMethod(hookName);
 		// get destination nodes
@@ -189,6 +213,10 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 				NodeHook hook = mMindMapController.createNodeHook(hookName,
 						currentDestinationNode, mMindMapController.getMap());
 				logger.finest("created hook " + hookName);
+				// set parameters, if present
+				if (pXmlParent != null && hook instanceof PermanentNodeHook) {
+					((PermanentNodeHook) hook).loadFrom(pXmlParent);
+				}
 				// call invoke.
 				currentDestinationNode.invokeHook(hook);
 				if (hook instanceof PermanentNodeHook) {
@@ -296,7 +324,20 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 				NodeListMember node = (NodeListMember) i.next();
 				selecteds.add(getController().getNodeFromID(node.getNode()));
 			}
-			invoke(selected, selecteds, hookNodeAction.getHookName());
+			// reconstruct child-xml:
+			XMLElement xmlParent = new XMLElement();
+			xmlParent.setName(hookNodeAction.getHookName());
+			XMLElement child = new XMLElement();
+			xmlParent.addChild(child);
+			child.setName(PermanentNodeHookAdapter.PARAMETERS);
+			for (Iterator it = hookNodeAction.getListNodeChildParameterList()
+					.iterator(); it.hasNext();) {
+				NodeChildParameter childParameter = (NodeChildParameter) it
+						.next();
+				child.setAttribute(childParameter.getKey(),
+						childParameter.getValue());
+			}
+			invoke(selected, selecteds, hookNodeAction.getHookName(), xmlParent);
 		}
 	}
 

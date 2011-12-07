@@ -706,9 +706,6 @@ public class FreeMindMapController extends JMapController implements
 	public void removeNodePosition(MindMapNode selected) {
 		MapNodePositionHolder hook = MapNodePositionHolder.getHook(selected);
 		if (hook != null) {
-			// first set position again for undo:
-			hook.changePosition(hook.getPosition(), hook.getMapCenter(),
-					hook.getZoom(), hook.getTileSource());
 			// double add == remove
 			addHookToNode(selected);
 		}

@@ -23,7 +23,7 @@ public class JZoomedHotEqn extends sHotEqn {
 		setEditable(false);
 		setBorder(true);
 		this.model = model;
-		setEquation(model.getContent());
+		setEquation(model.getContent(null));
 		if (editorTitle == null) {
 			editorTitle = model.getMindMapController().getText(
 					"plugins/latex/LatexNodeHook.editorTitle");
@@ -83,12 +83,12 @@ public class JZoomedHotEqn extends sHotEqn {
 		edit.setLocationRelativeTo(this);
 		edit.setVisible(true);
 		String eq = textArea.getText();
-		model.setContentUndoable(eq);
+		model.setContent(null, eq);
 	}
 
 	public void setModel(LatexNodeHook model) {
 		this.model = model;
-		setEquation(model.getContent());
+		setEquation(model.getContent(null));
 		revalidate();
 		repaint();
 	}
