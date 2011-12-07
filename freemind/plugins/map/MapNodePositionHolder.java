@@ -200,14 +200,12 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 
 	/**
 	 * Set map position. Is undoable.
-	 * 
 	 * @param pTileSource
 	 * 
 	 */
-	public void changePosition(MapNodePositionHolder pHolder,
-			Coordinate pPosition, Coordinate pMapCenter, int pZoom,
-			String pTileSource) {
-		((Registration) getPluginBaseClass()).changePosition(pHolder,
+	public void changePosition(Coordinate pPosition,
+			Coordinate pMapCenter, int pZoom, String pTileSource) {
+		((Registration) getPluginBaseClass()).changePosition(this,
 				pPosition, pMapCenter, pZoom, pTileSource);
 		// the changePosition recreates the tooltip...
 	}

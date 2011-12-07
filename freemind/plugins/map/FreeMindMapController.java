@@ -264,7 +264,7 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 		public void actionPerformed(ActionEvent actionEvent) {
-			removePlaceNodes(actionEvent);
+			removeNodePosition(mMindMapController.getSelected());
 		}
 	}
 
@@ -565,6 +565,21 @@ public class FreeMindMapController extends JMapController implements
 		
 	}
 	
+	private final class RemoveNodeLocationInContextMenu extends AbstractAction  {
+		
+		public RemoveNodeLocationInContextMenu() {
+			super(getText("MapControllerPopupDialog.RemoveNodeLocationInContextMenu"));
+		}
+		
+		public void actionPerformed(ActionEvent pE) {
+			if(mContextPopupMenu != null) {
+				MindMapNode node = mCurrentPopupPositionHolder.getNode();
+				removeNodePosition(node);
+			}
+		}
+		
+	}
+	
 	JCursorMapViewer getMap() {
 		return (JCursorMapViewer) map;
 	}
@@ -598,9 +613,6 @@ public class FreeMindMapController extends JMapController implements
 		Action zoomControlsVisible = new ZoomControlsVisible();
 		Action searchControlVisible = new SearchControlVisible();
 		Action hideFoldedNodes = new HideFoldedNodes();
-		AddMapPictureToNode addMapPictureToNode = new AddMapPictureToNode();
-		ShowNodeMapInContextMenu showNodeMapInContextMenu = new ShowNodeMapInContextMenu();
-
 		/** Menu **/
 		StructuredMenuHolder menuHolder = new StructuredMenuHolder();
 		JMenuBar menu = new JMenuBar();
@@ -653,9 +665,12 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addAction(removePlaceAction, "popup/removeplace");
 		menuHolder.addAction(showAction, "popup/showNode");
 		menuHolder.updateMenus(mPopupMenu, "popup/");
-		menuHolder.addAction(showNodeMapInContextMenu, "contextPopup/showNodeMapInContextMenu");
+		menuHolder.addAction(new ShowNodeMapInContextMenu(), "contextPopup/showNodeMapInContextMenu");
 		menuHolder.addAction(new SelectNodeInContextMenu(), "contextPopup/SelectNodeInContextMenu");
-		menuHolder.addAction(addMapPictureToNode, "contextPopup/addPictureToNode");
+		menuHolder.addSeparator("contextPopup/");
+		menuHolder.addAction(new AddMapPictureToNode(), "contextPopup/addPictureToNode");
+		menuHolder.addSeparator("contextPopup/");
+		menuHolder.addAction(new RemoveNodeLocationInContextMenu(), "contextPopup/RemoveNodeLocationInContextMenu");
 		menuHolder.updateMenus(getContextPopupMenu(), "contextPopup/");
 	}
 
@@ -676,8 +691,8 @@ public class FreeMindMapController extends JMapController implements
 		if (hook != null) {
 			// set parameters:
 			String tileSource = getTileSource().getClass().getName();
-			hook.changePosition(hook, getMap().getCursorPosition(),
-					map.getPosition(), map.getZoom(), tileSource);
+			hook.changePosition(getMap().getCursorPosition(), map.getPosition(),
+					map.getZoom(), tileSource);
 		} else {
 			logger.warning("Hook not found although it was recently added. Node was "
 					+ pSelected);
@@ -688,17 +703,15 @@ public class FreeMindMapController extends JMapController implements
 		return getMap().getTileController().getTileSource();
 	}
 
-	/**
-	 * @param pActionEvent
-	 */
-	public void removePlaceNodes(ActionEvent pActionEvent) {
-		MindMapNode selected = mMindMapController.getSelected();
+	public void removeNodePosition(MindMapNode selected) {
 		MapNodePositionHolder hook = MapNodePositionHolder.getHook(selected);
 		if (hook != null) {
+			// first set position again for undo:
+			hook.changePosition(hook.getPosition(), hook.getMapCenter(),
+					hook.getZoom(), hook.getTileSource());
 			// double add == remove
 			addHookToNode(selected);
 		}
-
 	}
 
 	/**
