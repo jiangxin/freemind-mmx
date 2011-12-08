@@ -603,27 +603,21 @@ public class FreeMindMapController extends JMapController implements
 			if (chosenFile == null) {
 				return;
 			}
+			boolean zoomContolsVisible = map.getZoomContolsVisible();
 			try {
 				mMindMapController.getFrame().setWaitingCursor(true);
-				Rectangle innerBounds = map.getBounds();
-
+				map.setZoomContolsVisible(false);
 				// Create an image containing the map:
 				BufferedImage myImage = (BufferedImage) map.createImage(
 						map.getWidth(), map.getHeight());
-
-				// Render the mind map nodes on the image:
-				Graphics g = myImage.getGraphics();
-				g.clipRect(innerBounds.x, innerBounds.y, innerBounds.width,
-						innerBounds.height);
-				map.print(g);
-				myImage = myImage.getSubimage(innerBounds.x, innerBounds.y,
-						innerBounds.width, innerBounds.height);
+				map.print(myImage.getGraphics());
 				FileOutputStream out = new FileOutputStream(chosenFile);
 				ImageIO.write(myImage, "png", out);
 				out.close();
 			} catch (IOException e1) {
 				freemind.main.Resources.getInstance().logException(e1);
 			}
+			map.setZoomContolsVisible(zoomContolsVisible);
 			mMindMapController.getFrame().setWaitingCursor(false);
 			return;
 
