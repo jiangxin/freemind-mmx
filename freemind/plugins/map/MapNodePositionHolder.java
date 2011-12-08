@@ -22,6 +22,7 @@ package plugins.map;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -35,6 +36,7 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener;
 
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.Resources;
+import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
@@ -64,6 +66,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	private static ImageIcon sMapLocationIcon;
 	private TileImage mTileImage;
 	private String mTooltipLocation = null;
+	private File mTooltipFile = null;
 
 	/*
 	 * (non-Javadoc)
@@ -291,38 +294,31 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	}
 
 	public File getTooltipLocation() {
-		if(mTooltipLocation != null) {
-			return new File(mTooltipLocation);
+		if(mTooltipFile != null) {
+			return mTooltipFile;
 		}
 		File mapFile = getMap().getFile();
-		File returnValue = null;
 		if (mapFile == null || !Resources.getInstance().getBoolProperty(NODE_MAP_STORE_TOOLTIP)) {
 			try {
 				// Houston, we have a problem
 				logger.warning("Creating tooltip in .freemind directory, "
 						+ "as we don't know, where the map will be stored.");
-				returnValue = File.createTempFile("node_map_tooltip_"
+				mTooltipFile = File.createTempFile("node_map_tooltip_"
 						+ getNodeId(), ".png", new File(getController()
 						.getFrame().getFreemindDirectory()));
 				// not persistent.
-				returnValue.deleteOnExit();
-				return returnValue;
+				mTooltipFile.deleteOnExit();
 			} catch (IOException e) {
 				freemind.main.Resources.getInstance().logException(e);
-				return null;
 			}
 		} else {
-			returnValue =  new File(createTooltipLocation());
+			String createdFileName = mapFile.getAbsolutePath() + "_map_" + getNodeId() + ".png";
+			mTooltipFile =  new File(createdFileName);
+			mTooltipLocation = mTooltipFile.getName();
 		}
-		mTooltipLocation = returnValue.getPath();
-		return returnValue;
+		return mTooltipFile;
 	}
 	
-	public String createTooltipLocation() {
-		File mapFile = getMap().getFile();
-		return mapFile.getName() + "_map_" + getNodeId()+".png";
-	}
-
 	public void createToolTip() {
 		// order tooltip to be created.
 		mTileImage = ((Registration) getPluginBaseClass())
