@@ -40,6 +40,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
 import freemind.main.Tools;
+import freemind.modes.ModeController;
 import freemind.view.mindmapview.MapView;
 
 /**
@@ -57,10 +58,16 @@ public class ExportHook extends ModeControllerHookAdapter {
 	 */
 	protected File chooseFile(String type, String description,
 			String nameExtension) {
-		Container component = getController().getFrame().getContentPane();
+		ModeController controller = getController();
+		return ExportHook.chooseImageFile(type, description, nameExtension, controller);
+	}
+	
+	public static File chooseImageFile(String type, String description,
+			String nameExtension, ModeController controller) {
+		Container component = controller.getFrame().getContentPane();
 		JFileChooser chooser = null;
 		chooser = new JFileChooser();
-		File mmFile = getController().getMap().getFile();
+		File mmFile = controller.getMap().getFile();
 		if (mmFile != null) {
 			String proposedName = mmFile.getAbsolutePath().replaceFirst(
 					"\\.[^.]*?$", "")
@@ -69,8 +76,8 @@ public class ExportHook extends ModeControllerHookAdapter {
 					+ type;
 			chooser.setSelectedFile(new File(proposedName));
 		}
-		if (getController().getLastCurrentDir() != null) {
-			chooser.setCurrentDirectory(getController().getLastCurrentDir());
+		if (controller.getLastCurrentDir() != null) {
+			chooser.setCurrentDirectory(controller.getLastCurrentDir());
 		}
 
 		chooser.addChoosableFileFilter(new ImageFilter(type, description));
@@ -82,7 +89,7 @@ public class ExportHook extends ModeControllerHookAdapter {
 
 		// |= Pressed O.K.
 		File chosenFile = chooser.getSelectedFile();
-		getController().setLastCurrentDir(chosenFile.getParentFile());
+		controller.setLastCurrentDir(chosenFile.getParentFile());
 		String ext = Tools.getExtension(chosenFile.getName());
 		if (!Tools.safeEqualsIgnoreCase(ext, type)) {
 			chosenFile = new File(chosenFile.getParent(), chosenFile.getName()
@@ -90,7 +97,7 @@ public class ExportHook extends ModeControllerHookAdapter {
 		}
 
 		if (chosenFile.exists()) { // If file exists, ask before overwriting.
-			String overwriteText = MessageFormat.format(getController()
+			String overwriteText = MessageFormat.format(controller
 					.getText("file_already_exists"), new Object[] { chosenFile
 					.toString() });
 			int overwriteMap = JOptionPane.showConfirmDialog(component,
