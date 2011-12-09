@@ -509,7 +509,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 
 			String imgfile = "" + transferData;
 
-			String strText = "<html><body><img src=\"file:///" + imgfile
+			String strText = "<html><body><img src=\"" + imgfile
 					+ "\"/></body></html>";
 
 			MindMapNode node = mMindMapController.newNode(strText,
@@ -870,23 +870,16 @@ public class PasteAction extends AbstractAction implements ActorXml {
 													"_"), ".jpeg", mindmapFile
 											.getParentFile());
 
-					String imgfilepath = tempFile.getAbsolutePath();
-					// File f=new File("img");
-					// if(!f.exists() || !f.isDirectory())
-					// {
-					// f.mkdir();
-					// }
+					String imgfilepath = tempFile.getName();
 					timg.setImage(imgfilepath);
 
 					trans.addTransferableImage(timg);
 
-					// file that we'll save to disk.
-					File file = new File(imgfilepath);
-
 					// class to write image to disk. You specify the image to be
 					// saved, its type,
 					// and then the file in which to write the image data.
-					ImageIO.write(image, "jpg", file);
+					logger.info("Starting to write clipboard image " + image + " to " + tempFile);
+					ImageIO.write(image, "jpg", tempFile);
 
 					trans.setTransferableAsImage(imgfilepath);
 
