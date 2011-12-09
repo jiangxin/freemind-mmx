@@ -116,6 +116,7 @@ import freemind.extensions.UndoEventReceiver;
 import freemind.main.ExampleFileFilter;
 import freemind.main.FixedHTMLWriter;
 import freemind.main.FreeMind;
+import freemind.main.FreeMindCommon;
 import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
@@ -439,8 +440,9 @@ public class MindMapController extends ControllerAdapter implements
 				new ModeControllerActionHandler(getActionFactory()));
 		getActionFactory().registerUndoHandler(
 				new UndoActionHandler(this, undo, redo));
-		// debug: 
-//		getActionFactory().registerHandler(new freemind.modes.mindmapmode.actions.xml.PrintActionHandler(this));
+		// debug:
+		// getActionFactory().registerHandler(new
+		// freemind.modes.mindmapmode.actions.xml.PrintActionHandler(this));
 
 		cut = new CutAction(this);
 		paste = new PasteAction(this);
@@ -1192,14 +1194,18 @@ public class MindMapController extends ControllerAdapter implements
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			if (getMap().getFile() == null) {
+			File mindmapFile = getMap().getFile();
+			if (mindmapFile == null) {
 				JOptionPane.showMessageDialog(getFrame().getContentPane(),
 						getText("map_not_saved"), "FreeMind",
 						JOptionPane.WARNING_MESSAGE);
 				return;
 			}
 			try {
-				File file = File.createTempFile("tmm", ".html");
+				File file = File.createTempFile(
+						mindmapFile.getName().replace(
+								FreeMindCommon.FREEMIND_FILE_EXTENSION, "_"),
+						".html", mindmapFile.getParentFile());
 				saveHTML((MindMapNodeModel) getSelected(), file);
 				loadURL(file.toString());
 			} catch (IOException ex) {
