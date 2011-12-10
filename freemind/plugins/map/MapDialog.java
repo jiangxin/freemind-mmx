@@ -6,6 +6,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -221,6 +223,17 @@ public class MapDialog extends MindMapHookAdapter implements
 		mSearchPanel = new JPanel(new BorderLayout());
 		JLabel label = new JLabel(getResourceString("MapDialog_Search"));
 		mSearchTerm = new JTextField(15);
+		mSearchTerm.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent pEvent) {
+				if (pEvent.getKeyCode() == KeyEvent.VK_DOWN) {
+					logger.info("Set Focus to search list.");
+					mResultList.requestFocusInWindow();
+					mResultList.setSelectedIndex(0);
+					pEvent.consume();
+				}
+			}
+		});
+
 		mSearchFieldPanel = new JPanel();
 		JButton clearButton = new JButton(new ImageIcon(Resources.getInstance()
 				.getResource("images/clear_box.png")));
@@ -232,7 +245,27 @@ public class MapDialog extends MindMapHookAdapter implements
 		mResultList = new JList(dataModel);
 		mListOriginalBackgroundColor = mResultList.getBackground();
 		mResultList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		mResultList.setFocusable(false);
+//		mResultList.setFocusable(false);
+		mResultList.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent pEvent) {
+				if (pEvent.getKeyCode() == KeyEvent.VK_UP) {
+					logger.info("Set Focus to search item.");
+					mResultList.clearSelection();
+					mSearchTerm.requestFocusInWindow();
+					pEvent.consume();
+					return;
+				} 
+				if (pEvent.getKeyCode() == KeyEvent.VK_ENTER) {
+					logger.info("Set result in map.");
+					int index = mResultList.getSelectedIndex();
+					displaySearchItem(dataModel, index);
+					pEvent.consume();
+					return;
+					
+				} 
+				
+			}
+		});
 		clearButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent pE) {
@@ -245,8 +278,7 @@ public class MapDialog extends MindMapHookAdapter implements
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
 					int index = mResultList.locationToIndex(e.getPoint());
-					Place place = dataModel.getPlaceAt(index);
-					getFreeMindMapController().setCursorPosition(place);
+					displaySearchItem(dataModel, index);
 				}
 			}
 		};
@@ -590,5 +622,11 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	public JCursorMapViewer getMap() {
 		return map;
+	}
+
+	public void displaySearchItem(final SearchResultListModel dataModel,
+			int index) {
+		Place place = dataModel.getPlaceAt(index);
+		getFreeMindMapController().setCursorPosition(place);
 	}
 }
