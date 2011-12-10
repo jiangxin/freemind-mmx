@@ -23,6 +23,7 @@ package plugins.map;
 //License: GPL. Copyright 2008 by Jan Peter Stotz
 
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -125,9 +126,10 @@ public class FreeMindMapController extends JMapController implements
 
 	private Point lastDragPoint;
 
+	private boolean mMovementEnabled = true;
+
 	private boolean isMoving = false;
 
-	private boolean mMovementEnabled = true;
 	private boolean mClickEnabled = true;
 
 	private int movementMouseButton = MouseEvent.BUTTON1;
@@ -138,6 +140,10 @@ public class FreeMindMapController extends JMapController implements
 	private JPopupMenu mContextPopupMenu;
 
 	private MapNodePositionHolder mCurrentPopupPositionHolder;
+
+	private boolean isMapNodeMoving = false;
+
+	private MapNodePositionHolder mMapNodeMovingSource = null;
 
 	private static TileSource[] mTileSources = new TileSource[] {
 			new OsmTileSource.Mapnik(), new OsmTileSource.TilesAtHome(),
@@ -741,13 +747,18 @@ public class FreeMindMapController extends JMapController implements
 		}
 		if (hook != null) {
 			// set parameters:
-			String tileSource = getTileSource().getClass().getName();
+			String tileSource = getTileSourceAsString();
 			hook.changePosition(getMap().getCursorPosition(),
 					map.getPosition(), map.getZoom(), tileSource);
 		} else {
 			logger.warning("Hook not found although it was recently added. Node was "
 					+ pSelected);
 		}
+	}
+
+	public String getTileSourceAsString() {
+		String tileSource = getTileSource().getClass().getName();
+		return tileSource;
 	}
 
 	public TileSource getTileSource() {
@@ -880,20 +891,28 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void mouseDragged(MouseEvent e) {
-		if (!mMovementEnabled || !isMoving)
+		if (!mMovementEnabled || !(isMoving || isMapNodeMoving))
 			return;
+		if (isMapNodeMoving) {
+			lastDragPoint = e.getPoint();
+			return;
+		}
 		// Is only the selected mouse button pressed?
 		if ((e.getModifiersEx() & MOUSE_BUTTONS_MASK) == movementMouseButtonMask) {
-			Point p = e.getPoint();
-			if (lastDragPoint != null) {
-				int diffx = lastDragPoint.x - p.x;
-				int diffy = lastDragPoint.y - p.y;
-				map.moveMap(diffx, diffy);
-				// System.out.println("Move to " + map.getPosition() +
-				// " with zoom " + map.getZoom() );
-			}
-			lastDragPoint = p;
+			moveMapOnDrag(e);
 		}
+	}
+
+	public void moveMapOnDrag(MouseEvent e) {
+		Point p = e.getPoint();
+		if (lastDragPoint != null) {
+			int diffx = lastDragPoint.x - p.x;
+			int diffy = lastDragPoint.y - p.y;
+			map.moveMap(diffx, diffy);
+			// System.out.println("Move to " + map.getPosition() +
+			// " with zoom " + map.getZoom() );
+		}
+		lastDragPoint = p;
 	}
 
 	public void mouseClicked(MouseEvent e) {
@@ -966,9 +985,47 @@ public class FreeMindMapController extends JMapController implements
 		}
 		if (e.getButton() == movementMouseButton || Tools.isMacOsX()
 				&& e.getModifiersEx() == MAC_MOUSE_BUTTON1_MASK) {
+			// detect collision with map marker:
+			MapNodePositionHolder posHolder = checkHit(e);
+			if (posHolder != null) {
+				isMapNodeMoving = true;
+				mMapNodeMovingSource = posHolder;
+				Component glassPane = getGlassPane();
+				glassPane.setCursor(Cursor
+						.getPredefinedCursor(Cursor.MOVE_CURSOR));
+				glassPane.setVisible(true);
+				return;
+			}
 			lastDragPoint = null;
 			isMoving = true;
 		}
+	}
+
+	public MapNodePositionHolder checkHit(MouseEvent e) {
+		// check for hit on map marker:
+		for (Iterator it = mMapHook.getMarkerMap().entrySet().iterator(); it
+				.hasNext();) {
+			Entry holder = (Entry) it.next();
+			MapNodePositionHolder posHolder = (MapNodePositionHolder) holder
+					.getKey();
+			MapMarkerLocation location = (MapMarkerLocation) holder.getValue();
+			Coordinate mousePosition = getCoordinateFromMouseEvent(e);
+			Coordinate locationC = posHolder.getPosition();
+			Point locationXY = map.getMapPosition(locationC, false);
+			Point mousePositionXY = map.getMapPosition(mousePosition, false);
+			if (location.checkHit(mousePositionXY.x - locationXY.x,
+					mousePositionXY.y - locationXY.y)) {
+				return posHolder;
+			}
+		}
+		return null;
+
+	}
+
+	public Coordinate getCoordinateFromMouseEvent(MouseEvent e) {
+		Coordinate mousePosition = map
+				.getPosition(new Point(e.getX(), e.getY()));
+		return mousePosition;
 	}
 
 	/**
@@ -979,27 +1036,13 @@ public class FreeMindMapController extends JMapController implements
 		if (e.isPopupTrigger()) {
 			JPopupMenu popupmenu = getPopupMenu();
 			// check for hit on map marker:
-			for (Iterator it = mMapHook.getMarkerMap().entrySet().iterator(); it
-					.hasNext();) {
-				Entry holder = (Entry) it.next();
-				MapNodePositionHolder posHolder = (MapNodePositionHolder) holder
-						.getKey();
-				MapMarkerLocation location = (MapMarkerLocation) holder
-						.getValue();
-				Coordinate mousePosition = map.getPosition(new Point(e.getX(),
-						e.getY()));
-				Coordinate locationC = posHolder.getPosition();
-				Point locationXY = map.getMapPosition(locationC, false);
-				Point mousePositionXY = map
-						.getMapPosition(mousePosition, false);
-				if (location.checkHit(mousePositionXY.x - locationXY.x,
-						mousePositionXY.y - locationXY.y)) {
-					mCurrentPopupPositionHolder = posHolder;
-					getContextPopupMenu().show(e.getComponent(), e.getX(),
-							e.getY());
-					e.consume();
-					return;
-				}
+			MapNodePositionHolder posHolder = checkHit(e);
+			if (posHolder != null) {
+				mCurrentPopupPositionHolder = posHolder;
+				getContextPopupMenu()
+						.show(e.getComponent(), e.getX(), e.getY());
+				e.consume();
+				return;
 			}
 			if (popupmenu != null) {
 				setCursorPosition(e);
@@ -1046,9 +1089,25 @@ public class FreeMindMapController extends JMapController implements
 
 		if (e.getButton() == movementMouseButton || Tools.isMacOsX()
 				&& e.getButton() == MouseEvent.BUTTON1) {
+			if (isMapNodeMoving) {
+				Coordinate mousePosition = getCoordinateFromMouseEvent(e);
+				mMapNodeMovingSource.changePosition(mousePosition,
+						map.getPosition(), map.getZoom(),
+						getTileSourceAsString());
+				mMapNodeMovingSource = null;
+				Component glassPane = getGlassPane();
+				glassPane.setCursor(Cursor
+						.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+				glassPane.setVisible(false);
+			}
+			isMapNodeMoving = false;
 			lastDragPoint = null;
 			isMoving = false;
 		}
+	}
+
+	public Component getGlassPane() {
+		return map.getRootPane().getGlassPane();
 	}
 
 	public void mouseWheelMoved(MouseWheelEvent e) {
@@ -1136,17 +1195,15 @@ public class FreeMindMapController extends JMapController implements
 		// no dragging events get fired.
 		//
 		if (Tools.isMacOsX()) {
-			if (!mMovementEnabled || !isMoving)
+			if (!mMovementEnabled || !(isMoving || isMapNodeMoving))
 				return;
+			if (isMapNodeMoving) {
+				lastDragPoint = e.getPoint();
+				return;
+			}
 			// Is only the selected mouse button pressed?
 			if (e.getModifiersEx() == 0 /* MouseEvent.CTRL_DOWN_MASK */) {
-				Point p = e.getPoint();
-				if (lastDragPoint != null) {
-					int diffx = lastDragPoint.x - p.x;
-					int diffy = lastDragPoint.y - p.y;
-					map.moveMap(diffx, diffy);
-				}
-				lastDragPoint = p;
+				moveMapOnDrag(e);
 			}
 
 		}
