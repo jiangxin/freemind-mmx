@@ -26,6 +26,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.swing.Action;
+import javax.swing.JMenuItem;
+
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.MemoryTileCache;
 import org.openstreetmap.gui.jmapviewer.OsmFileCacheTileLoader;
@@ -39,6 +42,7 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
 import plugins.map.MapNodePositionHolder.MapNodePositionListener;
+import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.actions.generated.instance.PlaceNodeXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
@@ -48,15 +52,18 @@ import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.NodeHookAction;
 import freemind.modes.mindmapmode.actions.xml.ActionFactory;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 public class Registration implements HookRegistration, ActorXml,
-		TileLoaderListener {
+		TileLoaderListener, MenuItemEnabledListener {
 
 	private static final String PLUGINS_MAP_NODE_POSITION = MapNodePositionHolder.class
 			.getName();
+
+	private static final String NODE_CONTEXT_PLUGIN_NAME = "plugins/map/MapDialog_ShowMapToNode.properties";
 
 	/*
 	 * Collects MapNodePositionHolder. This is necessary to be able to display
@@ -77,6 +84,8 @@ public class Registration implements HookRegistration, ActorXml,
 	private TileController mTileController;
 
 	private MemoryTileCache mTileCache;
+
+	private MapDialog mMapDialog = null;
 
 	public Registration(ModeController controller, MindMap map) {
 		this.controller = (MindMapController) controller;
@@ -315,6 +324,29 @@ public class Registration implements HookRegistration, ActorXml,
 	public void tileLoadingFinished(Tile pTile, boolean pSuccess) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.controller.MenuItemEnabledListener#isEnabled(javax.swing.JMenuItem, javax.swing.Action)
+	 */
+	public boolean isEnabled(JMenuItem pItem, Action pAction) {
+		String hookName = ((NodeHookAction) pAction).getHookName();
+		logger.info("Enabled for " + hookName);
+		if (NODE_CONTEXT_PLUGIN_NAME.equals(hookName)) {
+			MindMapNode selected = controller.getSelected();
+			MapNodePositionHolder hook = MapNodePositionHolder.getHook(selected);
+			logger.info("Looking for hook on node " + selected + " result: " + hook);
+			return hook != null;
+		}
+		return true;
+	}
+
+	public MapDialog getMapDialog() {
+		return mMapDialog;
+	}
+
+	public void setMapDialog(MapDialog pMapDialog) {
+		mMapDialog = pMapDialog;
 	}
 
 }

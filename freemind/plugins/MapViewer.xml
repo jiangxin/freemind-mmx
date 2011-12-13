@@ -14,6 +14,19 @@
 		<plugin_menu location="menu_bar/extras/map/ShowMap"/>
 	</plugin_action>
 	
+	<!-- Context menu -->
+	<plugin_action 
+		documentation="%plugins/map/MapDialog_ShowMapToNode.properties_documentation" 
+		name="%plugins/map/MapDialog_ShowMapToNode.properties_name" 
+		base="freemind.extensions.NodeHookAdapter" 
+		label="plugins/map/MapDialog_ShowMapToNode.properties" 
+		class_name="plugins.map.ShowMapToNode" 
+		instanciation="Other">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="mindmapmode_popup/map/ShowNode"/>
+	</plugin_action>
+
+	
 	<plugin_action 
 		documentation="plugins/map/MapNodePositionHolder.properties_documentation" 
 		name="plugins/map/MapNodePositionHolder.properties_name" 

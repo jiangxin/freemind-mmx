@@ -316,13 +316,16 @@
 				<menu_action field="addLocalLinkAction" key_ref="keystroke_add_local_link_action"/>
 			</menu_category>
 		</menu_submenu>	
-			<menu_submenu name="patterns" name_ref="extension_menu">
-				<menu_category name="manage">
-				</menu_category>
-				<menu_separator/>
-				<menu_category name="patterns">
-				</menu_category>
-			</menu_submenu>
+		<menu_submenu name="patterns" name_ref="extension_menu">
+			<menu_category name="manage">
+			</menu_category>
+			<menu_separator/>
+			<menu_category name="patterns">
+			</menu_category>
+		</menu_submenu>
+		<menu_separator/>
+		<menu_category name="map">
+		</menu_category>
 	</menu_category>
 
 	<menu_category name="mindmapmode_toolbar">

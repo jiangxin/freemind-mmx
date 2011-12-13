@@ -350,7 +350,7 @@ public class MapDialog extends MindMapHookAdapter implements
 			}
 		}
 		mMapDialog.setVisible(true);
-
+		getRegistration().setMapDialog(this);
 	}
 
 	public Registration getRegistration() {
@@ -403,6 +403,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		Registration registration = (Registration) getPluginBaseClass();
 		if (registration != null) {
 			// on close, it is null. Why?
+			registration.setMapDialog(null);
 			registration.deregisterMapNodePositionListener(this);
 		}
 		getMindMapController().deregisterNodeSelectionListener(this);
