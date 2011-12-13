@@ -44,12 +44,7 @@ public class MindMapControllerHookAction extends AbstractAction implements
 	}
 
 	public void actionPerformed(ActionEvent arg0) {
-		HookFactory hookFactory = mindMapController.getHookFactory();
-		// two different invocation methods:single or selecteds
-		ModeControllerHook hook = hookFactory
-				.createModeControllerHook(mHookName);
-		hook.setController(mindMapController);
-		mindMapController.invokeHook(hook);
+		mindMapController.createModeControllerHook(mHookName);
 	}
 
 	public String getHookName() {

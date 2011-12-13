@@ -333,12 +333,15 @@ public class Registration implements HookRegistration, ActorXml,
 		String hookName = ((NodeHookAction) pAction).getHookName();
 		logger.info("Enabled for " + hookName);
 		if (NODE_CONTEXT_PLUGIN_NAME.equals(hookName)) {
-			MindMapNode selected = controller.getSelected();
-			MapNodePositionHolder hook = MapNodePositionHolder.getHook(selected);
-			logger.info("Looking for hook on node " + selected + " result: " + hook);
-			return hook != null;
+			for (Iterator it = controller.getSelecteds().iterator(); it.hasNext();) {
+				MindMapNode node = (MindMapNode) it.next();
+				MapNodePositionHolder hook = MapNodePositionHolder.getHook(node);
+				if(hook != null) {
+					return true;
+				}
+			}
 		}
-		return true;
+		return false;
 	}
 
 	public MapDialog getMapDialog() {

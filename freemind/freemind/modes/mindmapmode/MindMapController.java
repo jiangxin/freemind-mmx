@@ -2371,4 +2371,16 @@ public class MindMapController extends ControllerAdapter implements
 		nodeHookFactory = pNodeHookFactory;
 	}
 
+	/* (non-Javadoc)
+	 * @see freemind.modes.mindmapmode.actions.MindMapActions#createModeControllerHook(java.lang.String)
+	 */
+	public void createModeControllerHook(String pHookName) {
+		HookFactory hookFactory = getHookFactory();
+		// two different invocation methods:single or selecteds
+		ModeControllerHook hook = hookFactory
+				.createModeControllerHook(pHookName);
+		hook.setController(this);
+		invokeHook(hook);
+	}
+
 }

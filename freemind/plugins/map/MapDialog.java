@@ -630,4 +630,8 @@ public class MapDialog extends MindMapHookAdapter implements
 		Place place = dataModel.getPlaceAt(index);
 		getFreeMindMapController().setCursorPosition(place);
 	}
+
+	public JDialog getMapDialog() {
+		return mMapDialog;
+	}
 }

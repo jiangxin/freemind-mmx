@@ -234,6 +234,9 @@ public interface MindMapActions {
 	 *            may be null if not known. But it has to be set afterwards!
 	 * */
 	NodeHook createNodeHook(String hookName, MindMapNode node, MindMap map);
+	
+	/** Creates and invokes a ModeControllerHook.*/
+	void createModeControllerHook(String hookName);
 
 	void invokeHook(ModeControllerHook hook);
 

@@ -293,7 +293,7 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 		public void actionPerformed(ActionEvent actionEvent) {
-			showNode();
+			showSelectedNodes();
 		}
 	}
 
@@ -775,7 +775,7 @@ public class FreeMindMapController extends JMapController implements
 
 	/**
 	 */
-	public void showNode() {
+	public void showSelectedNodes() {
 		MindMapNode selected = mMindMapController.getSelected();
 		List selecteds = mMindMapController.getSelecteds();
 		if (selecteds.size() == 1) {
