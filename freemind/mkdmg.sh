@@ -106,9 +106,9 @@ main()
 
     # Use ditto to copy everything to the image, preserving resource forks
     #
-    ditto -rsrcFork $SRC "/Volumes/$ARCH/$NAME" 2>/dev/null >/dev/null
+    ditto -rsrcFork $SRC "/Volumes/$ARCH/" 2>/dev/null >/dev/null
     chkerror
-    croak "Copied $SRC to /Volumes/$ARCH/$NAME"
+    croak "Copied $SRC to /Volumes/$ARCH/"
 
     # Detach the disk image
     hdiutil detach $DEV 2>/dev/null >/dev/null

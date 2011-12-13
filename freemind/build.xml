@@ -274,7 +274,7 @@
 	</target>
 
 	<target name="dist_macos" if="isMacOs">
-		<delete dir="${dist_macos}"/>
+		<delete dir="${dist_macos}" followsymlinks="false"/>
 		<mkdir dir="${dist_macos}"/>
 		<!-- change freemind.properties -->
 		<copy todir="${dist_macos}" file="${src}/freemind.properties"/>
@@ -379,23 +379,27 @@
 
 	<target name="post_macos" if="isMacOs">
 
-		<exec dir="." executable="zsh" os="Mac OS X">
-			<arg value="./mkdmg.sh"/>
-			<arg path="${dist_macos_app}"/>
+		<copy todir="${dist_macos}" verbose="true">
+			<fileset dir="../admin/installer/mac/dmg/">
+			    <include name=".VolumeIcon.icns"/>
+			</fileset>
+			<fileset dir="../admin/installer/mac/QuickLook/build/Debug/">
+			    <include name="**"/>
+			</fileset>
+		</copy>
+		<exec executable="cp">
+		  <arg value="../admin/installer/mac/dmg/.DS_Store"/>
+		  <arg value="${dist_macos}"/>
 		</exec>
-		<exec dir="." executable="mv" os="Mac OS X">
-			<arg path="/tmp/${dist_macos_app_name} Archive.dmg"/>
-			<arg path="${post}/${dist_macos_name}_MAC_OSX_10.5_Rosetta.dmg"/>
+		<exec executable="ln">
+		  <arg line="-s /Library/QuickLook"/>
+		  <arg value="${dist_macos}"/>
+		</exec>
+		<exec executable="ln">
+		  <arg line="-s /Applications"/>
+		  <arg value="${dist_macos}"/>
 		</exec>
 
-		<!-- Delete the JavaApplicationStub and replace it with a symbolic link -->
-		  <!--   which should work on older and future versions of OS X
-		   Taken from http://informagen.com/JarBundler/StubFile.html   
-
-			fc, 22.10.2009,  as people reported problems with this, we make two versions.
-			http://sourceforge.net/forum/message.php?msg_id=5324833
-         -->
-			
 		<delete file="${dist_macos_contents}/MacOS/JavaApplicationStub"/>
 		<exec executable="ln">
 		  <arg line="-s /System/Library/Frameworks/JavaVM.framework/Resources/MacOS/JavaApplicationStub"/>
@@ -404,13 +408,19 @@
 
 		<exec dir="." executable="zsh" os="Mac OS X">
 			<arg value="./mkdmg.sh"/>
-			<arg path="${dist_macos_app}"/>
+			<arg path="${dist_macos}"/>
 		</exec>
 		<exec dir="." executable="mv" os="Mac OS X">
-			<arg path="/tmp/${dist_macos_app_name} Archive.dmg"/>
+			<arg path="/tmp/${dist_macos_name} Archive.dmg"/>
 			<arg path="${post}/${dist_macos_name}.dmg"/>
 		</exec>
 
+		<exec executable="rm">
+		  <arg value="${dist_macos}/QuickLook"/>
+		</exec>
+		<exec executable="rm">
+		  <arg value="${dist_macos}/Applications"/>
+		</exec>
 
 		
 	</target>
