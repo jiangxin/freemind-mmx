@@ -1,0 +1,204 @@
+// !$*UTF8*$!
+{
+	089C1669FE841209C02AAC07 /* Project object */ = {
+		activeBuildConfigurationName = Debug;
+		activeTarget = 8D57630D048677EA00EA77CD /* FreemindQL */;
+		addToTargets = (
+			8D57630D048677EA00EA77CD /* FreemindQL */,
+		);
+		codeSenseManager = 18810247144760EB001CE9B8 /* Code sense */;
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					925,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					885,
+					60,
+					20,
+					48.16259765625,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 341847393;
+			PBXWorkspaceStateSaveDate = 341847393;
+		};
+		perUserProjectItems = {
+			183BEA051448AEEC00BF827F /* PBXTextBookmark */ = 183BEA051448AEEC00BF827F /* PBXTextBookmark */;
+			183BEAA21448BCBB00BF827F /* PBXTextBookmark */ = 183BEAA21448BCBB00BF827F /* PBXTextBookmark */;
+			189855DC144DC23D0008E10E /* PlistBookmark */ = 189855DC144DC23D0008E10E /* PlistBookmark */;
+			189855DD144DC23D0008E10E /* PBXTextBookmark */ = 189855DD144DC23D0008E10E /* PBXTextBookmark */;
+			18CFB1921460864F008D178F /* PBXTextBookmark */ = 18CFB1921460864F008D178F /* PBXTextBookmark */;
+			18CFB1931460864F008D178F /* PBXTextBookmark */ = 18CFB1931460864F008D178F /* PBXTextBookmark */;
+			18CFB1941460864F008D178F /* PBXTextBookmark */ = 18CFB1941460864F008D178F /* PBXTextBookmark */;
+		};
+		sourceControlManager = 18810246144760EB001CE9B8 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	08FB77B6FE84183AC02AAC07 /* main.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1848.3, 5375}}";
+			sepNavSelRange = "{5862, 0}";
+			sepNavVisRange = "{0, 731}";
+		};
+	};
+	183BE9CC1448913600BF827F /* Common.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1103, 535}}";
+			sepNavSelRange = "{122, 0}";
+			sepNavVisRange = "{0, 150}";
+		};
+	};
+	183BE9CD1448913600BF827F /* Common.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1232.6, 1150}}";
+			sepNavSelRange = "{295, 0}";
+			sepNavVisRange = "{0, 532}";
+		};
+	};
+	183BEA051448AEEC00BF827F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 183BE9CC1448913600BF827F /* Common.h */;
+		name = "Common.h: 11";
+		rLen = 0;
+		rLoc = 150;
+		rType = 0;
+		vrLen = 150;
+		vrLoc = 0;
+	};
+	183BEAA21448BCBB00BF827F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 183BE9CD1448913600BF827F /* Common.m */;
+		name = "Common.m: 8";
+		rLen = 0;
+		rLoc = 295;
+		rType = 0;
+		vrLen = 532;
+		vrLoc = 0;
+	};
+	18810246144760EB001CE9B8 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
+		};
+	};
+	18810247144760EB001CE9B8 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	189855DC144DC23D0008E10E /* PlistBookmark */ = {
+		isa = PlistBookmark;
+		fRef = 8D576317048677EA00EA77CD /* Info.plist */;
+		fallbackIsa = PBXBookmark;
+		isK = 0;
+		kPath = (
+			JVMOptions,
+		);
+		name = /Users/dvsekhvalnov/projects/personal/freemind/ql/Info.plist;
+		rLen = 0;
+		rLoc = 9223372036854775808;
+	};
+	189855DD144DC23D0008E10E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 61E3BCFA0870B4F2002186A0 /* GenerateThumbnailForURL.m */;
+		name = "GenerateThumbnailForURL.m: 13";
+		rLen = 0;
+		rLoc = 580;
+		rType = 0;
+		vrLen = 843;
+		vrLoc = 0;
+	};
+	18CFB1921460864F008D178F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 2C05A19B06CAA52B00D84F6F /* GeneratePreviewForURL.m */;
+		name = "GeneratePreviewForURL.m: 16";
+		rLen = 0;
+		rLoc = 537;
+		rType = 0;
+		vrLen = 698;
+		vrLoc = 115;
+	};
+	18CFB1931460864F008D178F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 08FB77B6FE84183AC02AAC07 /* main.c */;
+		name = "main.c: 142";
+		rLen = 0;
+		rLoc = 5862;
+		rType = 0;
+		vrLen = 731;
+		vrLoc = 0;
+	};
+	18CFB1941460864F008D178F /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 183BE9CC1448913600BF827F /* Common.h */;
+		name = "Common.h: 9";
+		rLen = 0;
+		rLoc = 122;
+		rType = 0;
+		vrLen = 150;
+		vrLoc = 0;
+	};
+	2C05A19B06CAA52B00D84F6F /* GeneratePreviewForURL.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1599.86, 2025}}";
+			sepNavSelRange = "{537, 0}";
+			sepNavVisRange = "{115, 698}";
+			sepNavWindowFrame = "{{19, 0}, {1244, 878}}";
+		};
+	};
+	61E3BCFA0870B4F2002186A0 /* GenerateThumbnailForURL.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1837.5, 541}}";
+			sepNavSelRange = "{580, 0}";
+			sepNavVisRange = "{0, 843}";
+		};
+	};
+	8D57630D048677EA00EA77CD /* FreemindQL */ = {
+		activeExec = 0;
+	};
+	8D576317048677EA00EA77CD /* Info.plist */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1103, 2100}}";
+			sepNavSelRange = "{1778, 0}";
+			sepNavVisRange = "{1593, 558}";
+			sepNavWindowFrame = "{{19, 0}, {1244, 878}}";
+		};
+	};
+}
