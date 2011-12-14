@@ -105,6 +105,8 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	private Color mListOriginalBackgroundColor;
 
+	static final String MAP_HOOK_NAME = "plugins/map/MapDialog.properties";
+
 	private final class CloseAction extends AbstractAction {
 
 		public CloseAction() {

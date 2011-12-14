@@ -63,8 +63,6 @@ public class Registration implements HookRegistration, ActorXml,
 	private static final String PLUGINS_MAP_NODE_POSITION = MapNodePositionHolder.class
 			.getName();
 
-	private static final String NODE_CONTEXT_PLUGIN_NAME = "plugins/map/MapDialog_ShowMapToNode.properties";
-
 	/*
 	 * Collects MapNodePositionHolder. This is necessary to be able to display
 	 * them all efficiently.
@@ -332,7 +330,9 @@ public class Registration implements HookRegistration, ActorXml,
 	public boolean isEnabled(JMenuItem pItem, Action pAction) {
 		String hookName = ((NodeHookAction) pAction).getHookName();
 		logger.info("Enabled for " + hookName);
-		if (NODE_CONTEXT_PLUGIN_NAME.equals(hookName)) {
+		if (ShowMapToNodeAction.NODE_CONTEXT_PLUGIN_NAME.equals(hookName) || 
+				RemoveMapToNodeAction.NODE_CONTEXT_PLUGIN_NAME.equals(hookName)  || 
+				AddMapImageToNodeAction.NODE_CONTEXT_PLUGIN_NAME.equals(hookName) ) {
 			for (Iterator it = controller.getSelecteds().iterator(); it.hasNext();) {
 				MindMapNode node = (MindMapNode) it.next();
 				MapNodePositionHolder hook = MapNodePositionHolder.getHook(node);

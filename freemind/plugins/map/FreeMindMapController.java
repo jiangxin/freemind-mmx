@@ -643,11 +643,16 @@ public class FreeMindMapController extends JMapController implements
 			// strange.
 			return;
 		}
-		MindMapNode selected = mCurrentPopupPositionHolder.getNode();
-		MindMapNode addNewNode = mMindMapController.addNewNode(selected, 0,
+		addPictureToNode(mCurrentPopupPositionHolder, mMindMapController);
+	}
+
+	public static void addPictureToNode(MapNodePositionHolder positionHolder,
+			MindMapController mindMapController) {
+		MindMapNode selected = positionHolder.getNode();
+		MindMapNode addNewNode = mindMapController.addNewNode(selected, 0,
 				selected.isLeft());
-		mMindMapController.setNodeText(addNewNode,
-				mCurrentPopupPositionHolder.getImageHtml());
+		mindMapController.setNodeText(addNewNode,
+				positionHolder.getImageHtml());
 	}
 
 	public FreeMindMapController(JMapViewer map,

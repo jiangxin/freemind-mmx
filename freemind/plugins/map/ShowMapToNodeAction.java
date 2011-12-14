@@ -20,7 +20,6 @@
 
 package plugins.map;
 
-import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 
@@ -28,9 +27,9 @@ import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
  * @author foltin
  * @date 12.12.2011
  */
-public class ShowMapToNode extends MindMapNodeHookAdapter {
+public class ShowMapToNodeAction extends MindMapNodeHookAdapter {
 
-	private static final String MAP_HOOK_NAME = "plugins/map/MapDialog.properties";
+	static final String NODE_CONTEXT_PLUGIN_NAME = "plugins/map/MapDialog_ShowMapToNode.properties";
 
 	/*
 	 * (non-Javadoc)
@@ -46,7 +45,7 @@ public class ShowMapToNode extends MindMapNodeHookAdapter {
 			MapDialog mapDialog = registration.getMapDialog();
 			if (mapDialog == null) {
 				// if not, open it!
-				getMindMapController().createModeControllerHook(MAP_HOOK_NAME);
+				getMindMapController().createModeControllerHook(MapDialog.MAP_HOOK_NAME);
 			}
 			mapDialog = registration.getMapDialog();
 			if (mapDialog != null) {

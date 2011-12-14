@@ -14,16 +14,41 @@
 		<plugin_menu location="menu_bar/extras/map/ShowMap"/>
 	</plugin_action>
 	
-	<!-- Context menu -->
+	<!-- Context menu Show -->
 	<plugin_action 
 		documentation="%plugins/map/MapDialog_ShowMapToNode.properties_documentation" 
 		name="%plugins/map/MapDialog_ShowMapToNode.properties_name" 
 		base="freemind.extensions.NodeHookAdapter" 
 		label="plugins/map/MapDialog_ShowMapToNode.properties" 
-		class_name="plugins.map.ShowMapToNode" 
+		class_name="plugins.map.ShowMapToNodeAction" 
 		instanciation="Other">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="mindmapmode_popup/map/ShowNode"/>
+	</plugin_action>
+
+	<!-- Context menu Remove -->
+	<plugin_action 
+		documentation="%plugins/map/MapDialog_RemoveMapToNode.properties_documentation" 
+		name="%plugins/map/MapDialog_RemoveMapToNode.properties_name" 
+		base="freemind.extensions.NodeHookAdapter" 
+		label="plugins/map/MapDialog_RemoveMapToNode.properties" 
+		class_name="plugins.map.RemoveMapToNodeAction" 
+		instanciation="Other">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="mindmapmode_popup/map/RemoveNode"/>
+	</plugin_action>
+
+	
+	<!-- Context menu Remove -->
+	<plugin_action 
+		documentation="%plugins/map/MapDialog_AddMapImageToNodeAction.properties_documentation" 
+		name="%plugins/map/MapDialog_AddMapImageToNodeAction.properties_name" 
+		base="freemind.extensions.NodeHookAdapter" 
+		label="plugins/map/MapDialog_AddMapImageToNodeAction.properties" 
+		class_name="plugins.map.AddMapImageToNodeAction" 
+		instanciation="Other">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="mindmapmode_popup/map/AddMapImageToNodeAction"/>
 	</plugin_action>
 
 	

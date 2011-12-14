@@ -11,6 +11,7 @@ Changes made in FreeMind 1.0.0 Alpha8
 * Patch: File > Open should behave like File > Most Recent Files * https://sourceforge.net/tracker/?func=detail&atid=307118&aid=2975476&group_id=7118, Thanks to the author!
 * Added property and functionality: folded nodes are hidden from map view.
 * Change map position with drag&drop.
+* Added map actions to node's context menu. 
 
 ===============================
 Changes made in FreeMind 1.0.0 Alpha7
