@@ -24,7 +24,9 @@ import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
+import java.util.Vector;
 
 import javax.swing.Action;
 import javax.swing.JMenuItem;
@@ -42,6 +44,9 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
 import plugins.map.MapNodePositionHolder.MapNodePositionListener;
+import freemind.common.BooleanProperty;
+import freemind.common.SeparatorProperty;
+import freemind.common.TextTranslator;
 import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.actions.generated.instance.PlaceNodeXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -56,6 +61,8 @@ import freemind.modes.mindmapmode.actions.NodeHookAction;
 import freemind.modes.mindmapmode.actions.xml.ActionFactory;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
+import freemind.preferences.FreemindPropertyContributor;
+import freemind.preferences.layout.OptionPanel;
 
 public class Registration implements HookRegistration, ActorXml,
 		TileLoaderListener, MenuItemEnabledListener {
@@ -85,6 +92,29 @@ public class Registration implements HookRegistration, ActorXml,
 
 	private MapDialog mMapDialog = null;
 
+	private MapDialogPropertyContributor mOptionContributor;
+
+	private static final class MapDialogPropertyContributor implements
+			FreemindPropertyContributor {
+
+		private final MindMapController modeController;
+
+		public MapDialogPropertyContributor(MindMapController modeController) {
+			this.modeController = modeController;
+		}
+
+		public List getControls(TextTranslator pTextTranslator) {
+			Vector controls = new Vector();
+			controls.add(new OptionPanel.NewTabProperty(
+					"plugins/map/MapDialog.properties_MapDialogTabName"));
+			controls.add(new SeparatorProperty(
+					"plugins/map/MapDialog.properties_PatternSeparatorName"));
+			controls.add(new BooleanProperty("node_map_show_tooltip.tooltip",
+					"node_map_show_tooltip"));
+			return controls;
+		}
+	}
+
 	public Registration(ModeController controller, MindMap map) {
 		this.controller = (MindMapController) controller;
 		mMap = map;
@@ -93,6 +123,7 @@ public class Registration implements HookRegistration, ActorXml,
 		mTileCache = new MemoryTileCache();
 		mTileController = new TileController(mTileSource, mTileCache, this);
 		mTileController.setTileLoader(createTileLoader(this));
+		mOptionContributor = new MapDialogPropertyContributor(this.controller);
 	}
 
 	/**
@@ -143,10 +174,12 @@ public class Registration implements HookRegistration, ActorXml,
 	}
 
 	public void deRegister() {
+		OptionPanel.removeContributor(mOptionContributor);
 		controller.getActionFactory().deregisterActor(getDoActionClass());
 	}
 
 	public void register() {
+		OptionPanel.addContributor(mOptionContributor);
 		controller.getActionFactory().registerActor(this, getDoActionClass());
 	}
 
@@ -215,7 +248,7 @@ public class Registration implements HookRegistration, ActorXml,
 		}
 		return loader;
 	}
-	
+
 	/**
 	 * Set map position. Is undoable.
 	 * 
@@ -302,7 +335,6 @@ public class Registration implements HookRegistration, ActorXml,
 		return PlaceNodeXmlAction.class;
 	}
 
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -324,19 +356,27 @@ public class Registration implements HookRegistration, ActorXml,
 
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.controller.MenuItemEnabledListener#isEnabled(javax.swing.JMenuItem, javax.swing.Action)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.controller.MenuItemEnabledListener#isEnabled(javax.swing.JMenuItem
+	 * , javax.swing.Action)
 	 */
 	public boolean isEnabled(JMenuItem pItem, Action pAction) {
 		String hookName = ((NodeHookAction) pAction).getHookName();
 		logger.info("Enabled for " + hookName);
-		if (ShowMapToNodeAction.NODE_CONTEXT_PLUGIN_NAME.equals(hookName) || 
-				RemoveMapToNodeAction.NODE_CONTEXT_PLUGIN_NAME.equals(hookName)  || 
-				AddMapImageToNodeAction.NODE_CONTEXT_PLUGIN_NAME.equals(hookName) ) {
-			for (Iterator it = controller.getSelecteds().iterator(); it.hasNext();) {
+		if (ShowMapToNodeAction.NODE_CONTEXT_PLUGIN_NAME.equals(hookName)
+				|| RemoveMapToNodeAction.NODE_CONTEXT_PLUGIN_NAME
+						.equals(hookName)
+				|| AddMapImageToNodeAction.NODE_CONTEXT_PLUGIN_NAME
+						.equals(hookName)) {
+			for (Iterator it = controller.getSelecteds().iterator(); it
+					.hasNext();) {
 				MindMapNode node = (MindMapNode) it.next();
-				MapNodePositionHolder hook = MapNodePositionHolder.getHook(node);
-				if(hook != null) {
+				MapNodePositionHolder hook = MapNodePositionHolder
+						.getHook(node);
+				if (hook != null) {
 					return true;
 				}
 			}
