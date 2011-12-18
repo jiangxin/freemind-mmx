@@ -387,6 +387,7 @@
 			    <include name="**"/>
 			</fileset>
 		</copy>
+		<chmod perm="ugo+rx" file="${dist_macos}/FreemindQL.qlgenerator/Contents/MacOS/FreemindQL" verbose="true"/>
 		<exec executable="cp">
 		  <arg value="../admin/installer/mac/dmg/.DS_Store"/>
 		  <arg value="${dist_macos}"/>

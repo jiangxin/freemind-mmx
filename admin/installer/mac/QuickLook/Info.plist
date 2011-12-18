@@ -78,7 +78,7 @@
 		</dict>
 	</array>
 	<key>FreemindPath</key>
-	<string>/Applications/Freemind-1.0-alpha</string>
+	<string>/Applications/FreeMind.app</string>
 	<key>JVMOptions</key>
 	<string>-Xmx256m</string>
 </dict>
