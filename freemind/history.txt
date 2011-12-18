@@ -1,5 +1,5 @@
 ===============================
-Changes made in FreeMind 1.0.0 Alpha8
+Changes made in FreeMind 1.0.0 Beta1
 ===============================
 * Fixed https://sourceforge.net/projects/freemind/forums/forum/22102/topic/4801690
 * Added spell checking. Thanks to the author Eicke.
@@ -12,6 +12,7 @@ Changes made in FreeMind 1.0.0 Alpha8
 * Added property and functionality: folded nodes are hidden from map view.
 * Change map position with drag&drop.
 * Added map actions to node's context menu. 
+* Added quick look plugin to Mac installer (drop it to the library)
 
 ===============================
 Changes made in FreeMind 1.0.0 Alpha7
