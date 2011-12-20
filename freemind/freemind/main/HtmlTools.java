@@ -311,7 +311,7 @@ public class HtmlTools {
 		return HTML_PATTERN.matcher(text.toLowerCase(Locale.ENGLISH)).matches();
 	}
 
-	public static String unicodeToHTMLUnicodeEntity(String text) {
+	public static String unicodeToHTMLUnicodeEntity(String text, boolean pPreserveNewlines) {
 		/*
 		 * Heuristic reserve for expansion : factor 1.2
 		 */
@@ -321,7 +321,11 @@ public class HtmlTools {
 		for (int i = 0; i < text.length(); ++i) {
 			myChar = text.charAt(i);
 			intValue = (int) text.charAt(i);
-			if (intValue < 32 || intValue > 126) {
+			boolean outOfRange = intValue < 32  || intValue > 126;
+			if(pPreserveNewlines && myChar == '\n') {
+				outOfRange = false;
+			}
+			if (outOfRange) {
 				result.append("&#x").append(Integer.toString(intValue, 16))
 						.append(';');
 			} else {

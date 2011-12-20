@@ -1075,7 +1075,7 @@ public abstract class NodeAdapter implements MindMapNode {
 			htmlElement.setName(XMLElementAdapter.XML_NODE_XHTML_CONTENT_TAG);
 			htmlElement.setAttribute(XMLElementAdapter.XML_NODE_XHTML_TYPE_TAG,
 					XMLElementAdapter.XML_NODE_XHTML_TYPE_NODE);
-			htmlElement.setEncodedContent(getXmlText().replace('\0', ' '));
+			htmlElement.setEncodedContent(convertToEncodedContent(getXmlText()));
 			node.addChild(htmlElement);
 		}
 		if (getXmlNoteText() != null) {
@@ -1083,7 +1083,7 @@ public abstract class NodeAdapter implements MindMapNode {
 			htmlElement.setName(XMLElementAdapter.XML_NODE_XHTML_CONTENT_TAG);
 			htmlElement.setAttribute(XMLElementAdapter.XML_NODE_XHTML_TYPE_TAG,
 					XMLElementAdapter.XML_NODE_XHTML_TYPE_NOTE);
-			htmlElement.setEncodedContent(getXmlNoteText().replace('\0', ' '));
+			htmlElement.setEncodedContent(convertToEncodedContent(getXmlNoteText()));
 			node.addChild(htmlElement);
 
 		}
@@ -1227,6 +1227,11 @@ public abstract class NodeAdapter implements MindMapNode {
 			node.write(writer);
 		}
 		return node;
+	}
+
+	public static String convertToEncodedContent(String xmlText2) {
+		String replace = xmlText2.replace('\0', ' ');
+		return HtmlTools.unicodeToHTMLUnicodeEntity(replace, true);
 	}
 
 	public ModeController getModeController() {

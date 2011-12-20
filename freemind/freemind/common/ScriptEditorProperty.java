@@ -87,7 +87,7 @@ public class ScriptEditorProperty extends PropertyBean implements
 
 	public String getValue() {
 		return HtmlTools.unicodeToHTMLUnicodeEntity(HtmlTools
-				.toXMLEscapedText(script));
+				.toXMLEscapedText(script), false);
 	}
 
 	public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {

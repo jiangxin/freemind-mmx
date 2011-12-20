@@ -67,6 +67,9 @@
 			--><xsl:when test="@version='0.9.0'"><!--
 			-->0901000<!-- 
 			--></xsl:when><!--
+			--><xsl:when test="@version='1.0.0'"><!--
+			-->1001000<!-- 
+			--></xsl:when><!--
 			--><xsl:otherwise><!--
 			-->-1<!--
 			--></xsl:otherwise><!--

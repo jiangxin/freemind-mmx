@@ -612,7 +612,7 @@ class MindMapHTMLWriter {
 			String output = model.toString();
 			if (HtmlTools.isHtmlNode(output)) {
 				output = HtmlTools.extractHtmlBody(output);
-				fileout.write(HtmlTools.unicodeToHTMLUnicodeEntity(output));
+				fileout.write(HtmlTools.unicodeToHTMLUnicodeEntity(output, false));
 			} else {
 				fileout.write(saveHTML_escapeUnicodeAndSpecialCharacters(model
 						.toString()));

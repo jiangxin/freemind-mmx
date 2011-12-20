@@ -64,6 +64,8 @@ public class OptionalDontShowMeAgainDialog {
 	private final int mMessageType;
 	private final Component mComponent;
 
+	protected static java.util.logging.Logger logger = null;
+	
 	public interface DontShowPropertyHandler {
 		/**
 		 * @return accepted are the following values as return values: * ""
@@ -104,6 +106,10 @@ public class OptionalDontShowMeAgainDialog {
 	public OptionalDontShowMeAgainDialog(JFrame pFrame, Component pComponent,
 			String pMessageId, String pTitleId, TextTranslator pTextTranslator,
 			DontShowPropertyHandler pDontShowPropertyHandler, int pMessageType) {
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
 		mComponent = pComponent;
 		mParent = pFrame;
 		mMessageId = pMessageId;
@@ -199,7 +205,9 @@ public class OptionalDontShowMeAgainDialog {
 						new Insets(5, 5, 0, 0), 0, 0));
 		mDialog.getRootPane().setDefaultButton(okButton);
 		mDialog.pack();
-		Tools.setDialogLocationRelativeTo(mDialog, mComponent);
+		if(mComponent != null) {
+			Tools.setDialogLocationRelativeTo(mDialog, mComponent);
+		}
 		mDialog.setVisible(true);
 		return this;
 	}

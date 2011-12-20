@@ -48,6 +48,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import freemind.common.OptionalDontShowMeAgainDialog;
@@ -69,7 +70,7 @@ public class MindMapMapModel extends MapAdapter {
 
 	public static final String MAP_INITIAL_START = "<map version=\"";
 	public static final String RESTORE_MODE_MIND_MAP = "MindMap:";
-	private static final String FREEMIND_VERSION_UPDATER_XSLT = "freemind/modes/mindmapmode/freemind_version_updater.xslt";
+	public static final String FREEMIND_VERSION_UPDATER_XSLT = "freemind/modes/mindmapmode/freemind_version_updater.xslt";
 	LockManager lockManager;
 	private MindMapLinkRegistry linkRegistry;
 	private Timer timerForAutomaticSaving;

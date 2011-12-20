@@ -247,7 +247,7 @@ public class HtmlConversionTests extends FreeMindTestBase {
 		String input = "if (myOldValue != null && myText.startsWith(myOldValue) == true) { \nmyText = myText.substring(myOldValue.length() + terminator.length());\n};\n";
 		String escapedText = HtmlTools.toXMLEscapedText(input);
 		String unicodeToHTMLUnicodeEntity = HtmlTools
-				.unicodeToHTMLUnicodeEntity(escapedText);
+				.unicodeToHTMLUnicodeEntity(escapedText, false);
 		System.out.println(unicodeToHTMLUnicodeEntity);
 		String unescapeHTMLUnicodeEntity = HtmlTools
 				.unescapeHTMLUnicodeEntity(unicodeToHTMLUnicodeEntity);
