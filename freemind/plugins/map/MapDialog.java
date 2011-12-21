@@ -4,6 +4,8 @@ package plugins.map;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -155,7 +157,7 @@ public class MapDialog extends MindMapHookAdapter implements
 						"try to delete in place list with an index out of range: "
 								+ index);
 			}
-			logger.info("Place "
+			logger.fine("Place "
 					+ ((Place) mPlaceList.get(index)).getDisplayName()
 					+ " should be removed at " + index);
 			mPlaceList.remove(index);
@@ -290,22 +292,31 @@ public class MapDialog extends MindMapHookAdapter implements
 
 			public void actionPerformed(ActionEvent pE) {
 				try {
+					dataModel.clear();
+					// doesn't work due to event thread...
+					mResultList.setBackground(Color.GRAY);
 					Searchresults results = getFreeMindMapController()
 							.getSearchResults(mSearchTerm.getText());
-					dataModel.clear();
-					for (Iterator it = results.getListPlaceList().iterator(); it
-							.hasNext();) {
-						Place place = (Place) it.next();
-						// error handling, if the query wasn't successful.
-						if (Tools.safeEquals("ERROR", place.getOsmType())) {
-							mResultList.setBackground(Color.red);
-						} else {
-							mResultList
-									.setBackground(mListOriginalBackgroundColor);
+					if(results == null) {
+						mResultList.setBackground(Color.red);
+					} else {
+						
+						for (Iterator it = results.getListPlaceList().iterator(); it
+								.hasNext();) {
+							Place place = (Place) it.next();
+							logger.fine("Found place " + place.getDisplayName());
+							// error handling, if the query wasn't successful.
+							if (Tools.safeEquals("ERROR", place.getOsmType())) {
+								mResultList.setBackground(Color.red);
+							} else {
+								mResultList.setBackground(Color.WHITE);
+								mResultList
+										.setBackground(mListOriginalBackgroundColor);
+							}
+							dataModel.addPlace(place);
 						}
-						dataModel.addPlace(place);
-					}
 
+					}
 				} catch (Exception e) {
 					freemind.main.Resources.getInstance().logException(e);
 				}

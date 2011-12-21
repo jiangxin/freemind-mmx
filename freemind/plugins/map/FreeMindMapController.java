@@ -24,9 +24,7 @@ package plugins.map;
 
 import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Graphics;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -41,10 +39,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
@@ -106,6 +106,8 @@ import freemind.view.mindmapview.NodeView;
  */
 public class FreeMindMapController extends JMapController implements
 		MouseListener, MouseMotionListener, MouseWheelListener {
+	private static final String XML_VERSION_1_0_ENCODING_UTF_8 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+
 	private static final int MOUSE_BUTTONS_MASK = MouseEvent.BUTTON3_DOWN_MASK
 			| MouseEvent.BUTTON1_DOWN_MASK | MouseEvent.BUTTON2_DOWN_MASK;
 
@@ -1233,17 +1235,22 @@ public class FreeMindMapController extends JMapController implements
 	 * @return
 	 */
 	public Searchresults getSearchResults(String pText) {
-		String result;
+		String result = "unknown";
 		Searchresults results = new Searchresults();
 		try {
 			if (true) {
-				URL url = new URI("http",
-						"//nominatim.openstreetmap.org/search?format=xml&q="
-								+ pText, null).toURL();
+                StringBuilder b = new StringBuilder();
+                b.append("http://nominatim.openstreetmap.org/search/"); //$NON-NLS-1$
+                b.append(URLEncoder.encode(pText, "UTF-8"));
+                b.append("?format=xml&accept-language=").append(Locale.getDefault().getLanguage()); //$NON-NLS-1$
+                logger.fine("Searching for " + b.toString());
+				URL url = new URL(b.toString());
 				result = Tools.getFile(new InputStreamReader(url.openStream()));
+				result = new String(result.getBytes(), "UTF-8");
+				logger.fine(result + " was received for search "+pText);
 			} else {
 				// only for offline testing:
-				result = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+				result = XML_VERSION_1_0_ENCODING_UTF_8
 						+ "<searchresults timestamp=\"Tue, 08 Nov 11 22:49:54 -0500\" attribution=\"Data Copyright OpenStreetMap Contributors, Some Rights Reserved. CC-BY-SA 2.0.\" querystring=\"innsbruck\" polygon=\"false\" exclude_place_ids=\"228452,25664166,26135863,25440203\" more_url=\"http://open.mapquestapi.com/nominatim/v1/search?format=xml&amp;exclude_place_ids=228452,25664166,26135863,25440203&amp;accept-language=&amp;q=innsbruck\">\n"
 						+ "  <place place_id=\"228452\" osm_type=\"node\" osm_id=\"34840064\" place_rank=\"16\" boundingbox=\"47.2554266357,47.2754304504,11.3827679062,11.4027688599\" lat=\"47.2654296\" lon=\"11.3927685\" display_name=\"Innsbruck, Bezirk Innsbruck-Stadt, Innsbruck-Stadt, Tirol, Österreich, Europe\" class=\"place\" type=\"city\" icon=\"http://open.mapquestapi.com/nominatim/v1/images/mapicons/poi_place_city.p.20.png\"/>\n"
 						+ "  <place place_id=\"25664166\" osm_type=\"way\" osm_id=\"18869490\" place_rank=\"27\" boundingbox=\"43.5348739624023,43.5354156494141,-71.1319198608398,-71.1316146850586\" lat=\"43.5351336524196\" lon=\"-71.1317853486877\" display_name=\"Innsbruck, New Durham, Strafford County, New Hampshire, United States of America\" class=\"highway\" type=\"service\"/>\n"
@@ -1253,6 +1260,9 @@ public class FreeMindMapController extends JMapController implements
 			}
 			results = (Searchresults) XmlBindingTools.getInstance().unMarshall(
 					result);
+			if(results == null) {
+				logger.warning(result + " can't be parsed");
+			}
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
 			Place place = new Place();
