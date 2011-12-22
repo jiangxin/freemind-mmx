@@ -74,13 +74,15 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 		g.fillOval(position.x - CIRCLE_RADIUS, position.y - CIRCLE_RADIUS, CIRCLE_DIAMETER, CIRCLE_DIAMETER);
 		g.setColor(getForeground());
 		g.drawOval(position.x - CIRCLE_RADIUS, position.y - CIRCLE_RADIUS, CIRCLE_DIAMETER, CIRCLE_DIAMETER);
+//		g.fillPolygon(new int[] {position.x, position.x-CIRCLE_RADIUS, position.x+CIRCLE_RADIUS}, 
+//				new int[] {position.y, position.y+CIRCLE_RADIUS, position.y+CIRCLE_RADIUS}, 3);
 		if (mSelected) {
 			g.setColor(Color.GRAY);
 		} else {
 			g.setColor(Color.WHITE);
 		}
-		int node_y = position.y; // + size;
-		int node_x = position.x;
+		int node_y = position.y - CIRCLE_RADIUS;
+		int node_x = position.x + CIRCLE_RADIUS;
 		g.fillRect(node_x, node_y, this.getWidth(), this.getHeight());
 		g.setColor(Color.BLACK);
 
@@ -117,7 +119,10 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 	 * @return true, if the map marker is hit by this relative coordinate (eg. 0,0 is likely a hit...).
 	 */
 	public boolean checkHit(int pX, int pY) {
-		return pX >= 0 && pY >= 0 && pX <= getWidth() && pY <= getHeight();
+		if(pX >= 0 && pY >= 0 && pX <= getWidth() && pY <= getHeight())
+			return true;
+		// distance to zero less than radius:
+		return (pX*pX + pY*pY) <= CIRCLE_RADIUS * CIRCLE_RADIUS;
 	}
 
 

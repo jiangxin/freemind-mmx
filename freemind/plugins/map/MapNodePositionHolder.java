@@ -348,8 +348,9 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	 * 
 	 */
 	public void recreateTooltip() {
+		getTooltipLocation().delete();
 		mTooltipLocation = null;
-		// TODO: remove file from disk.
+		// remove file from disk.
 		mTileImage = null;
 		showTooltip();
 	}
