@@ -26,6 +26,18 @@
 		<plugin_menu location="mindmapmode_popup/map/ShowNode"/>
 	</plugin_action>
 
+	<!-- Context menu Add osm link to node -->
+	<plugin_action 
+		documentation="%plugins/map/MapDialog_AddLinkToMapAction.properties_documentation" 
+		name="%plugins/map/MapDialog_AddLinkToMapAction.properties_name" 
+		base="freemind.extensions.NodeHookAdapter" 
+		label="plugins/map/MapDialog_AddLinkToMapAction.properties" 
+		class_name="plugins.map.AddLinkToMapAction" 
+		instanciation="Other">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="mindmapmode_popup/map/AddLinkToNode"/>
+	</plugin_action>
+
 	<!-- Context menu Remove -->
 	<plugin_action 
 		documentation="%plugins/map/MapDialog_RemoveMapToNode.properties_documentation" 

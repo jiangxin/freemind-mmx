@@ -2,6 +2,7 @@
 Changes made in FreeMind 1.0.0 Beta1
 ===============================
 * Bug fix for Problem with greek text inside long nodes after upgrading - ID: 3432919, http://sourceforge.net/tracker/?func=detail&aid=3432919&group_id=7118&atid=107118 
+* New feature: add link to osm.org webpage to node for locations.
 
 ===============================
 Changes made in FreeMind 1.0.0 Alpha8

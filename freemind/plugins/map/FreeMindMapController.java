@@ -145,10 +145,25 @@ public class FreeMindMapController extends JMapController implements
 
 	private MapNodePositionHolder mMapNodeMovingSource = null;
 
-	private static TileSource[] mTileSources = new TileSource[] {
-			new OsmTileSource.Mapnik(), new OsmTileSource.TilesAtHome(),
-			new OsmTileSource.CycleMap(), new BingAerialTileSource() };
+	public static class TileSourceStore {
+		TileSource mTileSource;
+		String mLayerName;
+		public TileSourceStore(TileSource pTileSource, String pLayerName) {
+			super();
+			mTileSource = pTileSource;
+			mLayerName = pLayerName;
+		}
+		
+	}
+	
+	private static TileSourceStore[] mTileSources = new TileSourceStore[] {
+			new TileSourceStore(new OsmTileSource.Mapnik(), "M"), 
+			new TileSourceStore(new OsmTileSource.TilesAtHome(), "T"),
+			new TileSourceStore(new OsmTileSource.CycleMap(), "C")
+			/*, new BingAerialTileSource() license problems....*/ 
+			};
 
+	
 	private final class MapEditTextFieldControl implements
 			EditNodeBase.EditControl {
 		private final NodeView mNodeView;
@@ -222,7 +237,7 @@ public class FreeMindMapController extends JMapController implements
 		 */
 		public ChangeTileSource(TileSource pSource) {
 			super(Resources.getInstance().getText(
-					"map_ChangeTileSource_" + pSource.getClass().getName()));
+					"map_ChangeTileSource_" + getTileSourceName(pSource)));
 			mSource = pSource;
 
 		}
@@ -687,7 +702,7 @@ public class FreeMindMapController extends JMapController implements
 				"main/view/setDisplayToFitMapMarkers");
 		menuHolder.addSeparator("main/view/");
 		for (int i = 0; i < mTileSources.length; i++) {
-			TileSource source = mTileSources[i];
+			TileSource source = mTileSources[i].mTileSource;
 			menuHolder
 					.addAction(new ChangeTileSource(source), "main/view/" + i);
 		}
@@ -762,7 +777,7 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public String getTileSourceAsString() {
-		String tileSource = getTileSource().getClass().getName();
+		String tileSource = getTileSourceName(getTileSource());
 		return tileSource;
 	}
 
@@ -863,17 +878,27 @@ public class FreeMindMapController extends JMapController implements
 	public static TileSource changeTileSource(String pTileSource,
 			JMapViewer pMap) {
 		logger.info("Searching for tile source " + pTileSource);
+		TileSourceStore tileSource = getTileSourceByName(pTileSource);
+		if(tileSource != null && pMap != null) {
+			pMap.setTileSource(tileSource.mTileSource);
+			return tileSource.mTileSource;
+		}
+		return null;
+	}
+
+	public static TileSourceStore getTileSourceByName(String sourceName) {
 		for (int i = 0; i < mTileSources.length; i++) {
-			TileSource source = mTileSources[i];
-			if (Tools.safeEquals(source.getClass().getName(), pTileSource)) {
-				logger.info("Found  tile source " + source);
-				if (pMap != null) {
-					pMap.setTileSource(source);
-				}
+			TileSourceStore source = mTileSources[i];
+			if (Tools.safeEquals(getTileSourceName(source.mTileSource), sourceName)) {
+				logger.fine("Found  tile source " + source);
 				return source;
 			}
 		}
 		return null;
+	}
+	
+	public static String getTileSourceName(TileSource source) {
+		return source.getClass().getName();
 	}
 
 	public MapNodePositionHolder addHookToNode(MindMapNode selected) {
@@ -1272,6 +1297,10 @@ public class FreeMindMapController extends JMapController implements
 
 	public void setClickEnabled(boolean pClickEnabled) {
 		mClickEnabled = pClickEnabled;
+	}
+
+	public static TileSourceStore[] getmTileSources() {
+		return mTileSources;
 	}
 
 }

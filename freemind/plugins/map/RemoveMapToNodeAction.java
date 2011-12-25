@@ -46,6 +46,7 @@ public class RemoveMapToNodeAction extends MindMapNodeHookAdapter {
 			MapNodePositionHolder hook = MapNodePositionHolder.getHook(node);
 			if(hook != null) {
 				List nodeSelected = Arrays.asList(new MindMapNode[] { node });
+				// double add = remove
 				getMindMapController().addHook(node, nodeSelected,
 						MapNodePositionHolder.NODE_MAP_HOOK_NAME);
 
