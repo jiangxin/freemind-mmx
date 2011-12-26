@@ -178,6 +178,9 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	 * @return
 	 */
 	private double fromString(Object pObject) {
+		if(pObject == null) {
+			return 0.0;
+		}
 		try {
 			return Double.parseDouble((String) pObject);
 		} catch (Exception e) {
@@ -191,6 +194,9 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	 * @return
 	 */
 	private int intFromString(Object pObject) {
+		if(pObject == null) {
+			return 1;
+		}
 		try {
 			return Integer.parseInt((String) pObject);
 		} catch (Exception e) {

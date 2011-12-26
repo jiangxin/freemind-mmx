@@ -160,7 +160,7 @@ public class FreeMindMapController extends JMapController implements
 	
 	private static TileSourceStore[] mTileSources = new TileSourceStore[] {
 			new TileSourceStore(new OsmTileSource.Mapnik(), "M"), 
-			new TileSourceStore(new OsmTileSource.TilesAtHome(), "T"),
+			new TileSourceStore(new OsmTileSource.TilesAtHome(), "O"),
 			new TileSourceStore(new OsmTileSource.CycleMap(), "C")
 			/*, new BingAerialTileSource() license problems....*/ 
 			};
