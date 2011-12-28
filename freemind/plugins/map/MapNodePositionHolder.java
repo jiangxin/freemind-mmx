@@ -84,6 +84,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	public void showTooltip() {
 		if (Resources.getInstance().getBoolProperty(NODE_MAP_SHOW_TOOLTIP)) {
 			if (mTooltipLocation != null) {
+				/* Why is the tooltip here loaded? We only need it on disk.?!*/
 				mTileImage = new TileImage();
 				mTileImage.load(getTooltipLocation());
 				if(mTileImage.isImageCreated()) {

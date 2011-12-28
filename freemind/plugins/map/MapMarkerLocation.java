@@ -93,6 +93,24 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 	}
 
 	/**
+	 * @param pX
+	 * @param pY
+	 * @return true, if the map marker is hit by this relative coordinate (eg. 0,0 is likely a hit...).
+	 */
+	public boolean checkHit(int pX, int pY) {
+		int x = pX;
+		int y = pY;
+		// translation:
+		x -= CIRCLE_RADIUS;
+		y += CIRCLE_RADIUS;
+		if(x >= 0 && y >= 0 && x <= getWidth() && y <= getHeight())
+			return true;
+		// distance to zero less than radius:
+		return (pX*pX + pY*pY) <= CIRCLE_RADIUS * CIRCLE_RADIUS;
+	}
+	
+	
+	/**
 	 * @return decides whether or not the marker should be displayed. 
 	 * Should be moved to FreeMindMapController, if time.
 	 */
@@ -112,18 +130,5 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 	public void setSelected(boolean pSelected) {
 		mSelected  = pSelected;
 	}
-
-	/**
-	 * @param pX
-	 * @param pY
-	 * @return true, if the map marker is hit by this relative coordinate (eg. 0,0 is likely a hit...).
-	 */
-	public boolean checkHit(int pX, int pY) {
-		if(pX >= 0 && pY >= 0 && pX <= getWidth() && pY <= getHeight())
-			return true;
-		// distance to zero less than radius:
-		return (pX*pX + pY*pY) <= CIRCLE_RADIUS * CIRCLE_RADIUS;
-	}
-
 
 }
