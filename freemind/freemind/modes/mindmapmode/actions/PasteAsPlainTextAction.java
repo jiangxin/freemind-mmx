@@ -29,6 +29,7 @@ import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
 
+import freemind.main.HtmlTools;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 
@@ -67,7 +68,7 @@ public class PasteAsPlainTextAction extends AbstractAction {
 				String plainText = (String) clipboardContents
 						.getTransferData(DataFlavor.stringFlavor);
 				// sometimes these (for XML illegal) characters occur
-				plainText = plainText.replaceAll("\0", "");
+				plainText = HtmlTools.makeValidXml(plainText);
 				logger.info("Pasting string " + plainText);
 				// paste.
 				MindMapNode selected = mMindMapController.getSelected();

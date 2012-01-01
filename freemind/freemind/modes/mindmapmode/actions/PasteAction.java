@@ -804,13 +804,13 @@ public class PasteAction extends AbstractAction implements ActorXml {
 				String textFromClipboard;
 				textFromClipboard = (String) t
 						.getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
-				trans.setTransferable(textFromClipboard);
+				trans.setTransferable(HtmlTools.makeValidXml(textFromClipboard));
 			}
 			if (t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
 				String textFromClipboard;
 				textFromClipboard = (String) t
 						.getTransferData(DataFlavor.stringFlavor);
-				trans.setTransferableAsPlainText(textFromClipboard);
+				trans.setTransferableAsPlainText(HtmlTools.makeValidXml(textFromClipboard));
 			}
 			if (t.isDataFlavorSupported(MindMapNodesSelection.rtfFlavor)) {
 				// byte[] textFromClipboard = (byte[])
@@ -821,7 +821,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 				String textFromClipboard;
 				textFromClipboard = (String) t
 						.getTransferData(MindMapNodesSelection.htmlFlavor);
-				trans.setTransferableAsHtml(textFromClipboard);
+				trans.setTransferableAsHtml(HtmlTools.makeValidXml(textFromClipboard));
 			}
 			if (t.isDataFlavorSupported(MindMapNodesSelection.fileListFlavor)) {
 				/*

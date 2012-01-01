@@ -155,8 +155,13 @@ public class JumpLastEditLocation extends MindMapNodeHookAdapter {
 				if (mLastEditLocations.size() > 10) {
 					mLastEditLocations.remove(0);
 				}
-				logger.info("New last edit location: " + lastLocation
-						+ " from " + controller.marshall(doAction));
+				try {
+					logger.fine("New last edit location: " + lastLocation
+							+ " from " + controller.marshall(doAction));
+				} catch (Exception e) {
+					freemind.main.Resources.getInstance().logException(e);
+					logger.warning("Not able to marshall the action " + doAction.getClass() + " as " + doAction);
+				}
 			}
 
 		}

@@ -205,7 +205,7 @@ public abstract class NodeAdapter implements MindMapNode {
 			xmlText = null;
 			return;
 		}
-		userObject = makeValidXml(text);
+		userObject = HtmlTools.makeValidXml(text);
 		xmlText = HtmlTools.getInstance().toXhtml((String) userObject);
 	}
 
@@ -214,13 +214,8 @@ public abstract class NodeAdapter implements MindMapNode {
 	}
 
 	public final void setXmlText(String pXmlText) {
-		this.xmlText = makeValidXml(pXmlText);
+		this.xmlText = HtmlTools.makeValidXml(pXmlText);
 		userObject = HtmlTools.getInstance().toHtml(xmlText);
-	}
-
-	/** \0 is not allowed: */
-	private String makeValidXml(String pXmlNoteText) {
-		return pXmlNoteText.replaceAll("\0", "").replaceAll("&#0;", "");
 	}
 
 	/* ************************************************************
@@ -243,7 +238,7 @@ public abstract class NodeAdapter implements MindMapNode {
 			noteText = null;
 			return;
 		}
-		this.xmlNoteText = makeValidXml(pXmlNoteText);
+		this.xmlNoteText = HtmlTools.makeValidXml(pXmlNoteText);
 		noteText = HtmlTools.getInstance().toHtml(xmlNoteText);
 	}
 
@@ -253,7 +248,7 @@ public abstract class NodeAdapter implements MindMapNode {
 			noteText = null;
 			return;
 		}
-		this.noteText = makeValidXml(pNoteText);
+		this.noteText = HtmlTools.makeValidXml(pNoteText);
 		this.xmlNoteText = HtmlTools.getInstance().toXhtml(noteText);
 	}
 
@@ -1230,7 +1225,7 @@ public abstract class NodeAdapter implements MindMapNode {
 	}
 
 	public static String convertToEncodedContent(String xmlText2) {
-		String replace = xmlText2.replace('\0', ' ');
+		String replace = HtmlTools.makeValidXml(xmlText2);
 		return HtmlTools.unicodeToHTMLUnicodeEntity(replace, true);
 	}
 

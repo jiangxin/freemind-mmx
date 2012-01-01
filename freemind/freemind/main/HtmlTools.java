@@ -580,6 +580,11 @@ public class HtmlTools {
 		return false;
 	}
 
+	/** \0 is not allowed: */
+	public static String makeValidXml(String pXmlNoteText) {
+		return pXmlNoteText.replaceAll("\0", "").replaceAll("&#0;", "");
+	}
+
 	public static String replaceIllegalXmlCharacters(String fileContents) {
 		// replace &xa; by newline.
 		fileContents = fileContents.replaceAll("&#x0*[Aa];", "\n");
