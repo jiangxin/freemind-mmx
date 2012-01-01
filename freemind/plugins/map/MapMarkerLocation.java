@@ -42,12 +42,18 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 	private final MapNodePositionHolder mNodePositionHolder;
 	private boolean mSelected = false;
 	private final MapDialog mMapDialog;
-
+	protected static java.util.logging.Logger logger = null;
+	
+	
 	/**
 	 * @param pNodePositionHolder
 	 * @param pMapDialog 
 	 */
 	public MapMarkerLocation(MapNodePositionHolder pNodePositionHolder, MapDialog pMapDialog) {
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
 		mNodePositionHolder = pNodePositionHolder;
 		mMapDialog = pMapDialog;
 		MindMapNode node = mNodePositionHolder.getNode();

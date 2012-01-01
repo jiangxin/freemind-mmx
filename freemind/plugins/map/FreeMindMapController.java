@@ -150,22 +150,22 @@ public class FreeMindMapController extends JMapController implements
 	public static class TileSourceStore {
 		TileSource mTileSource;
 		String mLayerName;
+
 		public TileSourceStore(TileSource pTileSource, String pLayerName) {
 			super();
 			mTileSource = pTileSource;
 			mLayerName = pLayerName;
 		}
-		
+
 	}
-	
+
 	private static TileSourceStore[] mTileSources = new TileSourceStore[] {
-			new TileSourceStore(new OsmTileSource.Mapnik(), "M"), 
+			new TileSourceStore(new OsmTileSource.Mapnik(), "M"),
 			new TileSourceStore(new OsmTileSource.TilesAtHome(), "O"),
 			new TileSourceStore(new OsmTileSource.CycleMap(), "C")
-			/*, new BingAerialTileSource() license problems....*/ 
-			};
+	/* , new BingAerialTileSource() license problems.... */
+	};
 
-	
 	private final class MapEditTextFieldControl implements
 			EditNodeBase.EditControl {
 		private final NodeView mNodeView;
@@ -668,8 +668,8 @@ public class FreeMindMapController extends JMapController implements
 		MindMapNode selected = positionHolder.getNode();
 		MindMapNode addNewNode = mindMapController.addNewNode(selected, 0,
 				selected.isLeft());
-		mindMapController.setNodeText(addNewNode,
-				positionHolder.getImageHtml());
+		mindMapController
+				.setNodeText(addNewNode, positionHolder.getImageHtml());
 	}
 
 	public FreeMindMapController(JMapViewer map,
@@ -881,7 +881,7 @@ public class FreeMindMapController extends JMapController implements
 			JMapViewer pMap) {
 		logger.info("Searching for tile source " + pTileSource);
 		TileSourceStore tileSource = getTileSourceByName(pTileSource);
-		if(tileSource != null && pMap != null) {
+		if (tileSource != null && pMap != null) {
 			pMap.setTileSource(tileSource.mTileSource);
 			return tileSource.mTileSource;
 		}
@@ -891,14 +891,15 @@ public class FreeMindMapController extends JMapController implements
 	public static TileSourceStore getTileSourceByName(String sourceName) {
 		for (int i = 0; i < mTileSources.length; i++) {
 			TileSourceStore source = mTileSources[i];
-			if (Tools.safeEquals(getTileSourceName(source.mTileSource), sourceName)) {
+			if (Tools.safeEquals(getTileSourceName(source.mTileSource),
+					sourceName)) {
 				logger.fine("Found  tile source " + source);
 				return source;
 			}
 		}
 		return null;
 	}
-	
+
 	public static String getTileSourceName(TileSource source) {
 		return source.getClass().getName();
 	}
@@ -1041,12 +1042,17 @@ public class FreeMindMapController extends JMapController implements
 			MapNodePositionHolder posHolder = (MapNodePositionHolder) holder
 					.getKey();
 			MapMarkerLocation location = (MapMarkerLocation) holder.getValue();
-			Coordinate mousePosition = getCoordinateFromMouseEvent(e);
 			Coordinate locationC = posHolder.getPosition();
-			Point locationXY = map.getMapPosition(locationC, false);
-			Point mousePositionXY = map.getMapPosition(mousePosition, false);
-			if (location.checkHit(mousePositionXY.x - locationXY.x,
-					mousePositionXY.y - locationXY.y)) {
+			Point locationXY = map.getMapPosition(locationC, true);
+			if (locationXY == null) {
+				continue;
+			}
+			boolean checkHitResult = location.checkHit(e.getX() - locationXY.x, e.getY()
+					- locationXY.y);
+			logger.fine("Checking for hit for location " + posHolder.getNode()
+					+ " at location " + locationXY + " to event " + e.getX()
+					+ " and " + e.getY() + " is " + checkHitResult);
+			if (checkHitResult) {
 				return posHolder;
 			}
 		}
@@ -1264,15 +1270,15 @@ public class FreeMindMapController extends JMapController implements
 		Searchresults results = new Searchresults();
 		try {
 			if (true) {
-                StringBuilder b = new StringBuilder();
-                b.append("http://nominatim.openstreetmap.org/search/"); //$NON-NLS-1$
-                b.append(URLEncoder.encode(pText, "UTF-8"));
-                b.append("?format=xml&accept-language=").append(Locale.getDefault().getLanguage()); //$NON-NLS-1$
-                logger.fine("Searching for " + b.toString());
+				StringBuilder b = new StringBuilder();
+				b.append("http://nominatim.openstreetmap.org/search/"); //$NON-NLS-1$
+				b.append(URLEncoder.encode(pText, "UTF-8"));
+				b.append("?format=xml&accept-language=").append(Locale.getDefault().getLanguage()); //$NON-NLS-1$
+				logger.fine("Searching for " + b.toString());
 				URL url = new URL(b.toString());
 				result = Tools.getFile(new InputStreamReader(url.openStream()));
 				result = new String(result.getBytes(), "UTF-8");
-				logger.fine(result + " was received for search "+pText);
+				logger.fine(result + " was received for search " + pText);
 			} else {
 				// only for offline testing:
 				result = XML_VERSION_1_0_ENCODING_UTF_8
@@ -1285,7 +1291,7 @@ public class FreeMindMapController extends JMapController implements
 			}
 			results = (Searchresults) XmlBindingTools.getInstance().unMarshall(
 					result);
-			if(results == null) {
+			if (results == null) {
 				logger.warning(result + " can't be parsed");
 			}
 		} catch (Exception e) {
