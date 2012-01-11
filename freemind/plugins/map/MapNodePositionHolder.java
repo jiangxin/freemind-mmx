@@ -84,10 +84,9 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	public void showTooltip() {
 		if (Resources.getInstance().getBoolProperty(NODE_MAP_SHOW_TOOLTIP)) {
 			if (mTooltipLocation != null) {
-				/* Why is the tooltip here loaded? We only need it on disk.?!*/
-				mTileImage = new TileImage();
-				mTileImage.load(getTooltipLocation());
-				if(mTileImage.isImageCreated()) {
+				/* We only need the tooltip on disk.*/
+				File tooltipFile = getTooltipFile();
+				if(tooltipFile.exists()) {
 					addTooltip();
 				} else {
 					// something went wrong. Again.
@@ -294,13 +293,13 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 
 	public String getImageHtml() {
 		String imageTag;
-		imageTag = "<img src=\"file://" + getTooltipLocation().getAbsolutePath()
+		imageTag = "<img src=\"file://" + getTooltipFile().getAbsolutePath()
 				+ "\"/>";
 		String imageHtml = "<html><body>" + imageTag + "</body></html>";
 		return imageHtml;
 	}
 
-	public File getTooltipLocation() {
+	public File getTooltipFile() {
 		if(mTooltipFile != null) {
 			return mTooltipFile;
 		}
@@ -334,7 +333,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 			logger.info("Creating tooltip for " + getNode());
 			// save image to disk:
 			try {
-				File tooltipFile = getTooltipLocation();
+				File tooltipFile = getTooltipFile();
 				ImageIO.write(mTileImage.getImage(), "png", tooltipFile);
 				addTooltip();
 			} catch (IOException e) {
@@ -355,7 +354,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	 * 
 	 */
 	public void recreateTooltip() {
-		getTooltipLocation().delete();
+		getTooltipFile().delete();
 		mTooltipLocation = null;
 		// remove file from disk.
 		mTileImage = null;
