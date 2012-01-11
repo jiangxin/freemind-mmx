@@ -44,8 +44,14 @@ public interface PermanentNodeHook extends NodeHook {
 	 */
 	void onLostFocusNode(NodeView nodeView);
 
+	/**
+	 * Fired after node is getting visible (is unfolded after having been folded).
+	 */
 	void onViewCreatedHook(NodeView nodeView);
 
+	/**
+	 * Fired after a node is getting invisible (folded).
+	 */
 	void onViewRemovedHook(NodeView nodeView);
 
 	/**

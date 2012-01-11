@@ -4,8 +4,6 @@ package plugins.map;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -15,7 +13,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -40,14 +37,13 @@ import javax.swing.WindowConstants;
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.MemoryTileCache;
-import org.openstreetmap.gui.jmapviewer.OsmFileCacheTileLoader;
 import org.openstreetmap.gui.jmapviewer.OsmTileLoader;
 import org.openstreetmap.gui.jmapviewer.events.JMVCommandEvent;
 import org.openstreetmap.gui.jmapviewer.interfaces.JMapViewerEventListener;
-import org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource.Mapnik;
 
 import plugins.map.MapNodePositionHolder.MapNodePositionListener;
+import plugins.map.Registration.NodeVisibilityListener;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.actions.generated.instance.MapWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.Place;
@@ -70,7 +66,7 @@ import freemind.view.mindmapview.NodeView;
  */
 public class MapDialog extends MindMapHookAdapter implements
 		JMapViewerEventListener, MapModuleChangeObserver,
-		MapNodePositionListener, NodeSelectionListener {
+		MapNodePositionListener, NodeSelectionListener, NodeVisibilityListener {
 
 	private static final String WINDOW_PREFERENCE_STORAGE_PROPERTY = MapDialog.class
 			.getName();
@@ -249,7 +245,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		mResultList = new JList(dataModel);
 		mListOriginalBackgroundColor = mResultList.getBackground();
 		mResultList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-//		mResultList.setFocusable(false);
+		// mResultList.setFocusable(false);
 		mResultList.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent pEvent) {
 				if (pEvent.getKeyCode() == KeyEvent.VK_UP) {
@@ -258,16 +254,16 @@ public class MapDialog extends MindMapHookAdapter implements
 					mSearchTerm.requestFocusInWindow();
 					pEvent.consume();
 					return;
-				} 
+				}
 				if (pEvent.getKeyCode() == KeyEvent.VK_ENTER) {
 					logger.info("Set result in map.");
 					int index = mResultList.getSelectedIndex();
 					displaySearchItem(dataModel, index);
 					pEvent.consume();
 					return;
-					
-				} 
-				
+
+				}
+
 			}
 		});
 		clearButton.addActionListener(new ActionListener() {
@@ -297,12 +293,12 @@ public class MapDialog extends MindMapHookAdapter implements
 					mResultList.setBackground(Color.GRAY);
 					Searchresults results = getFreeMindMapController()
 							.getSearchResults(mSearchTerm.getText());
-					if(results == null) {
+					if (results == null) {
 						mResultList.setBackground(Color.red);
 					} else {
-						
-						for (Iterator it = results.getListPlaceList().iterator(); it
-								.hasNext();) {
+
+						for (Iterator it = results.getListPlaceList()
+								.iterator(); it.hasNext();) {
 							Place place = (Place) it.next();
 							logger.fine("Found place " + place.getDisplayName());
 							// error handling, if the query wasn't successful.
@@ -330,16 +326,6 @@ public class MapDialog extends MindMapHookAdapter implements
 		mMapDialog.add(mSearchPanel, BorderLayout.NORTH);
 		mMapDialog.add(map, BorderLayout.CENTER);
 
-		// add known markers to the map.
-		Set mapNodePositionHolders = getMapNodePositionHolders();
-		for (Iterator it = mapNodePositionHolders.iterator(); it.hasNext();) {
-			MapNodePositionHolder nodePositionHolder = (MapNodePositionHolder) it
-					.next();
-			addMapMarker(nodePositionHolder);
-		}
-		getRegistration().registerMapNodePositionListener(this);
-		getMindMapController().registerNodeSelectionListener(this, true);
-
 		map.setCursorPosition(new Coordinate(49.8, 8.8));
 		map.setUseCursor(true);
 		// restore preferences:
@@ -362,8 +348,34 @@ public class MapDialog extends MindMapHookAdapter implements
 				toggleSearchBar();
 			}
 		}
+		addMarkersToMap();
+		getRegistration().registerMapNodePositionListener(this);
+		getRegistration().registerNodeVisibilityListener(this);
+		getMindMapController().registerNodeSelectionListener(this, true);
+
 		mMapDialog.setVisible(true);
 		getRegistration().setMapDialog(this);
+	}
+
+	public void addMarkersToMap() {
+		// add known markers to the map.
+		Set mapNodePositionHolders = getAllMapNodePositionHolders();
+		for (Iterator it = mapNodePositionHolders.iterator(); it.hasNext();) {
+			MapNodePositionHolder nodePositionHolder = (MapNodePositionHolder) it
+					.next();
+			boolean visible = !nodePositionHolder.hasFoldedParents();
+			changeVisibilityOfNode(nodePositionHolder, visible);
+		}
+
+	}
+
+	protected void changeVisibilityOfNode(
+			MapNodePositionHolder nodePositionHolder, boolean pVisible) {
+		if (!pVisible && map.isHideFoldedNodes()) {
+			removeMapMarker(nodePositionHolder);
+		} else {
+			addMapMarker(nodePositionHolder);
+		}
 	}
 
 	public Registration getRegistration() {
@@ -381,11 +393,28 @@ public class MapDialog extends MindMapHookAdapter implements
 		mSearchBarVisible = !mSearchBarVisible;
 	}
 
-	public Set getMapNodePositionHolders() {
+	/**
+	 * @return a set of MapNodePositionHolder elements of all nodes (even if
+	 *         hidden)
+	 */
+	public Set getAllMapNodePositionHolders() {
 		return getRegistration().getMapNodePositionHolders();
 	}
 
-	public void addMapMarker(MapNodePositionHolder nodePositionHolder) {
+	/**
+	 * @return a set of MapNodePositionHolder elements to those nodes currently
+	 *         displayed (ie. not hidden).
+	 */
+	public Set getMapNodePositionHolders() {
+		return mMarkerMap.keySet();
+	}
+
+	protected void addMapMarker(MapNodePositionHolder nodePositionHolder) {
+		if (mMarkerMap.containsKey(nodePositionHolder)) {
+			// already present.
+			logger.fine("Node " + nodePositionHolder + " already present.");
+			return;
+		}
 		Coordinate position = nodePositionHolder.getPosition();
 		logger.fine("Adding map position for " + nodePositionHolder.getNode()
 				+ " at " + position);
@@ -394,6 +423,14 @@ public class MapDialog extends MindMapHookAdapter implements
 		marker.setSize(marker.getPreferredSize());
 		map.addMapMarker(marker);
 		mMarkerMap.put(nodePositionHolder, marker);
+	}
+
+	protected void removeMapMarker(MapNodePositionHolder pMapNodePositionHolder) {
+		MapMarkerLocation marker = (MapMarkerLocation) mMarkerMap
+				.remove(pMapNodePositionHolder);
+		if (marker != null) {
+			map.removeMapMarker(marker);
+		}
 	}
 
 	/**
@@ -418,6 +455,7 @@ public class MapDialog extends MindMapHookAdapter implements
 			// on close, it is null. Why?
 			registration.setMapDialog(null);
 			registration.deregisterMapNodePositionListener(this);
+			registration.deregisterNodeVisibilityListener(this);
 		}
 		getMindMapController().deregisterNodeSelectionListener(this);
 
@@ -544,11 +582,7 @@ public class MapDialog extends MindMapHookAdapter implements
 	 * (plugins.map.MapNodePositionHolder)
 	 */
 	public void deregisterMapNode(MapNodePositionHolder pMapNodePositionHolder) {
-		MapMarkerLocation marker = (MapMarkerLocation) mMarkerMap
-				.remove(pMapNodePositionHolder);
-		if (marker != null) {
-			map.removeMapMarker(marker);
-		}
+		removeMapMarker(pMapNodePositionHolder);
 
 	}
 
@@ -628,7 +662,8 @@ public class MapDialog extends MindMapHookAdapter implements
 	}
 
 	/**
-	 * @return < MapNodePositionHolder, MapMarkerLocation >
+	 * @return < MapNodePositionHolder, MapMarkerLocation > of those nodes
+	 *         currently displayed (ie. not hidden)
 	 */
 	public Map getMarkerMap() {
 		return Collections.unmodifiableMap(mMarkerMap);
@@ -646,5 +681,17 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	public JDialog getMapDialog() {
 		return mMapDialog;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * plugins.map.Registration.NodeVisibilityListener#nodeVisibilityChanged
+	 * (boolean)
+	 */
+	public void nodeVisibilityChanged(MapNodePositionHolder pMapNodePositionHolder,
+			boolean pVisible) {
+		changeVisibilityOfNode(pMapNodePositionHolder, pVisible);
 	}
 }

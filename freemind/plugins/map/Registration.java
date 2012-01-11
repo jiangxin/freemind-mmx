@@ -393,4 +393,38 @@ public class Registration implements HookRegistration, ActorXml,
 		mMapDialog = pMapDialog;
 	}
 
+	public interface NodeVisibilityListener {
+		void nodeVisibilityChanged(MapNodePositionHolder pMapNodePositionHolder, boolean pVisible);
+
+	}
+
+	private HashSet mNodeVisibilityListeners = new HashSet();
+
+	public void registerNodeVisibilityListener(
+			NodeVisibilityListener pNodeVisibilityListener) {
+		mNodeVisibilityListeners.add(pNodeVisibilityListener);
+	}
+
+	public void deregisterNodeVisibilityListener(
+			NodeVisibilityListener pNodeVisibilityListener) {
+		mNodeVisibilityListeners.remove(pNodeVisibilityListener);
+	}
+
+	/**
+	 * @param pVisible
+	 *            is true, when a node is visible now.
+	 * @param pMapNodePositionHolder 
+	 */
+	public void fireNodeVisibilityChanged(boolean pVisible, MapNodePositionHolder pMapNodePositionHolder) {
+		for (Iterator it = mNodeVisibilityListeners.iterator(); it.hasNext();) {
+			NodeVisibilityListener listener = (NodeVisibilityListener) it
+					.next();
+			try {
+				listener.nodeVisibilityChanged(pMapNodePositionHolder, pVisible);
+			} catch (Exception e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+		}
+	}
+
 }

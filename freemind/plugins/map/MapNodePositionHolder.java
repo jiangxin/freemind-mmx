@@ -22,7 +22,6 @@ package plugins.map;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -30,16 +29,13 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
-import org.openstreetmap.gui.jmapviewer.Tile;
-import org.openstreetmap.gui.jmapviewer.interfaces.TileCache;
-import org.openstreetmap.gui.jmapviewer.interfaces.TileLoaderListener;
 
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.Resources;
-import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
+import freemind.view.mindmapview.NodeView;
 
 /**
  * @author foltin
@@ -76,9 +72,13 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	 */
 	public void invoke(MindMapNode pNode) {
 		super.invoke(pNode);
-		((Registration) getPluginBaseClass()).registerMapNode(this);
+		getRegistration().registerMapNode(this);
 		setStateIcon(pNode, true);
 		showTooltip();
+	}
+
+	protected Registration getRegistration() {
+		return (Registration) getPluginBaseClass();
 	}
 
 	public void showTooltip() {
@@ -106,7 +106,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	 */
 	public void shutdownMapHook() {
 		setStateIcon(getNode(), false);
-		((Registration) getPluginBaseClass()).deregisterMapNode(this);
+		getRegistration().deregisterMapNode(this);
 		super.shutdownMapHook();
 	}
 
@@ -213,7 +213,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	 */
 	public void changePosition(Coordinate pPosition,
 			Coordinate pMapCenter, int pZoom, String pTileSource) {
-		((Registration) getPluginBaseClass()).changePosition(this,
+		getRegistration().changePosition(this,
 				pPosition, pMapCenter, pZoom, pTileSource);
 		// the changePosition recreates the tooltip...
 	}
@@ -328,7 +328,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	
 	public void createToolTip() {
 		// order tooltip to be created.
-		mTileImage = ((Registration) getPluginBaseClass())
+		mTileImage = getRegistration()
 				.getImageForTooltip(mPosition, mZoom, mTileSource);
 		if (!mTileImage.hasErrors()) {
 			logger.info("Creating tooltip for " + getNode());
@@ -370,4 +370,30 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 		return getNode().hasFoldedParents();
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see freemind.extensions.PermanentNodeHookAdapter#onViewCreatedHook(freemind.view.mindmapview.NodeView)
+	 */
+	public void onViewCreatedHook(NodeView pNodeView) {
+		super.onViewCreatedHook(pNodeView);
+		logger.info("View created for " + this);
+		getRegistration().fireNodeVisibilityChanged(true, this);
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.extensions.PermanentNodeHookAdapter#onViewRemovedHook(freemind.view.mindmapview.NodeView)
+	 */
+	public void onViewRemovedHook(NodeView pNodeView) {
+		super.onViewRemovedHook(pNodeView);
+		logger.info("Removed view for " + this);
+		getRegistration().fireNodeVisibilityChanged(false, this);
+	}
+	
+	public String toString() {
+		return "MapNodePositionHolder [mPosition=" + mPosition
+				+ ", mMapCenter=" + mMapCenter + ", mTileSource=" + mTileSource
+				+ ", mZoom=" + mZoom + ", getNode()=" + getNode() + "]";
+	}
+	
+	
 }

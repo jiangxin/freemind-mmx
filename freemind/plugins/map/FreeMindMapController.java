@@ -530,6 +530,7 @@ public class FreeMindMapController extends JMapController implements
 
 		public void actionPerformed(ActionEvent pE) {
 			getMap().setHideFoldedNodes(!getMap().isHideFoldedNodes());
+			mMapHook.addMarkersToMap();
 		}
 
 		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
