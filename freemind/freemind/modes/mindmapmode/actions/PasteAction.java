@@ -582,15 +582,10 @@ public class PasteAction extends AbstractAction implements ActorXml {
      */
 	private DataFlavorHandler[] getFlavorHandlers() {
 		DataFlavorHandler[] dataFlavorHandlerList = new DataFlavorHandler[] {
-				new ImageFlavorHandler(), new FileListFlavorHandler(),
-				new MindMapNodesFlavorHandler(), new DirectHtmlFlavorHandler(), // %%%
-																				// Make
-																				// dependent
-																				// on
-																				// an
-				// option?
-				// new HtmlFlavorHandler(),
-				new StringFlavorHandler() };
+				new FileListFlavorHandler(), new MindMapNodesFlavorHandler(),
+				new DirectHtmlFlavorHandler(), new StringFlavorHandler(),
+				new ImageFlavorHandler() };
+		// %%% Make dependent on an option?: new HtmlFlavorHandler(),
 		return dataFlavorHandlerList;
 	}
 
@@ -810,7 +805,8 @@ public class PasteAction extends AbstractAction implements ActorXml {
 				String textFromClipboard;
 				textFromClipboard = (String) t
 						.getTransferData(DataFlavor.stringFlavor);
-				trans.setTransferableAsPlainText(HtmlTools.makeValidXml(textFromClipboard));
+				trans.setTransferableAsPlainText(HtmlTools
+						.makeValidXml(textFromClipboard));
 			}
 			if (t.isDataFlavorSupported(MindMapNodesSelection.rtfFlavor)) {
 				// byte[] textFromClipboard = (byte[])
@@ -821,7 +817,8 @@ public class PasteAction extends AbstractAction implements ActorXml {
 				String textFromClipboard;
 				textFromClipboard = (String) t
 						.getTransferData(MindMapNodesSelection.htmlFlavor);
-				trans.setTransferableAsHtml(HtmlTools.makeValidXml(textFromClipboard));
+				trans.setTransferableAsHtml(HtmlTools
+						.makeValidXml(textFromClipboard));
 			}
 			if (t.isDataFlavorSupported(MindMapNodesSelection.fileListFlavor)) {
 				/*
@@ -878,7 +875,8 @@ public class PasteAction extends AbstractAction implements ActorXml {
 					// class to write image to disk. You specify the image to be
 					// saved, its type,
 					// and then the file in which to write the image data.
-					logger.info("Starting to write clipboard image " + image + " to " + tempFile);
+					logger.info("Starting to write clipboard image " + image
+							+ " to " + tempFile);
 					ImageIO.write(image, "jpg", tempFile);
 
 					trans.setTransferableAsImage(imgfilepath);
