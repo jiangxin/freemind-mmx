@@ -41,6 +41,7 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1054,8 +1055,8 @@ public class FreeMindMapController extends JMapController implements
 			if (locationXY == null) {
 				continue;
 			}
-			boolean checkHitResult = location.checkHit(e.getX() - locationXY.x, e.getY()
-					- locationXY.y);
+			boolean checkHitResult = location.checkHit(e.getX() - locationXY.x,
+					e.getY() - locationXY.y);
 			logger.fine("Checking for hit for location " + posHolder.getNode()
 					+ " at location " + locationXY + " to event " + e.getX()
 					+ " and " + e.getY() + " is " + checkHitResult);
@@ -1253,7 +1254,7 @@ public class FreeMindMapController extends JMapController implements
 			}
 
 		}
-		// no move events, thus the cursor is just moving. 
+		// no move events, thus the cursor is just moving.
 		mTimer.restart();
 		mTimerMouseEvent = e;
 
@@ -1330,19 +1331,35 @@ public class FreeMindMapController extends JMapController implements
 		return mTileSources;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent pE) {
 		// here, we look wether or not the cursor is above a node.
 		MapNodePositionHolder posHolder = checkHit(mTimerMouseEvent);
 		logger.fine("Looking for hit on node " + posHolder);
-		if(posHolder != null) {
-			mMapHook.getStatusLabel().setText(Tools.getNodeTextHierarchy(posHolder.getNode(), mMapHook.getMindMapController()));
+		if (posHolder != null) {
+			mMapHook.getStatusLabel().setText(
+					Tools.getNodeTextHierarchy(posHolder.getNode(),
+							mMapHook.getMindMapController()));
 		} else {
-			mMapHook.getStatusLabel().setText(" ");
+			// calculate the distance to the cursor
+			Coordinate coordinate = getCoordinateFromMouseEvent(mTimerMouseEvent);
+			Coordinate cursorPosition = getMap().getCursorPosition();
+			double distance = OsmMercator.getDistance(coordinate.getLat(),
+					coordinate.getLon(), cursorPosition.getLat(),
+					cursorPosition.getLon()) / 1000.0;
+			Object[] messageArguments = { new Double(distance) };
+			MessageFormat formatter = new MessageFormat(
+					mMindMapController
+							.getText("plugins/map/MapDialog_Distance"));
+			String message = formatter.format(messageArguments);
+			mMapHook.getStatusLabel().setText(message);
 		}
-		
+
 	}
 
 }
