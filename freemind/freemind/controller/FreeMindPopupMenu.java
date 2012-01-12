@@ -37,9 +37,18 @@ public class FreeMindPopupMenu extends JPopupMenu implements
 		StructuredMenuHolder.MenuEventSupplier {
 	private HashSet listeners = new HashSet();
 
+	protected static java.util.logging.Logger logger = null;
+	
+	public FreeMindPopupMenu() {
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
+	}
+	
 	protected void firePopupMenuWillBecomeVisible() {
 		super.firePopupMenuWillBecomeVisible();
-		// logger.info("Popup firePopupMenuWillBecomeVisible called.");
+		logger.fine("Popup firePopupMenuWillBecomeVisible called.");
 		for (Iterator i = listeners.iterator(); i.hasNext();) {
 			MenuListener listener = (MenuListener) i.next();
 			listener.menuSelected(null);

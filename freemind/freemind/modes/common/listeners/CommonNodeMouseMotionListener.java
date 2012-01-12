@@ -139,7 +139,7 @@ public class CommonNodeMouseMotionListener implements NodeMouseMotionObserver {
 	public void mousePressed(MouseEvent e) {
 		logger.fine("Event: mousePressed");
 		// for Linux
-		c.showPopupMenu(e);
+		handlePopupMenu(e);
 	}
 
 	public void mouseExited(MouseEvent e) {
@@ -148,20 +148,14 @@ public class CommonNodeMouseMotionListener implements NodeMouseMotionObserver {
 	}
 
 	public void mouseReleased(MouseEvent e) {
-		logger.fine("Event: mouseReleased");
 		// handling click in mouseReleased rather than in mouseClicked
 		// provides better interaction. If mouse was slightly moved
 		// between pressed and released events, the event clicked
 		// is not triggered.
 		// The behavior is not tested on Linux.
-
-		// first stop the timer and select the node:
-		stopTimerForDelayedSelection();
-		c.extendSelection(e);
-		// Right mouse <i>press</i> is <i>not</i> a popup trigger for Windows.
-		// Only Right mouse release is a popup trigger!
-		// OK, but Right mouse <i>press</i> <i>is</i> a popup trigger on Linux.
-		c.showPopupMenu(e);
+		
+		logger.fine("Event: mouseReleased");
+		handlePopupMenu(e);
 		if (e.isConsumed()) {
 			return;
 		}
@@ -176,6 +170,18 @@ public class CommonNodeMouseMotionListener implements NodeMouseMotionObserver {
 			// }
 			e.consume();
 		}
+	}
+
+	protected void handlePopupMenu(MouseEvent e) {
+		// first stop the timer and select the node:
+		stopTimerForDelayedSelection();
+		logger.fine("Extending selection for " +e);
+		c.extendSelection(e);
+		// Right mouse <i>press</i> is <i>not</i> a popup trigger for Windows.
+		// Only Right mouse release is a popup trigger!
+		// OK, but Right mouse <i>press</i> <i>is</i> a popup trigger on Linux.
+		logger.fine("Looking for popup for " +e);
+		c.showPopupMenu(e);
 	}
 
 	protected Rectangle getControlRegion(Point2D p) {
