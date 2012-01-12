@@ -397,9 +397,7 @@ public class TimeList extends MindMapHookAdapter implements
 		// table selection listener to display the history of the selected nodes
 		rowSM.addListSelectionListener(new ListSelectionListener() {
 			String getNodeText(MindMapNode node) {
-				return node.getShortText(getController())
-						+ ((node.isRoot()) ? "" : (" <- " + getNodeText(node
-								.getParentNode())));
+				return Tools.getNodeTextHierarchy(node, getMindMapController());
 			}
 
 			public void valueChanged(ListSelectionEvent e) {

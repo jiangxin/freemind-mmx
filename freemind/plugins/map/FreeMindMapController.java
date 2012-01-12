@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -57,6 +58,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
+import javax.swing.Timer;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
@@ -105,7 +107,7 @@ import freemind.view.mindmapview.NodeView;
  *         contains the initial zeros, I guess).
  */
 public class FreeMindMapController extends JMapController implements
-		MouseListener, MouseMotionListener, MouseWheelListener {
+		MouseListener, MouseMotionListener, MouseWheelListener, ActionListener {
 	private static final String XML_VERSION_1_0_ENCODING_UTF_8 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
 	private static final int MOUSE_BUTTONS_MASK = MouseEvent.BUTTON3_DOWN_MASK
@@ -146,6 +148,8 @@ public class FreeMindMapController extends JMapController implements
 	private boolean isMapNodeMoving = false;
 
 	private MapNodePositionHolder mMapNodeMovingSource = null;
+
+	private Timer mTimer;
 
 	public static class TileSourceStore {
 		TileSource mTileSource;
@@ -680,6 +684,8 @@ public class FreeMindMapController extends JMapController implements
 		mMapHook = pMapHook;
 		mMindMapController = pMindMapController;
 		mMapDialog = pMapDialog;
+		mTimer = new Timer(500, this);
+		mTimer.setRepeats(false);
 		Action placeAction = new PlaceNodeAction();
 		Action removePlaceAction = new RemovePlaceNodeAction();
 		Action showAction = new ShowNodeAction();
@@ -1117,6 +1123,8 @@ public class FreeMindMapController extends JMapController implements
 	 */
 	protected final ControllerPopupMenuListener popupListenerSingleton = new ControllerPopupMenuListener();
 
+	private MouseEvent mTimerMouseEvent;
+
 	public void mouseReleased(MouseEvent e) {
 		if (!mClickEnabled) {
 			return;
@@ -1234,18 +1242,20 @@ public class FreeMindMapController extends JMapController implements
 		// no dragging events get fired.
 		//
 		if (Tools.isMacOsX()) {
-			if (!mMovementEnabled || !(isMoving || isMapNodeMoving))
-				return;
 			if (isMapNodeMoving) {
 				lastDragPoint = e.getPoint();
 				return;
 			}
 			// Is only the selected mouse button pressed?
-			if (e.getModifiersEx() == 0 /* MouseEvent.CTRL_DOWN_MASK */) {
+			if (isMoving && e.getModifiersEx() == 0 /* MouseEvent.CTRL_DOWN_MASK */) {
 				moveMapOnDrag(e);
+				return;
 			}
 
 		}
+		// no move events, thus the cursor is just moving. 
+		mTimer.restart();
+		mTimerMouseEvent = e;
 
 	}
 
@@ -1318,6 +1328,21 @@ public class FreeMindMapController extends JMapController implements
 
 	public static TileSourceStore[] getmTileSources() {
 		return mTileSources;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	public void actionPerformed(ActionEvent pE) {
+		// here, we look wether or not the cursor is above a node.
+		MapNodePositionHolder posHolder = checkHit(mTimerMouseEvent);
+		logger.fine("Looking for hit on node " + posHolder);
+		if(posHolder != null) {
+			mMapHook.getStatusLabel().setText(Tools.getNodeTextHierarchy(posHolder.getNode(), mMapHook.getMindMapController()));
+		} else {
+			mMapHook.getStatusLabel().setText(" ");
+		}
+		
 	}
 
 }

@@ -105,6 +105,8 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	static final String MAP_HOOK_NAME = "plugins/map/MapDialog.properties";
 
+	private JLabel mStatusLabel;
+
 	private final class CloseAction extends AbstractAction {
 
 		public CloseAction() {
@@ -325,7 +327,9 @@ public class MapDialog extends MindMapHookAdapter implements
 		mSearchBarVisible = true;
 		mMapDialog.add(mSearchPanel, BorderLayout.NORTH);
 		mMapDialog.add(map, BorderLayout.CENTER);
-
+		mStatusLabel = new JLabel(" ");
+		mMapDialog.add(mStatusLabel, BorderLayout.SOUTH);
+		
 		map.setCursorPosition(new Coordinate(49.8, 8.8));
 		map.setUseCursor(true);
 		// restore preferences:
@@ -693,5 +697,9 @@ public class MapDialog extends MindMapHookAdapter implements
 	public void nodeVisibilityChanged(MapNodePositionHolder pMapNodePositionHolder,
 			boolean pVisible) {
 		changeVisibilityOfNode(pMapNodePositionHolder, pVisible);
+	}
+
+	public JLabel getStatusLabel() {
+		return mStatusLabel;
 	}
 }

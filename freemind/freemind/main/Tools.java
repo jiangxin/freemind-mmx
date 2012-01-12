@@ -96,6 +96,7 @@ import javax.xml.transform.stream.StreamSource;
 import freemind.common.XmlBindingTools;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.MindMapNode;
+import freemind.modes.mindmapmode.MindMapController;
 import freemind.view.mindmapview.NodeView;
 
 /**
@@ -1043,9 +1044,10 @@ public class Tools {
 		}
 		if (successful) {
 			String content = writer.getBuffer().toString();
-//			logger.info("Content before transformation: " + content);
-			String replacedContent = Tools.replaceUtf8AndIllegalXmlChars(content);
-//			logger.info("Content after transformation: " + replacedContent);
+			// logger.info("Content before transformation: " + content);
+			String replacedContent = Tools
+					.replaceUtf8AndIllegalXmlChars(content);
+			// logger.info("Content after transformation: " + replacedContent);
 			return new StringReader(replacedContent);
 		} else {
 			return new StringReader("<map><node TEXT='"
@@ -1673,6 +1675,18 @@ public class Tools {
 	 */
 	public static boolean isHeadless() {
 		return GraphicsEnvironment.getLocalGraphicsEnvironment().isHeadless();
+	}
+
+	/**
+	 * @param pNode
+	 * @param pMindMapController
+	 * @return
+	 */
+	public static String getNodeTextHierarchy(MindMapNode pNode,
+			MindMapController pMindMapController) {
+		return pNode.getShortText(pMindMapController)
+				+ ((pNode.isRoot()) ? "" : (" <- " + getNodeTextHierarchy(
+						pNode.getParentNode(), pMindMapController)));
 	}
 
 }
