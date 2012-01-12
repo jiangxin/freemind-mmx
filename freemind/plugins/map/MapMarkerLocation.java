@@ -73,9 +73,6 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 	}
 
 	public void paint(Graphics g, Point position) {
-		if(displayMapMarkerLocation())
-			return;
-		
 		g.setColor(Color.BLACK);
 		g.fillOval(position.x - CIRCLE_RADIUS, position.y - CIRCLE_RADIUS, CIRCLE_DIAMETER, CIRCLE_DIAMETER);
 		g.setColor(getForeground());
@@ -115,15 +112,6 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 		return (pX*pX + pY*pY) <= CIRCLE_RADIUS * CIRCLE_RADIUS;
 	}
 	
-	
-	/**
-	 * @return decides whether or not the marker should be displayed. 
-	 * Should be moved to FreeMindMapController, if time.
-	 */
-	public boolean displayMapMarkerLocation() {
-		return mMapDialog.getMap().isHideFoldedNodes() && mNodePositionHolder.hasFoldedParents();
-	}
-
 	public String toString() {
 		return "MapMarkerLocation for node "
 				+ mNodePositionHolder.getNode().getText() + " at " + getLat()
