@@ -84,6 +84,8 @@ public class CommonNodeMouseMotionListener implements NodeMouseMotionObserver {
 	 */
 	private Rectangle controlRegionForDelayedSelection;
 
+	private MouseEvent mMousePressedEvent;
+
 	public CommonNodeMouseMotionListener(ModeController controller) {
 		c = controller;
 		if (logger == null)
@@ -139,7 +141,9 @@ public class CommonNodeMouseMotionListener implements NodeMouseMotionObserver {
 	public void mousePressed(MouseEvent e) {
 		logger.fine("Event: mousePressed");
 		// for Linux
-		handlePopupMenu(e);
+		if(Tools.isLinux()) {
+			mMousePressedEvent = e;
+		}
 	}
 
 	public void mouseExited(MouseEvent e) {
@@ -155,8 +159,13 @@ public class CommonNodeMouseMotionListener implements NodeMouseMotionObserver {
 		// The behavior is not tested on Linux.
 		
 		logger.fine("Event: mouseReleased");
-		handlePopupMenu(e);
-		if (e.isConsumed()) {
+		MouseEvent ev = e;
+		if(Tools.isLinux()) {
+			ev = mMousePressedEvent;
+		} 
+		handlePopupMenu(ev);
+		
+		if (ev.isConsumed()) {
 			return;
 		}
 

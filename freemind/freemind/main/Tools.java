@@ -1402,6 +1402,15 @@ public class Tools {
 		return underMac;
 	}
 
+	public static boolean isLinux() {
+		boolean underLinux = false;
+		String osName = System.getProperty("os.name");
+		if (osName.startsWith("Linux")) {
+			underLinux = true;
+		}
+		return underLinux;
+	}
+	
 	public static String removeMnemonic(String rawLabel) {
 		return rawLabel.replaceFirst("&([^ ])", "$1");
 	}
