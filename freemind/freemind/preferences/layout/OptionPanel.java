@@ -447,7 +447,7 @@ public class OptionPanel implements TextTranslator {
 		 * http://www.loc.gov/standards/iso639-2/php/English_list.php
 		 */
 		"language.tooltip", FreeMindCommon.RESOURCE_LANGUAGE, new String[] {
-				"automatic", "ar", "cs", "de", "dk", "en", "el", "es", "et",
+				"automatic", "ar", "bg", "cs", "de", "dk", "en", "el", "es", "et",
 				"eu", "fr", "gl", "hr", "hu", "id", "it", "ja", "ko", "lt",
 				"nl", "nn", "nb", "pl", "pt_BR", "pt_PT", "ro", "ru", "sk",
 				"se", "sl", "tr", "uk_UA", "vi", "zh_TW", "zh_CN" },
