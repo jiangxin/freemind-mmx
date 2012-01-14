@@ -341,9 +341,9 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 	public void deRegister() {
 		controller.deregisterNodeSelectionListener(mNotesManager);
 		controller.deregisterNodeLifetimeListener(mNotesManager);
-		noteViewerComponent.getActionMap().remove("jumpToMapAction");
 
 		if (noteViewerComponent != null && shouldUseSplitPane()) {
+			noteViewerComponent.getActionMap().remove("jumpToMapAction");
 			hideNotesPanel();
 			noteViewerComponent = null;
 		}
