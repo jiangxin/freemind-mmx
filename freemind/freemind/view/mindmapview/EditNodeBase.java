@@ -48,6 +48,7 @@ import javax.swing.text.JTextComponent;
 import freemind.controller.Controller;
 import freemind.main.FreeMindMain;
 import freemind.main.Resources;
+import freemind.main.Tools;
 import freemind.modes.ModeController;
 
 /**
@@ -281,7 +282,7 @@ public class EditNodeBase {
 	/**
      */
 	public Clipboard getClipboard() {
-		return Toolkit.getDefaultToolkit().getSystemClipboard();
+		return Tools.getClipboard();
 	}
 
 	/**

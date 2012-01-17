@@ -6,6 +6,7 @@ Changes made in FreeMind 1.0.0 Beta1
 * New status bar for geographical maps: 
   * hierarchy of nodes are displayed on holding the mouse over a node
   * distance between cursor and mouse if not a node is below the mouse
+* Reorganized popup menu: new node, copy as link, search and maximal zoom actions.
 
 ===============================
 Changes made in FreeMind 1.0.0 Alpha8

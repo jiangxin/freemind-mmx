@@ -53,19 +53,7 @@ public class AddLinkToMapAction extends MindMapNodeHookAdapter {
 					// TODO: ask user if should overwrite?
 					continue;
 				}
-				String layer = "M";
-				TileSourceStore tileSourceByName = FreeMindMapController.getTileSourceByName(hook.getTileSource());
-				if(tileSourceByName != null) {
-					layer = tileSourceByName.mLayerName;
-				}
-				String link= "http://www.openstreetmap.org/?" +
-						"mlat=" + hook.getPosition().getLat()
-						+"&mlon="+ hook.getPosition().getLon()
-						+ "&lat=" + hook.getMapCenter().getLat()
-						+"&lon="+ hook.getMapCenter().getLon()
-						+"&zoom=" + hook.getZoom()
-						+ "&layers=" + layer;
-				getMindMapController().setLink(node, link);
+				getMindMapController().setLink(node, FreeMindMapController.getLink(hook));
 			}
 		}
 	}

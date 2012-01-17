@@ -25,6 +25,7 @@ package plugins.map;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Point;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -38,7 +39,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
@@ -52,6 +52,7 @@ import java.util.Map.Entry;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
@@ -68,7 +69,6 @@ import org.openstreetmap.gui.jmapviewer.JMapController;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.OsmMercator;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
-import org.openstreetmap.gui.jmapviewer.tilesources.BingAerialTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
 import freemind.common.XmlBindingTools;
@@ -573,6 +573,79 @@ public class FreeMindMapController extends JMapController implements
 
 	}
 
+	private final class NewNodeAction extends AbstractAction {
+
+		public NewNodeAction() {
+			super(getText("MapControllerPopupDialog.NewNodeAction"));
+		}
+
+		public void actionPerformed(ActionEvent pE) {
+			Point pos = getMap().getMapPosition(getMap().getCursorPosition(),
+					true);
+			MouseEvent e = new MouseEvent(map, 0, 0, 0, pos.x, pos.y, 1, false);
+			newNode(e);
+		}
+
+	}
+
+	private final class MaxmimalZoomToCursorAction extends AbstractAction {
+
+		public MaxmimalZoomToCursorAction() {
+			super(
+					getText("MapControllerPopupDialog.MaxmimalZoomToCursorAction"));
+		}
+
+		public void actionPerformed(ActionEvent pE) {
+			Coordinate cursorPosition = getMap().getCursorPosition();
+			int zoom = getMaxZoom();
+			map.setDisplayPositionByLatLon(cursorPosition.getLat(),
+					cursorPosition.getLon(), zoom);
+		}
+
+	}
+
+	private final class ZoomAction extends AbstractAction {
+
+		private final int mZoomDelta;
+
+		public ZoomAction(int pZoomDelta) {
+			super(getText("MapControllerPopupDialog.ZoomAction" + pZoomDelta));
+			mZoomDelta = pZoomDelta;
+		}
+
+		public void actionPerformed(ActionEvent pE) {
+			Coordinate mapCenter = getMap().getPosition();
+			int zoom = getMap().getZoom() + mZoomDelta;
+			if (zoom < JMapViewer.MIN_ZOOM) {
+				zoom = JMapViewer.MIN_ZOOM;
+			}
+			if (zoom > getMaxZoom()) {
+				zoom = getMaxZoom();
+			}
+			map.setDisplayPositionByLatLon(mapCenter.getLat(),
+					mapCenter.getLon(), zoom);
+		}
+
+	}
+
+	private final class CopyLinkToClipboardAction extends AbstractAction {
+
+		public CopyLinkToClipboardAction() {
+			super(getText("MapControllerPopupDialog.CopyLinkToClipboardAction"));
+		}
+
+		public void actionPerformed(ActionEvent pE) {
+			Coordinate cursorPosition = getMap().getCursorPosition();
+			Coordinate position = getMap().getPosition();
+			int zoom = getMap().getZoom();
+			String link = getLink(getTileSourceAsString(), cursorPosition,
+					position, zoom);
+			// Put link into clipboard.
+			Tools.getClipboard().setContents(new StringSelection(link), null);
+		}
+
+	}
+
 	private final class ShowNodeMapInContextMenu extends AbstractAction {
 
 		public ShowNodeMapInContextMenu() {
@@ -690,12 +763,17 @@ public class FreeMindMapController extends JMapController implements
 		Action placeAction = new PlaceNodeAction();
 		Action removePlaceAction = new RemovePlaceNodeAction();
 		Action showAction = new ShowNodeAction();
+		Action zoomInAction = new ZoomAction(1);
+		Action zoomOutAction = new ZoomAction(-1);
 		Action setDisplayToFitMapMarkers = new SetDisplayToFitMapMarkers();
 		Action showMapMarker = new ShowMapMarker();
 		Action tileGridVisible = new TileGridVisible();
 		Action zoomControlsVisible = new ZoomControlsVisible();
 		Action searchControlVisible = new SearchControlVisible();
 		Action hideFoldedNodes = new HideFoldedNodes();
+		Action newNodeAction = new NewNodeAction();
+		Action maxmimalZoomToCursorAction = new MaxmimalZoomToCursorAction();
+		Action copyLinkToClipboardAction = new CopyLinkToClipboardAction();
 		/** Menu **/
 		StructuredMenuHolder menuHolder = new StructuredMenuHolder();
 		JMenuBar menu = new JMenuBar();
@@ -722,6 +800,14 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addAction(zoomControlsVisible,
 				"main/view/zoomControlsVisible");
 		menuHolder.addAction(hideFoldedNodes, "main/view/hideFoldedNodes");
+		menuHolder.addSeparator("main/view/");
+		addAccelerator(
+				menuHolder.addAction(zoomInAction, "main/view/ZoomInAction"),
+				"keystroke_plugins/map/MapDialog_zoomIn");
+		addAccelerator(
+				menuHolder.addAction(zoomOutAction, "main/view/ZoomOutAction"),
+				"keystroke_plugins/map/MapDialog_zoomOut");
+
 		JMenu navigationItem = new JMenu(
 				getText("MapControllerPopupDialog.Navigation"));
 		JMenuItem searchItem = menuHolder.addAction(searchControlVisible,
@@ -744,10 +830,17 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.updateMenus(menu, "main/");
 		mMapDialog.setJMenuBar(menu);
 		/* Popup menu */
-		menuHolder.addAction(placeAction, "popup/place");
-		menuHolder.addAction(removePlaceAction, "popup/removeplace");
-		menuHolder.addAction(showAction, "popup/showNode");
+		menuHolder.addAction(newNodeAction, "popup/newNode");
+		menuHolder.addAction(copyLinkToClipboardAction,
+				"popup/copyLinkToClipboardAction");
+		menuHolder.addAction(searchControlVisible, "popup/showSearchControl");
+		menuHolder.addAction(maxmimalZoomToCursorAction,
+				"popup/maxmimalZoomToCursorAction");
+		// menuHolder.addAction(placeAction, "popup/place");
+		// menuHolder.addAction(removePlaceAction, "popup/removeplace");
+		// menuHolder.addAction(showAction, "popup/showNode");
 		menuHolder.updateMenus(mPopupMenu, "popup/");
+		// map location context menu
 		menuHolder.addAction(new ShowNodeMapInContextMenu(),
 				"contextPopup/showNodeMapInContextMenu");
 		menuHolder.addAction(new SelectNodeInContextMenu(),
@@ -983,6 +1076,7 @@ public class FreeMindMapController extends JMapController implements
 	 *            : location
 	 */
 	private void newNode(MouseEvent pEvent) {
+		logger.warning("Source " + pEvent.getSource());
 		final MindMapNode targetNode = mMindMapController.getSelected();
 		int childPosition;
 		MindMapNode parent;
@@ -1360,6 +1454,29 @@ public class FreeMindMapController extends JMapController implements
 			mMapHook.getStatusLabel().setText(message);
 		}
 
+	}
+
+	public static String getLink(MapNodePositionHolder hook) {
+		String tileSource = hook.getTileSource();
+		Coordinate position = hook.getPosition();
+		Coordinate mapCenter = hook.getMapCenter();
+		int zoom = hook.getZoom();
+		return getLink(tileSource, position, mapCenter, zoom);
+	}
+
+	protected static String getLink(String tileSource, Coordinate position,
+			Coordinate mapCenter, int zoom) {
+		String layer = "M";
+		TileSourceStore tileSourceByName = FreeMindMapController
+				.getTileSourceByName(tileSource);
+		if (tileSourceByName != null) {
+			layer = tileSourceByName.mLayerName;
+		}
+		String link = "http://www.openstreetmap.org/?" + "mlat="
+				+ position.getLat() + "&mlon=" + position.getLon() + "&lat="
+				+ mapCenter.getLat() + "&lon=" + mapCenter.getLon() + "&zoom="
+				+ zoom + "&layers=" + layer;
+		return link;
 	}
 
 }

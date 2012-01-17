@@ -35,6 +35,7 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
@@ -1698,4 +1699,12 @@ public class Tools {
 						pNode.getParentNode(), pMindMapController)));
 	}
 
+	/**
+     */
+	public static Clipboard getClipboard() {
+		return Toolkit.getDefaultToolkit().getSystemClipboard();
+	}
+
+
+	
 }
