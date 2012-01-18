@@ -7,7 +7,7 @@ Changes made in FreeMind 1.0.0 Beta1
   * hierarchy of nodes are displayed on holding the mouse over a node
   * distance between cursor and mouse if not a node is below the mouse
 * New language bulgarian. Thanks to the author vii!
-* Reorganized popup menu: new node, copy as link, search and maximal zoom actions.
+* Reorganized popup menu: new node, copy as link, maximal zoom actions.
 
 ===============================
 Changes made in FreeMind 1.0.0 Alpha8

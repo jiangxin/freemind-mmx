@@ -635,11 +635,16 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 		public void actionPerformed(ActionEvent pE) {
-			Coordinate cursorPosition = getMap().getCursorPosition();
-			Coordinate position = getMap().getPosition();
-			int zoom = getMap().getZoom();
-			String link = getLink(getTileSourceAsString(), cursorPosition,
-					position, zoom);
+			String link;
+			if (mContextPopupMenu != null) {
+				link = getLink(mCurrentPopupPositionHolder);
+			} else {
+				Coordinate cursorPosition = getMap().getCursorPosition();
+				Coordinate position = getMap().getPosition();
+				int zoom = getMap().getZoom();
+				link = getLink(getTileSourceAsString(), cursorPosition,
+						position, zoom);
+			}
 			// Put link into clipboard.
 			Tools.getClipboard().setContents(new StringSelection(link), null);
 		}
@@ -833,19 +838,22 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addAction(newNodeAction, "popup/newNode");
 		menuHolder.addAction(copyLinkToClipboardAction,
 				"popup/copyLinkToClipboardAction");
-		menuHolder.addAction(searchControlVisible, "popup/showSearchControl");
+//		menuHolder.addAction(searchControlVisible, "popup/showSearchControl");
 		menuHolder.addAction(maxmimalZoomToCursorAction,
 				"popup/maxmimalZoomToCursorAction");
-		// menuHolder.addAction(placeAction, "popup/place");
-		// menuHolder.addAction(removePlaceAction, "popup/removeplace");
-		// menuHolder.addAction(showAction, "popup/showNode");
 		menuHolder.updateMenus(mPopupMenu, "popup/");
-		// map location context menu
+		/* map location context menu 
+		 * mising: 
+		 * - select node and close
+		 * - edit node
+		 * */
 		menuHolder.addAction(new ShowNodeMapInContextMenu(),
 				"contextPopup/showNodeMapInContextMenu");
 		menuHolder.addAction(new SelectNodeInContextMenu(),
 				"contextPopup/SelectNodeInContextMenu");
 		menuHolder.addSeparator("contextPopup/");
+		menuHolder.addAction(copyLinkToClipboardAction,
+				"contextPopup/copyLinkToClipboardAction");
 		menuHolder.addAction(new AddMapPictureToNode(),
 				"contextPopup/addPictureToNode");
 		menuHolder.addSeparator("contextPopup/");
