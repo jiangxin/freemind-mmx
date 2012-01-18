@@ -597,7 +597,7 @@ public class FreeMindMapController extends JMapController implements
 
 		public void actionPerformed(ActionEvent pE) {
 			Coordinate cursorPosition = getMap().getCursorPosition();
-			int zoom = getMaxZoom();
+			int zoom = getMaxZoom()-2;
 			map.setDisplayPositionByLatLon(cursorPosition.getLat(),
 					cursorPosition.getLon(), zoom);
 		}
@@ -681,6 +681,23 @@ public class FreeMindMapController extends JMapController implements
 
 	}
 
+	private final class SelectNodeAndCloseInContextMenu extends AbstractAction {
+		
+		public SelectNodeAndCloseInContextMenu() {
+			super(getText("MapControllerPopupDialog.SelectNodeAndCloseInContextMenu"));
+		}
+		
+		public void actionPerformed(ActionEvent pE) {
+			if (mContextPopupMenu != null) {
+				MindMapNode node = mCurrentPopupPositionHolder.getNode();
+				mMindMapController.select(node,
+						Tools.getVectorWithSingleElement(node));
+				mMapHook.disposeDialog();
+			}
+		}
+		
+	}
+	
 	private final class RemoveNodeLocationInContextMenu extends AbstractAction {
 
 		public RemoveNodeLocationInContextMenu() {
@@ -851,6 +868,8 @@ public class FreeMindMapController extends JMapController implements
 				"contextPopup/showNodeMapInContextMenu");
 		menuHolder.addAction(new SelectNodeInContextMenu(),
 				"contextPopup/SelectNodeInContextMenu");
+		menuHolder.addAction(new SelectNodeAndCloseInContextMenu(),
+				"contextPopup/SelectNodeAndCloseInContextMenu");
 		menuHolder.addSeparator("contextPopup/");
 		menuHolder.addAction(copyLinkToClipboardAction,
 				"contextPopup/copyLinkToClipboardAction");

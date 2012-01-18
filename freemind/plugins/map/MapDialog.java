@@ -453,7 +453,7 @@ public class MapDialog extends MindMapHookAdapter implements
 	/**
 	 * 
 	 */
-	protected void disposeDialog() {
+	public void disposeDialog() {
 		Registration registration = (Registration) getPluginBaseClass();
 		if (registration != null) {
 			// on close, it is null. Why?
