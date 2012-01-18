@@ -194,7 +194,7 @@ public class FreeMindMapController extends JMapController implements
 
 		public void ok(String newText) {
 			mMindMapController.setNodeText(mNewNode, newText);
-			placeNodes(mNewNode);
+			MapNodePositionHolder hook = placeNodes(mNewNode);
 			endEdit();
 		}
 
@@ -588,6 +588,34 @@ public class FreeMindMapController extends JMapController implements
 
 	}
 
+	private final class EditNodeInContextMenu extends AbstractAction {
+		
+		public EditNodeInContextMenu() {
+			super(getText("MapControllerPopupDialog.EditNodeInContextMenu"));
+		}
+		
+		public void actionPerformed(ActionEvent pE) {
+			if (mContextPopupMenu == null) {
+				return;
+			}
+			getMap().setCursorPosition(mCurrentPopupPositionHolder.getPosition());
+			Point pos = getMap().getMapPosition(mCurrentPopupPositionHolder.getPosition(),
+					true);
+			// unfold node (and its parents):
+			MindMapNode node = mCurrentPopupPositionHolder.getNode();
+			while(! node.isRoot()) {
+				if(node.isFolded()) {
+					mMindMapController.setFolded(node, false);
+				}
+				node = node.getParentNode();
+			}
+			pos = MapMarkerLocation.adjustToTextfieldLocation(pos);
+			MouseEvent e = new MouseEvent(map, 0, 0, 0, pos.x, pos.y, 1, false);
+			editNode(mCurrentPopupPositionHolder, e);
+		}
+		
+	}
+	
 	private final class MaxmimalZoomToCursorAction extends AbstractAction {
 
 		public MaxmimalZoomToCursorAction() {
@@ -861,9 +889,10 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.updateMenus(mPopupMenu, "popup/");
 		/* map location context menu 
 		 * mising: 
-		 * - select node and close
 		 * - edit node
 		 * */
+		menuHolder.addAction(new EditNodeInContextMenu(),
+				"contextPopup/editNodeInContextMenu");
 		menuHolder.addAction(new ShowNodeMapInContextMenu(),
 				"contextPopup/showNodeMapInContextMenu");
 		menuHolder.addAction(new SelectNodeInContextMenu(),
@@ -889,8 +918,9 @@ public class FreeMindMapController extends JMapController implements
 
 	/**
 	 * @param pSelected
+	 * @return 
 	 */
-	protected void placeNodes(MindMapNode pSelected) {
+	protected MapNodePositionHolder placeNodes(MindMapNode pSelected) {
 		MapNodePositionHolder hook = MapNodePositionHolder.getHook(pSelected);
 		if (hook == null) {
 			hook = addHookToNode(pSelected);
@@ -904,6 +934,7 @@ public class FreeMindMapController extends JMapController implements
 			logger.warning("Hook not found although it was recently added. Node was "
 					+ pSelected);
 		}
+		return hook;
 	}
 
 	public String getTileSourceAsString() {
@@ -1103,7 +1134,6 @@ public class FreeMindMapController extends JMapController implements
 	 *            : location
 	 */
 	private void newNode(MouseEvent pEvent) {
-		logger.warning("Source " + pEvent.getSource());
 		final MindMapNode targetNode = mMindMapController.getSelected();
 		int childPosition;
 		MindMapNode parent;
@@ -1133,6 +1163,31 @@ public class FreeMindMapController extends JMapController implements
 		textfield.show();
 	}
 
+	/**
+	 * @param pPositionHolder 
+	 * @param pEvent
+	 *            : location
+	 */
+	private void editNode(MapNodePositionHolder pPositionHolder, MouseEvent pEvent) {
+		final MindMapNode editNode = pPositionHolder.getNode();
+		final NodeView nodeView = mMindMapController.getNodeView(editNode);
+		if(nodeView == null) {
+			return;
+		}
+		mMindMapController.select(nodeView);
+		map.requestFocus();
+		// inline editing:
+		mMindMapController.setBlocked(true);
+		setMouseControl(false);
+		Point point = pEvent.getPoint();
+		Tools.convertPointToAncestor((Component) pEvent.getSource(), point, map);
+		MapEditTextFieldControl editControl = new MapEditTextFieldControl(
+				nodeView, editNode, editNode);
+		EditNodeTextField textfield = new MapEditNoteTextField(nodeView, editNode.getText(),
+				null, mMindMapController, editControl, map, point);
+		textfield.show();
+	}
+	
 	public void setCursorPosition(MouseEvent e) {
 		getMap().setCursorPosition(map.getPosition(e.getPoint()));
 	}

@@ -56,12 +56,19 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 		}
 		mNodePositionHolder = pNodePositionHolder;
 		mMapDialog = pMapDialog;
+		update();
+	}
+
+	/**
+	 * Either start or when something changes on the node, this method is called.
+	 */
+	public void update() {
 		MindMapNode node = mNodePositionHolder.getNode();
-		// TODO: Listener, if the text changes...
 		setText(node.getText());
 		// setFont(node.getFont());
 		setForeground(node.getColor());
 		// setBackground(Color.WHITE);
+		setSize(getPreferredSize());
 	}
 
 	public double getLat() {
@@ -84,8 +91,9 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 		} else {
 			g.setColor(Color.WHITE);
 		}
-		int node_y = position.y - CIRCLE_RADIUS;
-		int node_x = position.x + CIRCLE_RADIUS;
+		Point newPoint = adjustToTextfieldLocation(position);
+		int node_y = newPoint.y;
+		int node_x = newPoint.x;
 		g.fillRect(node_x, node_y, this.getWidth(), this.getHeight());
 		g.setColor(Color.BLACK);
 
@@ -93,6 +101,13 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 		this.paint(g);
 		g.translate(-node_x, -node_y);
 
+	}
+
+	public static Point adjustToTextfieldLocation(Point position) {
+		Point newPoint = new Point(position);
+		newPoint.x = newPoint.x + CIRCLE_RADIUS;
+		newPoint.y = newPoint.y - CIRCLE_RADIUS;
+		return newPoint;
 	}
 
 	/**
@@ -124,5 +139,6 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 	public void setSelected(boolean pSelected) {
 		mSelected  = pSelected;
 	}
+
 
 }
