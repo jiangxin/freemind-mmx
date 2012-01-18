@@ -424,7 +424,6 @@ public class MapDialog extends MindMapHookAdapter implements
 				+ " at " + position);
 		MapMarkerLocation marker = new MapMarkerLocation(nodePositionHolder,
 				this);
-		marker.setSize(marker.getPreferredSize());
 		map.addMapMarker(marker);
 		mMarkerMap.put(nodePositionHolder, marker);
 	}
@@ -598,6 +597,14 @@ public class MapDialog extends MindMapHookAdapter implements
 	 * freemind.modes.MindMapNode)
 	 */
 	public void onUpdateNodeHook(MindMapNode pNode) {
+		// update MapMarkerLocation if present:
+		MapNodePositionHolder hook = MapNodePositionHolder.getHook(pNode);
+		if(hook != null && mMarkerMap.containsKey(hook)) {
+			MapMarkerLocation location = (MapMarkerLocation) mMarkerMap.get(hook);
+			location.update();
+			location.repaint();
+		}
+
 	}
 
 	/*
