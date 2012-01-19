@@ -828,7 +828,8 @@ public class FreeMindMapController extends JMapController implements
 		JMenu mainItem = new JMenu(getText("MapControllerPopupDialog.Actions"));
 		menuHolder.addMenu(mainItem, "main/actions/.");
 		menuHolder.addAction(placeAction, "main/actions/place");
-		menuHolder.addAction(removePlaceAction, "main/actions/removeplace");
+		addAccelerator(menuHolder.addAction(removePlaceAction, "main/actions/removeplace"),
+				"keystroke_plugins/map/MapDialog_RemovePlace");
 		menuHolder.addAction(exportAction, "main/actions/exportPng");
 		menuHolder.addAction(pMapHook.getCloseAction(), "main/actions/close");
 		JMenu viewItem = new JMenu(getText("MapControllerPopupDialog.Views"));
