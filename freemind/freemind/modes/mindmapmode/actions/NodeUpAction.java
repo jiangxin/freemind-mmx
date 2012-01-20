@@ -133,8 +133,8 @@ public class NodeUpAction extends AbstractAction implements ActorXml {
 				final NodeView nodeView = mapView.getNodeView(node);
 				mapView.makeTheSelected(nodeView);
 			}
-			modeController.getController().obtainFocusForSelected(); // focus
-																		// fix
+			// focus fix
+			modeController.getController().obtainFocusForSelected(); 
 		}
 	}
 

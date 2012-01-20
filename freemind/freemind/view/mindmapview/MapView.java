@@ -749,7 +749,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 	 * Select the node, resulting in only that one being selected.
 	 */
 	public void selectAsTheOnlyOneSelected(NodeView newSelected) {
-		selectAsTheOnlyOneSelected(newSelected, true);
+		selectAsTheOnlyOneSelected(newSelected, false);
 	}
 
 	public void selectAsTheOnlyOneSelected(NodeView newSelected,
@@ -794,7 +794,6 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		} else {
 			selected.add(newSelected);
 		}
-		getSelected().requestFocus();
 		getSelected().repaintSelected();
 		if (oldSelected != null)
 			oldSelected.repaintSelected();
@@ -812,7 +811,6 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		} else {
 			selected.add(newSelected);
 		}
-		getSelected().requestFocus();
 		getSelected().repaintSelected();
 	}
 
@@ -1602,17 +1600,6 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 				}
 			}
 		}
-
-		// if the focussed is deleted:
-		NodeView focussedNodeView = getSelected();
-
-		// determine focussed node:
-		if (focussedNodeView == null) {
-			// if the focussed is deleted:
-			focussedNodeView = getRoot();
-		}
-		// now select focussed:
-		focussedNodeView.requestFocus();
 	}
 
 	public Point getNodeContentLocation(NodeView nodeView) {

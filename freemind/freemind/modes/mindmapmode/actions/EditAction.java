@@ -284,8 +284,7 @@ public class EditAction extends AbstractAction implements ActorXml {
 					}
 
 					private void endEdit() {
-						mMindMapController.getController()
-								.obtainFocusForSelected();
+						mMindMapController.obtainFocusForSelected();
 						mMindMapController.setBlocked(false);
 						mCurrentEditDialog = null;
 					}

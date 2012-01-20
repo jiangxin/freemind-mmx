@@ -81,6 +81,7 @@ public class SortNodes extends MindMapNodeHookAdapter {
 			// one.
 			getMindMapController().paste(cut, node);
 		}
+		obtainFocusForSelected();
 
 	}
 

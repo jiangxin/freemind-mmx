@@ -61,18 +61,14 @@ public class NodeNote extends MindMapNodeHookAdapter {
 			// }
 			KeyboardFocusManager.getCurrentKeyboardFocusManager()
 					.clearGlobalFocusOwner();
-			EventQueue.invokeLater(new Runnable() {
-				public void run() {
-					NodeNoteRegistration.getHtmlEditorPanel()
-							.getMostRecentFocusOwner().requestFocus();
-				}
-			});
+			requestFocusForNotePanel();
 		} else {
 			// show hidden window:
 			if (registration.getSplitPane() == null) {
 				// the window is currently hidden. show it:
 				splitPane = getSplitPaneToScreen(registration);
 				// openSplitPane(splitPane, maximumDividerLocation);
+				requestFocusForNotePanel();
 			} else {
 				// it is shown, hide it:
 				// int newLoc = splitPane.getHeight() -
@@ -86,6 +82,11 @@ public class NodeNote extends MindMapNodeHookAdapter {
 			}
 
 		}
+	}
+
+	protected void requestFocusForNotePanel() {
+		NodeNoteRegistration.getHtmlEditorPanel()
+				.getMostRecentFocusOwner().requestFocus();
 	}
 
 	private JSplitPane getSplitPaneToScreen(NodeNoteRegistration registration) {

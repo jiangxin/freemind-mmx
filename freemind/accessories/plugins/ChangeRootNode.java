@@ -182,6 +182,7 @@ public class ChangeRootNode extends MindMapNodeHookAdapter {
 				controller.select(focussed,
 						Tools.getVectorWithSingleElement(focussed));
 				controller.centerNode(focussed);
+				controller.obtainFocusForSelected();
 			}
 		}
 

@@ -200,7 +200,6 @@ public class FreeMindMapController extends JMapController implements
 
 		private void endEdit() {
 			setMouseControl(true);
-			mMindMapController.getController().obtainFocusForSelected();
 			mMindMapController.setBlocked(false);
 			map.requestFocus();
 		}
@@ -368,7 +367,7 @@ public class FreeMindMapController extends JMapController implements
 				}
 			}
 			if (nearest != null) {
-				selectNode(nearest.getNode(), true);
+				selectNode(nearest.getNode());
 				// don't change the zoom
 				setCursorPosition(nearest, map.getZoom());
 			}
@@ -1151,7 +1150,6 @@ public class FreeMindMapController extends JMapController implements
 				childPosition, targetNode.isLeft());
 		final NodeView nodeView = mMindMapController.getNodeView(newNode);
 		mMindMapController.select(nodeView);
-		map.requestFocus();
 		// inline editing:
 		mMindMapController.setBlocked(true);
 		setMouseControl(false);
@@ -1176,7 +1174,6 @@ public class FreeMindMapController extends JMapController implements
 			return;
 		}
 		mMindMapController.select(nodeView);
-		map.requestFocus();
 		// inline editing:
 		mMindMapController.setBlocked(true);
 		setMouseControl(false);
@@ -1542,15 +1539,12 @@ public class FreeMindMapController extends JMapController implements
 
 	protected void selectContextMenuNode() {
 		MindMapNode node = mCurrentPopupPositionHolder.getNode();
-		selectNode(node, false);
+		selectNode(node);
 	}
 
-	protected void selectNode(MindMapNode node, boolean pLeaveFocusAtMap) {
+	protected void selectNode(MindMapNode node) {
 		mMindMapController.select(node,
 				Tools.getVectorWithSingleElement(node));
-		if(pLeaveFocusAtMap) {
-			map.requestFocus();
-		}
 	}
 
 	public static String getLink(MapNodePositionHolder hook) {

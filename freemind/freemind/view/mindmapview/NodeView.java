@@ -966,9 +966,6 @@ public class NodeView extends JComponent implements TreeModelListener {
 		final MainView newMainView = NodeViewFactory.getInstance().newMainView(
 				model);
 		setMainView(newMainView);
-		if (map.getSelected() == this) {
-			requestFocus();
-		}
 
 	}
 

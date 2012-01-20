@@ -166,9 +166,9 @@ public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
 				getMindMapController().paste(copy, directSibling, false,
 						directSibling.isLeft());
 				select(selectedNodeId, selectedNodesId);
-				return;
 			}
 		}
+		obtainFocusForSelected();
 	}
 
 	private void select(String selectedNodeId, List selectedNodesIds) {

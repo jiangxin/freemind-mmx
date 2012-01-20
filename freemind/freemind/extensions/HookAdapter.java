@@ -146,4 +146,13 @@ public class HookAdapter implements MindMapHook {
 		this.baseClass = baseClass;
 	}
 
+	/**
+	 * After tree node change, the focus must be obtained as it is invalid.
+	 */
+	protected void obtainFocusForSelected() {
+		// Focus fix
+		getController().getController().obtainFocusForSelected();
+	}
+
+
 }

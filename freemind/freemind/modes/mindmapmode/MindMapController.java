@@ -2382,4 +2382,12 @@ public class MindMapController extends ControllerAdapter implements
 		invokeHook(hook);
 	}
 
+	/**
+	 * Delegate method to Controller. Must be called after cut.s
+	 */
+	public void obtainFocusForSelected() {
+		getController().obtainFocusForSelected();
+		
+	}
+
 }

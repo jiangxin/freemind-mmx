@@ -645,13 +645,13 @@ public abstract class ControllerAdapter implements ModeController {
 																		// default
 	}
 
-	public void select(MindMapNode focused, List selecteds) {
+	public void select(MindMapNode primarySelected, List selecteds) {
 		// are they visible?
 		for (Iterator i = selecteds.iterator(); i.hasNext();) {
 			MindMapNode node = (MindMapNode) (i.next());
 			displayNode(node);
 		}
-		final NodeView focussedNodeView = getNodeView(focused);
+		final NodeView focussedNodeView = getNodeView(primarySelected);
 		if (focussedNodeView != null) {
 			getView().selectAsTheOnlyOneSelected(focussedNodeView);
 			getView().scrollNodeToVisible(focussedNodeView);
@@ -663,8 +663,6 @@ public abstract class ControllerAdapter implements ModeController {
 				}
 			}
 		}
-		getController().obtainFocusForSelected(); // focus fix
-
 	}
 
 	public void selectBranch(NodeView selected, boolean extend) {
@@ -1507,11 +1505,10 @@ public abstract class ControllerAdapter implements ModeController {
 
 	}
 
+	/** Select the node and scroll to it. **/
 	private void centerNode(NodeView node) {
-		// Select the node and scroll to it.
 		getView().centerNode(node);
 		getView().selectAsTheOnlyOneSelected(node);
-		getController().obtainFocusForSelected();
 	}
 
 	public void centerNode(MindMapNode node) {
