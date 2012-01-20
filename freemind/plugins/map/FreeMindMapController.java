@@ -332,18 +332,30 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 		public void actionPerformed(ActionEvent actionEvent) {
+			if(!searchForNearestNode(false)) {
+				searchForNearestNode(true);
+			}
+		}
+
+		/**
+		 * @param alternative
+		 * @return true, if a node was found
+		 */
+		protected boolean searchForNearestNode(boolean alternative) {
+			boolean returnValue = false;
 			Coordinate cursorPosition = getMap().getCursorPosition();
 			// get map marker locations:
 			HashSet mapNodePositionHolders = new HashSet(
 					mMapHook.getMapNodePositionHolders());
 			logger.fine("Before removal " + mapNodePositionHolders.size()
 					+ " elements");
+			// take only those elements in the correct quadrant (eg. -45° - +45°) which are not identical to the current
 			for (Iterator it = mapNodePositionHolders.iterator(); it.hasNext();) {
 				MapNodePositionHolder holder = (MapNodePositionHolder) it
 						.next();
 				Coordinate pointPosition = holder.getPosition();
 				boolean inDestinationQuadrant = destinationQuadrantCheck(
-						cursorPosition, pointPosition);
+						cursorPosition, pointPosition, alternative);
 				if (!inDestinationQuadrant
 						|| safeEquals(pointPosition, cursorPosition)) {
 					it.remove();
@@ -351,7 +363,7 @@ public class FreeMindMapController extends JMapController implements
 			}
 			logger.fine("After removal " + mapNodePositionHolders.size()
 					+ " elements");
-			// now, we have all points on the left angle -45° to 45° and
+			// now, we have all points on the left angle (eg. -45° to 45°) and
 			// search
 			// for the nearest
 			MapNodePositionHolder nearest = null;
@@ -370,22 +382,29 @@ public class FreeMindMapController extends JMapController implements
 				selectNode(nearest.getNode());
 				// don't change the zoom
 				setCursorPosition(nearest, map.getZoom());
+				returnValue = true;
 			}
+			return returnValue;
 		}
 
 		public boolean destinationQuadrantCheck(Coordinate cursorPosition,
-				Coordinate pointPosition) {
+				Coordinate pointPosition, boolean alternative) {
 			int mapZoomMax = getMaxZoom();
 			int x1 = OsmMercator.LonToX(cursorPosition.getLon(), mapZoomMax);
 			int y1 = OsmMercator.LatToY(cursorPosition.getLat(), mapZoomMax);
 			int x2 = OsmMercator.LonToX(pointPosition.getLon(), mapZoomMax);
 			int y2 = OsmMercator.LatToY(pointPosition.getLat(), mapZoomMax);
-			return destinationQuadrantCheck(x1, y1, x2, y2);
+			return destinationQuadrantCheck(x1, y1, x2, y2, alternative);
 		}
 
+		/**
+		 * If no point was found from the destinationQuadrantCheck, 
+		 * here, alternative = true is tried
+		 */
 		public abstract boolean destinationQuadrantCheck(int x1, int y1,
-				int x2, int y2);
+				int x2, int y2, boolean alternative);
 
+		
 		/**
 		 * @param pPointPosition
 		 * @param pCursorPosition
@@ -415,7 +434,9 @@ public class FreeMindMapController extends JMapController implements
 			super(getText("MapControllerPopupDialog.moveLeft"));
 		}
 
-		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2) {
+		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2, boolean alternative) {
+			if(alternative)
+				return x2 < x1;
 			return x2 < x1 && Math.abs(y2 - y1) < Math.abs(x2 - x1);
 		}
 
@@ -429,7 +450,9 @@ public class FreeMindMapController extends JMapController implements
 			super(getText("MapControllerPopupDialog.moveRight"));
 		}
 
-		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2) {
+		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2, boolean alternative) {
+			if(alternative)
+				return x2 > x1;
 			return x2 > x1 && Math.abs(y2 - y1) < Math.abs(x2 - x1);
 		}
 
@@ -443,7 +466,9 @@ public class FreeMindMapController extends JMapController implements
 			super(getText("MapControllerPopupDialog.moveUp"));
 		}
 
-		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2) {
+		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2, boolean alternative) {
+			if(alternative)
+				return y2 < y1;
 			return y2 < y1 && Math.abs(y2 - y1) > Math.abs(x2 - x1);
 		}
 
@@ -457,7 +482,9 @@ public class FreeMindMapController extends JMapController implements
 			super(getText("MapControllerPopupDialog.moveDown"));
 		}
 
-		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2) {
+		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2, boolean alternative) {
+			if(alternative)
+				return y2 > y1;
 			return y2 > y1 && Math.abs(y2 - y1) > Math.abs(x2 - x1);
 		}
 
