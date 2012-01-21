@@ -25,6 +25,7 @@ package plugins.map;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -52,7 +53,6 @@ import java.util.Map.Entry;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
@@ -117,6 +117,10 @@ public class FreeMindMapController extends JMapController implements
 	private static final int MAC_MOUSE_BUTTON3_MASK = MouseEvent.CTRL_DOWN_MASK
 			| MouseEvent.BUTTON1_DOWN_MASK;
 	private static final int MAC_MOUSE_BUTTON1_MASK = MouseEvent.BUTTON1_DOWN_MASK;
+
+	private static final int SCROLL_MARGIN = 5;
+
+	private static final int SCROLL_PIXEL_AMOUNT = 25;
 
 	protected static java.util.logging.Logger logger = freemind.main.Resources
 			.getInstance().getLogger("plugins.map.FreeMindMapController");
@@ -1114,6 +1118,21 @@ public class FreeMindMapController extends JMapController implements
 			return;
 		if (isMapNodeMoving) {
 			lastDragPoint = e.getPoint();
+			int diffx = 0;
+			int diffy = 0;
+			if(e.getX()<SCROLL_MARGIN) {
+				diffx = - SCROLL_PIXEL_AMOUNT;
+			}
+			if(map.getWidth() - e.getX() < SCROLL_MARGIN) {
+				diffx = SCROLL_PIXEL_AMOUNT;
+			}
+			if(e.getY()<SCROLL_MARGIN) {
+				diffy = - SCROLL_PIXEL_AMOUNT;
+			}
+			if(map.getHeight() - e.getY() < SCROLL_MARGIN) {
+				diffy = SCROLL_PIXEL_AMOUNT;
+			}
+			map.moveMap(diffx, diffy);
 			return;
 		}
 		// Is only the selected mouse button pressed?
