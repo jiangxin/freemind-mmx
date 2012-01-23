@@ -25,7 +25,6 @@ package plugins.map;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -108,7 +107,7 @@ import freemind.view.mindmapview.NodeView;
  *         contains the initial zeros, I guess).
  */
 public class FreeMindMapController extends JMapController implements
-		MouseListener, MouseMotionListener, MouseWheelListener, ActionListener {
+		MouseListener, MouseMotionListener, MouseWheelListener, ActionListener{
 	private static final String XML_VERSION_1_0_ENCODING_UTF_8 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
 	private static final int MOUSE_BUTTONS_MASK = MouseEvent.BUTTON3_DOWN_MASK
@@ -626,7 +625,7 @@ public class FreeMindMapController extends JMapController implements
 		}
 		
 		public void actionPerformed(ActionEvent pE) {
-			if (mContextPopupMenu == null) {
+			if (mCurrentPopupPositionHolder == null) {
 				return;
 			}
 			getMap().setCursorPosition(mCurrentPopupPositionHolder.getPosition());
@@ -695,7 +694,7 @@ public class FreeMindMapController extends JMapController implements
 
 		public void actionPerformed(ActionEvent pE) {
 			String link;
-			if (mContextPopupMenu != null) {
+			if (mCurrentPopupPositionHolder != null) {
 				link = getLink(mCurrentPopupPositionHolder);
 			} else {
 				Coordinate cursorPosition = getMap().getCursorPosition();
@@ -717,7 +716,7 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 		public void actionPerformed(ActionEvent pE) {
-			if (mContextPopupMenu != null) {
+			if (mCurrentPopupPositionHolder != null) {
 				showNode(mCurrentPopupPositionHolder);
 			}
 		}
@@ -731,7 +730,7 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 		public void actionPerformed(ActionEvent pE) {
-			if (mContextPopupMenu != null) {
+			if (mCurrentPopupPositionHolder != null) {
 				selectContextMenuNode();
 			}
 		}
@@ -745,7 +744,7 @@ public class FreeMindMapController extends JMapController implements
 		}
 		
 		public void actionPerformed(ActionEvent pE) {
-			if (mContextPopupMenu != null) {
+			if (mCurrentPopupPositionHolder != null) {
 				selectContextMenuNode();
 				mMapHook.disposeDialog();
 			}
@@ -761,7 +760,7 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 		public void actionPerformed(ActionEvent pE) {
-			if (mContextPopupMenu != null) {
+			if (mCurrentPopupPositionHolder != null) {
 				MindMapNode node = mCurrentPopupPositionHolder.getNode();
 				removeNodePosition(node);
 			}
@@ -1311,6 +1310,7 @@ public class FreeMindMapController extends JMapController implements
 				e.consume();
 				return;
 			}
+			mCurrentPopupPositionHolder = null;
 			if (popupmenu != null) {
 				setCursorPosition(e);
 				popupmenu.show(e.getComponent(), e.getX(), e.getY());

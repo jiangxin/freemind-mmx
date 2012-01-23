@@ -215,7 +215,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		mMapDialog.setSize(400, 400);
 
 		map = new JCursorMapViewer(getMindMapController(), mMapDialog,
-				new MemoryTileCache(), this);
+				getRegistration().getTileCache(), this);
 		map.addJMVListener(this);
 		FreeMindMapController.changeTileSource(Mapnik.class.getName(), map);
 		OsmTileLoader loader = getRegistration().createTileLoader(map);

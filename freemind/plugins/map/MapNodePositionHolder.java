@@ -32,6 +32,7 @@ import org.openstreetmap.gui.jmapviewer.Coordinate;
 
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.Resources;
+import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
@@ -60,7 +61,6 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	private String mTileSource = null;
 	private int mZoom = 1;
 	private static ImageIcon sMapLocationIcon;
-	private TileImage mTileImage;
 	private String mTooltipLocation = null;
 	private File mTooltipFile = null;
 
@@ -82,7 +82,8 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	}
 
 	public void showTooltip() {
-		if (Resources.getInstance().getBoolProperty(NODE_MAP_SHOW_TOOLTIP)) {
+		if (Resources.getInstance().getBoolProperty(NODE_MAP_SHOW_TOOLTIP) && 
+				!Tools.safeEquals(mTooltipLocation, "false")) {
 			if (mTooltipLocation != null) {
 				/* We only need the tooltip on disk.*/
 				File tooltipFile = getTooltipFile();
@@ -293,7 +294,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 
 	public String getImageHtml() {
 		String imageTag;
-		imageTag = "<img src=\"file://" + getTooltipFile().getAbsolutePath()
+		imageTag = "<img src=\"file://" + getTooltipFile().getAbsolutePath().replace(File.separatorChar, '/')
 				+ "\"/>";
 		String imageHtml = "<html><body>" + imageTag + "</body></html>";
 		return imageHtml;
@@ -304,11 +305,14 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 			return mTooltipFile;
 		}
 		File mapFile = getMap().getFile();
-		if (mapFile == null || !Resources.getInstance().getBoolProperty(NODE_MAP_STORE_TOOLTIP)) {
+		boolean storeProperty = Resources.getInstance().getBoolProperty(NODE_MAP_STORE_TOOLTIP);
+		if (mapFile == null || !storeProperty) {
 			try {
-				// Houston, we have a problem
-				logger.warning("Creating tooltip in .freemind directory, "
-						+ "as we don't know, where the map will be stored.");
+				if (mapFile==null) {
+					// Houston, we have a problem
+					logger.warning("Creating tooltip in .freemind directory, "
+							+ "as we don't know, where the map will be stored.");
+				}
 				mTooltipFile = File.createTempFile("node_map_tooltip_"
 						+ getNodeId(), ".png", new File(getController()
 						.getFrame().getFreemindDirectory()));
@@ -327,20 +331,21 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	
 	public void createToolTip() {
 		// order tooltip to be created.
-		mTileImage = getRegistration()
+		TileImage tileImage;
+		tileImage = getRegistration()
 				.getImageForTooltip(mPosition, mZoom, mTileSource);
-		if (!mTileImage.hasErrors()) {
+		if (!tileImage.hasErrors()) {
 			logger.info("Creating tooltip for " + getNode());
 			// save image to disk:
 			try {
 				File tooltipFile = getTooltipFile();
-				ImageIO.write(mTileImage.getImage(), "png", tooltipFile);
+				ImageIO.write(tileImage.getImage(), "png", tooltipFile);
 				addTooltip();
 			} catch (IOException e) {
 				freemind.main.Resources.getInstance().logException(e);
 			}
 		} else {
-			mTileImage = null;
+			tileImage = null;
 			logger.warning("Tooltip for node '" + getNode()
 					+ "' has errors on creation.");
 		}
@@ -354,10 +359,9 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	 * 
 	 */
 	public void recreateTooltip() {
+		// remove file from disk.
 		getTooltipFile().delete();
 		mTooltipLocation = null;
-		// remove file from disk.
-		mTileImage = null;
 		showTooltip();
 	}
 
