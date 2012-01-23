@@ -17,16 +17,26 @@ sub Encode {
 }
 
 # TODO: Get filename from command line
+# (1) quit unless we have the correct number of command-line args
+my $num_args = $#ARGV + 1;
+if ($num_args != 1) {
+  print "\nUsage: convertOsmandPoiToFreeMind.pl file_name.odb\n";
+  exit;
+}
+
+# (2) we got two command line args, so assume they are the
+# first name and last name
+my $file_name=$ARGV[0];
 
 my $dbargs = {AutoCommit => 0, PrintError => 1};
-my $dbh = DBI->connect("dbi:SQLite:dbname=Germany_berlin_europe_1.poi.odb", "", "", $dbargs);
+my $dbh = DBI->connect("dbi:SQLite:dbname=${file_name}", "", "", $dbargs);
 
 # Zeilen ausgeben
 my $oldtype;
 my $oldsubtype;
 my ($id, $x, $y, $name, $type, $subtype, $site);
 my $res = $dbh->selectall_arrayref("SELECT id, x, y, name, type, subtype, site FROM  poi order by type, subtype, name;");
-print "<map version=\"1.0.0\"><node TEXT=\"Berlin\">\n";
+print "<map version=\"1.0.0\"><node TEXT=\"${file_name}\">\n";
 foreach my $row (@$res) {
   ($id, $x, $y, $name, $type, $subtype, $site) = @$row;
   next if "$name" eq "";
