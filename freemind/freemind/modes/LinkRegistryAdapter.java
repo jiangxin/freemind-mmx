@@ -23,7 +23,6 @@ package freemind.modes;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.Random;
 import java.util.Vector;
@@ -34,6 +33,53 @@ import java.util.Vector;
  * maps have a different registry.
  */
 public class LinkRegistryAdapter implements MindMapLinkRegistry {
+	/**
+	 * All elements put into this sort of vectors are put into the SourceToLinks, too.
+	 * This structure is kept synchronous to the IDToLinks structure, but reversed.
+	 * @author foltin
+	 * @date 23.01.2012
+	 */
+	private class SynchronousVector extends Vector {
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.util.Vector#add(java.lang.Object)
+		 */
+		public synchronized boolean add(Object pE) {
+			boolean add = super.add(pE);
+			if (pE instanceof MindMapLink) {
+				MindMapLink link = (MindMapLink) pE;
+				MindMapNode source = link.getSource();
+				if (!SourceToLinks.containsKey(source)) {
+					SourceToLinks.put(source, new Vector());
+				}
+				((Vector) SourceToLinks.get(source)).add(pE);
+			}
+			return add;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.util.Vector#removeElementAt(int)
+		 */
+		public synchronized void removeElementAt(int pIndex) {
+			MindMapLink link = (MindMapLink) get(pIndex);
+			MindMapNode source = link.getSource();
+			Vector vector = (Vector) SourceToLinks.get(source);
+			if (vector != null) {
+				vector.remove(link);
+				if (vector.isEmpty()) {
+					SourceToLinks.remove(source);
+				}
+			}
+			super.removeElementAt(pIndex);
+		}
+
+	}
+
+	protected HashMap /* source -> vector of links with same source */SourceToLinks = new HashMap();
+
 	/** State parent interface. */
 	public interface ID_BasicState {
 		/** Returns null for many states. */
@@ -259,9 +305,10 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 		if (IDToLinks.containsKey(id)) {
 			vec = (Vector) IDToLinks.get(id);
 		} else {
-			vec = new Vector();
+			vec = new SynchronousVector();
 			IDToLinks.put(id, vec);
 		}
+
 		// Dimitry : logger is a performance killer here
 		// //logger.fine("getAssignedLinksVector "+vec);
 		return vec;
@@ -387,14 +434,9 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 	/** @return returns all links from this node. */
 	public Vector /* of MindMapLink s */getAllLinksFromMe(MindMapNode source) {
 		Vector returnValue = new Vector();
-		Collection values = IDToLinks.values();
-		for (Iterator i = values.iterator(); i.hasNext();) {
-			Vector linkVector = (Vector) i.next();
-			for (int j = 0; j < linkVector.size(); ++j) {
-				MindMapLink link = (MindMapLink) linkVector.get(j);
-				if (link.getSource() == source)
-					returnValue.add(link);
-			}
+		Collection vec = (Collection) SourceToLinks.get(source);
+		if (vec != null) {
+			returnValue.addAll(vec);
 		}
 		return returnValue;
 	}
