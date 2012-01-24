@@ -16,11 +16,11 @@ sub Encode {
     return $encodedText;
 }
 
-# TODO: Get filename from command line
+# Get filename from command line
 # (1) quit unless we have the correct number of command-line args
 my $num_args = $#ARGV + 1;
 if ($num_args != 1) {
-  print "\nUsage: convertOsmandPoiToFreeMind.pl file_name.odb\n";
+  print "\nUsage: convertOsmandPoiToFreeMind.pl file_name.odb\nWhere the odb files can be downloaded from http://code.google.com/p/osmand/downloads/list?num=700 and must be unzipped.\n";
   exit;
 }
 
