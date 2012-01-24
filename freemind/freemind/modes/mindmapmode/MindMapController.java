@@ -223,6 +223,50 @@ public class MindMapController extends ControllerAdapter implements
 
 	private static final String ACCESSORIES_PLUGINS_NODE_NOTE = "accessories.plugins.NodeNote";
 
+	/**
+	 * @author foltin
+	 * @date 24.01.2012
+	 */
+	private final class MapSourceChangeDialog implements Runnable {
+		/**
+		 * 
+		 */
+		private boolean mReturnValue = true;
+
+		/**
+		 * @param pReturnValue
+		 */
+		private MapSourceChangeDialog() {
+		}
+
+		public void run() {
+			int showResult = new OptionalDontShowMeAgainDialog(
+					getFrame().getJFrame(),
+					getSelectedView(),
+					"file_changed_on_disk_reload",
+					"confirmation",
+					MindMapController.this,
+					new OptionalDontShowMeAgainDialog.StandardPropertyHandler(
+							getController(),
+							FreeMind.RESOURCES_RELOAD_FILES_WITHOUT_QUESTION),
+					OptionalDontShowMeAgainDialog.BOTH_OK_AND_CANCEL_OPTIONS_ARE_STORED)
+					.show().getResult();
+			if (showResult != JOptionPane.OK_OPTION) {
+				getFrame().out(
+						Tools.expandPlaceholders(
+								getText("file_not_reloaded"), getMap()
+										.getFile().toString()));
+				mReturnValue = false;
+				return;
+			}
+			revertAction.actionPerformed(null);
+		}
+
+		public boolean getReturnValue() {
+			return mReturnValue;
+		}
+	}
+
 	protected class AssignAttributesAction extends AbstractAction {
 		public AssignAttributesAction() {
 			super(getText("attributes_assign_dialog"));
@@ -2338,32 +2382,11 @@ public class MindMapController extends ControllerAdapter implements
 		getController().getMapModuleManager().changeToMapModule(getMapModule());
 	}
 
-	public void mapSourceChanged(MindMap pMap) throws Exception {
+	public boolean mapSourceChanged(MindMap pMap) throws Exception {
 		// ask the user, if he wants to reload the map.
-		EventQueue.invokeAndWait(new Runnable() {
-
-			public void run() {
-				int showResult = new OptionalDontShowMeAgainDialog(
-						getFrame().getJFrame(),
-						getSelectedView(),
-						"file_changed_on_disk_reload",
-						"confirmation",
-						MindMapController.this,
-						new OptionalDontShowMeAgainDialog.StandardPropertyHandler(
-								getController(),
-								FreeMind.RESOURCES_RELOAD_FILES_WITHOUT_QUESTION),
-						OptionalDontShowMeAgainDialog.BOTH_OK_AND_CANCEL_OPTIONS_ARE_STORED)
-						.show().getResult();
-				if (showResult != JOptionPane.OK_OPTION) {
-					getFrame().out(
-							Tools.expandPlaceholders(
-									getText("file_not_reloaded"), getMap()
-											.getFile().toString()));
-					return;
-				}
-				revertAction.actionPerformed(null);
-			}
-		});
+		MapSourceChangeDialog runnable = new MapSourceChangeDialog();
+		EventQueue.invokeAndWait(runnable);
+		return runnable.getReturnValue();
 	}
 
 	public void setNodeHookFactory(HookFactory pNodeHookFactory) {

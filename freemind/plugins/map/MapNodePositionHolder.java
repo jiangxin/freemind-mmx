@@ -22,6 +22,7 @@ package plugins.map;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -293,9 +294,14 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	}
 
 	public String getImageHtml() {
-		String imageTag;
-		imageTag = "<img src=\"file://" + getTooltipFile().getAbsolutePath().replace(File.separatorChar, '/')
-				+ "\"/>";
+		String imageTag = "ERROR";
+		try {
+			imageTag = "<img src=\"file://" + Tools.fileToUrl(getTooltipFile())
+					+ "\"/>";
+		} catch (MalformedURLException e) {
+			freemind.main.Resources.getInstance().logException(e);
+			
+		}
 		String imageHtml = "<html><body>" + imageTag + "</body></html>";
 		return imageHtml;
 	}

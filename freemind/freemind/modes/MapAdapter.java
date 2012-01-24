@@ -111,7 +111,11 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 					MapSourceChangedObserver observer = (MapSourceChangedObserver) it
 							.next();
 					try {
-						observer.mapSourceChanged(MapAdapter.this);
+						boolean changeAccepted = observer.mapSourceChanged(MapAdapter.this);
+						if(!changeAccepted) {
+							// this is a trick: at the next save/load the correct value is set again. 
+							mFileTime = Long.MAX_VALUE;
+						}
 					} catch (Exception e) {
 						freemind.main.Resources.getInstance().logException(e);
 					}

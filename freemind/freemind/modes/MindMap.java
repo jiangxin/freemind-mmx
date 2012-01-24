@@ -143,7 +143,14 @@ public interface MindMap extends TreeModel {
 	 * @date 04.07.2011
 	 */
 	public interface MapSourceChangedObserver {
-		void mapSourceChanged(MindMap pMap) throws Exception;
+		/**
+		 * @param pMap
+		 * @return true, if the map was reloaded, false otherwise. This means, that if the method returns
+		 * true, then the next change on disk is reported as well. If it returns false, the 
+		 * next changes will be ignored until the map is saved.
+		 * @throws Exception
+		 */
+		boolean mapSourceChanged(MindMap pMap) throws Exception;
 	}
 
 	/**
