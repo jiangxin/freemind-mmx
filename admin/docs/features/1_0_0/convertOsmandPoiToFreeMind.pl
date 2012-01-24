@@ -27,7 +27,9 @@ if ($num_args != 1) {
 # (2) we got two command line args, so assume they are the
 # first name and last name
 my $file_name=$ARGV[0];
-
+my $title = $file_name;
+$title =~ s/.odb$//;
+$title =~ s/.poi$//;
 my $dbargs = {AutoCommit => 0, PrintError => 1};
 my $dbh = DBI->connect("dbi:SQLite:dbname=${file_name}", "", "", $dbargs);
 
@@ -36,7 +38,7 @@ my $oldtype;
 my $oldsubtype;
 my ($id, $x, $y, $name, $type, $subtype, $site);
 my $res = $dbh->selectall_arrayref("SELECT id, x, y, name, type, subtype, site FROM  poi order by type, subtype, name;");
-print "<map version=\"1.0.0\"><node TEXT=\"${file_name}\">\n";
+print "<map version=\"1.0.0\"><node TEXT=\"${title}\">\n";
 foreach my $row (@$res) {
   ($id, $x, $y, $name, $type, $subtype, $site) = @$row;
   next if "$name" eq "";
