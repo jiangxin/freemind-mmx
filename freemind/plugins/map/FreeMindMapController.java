@@ -108,6 +108,8 @@ import freemind.view.mindmapview.NodeView;
  */
 public class FreeMindMapController extends JMapController implements
 		MouseListener, MouseMotionListener, MouseWheelListener, ActionListener{
+	private static final String NODE_MAP_HOME_PROPERTY = "node_map_home";
+
 	private static final String XML_VERSION_1_0_ENCODING_UTF_8 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
 	private static final int MOUSE_BUTTONS_MASK = MouseEvent.BUTTON3_DOWN_MASK
@@ -493,6 +495,45 @@ public class FreeMindMapController extends JMapController implements
 
 	}
 
+	private final class MoveHomeAction extends AbstractAction {
+		public MoveHomeAction() {
+			super(getText("MapControllerPopupDialog.MoveHome"));
+		}
+		
+		public void actionPerformed(ActionEvent pE) {
+			String homeProperty = Resources.getInstance().getProperty(NODE_MAP_HOME_PROPERTY);
+			if(homeProperty == null || homeProperty.isEmpty()) {
+				return;
+			}
+			String[] splitResult = homeProperty.split(":");
+			if(splitResult.length != 3) {
+				return;
+			}
+			double lat = Double.parseDouble(splitResult[0]);
+			double lon = Double.parseDouble(splitResult[1]);
+			int zoom = Integer.parseInt(splitResult[2]);
+			getMap().setCursorPosition(new Coordinate(lat, lon));
+			map.setDisplayPositionByLatLon(lat, lon, zoom);
+		}
+		
+	}
+	
+	private final class SetHomeAction extends AbstractAction {
+		/**
+		 * 
+		 */
+		public SetHomeAction() {
+			super(getText("MapControllerPopupDialog.SetHome"));
+		}
+		
+		public void actionPerformed(ActionEvent pE) {
+			Coordinate cursorPosition = getMap().getCursorPosition();
+			String propertyValue = cursorPosition.getLat()+":"+cursorPosition.getLon()+":"+map.getZoom();
+			mMindMapController.getController().setProperty(NODE_MAP_HOME_PROPERTY, propertyValue);
+		}
+		
+	}
+	
 	private final class SetDisplayToFitMapMarkers extends AbstractAction {
 
 		public SetDisplayToFitMapMarkers() {
@@ -888,11 +929,18 @@ public class FreeMindMapController extends JMapController implements
 
 		JMenu navigationItem = new JMenu(
 				getText("MapControllerPopupDialog.Navigation"));
-		JMenuItem searchItem = menuHolder.addAction(searchControlVisible,
-				"main/navigation/showSearchControl");
-		addAccelerator(searchItem,
-				"keystroke_plugins/map/MapDialog_toggle_search");
 		menuHolder.addMenu(navigationItem, "main/navigation/.");
+		addAccelerator(menuHolder.addAction(searchControlVisible,
+				"main/navigation/showSearchControl"),
+				"keystroke_plugins/map/MapDialog_toggle_search");
+		menuHolder.addSeparator("main/navigation/");
+		addAccelerator(menuHolder.addAction(new SetHomeAction(),
+				"main/navigation/SetHome"),
+				"keystroke_plugins/map/MapDialogSetHome");
+		addAccelerator(menuHolder.addAction(new MoveHomeAction(),
+				"main/navigation/MoveHome"),
+				"keystroke_plugins/map/MapDialogMoveHome");
+		menuHolder.addSeparator("main/navigation/");
 		addAccelerator(menuHolder.addAction(new MoveLeftAction(),
 				"main/navigation/moveLeft"),
 				"keystroke_plugins/map/MapDialog_moveLeft");
