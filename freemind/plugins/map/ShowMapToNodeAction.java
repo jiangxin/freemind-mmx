@@ -51,7 +51,12 @@ public class ShowMapToNodeAction extends MindMapNodeHookAdapter {
 			if (mapDialog != null) {
 				mapDialog.getFreeMindMapController().showSelectedNodes();
 				mapDialog.getMapDialog().requestFocus();
+			} else {
+				logger.warning("Can't find dialog to connect to!");
 			}
+		} else {
+			logger.warning("Can't find registration base class!");
+			
 		}
 	}
 

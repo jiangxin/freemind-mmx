@@ -71,6 +71,7 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
 import freemind.common.XmlBindingTools;
+import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.Place;
@@ -495,25 +496,54 @@ public class FreeMindMapController extends JMapController implements
 
 	}
 
-	private final class MoveHomeAction extends AbstractAction {
+	private final class PositionHolder {
+		double lat;
+		double lon;
+		int zoom;
+		public PositionHolder(double pLat, double pLon, int pZoom) {
+			super();
+			lat = pLat;
+			lon = pLon;
+			zoom = pZoom;
+		}
+		
+	}
+	
+	private final class MoveHomeAction extends AbstractAction implements MenuItemEnabledListener {
+		
+		
 		public MoveHomeAction() {
 			super(getText("MapControllerPopupDialog.MoveHome"));
 		}
 		
 		public void actionPerformed(ActionEvent pE) {
-			String homeProperty = Resources.getInstance().getProperty(NODE_MAP_HOME_PROPERTY);
-			if(homeProperty == null || homeProperty.isEmpty()) {
-				return;
+			PositionHolder posHolder = getPosHolder();
+			getMap().setCursorPosition(new Coordinate(posHolder.lat, posHolder.lon));
+			map.setDisplayPositionByLatLon(posHolder.lat, posHolder.lon, posHolder.zoom);
+		}
+		public PositionHolder getPosHolder() {
+			try {
+				String homeProperty = Resources.getInstance().getProperty(
+						NODE_MAP_HOME_PROPERTY);
+				if (homeProperty == null || homeProperty.isEmpty()) {
+					return null;
+				}
+				String[] splitResult = homeProperty.split(":");
+				if (splitResult.length != 3) {
+					return null;
+				}
+				double lat = Double.parseDouble(splitResult[0]);
+				double lon = Double.parseDouble(splitResult[1]);
+				int zoom = Integer.parseInt(splitResult[2]);
+				return new PositionHolder(lat, lon, zoom);
+			} catch (Exception e) {
+				freemind.main.Resources.getInstance().logException(e);
+				return null;
 			}
-			String[] splitResult = homeProperty.split(":");
-			if(splitResult.length != 3) {
-				return;
-			}
-			double lat = Double.parseDouble(splitResult[0]);
-			double lon = Double.parseDouble(splitResult[1]);
-			int zoom = Integer.parseInt(splitResult[2]);
-			getMap().setCursorPosition(new Coordinate(lat, lon));
-			map.setDisplayPositionByLatLon(lat, lon, zoom);
+		}
+		
+		public boolean isEnabled(JMenuItem pItem, Action pAction) {
+			return getPosHolder() != null;
 		}
 		
 	}
@@ -1101,8 +1131,12 @@ public class FreeMindMapController extends JMapController implements
 
 	public void setCursorPosition(MapNodePositionHolder hook, int zoom) {
 		getMap().setCursorPosition(hook.getPosition());
+		if(zoom > getMaxZoom()) {
+			zoom = getMaxZoom();
+		}
 		// move map:
 		Coordinate mapCenter = hook.getMapCenter();
+		logger.fine("Set display position to " + mapCenter + " and cursor to " + hook.getPosition() + " and zoom " + zoom + " where max zoom is " + getMaxZoom());
 		map.setDisplayPositionByLatLon(mapCenter.getLat(), mapCenter.getLon(),
 				zoom);
 	}
