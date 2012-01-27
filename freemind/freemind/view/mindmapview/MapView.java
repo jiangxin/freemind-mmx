@@ -610,6 +610,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 
 	private NodeView getVisibleNeighbour(int directionCode) {
 		NodeView oldSelected = getSelected();
+		logger.fine("Old selected: " + oldSelected);
 		NodeView newSelected = null;
 
 		switch (directionCode) {
@@ -648,6 +649,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 
 	public void move(KeyEvent e) {
 		NodeView newSelected = getVisibleNeighbour(e.getKeyCode());
+		logger.fine("New selected: " + newSelected);
 		if (newSelected != null) {
 			if (!(newSelected == getSelected())) {
 				extendSelectionWithKeyMove(newSelected, e);

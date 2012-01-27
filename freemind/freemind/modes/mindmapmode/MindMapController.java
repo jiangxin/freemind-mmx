@@ -2162,6 +2162,7 @@ public class MindMapController extends ControllerAdapter implements
 		logger.fine("MouseEvent: extend:" + extend + ", range:" + range
 				+ ", branch:" + branch + ", event:" + e + ", retValue:"
 				+ retValue);
+		obtainFocusForSelected();
 		return retValue;
 	}
 

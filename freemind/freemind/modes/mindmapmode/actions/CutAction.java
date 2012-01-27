@@ -112,7 +112,7 @@ public class CutAction extends AbstractAction implements ActorXml {
 			Transferable copy = mMindMapController.copy(node, true);
 			XmlAction pasteNodeAction = mMindMapController.paste
 					.getPasteNodeAction(copy, coord);
-			logger.info("Undo for cut: "
+			logger.fine("Undo for cut: "
 					+ mMindMapController.marshall(pasteNodeAction));
 			// The paste actions are reversed because of the strange
 			// coordinates.
