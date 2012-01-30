@@ -639,10 +639,8 @@ public abstract class ControllerAdapter implements ModeController {
 		}
 		getView().scrollNodeToVisible(node);
 		getView().selectAsTheOnlyOneSelected(node);
-		getView().setSiblingMaxLevel(node.getModel().getNodeLevel()); // this
-																		// level
-																		// is
-																		// default
+		// this level is default
+		getView().setSiblingMaxLevel(node.getModel().getNodeLevel()); 
 	}
 
 	public void select(MindMapNode primarySelected, List selecteds) {

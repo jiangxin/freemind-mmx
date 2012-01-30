@@ -42,6 +42,8 @@ import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.PasteAction.NodeCoordinate;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
+import freemind.view.mindmapview.MapView;
+import freemind.view.mindmapview.NodeView;
 
 public class DeleteChildAction extends AbstractAction implements ActorXml {
 	private final MindMapController mMindMapController;
@@ -107,7 +109,18 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
 		mMindMapController.fireNodePreDeleteEvent(selectedNode);
 		// deregister node:
 		mMindMapController.getModel().getLinkRegistry()
-				.deregisterLinkTarget(selectedNode);
+				.deregisterLinkTarget(selectedNode);		
+		MapView view = mMindMapController.getView();
+		NodeView nodeView = view.getNodeView(selectedNode);
+		boolean focusOwner = nodeView.focused();
+		if(view.getSelecteds().size()>1) {
+			view.deselect(nodeView);
+		} else {
+			view.selectAsTheOnlyOneSelected(view.getNodeView(parent));
+		}
+		if(focusOwner) {
+			mMindMapController.obtainFocusForSelected();
+		}
 		mMindMapController.removeNodeFromParent(selectedNode);
 		// post event
 		mMindMapController.fireNodePostDeleteEvent(selectedNode, parent);

@@ -28,6 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 import freemind.view.mindmapview.MapView;
@@ -168,7 +169,10 @@ public class NewParentNode extends MindMapNodeHookAdapter {
 		// Move selected nodes to become children of new node
 		Transferable copy = getMindMapController().cut(nodesToBeMoved);
 		getMindMapController().paste(copy, newNode);
+		getMindMapController().select(selectedParent, Tools.getVectorWithSingleElement(selectedParent));
+//		getMindMapController().obtainFocusForSelected();
 		nodeChanged(selectedParent);
+		
 		return newNode;
 	}
 
