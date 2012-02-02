@@ -1644,24 +1644,25 @@ public class FreeMindMapController extends JMapController implements
 		// here, we look wether or not the cursor is above a node.
 		MapNodePositionHolder posHolder = checkHit(mTimerMouseEvent);
 		logger.fine("Looking for hit on node " + posHolder);
+		String statusText = "";
 		if (posHolder != null) {
-			mMapHook.getStatusLabel().setText(
-					Tools.getNodeTextHierarchy(posHolder.getNode(),
-							mMapHook.getMindMapController()));
-		} else {
-			// calculate the distance to the cursor
-			Coordinate coordinate = getCoordinateFromMouseEvent(mTimerMouseEvent);
-			Coordinate cursorPosition = getMap().getCursorPosition();
-			double distance = OsmMercator.getDistance(coordinate.getLat(),
-					coordinate.getLon(), cursorPosition.getLat(),
-					cursorPosition.getLon()) / 1000.0;
-			Object[] messageArguments = { new Double(distance) };
-			MessageFormat formatter = new MessageFormat(
-					mMindMapController
-							.getText("plugins/map/MapDialog_Distance"));
-			String message = formatter.format(messageArguments);
-			mMapHook.getStatusLabel().setText(message);
-		}
+			statusText = Tools.getNodeTextHierarchy(posHolder.getNode(),
+					mMapHook.getMindMapController()) + ". ";
+		} 
+		// calculate the distance to the cursor
+		Coordinate coordinate = getCoordinateFromMouseEvent(mTimerMouseEvent);
+		Coordinate cursorPosition = getMap().getCursorPosition();
+		double distance = OsmMercator.getDistance(coordinate.getLat(),
+				coordinate.getLon(), cursorPosition.getLat(),
+				cursorPosition.getLon()) / 1000.0;
+		Object[] messageArguments = { new Double(distance) };
+		MessageFormat formatter = new MessageFormat(
+				mMindMapController
+						.getText("plugins/map/MapDialog_Distance"));
+		String message = formatter.format(messageArguments);
+		statusText += message;
+		mMapHook.getStatusLabel().setText(
+				statusText);
 
 	}
 
