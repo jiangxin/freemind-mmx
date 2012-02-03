@@ -224,7 +224,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		mMapDialog.setLayout(new BorderLayout());
 		mSearchPanel = new JPanel(new BorderLayout());
 		JLabel label = new JLabel(getResourceString("MapDialog_Search"));
-		mSearchTerm = new JTextField(15);
+		mSearchTerm = new JTextField();
 		mSearchTerm.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent pEvent) {
 				if (pEvent.getKeyCode() == KeyEvent.VK_DOWN) {
@@ -237,6 +237,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		});
 
 		mSearchFieldPanel = new JPanel();
+		mSearchFieldPanel.setLayout(new BorderLayout(10,0));
 		JButton clearButton = new JButton(new ImageIcon(Resources.getInstance()
 				.getResource("images/clear_box.png")));
 		clearButton.setFocusable(false);

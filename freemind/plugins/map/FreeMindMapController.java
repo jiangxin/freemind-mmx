@@ -1586,10 +1586,10 @@ public class FreeMindMapController extends JMapController implements
 		try {
 			if (true) {
 				StringBuilder b = new StringBuilder();
-				b.append("http://nominatim.openstreetmap.org/search/"); //$NON-NLS-1$
+				b.append("http://nominatim.openstreetmap.org/search/?q="); //$NON-NLS-1$
 				b.append(URLEncoder.encode(pText, "UTF-8"));
-				b.append("?format=xml&accept-language=").append(Locale.getDefault().getLanguage()); //$NON-NLS-1$
-				logger.fine("Searching for " + b.toString());
+				b.append("&format=xml&limit=30&accept-language=").append(Locale.getDefault().getLanguage()); //$NON-NLS-1$
+				logger.info("Searching for " + b.toString());
 				URL url = new URL(b.toString());
 				result = Tools.getFile(new InputStreamReader(url.openStream()));
 				result = new String(result.getBytes(), "UTF-8");

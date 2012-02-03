@@ -385,7 +385,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	 */
 	public void onViewCreatedHook(NodeView pNodeView) {
 		super.onViewCreatedHook(pNodeView);
-		logger.info("View created for " + this);
+		logger.fine("View created for " + this);
 		getRegistration().fireNodeVisibilityChanged(true, this);
 	}
 
@@ -394,7 +394,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	 */
 	public void onViewRemovedHook(NodeView pNodeView) {
 		super.onViewRemovedHook(pNodeView);
-		logger.info("Removed view for " + this);
+		logger.fine("Removed view for " + this);
 		getRegistration().fireNodeVisibilityChanged(false, this);
 	}
 	
