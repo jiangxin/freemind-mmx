@@ -251,7 +251,8 @@ public class MapDialog extends MindMapHookAdapter implements
 		// mResultList.setFocusable(false);
 		mResultList.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent pEvent) {
-				if (pEvent.getKeyCode() == KeyEvent.VK_UP) {
+				int index = mResultList.getSelectedIndex();
+				if (index == 0 && pEvent.getKeyCode() == KeyEvent.VK_UP) {
 					logger.info("Set Focus to search item.");
 					mResultList.clearSelection();
 					mSearchTerm.requestFocusInWindow();
@@ -260,7 +261,6 @@ public class MapDialog extends MindMapHookAdapter implements
 				}
 				if (pEvent.getKeyCode() == KeyEvent.VK_ENTER) {
 					logger.info("Set result in map.");
-					int index = mResultList.getSelectedIndex();
 					displaySearchItem(dataModel, index);
 					pEvent.consume();
 					return;
@@ -392,6 +392,7 @@ public class MapDialog extends MindMapHookAdapter implements
 			mMapDialog.remove(mSearchPanel);
 		} else {
 			mMapDialog.add(mSearchPanel, BorderLayout.NORTH);
+			mSearchTerm.selectAll();
 			mSearchTerm.requestFocus();
 		}
 		mMapDialog.validate();
