@@ -34,7 +34,7 @@ public class MapMarkerLocation extends JLabel implements MapMarker {
 	/**
 	 * 
 	 */
-	private static final int CIRCLE_RADIUS = 5;
+	public static final int CIRCLE_RADIUS = 5;
 	/**
 	 * 
 	 */

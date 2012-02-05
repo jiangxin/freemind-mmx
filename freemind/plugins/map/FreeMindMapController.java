@@ -136,6 +136,7 @@ public class FreeMindMapController extends JMapController implements
 	private final MapDialog mMapHook;
 
 	private Point lastDragPoint;
+	private Point mDragStartingPoint;
 
 	private boolean mMovementEnabled = true;
 
@@ -1330,6 +1331,8 @@ public class FreeMindMapController extends JMapController implements
 			// detect collision with map marker:
 			MapNodePositionHolder posHolder = checkHit(e);
 			if (posHolder != null) {
+				mDragStartingPoint = new Point(e.getPoint());
+				correctPointByMapCenter(mDragStartingPoint);
 				isMapNodeMoving = true;
 				mMapNodeMovingSource = posHolder;
 				Component glassPane = getGlassPane();
@@ -1341,6 +1344,11 @@ public class FreeMindMapController extends JMapController implements
 			lastDragPoint = null;
 			isMoving = true;
 		}
+	}
+
+	protected void correctPointByMapCenter(Point dragStartingPoint) {
+		Point center = getMap().getCenter();
+		dragStartingPoint.translate(center.x, center.y);
 	}
 
 	public MapNodePositionHolder checkHit(MouseEvent e) {
@@ -1441,10 +1449,18 @@ public class FreeMindMapController extends JMapController implements
 		if (e.getButton() == movementMouseButton || Tools.isMacOsX()
 				&& e.getButton() == MouseEvent.BUTTON1) {
 			if (isMapNodeMoving) {
-				Coordinate mousePosition = getCoordinateFromMouseEvent(e);
-				mMapNodeMovingSource.changePosition(mousePosition,
-						map.getPosition(), map.getZoom(),
-						getTileSourceAsString());
+				// check for minimal drag distance:
+				Point currentPoint = new Point(e.getPoint());
+				correctPointByMapCenter(currentPoint);
+				if(mDragStartingPoint.distance(currentPoint) > MapMarkerLocation.CIRCLE_RADIUS) {
+					Coordinate mousePosition = getCoordinateFromMouseEvent(e);
+					mMapNodeMovingSource.changePosition(mousePosition,
+							map.getPosition(), map.getZoom(),
+							getTileSourceAsString());
+				} else {
+					// select the node (single click)
+					selectNode(mMapNodeMovingSource.getNode());
+				}
 				mMapNodeMovingSource = null;
 				Component glassPane = getGlassPane();
 				glassPane.setCursor(Cursor
