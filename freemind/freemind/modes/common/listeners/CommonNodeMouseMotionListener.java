@@ -140,10 +140,8 @@ public class CommonNodeMouseMotionListener implements NodeMouseMotionObserver {
 
 	public void mousePressed(MouseEvent e) {
 		logger.fine("Event: mousePressed");
-		// for Linux
-		if(Tools.isLinux()) {
-			mMousePressedEvent = e;
-		}
+		// for Linux/Mac
+		mMousePressedEvent = e;
 	}
 
 	public void mouseExited(MouseEvent e) {
@@ -160,7 +158,11 @@ public class CommonNodeMouseMotionListener implements NodeMouseMotionObserver {
 		
 		logger.fine("Event: mouseReleased");
 		MouseEvent ev = e;
-		if(Tools.isLinux()) {
+		/* 
+		 * For Mac see 
+		 * https://developer.apple.com/library/mac/#documentation/Java/Conceptual/Java14Development/07-NativePlatformIntegration/NativePlatformIntegration.html
+		 * */
+		if(Tools.isLinux() || Tools.isMacOsX()) {
 			ev = mMousePressedEvent;
 		} 
 		handlePopupMenu(ev);
