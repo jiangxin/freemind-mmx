@@ -48,6 +48,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
+import java.util.Vector;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -1459,7 +1460,20 @@ public class FreeMindMapController extends JMapController implements
 							getTileSourceAsString());
 				} else {
 					// select the node (single click)
-					selectNode(mMapNodeMovingSource.getNode());
+					MindMapNode node = mMapNodeMovingSource.getNode();
+					if(e.isShiftDown()) {
+						Vector sel = new Vector(mMindMapController.getSelecteds());
+						if(sel.contains(node)) {
+							// remove:
+							sel.remove(node);
+							node = mMindMapController.getSelected();
+						} else {
+							sel.add(node);
+						}
+						mMindMapController.select(node, sel);
+					} else {
+						selectNode(node);
+					}
 				}
 				mMapNodeMovingSource = null;
 				Component glassPane = getGlassPane();
