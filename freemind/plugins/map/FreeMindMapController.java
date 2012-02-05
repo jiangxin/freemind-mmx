@@ -893,6 +893,14 @@ public class FreeMindMapController extends JMapController implements
 
 	public static void addPictureToNode(MapNodePositionHolder positionHolder,
 			MindMapController mindMapController) {
+		// create picture if not present:
+		File tooltipFile = positionHolder.getTooltipFile(true);
+		if(!tooltipFile.exists()) {
+			if(!positionHolder.createToolTip(true)) {
+				// an error occurred, sorry.
+				return;
+			}
+		}
 		MindMapNode selected = positionHolder.getNode();
 		MindMapNode addNewNode = mindMapController.addNewNode(selected, 0,
 				selected.isLeft());

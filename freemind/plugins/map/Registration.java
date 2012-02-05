@@ -365,7 +365,7 @@ public class Registration implements HookRegistration, ActorXml,
 	 */
 	public boolean isEnabled(JMenuItem pItem, Action pAction) {
 		String hookName = ((NodeHookAction) pAction).getHookName();
-		logger.info("Enabled for " + hookName);
+		logger.fine("Enabled for " + hookName);
 		if (ShowMapToNodeAction.NODE_CONTEXT_PLUGIN_NAME.equals(hookName)
 				|| AddLinkToMapAction.NODE_CONTEXT_PLUGIN_NAME.equals(hookName)
 				|| RemoveMapToNodeAction.NODE_CONTEXT_PLUGIN_NAME
