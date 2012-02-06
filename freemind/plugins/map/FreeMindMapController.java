@@ -160,6 +160,10 @@ public class FreeMindMapController extends JMapController implements
 
 	private Timer mTimer;
 
+	private boolean mIsRectangularSelect;
+
+	private Coordinate mRectangularStart;
+
 	public static class TileSourceStore {
 		TileSource mTileSource;
 		String mLayerName;
@@ -1205,7 +1209,7 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void mouseDragged(MouseEvent e) {
-		if (!mMovementEnabled || !(isMoving || isMapNodeMoving))
+		if (!mMovementEnabled || !(isMoving || isMapNodeMoving || mIsRectangularSelect))
 			return;
 		if (isMapNodeMoving) {
 			lastDragPoint = e.getPoint();
@@ -1224,6 +1228,13 @@ public class FreeMindMapController extends JMapController implements
 				diffy = SCROLL_PIXEL_AMOUNT;
 			}
 			map.moveMap(diffx, diffy);
+			return;
+		}
+		if(mIsRectangularSelect) {
+			// Actualize second point of rectangle.
+			getMap().setRectangular(mRectangularStart, getCoordinateFromMouseEvent(e));
+			getMap().setDrawRectangular(true);
+			getMap().repaint();
 			return;
 		}
 		// Is only the selected mouse button pressed?
@@ -1335,8 +1346,15 @@ public class FreeMindMapController extends JMapController implements
 		if (e.isConsumed()) {
 			return;
 		}
-		if (e.getButton() == movementMouseButton || Tools.isMacOsX()
-				&& e.getModifiersEx() == MAC_MOUSE_BUTTON1_MASK) {
+		if (e.getButton() == movementMouseButton || (Tools.isMacOsX()
+				&& e.getModifiersEx() == MAC_MOUSE_BUTTON1_MASK)) {
+			if(e.isShiftDown()) {
+				// rectangular select:
+				mIsRectangularSelect = true;
+				mRectangularStart = getCoordinateFromMouseEvent(e);
+				logger.info("Starting rect on " + mRectangularStart);
+				return;
+			}
 			// detect collision with map marker:
 			MapNodePositionHolder posHolder = checkHit(e);
 			if (posHolder != null) {

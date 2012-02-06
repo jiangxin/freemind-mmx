@@ -303,7 +303,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 			
 		}
 		String imageHtml = "<html><body>" + imageTag + "</body></html>";
-		logger.info("Tooltip at " + imageTag);
+		logger.fine("Tooltip at " + imageTag);
 		return imageHtml;
 	}
 

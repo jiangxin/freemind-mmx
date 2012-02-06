@@ -50,9 +50,14 @@ final class JCursorMapViewer extends JMapViewer {
 	boolean mUseCursor;
 	Coordinate mCursorPosition;
 	Stroke mStroke = new BasicStroke(2);
+	Stroke mRectangularStroke = new BasicStroke(1, BasicStroke.CAP_SQUARE,
+			BasicStroke.JOIN_MITER, 10.0f, new float[] { 10.0f, 10.0f }, 0.0f);
 	private FreeMindMapController mFreeMindMapController;
 	private final MapDialog mMapHook;
 	private boolean mHideFoldedNodes;
+	private Coordinate mRectangularStart;
+	private Coordinate mRectangularEnd;
+	private boolean mDrawRectangular = false;
 
 	/**
 	 * @param pMindMapController
@@ -108,26 +113,38 @@ final class JCursorMapViewer extends JMapViewer {
 	 */
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		// do cursor
-		if (mUseCursor && mShowCursor) {
-			Point position = getMapPosition(mCursorPosition.getLat(),
-					mCursorPosition.getLon());
-			if (position != null) {
-				int size_h = 15;
-				if (g instanceof Graphics2D) {
-					Graphics2D g2d = (Graphics2D) g;
-					Stroke oldStroke = g2d.getStroke();
-					Color oldColor = g2d.getColor();
+		if (g instanceof Graphics2D) {
+			Graphics2D g2d = (Graphics2D) g;
+			Stroke oldStroke = g2d.getStroke();
+			Color oldColor = g2d.getColor();
+			// do cursor
+			if (mUseCursor && mShowCursor) {
+				Point position = getMapPosition(mCursorPosition);
+				if (position != null) {
+					int size_h = 15;
 					g2d.setStroke(mStroke);
 					g2d.setColor(Color.RED);
 					g2d.drawLine(position.x - size_h, position.y, position.x
 							+ size_h, position.y);
 					g2d.drawLine(position.x, position.y - size_h, position.x,
 							position.y + size_h);
-					g2d.setColor(oldColor);
-					g2d.setStroke(oldStroke);
 				}
 			}
+			if (mDrawRectangular) {
+				g2d.setColor(Color.BLACK);
+				g2d.setStroke(mRectangularStroke);
+				Point positionStart = getMapPosition(mRectangularStart);
+				Point positionEnd = getMapPosition(mRectangularEnd);
+				if (positionStart != null && positionEnd != null) {
+					int x = Math.min(positionStart.x, positionEnd.x);
+					int y = Math.min(positionStart.y, positionEnd.y);
+					int width = Math.abs(positionStart.x - positionEnd.x);
+					int height = Math.abs(positionStart.y - positionEnd.y);
+					g2d.drawRect(x, y, width, height);
+				}
+			}
+			g2d.setColor(oldColor);
+			g2d.setStroke(oldStroke);
 
 		}
 	}
@@ -158,4 +175,20 @@ final class JCursorMapViewer extends JMapViewer {
 	public boolean isHideFoldedNodes() {
 		return mHideFoldedNodes;
 	}
+
+	public void setRectangular(Coordinate pRectangularStart, Coordinate pRectangularEnd) {
+		mRectangularStart = pRectangularStart;
+		mRectangularEnd = pRectangularEnd;
+	}
+
+
+	public boolean isDrawRectangular() {
+		return mDrawRectangular;
+	}
+
+	public void setDrawRectangular(boolean pDrawRectangular) {
+		mDrawRectangular = pDrawRectangular;
+	}
+	
+	
 }
