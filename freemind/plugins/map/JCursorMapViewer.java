@@ -25,6 +25,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 
@@ -133,20 +134,30 @@ final class JCursorMapViewer extends JMapViewer {
 			if (mDrawRectangular) {
 				g2d.setColor(Color.BLACK);
 				g2d.setStroke(mRectangularStroke);
-				Point positionStart = getMapPosition(mRectangularStart);
-				Point positionEnd = getMapPosition(mRectangularEnd);
-				if (positionStart != null && positionEnd != null) {
-					int x = Math.min(positionStart.x, positionEnd.x);
-					int y = Math.min(positionStart.y, positionEnd.y);
-					int width = Math.abs(positionStart.x - positionEnd.x);
-					int height = Math.abs(positionStart.y - positionEnd.y);
-					g2d.drawRect(x, y, width, height);
+				Rectangle r = getRectangle(mRectangularStart, mRectangularEnd);
+				if (r != null) {
+					g2d.drawRect(r.x, r.y, r.width, r.height);
 				}
 			}
 			g2d.setColor(oldColor);
 			g2d.setStroke(oldStroke);
 
 		}
+	}
+
+	public Rectangle getRectangle(Coordinate rectangularStart,
+			Coordinate rectangularEnd) {
+		Point positionStart = getMapPosition(rectangularStart);
+		Point positionEnd = getMapPosition(rectangularEnd);
+		Rectangle r = null;
+		if (positionStart != null && positionEnd != null) {
+			int x = Math.min(positionStart.x, positionEnd.x);
+			int y = Math.min(positionStart.y, positionEnd.y);
+			int width = Math.abs(positionStart.x - positionEnd.x);
+			int height = Math.abs(positionStart.y - positionEnd.y);
+			r = new Rectangle(x, y, width, height);
+		}
+		return r;
 	}
 	
 	public TileController getTileController() {

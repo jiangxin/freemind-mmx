@@ -8,6 +8,7 @@ Changes made in FreeMind 1.0.0 Beta1
   * distance between cursor and mouse if not a node is below the mouse
 * New language bulgarian. Thanks to the author vii!
 * Reorganized popup menu: new node, copy as link, maximal zoom actions.
+* Multiple selection with rectangle possible at geographical view (press shift before left mouse click)
 
 ===============================
 Changes made in FreeMind 1.0.0 Alpha8

@@ -25,6 +25,7 @@ package plugins.map;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -109,7 +110,7 @@ import freemind.view.mindmapview.NodeView;
  *         contains the initial zeros, I guess).
  */
 public class FreeMindMapController extends JMapController implements
-		MouseListener, MouseMotionListener, MouseWheelListener, ActionListener{
+		MouseListener, MouseMotionListener, MouseWheelListener, ActionListener {
 	private static final String NODE_MAP_HOME_PROPERTY = "node_map_home";
 
 	private static final String XML_VERSION_1_0_ENCODING_UTF_8 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -344,7 +345,7 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 		public void actionPerformed(ActionEvent actionEvent) {
-			if(!searchForNearestNode(false)) {
+			if (!searchForNearestNode(false)) {
 				searchForNearestNode(true);
 			}
 		}
@@ -361,7 +362,8 @@ public class FreeMindMapController extends JMapController implements
 					mMapHook.getMapNodePositionHolders());
 			logger.fine("Before removal " + mapNodePositionHolders.size()
 					+ " elements");
-			// take only those elements in the correct quadrant (eg. -45° - +45°) which are not identical to the current
+			// take only those elements in the correct quadrant (eg. -45° -
+			// +45°) which are not identical to the current
 			for (Iterator it = mapNodePositionHolders.iterator(); it.hasNext();) {
 				MapNodePositionHolder holder = (MapNodePositionHolder) it
 						.next();
@@ -410,13 +412,12 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 		/**
-		 * If no point was found from the destinationQuadrantCheck, 
-		 * here, alternative = true is tried
+		 * If no point was found from the destinationQuadrantCheck, here,
+		 * alternative = true is tried
 		 */
 		public abstract boolean destinationQuadrantCheck(int x1, int y1,
 				int x2, int y2, boolean alternative);
 
-		
 		/**
 		 * @param pPointPosition
 		 * @param pCursorPosition
@@ -446,8 +447,9 @@ public class FreeMindMapController extends JMapController implements
 			super(getText("MapControllerPopupDialog.moveLeft"));
 		}
 
-		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2, boolean alternative) {
-			if(alternative)
+		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2,
+				boolean alternative) {
+			if (alternative)
 				return x2 < x1;
 			return x2 < x1 && Math.abs(y2 - y1) < Math.abs(x2 - x1);
 		}
@@ -462,8 +464,9 @@ public class FreeMindMapController extends JMapController implements
 			super(getText("MapControllerPopupDialog.moveRight"));
 		}
 
-		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2, boolean alternative) {
-			if(alternative)
+		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2,
+				boolean alternative) {
+			if (alternative)
 				return x2 > x1;
 			return x2 > x1 && Math.abs(y2 - y1) < Math.abs(x2 - x1);
 		}
@@ -478,8 +481,9 @@ public class FreeMindMapController extends JMapController implements
 			super(getText("MapControllerPopupDialog.moveUp"));
 		}
 
-		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2, boolean alternative) {
-			if(alternative)
+		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2,
+				boolean alternative) {
+			if (alternative)
 				return y2 < y1;
 			return y2 < y1 && Math.abs(y2 - y1) > Math.abs(x2 - x1);
 		}
@@ -494,8 +498,9 @@ public class FreeMindMapController extends JMapController implements
 			super(getText("MapControllerPopupDialog.moveDown"));
 		}
 
-		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2, boolean alternative) {
-			if(alternative)
+		public boolean destinationQuadrantCheck(int x1, int y1, int x2, int y2,
+				boolean alternative) {
+			if (alternative)
 				return y2 > y1;
 			return y2 > y1 && Math.abs(y2 - y1) > Math.abs(x2 - x1);
 		}
@@ -506,27 +511,31 @@ public class FreeMindMapController extends JMapController implements
 		double lat;
 		double lon;
 		int zoom;
+
 		public PositionHolder(double pLat, double pLon, int pZoom) {
 			super();
 			lat = pLat;
 			lon = pLon;
 			zoom = pZoom;
 		}
-		
+
 	}
-	
-	private final class MoveHomeAction extends AbstractAction implements MenuItemEnabledListener {
-		
-		
+
+	private final class MoveHomeAction extends AbstractAction implements
+			MenuItemEnabledListener {
+
 		public MoveHomeAction() {
 			super(getText("MapControllerPopupDialog.MoveHome"));
 		}
-		
+
 		public void actionPerformed(ActionEvent pE) {
 			PositionHolder posHolder = getPosHolder();
-			getMap().setCursorPosition(new Coordinate(posHolder.lat, posHolder.lon));
-			map.setDisplayPositionByLatLon(posHolder.lat, posHolder.lon, posHolder.zoom);
+			getMap().setCursorPosition(
+					new Coordinate(posHolder.lat, posHolder.lon));
+			map.setDisplayPositionByLatLon(posHolder.lat, posHolder.lon,
+					posHolder.zoom);
 		}
+
 		public PositionHolder getPosHolder() {
 			try {
 				String homeProperty = Resources.getInstance().getProperty(
@@ -547,13 +556,13 @@ public class FreeMindMapController extends JMapController implements
 				return null;
 			}
 		}
-		
+
 		public boolean isEnabled(JMenuItem pItem, Action pAction) {
 			return getPosHolder() != null;
 		}
-		
+
 	}
-	
+
 	private final class SetHomeAction extends AbstractAction {
 		/**
 		 * 
@@ -561,15 +570,17 @@ public class FreeMindMapController extends JMapController implements
 		public SetHomeAction() {
 			super(getText("MapControllerPopupDialog.SetHome"));
 		}
-		
+
 		public void actionPerformed(ActionEvent pE) {
 			Coordinate cursorPosition = getMap().getCursorPosition();
-			String propertyValue = cursorPosition.getLat()+":"+cursorPosition.getLon()+":"+map.getZoom();
-			mMindMapController.getController().setProperty(NODE_MAP_HOME_PROPERTY, propertyValue);
+			String propertyValue = cursorPosition.getLat() + ":"
+					+ cursorPosition.getLon() + ":" + map.getZoom();
+			mMindMapController.getController().setProperty(
+					NODE_MAP_HOME_PROPERTY, propertyValue);
 		}
-		
+
 	}
-	
+
 	private final class SetDisplayToFitMapMarkers extends AbstractAction {
 
 		public SetDisplayToFitMapMarkers() {
@@ -696,22 +707,23 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	private final class EditNodeInContextMenu extends AbstractAction {
-		
+
 		public EditNodeInContextMenu() {
 			super(getText("MapControllerPopupDialog.EditNodeInContextMenu"));
 		}
-		
+
 		public void actionPerformed(ActionEvent pE) {
 			if (mCurrentPopupPositionHolder == null) {
 				return;
 			}
-			getMap().setCursorPosition(mCurrentPopupPositionHolder.getPosition());
-			Point pos = getMap().getMapPosition(mCurrentPopupPositionHolder.getPosition(),
-					true);
+			getMap().setCursorPosition(
+					mCurrentPopupPositionHolder.getPosition());
+			Point pos = getMap().getMapPosition(
+					mCurrentPopupPositionHolder.getPosition(), true);
 			// unfold node (and its parents):
 			MindMapNode node = mCurrentPopupPositionHolder.getNode();
-			while(! node.isRoot()) {
-				if(node.isFolded()) {
+			while (!node.isRoot()) {
+				if (node.isFolded()) {
 					mMindMapController.setFolded(node, false);
 				}
 				node = node.getParentNode();
@@ -720,9 +732,9 @@ public class FreeMindMapController extends JMapController implements
 			MouseEvent e = new MouseEvent(map, 0, 0, 0, pos.x, pos.y, 1, false);
 			editNode(mCurrentPopupPositionHolder, e);
 		}
-		
+
 	}
-	
+
 	private final class MaxmimalZoomToCursorAction extends AbstractAction {
 
 		public MaxmimalZoomToCursorAction() {
@@ -732,7 +744,7 @@ public class FreeMindMapController extends JMapController implements
 
 		public void actionPerformed(ActionEvent pE) {
 			Coordinate cursorPosition = getMap().getCursorPosition();
-			int zoom = getMaxZoom()-2;
+			int zoom = getMaxZoom() - 2;
 			map.setDisplayPositionByLatLon(cursorPosition.getLat(),
 					cursorPosition.getLon(), zoom);
 		}
@@ -815,20 +827,21 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	private final class SelectNodeAndCloseInContextMenu extends AbstractAction {
-		
+
 		public SelectNodeAndCloseInContextMenu() {
-			super(getText("MapControllerPopupDialog.SelectNodeAndCloseInContextMenu"));
+			super(
+					getText("MapControllerPopupDialog.SelectNodeAndCloseInContextMenu"));
 		}
-		
+
 		public void actionPerformed(ActionEvent pE) {
 			if (mCurrentPopupPositionHolder != null) {
 				selectContextMenuNode();
 				mMapHook.disposeDialog();
 			}
 		}
-		
+
 	}
-	
+
 	private final class RemoveNodeLocationInContextMenu extends AbstractAction {
 
 		public RemoveNodeLocationInContextMenu() {
@@ -899,8 +912,8 @@ public class FreeMindMapController extends JMapController implements
 			MindMapController mindMapController) {
 		// create picture if not present:
 		File tooltipFile = positionHolder.getTooltipFile(true);
-		if(!tooltipFile.exists()) {
-			if(!positionHolder.createToolTip(true)) {
+		if (!tooltipFile.exists()) {
+			if (!positionHolder.createToolTip(true)) {
 				// an error occurred, sorry.
 				return;
 			}
@@ -942,7 +955,8 @@ public class FreeMindMapController extends JMapController implements
 		JMenu mainItem = new JMenu(getText("MapControllerPopupDialog.Actions"));
 		menuHolder.addMenu(mainItem, "main/actions/.");
 		menuHolder.addAction(placeAction, "main/actions/place");
-		addAccelerator(menuHolder.addAction(removePlaceAction, "main/actions/removeplace"),
+		addAccelerator(menuHolder.addAction(removePlaceAction,
+				"main/actions/removeplace"),
 				"keystroke_plugins/map/MapDialog_RemovePlace");
 		menuHolder.addAction(exportAction, "main/actions/exportPng");
 		menuHolder.addAction(pMapHook.getCloseAction(), "main/actions/close");
@@ -1009,8 +1023,9 @@ public class FreeMindMapController extends JMapController implements
 				"popup/copyLinkToClipboardAction");
 		menuHolder.addAction(exportAction, "popup/exportPng");
 		menuHolder.updateMenus(mPopupMenu, "popup/");
-		/* map location context menu 
-		 * */
+		/*
+		 * map location context menu
+		 */
 		menuHolder.addAction(new EditNodeInContextMenu(),
 				"contextPopup/editNodeInContextMenu");
 		menuHolder.addAction(new RemoveNodeLocationInContextMenu(),
@@ -1040,7 +1055,7 @@ public class FreeMindMapController extends JMapController implements
 
 	/**
 	 * @param pSelected
-	 * @return 
+	 * @return
 	 */
 	protected MapNodePositionHolder placeNodes(MindMapNode pSelected) {
 		MapNodePositionHolder hook = MapNodePositionHolder.getHook(pSelected);
@@ -1145,12 +1160,14 @@ public class FreeMindMapController extends JMapController implements
 
 	public void setCursorPosition(MapNodePositionHolder hook, int zoom) {
 		getMap().setCursorPosition(hook.getPosition());
-		if(zoom > getMaxZoom()) {
+		if (zoom > getMaxZoom()) {
 			zoom = getMaxZoom();
 		}
 		// move map:
 		Coordinate mapCenter = hook.getMapCenter();
-		logger.fine("Set display position to " + mapCenter + " and cursor to " + hook.getPosition() + " and zoom " + zoom + " where max zoom is " + getMaxZoom());
+		logger.fine("Set display position to " + mapCenter + " and cursor to "
+				+ hook.getPosition() + " and zoom " + zoom
+				+ " where max zoom is " + getMaxZoom());
 		map.setDisplayPositionByLatLon(mapCenter.getLat(), mapCenter.getLon(),
 				zoom);
 	}
@@ -1209,30 +1226,32 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void mouseDragged(MouseEvent e) {
-		if (!mMovementEnabled || !(isMoving || isMapNodeMoving || mIsRectangularSelect))
+		if (!mMovementEnabled
+				|| !(isMoving || isMapNodeMoving || mIsRectangularSelect))
 			return;
 		if (isMapNodeMoving) {
 			lastDragPoint = e.getPoint();
 			int diffx = 0;
 			int diffy = 0;
-			if(e.getX()<SCROLL_MARGIN) {
-				diffx = - SCROLL_PIXEL_AMOUNT;
+			if (e.getX() < SCROLL_MARGIN) {
+				diffx = -SCROLL_PIXEL_AMOUNT;
 			}
-			if(map.getWidth() - e.getX() < SCROLL_MARGIN) {
+			if (map.getWidth() - e.getX() < SCROLL_MARGIN) {
 				diffx = SCROLL_PIXEL_AMOUNT;
 			}
-			if(e.getY()<SCROLL_MARGIN) {
-				diffy = - SCROLL_PIXEL_AMOUNT;
+			if (e.getY() < SCROLL_MARGIN) {
+				diffy = -SCROLL_PIXEL_AMOUNT;
 			}
-			if(map.getHeight() - e.getY() < SCROLL_MARGIN) {
+			if (map.getHeight() - e.getY() < SCROLL_MARGIN) {
 				diffy = SCROLL_PIXEL_AMOUNT;
 			}
 			map.moveMap(diffx, diffy);
 			return;
 		}
-		if(mIsRectangularSelect) {
+		if (mIsRectangularSelect) {
 			// Actualize second point of rectangle.
-			getMap().setRectangular(mRectangularStart, getCoordinateFromMouseEvent(e));
+			getMap().setRectangular(mRectangularStart,
+					getCoordinateFromMouseEvent(e));
 			getMap().setDrawRectangular(true);
 			getMap().repaint();
 			return;
@@ -1311,14 +1330,15 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	/**
-	 * @param pPositionHolder 
+	 * @param pPositionHolder
 	 * @param pEvent
 	 *            : location
 	 */
-	private void editNode(MapNodePositionHolder pPositionHolder, MouseEvent pEvent) {
+	private void editNode(MapNodePositionHolder pPositionHolder,
+			MouseEvent pEvent) {
 		final MindMapNode editNode = pPositionHolder.getNode();
 		final NodeView nodeView = mMindMapController.getNodeView(editNode);
-		if(nodeView == null) {
+		if (nodeView == null) {
 			return;
 		}
 		mMindMapController.select(nodeView);
@@ -1329,11 +1349,12 @@ public class FreeMindMapController extends JMapController implements
 		Tools.convertPointToAncestor((Component) pEvent.getSource(), point, map);
 		MapEditTextFieldControl editControl = new MapEditTextFieldControl(
 				nodeView, editNode, editNode);
-		EditNodeTextField textfield = new MapEditNoteTextField(nodeView, editNode.getText(),
-				null, mMindMapController, editControl, map, point);
+		EditNodeTextField textfield = new MapEditNoteTextField(nodeView,
+				editNode.getText(), null, mMindMapController, editControl, map,
+				point);
 		textfield.show();
 	}
-	
+
 	public void setCursorPosition(MouseEvent e) {
 		getMap().setCursorPosition(map.getPosition(e.getPoint()));
 	}
@@ -1346,9 +1367,9 @@ public class FreeMindMapController extends JMapController implements
 		if (e.isConsumed()) {
 			return;
 		}
-		if (e.getButton() == movementMouseButton || (Tools.isMacOsX()
-				&& e.getModifiersEx() == MAC_MOUSE_BUTTON1_MASK)) {
-			if(e.isShiftDown()) {
+		if (e.getButton() == movementMouseButton
+				|| (Tools.isMacOsX() && e.getModifiersEx() == MAC_MOUSE_BUTTON1_MASK)) {
+			if (e.isShiftDown()) {
 				// rectangular select:
 				mIsRectangularSelect = true;
 				mRectangularStart = getCoordinateFromMouseEvent(e);
@@ -1479,7 +1500,7 @@ public class FreeMindMapController extends JMapController implements
 				// check for minimal drag distance:
 				Point currentPoint = new Point(e.getPoint());
 				correctPointByMapCenter(currentPoint);
-				if(mDragStartingPoint.distance(currentPoint) > MapMarkerLocation.CIRCLE_RADIUS) {
+				if (mDragStartingPoint.distance(currentPoint) > MapMarkerLocation.CIRCLE_RADIUS) {
 					Coordinate mousePosition = getCoordinateFromMouseEvent(e);
 					mMapNodeMovingSource.changePosition(mousePosition,
 							map.getPosition(), map.getZoom(),
@@ -1487,9 +1508,10 @@ public class FreeMindMapController extends JMapController implements
 				} else {
 					// select the node (single click)
 					MindMapNode node = mMapNodeMovingSource.getNode();
-					if(e.isShiftDown()) {
-						Vector sel = new Vector(mMindMapController.getSelecteds());
-						if(sel.contains(node)) {
+					if (e.isShiftDown()) {
+						Vector sel = new Vector(
+								mMindMapController.getSelecteds());
+						if (sel.contains(node)) {
 							// remove:
 							sel.remove(node);
 							node = mMindMapController.getSelected();
@@ -1507,6 +1529,36 @@ public class FreeMindMapController extends JMapController implements
 						.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 				glassPane.setVisible(false);
 			}
+			if (mIsRectangularSelect) {
+				// gather all locations and select them:
+				Vector mapNodePositionHolders = new Vector();
+				// take only those elements in the correct rectangle:
+				Rectangle r = getMap().getRectangle(mRectangularStart,
+						getCoordinateFromMouseEvent(e));
+				if (r != null) {
+					MindMapNode last = null;
+					for (Iterator it = mMapHook.getMapNodePositionHolders()
+							.iterator(); it.hasNext();) {
+						MapNodePositionHolder holder = (MapNodePositionHolder) it
+								.next();
+						Coordinate pointPosition = holder.getPosition();
+						Point mapPosition = getMap().getMapPosition(
+								pointPosition, true);
+						if (mapPosition != null && r.contains(mapPosition)) {
+							// ok
+							mapNodePositionHolders.add(holder.getNode());
+							last = holder.getNode();
+						}
+					}
+					if(last != null) {
+						// ie. at least one found:
+						mMindMapController.select(last, mapNodePositionHolders);
+					}
+				}
+			}
+			getMap().setDrawRectangular(false);
+			mIsRectangularSelect = false;
+			mRectangularStart = null;
 			isMapNodeMoving = false;
 			lastDragPoint = null;
 			isMoving = false;
@@ -1704,7 +1756,7 @@ public class FreeMindMapController extends JMapController implements
 		if (posHolder != null) {
 			statusText = Tools.getNodeTextHierarchy(posHolder.getNode(),
 					mMapHook.getMindMapController()) + ". ";
-		} 
+		}
 		// calculate the distance to the cursor
 		Coordinate coordinate = getCoordinateFromMouseEvent(mTimerMouseEvent);
 		Coordinate cursorPosition = getMap().getCursorPosition();
@@ -1713,12 +1765,10 @@ public class FreeMindMapController extends JMapController implements
 				cursorPosition.getLon()) / 1000.0;
 		Object[] messageArguments = { new Double(distance) };
 		MessageFormat formatter = new MessageFormat(
-				mMindMapController
-						.getText("plugins/map/MapDialog_Distance"));
+				mMindMapController.getText("plugins/map/MapDialog_Distance"));
 		String message = formatter.format(messageArguments);
 		statusText += message;
-		mMapHook.getStatusLabel().setText(
-				statusText);
+		mMapHook.getStatusLabel().setText(statusText);
 
 	}
 
@@ -1728,8 +1778,7 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	protected void selectNode(MindMapNode node) {
-		mMindMapController.select(node,
-				Tools.getVectorWithSingleElement(node));
+		mMindMapController.select(node, Tools.getVectorWithSingleElement(node));
 	}
 
 	public static String getLink(MapNodePositionHolder hook) {
