@@ -143,7 +143,6 @@ public class NodeView extends JComponent implements TreeModelListener {
 			mainView.removeMouseListener(this.map.getNodeMouseMotionListener());
 			mainView.removeMouseMotionListener(this.map
 					.getNodeMouseMotionListener());
-			mainView.removeKeyListener(this.map.getNodeKeyListener());
 			c.add(newMainView, i);
 		} else {
 			add(newMainView);
@@ -151,7 +150,6 @@ public class NodeView extends JComponent implements TreeModelListener {
 		this.mainView = newMainView;
 		mainView.addMouseListener(this.map.getNodeMouseMotionListener());
 		mainView.addMouseMotionListener(this.map.getNodeMouseMotionListener());
-		mainView.addKeyListener(this.map.getNodeKeyListener());
 		addDragListener(map.getNodeDragListener());
 		addDropListener(map.getNodeDropListener());
 
@@ -287,17 +285,10 @@ public class NodeView extends JComponent implements TreeModelListener {
 	}
 
 	public void requestFocus() {
-		boolean requestResult = mainView.requestFocusInWindow();
-		if (!requestResult) {
-			logger.finest("Using 'requestFocus' to request Focus for "
-					+ mainView);
-			mainView.requestFocus();
-		}
+		// delegate to mapview:
+		map.getController().obtainFocusForSelected();
 	}
 
-	public boolean focused() {
-		return mainView.hasFocus();
-	}
 
 	//
 	// get/set methods

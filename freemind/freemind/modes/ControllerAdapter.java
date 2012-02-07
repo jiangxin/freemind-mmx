@@ -1008,8 +1008,6 @@ public abstract class ControllerAdapter implements ModeController {
 			if (node != null) {
 				onFocusNode(node);
 			}
-			// TODO: fc, 21.5.07 Do we need this?
-			// getView().getRootPane().requestFocus();
 		}
 		changeSelection(node, !visible);
 	}

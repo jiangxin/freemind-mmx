@@ -96,7 +96,7 @@ public class AttributeTable extends JTable implements ColumnWidthChangeListener 
 							NodeView viewer = (NodeView) newNodeViewInFocus;
 							if (viewer != viewer.getMap().getSelected()) {
 								viewer.getMap().selectAsTheOnlyOneSelected(
-										viewer, false);
+										viewer);
 							}
 						}
 					}

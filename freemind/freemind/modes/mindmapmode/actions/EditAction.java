@@ -127,9 +127,6 @@ public class EditAction extends AbstractAction implements ActorXml {
 		map.validate();
 		map.invalidate();
 
-		if (!node.focused()) {
-			node.requestFocus();
-		}
 		stopEditing();
 		// EditNodeBase.closeEdit();
 		mMindMapController.setBlocked(true); // locally "modal" stated

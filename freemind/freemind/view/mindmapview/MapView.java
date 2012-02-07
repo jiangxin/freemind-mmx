@@ -358,6 +358,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		addMouseListener(controller.getMapMouseMotionListener());
 		addMouseMotionListener(controller.getMapMouseMotionListener());
 		addMouseWheelListener(controller.getMapMouseWheelListener());
+		addKeyListener(getNodeKeyListener());
 
 		// fc, 20.6.2004: to enable tab for insert.
 		setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS,
@@ -751,18 +752,11 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 	 * Select the node, resulting in only that one being selected.
 	 */
 	public void selectAsTheOnlyOneSelected(NodeView newSelected) {
-		selectAsTheOnlyOneSelected(newSelected, false);
-	}
-
-	public void selectAsTheOnlyOneSelected(NodeView newSelected,
-			boolean requestFocus) {
 		logger.finest("selectAsTheOnlyOneSelected");
 		LinkedList oldSelecteds = getSelecteds();
 		// select new node
 		this.selected.clear();
 		this.selected.add(newSelected);
-		if (requestFocus)
-			newSelected.requestFocus();
 
 		// getController().getMode().getDefaultModeController().onSelectHook(newSelected.getModel());
 		// set last focused as preferred (PN)

@@ -787,10 +787,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			}
 
 			public void windowGainedFocus(WindowEvent e) {
-				NodeView selectedView = ctrl.getSelectedView();
-				if (selectedView != null) {
-					selectedView.requestFocus();
-				}
+				frame.getController().obtainFocusForSelected();
 				frame.removeWindowFocusListener(this);
 			}
 		});

@@ -99,7 +99,7 @@ public class CommonNodeKeyListener implements KeyListener {
 	}
 
 	public void keyPressed(KeyEvent e) {
-		logger.fine("Key pressend " + e.getKeyChar() + " alias " + e.getKeyCode());
+		logger.finest("Key pressend " + e.getKeyChar() + " alias " + e.getKeyCode());
 		// add to check meta keydown by koh 2004.04.16
 		if (e.isAltDown() || e.isControlDown() || e.isMetaDown()) {
 			return;
@@ -117,7 +117,7 @@ public class CommonNodeKeyListener implements KeyListener {
 		case KeyEvent.VK_TAB:
 			// end change.
 			return; // processed by Adapters ActionListener
-			// explicitly what is not catched in e.isActionKey()
+			// explicitly what is not caught in e.isActionKey()
 
 		case KeyEvent.VK_UP:
 		case KeyEvent.VK_DOWN:

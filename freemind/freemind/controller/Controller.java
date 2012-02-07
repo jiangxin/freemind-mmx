@@ -813,8 +813,8 @@ public class Controller implements MapModuleChangeObserver {
 	public void obtainFocusForSelected() {
 		// logger.finest("obtainFocusForSelected");
 		if (getView() != null) { // is null if the last map was closed.
-			logger.fine("Requesting Focus for " + getView().getSelected());
-			getView().getSelected().requestFocus();
+			logger.fine("Requesting Focus for " + getView());
+			getView().requestFocusInWindow();
 		} else {
 			// fc, 6.1.2004: bug fix, that open and quit are not working if no
 			// map is present.

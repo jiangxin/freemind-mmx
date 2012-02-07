@@ -112,14 +112,10 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
 				.deregisterLinkTarget(selectedNode);		
 		MapView view = mMindMapController.getView();
 		NodeView nodeView = view.getNodeView(selectedNode);
-		boolean focusOwner = nodeView.focused();
 		if(view.getSelecteds().size()>1) {
 			view.deselect(nodeView);
 		} else {
 			view.selectAsTheOnlyOneSelected(view.getNodeView(parent));
-		}
-		if(focusOwner) {
-			mMindMapController.obtainFocusForSelected();
 		}
 		mMindMapController.removeNodeFromParent(selectedNode);
 		// post event
