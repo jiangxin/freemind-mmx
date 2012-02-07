@@ -1159,17 +1159,24 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void setCursorPosition(MapNodePositionHolder hook, int zoom) {
-		getMap().setCursorPosition(hook.getPosition());
+		Coordinate position = hook.getPosition();
+		getMap().setCursorPosition(position);
 		if (zoom > getMaxZoom()) {
 			zoom = getMaxZoom();
 		}
 		// move map:
 		Coordinate mapCenter = hook.getMapCenter();
 		logger.fine("Set display position to " + mapCenter + " and cursor to "
-				+ hook.getPosition() + " and zoom " + zoom
+				+ position + " and zoom " + zoom
 				+ " where max zoom is " + getMaxZoom());
 		map.setDisplayPositionByLatLon(mapCenter.getLat(), mapCenter.getLon(),
 				zoom);
+		// is the cursor now visible? if not, display it directly.
+		if(map.getMapPosition(position, true)==null) {
+			map.setDisplayPositionByLatLon(position.getLat(), position.getLon(),
+					zoom);
+			
+		}
 	}
 
 	/**
