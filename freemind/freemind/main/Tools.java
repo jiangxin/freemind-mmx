@@ -32,6 +32,7 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
+import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
@@ -39,6 +40,8 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -87,6 +90,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -1411,7 +1415,7 @@ public class Tools {
 		}
 		return underLinux;
 	}
-	
+
 	public static String removeMnemonic(String rawLabel) {
 		return rawLabel.replaceFirst("&([^ ])", "$1");
 	}
@@ -1705,6 +1709,49 @@ public class Tools {
 		return Toolkit.getDefaultToolkit().getSystemClipboard();
 	}
 
+	public static void addFocusPrintTimer() {
+		Timer timer = new Timer(1000, new ActionListener() {
 
-	
+			public void actionPerformed(ActionEvent pE) {
+				logger.info("Component: "
+						+ KeyboardFocusManager.getCurrentKeyboardFocusManager()
+								.getFocusOwner()
+						+ ", Window: "
+						+ KeyboardFocusManager.getCurrentKeyboardFocusManager()
+								.getFocusedWindow());
+			}
+		});
+		timer.start();
+
+	}
+
+	/**
+	 * copied from HomePane.java 15 mai 2006
+	 * 
+	 * Sweet Home 3D, Copyright (c) 2006 Emmanuel PUYBARET / eTeks
+	 * <info@eteks.com> 
+	 * 
+	 * - This listener manages accelerator keys that may require
+	 *   the use of shift key depending on keyboard layout (like + - or ?)
+	 */
+	public static void invokeActionsToKeyboardLayoutDependantCharacters(
+			KeyEvent pEvent, Action[] specialKeyActions, Object pObject) {
+		int modifiersMask = KeyEvent.ALT_MASK | KeyEvent.CTRL_MASK
+				| KeyEvent.META_MASK;
+		for (int i = 0; i < specialKeyActions.length; i++) {
+			Action specialKeyAction = specialKeyActions[i];
+			KeyStroke actionKeyStroke = (KeyStroke) specialKeyAction
+					.getValue(Action.ACCELERATOR_KEY);
+			if (pEvent.getKeyChar() == actionKeyStroke.getKeyChar()
+					&& (pEvent.getModifiers() & modifiersMask) == (actionKeyStroke
+							.getModifiers() & modifiersMask)
+					&& specialKeyAction.isEnabled()) {
+				specialKeyAction.actionPerformed(new ActionEvent(pObject,
+						ActionEvent.ACTION_PERFORMED, (String) specialKeyAction
+								.getValue(Action.ACTION_COMMAND_KEY)));
+				pEvent.consume();
+			}
+		}
+	}
+
 }

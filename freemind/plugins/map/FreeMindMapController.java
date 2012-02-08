@@ -30,6 +30,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -54,6 +55,7 @@ import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ActionMap;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JMenu;
@@ -110,7 +112,8 @@ import freemind.view.mindmapview.NodeView;
  *         contains the initial zeros, I guess).
  */
 public class FreeMindMapController extends JMapController implements
-		MouseListener, MouseMotionListener, MouseWheelListener, ActionListener {
+		MouseListener, MouseMotionListener, MouseWheelListener, ActionListener,
+		KeyListener {
 	private static final String NODE_MAP_HOME_PROPERTY = "node_map_home";
 
 	private static final String XML_VERSION_1_0_ENCODING_UTF_8 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -937,8 +940,8 @@ public class FreeMindMapController extends JMapController implements
 		Action placeAction = new PlaceNodeAction();
 		Action removePlaceAction = new RemovePlaceNodeAction();
 		Action showAction = new ShowNodeAction();
-		Action zoomInAction = new ZoomAction(1);
-		Action zoomOutAction = new ZoomAction(-1);
+		mZoomInAction = new ZoomAction(1);
+		mZoomOutAction = new ZoomAction(-1);
 		Action setDisplayToFitMapMarkers = new SetDisplayToFitMapMarkers();
 		Action showMapMarker = new ShowMapMarker();
 		Action tileGridVisible = new TileGridVisible();
@@ -959,7 +962,8 @@ public class FreeMindMapController extends JMapController implements
 				"main/actions/removeplace"),
 				"keystroke_plugins/map/MapDialog_RemovePlace");
 		menuHolder.addAction(exportAction, "main/actions/exportPng");
-		menuHolder.addAction(pMapHook.getCloseAction(), "main/actions/close");
+		addAccelerator(menuHolder.addAction(pMapHook.getCloseAction(),
+				"main/actions/close"), "keystroke_plugins/map/MapDialog_Close");
 		JMenu viewItem = new JMenu(getText("MapControllerPopupDialog.Views"));
 		menuHolder.addMenu(viewItem, "main/view/.");
 		menuHolder.addAction(showAction, "main/view/showNode");
@@ -979,10 +983,10 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addAction(hideFoldedNodes, "main/view/hideFoldedNodes");
 		menuHolder.addSeparator("main/view/");
 		addAccelerator(
-				menuHolder.addAction(zoomInAction, "main/view/ZoomInAction"),
+				menuHolder.addAction(mZoomInAction, "main/view/ZoomInAction"),
 				"keystroke_plugins/map/MapDialog_zoomIn");
 		addAccelerator(
-				menuHolder.addAction(zoomOutAction, "main/view/ZoomOutAction"),
+				menuHolder.addAction(mZoomOutAction, "main/view/ZoomOutAction"),
 				"keystroke_plugins/map/MapDialog_zoomOut");
 
 		JMenu navigationItem = new JMenu(
@@ -1045,12 +1049,15 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addAction(new AddMapPictureToNode(),
 				"contextPopup/addPictureToNode");
 		menuHolder.updateMenus(getContextPopupMenu(), "contextPopup/");
+
+		mMapDialog.addKeyListener(this);
 	}
 
-	public void addAccelerator(JMenuItem searchItem, String key) {
+	public void addAccelerator(JMenuItem menuItem, String key) {
 		String keyProp = mMindMapController.getFrame().getProperty(key);
 		KeyStroke keyStroke = KeyStroke.getKeyStroke(keyProp);
-		searchItem.setAccelerator(keyStroke);
+		menuItem.setAccelerator(keyStroke);
+		menuItem.getAction().putValue(Action.ACCELERATOR_KEY, keyStroke);
 	}
 
 	/**
@@ -1167,15 +1174,15 @@ public class FreeMindMapController extends JMapController implements
 		// move map:
 		Coordinate mapCenter = hook.getMapCenter();
 		logger.fine("Set display position to " + mapCenter + " and cursor to "
-				+ position + " and zoom " + zoom
-				+ " where max zoom is " + getMaxZoom());
+				+ position + " and zoom " + zoom + " where max zoom is "
+				+ getMaxZoom());
 		map.setDisplayPositionByLatLon(mapCenter.getLat(), mapCenter.getLon(),
 				zoom);
 		// is the cursor now visible? if not, display it directly.
-		if(map.getMapPosition(position, true)==null) {
-			map.setDisplayPositionByLatLon(position.getLat(), position.getLon(),
-					zoom);
-			
+		if (map.getMapPosition(position, true) == null) {
+			map.setDisplayPositionByLatLon(position.getLat(),
+					position.getLon(), zoom);
+
 		}
 	}
 
@@ -1492,6 +1499,10 @@ public class FreeMindMapController extends JMapController implements
 
 	private MouseEvent mTimerMouseEvent;
 
+	private Action mZoomInAction;
+
+	private Action mZoomOutAction;
+
 	public void mouseReleased(MouseEvent e) {
 		if (!mClickEnabled) {
 			return;
@@ -1557,7 +1568,7 @@ public class FreeMindMapController extends JMapController implements
 							last = holder.getNode();
 						}
 					}
-					if(last != null) {
+					if (last != null) {
 						// ie. at least one found:
 						mMindMapController.select(last, mapNodePositionHolders);
 					}
@@ -1809,6 +1820,19 @@ public class FreeMindMapController extends JMapController implements
 				+ mapCenter.getLat() + "&lon=" + mapCenter.getLon() + "&zoom="
 				+ zoom + "&layers=" + layer;
 		return link;
+	}
+
+	public void keyTyped(KeyEvent pEvent) {
+		Action[] specialKeyActions = { mZoomInAction, mZoomOutAction };
+		Tools.invokeActionsToKeyboardLayoutDependantCharacters(pEvent,
+				specialKeyActions, mMapDialog);
+
+	}
+
+	public void keyPressed(KeyEvent pE) {
+	}
+
+	public void keyReleased(KeyEvent pE) {
 	}
 
 }

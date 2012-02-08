@@ -81,14 +81,6 @@ public class CommonNodeKeyListener implements KeyListener {
 		keyStrokeDown = KeyStroke.getKeyStroke(down);
 		keyStrokeLeft = KeyStroke.getKeyStroke(left);
 		keyStrokeRight = KeyStroke.getKeyStroke(right);
-//		Timer timer = new Timer(1000, new ActionListener() {
-//			
-//			public void actionPerformed(ActionEvent pE) {
-//				logger.info("Comp: " + KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner() 
-//						+ ", Win: " +  KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusedWindow());
-//			}
-//		});
-//		timer.start();
 	}
 
 	//

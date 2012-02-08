@@ -227,7 +227,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		mSearchTerm = new JTextField();
 		mSearchTerm.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent pEvent) {
-				if (pEvent.getKeyCode() == KeyEvent.VK_DOWN) {
+				if (pEvent.getKeyCode() == KeyEvent.VK_DOWN && pEvent.getModifiers()==0) {
 					logger.info("Set Focus to search list.");
 					mResultList.requestFocusInWindow();
 					mResultList.setSelectedIndex(0);
@@ -235,7 +235,7 @@ public class MapDialog extends MindMapHookAdapter implements
 				}
 			}
 		});
-
+		mSearchTerm.addKeyListener(getFreeMindMapController());
 		mSearchFieldPanel = new JPanel();
 		mSearchFieldPanel.setLayout(new BorderLayout(10,0));
 		JButton clearButton = new JButton(new ImageIcon(Resources.getInstance()
@@ -252,14 +252,14 @@ public class MapDialog extends MindMapHookAdapter implements
 		mResultList.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent pEvent) {
 				int index = mResultList.getSelectedIndex();
-				if (index == 0 && pEvent.getKeyCode() == KeyEvent.VK_UP) {
+				if (index == 0 && pEvent.getKeyCode() == KeyEvent.VK_UP && pEvent.getModifiers()==0) {
 					logger.info("Set Focus to search item.");
 					mResultList.clearSelection();
 					mSearchTerm.requestFocusInWindow();
 					pEvent.consume();
 					return;
 				}
-				if (pEvent.getKeyCode() == KeyEvent.VK_ENTER) {
+				if (pEvent.getKeyCode() == KeyEvent.VK_ENTER && pEvent.getModifiers()==0) {
 					logger.info("Set result in map.");
 					displaySearchItem(dataModel, index);
 					pEvent.consume();
@@ -269,6 +269,7 @@ public class MapDialog extends MindMapHookAdapter implements
 
 			}
 		});
+		mResultList.addKeyListener(getFreeMindMapController());
 		clearButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent pE) {
@@ -390,10 +391,11 @@ public class MapDialog extends MindMapHookAdapter implements
 	public void toggleSearchBar() {
 		if (mSearchBarVisible) {
 			mMapDialog.remove(mSearchPanel);
+			mMapDialog.requestFocusInWindow();
 		} else {
 			mMapDialog.add(mSearchPanel, BorderLayout.NORTH);
 			mSearchTerm.selectAll();
-			mSearchTerm.requestFocus();
+			mSearchTerm.requestFocusInWindow();
 		}
 		mMapDialog.validate();
 		mSearchBarVisible = !mSearchBarVisible;
