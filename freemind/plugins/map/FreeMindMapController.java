@@ -533,6 +533,9 @@ public class FreeMindMapController extends JMapController implements
 
 		public void actionPerformed(ActionEvent pE) {
 			PositionHolder posHolder = getPosHolder();
+			if(posHolder == null) {
+				return;
+			}
 			getMap().setCursorPosition(
 					new Coordinate(posHolder.lat, posHolder.lon));
 			map.setDisplayPositionByLatLon(posHolder.lat, posHolder.lon,
