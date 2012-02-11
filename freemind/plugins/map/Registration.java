@@ -237,7 +237,11 @@ public class Registration implements HookRegistration, ActorXml,
 			logger.info("Trying to use file cache tile loader with dir "
 					+ directory);
 			try {
-				loader = new OsmFileCacheTileLoader(mMap, new File(directory));
+				OsmFileCacheTileLoader osmFileCacheTileLoader = new OsmFileCacheTileLoader(mMap, new File(directory));
+				loader = osmFileCacheTileLoader;
+				long maxFileAge = Resources.getInstance().getLongProperty(MapDialog.TILE_CACHE_MAX_AGE, OsmFileCacheTileLoader.FILE_AGE_ONE_WEEK);
+				logger.info("Setting cache max age to " + maxFileAge/OsmFileCacheTileLoader.FILE_AGE_ONE_DAY + " days.");
+				osmFileCacheTileLoader.setCacheMaxFileAge(maxFileAge);
 			} catch (Exception e1) {
 				freemind.main.Resources.getInstance().logException(e1);
 			}

@@ -75,6 +75,8 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	static final String FILE_TILE_CACHE_DIRECTORY = "file_tile_cache_directory";
 
+	public static final String TILE_CACHE_MAX_AGE = "tile_cache_max_age";
+
 	private JCursorMapViewer map = null;
 
 	private JLabel zoomLabel = null;
