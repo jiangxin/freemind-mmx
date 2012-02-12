@@ -250,6 +250,7 @@ public class Registration implements HookRegistration, ActorXml,
 			logger.info("Using osm tile loader");
 			loader = new OsmTileLoader(mMap);
 		}
+		OsmTileLoader.USER_AGENT = "FreeMind";
 		return loader;
 	}
 
