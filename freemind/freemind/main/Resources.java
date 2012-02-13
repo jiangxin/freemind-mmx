@@ -82,6 +82,16 @@ public class Resources implements TextTranslator {
 	public int getIntProperty(String key, int defaultValue) {
 		return main.getIntProperty(key, defaultValue);
 	}
+	
+	public long getLongProperty(String key, long defaultValue) {
+		try {
+			return Long.parseLong(getProperty(key));
+		} catch (NumberFormatException nfe) {
+			return defaultValue;
+		}
+	}
+
+
 
 	/**
 	 * @param key
