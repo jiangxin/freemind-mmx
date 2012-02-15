@@ -1736,6 +1736,7 @@ public class Tools {
 	 */
 	public static void invokeActionsToKeyboardLayoutDependantCharacters(
 			KeyEvent pEvent, Action[] specialKeyActions, Object pObject) {
+		// on purpose without shift.
 		int modifiersMask = KeyEvent.ALT_MASK | KeyEvent.CTRL_MASK
 				| KeyEvent.META_MASK;
 		for (int i = 0; i < specialKeyActions.length; i++) {

@@ -51,6 +51,9 @@ import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.actions.generated.instance.PlaceNodeXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
+import freemind.main.FreeMind;
+import freemind.main.FreeMindCommon;
+import freemind.main.FreeMindMain.VersionInformation;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
@@ -237,10 +240,14 @@ public class Registration implements HookRegistration, ActorXml,
 			logger.info("Trying to use file cache tile loader with dir "
 					+ directory);
 			try {
-				OsmFileCacheTileLoader osmFileCacheTileLoader = new OsmFileCacheTileLoader(mMap, new File(directory));
+				OsmFileCacheTileLoader osmFileCacheTileLoader = new OsmFileCacheTileLoader(
+						mMap, new File(directory));
 				loader = osmFileCacheTileLoader;
-				long maxFileAge = Resources.getInstance().getLongProperty(MapDialog.TILE_CACHE_MAX_AGE, OsmFileCacheTileLoader.FILE_AGE_ONE_WEEK);
-				logger.info("Setting cache max age to " + maxFileAge/OsmFileCacheTileLoader.FILE_AGE_ONE_DAY + " days.");
+				long maxFileAge = Resources.getInstance().getLongProperty(
+						MapDialog.TILE_CACHE_MAX_AGE,
+						OsmFileCacheTileLoader.FILE_AGE_ONE_WEEK);
+				logger.info("Setting cache max age to " + maxFileAge
+						/ OsmFileCacheTileLoader.FILE_AGE_ONE_DAY + " days.");
 				osmFileCacheTileLoader.setCacheMaxFileAge(maxFileAge);
 			} catch (Exception e1) {
 				freemind.main.Resources.getInstance().logException(e1);
@@ -250,7 +257,9 @@ public class Registration implements HookRegistration, ActorXml,
 			logger.info("Using osm tile loader");
 			loader = new OsmTileLoader(mMap);
 		}
-		OsmTileLoader.USER_AGENT = "FreeMind";
+		VersionInformation freemindVersion = controller.getFrame()
+				.getFreemindVersion();
+		OsmTileLoader.USER_AGENT = "FreeMind " + freemindVersion;
 		return loader;
 	}
 
@@ -399,7 +408,8 @@ public class Registration implements HookRegistration, ActorXml,
 	}
 
 	public interface NodeVisibilityListener {
-		void nodeVisibilityChanged(MapNodePositionHolder pMapNodePositionHolder, boolean pVisible);
+		void nodeVisibilityChanged(
+				MapNodePositionHolder pMapNodePositionHolder, boolean pVisible);
 
 	}
 
@@ -418,9 +428,10 @@ public class Registration implements HookRegistration, ActorXml,
 	/**
 	 * @param pVisible
 	 *            is true, when a node is visible now.
-	 * @param pMapNodePositionHolder 
+	 * @param pMapNodePositionHolder
 	 */
-	public void fireNodeVisibilityChanged(boolean pVisible, MapNodePositionHolder pMapNodePositionHolder) {
+	public void fireNodeVisibilityChanged(boolean pVisible,
+			MapNodePositionHolder pMapNodePositionHolder) {
 		for (Iterator it = mNodeVisibilityListeners.iterator(); it.hasNext();) {
 			NodeVisibilityListener listener = (NodeVisibilityListener) it
 					.next();
