@@ -137,6 +137,8 @@ public class FreeMindMapController extends JMapController implements
 
 	private static final String OSM_NOMINATIM_READ_TIMEOUT_IN_MS = "osm_nominatim_read_timeout_in_ms";
 
+	private static final int MOVE_PIXEL_AMOUNT = 50;
+
 	protected static java.util.logging.Logger logger = freemind.main.Resources
 			.getInstance().getLogger("plugins.map.FreeMindMapController");
 
@@ -1890,7 +1892,33 @@ public class FreeMindMapController extends JMapController implements
 	public void keyPressed(KeyEvent pE) {
 	}
 
-	public void keyReleased(KeyEvent pE) {
+	public void keyReleased(KeyEvent pEvent) {
+		switch(pEvent.getKeyCode()) {
+		case KeyEvent.VK_LEFT:
+			map.moveMap(-MOVE_PIXEL_AMOUNT, 0);
+			pEvent.consume();
+			break;
+		case KeyEvent.VK_RIGHT:
+			map.moveMap(MOVE_PIXEL_AMOUNT, 0);
+			pEvent.consume();
+			break;
+		case KeyEvent.VK_UP:
+			map.moveMap(0, -MOVE_PIXEL_AMOUNT);
+			pEvent.consume();
+			break;
+		case KeyEvent.VK_DOWN:
+			map.moveMap(0, MOVE_PIXEL_AMOUNT);
+			pEvent.consume();
+			break;
+		case KeyEvent.VK_PAGE_UP:
+			map.moveMap(0, -5*MOVE_PIXEL_AMOUNT);
+			pEvent.consume();
+			break;
+		case KeyEvent.VK_PAGE_DOWN:
+			map.moveMap(0, 5*MOVE_PIXEL_AMOUNT);
+			pEvent.consume();
+			break;
+		}
 	}
 
 }
