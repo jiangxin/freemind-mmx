@@ -15,6 +15,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -36,10 +37,10 @@ import javax.swing.WindowConstants;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
-import org.openstreetmap.gui.jmapviewer.MemoryTileCache;
 import org.openstreetmap.gui.jmapviewer.OsmTileLoader;
 import org.openstreetmap.gui.jmapviewer.events.JMVCommandEvent;
 import org.openstreetmap.gui.jmapviewer.interfaces.JMapViewerEventListener;
+import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource.Mapnik;
 
 import plugins.map.MapNodePositionHolder.MapNodePositionListener;
@@ -47,7 +48,6 @@ import plugins.map.Registration.NodeVisibilityListener;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.actions.generated.instance.MapWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.Place;
-import freemind.controller.actions.generated.instance.Searchresults;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
@@ -122,6 +122,7 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	public final class SearchResultListModel extends AbstractListModel {
 		private final List mPlaceList;
+		private HashMap mMapSearchMarkerLocationHash = new HashMap();
 
 		// private final List mListeners;
 
@@ -157,9 +158,14 @@ public class MapDialog extends MindMapHookAdapter implements
 						"try to delete in place list with an index out of range: "
 								+ index);
 			}
+			Place place = (Place) mPlaceList.get(index);
 			logger.fine("Place "
-					+ ((Place) mPlaceList.get(index)).getDisplayName()
+					+ place.getDisplayName()
 					+ " should be removed at " + index);
+			MapMarker mapMarker = (MapMarker) mMapSearchMarkerLocationHash.remove(place);
+			if (mapMarker != null) {
+				MapDialog.this.getMap().removeMapMarker(mapMarker);
+			}
 			mPlaceList.remove(index);
 			fireIntervalRemoved(mPlaceList, index, index);
 		}
@@ -167,6 +173,10 @@ public class MapDialog extends MindMapHookAdapter implements
 		public void addPlace(Place newPlace) {
 			mPlaceList.add(newPlace);
 			int newIndex = mPlaceList.size() - 1;
+			MapSearchMarkerLocation location = new MapSearchMarkerLocation(
+					MapDialog.this, newPlace);
+			mMapSearchMarkerLocationHash.put(newPlace, location);
+			getMap().addMapMarker(location);
 			fireIntervalAdded(mPlaceList, newIndex, newIndex);
 		}
 
@@ -229,7 +239,8 @@ public class MapDialog extends MindMapHookAdapter implements
 		mSearchTerm = new JTextField();
 		mSearchTerm.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent pEvent) {
-				if (pEvent.getKeyCode() == KeyEvent.VK_DOWN && pEvent.getModifiers()==0) {
+				if (pEvent.getKeyCode() == KeyEvent.VK_DOWN
+						&& pEvent.getModifiers() == 0) {
 					logger.info("Set Focus to search list.");
 					mResultList.requestFocusInWindow();
 					mResultList.setSelectedIndex(0);
@@ -239,7 +250,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		});
 		mSearchTerm.addKeyListener(getFreeMindMapController());
 		mSearchFieldPanel = new JPanel();
-		mSearchFieldPanel.setLayout(new BorderLayout(10,0));
+		mSearchFieldPanel.setLayout(new BorderLayout(10, 0));
 		JButton clearButton = new JButton(new ImageIcon(Resources.getInstance()
 				.getResource("images/clear_box.png")));
 		clearButton.setFocusable(false);
@@ -254,14 +265,16 @@ public class MapDialog extends MindMapHookAdapter implements
 		mResultList.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent pEvent) {
 				int index = mResultList.getSelectedIndex();
-				if (index == 0 && pEvent.getKeyCode() == KeyEvent.VK_UP && pEvent.getModifiers()==0) {
+				if (index == 0 && pEvent.getKeyCode() == KeyEvent.VK_UP
+						&& pEvent.getModifiers() == 0) {
 					logger.info("Set Focus to search item.");
 					mResultList.clearSelection();
 					mSearchTerm.requestFocusInWindow();
 					pEvent.consume();
 					return;
 				}
-				if (pEvent.getKeyCode() == KeyEvent.VK_ENTER && pEvent.getModifiers()==0) {
+				if (pEvent.getKeyCode() == KeyEvent.VK_ENTER
+						&& pEvent.getModifiers() == 0) {
 					logger.info("Set result in map.");
 					displaySearchItem(dataModel, index);
 					pEvent.consume();
@@ -293,36 +306,8 @@ public class MapDialog extends MindMapHookAdapter implements
 		mSearchTerm.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent pE) {
-				try {
-					dataModel.clear();
-					// doesn't work due to event thread...
-					mResultList.setBackground(Color.GRAY);
-					Searchresults results = getFreeMindMapController()
-							.getSearchResults(mSearchTerm.getText());
-					if (results == null) {
-						mResultList.setBackground(Color.red);
-					} else {
-
-						for (Iterator it = results.getListPlaceList()
-								.iterator(); it.hasNext();) {
-							Place place = (Place) it.next();
-							logger.fine("Found place " + place.getDisplayName());
-							// error handling, if the query wasn't successful.
-							if (Tools.safeEquals("ERROR", place.getOsmType())) {
-								mResultList.setBackground(Color.red);
-							} else {
-								mResultList.setBackground(Color.WHITE);
-								mResultList
-										.setBackground(mListOriginalBackgroundColor);
-							}
-							dataModel.addPlace(place);
-						}
-
-					}
-				} catch (Exception e) {
-					freemind.main.Resources.getInstance().logException(e);
-				}
-
+				getFreeMindMapController().search(dataModel, mResultList,
+						mSearchTerm.getText(), mListOriginalBackgroundColor);
 			}
 		});
 		mSearchPanel.setLayout(new BorderLayout());
@@ -333,7 +318,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		mMapDialog.add(map, BorderLayout.CENTER);
 		mStatusLabel = new JLabel(" ");
 		mMapDialog.add(mStatusLabel, BorderLayout.SOUTH);
-		
+
 		map.setCursorPosition(new Coordinate(49.8, 8.8));
 		map.setUseCursor(true);
 		// restore preferences:
@@ -605,8 +590,9 @@ public class MapDialog extends MindMapHookAdapter implements
 	public void onUpdateNodeHook(MindMapNode pNode) {
 		// update MapMarkerLocation if present:
 		MapNodePositionHolder hook = MapNodePositionHolder.getHook(pNode);
-		if(hook != null && mMarkerMap.containsKey(hook)) {
-			MapMarkerLocation location = (MapMarkerLocation) mMarkerMap.get(hook);
+		if (hook != null && mMarkerMap.containsKey(hook)) {
+			MapMarkerLocation location = (MapMarkerLocation) mMarkerMap
+					.get(hook);
 			location.update();
 			location.repaint();
 		}
@@ -707,8 +693,8 @@ public class MapDialog extends MindMapHookAdapter implements
 	 * plugins.map.Registration.NodeVisibilityListener#nodeVisibilityChanged
 	 * (boolean)
 	 */
-	public void nodeVisibilityChanged(MapNodePositionHolder pMapNodePositionHolder,
-			boolean pVisible) {
+	public void nodeVisibilityChanged(
+			MapNodePositionHolder pMapNodePositionHolder, boolean pVisible) {
 		changeVisibilityOfNode(pMapNodePositionHolder, pVisible);
 	}
 

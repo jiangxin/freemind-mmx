@@ -22,6 +22,7 @@ package plugins.map;
 
 //License: GPL. Copyright 2008 by Jan Peter Stotz
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Point;
@@ -40,6 +41,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -55,9 +57,9 @@ import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.ActionMap;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -74,6 +76,7 @@ import org.openstreetmap.gui.jmapviewer.OsmMercator;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
+import plugins.map.MapDialog.SearchResultListModel;
 import freemind.common.XmlBindingTools;
 import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.MenuItemSelectedListener;
@@ -533,7 +536,7 @@ public class FreeMindMapController extends JMapController implements
 
 		public void actionPerformed(ActionEvent pE) {
 			PositionHolder posHolder = getPosHolder();
-			if(posHolder == null) {
+			if (posHolder == null) {
 				return;
 			}
 			getMap().setCursorPosition(
@@ -1400,10 +1403,7 @@ public class FreeMindMapController extends JMapController implements
 				correctPointByMapCenter(mDragStartingPoint);
 				isMapNodeMoving = true;
 				mMapNodeMovingSource = posHolder;
-				Component glassPane = getGlassPane();
-				glassPane.setCursor(Cursor
-						.getPredefinedCursor(Cursor.MOVE_CURSOR));
-				glassPane.setVisible(true);
+				setCursor(Cursor.MOVE_CURSOR, true);
 				return;
 			}
 			lastDragPoint = null;
@@ -1545,10 +1545,7 @@ public class FreeMindMapController extends JMapController implements
 					}
 				}
 				mMapNodeMovingSource = null;
-				Component glassPane = getGlassPane();
-				glassPane.setCursor(Cursor
-						.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-				glassPane.setVisible(false);
+				setCursor(Cursor.DEFAULT_CURSOR, false);
 			}
 			if (mIsRectangularSelect) {
 				// gather all locations and select them:
@@ -1584,6 +1581,13 @@ public class FreeMindMapController extends JMapController implements
 			lastDragPoint = null;
 			isMoving = false;
 		}
+	}
+
+	protected void setCursor(int defaultCursor, boolean pVisible) {
+		Component glassPane = getGlassPane();
+		glassPane.setCursor(Cursor
+				.getPredefinedCursor(defaultCursor));
+		glassPane.setVisible(pVisible);
 	}
 
 	public Component getGlassPane() {
@@ -1705,6 +1709,40 @@ public class FreeMindMapController extends JMapController implements
 
 	}
 
+	public void search(SearchResultListModel dataModel, JList mResultList,
+			String mSearchText, Color mListOriginalBackgroundColor) {
+		// Display hour glass
+		setCursor(Cursor.WAIT_CURSOR, true);
+		try {
+			dataModel.clear();
+			// doesn't work due to event thread...
+			mResultList.setBackground(Color.GRAY);
+			Searchresults results = getSearchResults(mSearchText);
+			if (results == null) {
+				mResultList.setBackground(Color.red);
+			} else {
+				for (Iterator it = results.getListPlaceList().iterator(); it
+						.hasNext();) {
+					Place place = (Place) it.next();
+					logger.fine("Found place " + place.getDisplayName());
+					// error handling, if the query wasn't successful.
+					if (Tools.safeEquals("ERROR", place.getOsmType())) {
+						mResultList.setBackground(Color.red);
+					} else {
+						mResultList.setBackground(Color.WHITE);
+						mResultList.setBackground(mListOriginalBackgroundColor);
+					}
+					dataModel.addPlace(place);
+				}
+
+			}
+		} catch (Exception e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
+		setCursor(Cursor.DEFAULT_CURSOR, false);
+
+	}
+
 	/**
 	 * @param pText
 	 * @return
@@ -1720,7 +1758,8 @@ public class FreeMindMapController extends JMapController implements
 				b.append("&format=xml&limit=30&accept-language=").append(Locale.getDefault().getLanguage()); //$NON-NLS-1$
 				logger.fine("Searching for " + b.toString());
 				URL url = new URL(b.toString());
-				result = Tools.getFile(new InputStreamReader(url.openStream()));
+				InputStream urlStream = url.openStream();
+				result = Tools.getFile(new InputStreamReader(urlStream));
 				result = new String(result.getBytes(), "UTF-8");
 				logger.fine(result + " was received for search " + pText);
 			} else {
