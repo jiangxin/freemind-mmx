@@ -1436,15 +1436,23 @@ public class Tools {
 
 	public static URL fileToUrl(File pFile) throws MalformedURLException {
 		// fix for java1.4 and java5 only.
-		if (JAVA_VERSION.compareTo("1.6.0") < 0) {
+		if (isBelowJava6()) {
 			return pFile.toURL();
 		}
 		return pFile.toURI().toURL();
 	}
 
+	public static boolean isBelowJava6() {
+		return JAVA_VERSION.compareTo("1.6.0") < 0;
+	}
+
+	public static boolean isAboveJava4() {
+		return JAVA_VERSION.compareTo("1.4.0") > 0;
+	}
+	
 	public static File urlToFile(URL pUrl) throws URISyntaxException {
 		// fix for java1.4 and java5 only.
-		if (JAVA_VERSION.compareTo("1.6.0") < 0) {
+		if (isBelowJava6()) {
 			return new File(urlGetFile(pUrl));
 		}
 		return new File(new URI(pUrl.toString()));

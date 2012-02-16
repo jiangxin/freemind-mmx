@@ -23,7 +23,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 
-import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 
 import freemind.controller.actions.generated.instance.Place;
@@ -59,7 +58,7 @@ public class MapSearchMarkerLocation implements MapMarker {
 	}
 
 	public void paint(Graphics g, Point position) {
-		g.setColor(Color.YELLOW);
+		g.setColor(Color.RED);
 		g.fillOval(position.x - CIRCLE_RADIUS, position.y - CIRCLE_RADIUS, CIRCLE_DIAMETER, CIRCLE_DIAMETER);
 		g.setColor(Color.BLACK);
 

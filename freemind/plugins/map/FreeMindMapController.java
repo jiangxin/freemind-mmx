@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -131,6 +132,10 @@ public class FreeMindMapController extends JMapController implements
 	private static final int SCROLL_MARGIN = 5;
 
 	private static final int SCROLL_PIXEL_AMOUNT = 25;
+
+	private static final String OSM_NOMINATIM_CONNECT_TIMEOUT_IN_MS = "osm_nominatim_connect_timeout_in_ms";
+
+	private static final String OSM_NOMINATIM_READ_TIMEOUT_IN_MS = "osm_nominatim_read_timeout_in_ms";
 
 	protected static java.util.logging.Logger logger = freemind.main.Resources
 			.getInstance().getLogger("plugins.map.FreeMindMapController");
@@ -1585,8 +1590,7 @@ public class FreeMindMapController extends JMapController implements
 
 	protected void setCursor(int defaultCursor, boolean pVisible) {
 		Component glassPane = getGlassPane();
-		glassPane.setCursor(Cursor
-				.getPredefinedCursor(defaultCursor));
+		glassPane.setCursor(Cursor.getPredefinedCursor(defaultCursor));
 		glassPane.setVisible(pVisible);
 	}
 
@@ -1758,7 +1762,19 @@ public class FreeMindMapController extends JMapController implements
 				b.append("&format=xml&limit=30&accept-language=").append(Locale.getDefault().getLanguage()); //$NON-NLS-1$
 				logger.fine("Searching for " + b.toString());
 				URL url = new URL(b.toString());
-				InputStream urlStream = url.openStream();
+				URLConnection urlConnection = url.openConnection();
+				if (Tools.isAboveJava4()) {
+					urlConnection
+							.setConnectTimeout(Resources
+									.getInstance()
+									.getIntProperty(
+											OSM_NOMINATIM_CONNECT_TIMEOUT_IN_MS,
+											10000));
+					urlConnection.setReadTimeout(Resources.getInstance()
+							.getIntProperty(OSM_NOMINATIM_READ_TIMEOUT_IN_MS,
+									30000));
+				}
+				InputStream urlStream = urlConnection.getInputStream();
 				result = Tools.getFile(new InputStreamReader(urlStream));
 				result = new String(result.getBytes(), "UTF-8");
 				logger.fine(result + " was received for search " + pText);

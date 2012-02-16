@@ -109,6 +109,8 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	private JLabel mStatusLabel;
 
+	private SearchResultListModel mDataModel;
+
 	private final class CloseAction extends AbstractAction {
 
 		public CloseAction() {
@@ -257,8 +259,8 @@ public class MapDialog extends MindMapHookAdapter implements
 		mSearchFieldPanel.add(label, BorderLayout.WEST);
 		mSearchFieldPanel.add(mSearchTerm, BorderLayout.CENTER);
 		mSearchFieldPanel.add(clearButton, BorderLayout.EAST);
-		final SearchResultListModel dataModel = new SearchResultListModel();
-		mResultList = new JList(dataModel);
+		mDataModel = new SearchResultListModel();
+		mResultList = new JList(mDataModel);
 		mListOriginalBackgroundColor = mResultList.getBackground();
 		mResultList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		// mResultList.setFocusable(false);
@@ -276,7 +278,7 @@ public class MapDialog extends MindMapHookAdapter implements
 				if (pEvent.getKeyCode() == KeyEvent.VK_ENTER
 						&& pEvent.getModifiers() == 0) {
 					logger.info("Set result in map.");
-					displaySearchItem(dataModel, index);
+					displaySearchItem(mDataModel, index);
 					pEvent.consume();
 					return;
 
@@ -288,7 +290,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		clearButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent pE) {
-				dataModel.clear();
+				mDataModel.clear();
 				mSearchTerm.setText("");
 				mResultList.setBackground(mListOriginalBackgroundColor);
 			}
@@ -297,7 +299,7 @@ public class MapDialog extends MindMapHookAdapter implements
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
 					int index = mResultList.locationToIndex(e.getPoint());
-					displaySearchItem(dataModel, index);
+					displaySearchItem(mDataModel, index);
 				}
 			}
 		};
@@ -306,7 +308,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		mSearchTerm.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent pE) {
-				getFreeMindMapController().search(dataModel, mResultList,
+				getFreeMindMapController().search(mDataModel, mResultList,
 						mSearchTerm.getText(), mListOriginalBackgroundColor);
 			}
 		});
@@ -377,6 +379,7 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	public void toggleSearchBar() {
 		if (mSearchBarVisible) {
+			mDataModel.clear();
 			mMapDialog.remove(mSearchPanel);
 			mMapDialog.requestFocusInWindow();
 		} else {
