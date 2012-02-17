@@ -33,14 +33,19 @@ $title =~ s/.poi$//;
 my $dbargs = {AutoCommit => 0, PrintError => 1};
 my $dbh = DBI->connect("dbi:SQLite:dbname=${file_name}", "", "", $dbargs);
 
+my $id = 1;
+
 # Zeilen ausgeben
 my $oldtype;
 my $oldsubtype;
-my ($id, $x, $y, $name, $type, $subtype, $site);
+my ($idd, $x, $y, $name, $type, $subtype, $site);
 my $res = $dbh->selectall_arrayref("SELECT id, x, y, name, type, subtype, site FROM  poi order by type, subtype, name;");
-print "<map version=\"1.0.0\"><node TEXT=\"${title}\">\n";
+
+print "<map version=\"1.0.0\"><node TEXT=\"${title}\" ID=\"${id}\">\n"; $id++;
+print "<node TEXT=\"Map data (c) OpenStreetMap contributors, CC-BY-SA\" LINK=\"http://creativecommons.org/licenses/by-sa/2.0/\" POSITION=\"left\" FOLDED=\"false\" ID=\"${id}\"/>\n"; $id++;
+
 foreach my $row (@$res) {
-  ($id, $x, $y, $name, $type, $subtype, $site) = @$row;
+  ($idd, $x, $y, $name, $type, $subtype, $site) = @$row;
   next if "$name" eq "";
   if ($subtype eq "") {
       $subtype = "no_category";
@@ -57,15 +62,15 @@ foreach my $row (@$res) {
       }
       $oldtype = $type;
       $type = Encode($type);
-      print "<node TEXT=\"$type\" FOLDED=\"true\">\n";
+      print "<node TEXT=\"$type\" POSITION=\"right\" FOLDED=\"true\" ID=\"${id}\">\n"; $id++;
   }
   if ($subtype ne $oldsubtype) {
       $oldsubtype = $subtype;
       $subtype = Encode($subtype);
-      print "<node TEXT=\"$subtype\" FOLDED=\"true\">\n";
+      print "<node TEXT=\"$subtype\" FOLDED=\"true\" ID=\"${id}\">\n"; $id++;
   }
   my $encodedText = Encode($name);
-  print "<node TEXT=\"$encodedText\" ID=\"$id\"";
+  print "<node TEXT=\"$encodedText\" ID=\"$id\""; $id++;
   if($site ne "") {
       $site = Encode($site);
       print " LINK=\"$site\"";
