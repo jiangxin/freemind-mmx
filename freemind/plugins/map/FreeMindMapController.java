@@ -139,6 +139,8 @@ public class FreeMindMapController extends JMapController implements
 
 	private static final int MOVE_PIXEL_AMOUNT = 50;
 
+	private static final float PAGE_DOWN_FACTOR = 0.85f;
+
 	protected static java.util.logging.Logger logger = freemind.main.Resources
 			.getInstance().getLogger("plugins.map.FreeMindMapController");
 
@@ -1893,29 +1895,29 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void keyReleased(KeyEvent pEvent) {
+		if(mMapHook.isSearchBarVisible())
+			return;
+		int dx = MOVE_PIXEL_AMOUNT;
+		int dy = MOVE_PIXEL_AMOUNT;
+		if(pEvent.isShiftDown()) {
+			dx = (int) (map.getWidth() * PAGE_DOWN_FACTOR);
+			dy = (int) (map.getHeight() * PAGE_DOWN_FACTOR);
+		}
 		switch(pEvent.getKeyCode()) {
 		case KeyEvent.VK_LEFT:
-			map.moveMap(-MOVE_PIXEL_AMOUNT, 0);
+			map.moveMap(-dx, 0);
 			pEvent.consume();
 			break;
 		case KeyEvent.VK_RIGHT:
-			map.moveMap(MOVE_PIXEL_AMOUNT, 0);
+			map.moveMap(dx, 0);
 			pEvent.consume();
 			break;
 		case KeyEvent.VK_UP:
-			map.moveMap(0, -MOVE_PIXEL_AMOUNT);
+			map.moveMap(0, -dy);
 			pEvent.consume();
 			break;
 		case KeyEvent.VK_DOWN:
-			map.moveMap(0, MOVE_PIXEL_AMOUNT);
-			pEvent.consume();
-			break;
-		case KeyEvent.VK_PAGE_UP:
-			map.moveMap(0, -5*MOVE_PIXEL_AMOUNT);
-			pEvent.consume();
-			break;
-		case KeyEvent.VK_PAGE_DOWN:
-			map.moveMap(0, 5*MOVE_PIXEL_AMOUNT);
+			map.moveMap(0, dy);
 			pEvent.consume();
 			break;
 		}
