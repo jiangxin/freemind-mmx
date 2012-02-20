@@ -2,6 +2,7 @@
 Changes made in FreeMind 1.0.0 Beta2
 ===============================
 * Search positions are displayed in map in red.
+* Export of multiple nodes as PDF (for each node, there will be one separate PDF) possible.
 
 ===============================
 Changes made in FreeMind 1.0.0 Beta1

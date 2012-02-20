@@ -30,6 +30,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
@@ -57,32 +59,52 @@ public class ExportPdf extends ExportVectorGraphic {
 		super.startupMapHook();
 		boolean nodeExport = Tools.safeEquals("node",
 				getResourceString("export_type"));
-		MindMapNode selectedNode = getController().getSelected();
-		String nameExtension = null;
-		if (nodeExport) {
-			nameExtension = " " + selectedNode.getShortText(getController());
+		HashMap transcodingHints = null;
+		List selecteds = getController().getSelecteds();
+		Vector documentsToOpen = new Vector();
+		while (!selecteds.isEmpty()) {
+			MindMapNode selectedNode = (MindMapNode) selecteds.remove(0);
+			String nameExtension = null;
+			if (nodeExport) {
+				nameExtension = " "
+						+ selectedNode.getShortText(getController());
+			}
+			File chosenFile = chooseFile("pdf",
+					getResourceString("export_pdf_text"), nameExtension);
+			if (chosenFile == null) {
+				return;
+			}
+			if (transcodingHints == null) {
+				transcodingHints = choosePaper();
+			}
+			if (transcodingHints == null) {
+				return;
+			}
+			getController().getFrame().setWaitingCursor(true);
+			try {
+				exportAsPdf(nodeExport, selectedNode, chosenFile,
+						transcodingHints);
+				documentsToOpen.add(chosenFile);
+			} catch (Exception e) {
+				freemind.main.Resources.getInstance().logException(e);
+				JOptionPane.showMessageDialog(getController().getFrame()
+						.getContentPane(), e.getLocalizedMessage(), null,
+						JOptionPane.ERROR_MESSAGE);
+			}
+			getController().getFrame().setWaitingCursor(false);
+			if (!nodeExport) {
+				selecteds.clear();
+			}
 		}
-		File chosenFile = chooseFile("pdf",
-				getResourceString("export_pdf_text"), nameExtension);
-		if (chosenFile == null) {
-			return;
-		}
-		HashMap transcodingHints = choosePaper();
-		if (transcodingHints == null) {
-			return;
-		}
-		getController().getFrame().setWaitingCursor(true);
 		try {
-			exportAsPdf(nodeExport, selectedNode, chosenFile, transcodingHints);
-			getController().getFrame()
-					.openDocument(Tools.fileToUrl(chosenFile));
+			for (Iterator it = documentsToOpen.iterator(); it.hasNext();) {
+				File fileToOpen = (File) it.next();
+				getController().getFrame().openDocument(
+						Tools.fileToUrl(fileToOpen));
+			}
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
-			JOptionPane.showMessageDialog(getController().getFrame()
-					.getContentPane(), e.getLocalizedMessage(), null,
-					JOptionPane.ERROR_MESSAGE);
 		}
-		getController().getFrame().setWaitingCursor(false);
 	}
 
 	/**
