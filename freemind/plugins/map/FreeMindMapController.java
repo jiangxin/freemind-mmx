@@ -174,8 +174,8 @@ public class FreeMindMapController extends JMapController implements
 
 	private MapNodePositionHolder mMapNodeMovingSource = null;
 
-	private Timer mTimer;
-
+	private Timer mMouseHitsNodeTimer;
+	
 	private boolean mIsRectangularSelect;
 
 	private Coordinate mRectangularStart;
@@ -950,8 +950,8 @@ public class FreeMindMapController extends JMapController implements
 		mMapHook = pMapHook;
 		mMindMapController = pMindMapController;
 		mMapDialog = pMapDialog;
-		mTimer = new Timer(500, this);
-		mTimer.setRepeats(false);
+		mMouseHitsNodeTimer = new Timer(500, this);
+		mMouseHitsNodeTimer.setRepeats(false);
 		Action placeAction = new PlaceNodeAction();
 		Action removePlaceAction = new RemovePlaceNodeAction();
 		Action showAction = new ShowNodeAction();
@@ -1699,7 +1699,7 @@ public class FreeMindMapController extends JMapController implements
 
 		}
 		// no move events, thus the cursor is just moving.
-		mTimer.restart();
+		mMouseHitsNodeTimer.restart();
 		mTimerMouseEvent = e;
 
 	}
@@ -1891,10 +1891,10 @@ public class FreeMindMapController extends JMapController implements
 
 	}
 
-	public void keyPressed(KeyEvent pE) {
+	public void keyReleased(KeyEvent pEvent) {
 	}
 
-	public void keyReleased(KeyEvent pEvent) {
+	public void keyPressed(KeyEvent pEvent) {
 		if(mMapHook.isSearchBarVisible())
 			return;
 		int dx = MOVE_PIXEL_AMOUNT;
