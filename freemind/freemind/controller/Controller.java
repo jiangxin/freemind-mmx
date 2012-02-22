@@ -369,13 +369,18 @@ public class Controller implements MapModuleChangeObserver {
 		return frame.getResourceString(resource);
 	}
 
-	/** @return the current modeController. */
+	/** @return the current modeController, or null, if 
+	 * FreeMind is just starting and there is no 
+	 * modeController present. */
 	public ModeController getModeController() {
 		if (getMapModule() != null) {
 			return getMapModule().getModeController();
 		}
-		// no map present: we take the default:
-		return getMode().getDefaultModeController();
+		if(getMode() != null) {
+			// no map present: we take the default:
+			return getMode().getDefaultModeController();
+		}
+		return null;
 	}
 
 	/** Returns the current model */
@@ -563,10 +568,10 @@ public class Controller implements MapModuleChangeObserver {
 			}
 		}
 		if (oldModeController.getModeToolBar() != null) {
-			// toolbar.remove(oldModeController.getModeToolBar());
-			// toolbar.activate(true);
-			northToolbarPanel.remove(oldModeController.getModeToolBar());
-			northToolbarPanel.add(toolbar, BorderLayout.NORTH);
+			toolbar.remove(oldModeController.getModeToolBar());
+			toolbar.activate(true);
+//			northToolbarPanel.remove(oldModeController.getModeToolBar());
+//			northToolbarPanel.add(toolbar, BorderLayout.NORTH);
 		}
 		/* other toolbars are to be removed too. */
 		if (oldModeController.getLeftToolBar() != null) {
@@ -603,10 +608,10 @@ public class Controller implements MapModuleChangeObserver {
 		setTitle();
 		JToolBar newToolBar = newModeController.getModeToolBar();
 		if (newToolBar != null) {
-			// toolbar.activate(false);
-			// toolbar.add(newToolBar, 0);
-			northToolbarPanel.remove(toolbar);
-			northToolbarPanel.add(newToolBar, BorderLayout.NORTH);
+			toolbar.activate(false);
+			toolbar.add(newToolBar, 0);
+//			northToolbarPanel.remove(toolbar);
+//			northToolbarPanel.add(newToolBar, BorderLayout.NORTH);
 			newToolBar.repaint();
 		}
 		/* new left toolbar. */

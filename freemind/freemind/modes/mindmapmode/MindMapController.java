@@ -1099,11 +1099,11 @@ public class MindMapController extends ControllerAdapter implements
 	}
 
 	MindMapToolBar getToolBar() {
-		return (MindMapToolBar) toolbar;
+		return toolbar;
 	}
 
 	public Component getLeftToolBar() {
-		return ((MindMapToolBar) toolbar).getLeftToolBar();
+		return toolbar.getLeftToolBar();
 	}
 
 	/**

@@ -20,6 +20,7 @@
 
 package freemind.controller;
 
+import java.awt.Insets;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.logging.Logger;
@@ -43,28 +44,32 @@ public class MainToolBar extends FreeMindToolBar {
 		}
 		userDefinedZoom = controller.getResourceString("user_defined_zoom");
 
-		mInnerToolBar.add(controller.navigationPreviousMap);
-		mInnerToolBar.add(controller.navigationNextMap);
-		mInnerToolBar.add(controller.printDirect);
-		mInnerToolBar.add(controller.showFilterToolbarAction);
-
+		mInnerToolBar.setBorderPainted(false);
+		mInnerToolBar.setMargin(new Insets(0, 0, 0, 0));
+		setBorderPainted(false);
+		setMargin(new Insets(0, 0, 0, 0));
+//		mInnerToolBar.add(controller.navigationPreviousMap);
+//		mInnerToolBar.add(controller.navigationNextMap);
+//		mInnerToolBar.add(controller.printDirect);
+//		mInnerToolBar.add(controller.showFilterToolbarAction);
+//
 		zoom = new JComboBox(controller.getZooms());
-		zoom.setSelectedItem("100%");
-		zoom.addItem(userDefinedZoom);
-		// Focus fix.
-		zoom.setFocusable(false);
-		// mInnerToolBar.add(zoom);
-		this.add(mInnerToolBar);
-		add(zoom);
-		zoom.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				// todo: dialog with user zoom value, if user zoom is chosen.
-				// change proposed by dimitri:
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					setZoomByItem(e.getItem());
-				}
-			}
-		});
+//		zoom.setSelectedItem("100%");
+//		zoom.addItem(userDefinedZoom);
+//		// Focus fix.
+//		zoom.setFocusable(false);
+//		// mInnerToolBar.add(zoom);
+//		this.add(mInnerToolBar);
+//		add(zoom);
+//		zoom.addItemListener(new ItemListener() {
+//			public void itemStateChanged(ItemEvent e) {
+//				// todo: dialog with user zoom value, if user zoom is chosen.
+//				// change proposed by dimitri:
+//				if (e.getStateChange() == ItemEvent.SELECTED) {
+//					setZoomByItem(e.getItem());
+//				}
+//			}
+//		});
 	}
 
 	public void activate(boolean visible) {
