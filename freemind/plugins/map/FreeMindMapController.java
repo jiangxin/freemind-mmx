@@ -1897,6 +1897,11 @@ public class FreeMindMapController extends JMapController implements
 	public void keyPressed(KeyEvent pEvent) {
 		if(mMapHook.isSearchBarVisible())
 			return;
+		int modifiers = pEvent.getModifiers() & (Integer.MAX_VALUE ^ KeyEvent.SHIFT_MASK);
+		// only plain of shifted cursor keys are consumed here.
+		if(modifiers != 0) {
+			return;
+		}
 		int dx = MOVE_PIXEL_AMOUNT;
 		int dy = MOVE_PIXEL_AMOUNT;
 		if(pEvent.isShiftDown()) {
