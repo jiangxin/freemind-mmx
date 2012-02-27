@@ -779,7 +779,7 @@ public abstract class ControllerAdapter implements ModeController {
 	//
 
 	public void open() {
-		JFileChooser chooser = getFileChooser();
+		FreeMindFileDialog chooser = getFileChooser();
 		// fc, 24.4.2008: multi selection has problems as setTitle in Controller
 		// doesn't works
 		// chooser.setMultiSelectionEnabled(true);
@@ -808,8 +808,8 @@ public abstract class ControllerAdapter implements ModeController {
 	/**
 	 * Creates a file chooser with the last selected directory as default.
 	 */
-	public JFileChooser getFileChooser(FileFilter filter) {
-		JFileChooser chooser = new JFileChooser();
+	public FreeMindFileDialog getFileChooser(FileFilter filter) {
+		FreeMindFileDialog chooser = new FreeMindAwtFileDialog();
 		File parentFile = getMapsParentFile();
 		// choose new lastCurrentDir only, if not previously set.
 		if (parentFile != null && lastCurrentDir == null) {
@@ -824,7 +824,7 @@ public abstract class ControllerAdapter implements ModeController {
 		return chooser;
 	}
 
-	protected JFileChooser getFileChooser() {
+	protected FreeMindFileDialog getFileChooser() {
 		return getFileChooser(getFileFilter());
 	}
 
@@ -858,7 +858,7 @@ public abstract class ControllerAdapter implements ModeController {
 	 */
 	public boolean saveAs() {
 		File f;
-		JFileChooser chooser = getFileChooser();
+		FreeMindFileDialog chooser = getFileChooser();
 		if (getMapsParentFile() == null) {
 			chooser.setSelectedFile(new File(getFileNameProposal()
 					+ freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION));

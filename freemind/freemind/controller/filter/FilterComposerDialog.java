@@ -64,6 +64,7 @@ import freemind.controller.filter.condition.DisjunctConditions;
 import freemind.controller.filter.util.ExtendedComboBoxModel;
 import freemind.main.Resources;
 import freemind.main.Tools;
+import freemind.modes.FreeMindFileDialog;
 import freemind.modes.MapRegistry;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
@@ -352,16 +353,16 @@ public class FilterComposerDialog extends JDialog {
 		}
 	}
 
-	protected JFileChooser getFileChooser() {
+	protected FreeMindFileDialog getFileChooser() {
 		final ModeController modeController = fc.getMap().getModeController();
-		JFileChooser chooser = modeController
+		FreeMindFileDialog chooser = modeController
 				.getFileChooser(MindMapFilterFileFilter.filter);
 		return chooser;
 	}
 
 	private class SaveAction implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			JFileChooser chooser = getFileChooser();
+			FreeMindFileDialog chooser = getFileChooser();
 			chooser.setDialogTitle(Resources.getInstance().getResourceString(
 					"save_as"));
 			int returnVal = chooser.showSaveDialog(FilterComposerDialog.this);
@@ -392,7 +393,7 @@ public class FilterComposerDialog extends JDialog {
 
 	private class LoadAction implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			JFileChooser chooser = getFileChooser();
+			FreeMindFileDialog chooser = getFileChooser();
 			int returnVal = chooser.showOpenDialog(FilterComposerDialog.this);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				try {

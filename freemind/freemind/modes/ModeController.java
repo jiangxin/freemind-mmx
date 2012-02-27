@@ -33,7 +33,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.swing.JFileChooser;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 import javax.swing.filechooser.FileFilter;
@@ -380,7 +379,7 @@ public interface ModeController extends TextTranslator {
 
 	public Transferable copy(List selectedNodes, boolean copyInvisible);
 
-	JFileChooser getFileChooser(FileFilter filter);
+	FreeMindFileDialog getFileChooser(FileFilter filter);
 
 	void setView(MapView pView);
 

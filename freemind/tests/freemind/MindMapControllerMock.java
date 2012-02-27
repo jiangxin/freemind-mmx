@@ -34,7 +34,6 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.swing.JFileChooser;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 import javax.swing.filechooser.FileFilter;
@@ -45,6 +44,7 @@ import freemind.controller.StructuredMenuHolder;
 import freemind.extensions.HookFactory;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLParseException;
+import freemind.modes.FreeMindFileDialog;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -734,7 +734,7 @@ public class MindMapControllerMock implements ModeController {
 
 	}
 
-	public JFileChooser getFileChooser(FileFilter filter) {
+	public FreeMindFileDialog getFileChooser(FileFilter filter) {
 		// TODO Auto-generated method stub
 		return null;
 	}
