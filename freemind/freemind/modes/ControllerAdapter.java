@@ -809,7 +809,13 @@ public abstract class ControllerAdapter implements ModeController {
 	 * Creates a file chooser with the last selected directory as default.
 	 */
 	public FreeMindFileDialog getFileChooser(FileFilter filter) {
-		FreeMindFileDialog chooser = new FreeMindAwtFileDialog();
+		FreeMindFileDialog chooser;
+		if (Tools.isWindows()) {
+			chooser = new FreeMindJFileDialog();
+		} else {
+			// only for mac
+			chooser = new FreeMindAwtFileDialog();
+		}
 		File parentFile = getMapsParentFile();
 		// choose new lastCurrentDir only, if not previously set.
 		if (parentFile != null && lastCurrentDir == null) {
