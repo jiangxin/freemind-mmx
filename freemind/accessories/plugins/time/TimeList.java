@@ -274,12 +274,7 @@ public class TimeList extends MindMapHookAdapter implements
 				5, 1, 1, 1.0, 1.0, GridBagConstraints.WEST,
 				GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 		// button bar
-		final AbstractAction selectAction = new AbstractAction(/*
-																 * getResourceString
-																 * (
-																 * "plugins/TimeManagement.xml_Select"
-																 * )
-																 */) {
+		final AbstractAction selectAction = new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				selectSelectedRows();
 			}
@@ -287,12 +282,7 @@ public class TimeList extends MindMapHookAdapter implements
 		JButton selectButton = new JButton(selectAction);
 		decorateButtonAndAction("plugins/TimeManagement.xml_Select",
 				selectAction, selectButton);
-		final AbstractAction exportAction = new AbstractAction(/*
-																 * getResourceString
-																 * (
-																 * "plugins/TimeManagement.xml_Export"
-																 * )
-																 */) {
+		final AbstractAction exportAction = new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				exportSelectedRowsAndClose();
 			}
@@ -300,11 +290,7 @@ public class TimeList extends MindMapHookAdapter implements
 		JButton exportButton = new JButton(exportAction);
 		decorateButtonAndAction("plugins/TimeManagement.xml_Export",
 				exportAction, exportButton);
-		AbstractAction replaceAllAction = new AbstractAction(/*
-															 * getResourceString(
-															 * "plugins/TimeManagement.xml_Replace_All"
-															 * )
-															 */) {
+		AbstractAction replaceAllAction = new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				replace(new ReplaceAllInfo());
 			}
@@ -312,12 +298,7 @@ public class TimeList extends MindMapHookAdapter implements
 		JButton replaceAllButton = new JButton(replaceAllAction);
 		decorateButtonAndAction("plugins/TimeManagement.xml_Replace_All",
 				replaceAllAction, replaceAllButton);
-		final AbstractAction replaceSelectedAction = new AbstractAction(/*
-																		 * getResourceString
-																		 * (
-																		 * "plugins/TimeManagement.xml_Replace_Selected"
-																		 * )
-																		 */) {
+		final AbstractAction replaceSelectedAction = new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				replace(new ReplaceSelectedInfo());
 			}
@@ -325,11 +306,7 @@ public class TimeList extends MindMapHookAdapter implements
 		JButton replaceSelectedButton = new JButton(replaceSelectedAction);
 		decorateButtonAndAction("plugins/TimeManagement.xml_Replace_Selected",
 				replaceSelectedAction, replaceSelectedButton);
-		final AbstractAction gotoAction = new AbstractAction(/*
-															 * getResourceString(
-															 * "plugins/TimeManagement.xml_Goto"
-															 * )
-															 */) {
+		final AbstractAction gotoAction = new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				selectSelectedRows();
 				disposeDialog();
@@ -338,11 +315,7 @@ public class TimeList extends MindMapHookAdapter implements
 		JButton gotoButton = new JButton(gotoAction);
 		decorateButtonAndAction("plugins/TimeManagement.xml_Goto", gotoAction,
 				gotoButton);
-		AbstractAction disposeAction = new AbstractAction(/*
-														 * getResourceString(
-														 * "plugins/TimeManagement.xml_Cancel"
-														 * )
-														 */) {
+		AbstractAction disposeAction = new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				disposeDialog();
 			}
