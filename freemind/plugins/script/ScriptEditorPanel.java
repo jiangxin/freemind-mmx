@@ -427,10 +427,13 @@ public class ScriptEditorPanel extends JDialog {
 		if (pIsCanceled && mScriptModel.isDirty()) {
 			// ask if really cancel:
 			int action = JOptionPane.showConfirmDialog(this, mFrame
-					.getResourceString("ScriptEditorPanel.changed_cancel"),
-					"FreeMind", JOptionPane.OK_CANCEL_OPTION);
+					.getResourceString("ScriptEditorPanel.changed_save"),
+					"FreeMind", JOptionPane.YES_NO_CANCEL_OPTION);
 			if (action == JOptionPane.CANCEL_OPTION)
 				return;
+			if(action == JOptionPane.YES_OPTION) {
+				pIsCanceled = false;
+			}
 		}
 		// store window positions:
 		ScriptEditorWindowConfigurationStorage storage = new ScriptEditorWindowConfigurationStorage();

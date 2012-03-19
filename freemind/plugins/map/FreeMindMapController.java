@@ -1799,6 +1799,7 @@ public class FreeMindMapController extends JMapController implements
 			}
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
+			logger.warning("Result was " + result);
 			Place place = new Place();
 			place.setDisplayName(e.toString());
 			place.setOsmType("ERROR");
@@ -1885,6 +1886,8 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void keyTyped(KeyEvent pEvent) {
+		if(mMapHook.isSearchBarVisible())
+			return;
 		Action[] specialKeyActions = { mZoomInAction, mZoomOutAction };
 		Tools.invokeActionsToKeyboardLayoutDependantCharacters(pEvent,
 				specialKeyActions, mMapDialog);

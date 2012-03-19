@@ -810,7 +810,7 @@ public abstract class ControllerAdapter implements ModeController {
 	 */
 	public FreeMindFileDialog getFileChooser(FileFilter filter) {
 		FreeMindFileDialog chooser;
-		if (Tools.isWindows()) {
+		if (!Tools.isMacOsX()) {
 			chooser = new FreeMindJFileDialog();
 		} else {
 			// only for mac
