@@ -116,6 +116,8 @@ ${freemind.installer.freemind_exe}
 ${freemind.installer.freemind_bat}
 
 
+Source: ..\..\..\bin\dist\dictionaries.properties; DestDir: {app}; Flags: promptifolder overwritereadonly
+Source: ..\..\..\bin\dist\dictionary_*.ortho; DestDir: {app}; Flags: promptifolder overwritereadonly
 Source: ..\..\..\bin\dist\accessories\*.*; DestDir: {app}\accessories; Flags: promptifolder overwritereadonly
 Source: ..\..\..\bin\dist\browser\*.*; DestDir: {app}\browser; Flags: promptifolder overwritereadonly
 Source: ..\..\..\bin\dist\doc\*.*; DestDir: {app}\doc; Flags: promptifolder overwritereadonly
