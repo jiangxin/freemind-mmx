@@ -213,14 +213,16 @@ public class FreeMindAwtFileDialog extends FileDialog implements
 	 * @see freemind.modes.FreeMindFileDialog#setMultiSelectionEnabled(boolean)
 	 */
 	public void setMultiSelectionEnabled(boolean pB) {
-		throw new IllegalArgumentException("Not implemented yet.");
+		if(pB) {
+			throw new IllegalArgumentException("Not implemented yet.");
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see freemind.modes.FreeMindFileDialog#isMultiSelectionEnabled()
 	 */
 	public boolean isMultiSelectionEnabled() {
-		throw new IllegalArgumentException("Not implemented yet.");
+		return false;
 	}
 
 	/* (non-Javadoc)
@@ -234,7 +236,7 @@ public class FreeMindAwtFileDialog extends FileDialog implements
 	 * @see freemind.modes.FreeMindFileDialog#getSelectedFile()
 	 */
 	public File getSelectedFile() {
-		return new File(getFile());
+		return new File(getDirectory(), getFile());
 	}
 
 	/* (non-Javadoc)
