@@ -51,7 +51,6 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -69,9 +68,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
-import com.jgoodies.forms.factories.ButtonBarFactory;
-
-import freemind.controller.BlindIcon;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.TimeWindowColumnSetting;
@@ -269,85 +265,80 @@ public class TimeList extends MindMapHookAdapter implements
 				GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,
 						0, 0, 0), 0, 0));
 
-		mTreeLabel = new JLabel();
-		contentPane.add(new JScrollPane(mTreeLabel), new GridBagConstraints(0,
-				5, 1, 1, 1.0, 1.0, GridBagConstraints.WEST,
-				GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 		// button bar
-		final AbstractAction selectAction = new AbstractAction() {
+		final AbstractAction selectAction = new AbstractAction(
+				getResourceString("plugins/TimeManagement.xml_Select")) {
 			public void actionPerformed(ActionEvent arg0) {
 				selectSelectedRows();
 			}
 		};
-		JButton selectButton = new JButton(selectAction);
-		decorateButtonAndAction("plugins/TimeManagement.xml_Select",
-				selectAction, selectButton);
-		final AbstractAction exportAction = new AbstractAction() {
+		final AbstractAction exportAction = new AbstractAction(
+				getResourceString("plugins/TimeManagement.xml_Export")) {
 			public void actionPerformed(ActionEvent arg0) {
 				exportSelectedRowsAndClose();
 			}
 		};
-		JButton exportButton = new JButton(exportAction);
-		decorateButtonAndAction("plugins/TimeManagement.xml_Export",
-				exportAction, exportButton);
-		AbstractAction replaceAllAction = new AbstractAction() {
+		AbstractAction replaceAllAction = new AbstractAction(
+				getResourceString("plugins/TimeManagement.xml_Replace_All")) {
 			public void actionPerformed(ActionEvent arg0) {
 				replace(new ReplaceAllInfo());
 			}
 		};
-		JButton replaceAllButton = new JButton(replaceAllAction);
-		decorateButtonAndAction("plugins/TimeManagement.xml_Replace_All",
-				replaceAllAction, replaceAllButton);
-		final AbstractAction replaceSelectedAction = new AbstractAction() {
+		final AbstractAction replaceSelectedAction = new AbstractAction(
+				getResourceString("plugins/TimeManagement.xml_Replace_Selected")) {
 			public void actionPerformed(ActionEvent arg0) {
 				replace(new ReplaceSelectedInfo());
 			}
 		};
-		JButton replaceSelectedButton = new JButton(replaceSelectedAction);
-		decorateButtonAndAction("plugins/TimeManagement.xml_Replace_Selected",
-				replaceSelectedAction, replaceSelectedButton);
-		final AbstractAction gotoAction = new AbstractAction() {
+		final AbstractAction gotoAction = new AbstractAction(
+				getResourceString("plugins/TimeManagement.xml_Goto")) {
 			public void actionPerformed(ActionEvent arg0) {
 				selectSelectedRows();
 				disposeDialog();
 			}
 		};
-		JButton gotoButton = new JButton(gotoAction);
-		decorateButtonAndAction("plugins/TimeManagement.xml_Goto", gotoAction,
-				gotoButton);
-		AbstractAction disposeAction = new AbstractAction() {
+		AbstractAction disposeAction = new AbstractAction(
+				getResourceString("plugins/TimeManagement.xml_Cancel")) {
 			public void actionPerformed(ActionEvent arg0) {
 				disposeDialog();
 			}
 		};
-		JButton cancelButton = new JButton(disposeAction);
-		decorateButtonAndAction("plugins/TimeManagement.xml_Cancel",
-				disposeAction, cancelButton);
 		/* Initial State */
 		selectAction.setEnabled(false);
 		gotoAction.setEnabled(false);
 		exportAction.setEnabled(false);
 		replaceSelectedAction.setEnabled(false);
 
-		JPanel bar = ButtonBarFactory.buildGrowingBar(new JButton[] {
-				cancelButton, exportButton, replaceAllButton,
-				replaceSelectedButton, gotoButton, selectButton, });
-		contentPane.add(/* new JScrollPane */(bar), new GridBagConstraints(0,
-				6, 1, 1, 1.0, 1.0, GridBagConstraints.WEST,
-				GridBagConstraints.HORIZONTAL, new Insets(0, 0, 0, 0), 0, 0));
-
+		/** Menu **/
+		StructuredMenuHolder menuHolder = new StructuredMenuHolder();
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu(
 				getResourceString("plugins/TimeManagement.xml_menu_actions"));
-		AbstractAction[] actionList = new AbstractAction[] { selectAction,
-				gotoAction, replaceSelectedAction, replaceAllAction,
-				exportAction, disposeAction };
-		for (int i = 0; i < actionList.length; i++) {
-			AbstractAction action = actionList[i];
-			JMenuItem item = menu.add(action);
-			item.setIcon(new BlindIcon(StructuredMenuHolder.ICON_SIZE));
-		}
-		menuBar.add(menu);
+		menuHolder.addMenu(menu, "main/actions/.");
+		addAccelerator(
+				menuHolder.addAction(selectAction, "main/actions/select"),
+				"keystroke_plugins/TimeList_select");
+
+		addAccelerator(
+				menuHolder.addAction(selectAction, "main/actions/select"),
+				"keystroke_plugins/TimeList_select");
+
+		addAccelerator(menuHolder.addAction(gotoAction, "main/actions/goto"),
+				"keystroke_plugins/TimeList_goto");
+		addAccelerator(menuHolder.addAction(replaceSelectedAction,
+				"main/actions/replaceSelected"),
+				"keystroke_plugins/TimeList_replaceSelected");
+		addAccelerator(menuHolder.addAction(replaceAllAction,
+				"main/actions/replaceAll"),
+				"keystroke_plugins/TimeList_replaceAll");
+
+		addAccelerator(
+				menuHolder.addAction(exportAction, "main/actions/export"),
+				"keystroke_plugins/TimeList_export");
+		addAccelerator(
+				menuHolder.addAction(disposeAction, "main/actions/dispose"),
+				"keystroke_plugins/TimeList_dispose");
+		menuHolder.updateMenus(menuBar, "main/");
 		dialog.setJMenuBar(menuBar);
 
 		// table selection listeners to enable/disable menu actions:

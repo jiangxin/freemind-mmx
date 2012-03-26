@@ -273,14 +273,6 @@ public class TimeManagement extends MindMapHookAdapter implements
 		dialog.setVisible(true);
 	}
 
-	public JMenuItem addAccelerator(JMenuItem menuItem, String key) {
-		String keyProp = getMindMapController().getFrame().getProperty(key);
-		KeyStroke keyStroke = KeyStroke.getKeyStroke(keyProp);
-		menuItem.setAccelerator(keyStroke);
-		menuItem.getAction().putValue(Action.ACCELERATOR_KEY, keyStroke);
-		return menuItem;
-	}
-
 	/**
 	 */
 	private JPanel getTimePanel() {
