@@ -155,6 +155,9 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 
 	public MindMapNode addNewNode(MindMapNode parent, int index,
 			boolean newNodeIsLeft) {
+		if(index == -1) {
+			index = parent.getChildCount();
+		}
 		// bug fix from Dimitri.
 		c.getModel().getLinkRegistry().registerLinkTarget(parent);
 		String newId = c.getModel().getLinkRegistry().generateUniqueID(null);

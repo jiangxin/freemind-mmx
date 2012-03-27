@@ -91,7 +91,8 @@ public interface MindMapActions {
 	 * Another variant of addNew. If the index of the new node as a child of
 	 * parent is known, this method is easier to use. Moreover, it does not
 	 * automatically start an editor.
-	 * 
+	 * @param index 0-based index of the new node. Use getChildCount or -1 to
+	 * add a new node at the bottom.
 	 * @param newNodeIsLeft
 	 *            here, normally parent.isLeft() or null is used.
 	 * @return returns the new node.

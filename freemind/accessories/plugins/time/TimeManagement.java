@@ -37,6 +37,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -48,7 +49,6 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
@@ -71,48 +71,77 @@ import freemind.view.MapModule;
 public class TimeManagement extends MindMapHookAdapter implements
 		PropertyChangeListener, ActionListener, MapModuleChangeObserver {
 
-	private class AppendDateAction extends AbstractAction {
+	private interface NodeFactory {
+		MindMapNode getNode(MindMapNode pNode);
+	}
+
+	private class AppendDateAbstractAction extends AbstractAction {
+		private NodeFactory mFactory;
+
+		public AppendDateAbstractAction() {
+			
+		}
+		public void init(NodeFactory pFactory, String pText) {
+			putValue(Action.NAME, getMindMapController().getText(pText));
+			mFactory = pFactory;
+		}
+
+		public void actionPerformed(ActionEvent actionEvent) {
+			MindMapNode lastElement = null;
+			Vector sel = new Vector();
+			for (Iterator i = getMindMapController().getSelecteds().iterator(); i
+					.hasNext();) {
+				MindMapNode element = mFactory.getNode((MindMapNode) i.next());
+				DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
+				String dateAsString = df.format(getCalendarDate());
+				getMindMapController().setNodeText(element,
+						element.getText() + " " + dateAsString);
+				lastElement = element;
+				sel.add(element);
+			}
+			getMindMapController().select(lastElement, sel);
+		}
+		
+	}
+
+	private class AppendDateAction extends AppendDateAbstractAction {
 		public AppendDateAction() {
-			super(getMindMapController().getText(
-					"plugins/TimeManagement.xml_appendButton"));
+			init(new NodeFactory() {
+
+				public MindMapNode getNode(MindMapNode pNode) {
+					return pNode;
+				}}, "plugins/TimeManagement.xml_appendButton");
 		}
 
-		public void actionPerformed(ActionEvent actionEvent) {
-			for (Iterator i = getMindMapController().getSelecteds().iterator(); i
-					.hasNext();) {
-				MindMapNode element = (MindMapNode) i.next();
-				DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
-				String dateAsString = df.format(getCalendarDate());
-				getMindMapController().setNodeText(element,
-						element.getText() + " " + dateAsString);
-			}
-
-		}
 
 	}
 
-	private class AppendDateToSiblingAction extends AbstractAction {
+	private class AppendDateToChildAction extends AppendDateAbstractAction {
+		public AppendDateToChildAction() {
+			init(new NodeFactory() {
+				
+				public MindMapNode getNode(MindMapNode pNode) {
+					return getMindMapController().addNewNode(pNode,
+							pNode.getChildCount(), pNode.isLeft());
+				}}, "plugins/TimeManagement.xml_appendAsNewButton");
+		}
+	}
+
+	private class AppendDateToSiblingAction extends AppendDateAbstractAction {
 		public AppendDateToSiblingAction() {
-			super(getMindMapController().getText(
-					"plugins/TimeManagement.xml_appendAsNewButton"));
+			init(new NodeFactory() {
+				
+				public MindMapNode getNode(MindMapNode pNode) {
+					MindMapNode parent = pNode;
+					if(!pNode.isRoot()) {
+						parent = pNode.getParentNode();
+					}
+					return getMindMapController().addNewNode(parent,
+							parent.getIndex(pNode)+1, parent.isLeft());
+				}}, "plugins/TimeManagement.xml_appendAsNewSiblingButton");
 		}
-
-		public void actionPerformed(ActionEvent actionEvent) {
-			for (Iterator i = getMindMapController().getSelecteds().iterator(); i
-					.hasNext();) {
-				MindMapNode element = (MindMapNode) i.next();
-				element = getMindMapController().addNewNode(element,
-						element.getChildCount(), element.isLeft());
-				DateFormat df = DateFormat.getDateInstance(DateFormat.SHORT);
-				String dateAsString = df.format(getCalendarDate());
-				getMindMapController().setNodeText(element,
-						element.getText() + " " + dateAsString);
-			}
-
-		}
-
 	}
-
+	
 	private class RemindAction extends AbstractAction {
 		public RemindAction() {
 			super(getMindMapController().getText(
@@ -218,6 +247,9 @@ public class TimeManagement extends MindMapHookAdapter implements
 		addAccelerator(menuHolder.addAction(new AppendDateAction(),
 				"main/actions/append"),
 				"keystroke_plugins/TimeManagement_append");
+		addAccelerator(menuHolder.addAction(new AppendDateToChildAction(),
+				"main/actions/appendAsChild"),
+				"keystroke_plugins/TimeManagement_appendAsChild");
 		addAccelerator(menuHolder.addAction(new AppendDateToSiblingAction(),
 				"main/actions/appendAsSibling"),
 				"keystroke_plugins/TimeManagement_appendAsSibling");
