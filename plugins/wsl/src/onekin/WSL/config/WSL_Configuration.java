@@ -52,7 +52,9 @@ import javax.swing.border.Border;
 import freemind.extensions.ModeControllerHookAdapter;
 
 public class WSL_Configuration extends ModeControllerHookAdapter {
-    String simpleDialogDesc = "Choose an existing or new MediaWiki installation";
+	private final String existingRB = "Existing MediaWiki installation (LocalSettings file)";
+	private final String newRB = "New MediaWiki installation (Download and install)";
+	private final String simpleDialogDesc = "Choose an existing or new MediaWiki installation";
     JPanel jPMain;
     static JFrame frame = new JFrame("WSL Configuration");
     private static JComponent newContentPane;    
@@ -100,10 +102,10 @@ public class WSL_Configuration extends ModeControllerHookAdapter {
         final String existingMW = "existingMW";
         final String newMW = "newMW";
 
-        radioButtons[0] = new JRadioButton("Existing MediaWiki installation (LocalSettings file)");
+        radioButtons[0] = new JRadioButton(existingRB);
         radioButtons[0].setActionCommand(existingMW);
 
-        radioButtons[1] = new JRadioButton("New MediaWiki installation (Download and install)");
+        radioButtons[1] = new JRadioButton(newRB);
         radioButtons[1].setActionCommand(newMW);
 
         for (int i = 0; i < numButtons; i++) {

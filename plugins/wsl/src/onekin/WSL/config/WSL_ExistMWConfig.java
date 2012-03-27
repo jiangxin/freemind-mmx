@@ -42,6 +42,9 @@ import freemind.extensions.ModeControllerHookAdapter;
 import freemind.main.XMLParseException;
 
 public class WSL_ExistMWConfig extends ModeControllerHookAdapter {
+	private String question="WSL needs to know the location of the MediaWiki LocalSettings.php";
+	private final String localSettings = System.getProperty("user.dir") + File.separator + "plugins/WSL/resources/localSettings.conf";
+	
 	public WSL_ExistMWConfig() {
 		super();
 		}
@@ -53,9 +56,8 @@ public class WSL_ExistMWConfig extends ModeControllerHookAdapter {
 
 	public void setLocalSettings() {
 		try {
-			String question="WSL needs to know the location of the MediaWiki LocalSettings.php";
 			String strLine="";
-			File localSettingsConf = new File(System.getProperty("user.dir") + "/plugins/WSL/resources/localSettings.conf");
+			File localSettingsConf = new File(localSettings);
 			Container component = getController().getFrame().getContentPane();
 			 // Open LocalSettings.conf and get the object of DataInputStream
 		    DataInputStream in;
@@ -75,7 +77,7 @@ public class WSL_ExistMWConfig extends ModeControllerHookAdapter {
 				eio.printStackTrace();
 			}
 			JDialog.setDefaultLookAndFeelDecorated(false);
-			int response = JOptionPane.showConfirmDialog(null, strLine+"\n"+question, "Confirm",
+			int response = JOptionPane.showConfirmDialog(null, strLine + "\n" + question, "Confirm",
 			    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 			if (response == JOptionPane.NO_OPTION) {
 			  System.out.println("No button clicked");

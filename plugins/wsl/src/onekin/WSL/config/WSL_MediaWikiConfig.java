@@ -53,15 +53,29 @@ import java.util.zip.GZIPInputStream;
  */
 public class WSL_MediaWikiConfig extends JPanel implements ActionListener, FocusListener {
 	
+    private final static int GAP = 10;
+    private final String curDir = System.getProperty("user.dir");
+    private final String localSettings = curDir + "/plugins/WSL/resources/LocalSettings.php";
+    private final String mediaWikiFileName = "mediawiki-1.16.1.tar.gz";
+    private final String[] labelStrings = {
+        "Wiki name (e.g., WSL)",
+        "Contact email (e.g., admin@host.com)",
+        "DB Host (e.g., localhost)",
+        "DB name (e.g., WSL)",
+        "DB username (e.g., root)",
+        "DB password",
+        "Confirm DB password",
+        "Select dir to install MediaWiki"
+    };
+    private final String EMAIL_PATTERN = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@" +
+		"[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
     private JTextField wikiName, email, host, dbName, dbUser, installationDir;
     private JPasswordField passwordField, confirmPasswordField;
     private JFileChooser chooser;
     private String chooserTitle;
     private JLabel addressDisplay;
     private static JFrame frame;
-    final static int GAP = 10;
     private static WSL_ExistMWConfig existingMW;
-    private String curDir = System.getProperty("user.dir");
     private WSL_Util wsl_util;
     private JButton button, installationDirButton;
 
@@ -170,8 +184,9 @@ public class WSL_MediaWikiConfig extends JPanel implements ActionListener, Focus
 	
     private void installMW() {
         try {
-        	File file = new File(installationDir.getText()+ "/" + wikiName.getText() + "/LocalSettings.php");
-        	wsl_util.copyFile(new File (curDir+"/plugins/WSL/resources/LocalSettings.php"), file);
+        	String userLocalSettings = installationDir.getText()+ File.separator + wikiName.getText() + "/LocalSettings.php";
+        	File file = new File(userLocalSettings);
+        	wsl_util.copyFile(new File (localSettings), file);
         	BufferedReader reader = new BufferedReader(new FileReader(file));
             String line = "", newText = "";
             while((line = reader.readLine()) != null)
@@ -202,7 +217,7 @@ public class WSL_MediaWikiConfig extends JPanel implements ActionListener, Focus
             }
             reader.close();
                
-            FileWriter writer = new FileWriter(installationDir.getText()+ "/" + wikiName.getText() + "/LocalSettings.php");
+            FileWriter writer = new FileWriter(userLocalSettings);
             writer.write(newText);
             writer.close();
         }catch (IOException ioe){
@@ -261,7 +276,6 @@ public class WSL_MediaWikiConfig extends JPanel implements ActionListener, Focus
 	private void downloadMW() {
 		BufferedInputStream in;
 		try {
-			String mediaWikiFileName = "mediawiki-1.16.1.tar.gz";
 			in = new BufferedInputStream(new 
 					java.net.URL("http://www.onekin.org/wsl/downloads/" + mediaWikiFileName).openStream());
 			FileOutputStream fos = new FileOutputStream(mediaWikiFileName);
@@ -419,8 +433,6 @@ public class WSL_MediaWikiConfig extends JPanel implements ActionListener, Focus
 	private Boolean validateEmail(String email) {
 		Pattern pattern;
 		Matcher matcher;
-	    final String EMAIL_PATTERN = "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@" +
-	    							 "[A-Za-z0-9]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 	    pattern = Pattern.compile(EMAIL_PATTERN);
 		//Validate email with regular expression
 	    matcher = pattern.matcher(email);
@@ -431,7 +443,6 @@ public class WSL_MediaWikiConfig extends JPanel implements ActionListener, Focus
         addressDisplay.setText("<html><p align=center>Complete the following data to <BR>configure MediaWiki installation!<BR>" +
         		"Be patient during MediaWiki configuration  <BR>and installation please, it takes a minute <BR>" +
         		"After this process you may select the new LocalSettings.php</html></p>");
-//        addressDisplay.setText(formatAddress());
     }
 
     protected JComponent createAddressDisplay() {
@@ -485,17 +496,6 @@ public class WSL_MediaWikiConfig extends JPanel implements ActionListener, Focus
 
     protected JComponent createEntryFields() {
         JPanel panel = new JPanel(new SpringLayout());
-
-        String[] labelStrings = {
-            "Wiki name (e.g., WSL)",
-            "Contact email (e.g., admin@host.com)",
-            "DB Host (e.g., localhost)",
-            "DB name (e.g., WSL)",
-            "DB username (e.g., root)",
-            "DB password",
-            "Confirm DB password",
-            "Select dir to install MediaWiki"
-        };
 
         JLabel[] labels = new JLabel[labelStrings.length];
         JComponent[] fields = new JComponent[labelStrings.length];
