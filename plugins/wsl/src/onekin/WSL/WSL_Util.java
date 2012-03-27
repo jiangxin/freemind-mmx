@@ -41,15 +41,19 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 public class WSL_Util {
+	private final String messagebox_warning = "wsl_resources/images/messagebox_warning.png";
+	private final String stop_sign = "wsl_resources/images/stop-sign.png";
+	private final String WSL_check_model = "wsl_resources/WSL_check_model.xsl";
+
 	public WSL_Util() {
 		}
 	
 	public Object[] checkModel(File currentMap){
 		Vector<Object> list = new Vector<Object>();
-		ImageIcon warning = new ImageIcon(getClass().getClassLoader().getResource("wsl_resources/images/messagebox_warning.png"));
-		ImageIcon error = new ImageIcon(getClass().getClassLoader().getResource("wsl_resources/images/stop-sign.png"));
+		ImageIcon warning = new ImageIcon(getClass().getClassLoader().getResource(messagebox_warning));
+		ImageIcon error = new ImageIcon(getClass().getClassLoader().getResource(stop_sign));
 	
-	    InputStream xsltFile = getClass().getClassLoader().getResourceAsStream("wsl_resources/WSL_check_model.xsl");
+	    InputStream xsltFile = getClass().getClassLoader().getResourceAsStream(WSL_check_model);
 	    String xml = transform(new StreamSource(currentMap), xsltFile);
 	    String[] token;
 	    if (xml != null && xml.length() != 0 ) {

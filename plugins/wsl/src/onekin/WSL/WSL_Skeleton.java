@@ -28,19 +28,24 @@ import java.io.IOException;
 
 import freemind.extensions.ModeControllerHookAdapter;
 import freemind.main.XMLParseException;
-
+/**
+ * 
+ * @author Gorka Puente
+ *
+ */
 public class WSL_Skeleton extends ModeControllerHookAdapter {
+	private final String curDir = System.getProperty("user.dir");
+	private final String skeleton = curDir + File.separator + "plugins/WSL/resources/WSL_Skeleton.mm";
 	public WSL_Skeleton() {
 		super();
 		}
 
 	public void startupMapHook() {
 		super.startupMapHook();
-		// Spaces in paths!
-		String curDir = System.getProperty("user.dir"); 
-		File skeleton = new File(curDir+"/plugins/WSL/resources/WSL_Skeleton.mm");
+		
+		File skeletonF = new File(skeleton);
 		try {
-			getController().load(skeleton);
+			getController().load(skeletonF);
 		} catch (XMLParseException e) {
 			e.printStackTrace();
 		} catch (FileNotFoundException e) {
@@ -48,5 +53,5 @@ public class WSL_Skeleton extends ModeControllerHookAdapter {
 		} catch (IOException e) {
 			freemind.main.Resources.getInstance().logException(e);
 		}
-	    }
+	  }
 	}
