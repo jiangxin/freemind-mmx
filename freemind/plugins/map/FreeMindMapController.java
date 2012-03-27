@@ -1758,9 +1758,9 @@ public class FreeMindMapController extends JMapController implements
 	public Searchresults getSearchResults(String pText) {
 		String result = "unknown";
 		Searchresults results = new Searchresults();
+		StringBuilder b = new StringBuilder();
 		try {
 			if (true) {
-				StringBuilder b = new StringBuilder();
 				b.append("http://nominatim.openstreetmap.org/search/?q="); //$NON-NLS-1$
 				b.append(URLEncoder.encode(pText, "UTF-8"));
 				b.append("&format=xml&limit=30&accept-language=").append(Locale.getDefault().getLanguage()); //$NON-NLS-1$
@@ -1798,6 +1798,7 @@ public class FreeMindMapController extends JMapController implements
 				logger.warning(result + " can't be parsed");
 			}
 		} catch (Exception e) {
+			logger.fine("Searching for " + b.toString() + " gave an error");
 			freemind.main.Resources.getInstance().logException(e);
 			logger.warning("Result was " + result);
 			Place place = new Place();
