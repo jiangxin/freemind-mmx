@@ -100,7 +100,7 @@ public class MindMapNodeModel extends NodeAdapter {
 	}
 
 	private void saveChildrenText(Writer fileout, int depth) throws IOException {
-		for (ListIterator e = childrenUnfolded(); e.hasNext();) {
+		for (ListIterator e = sortedChildrenUnfolded(); e.hasNext();) {
 			final MindMapNodeModel child = (MindMapNodeModel) e.next();
 			if (child.isVisible()) {
 				child.saveTXT(fileout, depth + 1);
@@ -206,7 +206,7 @@ public class MindMapNodeModel extends NodeAdapter {
 
 	private void saveChildrenRTF(Writer fileout, int depth, HashMap colorTable)
 			throws IOException {
-		for (ListIterator e = childrenUnfolded(); e.hasNext();) {
+		for (ListIterator e = sortedChildrenUnfolded(); e.hasNext();) {
 			final MindMapNodeModel child = (MindMapNodeModel) e.next();
 			if (child.isVisible()) {
 				child.saveRTF(fileout, depth + 1, colorTable);

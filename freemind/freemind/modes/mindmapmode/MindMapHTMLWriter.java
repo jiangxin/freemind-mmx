@@ -491,7 +491,7 @@ class MindMapHTMLWriter {
 		// Are the children to be treated as paragraphs?
 
 		boolean treatChildrenAsParagraph = false;
-		for (ListIterator e = model.childrenUnfolded(); e.hasNext();) {
+		for (ListIterator e = model.sortedChildrenUnfolded(); e.hasNext();) {
 			if (((MindMapNodeModel) e.next()).toString().length() > 100) { // TODO:
 																			// replace
 																			// heuristic
@@ -507,7 +507,7 @@ class MindMapHTMLWriter {
 
 		if (getProperty("html_export_folding").equals(
 				"html_export_based_on_headings")) {
-			for (ListIterator e = model.childrenUnfolded(); e.hasNext();) {
+			for (ListIterator e = model.sortedChildrenUnfolded(); e.hasNext();) {
 				MindMapNodeModel child = (MindMapNodeModel) e.next();
 				lastChildNumber = saveHTML(child, parentID, lastChildNumber,/*
 																			 * isRoot
@@ -523,7 +523,7 @@ class MindMapHTMLWriter {
 		if (model.hasChildren()) {
 			if (getProperty("html_export_folding").equals(
 					"html_export_based_on_headings")) {
-				for (ListIterator e = model.childrenUnfolded(); e.hasNext();) {
+				for (ListIterator e = model.sortedChildrenUnfolded(); e.hasNext();) {
 					MindMapNodeModel child = (MindMapNodeModel) e.next();
 					lastChildNumber = saveHTML(child, parentID,
 							lastChildNumber,/* isRoot= */false,
@@ -537,7 +537,7 @@ class MindMapHTMLWriter {
 					fileout.write("<li>");
 				}
 				int localLastChildNumber = 0;
-				for (ListIterator e = model.childrenUnfolded(); e.hasNext();) {
+				for (ListIterator e = model.sortedChildrenUnfolded(); e.hasNext();) {
 					MindMapNodeModel child = (MindMapNodeModel) e.next();
 					localLastChildNumber = saveHTML(child, localParentID,
 							localLastChildNumber,/* isRoot= */false,
@@ -548,7 +548,7 @@ class MindMapHTMLWriter {
 				if (treatChildrenAsParagraph) {
 					fileout.write("<li>");
 				}
-				for (ListIterator e = model.childrenUnfolded(); e.hasNext();) {
+				for (ListIterator e = model.sortedChildrenUnfolded(); e.hasNext();) {
 					MindMapNodeModel child = (MindMapNodeModel) e.next();
 					lastChildNumber = saveHTML(child, parentID,
 							lastChildNumber,/* isRoot= */false,

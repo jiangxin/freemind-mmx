@@ -28,6 +28,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -670,6 +671,24 @@ public abstract class NodeAdapter implements MindMapNode {
 				: Collections.EMPTY_LIST.listIterator();
 	}
 
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#sortedChildrenUnfolded()
+	 */
+	public ListIterator sortedChildrenUnfolded() {
+		if (children == null)
+			return null;
+		LinkedList sorted = new LinkedList(children);
+		/* 
+		 * Using this stable sort, we assure that the left nodes came in front of the right ones.
+		 * */
+		Collections.sort(sorted, new Comparator() {
+
+			public int compare(Object pO1, Object pO2) {
+				return Boolean.compare(((MindMapNode) pO2).isLeft(), ((MindMapNode) pO1).isLeft());
+			}});
+		return sorted.listIterator();
+	}
+	
 	public ListIterator childrenFolded() {
 		if (isFolded()) {
 			return Collections.EMPTY_LIST.listIterator();

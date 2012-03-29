@@ -120,6 +120,13 @@ public interface MindMapNode extends MutableTreeNode {
 	ListIterator childrenUnfolded();
 
 	/**
+	 * @return returns a ListIterator of all (and not only the unfolded ones!!)
+	 *         children of the node sorted in the way they occur (if called from root, this
+	 *         has the effect to sort the children first left then right).
+	 * */
+	ListIterator sortedChildrenUnfolded();
+	
+	/**
 	 * @return a list of (unmodifiable) children (all ones, folded and unfolded)
 	 *         of type MindMapNode.
 	 */

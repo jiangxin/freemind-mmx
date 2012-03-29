@@ -220,7 +220,8 @@
 	<xsl:if test="node">
 		<div class="content">
 			<xsl:attribute name="id"><xsl:value-of select="$contentID" /></xsl:attribute>
-			<xsl:apply-templates select="node"/>
+			<xsl:apply-templates select="node[@POSITION='left']"/>
+			<xsl:apply-templates select="node[@POSITION='right']"/>
 		</div>
 	</xsl:if>
 </div>

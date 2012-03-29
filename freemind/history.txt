@@ -5,6 +5,7 @@ Changes made in FreeMind 1.0.0 Beta2
 * Export of multiple nodes as PDF (for each node, there will be one separate PDF) possible.
 * FIX: Toolbar can be hidden
 * Time management: menu added and a method for journals: make new node with current date.
+* FIX: Text based exports are using the correct order for the first level nodes.
  
 ===============================
 Changes made in FreeMind 1.0.0 Beta1

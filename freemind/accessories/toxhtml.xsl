@@ -165,7 +165,10 @@ Todo:
 	<xsl:if test="child::node"> 
 		<xsl:text>
 		</xsl:text> <!-- adds a line-break in the html code -->
-		<ul class="{$ulfold}"><xsl:apply-templates select="node"/></ul>
+		<ul class="{$ulfold}">
+			<xsl:apply-templates select="node[@POSITION='left']"/>
+			<xsl:apply-templates select="node[@POSITION='right']"/>
+		</ul>
 	</xsl:if>
 	<!-- if there are arrowlinks inside this node (i.e. this node is
 	connected to another node in FreeMind using an arrow), then create a
