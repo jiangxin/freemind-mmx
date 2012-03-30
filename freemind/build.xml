@@ -194,7 +194,7 @@
     <target name="test" depends="build_tests" description="Carries out all unit tests">
 	<delete dir="${test.reports}" />
      	<mkdir dir="${test.reports}" />
-     	<junit printsummary="yes" fork="yes" haltonfailure="no">        
+     	<junit printsummary="withOutAndErr"  fork="yes" haltonfailure="no">        
 		<classpath refid="jars.path"></classpath>
 		<classpath path="${testbuild}"></classpath>
 		<classpath path="${src}"></classpath>
@@ -335,7 +335,16 @@
 			  tofile="${dist_macos_info}"/>
 		<!-- Done. -->
 	</target>
-
+	
+	<!-- installs the application directly on this mac. -->
+	<target name="install_macos" if="isMacOs" depends="dist">
+		<!-- Remove old application via move -->
+		<exec dir="." executable="mv" os="Mac OS X">
+			<arg path="${dist_macos_app}"/>
+			<arg path="/Applications"/>
+		</exec>
+	</target>
+	
 	<target name="post" depends="dist,browser">
 		<mkdir dir="${post}" />
 <!--		<tar tarfile="${post}/freemind-bin.tar"

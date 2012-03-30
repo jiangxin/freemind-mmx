@@ -489,4 +489,11 @@ final class TestMindMapNode implements MindMapNode {
 	public void removeAllHooks() {
 	}
 
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#sortedChildrenUnfolded()
+	 */
+	public ListIterator sortedChildrenUnfolded() {
+		return null;
+	}
+
 }
