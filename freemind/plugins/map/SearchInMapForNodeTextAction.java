@@ -20,19 +20,17 @@
 
 package plugins.map;
 
-import java.util.Iterator;
-import java.util.List;
-
+import freemind.main.HtmlTools;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 
 /**
  * @author foltin
- * @date 22.12.2011
+ * @date 1.4.2012
  */
-public class AddLinkToMapAction extends MindMapNodeHookAdapter {
+public class SearchInMapForNodeTextAction extends MindMapNodeHookAdapter {
 
-	static final String NODE_CONTEXT_PLUGIN_NAME = "plugins/map/MapDialog_AddLinkToMapAction.properties";
+	static final String NODE_CONTEXT_PLUGIN_NAME = "plugins/map/MapDialog_SearchInMapForNodeTextAction.properties";
 
 	/*
 	 * (non-Javadoc)
@@ -41,17 +39,31 @@ public class AddLinkToMapAction extends MindMapNodeHookAdapter {
 	 * freemind.extensions.NodeHookAdapter#invoke(freemind.modes.MindMapNode)
 	 */
 	public void invoke(MindMapNode pNode) {
-		List selecteds = getMindMapController().getSelecteds();
-		for (Iterator it = selecteds.iterator(); it.hasNext();) {
-			MindMapNode node = (MindMapNode) it.next();
-			MapNodePositionHolder hook = MapNodePositionHolder.getHook(node);
-			if(hook != null) {
-				if(node.getLink() != null) {
-					// TODO: ask user if should overwrite?
-					continue;
-				}
-				getMindMapController().setLink(node, FreeMindMapController.getLink(hook));
+		// is the map open? Ask base class.
+		Registration registration = getRegistration();
+		if (registration != null) {
+			// is the map open?
+			MapDialog mapDialog = registration.getMapDialog();
+			if (mapDialog == null) {
+				// if not, open it!
+				getMindMapController().createModeControllerHook(MapDialog.MAP_HOOK_NAME);
 			}
+			mapDialog = registration.getMapDialog();
+			if (mapDialog != null) {
+				MindMapNode selected = getMindMapController().getSelected();
+				// Convert to plain text
+				mapDialog.search(HtmlTools.htmlToPlain(selected.getText()), true, true);
+			} else {
+				logger.warning("Can't find dialog to connect to!");
+			}
+		} else {
+			logger.warning("Can't find registration base class!");
+			
 		}
 	}
+
+	public Registration getRegistration() {
+		return (Registration) getPluginBaseClass();
+	}
+
 }

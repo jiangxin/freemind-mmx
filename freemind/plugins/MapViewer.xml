@@ -51,7 +51,7 @@
 	</plugin_action>
 
 	
-	<!-- Context menu Remove -->
+	<!-- Context menu Add image -->
 	<plugin_action 
 		documentation="%plugins/map/MapDialog_AddMapImageToNodeAction.properties_documentation" 
 		name="%plugins/map/MapDialog_AddMapImageToNodeAction.properties_name" 
@@ -63,6 +63,22 @@
 		<plugin_menu location="mindmapmode_popup/map/AddMapImageToNodeAction"/>
 	</plugin_action>
 
+
+	<!-- Context menu Search for text in current node -->
+	<plugin_action 
+		documentation="%plugins/map/MapDialog_SearchInMapForNodeTextAction.properties_documentation" 
+		name="%plugins/map/MapDialog_SearchInMapForNodeTextAction.properties_name" 
+		base="freemind.extensions.NodeHookAdapter" 
+		key_stroke="%keystroke_plugins/map/MapDialog_SearchInMapForNodeTextAction.properties" 
+		label="plugins/map/MapDialog_SearchInMapForNodeTextAction.properties" 
+		class_name="plugins.map.SearchInMapForNodeTextAction" 
+		instanciation="Other">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/edit/find/SearchInMapForNodeTextAction"/>
+	</plugin_action>
+
+
+	
 	
 	<plugin_action 
 		documentation="plugins/map/MapNodePositionHolder.properties_documentation" 

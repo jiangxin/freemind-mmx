@@ -6,6 +6,7 @@ Changes made in FreeMind 1.0.0 Beta2
 * FIX: Toolbar can be hidden
 * Time management: menu added and a method for journals: make new node with current date.
 * FIX: Text based exports are using the correct order for the first level nodes.
+* NEW: If you have addresses as nodes, these can be displayed on the osm-maps very quickly
  
 ===============================
 Changes made in FreeMind 1.0.0 Beta1

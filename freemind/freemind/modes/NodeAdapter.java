@@ -684,7 +684,17 @@ public abstract class NodeAdapter implements MindMapNode {
 		Collections.sort(sorted, new Comparator() {
 
 			public int compare(Object pO1, Object pO2) {
-				return Boolean.compare(((MindMapNode) pO2).isLeft(), ((MindMapNode) pO1).isLeft());
+				return comp(((MindMapNode) pO2).isLeft(), ((MindMapNode) pO1).isLeft());
+			}
+
+			private int comp(boolean pLeft, boolean pLeft2) {
+				if(pLeft == pLeft2) {
+					return 0;
+				}
+				if(pLeft){
+					return 1;
+				}
+				return -1;
 			}});
 		return sorted.listIterator();
 	}

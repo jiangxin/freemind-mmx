@@ -308,8 +308,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		mSearchTerm.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent pE) {
-				getFreeMindMapController().search(mDataModel, mResultList,
-						mSearchTerm.getText(), mListOriginalBackgroundColor);
+				search(mSearchTerm.getText(), false, false);
 			}
 		});
 		mSearchPanel.setLayout(new BorderLayout());
@@ -703,5 +702,30 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	public JLabel getStatusLabel() {
 		return mStatusLabel;
+	}
+
+	public void search(String searchText, boolean pSelectFirstResult, boolean pCloseAfterSelect) {
+		if(!isSearchBarVisible()) {
+			toggleSearchBar();
+		}
+		mSearchTerm.setText(searchText);
+		boolean resultOk = getFreeMindMapController().search(mDataModel, mResultList,
+				searchText, mListOriginalBackgroundColor);
+		if(resultOk && pSelectFirstResult){
+			if(mDataModel.getSize()>0){
+				displaySearchItem(mDataModel, 0);
+				if(pCloseAfterSelect && mDataModel.getSize()==1){
+					toggleSearchBar();
+					this.map.requestFocus();
+					return;
+				}
+			}
+		}
+		if (resultOk) {
+			mResultList.requestFocus();
+		} else {
+			mSearchTerm.requestFocus();
+		}
+		
 	}
 }

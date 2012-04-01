@@ -972,7 +972,8 @@ public class FreeMindMapController extends JMapController implements
 		JMenuBar menu = new JMenuBar();
 		JMenu mainItem = new JMenu(getText("MapControllerPopupDialog.Actions"));
 		menuHolder.addMenu(mainItem, "main/actions/.");
-		menuHolder.addAction(placeAction, "main/actions/place");
+		addAccelerator(menuHolder.addAction(placeAction, "main/actions/place"),
+				"keystroke_plugins/map/MapDialog_Place");
 		addAccelerator(menuHolder.addAction(removePlaceAction,
 				"main/actions/removeplace"),
 				"keystroke_plugins/map/MapDialog_RemovePlace");
@@ -1717,9 +1718,13 @@ public class FreeMindMapController extends JMapController implements
 
 	}
 
-	public void search(SearchResultListModel dataModel, JList mResultList,
+	/**
+	 * @return true, if ok, false if error.
+	 */
+	public boolean search(SearchResultListModel dataModel, JList mResultList,
 			String mSearchText, Color mListOriginalBackgroundColor) {
 		// Display hour glass
+		boolean returnValue = true;
 		setCursor(Cursor.WAIT_CURSOR, true);
 		try {
 			dataModel.clear();
@@ -1736,6 +1741,7 @@ public class FreeMindMapController extends JMapController implements
 					// error handling, if the query wasn't successful.
 					if (Tools.safeEquals("ERROR", place.getOsmType())) {
 						mResultList.setBackground(Color.red);
+						returnValue = false;
 					} else {
 						mResultList.setBackground(Color.WHITE);
 						mResultList.setBackground(mListOriginalBackgroundColor);
@@ -1746,9 +1752,10 @@ public class FreeMindMapController extends JMapController implements
 			}
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
+			returnValue = false;
 		}
 		setCursor(Cursor.DEFAULT_CURSOR, false);
-
+		return returnValue;
 	}
 
 	/**

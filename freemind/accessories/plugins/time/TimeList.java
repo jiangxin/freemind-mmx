@@ -51,6 +51,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -265,14 +266,18 @@ public class TimeList extends MindMapHookAdapter implements
 				GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,
 						0, 0, 0), 0, 0));
 
+		mTreeLabel = new JLabel();
+		contentPane.add(new JScrollPane(mTreeLabel), new GridBagConstraints(0,
+				5, 1, 1, 1.0, 1.0, GridBagConstraints.WEST,
+				GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 		// button bar
-		final AbstractAction selectAction = new AbstractAction(
+		AbstractAction selectAction = new AbstractAction(
 				getResourceString("plugins/TimeManagement.xml_Select")) {
 			public void actionPerformed(ActionEvent arg0) {
 				selectSelectedRows();
 			}
 		};
-		final AbstractAction exportAction = new AbstractAction(
+		AbstractAction exportAction = new AbstractAction(
 				getResourceString("plugins/TimeManagement.xml_Export")) {
 			public void actionPerformed(ActionEvent arg0) {
 				exportSelectedRowsAndClose();
@@ -284,13 +289,13 @@ public class TimeList extends MindMapHookAdapter implements
 				replace(new ReplaceAllInfo());
 			}
 		};
-		final AbstractAction replaceSelectedAction = new AbstractAction(
+		AbstractAction replaceSelectedAction = new AbstractAction(
 				getResourceString("plugins/TimeManagement.xml_Replace_Selected")) {
 			public void actionPerformed(ActionEvent arg0) {
 				replace(new ReplaceSelectedInfo());
 			}
 		};
-		final AbstractAction gotoAction = new AbstractAction(
+		AbstractAction gotoAction = new AbstractAction(
 				getResourceString("plugins/TimeManagement.xml_Goto")) {
 			public void actionPerformed(ActionEvent arg0) {
 				selectSelectedRows();
@@ -303,11 +308,6 @@ public class TimeList extends MindMapHookAdapter implements
 				disposeDialog();
 			}
 		};
-		/* Initial State */
-		selectAction.setEnabled(false);
-		gotoAction.setEnabled(false);
-		exportAction.setEnabled(false);
-		replaceSelectedAction.setEnabled(false);
 
 		/** Menu **/
 		StructuredMenuHolder menuHolder = new StructuredMenuHolder();
@@ -315,24 +315,19 @@ public class TimeList extends MindMapHookAdapter implements
 		JMenu menu = new JMenu(
 				getResourceString("plugins/TimeManagement.xml_menu_actions"));
 		menuHolder.addMenu(menu, "main/actions/.");
-		addAccelerator(
+		final JMenuItem selectMenuItem = addAccelerator(
 				menuHolder.addAction(selectAction, "main/actions/select"),
 				"keystroke_plugins/TimeList_select");
-
-		addAccelerator(
-				menuHolder.addAction(selectAction, "main/actions/select"),
-				"keystroke_plugins/TimeList_select");
-
-		addAccelerator(menuHolder.addAction(gotoAction, "main/actions/goto"),
+		final JMenuItem gotoMenuItem = addAccelerator(menuHolder.addAction(gotoAction, "main/actions/goto"),
 				"keystroke_plugins/TimeList_goto");
-		addAccelerator(menuHolder.addAction(replaceSelectedAction,
+		final JMenuItem replaceSelectedMenuItem = addAccelerator(menuHolder.addAction(replaceSelectedAction,
 				"main/actions/replaceSelected"),
 				"keystroke_plugins/TimeList_replaceSelected");
-		addAccelerator(menuHolder.addAction(replaceAllAction,
+		final JMenuItem replaceAllMenuItem = addAccelerator(menuHolder.addAction(replaceAllAction,
 				"main/actions/replaceAll"),
 				"keystroke_plugins/TimeList_replaceAll");
 
-		addAccelerator(
+		final JMenuItem exportMenuItem = addAccelerator(
 				menuHolder.addAction(exportAction, "main/actions/export"),
 				"keystroke_plugins/TimeList_export");
 		addAccelerator(
@@ -341,8 +336,13 @@ public class TimeList extends MindMapHookAdapter implements
 		menuHolder.updateMenus(menuBar, "main/");
 		dialog.setJMenuBar(menuBar);
 
-		// table selection listeners to enable/disable menu actions:
+		/* Initial State */
+		selectMenuItem.setEnabled(false);
+		gotoMenuItem.setEnabled(false);
+		exportMenuItem.setEnabled(false);
+		replaceSelectedMenuItem.setEnabled(false);
 
+		// table selection listeners to enable/disable menu actions:
 		ListSelectionModel rowSM = timeTable.getSelectionModel();
 		rowSM.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
@@ -352,10 +352,10 @@ public class TimeList extends MindMapHookAdapter implements
 
 				ListSelectionModel lsm = (ListSelectionModel) e.getSource();
 				boolean enable = !(lsm.isSelectionEmpty());
-				replaceSelectedAction.setEnabled(enable);
-				selectAction.setEnabled(enable);
-				gotoAction.setEnabled(enable);
-				exportAction.setEnabled(enable);
+				replaceSelectedMenuItem.setEnabled(enable);
+				selectMenuItem.setEnabled(enable);
+				gotoMenuItem.setEnabled(enable);
+				exportMenuItem.setEnabled(enable);
 			}
 		});
 		// table selection listener to display the history of the selected nodes
