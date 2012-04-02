@@ -5,6 +5,7 @@ package plugins.map;
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -399,7 +400,16 @@ public class MapDialog extends MindMapHookAdapter implements
 		mMapDialog.validate();
 		mSearchBarVisible = !mSearchBarVisible;
 		if(pEvent != null) {
+			mSearchTerm.setText("");
 			mSearchTerm.dispatchEvent(pEvent);
+			/* Special for mac, as otherwise, everything is selected... GRRR. */
+			if (Tools.isMacOsX()) {
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						mSearchTerm.setCaretPosition(mSearchTerm.getDocument().getLength());
+					}
+				});
+			}
 		}
 	}
 
