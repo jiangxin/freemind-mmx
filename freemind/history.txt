@@ -7,6 +7,8 @@ Changes made in FreeMind 1.0.0 Beta2
 * Time management: menu added and a method for journals: make new node with current date.
 * FIX: Text based exports are using the correct order for the first level nodes.
 * NEW: If you have addresses as nodes, these can be displayed on the osm-maps very quickly
+* NEW: Find as you type: if you type an address to search for in the geographical map view, 
+  the find window is opened. 
  
 ===============================
 Changes made in FreeMind 1.0.0 Beta1

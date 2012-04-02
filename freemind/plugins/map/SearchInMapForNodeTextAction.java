@@ -20,6 +20,9 @@
 
 package plugins.map;
 
+import java.util.Iterator;
+import java.util.List;
+
 import freemind.main.HtmlTools;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
@@ -50,9 +53,17 @@ public class SearchInMapForNodeTextAction extends MindMapNodeHookAdapter {
 			}
 			mapDialog = registration.getMapDialog();
 			if (mapDialog != null) {
-				MindMapNode selected = getMindMapController().getSelected();
-				// Convert to plain text
-				mapDialog.search(HtmlTools.htmlToPlain(selected.getText()), true, true);
+				StringBuffer sb = new StringBuffer();
+			
+				List selecteds = getMindMapController().getSelecteds();
+				for (Iterator it = selecteds.iterator(); it.hasNext();) {
+					MindMapNode node = (MindMapNode) it.next();
+					// Convert to plain text
+					final String plainText = HtmlTools.htmlToPlain(node.getText());
+					sb.append(plainText + " ");
+				}
+				mapDialog.setSingleSearch();
+				mapDialog.search(sb.toString(), true);
 			} else {
 				logger.warning("Can't find dialog to connect to!");
 			}

@@ -118,6 +118,12 @@ import freemind.view.mindmapview.NodeView;
 public class FreeMindMapController extends JMapController implements
 		MouseListener, MouseMotionListener, MouseWheelListener, ActionListener,
 		KeyListener {
+	/**
+	 * 
+	 */
+	private static final int MODIFIERS_WITHOUT_SHIFT = Integer.MAX_VALUE
+			^ KeyEvent.SHIFT_MASK;
+
 	private static final String NODE_MAP_HOME_PROPERTY = "node_map_home";
 
 	private static final String XML_VERSION_1_0_ENCODING_UTF_8 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -175,7 +181,7 @@ public class FreeMindMapController extends JMapController implements
 	private MapNodePositionHolder mMapNodeMovingSource = null;
 
 	private Timer mMouseHitsNodeTimer;
-	
+
 	private boolean mIsRectangularSelect;
 
 	private Coordinate mRectangularStart;
@@ -1886,6 +1892,9 @@ public class FreeMindMapController extends JMapController implements
 		if (tileSourceByName != null) {
 			layer = tileSourceByName.mLayerName;
 		}
+		/* The embedded link would work for IE, too. 
+		 * But it is not easy to configure as a bounding box is necessary. 
+		 * It reads like osm.org/export/embed.html?bbox=... */
 		String link = "http://www.openstreetmap.org/?" + "mlat="
 				+ position.getLat() + "&mlon=" + position.getLon() + "&lat="
 				+ mapCenter.getLat() + "&lon=" + mapCenter.getLon() + "&zoom="
@@ -1894,11 +1903,19 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void keyTyped(KeyEvent pEvent) {
-		if(mMapHook.isSearchBarVisible())
+		if (mMapHook.isSearchBarVisible())
 			return;
 		Action[] specialKeyActions = { mZoomInAction, mZoomOutAction };
 		Tools.invokeActionsToKeyboardLayoutDependantCharacters(pEvent,
 				specialKeyActions, mMapDialog);
+		if (!pEvent.isConsumed() && !pEvent.isActionKey()
+				&& (Character.isLetter(pEvent.getKeyChar()))
+				&& ((pEvent.getModifiers() & MODIFIERS_WITHOUT_SHIFT) == 0)) {
+			// open search bar and process event.
+//			logger.info("Key event processed: " + pEvent);
+			mMapHook.toggleSearchBar(pEvent);
+			mMapHook.setSingleSearch();
+		}
 
 	}
 
@@ -1906,36 +1923,35 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void keyPressed(KeyEvent pEvent) {
-		if(mMapHook.isSearchBarVisible())
+		if (mMapHook.isSearchBarVisible())
 			return;
-		int modifiers = pEvent.getModifiers() & (Integer.MAX_VALUE ^ KeyEvent.SHIFT_MASK);
+		int modifiers = pEvent.getModifiers() & MODIFIERS_WITHOUT_SHIFT;
 		// only plain of shifted cursor keys are consumed here.
-		if(modifiers != 0) {
-			return;
-		}
-		int dx = MOVE_PIXEL_AMOUNT;
-		int dy = MOVE_PIXEL_AMOUNT;
-		if(pEvent.isShiftDown()) {
-			dx = (int) (map.getWidth() * PAGE_DOWN_FACTOR);
-			dy = (int) (map.getHeight() * PAGE_DOWN_FACTOR);
-		}
-		switch(pEvent.getKeyCode()) {
-		case KeyEvent.VK_LEFT:
-			map.moveMap(-dx, 0);
-			pEvent.consume();
-			break;
-		case KeyEvent.VK_RIGHT:
-			map.moveMap(dx, 0);
-			pEvent.consume();
-			break;
-		case KeyEvent.VK_UP:
-			map.moveMap(0, -dy);
-			pEvent.consume();
-			break;
-		case KeyEvent.VK_DOWN:
-			map.moveMap(0, dy);
-			pEvent.consume();
-			break;
+		if (modifiers == 0) {
+			int dx = MOVE_PIXEL_AMOUNT;
+			int dy = MOVE_PIXEL_AMOUNT;
+			if (pEvent.isShiftDown()) {
+				dx = (int) (map.getWidth() * PAGE_DOWN_FACTOR);
+				dy = (int) (map.getHeight() * PAGE_DOWN_FACTOR);
+			}
+			switch (pEvent.getKeyCode()) {
+			case KeyEvent.VK_LEFT:
+				map.moveMap(-dx, 0);
+				pEvent.consume();
+				break;
+			case KeyEvent.VK_RIGHT:
+				map.moveMap(dx, 0);
+				pEvent.consume();
+				break;
+			case KeyEvent.VK_UP:
+				map.moveMap(0, -dy);
+				pEvent.consume();
+				break;
+			case KeyEvent.VK_DOWN:
+				map.moveMap(0, dy);
+				pEvent.consume();
+				break;
+			}
 		}
 	}
 

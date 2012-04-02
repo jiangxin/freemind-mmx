@@ -2,6 +2,7 @@ package plugins.map;
 
 //License: GPL. Copyright 2008 by Jan Peter Stotz
 
+import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -15,7 +16,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -110,6 +110,11 @@ public class MapDialog extends MindMapHookAdapter implements
 	private JLabel mStatusLabel;
 
 	private SearchResultListModel mDataModel;
+
+	/**
+	 * Indicates that after a search, when a place was selected, the search dialog should close
+	 */
+	private boolean mSingleSearch = false;
 
 	private final class CloseAction extends AbstractAction {
 
@@ -278,8 +283,8 @@ public class MapDialog extends MindMapHookAdapter implements
 				if (pEvent.getKeyCode() == KeyEvent.VK_ENTER
 						&& pEvent.getModifiers() == 0) {
 					logger.info("Set result in map.");
-					displaySearchItem(mDataModel, index);
 					pEvent.consume();
+					displaySearchItem(mDataModel, index);
 					return;
 
 				}
@@ -308,7 +313,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		mSearchTerm.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent pE) {
-				search(mSearchTerm.getText(), false, false);
+				search(mSearchTerm.getText(), false);
 			}
 		});
 		mSearchPanel.setLayout(new BorderLayout());
@@ -375,8 +380,13 @@ public class MapDialog extends MindMapHookAdapter implements
 	public Registration getRegistration() {
 		return (Registration) getPluginBaseClass();
 	}
-
+	
 	public void toggleSearchBar() {
+		mSingleSearch = false;
+		toggleSearchBar(null);
+	}
+	
+	public void toggleSearchBar(AWTEvent pEvent) {
 		if (mSearchBarVisible) {
 			mDataModel.clear();
 			mMapDialog.remove(mSearchPanel);
@@ -388,6 +398,9 @@ public class MapDialog extends MindMapHookAdapter implements
 		}
 		mMapDialog.validate();
 		mSearchBarVisible = !mSearchBarVisible;
+		if(pEvent != null) {
+			mSearchTerm.dispatchEvent(pEvent);
+		}
 	}
 
 	/**
@@ -682,6 +695,10 @@ public class MapDialog extends MindMapHookAdapter implements
 			int index) {
 		Place place = dataModel.getPlaceAt(index);
 		getFreeMindMapController().setCursorPosition(place);
+		if(mSingleSearch && mSearchBarVisible) {
+			toggleSearchBar();
+		}
+		mSingleSearch = false;
 	}
 
 	public JDialog getMapDialog() {
@@ -704,7 +721,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		return mStatusLabel;
 	}
 
-	public void search(String searchText, boolean pSelectFirstResult, boolean pCloseAfterSelect) {
+	public void search(String searchText, boolean pSelectFirstResult) {
 		if(!isSearchBarVisible()) {
 			toggleSearchBar();
 		}
@@ -714,18 +731,26 @@ public class MapDialog extends MindMapHookAdapter implements
 		if(resultOk && pSelectFirstResult){
 			if(mDataModel.getSize()>0){
 				displaySearchItem(mDataModel, 0);
-				if(pCloseAfterSelect && mDataModel.getSize()==1){
-					toggleSearchBar();
-					this.map.requestFocus();
-					return;
-				}
 			}
+		}
+		if(mSingleSearch && mDataModel.getSize()==1){
+			displaySearchItem(mDataModel, 0);
+			this.map.requestFocus();
+			return;
 		}
 		if (resultOk) {
 			mResultList.requestFocus();
 		} else {
 			mSearchTerm.requestFocus();
 		}
+		
+	}
+
+	/**
+	 * 
+	 */
+	public void setSingleSearch() {
+		mSingleSearch  = true;
 		
 	}
 }
