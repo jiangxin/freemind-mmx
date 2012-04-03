@@ -44,6 +44,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 
+import freemind.main.Tools;
+
 /**
  * JDayChooser is a bean for choosing a day.
  * 
@@ -169,8 +171,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
 						private static final long serialVersionUID = -7433645992591669725L;
 
 						public void paint(Graphics g) {
-							if ("Windows".equals(UIManager.getLookAndFeel()
-									.getID())) {
+							if (Tools.isWindows()||Tools.isMacOsX()) {
 								// this is a hack to get the background painted
 								// when using Windows Look & Feel
 								if (selectedDay == this) {
