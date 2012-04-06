@@ -45,6 +45,7 @@ import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
 import plugins.map.MapNodePositionHolder.MapNodePositionListener;
 import freemind.common.BooleanProperty;
+import freemind.common.DontShowNotificationProperty;
 import freemind.common.SeparatorProperty;
 import freemind.common.TextTranslator;
 import freemind.controller.MenuItemEnabledListener;
@@ -114,6 +115,9 @@ public class Registration implements HookRegistration, ActorXml,
 					"plugins/map/MapDialog.properties_PatternSeparatorName"));
 			controls.add(new BooleanProperty("node_map_show_tooltip.tooltip",
 					"node_map_show_tooltip"));
+			controls.add(new DontShowNotificationProperty(
+					"resources_search_for_node_text_without_question.tooltip",
+					FreeMind.RESOURCES_SEARCH_FOR_NODE_TEXT_WITHOUT_QUESTION));
 			return controls;
 		}
 	}
