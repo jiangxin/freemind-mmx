@@ -164,14 +164,17 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 			} // focus gained
 
 			public void focusLost(FocusEvent e) {
-
 				// %%% open problems:
 				// - adding of a child to the rightmost node
 				// - scrolling while in editing mode (it can behave just like
 				// other viewers)
 				// - block selected events while in editing mode
-				if (!textfield.isVisible() || eventSource.getValue() == CANCEL)
+				if (! textfield.isVisible() || eventSource.getValue() == CANCEL) {
+					if (checkSpelling) {
+						eventSource.setValue(EDIT); // allow focus lost again
+					}
 					return;
+				}
 				if (e == null) { // can be when called explicitly
 					hideMe();
 					getEditControl().ok(textfield.getText());
@@ -184,10 +187,10 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 			}
 
 			public void keyPressed(KeyEvent e) {
-
 				// add to check meta keydown by koh 2004.04.16
 				if (e.isAltDown() || e.isControlDown() || e.isMetaDown()
-						|| eventSource.getValue() == CANCEL) {
+						|| eventSource.getValue() == CANCEL)
+				{
 					return;
 				}
 
@@ -235,9 +238,6 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 
 			public void mouseReleased(MouseEvent e) {
 				conditionallyShowPopup(e);
-				if (checkSpelling) {
-					eventSource.setValue(EDIT); // allow focus lost again
-				}
 			}
 
 			private void conditionallyShowPopup(MouseEvent e) {
