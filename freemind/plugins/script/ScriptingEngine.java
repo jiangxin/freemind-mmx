@@ -75,7 +75,12 @@ public class ScriptingEngine extends MindMapHookAdapter {
 			return;
 		}
 		// start calculation:
-		performScriptOperation(node, booleanHolder);
+		getController().getFrame().setWaitingCursor(true);
+		try {
+			performScriptOperation(node, booleanHolder);
+		} finally {
+			getController().getFrame().setWaitingCursor(false);
+		}
 	}
 
 	private void performExternalScript(String pScriptLocation,
@@ -95,7 +100,6 @@ public class ScriptingEngine extends MindMapHookAdapter {
 
 	private void performScriptOperation(MindMapNode node,
 			BooleanHolder pAlreadyAScriptExecuted) {
-		getController().getFrame().setWaitingCursor(true);
 		// depth first:
 		for (Iterator iter = node.childrenUnfolded(); iter.hasNext();) {
 			MindMapNode element = (MindMapNode) iter.next();
@@ -122,7 +126,6 @@ public class ScriptingEngine extends MindMapHookAdapter {
 				}
 			}
 		}
-		getController().getFrame().setWaitingCursor(false);
 	}
 
 	public static int findLineNumberInString(String resultString, int lineNumber) {
