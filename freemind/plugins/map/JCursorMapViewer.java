@@ -79,7 +79,7 @@ final class JCursorMapViewer extends JMapViewer {
 			}
 		};
 		new Timer(1000, updateCursorAction).start();
-
+		setFocusable(false);
 	}
 
 	public FreeMindMapController getFreeMindMapController() {

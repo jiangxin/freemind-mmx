@@ -705,7 +705,7 @@ public class MapDialog extends MindMapHookAdapter implements
 			int index) {
 		Place place = dataModel.getPlaceAt(index);
 		getFreeMindMapController().setCursorPosition(place);
-		if(mSingleSearch && mSearchBarVisible) {
+		if(mSingleSearch && isSearchBarVisible()) {
 			toggleSearchBar();
 		}
 		mSingleSearch = false;

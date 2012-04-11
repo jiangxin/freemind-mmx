@@ -1903,8 +1903,9 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void keyTyped(KeyEvent pEvent) {
-		if (mMapHook.isSearchBarVisible())
+		if (mMapHook.isSearchBarVisible()) {
 			return;
+		}
 		Action[] specialKeyActions = { mZoomInAction, mZoomOutAction };
 		Tools.invokeActionsToKeyboardLayoutDependantCharacters(pEvent,
 				specialKeyActions, mMapDialog);
@@ -1923,8 +1924,9 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void keyPressed(KeyEvent pEvent) {
-		if (mMapHook.isSearchBarVisible())
+		if (mMapHook.isSearchBarVisible()) {
 			return;
+		}
 		int modifiers = pEvent.getModifiers() & MODIFIERS_WITHOUT_SHIFT;
 		// only plain of shifted cursor keys are consumed here.
 		if (modifiers == 0) {
