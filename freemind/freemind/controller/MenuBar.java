@@ -187,6 +187,8 @@ public class MenuBar extends JMenuBar {
 		menuHolder.addAction(c.keyDocumentation, HELP_MENU
 				+ "doc/keyDocumentation");
 		menuHolder.addSeparator(HELP_MENU);
+		menuHolder.addCategory(HELP_MENU + "bugs");
+		menuHolder.addSeparator(HELP_MENU);
 		menuHolder.addAction(c.license, HELP_MENU + "about/license");
 		menuHolder.addAction(c.about, HELP_MENU + "about/about");
 

@@ -9,6 +9,7 @@ Changes made in FreeMind 1.0.0 Beta2
 * NEW: If you have addresses as nodes, these can be displayed on the osm-maps very quickly
 * NEW: Find as you type: if you type an address to search for in the geographical map view, 
   the find window is opened. 
+* NEW: Menu item to display current log file added.
  
 ===============================
 Changes made in FreeMind 1.0.0 Beta1

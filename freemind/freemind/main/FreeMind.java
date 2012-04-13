@@ -84,6 +84,8 @@ import freemind.view.mindmapview.NodeView;
 
 public class FreeMind extends JFrame implements FreeMindMain {
 
+	public static final String LOG_FILE_NAME = "log";
+
 	private static final String PORT_FILE = "portFile";
 
 	private static final String FREE_MIND_PROGRESS_LOAD_MAPS = "FreeMind.progress.loadMaps";
@@ -703,7 +705,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 			try {
 				mFileHandler = new FileHandler(getFreemindDirectory()
-						+ File.separator + "log", 1400000, 5, false);
+						+ File.separator + LOG_FILE_NAME, 1400000, 5, false);
 				mFileHandler.setFormatter(new StdFormatter());
 				mFileHandler.setLevel(Level.INFO);
 				parentLogger.addHandler(mFileHandler);

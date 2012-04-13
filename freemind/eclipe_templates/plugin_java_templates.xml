@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template autoinsert="true" context="java" deleted="false" description="Modal dialog via plugin" enabled="true" name="freemind_plugin_dialog">public class ${PluginName} extends MindMapHookAdapter implements
+		MapModuleChangeObserver {
+
+    /* in Resources_en.properties:
+# new, ${user}, ${date}:
+${PluginName}_title=
+${PluginName}_close=Close
+
+       in freemind_actions.xsd:
+	&lt;!-- Windowpositionstorage stores the window configuration of the
+		 ${PluginName}. --&gt;
+	&lt;xs:element name="${PluginName}_configuration_storage"&gt;
+	  &lt;xs:complexType&gt;
+		&lt;xs:complexContent&gt;
+			&lt;xs:extension base="window_configuration_storage"&gt;
+			&lt;/xs:extension&gt;
+		&lt;/xs:complexContent&gt;
+	  &lt;/xs:complexType&gt;
+	&lt;/xs:element&gt;
+
+	in ${PluginName}.xml or similar use the freemind_plugin macros.
+
+     */
+
+	private static final String WINDOW_PREFERENCE_STORAGE_PROPERTY = ${PluginName}.class
+			.getName();
+
+	private MindMapController mMyMindMapController;
+
+	private JDialog m${PluginName};
+
+	private CloseAction mCloseAction;
+
+	private final class CloseAction extends AbstractAction {
+
+		public CloseAction() {
+			super(getResourceString("${PluginName}_close"));
+		}
+
+		public void actionPerformed(ActionEvent arg0) {
+			disposeDialog();
+		}
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see freemind.extensions.HookAdapter#startupMapHook()
+	 */
+	public void startupMapHook() {
+		super.startupMapHook();
+		mMyMindMapController = super.getMindMapController();
+		getMindMapController().getController().getMapModuleManager()
+				.addListener(this);
+		m${PluginName} = new JDialog(getController().getFrame().getJFrame(), false /* unmodal */);
+		m${PluginName}.setTitle(getResourceString("${PluginName}_title"));
+		m${PluginName}
+				.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		m${PluginName}.addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent event) {
+				disposeDialog();
+			}
+		});
+		mCloseAction = new CloseAction();
+		// the action title is changed by the following method, thus we create
+		// another close action.
+		Tools.addEscapeActionToDialog(m${PluginName}, new CloseAction());
+		m${PluginName}.setSize(400, 400);
+
+		m${PluginName}.setLayout(new BorderLayout());
+		// restore preferences:
+		// Retrieve window size and column positions.
+		${PluginName}ConfigurationStorage storage = (${PluginName}ConfigurationStorage) getMindMapController()
+				.decorateDialog(m${PluginName}, WINDOW_PREFERENCE_STORAGE_PROPERTY);
+		if (storage != null) {
+		    //TODO: ${retrieve_additional_data_here}
+		}
+		m${PluginName}.setVisible(true);
+	}
+
+
+	/**
+	 * Overwritten, as this dialog is not modal, but after the plugin has
+	 * terminated, the dialog is still present and needs the controller to store
+	 * its values.
+	 * */
+	public MindMapController getMindMapController() {
+		return mMyMindMapController;
+	}
+
+	/**
+	 * 
+	 */
+	public void disposeDialog() {
+
+		// store window positions:
+		${PluginName}ConfigurationStorage storage = new ${PluginName}ConfigurationStorage();
+		//TODO: ${put_additional_data_here}
+		getMindMapController().storeDialogPositions(m${PluginName}, storage,
+				WINDOW_PREFERENCE_STORAGE_PROPERTY);
+
+		getMindMapController().getController().getMapModuleManager()
+				.removeListener(this);
+		m${PluginName}.setVisible(false);
+		m${PluginName}.dispose();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see freemind.controller.MapModuleManager.MapModuleChangeObserver#
+	 * isMapModuleChangeAllowed(freemind.view.MapModule, freemind.modes.Mode,
+	 * freemind.view.MapModule, freemind.modes.Mode)
+	 */
+	public boolean isMapModuleChangeAllowed(MapModule pOldMapModule,
+			Mode pOldMode, MapModule pNewMapModule, Mode pNewMode) {
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see freemind.controller.MapModuleManager.MapModuleChangeObserver#
+	 * beforeMapModuleChange(freemind.view.MapModule, freemind.modes.Mode,
+	 * freemind.view.MapModule, freemind.modes.Mode)
+	 */
+	public void beforeMapModuleChange(MapModule pOldMapModule, Mode pOldMode,
+			MapModule pNewMapModule, Mode pNewMode) {
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.controller.MapModuleManager.MapModuleChangeObserver#afterMapClose
+	 * (freemind.view.MapModule, freemind.modes.Mode)
+	 */
+	public void afterMapClose(MapModule pOldMapModule, Mode pOldMode) {
+		disposeDialog();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see freemind.controller.MapModuleManager.MapModuleChangeObserver#
+	 * afterMapModuleChange(freemind.view.MapModule, freemind.modes.Mode,
+	 * freemind.view.MapModule, freemind.modes.Mode)
+	 */
+	public void afterMapModuleChange(MapModule pOldMapModule, Mode pOldMode,
+			MapModule pNewMapModule, Mode pNewMode) {
+		disposeDialog();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see freemind.controller.MapModuleManager.MapModuleChangeObserver#
+	 * numberOfOpenMapInformation(int, int)
+	 */
+	public void numberOfOpenMapInformation(int pNumber, int pIndex) {
+	}
+
+	public CloseAction getCloseAction() {
+		return mCloseAction;
+	}
+
+}
+</template><template autoinsert="true" context="java" deleted="false" description="Plugin registration for FreeMind" enabled="true" name="freemind_registration">	public static class ${classname} implements HookRegistration,
+			MenuItemEnabledListener {
+
+		private final MindMapController controller;
+
+		private final MindMap mMap;
+
+		private final java.util.logging.Logger logger;
+
+		public ${classname}(ModeController controller, MindMap map) {
+			this.controller = (MindMapController) controller;
+			mMap = map;
+			logger = controller.getFrame().getLogger(this.getClass().getName());
+		}
+
+		public boolean isEnabled(JMenuItem pItem, Action pAction) {
+			if (controller == null)
+				return false;
+			boolean foundNote = false;
+			return foundNote;
+		}
+
+		public void deRegister() {
+		}
+
+		public void register() {
+		}
+	}
+</template></templates>

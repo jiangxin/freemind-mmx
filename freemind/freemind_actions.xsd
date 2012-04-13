@@ -944,6 +944,18 @@
 	  </xs:complexType>
 	</xs:element>
 
+	<!-- Windowpositionstorage stores the window configuration of the
+		 Log file Viewer window. -->
+	<xs:element name="log_file_viewer_configuration_storage">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="window_configuration_storage">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+
 	<!-- This element holds the sorting and size information to a column -->
 	<xs:element name="time_window_column_setting">
 		<xs:complexType>
