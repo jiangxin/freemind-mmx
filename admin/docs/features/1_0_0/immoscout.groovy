@@ -111,7 +111,7 @@ def getUrl(HashMap urlMap, String urlT, String IMMO) {
 					c.addIcon(cnode,freemind.modes.MindIcon.factory("full-" + (weeksOld as int)));
 					for(otherIcon in list){
 						c.addIcon(cnode, otherIcon);
-						//println "Readding " + otherIcon
+						println "Readding " + otherIcon
 					}
 					urlMap.remove(link);
 				} else {
