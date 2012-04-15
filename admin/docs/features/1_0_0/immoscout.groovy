@@ -96,9 +96,23 @@ def getUrl(HashMap urlMap, String urlT, String IMMO) {
 					if(weeksOld > 9) {
 						weeksOld = 9;
 					}
-					if(cnode.getIcons().size()>0)
+					// remove all icons up to the date icon:
+					def list = []
+					while(cnode.getIcons().size()>0) {
+						def currIcon = cnode.getIcons().lastElement()
 						c.removeLastIcon(cnode);
+						if(currIcon.getName().contains("full-")){
+							// last, if icon found
+							break;
+						}
+						list.add(0,currIcon)
+						println "Removing " + currIcon
+					}
 					c.addIcon(cnode,freemind.modes.MindIcon.factory("full-" + (weeksOld as int)));
+					for(otherIcon in list){
+						c.addIcon(cnode, otherIcon);
+						println "Readding " + otherIcon
+					}
 					urlMap.remove(link);
 				} else {
 					// new node
