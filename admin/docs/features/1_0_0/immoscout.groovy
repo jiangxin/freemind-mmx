@@ -54,9 +54,7 @@ urlMap.keySet().each { link ->
 	if(! link.startsWith(IMMO) )
 		return;
 	removedNode = urlMap[link];
-	if(removedNode.getIcons().size()>0)
-		c.removeLastIcon(removedNode);
-	c.addIcon(removedNode,freemind.modes.MindIcon.factory("button_cancel"));
+	changeIcon(removedNode, freemind.modes.MindIcon.factory("button_cancel"));
 	println "Removed from page T: " + removedNode;
 }
 
@@ -96,9 +94,8 @@ def getUrl(HashMap urlMap, String urlT, String IMMO) {
 					if(weeksOld > 9) {
 						weeksOld = 9;
 					}
-					if(cnode.getIcons().size()>0)
-						c.removeLastIcon(cnode);
-					c.addIcon(cnode,freemind.modes.MindIcon.factory("full-" + (weeksOld as int)));
+					def newIcon = freemind.modes.MindIcon.factory("full-" + (weeksOld as int));
+					changeIcon(cnode, newIcon);
 					urlMap.remove(link);
 				} else {
 					// new node
@@ -154,4 +151,24 @@ def addData(currentNode, matcherAdditionalData) {
 		return data;
 	}
 	return "";
+}
+
+def changeIcon(cnode, newIcon){
+	// remove all icons up to the date icon:
+	def list = []
+	while(cnode.getIcons().size()>0) {
+		def currIcon = cnode.getIcons().lastElement()
+		c.removeLastIcon(cnode);
+		if(currIcon.getName().contains("full-") || currIcon.getName().contains("button_cancel")){
+			// last, if icon found
+			break;
+		}
+		list.add(0,currIcon)
+		//println "Removing " + currIcon
+	}
+	c.addIcon(cnode,newIcon);
+	for(otherIcon in list){
+		c.addIcon(cnode, otherIcon);
+		//println "Readding " + otherIcon
+	}
 }

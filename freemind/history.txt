@@ -10,6 +10,8 @@ Changes made in FreeMind 1.0.0 Beta2
 * NEW: Find as you type: if you type an address to search for in the geographical map view, 
   the find window is opened. 
 * NEW: Menu item to display current log file added.
+* NEW: Added support for osm's new transport map
+* NEW: Added support for osm's new MapQuest.Open map
  
 ===============================
 Changes made in FreeMind 1.0.0 Beta1
