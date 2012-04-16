@@ -220,7 +220,7 @@ public class FreeMindMapController extends JMapController implements
         }
 
         public int getMaxZoom() {
-            return 17;
+            return 18;
         }
 
         public TileUpdate getTileUpdate() {
@@ -228,11 +228,40 @@ public class FreeMindMapController extends JMapController implements
         }
     }
 
+	public static class MapQuestOpenMap extends AbstractOsmTileSource {
+		
+		// http://otile1.mqcdn.com/tiles/1.0.0/osm/14/8800/5374.png
+		private static final String PATTERN = "http://otile%s.mqcdn.com/tiles/1.0.0/osm";
+		
+		private static final String[] SERVER = { "1", "2", "3", "4" };
+		
+		private int SERVER_NUM = 0;
+		
+		public MapQuestOpenMap() {
+			super("OSM MapQuest.Open Map", PATTERN);
+		}
+		
+		public String getBaseUrl() {
+			String url = String.format(this.baseUrl, new Object[] { SERVER[SERVER_NUM] });
+			SERVER_NUM = (SERVER_NUM + 1) % SERVER.length;
+			return url;
+		}
+		
+		public int getMaxZoom() {
+			return 18;
+		}
+		
+		public TileUpdate getTileUpdate() {
+			return TileUpdate.LastModified;
+		}
+	}
+	
 	private static TileSourceStore[] mTileSources = new TileSourceStore[] {
 			new TileSourceStore(new OsmTileSource.Mapnik(), "M"),
 			new TileSourceStore(new OsmTileSource.TilesAtHome(), "O"),
 			new TileSourceStore(new OsmTileSource.CycleMap(), "C"),
-			new TileSourceStore(new TransportMap(), "T")
+			new TileSourceStore(new TransportMap(), "T"),
+			new TileSourceStore(new MapQuestOpenMap(), "Q")
 	/* , new BingAerialTileSource() license problems.... */
 	};
 
