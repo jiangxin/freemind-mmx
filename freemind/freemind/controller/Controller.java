@@ -115,6 +115,7 @@ import freemind.view.mindmapview.MapView;
 public class Controller implements MapModuleChangeObserver {
 
 	private HashSet mMapTitleChangeListenerSet = new HashSet();
+	private HashSet mZoomListenerSet = new HashSet();
 	private HashSet mMapTitleContributorSet = new HashSet();
 	/**
 	 * Converts from a local link to the real file URL of the documentation map.
@@ -369,14 +370,15 @@ public class Controller implements MapModuleChangeObserver {
 		return frame.getResourceString(resource);
 	}
 
-	/** @return the current modeController, or null, if 
-	 * FreeMind is just starting and there is no 
-	 * modeController present. */
+	/**
+	 * @return the current modeController, or null, if FreeMind is just starting
+	 *         and there is no modeController present.
+	 */
 	public ModeController getModeController() {
 		if (getMapModule() != null) {
 			return getMapModule().getModeController();
 		}
-		if(getMode() != null) {
+		if (getMode() != null) {
 			// no map present: we take the default:
 			return getMode().getDefaultModeController();
 		}
@@ -570,8 +572,8 @@ public class Controller implements MapModuleChangeObserver {
 		if (oldModeController.getModeToolBar() != null) {
 			toolbar.remove(oldModeController.getModeToolBar());
 			toolbar.activate(true);
-//			northToolbarPanel.remove(oldModeController.getModeToolBar());
-//			northToolbarPanel.add(toolbar, BorderLayout.NORTH);
+			// northToolbarPanel.remove(oldModeController.getModeToolBar());
+			// northToolbarPanel.add(toolbar, BorderLayout.NORTH);
 		}
 		/* other toolbars are to be removed too. */
 		if (oldModeController.getLeftToolBar() != null) {
@@ -591,8 +593,8 @@ public class Controller implements MapModuleChangeObserver {
 				getView().selectAsTheOnlyOneSelected(getView().getRoot());
 			}
 			lastOpened.mapOpened(newMapModule);
-			((MainToolBar) getToolbar()).setZoomComboBox(newMapModule.getView()
-					.getZoom());
+			changeZoomValueProperty(newMapModule.getView().getZoom());
+			// ((MainToolBar) getToolbar()).setZoomComboBox(zoomValue);
 			// old
 			// obtainFocusForSelected();
 			newModeController = newMapModule.getModeController();
@@ -610,8 +612,8 @@ public class Controller implements MapModuleChangeObserver {
 		if (newToolBar != null) {
 			toolbar.activate(false);
 			toolbar.add(newToolBar, 0);
-//			northToolbarPanel.remove(toolbar);
-//			northToolbarPanel.add(newToolBar, BorderLayout.NORTH);
+			// northToolbarPanel.remove(toolbar);
+			// northToolbarPanel.add(newToolBar, BorderLayout.NORTH);
 			newToolBar.repaint();
 		}
 		/* new left toolbar. */
@@ -633,6 +635,13 @@ public class Controller implements MapModuleChangeObserver {
 		menuBar.repaint();
 		// new
 		obtainFocusForSelected();
+	}
+
+	protected void changeZoomValueProperty(final float zoomValue) {
+		for (Iterator it = mZoomListenerSet.iterator(); it.hasNext();) {
+			ZoomListener listener = (ZoomListener) it.next();
+			listener.setZoom(zoomValue);
+		}
 	}
 
 	public void numberOfOpenMapInformation(int number, int pIndex) {
@@ -841,7 +850,8 @@ public class Controller implements MapModuleChangeObserver {
 
 	public void setZoom(float zoom) {
 		getView().setZoom(zoom);
-		((MainToolBar) toolbar).setZoomComboBox(zoom);
+		changeZoomValueProperty(zoom);
+//		((MainToolBar) toolbar).setZoomComboBox(zoom);
 		// show text in status bar:
 		Object[] messageArguments = { String.valueOf(zoom * 100f) };
 		String stringResult = Resources.getInstance().format(
@@ -914,6 +924,14 @@ public class Controller implements MapModuleChangeObserver {
 	public void deregisterMapTitleChangeListener(
 			MapModuleManager.MapTitleChangeListener pMapTitleChangeListener) {
 		mMapTitleChangeListenerSet.remove(pMapTitleChangeListener);
+	}
+
+	public void registerZoomListener(ZoomListener pZoomListener) {
+		mZoomListenerSet.add(pZoomListener);
+	}
+
+	public void deregisterZoomListener(ZoomListener pZoomListener) {
+		mZoomListenerSet.remove(pZoomListener);
 	}
 
 	public void registerMapTitleContributor(

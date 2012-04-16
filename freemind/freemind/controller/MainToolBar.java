@@ -32,20 +32,16 @@ public class MainToolBar extends FreeMindToolBar {
 	Controller controller;
 	String userDefinedZoom;
 	private static Logger logger = null;
-	FreeMindToolBar mInnerToolBar;
 
 	public MainToolBar(final Controller controller) {
 		super();
 		this.setRollover(true);
 		this.controller = controller;
-		mInnerToolBar = new FreeMindToolBar();
 		if (logger == null) {
 			logger = controller.getFrame().getLogger(this.getClass().getName());
 		}
 		userDefinedZoom = controller.getResourceString("user_defined_zoom");
 
-		mInnerToolBar.setBorderPainted(false);
-		mInnerToolBar.setMargin(new Insets(0, 0, 0, 0));
 		setBorderPainted(false);
 		setMargin(new Insets(0, 0, 0, 0));
 //		mInnerToolBar.add(controller.navigationPreviousMap);
@@ -73,12 +69,6 @@ public class MainToolBar extends FreeMindToolBar {
 	}
 
 	public void activate(boolean visible) {
-		if (visible) {
-			this.remove(mInnerToolBar);
-			this.add(mInnerToolBar);
-		} else {
-			this.remove(mInnerToolBar);
-		}
 	}
 
 	private void setZoomByItem(Object item) {
@@ -126,7 +116,7 @@ public class MainToolBar extends FreeMindToolBar {
 		}
 	}
 
-	public String getItemForZoom(float f) {
+	private String getItemForZoom(float f) {
 		return (int) (f * 100F) + "%";
 	}
 
