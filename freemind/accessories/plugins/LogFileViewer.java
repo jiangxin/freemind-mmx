@@ -84,7 +84,7 @@ public class LogFileViewer extends MindMapHookAdapter implements
 		getMindMapController().getController().getMapModuleManager()
 				.addListener(this);
 		mLogFileViewer = new JDialog(getController().getFrame().getJFrame(),
-				false /* unmodal */);
+				true /* modal, as long as we don't have a tail -f */);
 		mLogFileViewer.setTitle(getResourceString("LogFileViewer_title")+pathname);
 		mLogFileViewer
 				.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -101,6 +101,8 @@ public class LogFileViewer extends MindMapHookAdapter implements
 		mLogFileViewer.setLayout(new BorderLayout());
 		mTextArea = new JTextArea(logFileContents);
 		mTextArea.setEditable(false);
+		// scroll at the end
+		mTextArea.setCaretPosition(logFileContents.length());
 		mLogFileViewer.add(new JScrollPane(mTextArea), BorderLayout.CENTER);
 		// restore preferences:
 		// Retrieve window size and column positions.
