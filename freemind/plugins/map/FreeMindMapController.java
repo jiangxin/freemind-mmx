@@ -75,6 +75,8 @@ import org.openstreetmap.gui.jmapviewer.JMapController;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.OsmMercator;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
+import org.openstreetmap.gui.jmapviewer.interfaces.TileSource.TileUpdate;
+import org.openstreetmap.gui.jmapviewer.tilesources.AbstractOsmTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
 import plugins.map.MapDialog.SearchResultListModel;
@@ -197,11 +199,40 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 	}
+	
+	public static class TransportMap extends AbstractOsmTileSource {
+
+		// http://b.tile2.opencyclemap.org/transport/14/8800/5373.png
+        private static final String PATTERN = "http://%s.tile2.opencyclemap.org/transport";
+
+        private static final String[] SERVER = { "a", "b", "c" };
+
+        private int SERVER_NUM = 0;
+
+        public TransportMap() {
+            super("OSM Transport Map", PATTERN);
+        }
+
+        public String getBaseUrl() {
+            String url = String.format(this.baseUrl, new Object[] { SERVER[SERVER_NUM] });
+            SERVER_NUM = (SERVER_NUM + 1) % SERVER.length;
+            return url;
+        }
+
+        public int getMaxZoom() {
+            return 17;
+        }
+
+        public TileUpdate getTileUpdate() {
+            return TileUpdate.LastModified;
+        }
+    }
 
 	private static TileSourceStore[] mTileSources = new TileSourceStore[] {
 			new TileSourceStore(new OsmTileSource.Mapnik(), "M"),
 			new TileSourceStore(new OsmTileSource.TilesAtHome(), "O"),
-			new TileSourceStore(new OsmTileSource.CycleMap(), "C")
+			new TileSourceStore(new OsmTileSource.CycleMap(), "C"),
+			new TileSourceStore(new TransportMap(), "T")
 	/* , new BingAerialTileSource() license problems.... */
 	};
 
