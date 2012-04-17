@@ -29,11 +29,13 @@ import javax.swing.JComboBox;
 import javax.swing.JToolBar;
 import javax.swing.plaf.basic.BasicComboBoxEditor;
 
+import freemind.controller.Controller;
 import freemind.controller.FreeMindToolBar;
 import freemind.controller.StructuredMenuHolder;
+import freemind.controller.ZoomListener;
 import freemind.main.Tools;
 
-public class MindMapToolBar extends FreeMindToolBar {
+public class MindMapToolBar extends FreeMindToolBar implements ZoomListener {
 
 	private static final String[] sizes = { "8", "10", "12", "14", "16", "18",
 			"20", "24", "28" };
@@ -45,10 +47,18 @@ public class MindMapToolBar extends FreeMindToolBar {
 	private boolean fontFamily_IgnoreChangeEvent = false;
 	private ItemListener fontsListener;
 	private ItemListener sizeListener;
+	private JComboBox zoom;
+	private String userDefinedZoom;
 
+	protected static java.util.logging.Logger logger = null;
+	
 	public MindMapToolBar(MindMapController controller) {
 		super();
 		this.c = controller;
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
 		this.setRollover(true);
 		fonts = new JComboBox(Tools.getAvailableFontFamilyNamesAsVector());
 		fonts.setFocusable(false);
@@ -98,11 +108,45 @@ public class MindMapToolBar extends FreeMindToolBar {
 			}
 		};
 		size.addItemListener(sizeListener);
+		userDefinedZoom = controller.getText("user_defined_zoom");
+
+		zoom = new JComboBox(controller.getController().getZooms());
+		zoom.setSelectedItem("100%");
+		zoom.addItem(userDefinedZoom);
+		// Focus fix.
+		zoom.setFocusable(false);
+		zoom.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				// todo: dialog with user zoom value, if user zoom is chosen.
+				// change proposed by dimitri:
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					setZoomByItem(e.getItem());
+				}
+			}
+		});
+
 	}
 
+	private void setZoomByItem(Object item) {
+		if (((String) item).equals(userDefinedZoom))
+			return;
+		String dirty = (String) item;
+		String cleaned = dirty.substring(0, dirty.length() - 1);
+		// change representation ("125" to 1.25)
+		float zoomValue = Float.parseFloat(cleaned) / 100F; // nothing to do...
+		// remove '%' sign
+		getController().setZoom(zoomValue);
+	}
+
+	protected Controller getController() {
+		return c.getController();
+	}
+	
 	public void update(StructuredMenuHolder holder) {
 		this.removeAll();
 		holder.updateMenus(this, "mindmapmode_toolbar/");
+
+		add(zoom);
 
 		fonts.setMaximumRowCount(9);
 		add(fonts);
@@ -154,4 +198,34 @@ public class MindMapToolBar extends FreeMindToolBar {
 		fonts.setEnabled(enabled);
 		size.setEnabled(enabled);
 	}
+
+	/* (non-Javadoc)
+	 * @see freemind.controller.ZoomListener#setZoom(float)
+	 */
+	public void setZoom(float f) {
+		logger.fine("setZoomComboBox is called with " + f + ".");
+		String toBeFound = getItemForZoom(f);
+		for (int i = 0; i < zoom.getItemCount(); ++i) {
+			if (toBeFound.equals((String) zoom.getItemAt(i))) {
+				// found
+				zoom.setSelectedItem(toBeFound);
+				return;
+			}
+		}
+		zoom.setSelectedItem(userDefinedZoom);
+		
+	}
+	
+	private String getItemForZoom(float f) {
+		return (int) (f * 100F) + "%";
+	}
+
+	public void startup() {
+		getController().registerZoomListener(this);
+	}
+		
+	public void shutdown() {
+		getController().deregisterZoomListener(this);
+	}
+
 }

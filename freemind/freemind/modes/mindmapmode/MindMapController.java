@@ -692,6 +692,7 @@ public class MindMapController extends ControllerAdapter implements
 	 */
 	public void startupController() {
 		super.startupController();
+		getToolBar().startup();
 		HookFactory hookFactory = getHookFactory();
 		List pluginRegistrations = hookFactory.getRegistrations();
 		logger.fine("mScheduledActions are executed: "
@@ -756,6 +757,8 @@ public class MindMapController extends ControllerAdapter implements
 		getController().getNodeMouseMotionListener().deregister();
 		mGetEventIfChangedAfterThisTimeInMillies = getMap()
 				.deregisterMapSourceChangedObserver(this);
+		getToolBar().shutdown();
+
 	}
 
 	public MapAdapter newModel(ModeController modeController) {

@@ -196,11 +196,8 @@ public class Controller implements MapModuleChangeObserver {
 	public PropertyAction propertyAction;
 	public OpenURLAction freemindUrl;
 
-	// this values better suit at least the test purposes
-	private static final String[] zooms = { "25%", "50%", "75%", "100%",
-			"150%", "200%", "300%", "400%" };
-	// private static final String[] zooms =
-	// {"25%","40%","60%","75%","100%","125%","150%","200%"};
+	private static final float[] zoomValues = { 25/100f, 50/100f, 75/100f, 100/100f,
+			150/100f, 200/100f, 300/100f, 400/100f };
 
 	private static Vector propertyChangeListeners = new Vector();
 
@@ -411,6 +408,11 @@ public class Controller implements MapModuleChangeObserver {
 	}
 
 	public String[] getZooms() {
+		String[] zooms = new String[zoomValues.length];
+		for (int i = 0; i < zoomValues.length; i++) {
+			float val = zoomValues[i];
+			zooms[i] = (int)(val*100f) + "%";
+		}
 		return zooms;
 	}
 
@@ -1603,7 +1605,15 @@ public class Controller implements MapModuleChangeObserver {
 
 		public void actionPerformed(ActionEvent e) {
 			// logger.info("ZoomInAction actionPerformed");
-			((MainToolBar) toolbar).zoomIn();
+			float currentZoom = getView().getZoom();
+			for (int i = 0; i < zoomValues.length; i++) {
+				float val = zoomValues[i];
+				if(val > currentZoom) {
+					setZoom(val);
+					return;
+				}
+			}
+			setZoom(zoomValues[zoomValues.length-1]);
 		}
 	}
 
@@ -1613,8 +1623,17 @@ public class Controller implements MapModuleChangeObserver {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			// logger.info("ZoomOutAction actionPerformed");
-			((MainToolBar) toolbar).zoomOut();
+			float currentZoom = getView().getZoom();
+			float lastZoom = zoomValues[0];
+			for (int i = 0; i < zoomValues.length; i++) {
+				float val = zoomValues[i];
+				if(val >= currentZoom) {
+					setZoom(lastZoom);
+					return;
+				}
+				lastZoom = val;
+			}
+			setZoom(lastZoom);
 		}
 	}
 
