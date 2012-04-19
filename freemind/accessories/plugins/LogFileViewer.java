@@ -21,16 +21,23 @@
 package accessories.plugins;
 
 import java.awt.BorderLayout;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.util.logging.ErrorManager;
+import java.util.logging.LogRecord;
+import java.util.logging.SimpleFormatter;
 
 import javax.swing.AbstractAction;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
+import javax.swing.text.BadLocationException;
+
+import accessories.plugins.LogFileLogHandler.LogReceiver;
 
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.actions.generated.instance.LogFileViewerConfigurationStorage;
@@ -42,7 +49,7 @@ import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
 import freemind.view.MapModule;
 
 public class LogFileViewer extends MindMapHookAdapter implements
-		MapModuleChangeObserver {
+		MapModuleChangeObserver, LogReceiver {
 
 	private static final String WINDOW_PREFERENCE_STORAGE_PROPERTY = LogFileViewer.class
 			.getName();
@@ -54,6 +61,10 @@ public class LogFileViewer extends MindMapHookAdapter implements
 	private CloseAction mCloseAction;
 
 	private JTextArea mTextArea;
+
+	protected static java.util.logging.Logger logger = null;
+
+	private LogFileLogHandler mHandler;
 
 	private final class CloseAction extends AbstractAction {
 
@@ -73,6 +84,10 @@ public class LogFileViewer extends MindMapHookAdapter implements
 	 */
 	public void startupMapHook() {
 		super.startupMapHook();
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
 		mMyMindMapController = super.getMindMapController();
 		// retrieve content
 		final String pathname = getMindMapController().getFrame()
@@ -84,8 +99,9 @@ public class LogFileViewer extends MindMapHookAdapter implements
 		getMindMapController().getController().getMapModuleManager()
 				.addListener(this);
 		mLogFileViewer = new JDialog(getController().getFrame().getJFrame(),
-				true /* modal, as long as we don't have a tail -f */);
-		mLogFileViewer.setTitle(getResourceString("LogFileViewer_title")+pathname);
+				false);
+		mLogFileViewer.setTitle(getResourceString("LogFileViewer_title")
+				+ pathname);
 		mLogFileViewer
 				.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		mLogFileViewer.addWindowListener(new WindowAdapter() {
@@ -113,6 +129,9 @@ public class LogFileViewer extends MindMapHookAdapter implements
 			// retrieve_additional_data_here
 		}
 		mLogFileViewer.setVisible(true);
+		mHandler = new LogFileLogHandler(this);
+		mHandler.setFormatter(new SimpleFormatter());
+		logger.getParent().addHandler(mHandler);
 	}
 
 	/**
@@ -128,7 +147,7 @@ public class LogFileViewer extends MindMapHookAdapter implements
 	 * 
 	 */
 	public void disposeDialog() {
-
+		logger.getParent().removeHandler(mHandler);
 		// store window positions:
 		LogFileViewerConfigurationStorage storage = new LogFileViewerConfigurationStorage();
 		// put_additional_data_here
@@ -198,6 +217,38 @@ public class LogFileViewer extends MindMapHookAdapter implements
 
 	public CloseAction getCloseAction() {
 		return mCloseAction;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * accessories.plugins.LogFileLogHandler.LogReceiver#receiveLog(java.util
+	 * .logging.LogRecord)
+	 */
+	public void receiveLog(final LogRecord record) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				if (!mHandler.isLoggable(record)) {
+					return;
+				}
+				try {
+					String msg = mHandler.getFormatter().format(record);
+					// is cursor at the end?
+					final int length = mTextArea.getDocument().getLength();
+					boolean atEnd = mTextArea.getCaretPosition() == length;
+					mTextArea.getDocument().insertString(length, msg, null);
+					if(atEnd) {
+						// if at end, scroll again to the end
+						mTextArea.setCaretPosition(mTextArea.getDocument().getLength());
+					}
+
+				} catch (Exception ex) {
+					// We don't want to throw an exception here.
+				}
+
+			}
+		});
 	}
 
 }
