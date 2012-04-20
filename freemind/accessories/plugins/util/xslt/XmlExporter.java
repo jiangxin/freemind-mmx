@@ -27,7 +27,6 @@ package accessories.plugins.util.xslt;
 
 import java.io.File;
 
-import javax.swing.JFileChooser;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -40,8 +39,6 @@ import javax.xml.transform.stream.StreamSource;
  * @author joerg
  */
 public class XmlExporter {
-	// Create a file chooser
-	final JFileChooser fc = new JFileChooser();
 
 	/** Creates a new instance of XmlExporter */
 	public XmlExporter() {

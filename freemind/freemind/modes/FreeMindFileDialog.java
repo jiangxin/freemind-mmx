@@ -32,6 +32,10 @@ import javax.swing.filechooser.FileFilter;
  */
 public interface FreeMindFileDialog  {
 
+	public interface DirectoryResultListener {
+		void setChosenDirectory(File pDir);
+	}
+	
 	public int showOpenDialog(Component pParent) throws HeadlessException;
 
 	public int showSaveDialog(Component pParent) throws HeadlessException;
@@ -66,6 +70,7 @@ public interface FreeMindFileDialog  {
 	 */
 	public void setSelectedFile(File pFile);
 
+	public void registerDirectoryResultListener(DirectoryResultListener pDirectoryResultListener);
 	
 	
 }

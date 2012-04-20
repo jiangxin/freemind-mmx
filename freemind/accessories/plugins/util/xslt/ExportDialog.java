@@ -39,6 +39,7 @@ import javax.swing.JTextField;
 
 import accessories.plugins.util.window.WindowClosingAdapter;
 import freemind.main.ExampleFileFilter;
+import freemind.modes.FreeMindFileDialog;
 import freemind.modes.ModeController;
 
 public class ExportDialog extends JFrame {
@@ -231,24 +232,20 @@ public class ExportDialog extends JFrame {
 
 		public void actionPerformed(ActionEvent e) {
 
-			JFileChooser chooser;
-			if (kind == 0) {
-				StringBuffer map = new StringBuffer(""); //$NON-NLS-1$
-
-				chooser = new JFileChooser();
-			} else
-				chooser = new JFileChooser(xf.getParentFile());
-
 			ExampleFileFilter filter = null;
 
 			if (kind == 0) {
 				filter = new ExampleFileFilter(
 						new String("xsl"), getResourceString("ExportDialog.13")); //$NON-NLS-1$ //$NON-NLS-2$
-				chooser.setFileFilter(filter);
 			}
-			;
-
-			int returnVal = chooser.showDialog(parent, WindowTitle);
+			FreeMindFileDialog chooser = mController.getFileChooser(filter);
+			chooser.setDialogTitle(WindowTitle);
+			int returnVal;
+			if (kind == 0) {
+				returnVal = chooser.showOpenDialog(parent);
+			} else {
+				returnVal = chooser.showSaveDialog(parent);
+			}
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				try {
 					if (kind == 0) {
@@ -265,7 +262,6 @@ public class ExportDialog extends JFrame {
 							jtf.setText(chooser.getSelectedFile()
 									.getAbsolutePath());
 						}
-						;
 					}
 					if (kind == 1) {
 						if (!new File(chooser.getSelectedFile()
@@ -289,7 +285,7 @@ public class ExportDialog extends JFrame {
 					}
 
 				} catch (Exception ex) {
-					System.out.println("exeption:" + ex);} { //$NON-NLS-1$
+					System.out.println("exeption:" + ex);
 				}
 			}
 		}

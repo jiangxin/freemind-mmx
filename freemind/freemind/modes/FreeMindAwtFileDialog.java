@@ -102,6 +102,7 @@ public class FreeMindAwtFileDialog extends FileDialog implements
 	}
 	
 	private FreeMindFilenameFilter mFilter;
+	private DirectoryResultListener mDirectoryResultListener = null;
 
 	/**
 	 * @author foltin
@@ -156,13 +157,32 @@ public class FreeMindAwtFileDialog extends FileDialog implements
 
 	}
 	
+	protected void callDirectoryListener() {
+		if(getFile() != null) {
+			if(mDirectoryResultListener != null) {
+				try {
+					mDirectoryResultListener
+					.setChosenDirectory(getSelectedFile()
+							.getParentFile());
+				} catch (Exception e) {
+					freemind.main.Resources.getInstance().logException(e);
+				}
+			}
+		}
+	}
+	
+	protected int getReturnValue() {
+		return (getFile() == null)?JFileChooser.CANCEL_OPTION:JFileChooser.APPROVE_OPTION;
+	}
+	
 	/* (non-Javadoc)
 	 * @see freemind.modes.FreeMindFileDialog#showOpenDialog(java.awt.Component)
 	 */
 	public int showOpenDialog(Component pParent) throws HeadlessException {
 		setMode(LOAD);
 		show();
-		return (getFile() == null)?JFileChooser.CANCEL_OPTION:JFileChooser.APPROVE_OPTION;
+		callDirectoryListener();
+		return getReturnValue();
 	}
 
 	/* (non-Javadoc)
@@ -171,7 +191,8 @@ public class FreeMindAwtFileDialog extends FileDialog implements
 	public int showSaveDialog(Component pParent) throws HeadlessException {
 		setMode(SAVE);
 		show();
-		return (getFile() == null)?JFileChooser.CANCEL_OPTION:JFileChooser.APPROVE_OPTION;
+		callDirectoryListener();
+		return getReturnValue();
 	}
 
 	/* (non-Javadoc)
@@ -251,6 +272,14 @@ public class FreeMindAwtFileDialog extends FileDialog implements
 	 */
 	public void setSelectedFile(File pFile) {
 		super.setFile(pFile.getAbsolutePath());
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.FreeMindFileDialog#registerDirectoryResultListener(freemind.modes.FreeMindFileDialog.DirectoryResultListener)
+	 */
+	public void registerDirectoryResultListener(
+			DirectoryResultListener pDirectoryResultListener) {
+				mDirectoryResultListener = pDirectoryResultListener;
 	}
 
 }

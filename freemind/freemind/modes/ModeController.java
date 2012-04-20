@@ -351,18 +351,6 @@ public interface ModeController extends TextTranslator {
 
 	URL getResource(String path);
 
-	/**
-	 * If other places want to save/load something, this should be the default
-	 * path.
-	 */
-	public File getLastCurrentDir();
-
-	/**
-	 * If some load/save operation has changed the path, it should be mentioned
-	 * here.
-	 */
-	public void setLastCurrentDir(File pLastCurrentDir);
-
 	AttributeController getAttributeController();
 
 	void nodeRefresh(MindMapNode node);

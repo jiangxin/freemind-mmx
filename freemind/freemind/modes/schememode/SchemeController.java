@@ -33,6 +33,7 @@ import javax.swing.JPopupMenu;
 import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
 import freemind.extensions.HookFactory;
+import freemind.modes.FreeMindFileDialog;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -69,17 +70,7 @@ public class SchemeController extends ViewControllerAdapter {
 	// }
 
 	public boolean saveAs() {
-		JFileChooser chooser = null;
-		if ((getMap().getFile() != null)
-				&& (getMap().getFile().getParentFile() != null)) {
-			chooser = new JFileChooser(getMap().getFile().getParentFile());
-		} else {
-			chooser = new JFileChooser();
-		}
-		// chooser.setLocale(currentLocale);
-		if (getFileFilter() != null) {
-			chooser.addChoosableFileFilter(getFileFilter());
-		}
+		FreeMindFileDialog chooser = getFileChooser();
 		int returnVal = chooser.showSaveDialog(getView());
 		if (returnVal == JFileChooser.APPROVE_OPTION) {// ok pressed
 			File f = chooser.getSelectedFile();

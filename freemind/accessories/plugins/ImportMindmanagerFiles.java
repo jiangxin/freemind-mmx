@@ -42,6 +42,7 @@ import javax.xml.transform.stream.StreamSource;
 import freemind.extensions.ExportHook;
 import freemind.extensions.ModeControllerHookAdapter;
 import freemind.main.XMLParseException;
+import freemind.modes.FreeMindFileDialog;
 
 /**
  * Applies an XSLT to the Document.xml file of MindManager(c) files.
@@ -57,17 +58,13 @@ public class ImportMindmanagerFiles extends ModeControllerHookAdapter {
 		super.startupMapHook();
 		String type = "mmap";
 		Container component = getController().getFrame().getContentPane();
-		JFileChooser chooser = new JFileChooser();
-		chooser.addChoosableFileFilter(new ExportHook.ImageFilter(type, null /*
+		final ExportHook.ImageFilter filter = new ExportHook.ImageFilter(type, null /*
 																			 * No
 																			 * description
 																			 * so
 																			 * far
-																			 */));
-		File mmFile = getController().getMap().getFile();
-		if (mmFile != null && mmFile.getParentFile() != null) {
-			chooser.setSelectedFile(mmFile.getParentFile());
-		}
+																			 */);
+		FreeMindFileDialog chooser = getController().getFileChooser(filter);
 		int returnVal = chooser.showOpenDialog(component);
 		if (returnVal != JFileChooser.APPROVE_OPTION) { // not ok pressed
 			return;

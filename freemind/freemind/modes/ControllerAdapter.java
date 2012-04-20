@@ -87,6 +87,7 @@ import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.main.XMLParseException;
+import freemind.modes.FreeMindFileDialog.DirectoryResultListener;
 import freemind.modes.attributes.AttributeController;
 import freemind.modes.common.listeners.MindMapMouseWheelEventHandler;
 import freemind.view.MapModule;
@@ -101,7 +102,7 @@ import freemind.view.mindmapview.attributeview.AttributeView;
  * default Actions you may want to use for easy editing of your model. Take
  * MindMapController as a sample.
  */
-public abstract class ControllerAdapter implements ModeController {
+public abstract class ControllerAdapter implements ModeController, DirectoryResultListener {
 
 	// Logging:
 	private static java.util.logging.Logger logger;
@@ -116,7 +117,7 @@ public abstract class ControllerAdapter implements ModeController {
 	private MapAdapter mModel;
 	private HashSet mNodeSelectionListeners = new HashSet();
 	private HashSet mNodeLifetimeListeners = new HashSet();
-	private static File lastCurrentDir = null;
+	private File lastCurrentDir = null;
 
 	/**
 	 * Instantiation order: first me and then the model.
@@ -805,6 +806,13 @@ public abstract class ControllerAdapter implements ModeController {
 		getController().setTitle();
 	}
 
+	/* (non-Javadoc)
+	 * @see freemind.modes.FreeMindFileDialog.DirectoryResultListener#setChosenDirectory(java.io.File)
+	 */
+	public void setChosenDirectory(File pDir) {
+		lastCurrentDir = pDir;
+	}
+	
 	/**
 	 * Creates a file chooser with the last selected directory as default.
 	 */
@@ -816,6 +824,7 @@ public abstract class ControllerAdapter implements ModeController {
 			// only for mac
 			chooser = new FreeMindAwtFileDialog();
 		}
+		chooser.registerDirectoryResultListener(this);
 		File parentFile = getMapsParentFile();
 		// choose new lastCurrentDir only, if not previously set.
 		if (parentFile != null && lastCurrentDir == null) {
@@ -830,7 +839,7 @@ public abstract class ControllerAdapter implements ModeController {
 		return chooser;
 	}
 
-	protected FreeMindFileDialog getFileChooser() {
+	public FreeMindFileDialog getFileChooser() {
 		return getFileChooser(getFileFilter());
 	}
 
@@ -1525,14 +1534,6 @@ public abstract class ControllerAdapter implements ModeController {
 			view = getController().getView().getNodeView(node);
 		}
 		centerNode(view);
-	}
-
-	public File getLastCurrentDir() {
-		return lastCurrentDir;
-	}
-
-	public void setLastCurrentDir(File pLastCurrentDir) {
-		lastCurrentDir = pLastCurrentDir;
 	}
 
 	public AttributeController getAttributeController() {

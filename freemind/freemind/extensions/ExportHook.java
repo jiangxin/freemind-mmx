@@ -40,6 +40,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
 import freemind.main.Tools;
+import freemind.modes.FreeMindFileDialog;
 import freemind.modes.ModeController;
 import freemind.view.mindmapview.MapView;
 
@@ -65,8 +66,9 @@ public class ExportHook extends ModeControllerHookAdapter {
 	public static File chooseImageFile(String type, String description,
 			String nameExtension, ModeController controller) {
 		Container component = controller.getFrame().getContentPane();
-		JFileChooser chooser = null;
-		chooser = new JFileChooser();
+		final ImageFilter filter = new ImageFilter(type, description);
+		FreeMindFileDialog chooser = null;
+		chooser = controller.getFileChooser(filter);
 		File mmFile = controller.getMap().getFile();
 		if (mmFile != null) {
 			String proposedName = mmFile.getAbsolutePath().replaceFirst(
@@ -76,12 +78,6 @@ public class ExportHook extends ModeControllerHookAdapter {
 					+ type;
 			chooser.setSelectedFile(new File(proposedName));
 		}
-		if (controller.getLastCurrentDir() != null) {
-			chooser.setCurrentDirectory(controller.getLastCurrentDir());
-		}
-
-		chooser.addChoosableFileFilter(new ImageFilter(type, description));
-		// chooser.setDialogTitle(label);
 		int returnVal = chooser.showSaveDialog(component);
 		if (returnVal != JFileChooser.APPROVE_OPTION) { // not ok pressed
 			return null;
@@ -89,7 +85,6 @@ public class ExportHook extends ModeControllerHookAdapter {
 
 		// |= Pressed O.K.
 		File chosenFile = chooser.getSelectedFile();
-		controller.setLastCurrentDir(chosenFile.getParentFile());
 		String ext = Tools.getExtension(chosenFile.getName());
 		if (!Tools.safeEqualsIgnoreCase(ext, type)) {
 			chosenFile = new File(chosenFile.getParent(), chosenFile.getName()

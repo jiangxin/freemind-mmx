@@ -123,6 +123,7 @@ import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.EdgeAdapter;
+import freemind.modes.FreeMindFileDialog;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
@@ -1269,11 +1270,7 @@ public class MindMapController extends ControllerAdapter implements
 			if (parent == null) {
 				return;
 			}
-			JFileChooser chooser = new JFileChooser();
-			// chooser.setLocale(currentLocale);
-			if (getFileFilter() != null) {
-				chooser.addChoosableFileFilter(getFileFilter());
-			}
+			FreeMindFileDialog chooser = getFileChooser();
 			int returnVal = chooser.showOpenDialog(getFrame().getContentPane());
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				try {
@@ -1725,7 +1722,7 @@ public class MindMapController extends ControllerAdapter implements
 		URL link;
 		String relative = null;
 		File input;
-		JFileChooser chooser = null;
+		FreeMindFileDialog chooser = getFileChooser(fileFilter);
 		if (getMap().getFile() == null) {
 			JOptionPane.showMessageDialog(getFrame().getContentPane(),
 					getText("not_saved_for_link_error"), "FreeMind",
@@ -1737,23 +1734,10 @@ public class MindMapController extends ControllerAdapter implements
 			// overwrote the linked map.
 
 		}
-		if (getLastCurrentDir() != null) {
-			chooser = new JFileChooser(getLastCurrentDir());
-		} else {
-			chooser = new JFileChooser();
-		}
-
-		if (fileFilter != null) {
-			// Set filters, make sure AcceptAll filter comes first
-			chooser.setFileFilter(fileFilter);
-		} else {
-			chooser.setFileFilter(chooser.getAcceptAllFileFilter());
-		}
 
 		int returnVal = chooser.showOpenDialog(getFrame().getContentPane());
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			input = chooser.getSelectedFile();
-			setLastCurrentDir(input.getParentFile());
 			try {
 				link = Tools.fileToUrl(input);
 				relative = link.toString();

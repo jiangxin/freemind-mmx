@@ -31,6 +31,7 @@ import javax.swing.JOptionPane;
 
 import freemind.main.Resources;
 import freemind.main.Tools;
+import freemind.modes.FreeMindFileDialog;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.modes.mindmapmode.MindMapController;
@@ -65,17 +66,7 @@ public class ExportBranchAction extends AbstractAction {
 
 		// Open FileChooser to choose in which file the exported
 		// branch should be stored
-		JFileChooser chooser;
-		if (mMindMapController.getMap().getFile().getParentFile() != null) {
-			chooser = new JFileChooser(mMindMapController.getMap().getFile()
-					.getParentFile());
-		} else {
-			chooser = new JFileChooser();
-		}
-		// chooser.setLocale(currentLocale);
-		if (mMindMapController.getFileFilter() != null) {
-			chooser.addChoosableFileFilter(mMindMapController.getFileFilter());
-		}
+		FreeMindFileDialog chooser = mMindMapController.getFileChooser();
 		chooser.setSelectedFile(new File(Tools.getFileNameProposal(node)
 				+ freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION));
 		int returnVal = chooser.showSaveDialog(mMindMapController

@@ -28,6 +28,7 @@ import javax.swing.JFileChooser;
 
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
+import freemind.modes.FreeMindFileDialog;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 
@@ -44,7 +45,7 @@ public class ImportFolderStructureAction extends AbstractAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		JFileChooser chooser = new JFileChooser();
+		FreeMindFileDialog chooser = controller.getFileChooser(null);
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		chooser.setDialogTitle(controller
 				.getText("select_folder_for_importing"));

@@ -227,16 +227,6 @@ public class MindMapControllerMock implements ModeController {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see freemind.modes.ModeController#getLastCurrentDir()
-	 */
-	public File getLastCurrentDir() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see freemind.modes.ModeController#getLeftToolBar()
 	 */
 	public Component getLeftToolBar() {
@@ -607,16 +597,6 @@ public class MindMapControllerMock implements ModeController {
 	 * boolean)
 	 */
 	public void setFolded(MindMapNode node, boolean folded) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see freemind.modes.ModeController#setLastCurrentDir(java.io.File)
-	 */
-	public void setLastCurrentDir(File pLastCurrentDir) {
 		// TODO Auto-generated method stub
 
 	}
