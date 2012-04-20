@@ -244,7 +244,7 @@ public class LogFileViewer extends MindMapHookAdapter implements
 					}
 
 				} catch (Exception ex) {
-					// We don't want to throw an exception here.
+					// We don't want to log anything here...
 				}
 
 			}
