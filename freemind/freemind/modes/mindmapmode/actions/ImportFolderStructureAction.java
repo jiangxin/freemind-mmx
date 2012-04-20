@@ -80,7 +80,7 @@ public class ImportFolderStructureAction extends AbstractAction {
 
 	public void importFolderStructure(File folder, MindMapNode target,
 			boolean redisplay) throws MalformedURLException {
-		logger.warning("Entering folder: " + folder);
+		logger.fine("Entering folder: " + folder);
 
 		if (folder.isDirectory()) {
 			getFrame().out(folder.getName());
