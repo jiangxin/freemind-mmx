@@ -197,11 +197,11 @@ public class ScriptingSecurityManager extends SecurityManager {
 	}
 
 	public void checkPermission(Permission pPerm, Object pContext) {
-		logger.info("Check Permission with Context: " + pPerm.getClass());
+		logger.fine("Check Permission with Context: " + pPerm.getClass());
 	}
 
 	public void checkPermission(Permission pPerm) {
-		logger.info("Check Permission: " + pPerm.getClass());
+		logger.fine("Check Permission: " + pPerm.getClass());
 	}
 
 	public void checkPrintJobAccess() {
