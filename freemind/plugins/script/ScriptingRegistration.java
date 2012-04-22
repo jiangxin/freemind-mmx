@@ -181,8 +181,9 @@ public class ScriptingRegistration implements HookRegistration,
 	public void act(MindMapNode node, Pattern pattern) {
 		if (pattern.getPatternScript() != null
 				&& pattern.getPatternScript().getValue() != null) {
-			String scriptString = HtmlTools.unescapeHTMLUnicodeEntity(pattern
-					.getPatternScript().getValue());
+			String scriptString = HtmlTools.toXMLUnescapedText(HtmlTools.unescapeHTMLUnicodeEntity(pattern
+					.getPatternScript().getValue()));
+			ScriptingEngine.logger.info("Executing script: " +scriptString);
 			executeScript(node, scriptString);
 		}
 	}
