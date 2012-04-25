@@ -917,6 +917,7 @@
 	          <xs:sequence>
 	    	      <xs:element ref="time_window_column_setting" maxOccurs="unbounded" minOccurs="0"/>
 	          </xs:sequence>
+			<xs:attribute use="optional" name="view_folded_nodes" type="xs:boolean" default="true"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>

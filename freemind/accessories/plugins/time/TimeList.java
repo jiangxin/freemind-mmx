@@ -46,6 +46,7 @@ import java.util.Vector;
 import java.util.regex.Pattern;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -63,6 +64,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -70,6 +73,7 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
+import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.TimeWindowColumnSetting;
 import freemind.controller.actions.generated.instance.TimeWindowConfigurationStorage;
@@ -153,6 +157,8 @@ public class TimeList extends MindMapHookAdapter implements
 	private JLabel mTreeLabel;
 
 	private MindMapController mMyMindMapController;
+	
+	private boolean mViewFoldedNodes = true;
 
 	public void startupMapHook() {
 		super.startupMapHook();
@@ -246,11 +252,7 @@ public class TimeList extends MindMapHookAdapter implements
 		timeTable.addMouseListener(new FlatNodeTableMouseAdapter());
 		// disable moving:
 		timeTable.getTableHeader().setReorderingAllowed(false);
-		timeTableModel = updateModel();
-		mFlatNodeTableFilterModel = new FlatNodeTableFilterModel(
-				timeTableModel, NODE_TEXT_COLUMN);
-		sorter = new TableSorter(mFlatNodeTableFilterModel);
-		timeTable.setModel(sorter);
+		updateModel();
 
 		sorter.setTableHeader(timeTable.getTableHeader());
 		sorter.setColumnComparator(Date.class,
@@ -309,6 +311,9 @@ public class TimeList extends MindMapHookAdapter implements
 			}
 		};
 
+		AbstractAction toggleViewFoldedNodesAction = new ToggleViewFoldedNodesAction(
+				getResourceString("plugins/TimeManagement.xml_ToggleViewFoldedNodesAction"));
+
 		/** Menu **/
 		StructuredMenuHolder menuHolder = new StructuredMenuHolder();
 		JMenuBar menuBar = new JMenuBar();
@@ -318,13 +323,16 @@ public class TimeList extends MindMapHookAdapter implements
 		final JMenuItem selectMenuItem = addAccelerator(
 				menuHolder.addAction(selectAction, "main/actions/select"),
 				"keystroke_plugins/TimeList_select");
-		final JMenuItem gotoMenuItem = addAccelerator(menuHolder.addAction(gotoAction, "main/actions/goto"),
+		final JMenuItem gotoMenuItem = addAccelerator(
+				menuHolder.addAction(gotoAction, "main/actions/goto"),
 				"keystroke_plugins/TimeList_goto");
-		final JMenuItem replaceSelectedMenuItem = addAccelerator(menuHolder.addAction(replaceSelectedAction,
-				"main/actions/replaceSelected"),
+		final JMenuItem replaceSelectedMenuItem = addAccelerator(
+				menuHolder.addAction(replaceSelectedAction,
+						"main/actions/replaceSelected"),
 				"keystroke_plugins/TimeList_replaceSelected");
-		final JMenuItem replaceAllMenuItem = addAccelerator(menuHolder.addAction(replaceAllAction,
-				"main/actions/replaceAll"),
+		final JMenuItem replaceAllMenuItem = addAccelerator(
+				menuHolder.addAction(replaceAllAction,
+						"main/actions/replaceAll"),
 				"keystroke_plugins/TimeList_replaceAll");
 
 		final JMenuItem exportMenuItem = addAccelerator(
@@ -333,6 +341,12 @@ public class TimeList extends MindMapHookAdapter implements
 		addAccelerator(
 				menuHolder.addAction(disposeAction, "main/actions/dispose"),
 				"keystroke_plugins/TimeList_dispose");
+		JMenu viewMenu = new JMenu(
+				getResourceString("plugins/TimeManagement.xml_menu_view"));
+		menuHolder.addMenu(viewMenu, "main/view/.");
+		addAccelerator(menuHolder.addAction(toggleViewFoldedNodesAction,
+				"main/view/showFoldedNodes"),
+				"keystroke_plugins/TimeList_showFoldedNodes");
 		menuHolder.updateMenus(menuBar, "main/");
 		dialog.setJMenuBar(menuBar);
 
@@ -385,21 +399,38 @@ public class TimeList extends MindMapHookAdapter implements
 		WindowConfigurationStorage storage = getMindMapController()
 				.decorateDialog(dialog, WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		if (storage != null) {
-			// Disable auto resizing
-			timeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-			int column = 0;
-			for (Iterator i = ((TimeWindowConfigurationStorage) storage)
-					.getListTimeWindowColumnSettingList().iterator(); i
-					.hasNext();) {
-				TimeWindowColumnSetting setting = (TimeWindowColumnSetting) i
-						.next();
-				timeTable.getColumnModel().getColumn(column)
-						.setPreferredWidth(setting.getColumnWidth());
-				sorter.setSortingStatus(column, setting.getColumnSorting());
-				column++;
-			}
+			setTableConfiguration(storage);
 		}
 		dialog.setVisible(true);
+	}
+
+	protected void setTableConfiguration(WindowConfigurationStorage storage) {
+		// Disable auto resizing
+		timeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		final TimeWindowConfigurationStorage timeStorage = (TimeWindowConfigurationStorage) storage;
+		if(mViewFoldedNodes != timeStorage.getViewFoldedNodes()) {
+			toggleViewFoldedNodes();
+		}
+		int column = 0;
+		for (Iterator i = timeStorage
+				.getListTimeWindowColumnSettingList().iterator(); i
+				.hasNext();) {
+			TimeWindowColumnSetting setting = (TimeWindowColumnSetting) i
+					.next();
+			timeTable.getColumnModel().getColumn(column)
+					.setPreferredWidth(setting.getColumnWidth());
+			sorter.setSortingStatus(column, setting.getColumnSorting());
+			column++;
+		}
+	}
+
+	/**
+	 * 
+	 */
+	protected void toggleViewFoldedNodes() {
+		mViewFoldedNodes = ! mViewFoldedNodes;
+		updateModel();
+		
 	}
 
 	protected void decorateButtonAndAction(String stringProperty,
@@ -439,6 +470,58 @@ public class TimeList extends MindMapHookAdapter implements
 			}
 		}
 		disposeDialog();
+	}
+
+	/**
+	 * @author foltin
+	 * @date 25.04.2012
+	 */
+	private final class MindmapTableModel extends DefaultTableModel {
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
+		 */
+		public Class getColumnClass(int arg0) {
+			switch (arg0) {
+			case DATE_COLUMN:
+			case NODE_CREATED_COLUMN:
+			case NODE_MODIFIED_COLUMN:
+				return Date.class;
+			case NODE_TEXT_COLUMN:
+				return NodeHolder.class;
+			case NODE_ICON_COLUMN:
+				return IconsHolder.class;
+			case NODE_NOTES_COLUMN:
+				return NotesHolder.class;
+			default:
+				return Object.class;
+			}
+		}
+	}
+
+	/**
+	 * @author foltin
+	 * @date 25.04.2012
+	 */
+	private final class ToggleViewFoldedNodesAction extends AbstractAction implements MenuItemSelectedListener {
+		/**
+		 * @param pName
+		 */
+		private ToggleViewFoldedNodesAction(String pName) {
+			super(pName);
+		}
+
+		public void actionPerformed(ActionEvent arg0) {
+			toggleViewFoldedNodes();
+		}
+
+		/* (non-Javadoc)
+		 * @see freemind.controller.MenuItemSelectedListener#isSelected(javax.swing.JMenuItem, javax.swing.Action)
+		 */
+		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
+			return mViewFoldedNodes;
+		}
 	}
 
 	public interface IReplaceInputInformation {
@@ -547,54 +630,47 @@ public class TimeList extends MindMapHookAdapter implements
 	 * Creates a table model for the new table and returns it.
 	 */
 	private DefaultTableModel updateModel() {
-		MindMapNode node = getController().getMap().getRootNode();
-		DefaultTableModel model = new DefaultTableModel() {
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see javax.swing.table.AbstractTableModel#getColumnClass(int)
-			 */
-			public Class getColumnClass(int arg0) {
-				switch (arg0) {
-				case DATE_COLUMN:
-				case NODE_CREATED_COLUMN:
-				case NODE_MODIFIED_COLUMN:
-					return Date.class;
-				case NODE_TEXT_COLUMN:
-					return NodeHolder.class;
-				case NODE_ICON_COLUMN:
-					return IconsHolder.class;
-				case NODE_NOTES_COLUMN:
-					return NotesHolder.class;
-				default:
-					return Object.class;
-				}
-			}
-		};
-
+		TimeWindowConfigurationStorage storage = null;
+		if(timeTable.getModel()==sorter) {
+			storage = getTableConfiguration();
+		}
+		DefaultTableModel model = new MindmapTableModel();
 		model.addColumn(COLUMN_DATE);
 		model.addColumn(COLUMN_TEXT);
 		model.addColumn(COLUMN_ICONS);
 		model.addColumn(COLUMN_CREATED);
 		model.addColumn(COLUMN_MODIFIED);
 		model.addColumn(COLUMN_NOTES);
+		MindMapNode node = getMindMapController().getMap().getRootNode();
 		updateModel(model, node);
+		timeTableModel = model;
+		mFlatNodeTableFilterModel = new FlatNodeTableFilterModel(
+				timeTableModel, NODE_TEXT_COLUMN);
+		sorter = new TableSorter(mFlatNodeTableFilterModel);
+		timeTable.setModel(sorter);
+		if(storage != null) {
+			setTableConfiguration(storage);
+		}
 		return model;
 	}
 
 	private void updateModel(DefaultTableModel model, MindMapNode node) {
 		ReminderHookBase hook = TimeManagementOrganizer.getHook(node);
-		Date date = null;
-		if (hook != null) {
-			date = new Date(hook.getRemindUserAt());
-		}
 		// show all nodes or only those with reminder:
 		if (showAllNodes || hook != null) {
+			Date date = null;
+			if (hook != null) {
+				date = new Date(hook.getRemindUserAt());
+			}
 			model.addRow(new Object[] { date, new NodeHolder(node),
 					new IconsHolder(node),
 					node.getHistoryInformation().getCreatedAt(),
 					node.getHistoryInformation().getLastModifiedAt(),
 					new NotesHolder(node) });
+		}
+		if((!mViewFoldedNodes) && node.isFolded()) {
+			// no recursion, if folded nodes should be hidden.
+			return;
 		}
 		for (Iterator i = node.childrenUnfolded(); i.hasNext();) {
 			MindMapNode child = (MindMapNode) i.next();
@@ -627,14 +703,7 @@ public class TimeList extends MindMapHookAdapter implements
 	private void disposeDialog() {
 		// store window positions:
 
-		TimeWindowConfigurationStorage storage = new TimeWindowConfigurationStorage();
-		for (int i = 0; i < timeTable.getColumnCount(); i++) {
-			TimeWindowColumnSetting setting = new TimeWindowColumnSetting();
-			setting.setColumnWidth(timeTable.getColumnModel().getColumn(i)
-					.getWidth());
-			setting.setColumnSorting(sorter.getSortingStatus(i));
-			storage.addTimeWindowColumnSetting(setting);
-		}
+		TimeWindowConfigurationStorage storage = getTableConfiguration();
 		getMindMapController().storeDialogPositions(dialog, storage,
 				WINDOW_PREFERENCE_STORAGE_PROPERTY);
 
@@ -642,6 +711,19 @@ public class TimeList extends MindMapHookAdapter implements
 				.removeListener(this);
 		dialog.setVisible(false);
 		dialog.dispose();
+	}
+
+	protected TimeWindowConfigurationStorage getTableConfiguration() {
+		TimeWindowConfigurationStorage storage = new TimeWindowConfigurationStorage();
+		storage.setViewFoldedNodes(mViewFoldedNodes);
+		for (int i = 0; i < timeTable.getColumnCount(); i++) {
+			TimeWindowColumnSetting setting = new TimeWindowColumnSetting();
+			setting.setColumnWidth(timeTable.getColumnModel().getColumn(i)
+					.getWidth());
+			setting.setColumnSorting(sorter.getSortingStatus(i));
+			storage.addTimeWindowColumnSetting(setting);
+		}
+		return storage;
 	}
 
 	public static String getRegularExpression(String text)

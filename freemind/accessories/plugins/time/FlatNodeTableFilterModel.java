@@ -129,6 +129,7 @@ public class FlatNodeTableFilterModel extends AbstractTableModel {
 	private class TableModelHandler implements TableModelListener {
 
 		public void tableChanged(TableModelEvent arg0) {
+//			updateIndexArray();
 			fireTableDataChanged();
 		}
 	}
