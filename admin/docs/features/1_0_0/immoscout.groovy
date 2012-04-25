@@ -114,7 +114,7 @@ def getUrl(HashMap urlMap, String urlT, String IMMO) {
 			
 			def matcherData = (~/.*Kaufpreis: ([0-9.]+) EUR.*/).matcher(data);
 			if(matcherData.matches()){
-				price = matcherData[0][1];
+				price = matcherData[0][1].replaceAll("\\.","");
 				println "Price " + price;
 			}
 			def matcherData2 = (~/.*Wohnfl.che: ([0-9.]+) m.*/).matcher(data);

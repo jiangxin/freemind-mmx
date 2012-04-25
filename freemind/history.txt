@@ -1,6 +1,7 @@
 ===============================
 Changes made in FreeMind 1.0.0 Beta3
 ===============================
+* FIX: Scripts in Patterns should work now.
 * NEW: In the new search dialog, folded nodes can be hidden.
 
 ===============================
