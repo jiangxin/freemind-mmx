@@ -29,10 +29,7 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.File;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Locale;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -58,7 +55,6 @@ import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindCommon;
-import freemind.main.FreeMindMain;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
@@ -271,8 +267,6 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 
 	protected SHTMLPanel noteViewerComponent;
 
-	private final MindMap mMap;
-
 	private final java.util.logging.Logger logger;
 
 	private NotesManager mNotesManager;
@@ -287,9 +281,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 
 	public NodeNoteRegistration(ModeController controller, MindMap map) {
 		this.controller = (MindMapController) controller;
-		mMap = map;
 		logger = controller.getFrame().getLogger(this.getClass().getName());
-
 	}
 
 	public boolean shouldUseSplitPane() {
@@ -367,8 +359,8 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 				 * http://sourceforge.net/tracker/?func=detail&aid=2800933&group_id
 				 * =7118&atid=107118
 				 */
-				defaultFont = Tools.updateFontSize(defaultFont, this
-						.getMindMapController().getView().getZoom(),
+				defaultFont = Tools.updateFontSize(defaultFont,
+						this.getMindMapController().getView().getZoom(),
 						defaultFont.getSize());
 			}
 			String rule = "BODY {";
@@ -467,8 +459,6 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 		getMindMapController().setNoteText(node, text);
 	}
 
-	/**
-     */
 	private MindMapController getMindMapController() {
 		return controller;
 	}
@@ -486,18 +476,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 	        boolean checkSpelling = Resources.getInstance().
 	        		getBoolProperty(FreeMindCommon.CHECK_SPELLING);
 			if (checkSpelling) {
-				try {
-					URL url = null;
-					if (new File (FreeMindMain.FREE_MIND_APP_CONTENTS_RESOURCES_JAVA).exists()) {
-						url = new URL("file", null, FreeMindMain.FREE_MIND_APP_CONTENTS_RESOURCES_JAVA);
-					}
-					SpellChecker.registerDictionaries(url,
-//							"en,de,es,fr,it,nl,pl,ru,ar",
-							Locale.getDefault().getLanguage());
-					SpellChecker.register(htmlEditorPanel.getEditorPane());
-				} catch (MalformedURLException e) {
-					e.printStackTrace();
-				}
+				SpellChecker.register(htmlEditorPanel.getEditorPane());
 			}
 		}
 		return htmlEditorPanel;

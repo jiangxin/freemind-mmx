@@ -27,11 +27,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Locale;
 import java.util.Properties;
 
 import javax.swing.JOptionPane;
+
+import com.inet.jortho.SpellChecker;
 
 /**
  * This class should check the java version and start freemind. In order to be
@@ -54,16 +57,16 @@ public class FreeMindStarter {
 		starter.checkJavaVersion();
 		Properties defaultPreferences = starter.readDefaultPreferences();
 		starter.createUserDirectory(defaultPreferences);
-		Properties userPreferences = starter
-				.readUsersPreferences(defaultPreferences);
+		Properties userPreferences =
+				starter.readUsersPreferences(defaultPreferences);
 		starter.setDefaultLocale(userPreferences);
 
 		// Christopher Robin Elmersson: set
 		Toolkit xToolkit = Toolkit.getDefaultToolkit();
 
 		try {
-			java.lang.reflect.Field awtAppClassNameField = xToolkit.getClass()
-					.getDeclaredField("awtAppClassName");
+			java.lang.reflect.Field awtAppClassNameField =
+					xToolkit.getClass().getDeclaredField("awtAppClassName");
 			awtAppClassNameField.setAccessible(true);
 			try {
 				awtAppClassNameField.set(xToolkit, "FreeMind");
@@ -82,8 +85,7 @@ public class FreeMindStarter {
 			Method mainMethod = mainClass.getMethod("main", new Class[] {
 					String[].class, Properties.class, Properties.class,
 					File.class });
-			mainMethod
-					.invoke(null,
+			mainMethod.invoke(null,
 							new Object[] {
 									args,
 									defaultPreferences,
@@ -97,6 +99,7 @@ public class FreeMindStarter {
 					"Startup problem", JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
+		starter.setupSpellChecking(userPreferences);
 	}
 
 	private void checkJavaVersion() {
@@ -124,8 +127,7 @@ public class FreeMindStarter {
 		} catch (Exception e) {
 			// exception is logged to console as we don't have a logger
 			e.printStackTrace();
-			System.err
-					.println("Cannot create folder for user properties and logging: '"
+			System.err.println("Cannot create folder for user properties and logging: '"
 							+ userPropertiesFolder.getAbsolutePath() + "'");
 
 		}
@@ -153,6 +155,28 @@ public class FreeMindStarter {
 		Locale.setDefault(localeDef);
 	}
 
+	private void setupSpellChecking(Properties userPreferences) {
+		boolean checkSpelling =
+//			Resources.getInstance().getBoolProperty(FreeMindCommon.CHECK_SPELLING);
+			Tools.safeEquals("true", userPreferences.getProperty(FreeMindCommon.CHECK_SPELLING));
+		if (checkSpelling) {
+			try {
+				// TODO filter languages in dictionaries.properties like this:
+//				String[] languages = "en,de,es,fr,it,nl,pl,ru,ar".split(",");
+//				for (int i = 0; i < languages.length; i++) {
+//					System.out.println(new File("dictionary_" + languages[i] + ".ortho").exists());
+//				}
+				URL url = null;
+				if (new File (FreeMindMain.FREE_MIND_APP_CONTENTS_RESOURCES_JAVA).exists()) {
+					url = new URL("file", null, FreeMindMain.FREE_MIND_APP_CONTENTS_RESOURCES_JAVA);
+				}
+				SpellChecker.registerDictionaries(url, Locale.getDefault().getLanguage());
+			} catch (MalformedURLException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+		}
+	}
+
 	private Properties readUsersPreferences(Properties defaultPreferences) {
 		Properties auto = null;
 		auto = new Properties(defaultPreferences);
@@ -164,16 +188,14 @@ public class FreeMindStarter {
 			in.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.err
-					.println("Panic! Error while loading default properties.");
+			System.err.println("Panic! Error while loading default properties.");
 		}
 		return auto;
 	}
 
 	private File getUserPreferencesFile(Properties defaultPreferences) {
 		if (defaultPreferences == null) {
-			System.err
-					.println("Panic! Error while loading default properties.");
+			System.err.println("Panic! Error while loading default properties.");
 			System.exit(1);
 		}
 		String freemindDirectory = getFreeMindDirectory(defaultPreferences);
@@ -190,8 +212,8 @@ public class FreeMindStarter {
 
 	public Properties readDefaultPreferences() {
 		String propsLoc = "freemind.properties";
-		URL defaultPropsURL = this.getClass().getClassLoader()
-				.getResource(propsLoc);
+		URL defaultPropsURL =
+				this.getClass().getClassLoader().getResource(propsLoc);
 		Properties props = new Properties();
 		try {
 			InputStream in = defaultPropsURL.openStream();
@@ -199,8 +221,7 @@ public class FreeMindStarter {
 			in.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();
-			System.err
-					.println("Panic! Error while loading default properties.");
+			System.err.println("Panic! Error while loading default properties.");
 		}
 		return props;
 	}

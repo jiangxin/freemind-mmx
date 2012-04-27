@@ -42,6 +42,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import com.inet.jortho.SpellChecker;
+
 import freemind.main.Tools;
 import freemind.modes.ModeController;
 
@@ -50,7 +52,6 @@ import freemind.modes.ModeController;
  * 
  */
 public class EditNodeDialog extends EditNodeBase {
-
 	private KeyEvent firstEvent;
 
 	/** Private variable to hold the last value of the "Enter confirms" state. */
@@ -61,10 +62,10 @@ public class EditNodeDialog extends EditNodeBase {
 			EditControl editControl) {
 		super(node, text, controller, editControl);
 		this.firstEvent = firstEvent;
-
 	}
 
 	class LongNodeDialog extends EditDialog {
+		private static final long serialVersionUID = 6185443281994675732L;
 		private JTextArea textArea;
 
 		LongNodeDialog() {
@@ -208,6 +209,10 @@ public class EditNodeDialog extends EditNodeBase {
 				private void conditionallyShowPopup(MouseEvent e) {
 					if (e.isPopupTrigger()) {
 						JPopupMenu popupMenu = new EditPopupMenu(textArea);
+						if (checkSpelling) {
+							popupMenu.add(SpellChecker.createCheckerMenu());
+							popupMenu.add(SpellChecker.createLanguagesMenu());
+						}
 						popupMenu.show(e.getComponent(), e.getX(), e.getY());
 						e.consume();
 					}
@@ -253,6 +258,9 @@ public class EditNodeDialog extends EditNodeBase {
 				textArea.setCaretPosition(getText().length());
 			}
 
+			if (checkSpelling) {
+				SpellChecker.register(textArea, false, true, true);
+			}
 		}
 
 		public void show() {
@@ -307,7 +315,6 @@ public class EditNodeDialog extends EditNodeBase {
 				return textArea;
 			}
 		}
-
 	}
 
 	public void show() {
