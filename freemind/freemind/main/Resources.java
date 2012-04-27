@@ -46,13 +46,15 @@ public class Resources implements TextTranslator {
 
 	private Resources(FreeMindMain frame) {
 		this.main = frame;
-		if (logger == null)
+		if (logger == null) {
 			logger = main.getLogger(this.getClass().getName());
+		}
 	}
 
 	static public void createInstance(FreeMindMain frame) {
-		if (resourcesInstance == null)
+		if (resourcesInstance == null) {
 			resourcesInstance = new Resources(frame);
+		}
 	}
 
 	public URL getResource(String resource) {
@@ -144,8 +146,8 @@ public class Resources implements TextTranslator {
 	}
 
 	public String format(String resourceKey, Object[] messageArguments) {
-		MessageFormat formatter = new MessageFormat(
-				getResourceString(resourceKey));
+		MessageFormat formatter =
+			new MessageFormat(getResourceString(resourceKey));
 		String stringResult = formatter.format(messageArguments);
 		return stringResult;
 	}

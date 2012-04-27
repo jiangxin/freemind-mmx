@@ -38,6 +38,7 @@ import javax.swing.JPanel;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.html.HTMLDocument;
 
+import com.inet.jortho.SpellChecker;
 import com.lightdev.app.shtm.SHTMLPanel;
 
 import freemind.main.FreeMindMain;
@@ -57,6 +58,7 @@ public class EditNodeWYSIWYG extends EditNodeBase {
 	private static HTMLDialog htmlEditorWindow;
 
 	private static class HTMLDialog extends EditDialog {
+		private static final long serialVersionUID = 2862979626489782521L;
 		private SHTMLPanel htmlEditorPanel;
 
 		HTMLDialog(EditNodeBase base) throws Exception {
@@ -101,7 +103,6 @@ public class EditNodeWYSIWYG extends EditNodeBase {
 			buttonPane.setMaximumSize(new Dimension(1000, 20));
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			htmlEditorPanel.setOpenHyperlinkHandler(new ActionListener() {
-
 				public void actionPerformed(ActionEvent pE) {
 					try {
 						getBase().getController().getFrame()
@@ -112,11 +113,38 @@ public class EditNodeWYSIWYG extends EditNodeBase {
 				}
 			});
 
+			if (checkSpelling) {
+				SpellChecker.register(htmlEditorPanel.getEditorPane());
+			}
 		}
 
 		private SHTMLPanel createEditorPanel() throws Exception {
 			if (htmlEditorPanel == null) {
 				htmlEditorPanel = SHTMLPanel.createSHTMLPanel();
+//				htmlEditorPanel.getEditorPane().addMouseListener(new MouseAdapter () {
+//					public void mousePressed(MouseEvent e) {
+//						conditionallyShowPopup(e);
+//					}
+//
+//					public void mouseReleased(MouseEvent e) {
+//						conditionallyShowPopup(e);
+//					}
+//
+//					private void conditionallyShowPopup(MouseEvent e) {
+//						if (e.isPopupTrigger()) {
+//							System.out.println("fooooooooooooooooooooo");
+//							JPopupMenu popupMenu =
+//									((SHTMLEditorPane) e.getSource()).getPopup();
+//							if (checkSpelling && popupMenu != null) {
+////								popupMenu.add(SpellChecker.createCheckerMenu(), 0);
+////								popupMenu.add(SpellChecker.createLanguagesMenu(), 1);
+////								popupMenu.addSeparator();
+////								popupMenu.show(e.getComponent(), e.getX(), e.getY());
+//							}
+////							e.consume();
+//						}
+//					}
+//				});
 			}
 			return htmlEditorPanel;
 		}

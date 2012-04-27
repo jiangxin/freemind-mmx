@@ -1141,6 +1141,8 @@ public class Tools {
 
 	public static void addEscapeActionToDialog(final JDialog dialog) {
 		class EscapeAction extends AbstractAction {
+			private static final long serialVersionUID = 238333614987438806L;
+
 			public void actionPerformed(ActionEvent e) {
 				dialog.dispose();
 			};
@@ -1437,7 +1439,7 @@ public class Tools {
 	public static URL fileToUrl(File pFile) throws MalformedURLException {
 		// fix for java1.4 and java5 only.
 		if (isBelowJava6()) {
-			return pFile.toURL();
+			return pFile.toURI().toURL();
 		}
 		return pFile.toURI().toURL();
 	}

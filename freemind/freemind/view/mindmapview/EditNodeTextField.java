@@ -36,21 +36,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.Locale;
 
 import javax.swing.JComponent;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 
-import com.inet.jortho.LanguageChangeEvent;
-import com.inet.jortho.LanguageChangeListener;
 import com.inet.jortho.SpellChecker;
 
 import freemind.main.FreeMindCommon;
-import freemind.main.FreeMindMain;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
@@ -60,9 +53,7 @@ import freemind.modes.ModeController;
  * @author foltin
  * 
  */
-public class EditNodeTextField extends EditNodeBase implements LanguageChangeListener {
-    // TODO collect all spell checking stuff outside this class
-	private static String language = Locale.getDefault().getLanguage();
+public class EditNodeTextField extends EditNodeBase {
 	private KeyEvent firstEvent;
 	protected JTextField textfield;
 	protected JComponent mParent;
@@ -76,7 +67,8 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 
 	public EditNodeTextField(final NodeView node, final String text,
 			final KeyEvent firstEvent, ModeController controller,
-			EditControl editControl, JComponent pParent, JComponent pFocusListener) {
+			EditControl editControl, JComponent pParent, JComponent pFocusListener)
+	{
 		super(node, text, controller, editControl);
 		this.firstEvent = firstEvent;
 		mParent = pParent;
@@ -167,7 +159,7 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 				// %%% open problems:
 				// - adding of a child to the rightmost node
 				// - scrolling while in editing mode (it can behave just like
-				// other viewers)
+				//   other viewers)
 				// - block selected events while in editing mode
 				if (! textfield.isVisible() || eventSource.getValue() == CANCEL) {
 					if (checkSpelling) {
@@ -211,7 +203,6 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 						getEditControl().cancel();
 					}
 					break;
-
 				case KeyEvent.VK_SPACE:
 					e.consume();
 				}
@@ -303,25 +294,8 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 		textfield.repaint();
 		redispatchKeyEvents(textfield, firstEvent);
 
-		boolean checkSpelling = Resources.getInstance().
-        		getBoolProperty(FreeMindCommon.CHECK_SPELLING);
 		if (checkSpelling) {
-			try {
-				SpellChecker.addLanguageChangeLister(this);
-				// TODO filter languages in dictionaries.properties like this:
-//				String[] languages = "en,de,es,fr,it,nl,pl,ru,ar".split(",");
-//				for (int i = 0; i < languages.length; i++) {
-//					System.out.println(new File("dictionary_" + languages[i] + ".ortho").exists());
-//				}
-				URL url = null;
-				if (new File (FreeMindMain.FREE_MIND_APP_CONTENTS_RESOURCES_JAVA).exists()) {
-					url = new URL("file", null, FreeMindMain.FREE_MIND_APP_CONTENTS_RESOURCES_JAVA);
-				}
-				SpellChecker.registerDictionaries(url, language);
-				SpellChecker.register(textfield, false, true, true);
-			} catch (MalformedURLException e) {
-				freemind.main.Resources.getInstance().logException(e);
-			}
+			SpellChecker.register(textfield, false, true, true);
 		}
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -352,9 +326,5 @@ public class EditNodeTextField extends EditNodeBase implements LanguageChangeLis
 		parent.revalidate();
 		parent.repaint(bounds);
 		textFieldListener = null;
-	}
-
-	public void languageChanged(LanguageChangeEvent event) {
-		language = event.getCurrentLocale().getLanguage();
 	}
 }

@@ -26,7 +26,6 @@ package freemind.view.mindmapview;
 import java.awt.BorderLayout;
 import java.awt.KeyEventDispatcher;
 import java.awt.KeyboardFocusManager;
-import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
@@ -46,6 +45,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.text.JTextComponent;
 
 import freemind.controller.Controller;
+import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain;
 import freemind.main.Resources;
 import freemind.main.Tools;
@@ -56,17 +56,32 @@ import freemind.modes.ModeController;
  * 
  */
 public class EditNodeBase {
+	protected static boolean checkSpelling = Resources.getInstance().
+    		getBoolProperty(FreeMindCommon.CHECK_SPELLING);;
+	protected static final int BUTTON_OK = 0;
+	protected static final int BUTTON_CANCEL = 1;
+	protected static final int BUTTON_SPLIT = 2;
+	protected NodeView node;
+	private EditControl editControl;
+	private ModeController controller;
+	protected String text;
+	// this enables from outside close the edit mode
+	protected FocusListener textFieldListener = null;
+
+	EditNodeBase(final NodeView node, final String text,
+			ModeController controller, EditControl editControl)
+	{
+		this.controller = controller;
+		this.editControl = editControl;
+		this.node = node;
+		this.text = text;
+	}
+
 	abstract static class EditDialog extends JDialog {
 		private static final long serialVersionUID = 6064679828160694117L;
+		private EditNodeBase base;
 
 		class DialogWindowListener extends WindowAdapter {
-
-			/*
-			 * (non-Javadoc)
-			 * 
-			 * @see java.awt.event.WindowAdapter#windowLostFocus(java.awt.event.
-			 * WindowEvent)
-			 */
 			/*
 			 * (non-Javadoc)
 			 * 
@@ -75,8 +90,9 @@ public class EditNodeBase {
 			 * )
 			 */
 			public void windowClosing(WindowEvent e) {
-				if (isVisible())
+				if (isVisible()) {
 					confirmedSubmit();
+				}
 			}
 		}
 
@@ -104,14 +120,9 @@ public class EditNodeBase {
 			}
 		}
 
-		private EditNodeBase base;
-
 		EditDialog(EditNodeBase base) {
-			super((JFrame) base.getFrame(), base.getText("edit_long_node"), /*
-																			 * modal
-																			 * =
-																			 */
-					true);
+			super((JFrame) base.getFrame(), base.getText("edit_long_node"),
+					/*modal = */ true);
 			getContentPane().setLayout(new BorderLayout());
 			setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 			DialogWindowListener dfl = new DialogWindowListener();
@@ -177,32 +188,10 @@ public class EditNodeBase {
 
 	public interface EditControl {
 		void cancel();
-
 		void ok(String newText);
-
 		void split(String newText, int position);
-
 	}
 
-	protected static final int BUTTON_OK = 0;
-	protected static final int BUTTON_CANCEL = 1;
-	protected static final int BUTTON_SPLIT = 2;
-	protected NodeView node;
-	private EditControl editControl;
-	private ModeController controller;
-	protected String text;
-
-	EditNodeBase(final NodeView node, final String text,
-			ModeController controller, EditControl editControl) {
-		this.controller = controller;
-		this.editControl = editControl;
-		this.node = node;
-		this.text = text;
-	}
-
-	/**
-    	 * 
-    	 */
 	protected MapView getView() {
 		return controller.getView();
 	}
@@ -211,21 +200,14 @@ public class EditNodeBase {
 		return controller;
 	}
 
-	/**
-    	 * 
-    	 */
 	protected Controller getController() {
 		return controller.getController();
 	}
 
-	/**
-    	 */
 	protected String getText(String string) {
 		return controller.getText(string);
 	}
 
-	/**
-    	 */
 	protected FreeMindMain getFrame() {
 		return controller.getFrame();
 	}
@@ -233,9 +215,6 @@ public class EditNodeBase {
 	protected boolean binOptionIsTrue(String option) {
 		return Resources.getInstance().getBoolProperty(option);
 	}
-
-	// this enables from outside close the edit mode
-	protected FocusListener textFieldListener = null;
 
 	protected class EditCopyAction extends AbstractAction {
 		private static final long serialVersionUID = 5104219263806454592L;
@@ -273,55 +252,42 @@ public class EditNodeBase {
 		}
 	}
 
-	/**
-	 */
 	protected String getText() {
 		return text;
 	}
 
-	/**
-     */
 	public Clipboard getClipboard() {
 		return Tools.getClipboard();
 	}
 
-	/**
-     */
 	public EditControl getEditControl() {
 		return editControl;
 	}
 
-	/**
-     */
 	public NodeView getNode() {
 		return node;
 	}
 
-	/**
-     */
 	public FocusListener getTextFieldListener() {
 		return textFieldListener;
 	}
 
-	/**
-     */
 	public void setText(String string) {
 		text = string;
 	}
 
-	/**
-     */
 	public void setTextFieldListener(FocusListener listener) {
 		textFieldListener = listener;
 	}
 
 	protected void redispatchKeyEvents(final JTextComponent textComponent,
-			KeyEvent firstKeyEvent) {
+			KeyEvent firstKeyEvent)
+	{
 		if (textComponent.hasFocus()) {
 			return;
 		}
-		final KeyboardFocusManager currentKeyboardFocusManager = KeyboardFocusManager
-				.getCurrentKeyboardFocusManager();
+		final KeyboardFocusManager currentKeyboardFocusManager =
+				KeyboardFocusManager.getCurrentKeyboardFocusManager();
 		class KeyEventQueue implements KeyEventDispatcher, FocusListener {
 			LinkedList events = new LinkedList();
 
@@ -339,15 +305,11 @@ public class EditNodeBase {
 					ke.setSource(textComponent);
 					textComponent.dispatchEvent(ke);
 				}
-
 			}
 
 			public void focusLost(FocusEvent e) {
-
 			}
-
-		}
-		;
+		};
 		final KeyEventQueue keyEventDispatcher = new KeyEventQueue();
 		currentKeyboardFocusManager.addKeyEventDispatcher(keyEventDispatcher);
 		textComponent.addFocusListener(keyEventDispatcher);
