@@ -295,7 +295,7 @@ public class Controller implements MapModuleChangeObserver {
 				String prop = e.getPropertyName();
 				if ("focusOwner".equals(prop)) {
 					Component comp = (Component) e.getNewValue();
-					logger.info("Focus change for " + comp);
+					logger.fine("Focus change for " + comp);
 					if (comp instanceof FreeMindMain) {
 						obtainFocusForSelected();
 					}

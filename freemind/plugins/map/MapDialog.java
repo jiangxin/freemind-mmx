@@ -108,6 +108,10 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	static final String MAP_HOOK_NAME = "plugins/map/MapDialog.properties";
 
+	public static final String TILE_CACHE_PURGE_TIME = "tile_cache_purge_time";
+
+	public static final long TILE_CACHE_PURGE_TIME_DEFAULT = 1000 * 60 * 10;
+
 	private JLabel mStatusLabel;
 
 	private SearchResultListModel mDataModel;

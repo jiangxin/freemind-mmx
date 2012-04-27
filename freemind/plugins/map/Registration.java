@@ -21,11 +21,14 @@
 package plugins.map;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.Vector;
 
 import javax.swing.Action;
@@ -53,10 +56,10 @@ import freemind.controller.actions.generated.instance.PlaceNodeXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
 import freemind.main.FreeMind;
-import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain.VersionInformation;
 import freemind.main.Resources;
 import freemind.main.Tools;
+import freemind.main.Tools.IntHolder;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
@@ -70,6 +73,92 @@ import freemind.preferences.layout.OptionPanel;
 
 public class Registration implements HookRegistration, ActorXml,
 		TileLoaderListener, MenuItemEnabledListener {
+
+	/**
+	 * 
+	 * Clean the file cache periodically.
+	 * 
+	 * @author foltin
+	 * @date 27.04.2012
+	 */
+	public class CachePurger extends TimerTask {
+
+		/**
+		 * @author foltin
+		 * @date 27.04.2012
+		 */
+		private final class AgeFilter implements FileFilter {
+			private final long mYoungestFileToAccept;
+
+			public AgeFilter(long pYoungestFileToAccept) {
+				mYoungestFileToAccept = pYoungestFileToAccept;
+			}
+
+			public boolean accept(File pPathname) {
+				return pPathname.getName().endsWith(".tags") &&
+						pPathname.lastModified() <= mYoungestFileToAccept;
+			}
+		}
+
+		private final File mCacheDirectory;
+		private final long mCacheMaxAge;
+
+		/**
+		 * @param pCacheDirectory
+		 * @param pCacheMaxAge
+		 */
+		public CachePurger(File pCacheDirectory, long pCacheMaxAge) {
+			mCacheDirectory = pCacheDirectory;
+			mCacheMaxAge = pCacheMaxAge;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see java.util.TimerTask#run()
+		 */
+		public void run() {
+			// the jobs must not overtake themselves. 
+			synchronized (mCachePurgerSemaphore) {
+				if(mCachePurgerSemaphore.getValue()>0) {
+					return;
+				}
+				mCachePurgerSemaphore.setValue(1);
+			}
+			try {
+				logger.info("Start purging for " + mCacheDirectory);
+				if (mCacheDirectory.exists()) {
+					File[] cacheDirectories = mCacheDirectory.listFiles();
+					for (int i = 0; i < cacheDirectories.length; i++) {
+						File cacheDirectory = cacheDirectories[i];
+						purgeDirectory(cacheDirectory);
+
+					}
+				}
+				logger.info("Finished purging");
+			} finally {
+				mCachePurgerSemaphore.setValue(0);
+			}
+		}
+
+		/**
+		 * @param pCacheDirectory
+		 */
+		private void purgeDirectory(File pCacheDirectory) {
+			logger.fine("Start purging for subdir " + pCacheDirectory);
+			File[] listTagFiles = pCacheDirectory.listFiles(new AgeFilter(
+					System.currentTimeMillis() - mCacheMaxAge));
+			for (int i = 0; i < listTagFiles.length; i++) {
+				File tagFile = listTagFiles[i];
+				File imageFile = new File(tagFile.getPath().replace(".tags", ".png"));
+				logger.finest("Deleting " + tagFile);
+				logger.finest("Deleting " + imageFile);
+				tagFile.delete();
+				imageFile.delete();
+			}
+		}
+
+	}
 
 	private static final String PLUGINS_MAP_NODE_POSITION = MapNodePositionHolder.class
 			.getName();
@@ -98,6 +187,12 @@ public class Registration implements HookRegistration, ActorXml,
 
 	private MapDialogPropertyContributor mOptionContributor;
 
+	private static Timer sTimer;
+
+	private static Boolean sTimerSemaphore = new Boolean(false);
+
+	private IntHolder mCachePurgerSemaphore = new IntHolder(0);
+	
 	private static final class MapDialogPropertyContributor implements
 			FreemindPropertyContributor {
 
@@ -131,6 +226,19 @@ public class Registration implements HookRegistration, ActorXml,
 		mTileController = new TileController(mTileSource, mTileCache, this);
 		mTileController.setTileLoader(createTileLoader(this));
 		mOptionContributor = new MapDialogPropertyContributor(this.controller);
+		
+		synchronized (sTimerSemaphore) {
+			if (sTimer == null) {
+				// only once in the system
+				sTimer = new Timer();
+				long purgeTime = Resources.getInstance().getLongProperty(
+						MapDialog.TILE_CACHE_PURGE_TIME,
+						MapDialog.TILE_CACHE_PURGE_TIME_DEFAULT);
+				sTimer.schedule(new CachePurger(getCacheDirectory(),
+						getCacheMaxAge()), purgeTime, purgeTime);
+			}
+		}
+
 	}
 
 	/**
@@ -235,21 +343,12 @@ public class Registration implements HookRegistration, ActorXml,
 		String tileCacheClass = Resources.getInstance().getProperty(
 				MapDialog.TILE_CACHE_CLASS);
 		if (Tools.safeEquals(tileCacheClass, "file")) {
-			String directory = Resources.getInstance().getProperty(
-					MapDialog.FILE_TILE_CACHE_DIRECTORY);
-			if (directory.startsWith("%/")) {
-				directory = Resources.getInstance().getFreemindDirectory()
-						+ File.separator + directory.substring(2);
-			}
-			logger.info("Trying to use file cache tile loader with dir "
-					+ directory);
+			File cacheDir = getCacheDirectory();
 			try {
 				OsmFileCacheTileLoader osmFileCacheTileLoader = new OsmFileCacheTileLoader(
-						mMap, new File(directory));
+						mMap, cacheDir);
 				loader = osmFileCacheTileLoader;
-				long maxFileAge = Resources.getInstance().getLongProperty(
-						MapDialog.TILE_CACHE_MAX_AGE,
-						OsmFileCacheTileLoader.FILE_AGE_ONE_WEEK);
+				long maxFileAge = getCacheMaxAge();
 				logger.info("Setting cache max age to " + maxFileAge
 						/ OsmFileCacheTileLoader.FILE_AGE_ONE_DAY + " days.");
 				osmFileCacheTileLoader.setCacheMaxFileAge(maxFileAge);
@@ -265,6 +364,26 @@ public class Registration implements HookRegistration, ActorXml,
 				.getFreemindVersion();
 		OsmTileLoader.USER_AGENT = "FreeMind " + freemindVersion;
 		return loader;
+	}
+
+	protected long getCacheMaxAge() {
+		long maxFileAge = Resources.getInstance().getLongProperty(
+				MapDialog.TILE_CACHE_MAX_AGE,
+				OsmFileCacheTileLoader.FILE_AGE_ONE_WEEK);
+		return maxFileAge;
+	}
+
+	protected File getCacheDirectory() {
+		String directory = Resources.getInstance().getProperty(
+				MapDialog.FILE_TILE_CACHE_DIRECTORY);
+		if (directory.startsWith("%/")) {
+			directory = Resources.getInstance().getFreemindDirectory()
+					+ File.separator + directory.substring(2);
+		}
+		File cacheDir = new File(directory);
+		logger.info("Trying to use file cache tile loader with dir "
+				+ directory);
+		return cacheDir;
 	}
 
 	/**
@@ -384,7 +503,8 @@ public class Registration implements HookRegistration, ActorXml,
 	public boolean isEnabled(JMenuItem pItem, Action pAction) {
 		String hookName = ((NodeHookAction) pAction).getHookName();
 		logger.fine("Enabled for " + hookName);
-		if(SearchInMapForNodeTextAction.NODE_CONTEXT_PLUGIN_NAME.equals(hookName)){
+		if (SearchInMapForNodeTextAction.NODE_CONTEXT_PLUGIN_NAME
+				.equals(hookName)) {
 			return true;
 		}
 		if (ShowMapToNodeAction.NODE_CONTEXT_PLUGIN_NAME.equals(hookName)
