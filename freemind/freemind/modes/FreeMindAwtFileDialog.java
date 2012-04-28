@@ -37,6 +37,7 @@ import javax.swing.filechooser.FileFilter;
 public class FreeMindAwtFileDialog extends FileDialog implements
 		FreeMindFileDialog {
 
+	protected static java.util.logging.Logger logger = null;
 
 	private final static class NullFilter extends FileFilter {
 
@@ -151,6 +152,10 @@ public class FreeMindAwtFileDialog extends FileDialog implements
 	 */
 	public FreeMindAwtFileDialog() {
 		super((Frame) null);
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
 		mFilter = new FreeMindFilenameFilter();
 		super.setFilenameFilter(mFilter);
 		System.setProperty("apple.awt.fileDialogForDirectories", "false");
@@ -263,15 +268,19 @@ public class FreeMindAwtFileDialog extends FileDialog implements
 	/* (non-Javadoc)
 	 * @see freemind.modes.FreeMindFileDialog#setCurrentDirectory(java.io.File)
 	 */
-	public void setCurrentDirectory(File pLastCurrentDir) {
-		super.setDirectory(pLastCurrentDir.getAbsolutePath());
+	public void setCurrentDirectory(File pDir) {
+		if(pDir == null) {
+			return;
+		}
+		logger.info("Setting dir to " + pDir);
+		super.setDirectory(pDir.getAbsolutePath());
 	}
 
 	/* (non-Javadoc)
 	 * @see freemind.modes.FreeMindFileDialog#setSelectedFile(java.io.File)
 	 */
 	public void setSelectedFile(File pFile) {
-		super.setFile(pFile.getAbsolutePath());
+		super.setFile(pFile.getName());
 	}
 
 	/* (non-Javadoc)
