@@ -114,6 +114,7 @@ Output is valid (possibly apart HTML entered by user in Freemind).
      <xsl:if test="count(child::node)>0" > <!-- anonoymous nodes are not processed, but their children are -->
 <xsl:apply-templates select="node[@POSITION='left']"/>
 <xsl:apply-templates select="node[@POSITION='right']"/>
+<xsl:apply-templates select="node[not(@POSITION)]"/>
 </xsl:if>
      <xsl:if test="count(child::node)=0" > <!-- anonoymous nodes are not processed, but their children are -->
       <li></li><!-- must be here to render valid html -->  
@@ -144,8 +145,9 @@ Output is valid (possibly apart HTML entered by user in Freemind).
             </xsl:otherwise>
           </xsl:choose>
           <ul>
-      				<xsl:apply-templates select="node[@POSITION='left']"/>
+      			<xsl:apply-templates select="node[@POSITION='left']"/>
 				<xsl:apply-templates select="node[@POSITION='right']"/>    
+				<xsl:apply-templates select="node[not(@POSITION)]"/>
           </ul>
           </li>
     </xsl:if>
@@ -153,6 +155,7 @@ Output is valid (possibly apart HTML entered by user in Freemind).
 <xsl:otherwise>
 	<xsl:apply-templates select="node[@POSITION='left']"/>
 	<xsl:apply-templates select="node[@POSITION='right']"/>
+	<xsl:apply-templates select="node[not(@POSITION)]"/>
 </xsl:otherwise>
 </xsl:choose>
 

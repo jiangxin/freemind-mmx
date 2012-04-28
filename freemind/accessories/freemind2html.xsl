@@ -222,6 +222,7 @@
 			<xsl:attribute name="id"><xsl:value-of select="$contentID" /></xsl:attribute>
 			<xsl:apply-templates select="node[@POSITION='left']"/>
 			<xsl:apply-templates select="node[@POSITION='right']"/>
+			<xsl:apply-templates select="node[not(@POSITION)]"/>
 		</div>
 	</xsl:if>
 </div>
