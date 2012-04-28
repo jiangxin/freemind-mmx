@@ -117,6 +117,7 @@ public class LogFileViewer extends MindMapHookAdapter implements
 		mLogFileViewer.setLayout(new BorderLayout());
 		mTextArea = new JTextArea(logFileContents);
 		mTextArea.setEditable(false);
+		mTextArea.getCaret().setVisible(true);
 		// scroll at the end
 		mTextArea.setCaretPosition(logFileContents.length());
 		mLogFileViewer.add(new JScrollPane(mTextArea), BorderLayout.CENTER);
