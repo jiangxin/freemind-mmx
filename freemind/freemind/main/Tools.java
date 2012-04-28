@@ -1360,6 +1360,25 @@ public class Tools {
 
 	}
 
+	public static class MindMapNodePair {
+		MindMapNode first;
+	
+		MindMapNode second;
+	
+		public MindMapNodePair(MindMapNode first, MindMapNode second) {
+			this.first = first;
+			this.second = second;
+		}
+	
+		public MindMapNode getCorresponding() {
+			return first;
+		}
+	
+		public MindMapNode getCloneNode() {
+			return second;
+		}
+	}
+
 	/**
 	 * Ampersand indicates that the character after it is a mnemo, unless the
 	 * character is a space. In "Find & Replace", ampersand does not label

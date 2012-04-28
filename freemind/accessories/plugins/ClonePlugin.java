@@ -51,31 +51,16 @@ import freemind.view.mindmapview.NodeView;
 public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		ActionFilter, NodeSelectionListener, NodeLifetimeListener {
 
-	public static class MindMapNodePair {
-		MindMapNode first;
-
-		MindMapNode second;
-
-		public MindMapNodePair(MindMapNode first, MindMapNode second) {
-			this.first = first;
-			this.second = second;
-		}
-
-		public MindMapNode getCorresponding() {
-			return first;
-		}
-
-		public MindMapNode getCloneNode() {
-			return second;
-		}
-	}
-
 	public static final String PLUGIN_LABEL = "accessories/plugins/ClonePlugin.properties";
 
 	private String mOriginalNodeId;
+	/**
+	 * This is the master list. {@link ClonePlugin#mCloneNodes mCloneNodes}
+	 */
 	private HashSet mCloneNodeIds;
 	/**
-	 * Includes the original node.
+	 * Includes the original node. This is a cached list with the MindMapNodes
+	 * belonging to the {@link ClonePlugin#mCloneNodeIds mCloneNodeIds}.
 	 */
 	private Vector mCloneNodes;
 
@@ -102,7 +87,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	private XmlAction cloneAction(XmlAction doAction) {
-		logger.info("Found do action: " + doAction.getClass().getName());
+		logger.fine("Found do action: " + doAction.getClass().getName());
 		if (doAction instanceof NodeAction) {
 			NodeAction nodeAction = (NodeAction) doAction;
 			MindMapNode node = getMindMapController().getNodeFromID(
@@ -160,7 +145,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 
 	public void save(XMLElement xml) {
 		super.save(xml);
-		logger.info("Saved clone plugin");
+		logger.fine("Saved clone plugin");
 	}
 
 	public void loadFrom(XMLElement child) {
@@ -170,7 +155,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	public void shutdownMapHook() {
-		logger.info("Shutdown of clones");
+		logger.fine("Shutdown of clones");
 		deregisterPlugin();
 		super.shutdownMapHook();
 	}
@@ -196,8 +181,9 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		 */
 		MindMapNode originalNode = getOriginalNode();
 		List/* MindMapNode */cloneNodes = getCloneNodes();
-		logger.info("Invoke shadow class with orig: " + originalNode
-				+ " and clones " + Tools.listToString(cloneNodes));
+		logger.fine("Invoke shadow class with orig: "
+				+ printNodeId(originalNode) + " and clones "
+				+ printNodeIds(cloneNodes));
 		for (Iterator it = cloneNodes.iterator(); it.hasNext();) {
 			MindMapNode cloneNode = (MindMapNode) it.next();
 			if (originalNode != null && originalNode.isChildOf(cloneNode)) {
@@ -269,7 +255,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 			List/* pair of MindMapNodePair */shadowNodes = getCorrespondingNodes(
 					model, false);
 			for (Iterator it = shadowNodes.iterator(); it.hasNext();) {
-				MindMapNodePair shadowNode = (MindMapNodePair) it.next();
+				Tools.MindMapNodePair shadowNode = (Tools.MindMapNodePair) it
+						.next();
 				selectShadowNode(shadowNode.getCorresponding(), pEnableShadow,
 						shadowNode.getCloneNode());
 			}
@@ -301,7 +288,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	/**
-	 * @return a list of MindMapNode s including the orignal node!
+	 * @return a list of MindMapNode s including the original node!
 	 */
 	List/* MindMapNode */getCloneNodes() {
 		try {
@@ -347,8 +334,13 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		Vector indexVector = new Vector();
 		MindMapNode child = pNode;
 		List cloneNodes = getCloneNodes();
-		logger.info("Searching for corresponding for " + pNode + " in "
-				+ Tools.listToString(cloneNodes));
+		logger.fine("Searching for corresponding for " + printNodeId(pNode)
+				+ " in " + printNodeIds(cloneNodes));
+		/*
+		 * FIXME: Design flaw here: the index based correspondence is more than
+		 * week. Imagine moving nodes up/down or inserting nodes with many
+		 * children. One the clones, the index way may leed into an asylum....
+		 */
 		while (!cloneNodes.contains(child)) {
 			if (child.isRoot()) {
 				// nothing found!
@@ -360,7 +352,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		}
 		MindMapNode originalNode = child;
 		List/* MindMapNode */targets = cloneNodes;
-		for (Iterator itClone = targets.iterator(); itClone.hasNext();) {
+		CloneLoop: for (Iterator itClone = targets.iterator(); itClone
+				.hasNext();) {
 			MindMapNode target = (MindMapNode) itClone.next();
 			MindMapNode cloneNode = target;
 			if (!includeNodeItself && cloneNode == originalNode)
@@ -368,17 +361,46 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 			for (Iterator it = indexVector.iterator(); it.hasNext();) {
 				int index = ((Integer) it.next()).intValue();
 				if (target.getChildCount() <= index) {
-					throw new IllegalArgumentException("Index " + index
-							+ " in other tree not found from " + targets
-							+ " originating from " + cloneNode);
+					logger.warning("Index " + index
+							+ " in other tree not found from "
+							+ printNodeIds(targets) + " originating from "
+							+ printNodeId(cloneNode));
+					// with crossed fingers.
+					continue CloneLoop;
 				}
 				target = (MindMapNode) target.getChildAt(index);
 			}
-			logger.info("Found corresponding node " + target + " on clone "
-					+ cloneNode);
-			returnValue.add(new MindMapNodePair(target, cloneNode));
+			logger.fine("Found corresponding node " + printNodeId(target)
+					+ " on clone " + printNodeId(cloneNode));
+			returnValue.add(new Tools.MindMapNodePair(target, cloneNode));
 		}
 		return returnValue;
+	}
+
+	/**
+	 * @param pCloneNode
+	 * @return
+	 */
+	private String printNodeId(MindMapNode pCloneNode) {
+		try {
+			return getMindMapController().getNodeID(pCloneNode) + ": '"
+					+ (pCloneNode.getShortText(getMindMapController())) + "'";
+		} catch (Exception e) {
+			return "NOT FOUND: '" + pCloneNode + "'";
+		}
+	}
+
+	/**
+	 * @param pTargets
+	 * @return
+	 */
+	private String printNodeIds(List pTargets) {
+		Vector strings = new Vector();
+		for (Iterator it = pTargets.iterator(); it.hasNext();) {
+			MindMapNode node = (MindMapNode) it.next();
+			strings.add(printNodeId(node));
+		}
+		return "" + strings;
 	}
 
 	private XmlAction cloneAction(XmlAction doAction, NodeAction nodeAction,
@@ -388,7 +410,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 				MindMapNode clone = (MindMapNode) it.next();
 				if (clone.isChildOfOrEqual(node)) {
 					// the complete node is cut.
-					logger.info("Node " + clone + " is cut.");
+					logger.fine("Node " + printNodeId(clone) + " is cut.");
 					return doAction;
 				}
 			}
@@ -399,14 +421,14 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		List/* MindMapNodePair */correspondingNodes = getCorrespondingNodes(
 				node, false);
 		for (Iterator it = correspondingNodes.iterator(); it.hasNext();) {
-			MindMapNodePair pair = (MindMapNodePair) it.next();
+			Tools.MindMapNodePair pair = (Tools.MindMapNodePair) it.next();
 			getNewCompoundAction(nodeAction, pair, compound);
 		}
 		return compound;
 	}
 
 	private void getNewCompoundAction(NodeAction nodeAction,
-			MindMapNodePair correspondingNodePair, CompoundAction compound) {
+			Tools.MindMapNodePair correspondingNodePair, CompoundAction compound) {
 		// deep copy:
 		NodeAction copiedNodeAction = (NodeAction) getMindMapController()
 				.unMarshall(getMindMapController().marshall(nodeAction));
@@ -423,7 +445,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 					// search for this clone:
 					for (Iterator it = correspondingMoveNodes.iterator(); it
 							.hasNext();) {
-						MindMapNodePair pair = (MindMapNodePair) it.next();
+						Tools.MindMapNodePair pair = (Tools.MindMapNodePair) it
+								.next();
 						if (pair.getCloneNode() == correspondingNodePair
 								.getCloneNode()) {
 							// found:
@@ -492,12 +515,16 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		registerPlugin();
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.modes.ModeController.NodeSelectionListener#onSelectionChange(freemind.modes.MindMapNode, boolean)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.modes.ModeController.NodeSelectionListener#onSelectionChange
+	 * (freemind.modes.MindMapNode, boolean)
 	 */
 	public void onSelectionChange(NodeView pNode, boolean pIsSelected) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
