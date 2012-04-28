@@ -165,9 +165,10 @@ Todo:
 	<xsl:if test="child::node"> 
 		<xsl:text>
 		</xsl:text> <!-- adds a line-break in the html code -->
-		<ul class="{$ulfold}">
+		<ul class="{$ulfold}">  
 			<xsl:apply-templates select="node[@POSITION='left']"/>
 			<xsl:apply-templates select="node[@POSITION='right']"/>
+			<xsl:apply-templates select="node[not(@POSITION)]"/>
 		</ul>
 	</xsl:if>
 	<!-- if there are arrowlinks inside this node (i.e. this node is
