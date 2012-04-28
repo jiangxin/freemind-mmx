@@ -321,7 +321,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 		feedback.increase("FreeMind.progress.createInitialMode");
 		controller.createNewMode(getProperty("initial_mode"));
-
 	}// Constructor
 
 	/**
