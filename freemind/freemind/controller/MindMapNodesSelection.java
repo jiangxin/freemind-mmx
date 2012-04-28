@@ -58,7 +58,7 @@ public class MindMapNodesSelection implements Transferable, ClipboardOwner {
 	static {
 		try {
 			mindMapNodesFlavor = new DataFlavor(
-					"text/freemind-nodes; class=java.util.List");
+					"text/freemind-nodes; class=java.lang.String");
 			rtfFlavor = new DataFlavor("text/rtf; class=java.io.InputStream");
 			htmlFlavor = new DataFlavor("text/html; class=java.lang.String");
 			fileListFlavor = new DataFlavor(
@@ -66,7 +66,7 @@ public class MindMapNodesSelection implements Transferable, ClipboardOwner {
 			dropActionFlavor = new DataFlavor(
 					"text/drop-action; class=java.lang.String");
 			copyNodeIdsFlavor = new DataFlavor(
-					"text/freemind-node-ids; class=java.lang.String");
+					"application/freemind-node-ids; class=java.util.List");
 		} catch (Exception e) {
 			System.err.println(e);
 		}
