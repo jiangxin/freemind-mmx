@@ -631,7 +631,8 @@ public class TimeList extends MindMapHookAdapter implements
 	 */
 	private DefaultTableModel updateModel() {
 		TimeWindowConfigurationStorage storage = null;
-		if(timeTable.getModel()==sorter) {
+		// if not first call, get configuration
+		if(sorter != null) {
 			storage = getTableConfiguration();
 		}
 		DefaultTableModel model = new MindmapTableModel();
@@ -646,8 +647,12 @@ public class TimeList extends MindMapHookAdapter implements
 		timeTableModel = model;
 		mFlatNodeTableFilterModel = new FlatNodeTableFilterModel(
 				timeTableModel, NODE_TEXT_COLUMN);
-		sorter = new TableSorter(mFlatNodeTableFilterModel);
-		timeTable.setModel(sorter);
+		if(sorter == null) {
+			sorter = new TableSorter(mFlatNodeTableFilterModel);
+			timeTable.setModel(sorter);
+		} else {
+			sorter.setTableModel(mFlatNodeTableFilterModel);
+		}
 		if(storage != null) {
 			setTableConfiguration(storage);
 		}
