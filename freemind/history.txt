@@ -5,6 +5,7 @@ Changes made in FreeMind 1.0.0 Beta3
 * NEW: In the new search dialog, folded nodes can be hidden.
 * NEW: Purging of old tile images in cache added
 * FIX: Clone functionality in combination with the automatic layout.
+* CHANGE: In new search (& replace) dialog, sorting is case insensitive.
 
 ===============================
 Changes made in FreeMind 1.0.0 Beta2

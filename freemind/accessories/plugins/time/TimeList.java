@@ -257,7 +257,9 @@ public class TimeList extends MindMapHookAdapter implements
 		sorter.setTableHeader(timeTable.getTableHeader());
 		sorter.setColumnComparator(Date.class,
 				TableSorter.COMPARABLE_COMAPRATOR);
-		sorter.setColumnComparator(MindMapNode.class,
+		sorter.setColumnComparator(NodeHolder.class,
+				TableSorter.LEXICAL_COMPARATOR);
+		sorter.setColumnComparator(NotesHolder.class,
 				TableSorter.LEXICAL_COMPARATOR);
 		sorter.setColumnComparator(IconsHolder.class,
 				TableSorter.COMPARABLE_COMAPRATOR);
