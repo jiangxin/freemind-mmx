@@ -1053,8 +1053,9 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addSeparator("main/view/");
 		for (int i = 0; i < mTileSources.length; i++) {
 			TileSource source = mTileSources[i].mTileSource;
-			menuHolder
-					.addAction(new ChangeTileSource(source), "main/view/" + i);
+			addAccelerator(menuHolder
+					.addAction(new ChangeTileSource(source), "main/view/" + i),
+					"keystroke_plugins/map/MapDialog_tileSource_" + i);
 		}
 		menuHolder.addSeparator("main/view/");
 		menuHolder.addAction(showMapMarker, "main/view/showMapMarker");
