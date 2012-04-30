@@ -656,6 +656,13 @@ public class TimeList extends MindMapHookAdapter implements
 		if(storage != null) {
 			setTableConfiguration(storage);
 		}
+		try {
+			String text = getRegularExpression(getText(mFilterTextSearchField
+					.getDocument()));
+			mFlatNodeTableFilterModel.setFilter(text);
+		} catch (BadLocationException e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
 		return model;
 	}
 
