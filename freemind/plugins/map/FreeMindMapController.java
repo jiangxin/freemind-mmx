@@ -188,6 +188,8 @@ public class FreeMindMapController extends JMapController implements
 
 	private Coordinate mRectangularStart;
 
+	private Vector mPositionHolderVector = new Vector();
+	
 	public static class TileSourceStore {
 		TileSource mTileSource;
 		String mLayerName;
@@ -1097,6 +1099,8 @@ public class FreeMindMapController extends JMapController implements
 		addAccelerator(menuHolder.addAction(new MoveDownAction(),
 				"main/navigation/moveDown"),
 				"keystroke_plugins/map/MapDialog_moveDown");
+		menuHolder.addSeparator("main/navigation/");
+		
 		menuHolder.updateMenus(menu, "main/");
 		mMapDialog.setJMenuBar(menu);
 		/* Popup menu */

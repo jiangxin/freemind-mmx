@@ -79,7 +79,7 @@
 
 
 	
-	
+	<!--  Internal plugin to manage the relation map location <-> node. -->
 	<plugin_action 
 		documentation="plugins/map/MapNodePositionHolder.properties_documentation" 
 		name="plugins/map/MapNodePositionHolder.properties_name" 

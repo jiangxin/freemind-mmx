@@ -208,6 +208,9 @@
 				<menu_category name="collaboration">
 				</menu_category>
 				<menu_separator/>
+				<menu_category name="map">
+				</menu_category>
+				<menu_separator/>
 				<menu_category name="options">
 					<menu_action name="option_dialog" field="propertyAction" key_ref="keystroke_option_dialog"/>
 				</menu_category>
