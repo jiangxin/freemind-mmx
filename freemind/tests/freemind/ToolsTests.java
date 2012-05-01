@@ -20,6 +20,7 @@
 
 package tests.freemind;
 
+import java.io.File;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URL;
@@ -84,6 +85,16 @@ public class ToolsTests extends FreeMindTestBase {
 		result = HtmlTools.unicodeToHTMLUnicodeEntity(result, true);
 		System.out.println(result);
 		assertEquals("Correct conversion", input, result);
+	}
+	
+	public void testUrlConversion() throws Exception {
+		File input = new File("/Users/foltin/downloads/Jänstraße 270c.pdf");
+		File mapFile = new File("/Users/foltin/tmp/Immobilien.mm");
+		URL url = Tools.fileToUrl(input);
+		String externalForm = HtmlTools.unicodeToHTMLUnicodeEntity(url.toExternalForm(), false);
+		assertEquals("Correct url representation", "????", externalForm);
+		String result = Tools.fileToRelativeUrlString(input, mapFile);
+		assertEquals("Correct conversion", "???", result);
 	}
 
 }

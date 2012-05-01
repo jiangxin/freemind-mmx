@@ -1661,7 +1661,7 @@ public class MindMapController extends ControllerAdapter implements
 	}
 
 	protected void setLinkByFileChooser() {
-		String relative = getLinkByFileChooser(getFileFilter());
+		String relative = getLinkByFileChooser(null);
 		if (relative != null)
 			setLink((NodeAdapter) getSelected(), relative);
 	}

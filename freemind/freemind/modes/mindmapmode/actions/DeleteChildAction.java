@@ -153,7 +153,6 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
 	public void deleteNode(MindMapNode selectedNode) {
 		String newId = mMindMapController.getNodeID(selectedNode);
 		mMindMapController.getActionFactory().startTransaction(text);
-		MindMapNode parent = selectedNode.getParentNode();
 
 		Transferable copy = mMindMapController.copy(selectedNode, true);
 		NodeCoordinate coord = new NodeCoordinate(selectedNode,
@@ -161,7 +160,7 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
 		// Undo-action
 		PasteNodeAction pasteNodeAction = null;
 		pasteNodeAction = mMindMapController.paste.getPasteNodeAction(copy,
-				coord);
+				coord, null);
 
 		DeleteNodeAction deleteAction = getDeleteNodeAction(newId);
 		mMindMapController.getActionFactory().executeAction(

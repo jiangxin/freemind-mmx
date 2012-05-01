@@ -615,18 +615,18 @@ public class HtmlTools {
 				&& character <= 0x10FFFF;
 	}
 
+	/** Precondition: The input text contains XML unicode entities rather
+	   than Java unicode text.
+	
+	   The algorithm:
+	   Search the string for XML entities. For each XML entity inspect
+	   whether it is valid. If valid, append it. To be on the safe side,
+	   also inspect for no-entity unicode whether it is XML-valid, and
+	   pass on only XML-valid characters.
+	
+	   This method uses the method isXMLValidCharacter, which makes use
+	   of http://www.w3.org/TR/2000/REC-xml-20001006#NT-Char. */
 	public static String removeInvalidXmlCharacters(String text) {
-		// Precondition: The input text contains XML unicode entities rather
-		// than Java unicode text.
-
-		// The algorithm:
-		// Search the string for XML entities. For each XML entity inspect
-		// whether it is valid. If valid, append it. To be on the safe side,
-		// also inspect for no-entity unicode whether it is XML-valid, and
-		// pass on only XML-valid characters.
-
-		// This method uses the method isXMLValidCharacter, which makes use
-		// of http://www.w3.org/TR/2000/REC-xml-20001006#NT-Char.
 		StringBuffer result = new StringBuffer(text.length());
 		StringBuffer entity = new StringBuffer();
 		boolean readingEntity = false;

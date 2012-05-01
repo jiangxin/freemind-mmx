@@ -379,14 +379,12 @@ public class Tools {
 			targetString = targetString.substring(0,
 					targetString.lastIndexOf("/") + 1);
 
-			StringTokenizer baseTokens = new StringTokenizer(baseString, "/");// Maybe
-			// this
-			// causes
-			// problems
-			// under
-			// windows
+			// Maybe this causes problems under windows
+			StringTokenizer baseTokens = new StringTokenizer(baseString, "/");
+
+			// Maybe this causes problems under windows
 			StringTokenizer targetTokens = new StringTokenizer(targetString,
-					"/");// Maybe this causes problems under windows
+					"/");
 
 			String nextBaseToken = "", nextTargetToken = "";
 
@@ -433,6 +431,30 @@ public class Tools {
 			return result;
 		}
 		return target.toString();
+	}
+	
+	/**
+	 * If the preferences say, that links should be relative, a relative url is returned.
+	 * 
+	 * @param input the file that is treated
+	 * @param pMapFile the file, that input is made relative to
+	 * @return
+	 */
+	public static String fileToRelativeUrlString(File input, File pMapFile) {
+		URL link;
+		String relative;
+		try {
+			link = Tools.fileToUrl(input);
+			relative = link.toString();
+			if ("relative".equals(Resources.getInstance().getProperty("links"))) {
+				// Create relative URL
+				relative = Tools.toRelativeURL(Tools.fileToUrl(pMapFile), link);
+			}
+			return relative;
+		} catch (MalformedURLException ex) {
+			freemind.main.Resources.getInstance().logException(ex);
+		}
+		return null;
 	}
 
 	/**

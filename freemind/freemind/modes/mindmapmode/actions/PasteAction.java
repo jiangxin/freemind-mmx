@@ -118,11 +118,17 @@ public class PasteAction extends AbstractAction implements ActorXml {
 		return PasteNodeAction.class;
 	}
 
+	/**
+	 * @param t
+	 * @param coord
+	 * @param pUndoAction is filled automatically when not null.
+	 * @return a new PasteNodeAction.
+	 */
 	public PasteNodeAction getPasteNodeAction(Transferable t,
-			NodeCoordinate coord) {
+			NodeCoordinate coord, CompoundAction pUndoAction) {
 		PasteNodeAction pasteAction = new PasteNodeAction();
 		pasteAction.setNode(mMindMapController.getNodeID(coord.target));
-		pasteAction.setTransferableContent(getTransferableContent(t));
+		pasteAction.setTransferableContent(getTransferableContent(t, pUndoAction));
 		pasteAction.setAsSibling(coord.asSibling);
 		pasteAction.setIsLeft(coord.isLeft);
 		return pasteAction;
@@ -151,10 +157,18 @@ public class PasteAction extends AbstractAction implements ActorXml {
 	 */
 	public boolean paste(Transferable t, MindMapNode target, boolean asSibling,
 			boolean isLeft) {
-		PasteNodeAction pasteAction = getPasteNodeAction(t, new NodeCoordinate(
-				target, asSibling, isLeft));
-		// Undo-action
 		CompoundAction undoAction = new CompoundAction();
+		PasteNodeAction pasteAction;
+		pasteAction = getPasteNodeAction(t, new NodeCoordinate(
+				target, asSibling, isLeft), undoAction);
+		// Undo-action
+		/* how to construct the undo action for a complex paste?
+		 * a) Paste pastes a number of new nodes that are adjacent. This number should be determined.
+		 * b) The new ids of the nodes must be given to the PasteAction. They must be used.
+		 * c) The cut action can cut exactly these node ids.
+		 * d) But, as there are many possibilities which data flavor is pasted, it has to be determined before, which one will be taken.
+		 * 
+		 */
 		mMindMapController.getActionFactory().startTransaction("paste");
 		boolean result = mMindMapController.getActionFactory().executeAction(
 				new ActionPair(pasteAction, undoAction));
@@ -258,7 +272,6 @@ public class PasteAction extends AbstractAction implements ActorXml {
 							.loadTree(
 									new MindMapMapModel.StringReaderCreator(
 											mapContent), false);
-					int index = 0;
 					for (ListIterator i = node.childrenUnfolded(); i.hasNext();) {
 						MindMapNodeModel importNode = (MindMapNodeModel) i
 								.next();
@@ -273,7 +286,6 @@ public class PasteAction extends AbstractAction implements ActorXml {
 								mMindMapController.getModel());
 					}
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
 					freemind.main.Resources.getInstance().logException(e);
 				}
 			}
@@ -733,7 +745,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 		mMindMapController.insertNodeInto(node, parent);
 	}
 
-	private TransferableContent getTransferableContent(Transferable t) {
+	private TransferableContent getTransferableContent(Transferable t, CompoundAction pUndoAction) {
 
 		try {
 			TransferableContent trans = new TransferableContent();

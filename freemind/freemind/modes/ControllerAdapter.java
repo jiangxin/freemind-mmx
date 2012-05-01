@@ -1398,7 +1398,7 @@ public abstract class ControllerAdapter implements ModeController, DirectoryResu
 			if (firstLoop) {
 				firstLoop = false;
 			} else {
-				forNodesFlavor += "<nodeseparator>";
+				forNodesFlavor += NODESEPARATOR;
 			}
 
 			forNodesFlavor += copy(tmpNode, copyInvisible).getTransferData(
