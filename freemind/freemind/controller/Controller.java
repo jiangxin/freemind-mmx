@@ -829,7 +829,7 @@ public class Controller implements MapModuleChangeObserver {
 	public void obtainFocusForSelected() {
 		// logger.finest("obtainFocusForSelected");
 		if (getView() != null) { // is null if the last map was closed.
-			logger.fine("Requesting Focus for " + getView());
+			logger.fine("Requesting Focus for " + getView() + " in model " +getView().getModel());
 			getView().requestFocusInWindow();
 		} else {
 			// fc, 6.1.2004: bug fix, that open and quit are not working if no
@@ -2091,6 +2091,8 @@ public class Controller implements MapModuleChangeObserver {
 		// mScrollPane could be set invisible by JTabbedPane
 		frame.getScrollPane().setVisible(true);
 		mTabbedPane.setComponentAt(selectedIndex, frame.getContentComponent());
+		// double call, due to mac strangeness.
+		obtainFocusForSelected();
 	}
 
 }

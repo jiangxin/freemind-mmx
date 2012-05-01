@@ -148,13 +148,20 @@ public class Registration implements HookRegistration, ActorXml,
 			logger.fine("Start purging for subdir " + pCacheDirectory);
 			File[] listTagFiles = pCacheDirectory.listFiles(new AgeFilter(
 					System.currentTimeMillis() - mCacheMaxAge));
+			if(listTagFiles == null) {
+				return;
+			}
 			for (int i = 0; i < listTagFiles.length; i++) {
 				File tagFile = listTagFiles[i];
 				File imageFile = new File(tagFile.getPath().replace(".tags", ".png"));
-				logger.finest("Deleting " + tagFile);
-				logger.finest("Deleting " + imageFile);
-				tagFile.delete();
-				imageFile.delete();
+				try {
+					logger.finest("Deleting " + tagFile);
+					logger.finest("Deleting " + imageFile);
+					tagFile.delete();
+					imageFile.delete();
+				} catch (Exception e) {
+					freemind.main.Resources.getInstance().logException(e);
+				}
 			}
 		}
 
