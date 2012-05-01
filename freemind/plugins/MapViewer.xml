@@ -11,7 +11,7 @@
 		class_name="plugins.map.MapDialog" 
 		instanciation="OnceForRoot">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
-		<plugin_menu location="menu_bar/extras/map/ShowMap"/>
+		<plugin_menu location="menu_bar/extras/first/map/ShowMap"/>
 	</plugin_action>
 	
 	<!-- Context menu Show -->
