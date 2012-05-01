@@ -403,4 +403,5 @@ public class JMonthChooser extends JPanel implements ItemListener,
 		frame.pack();
 		frame.setVisible(true);
 	}
+	
 }

@@ -480,7 +480,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
 				break;
 			}
 		}
-
+		
 		if (alwaysFireDayProperty) {
 			firePropertyChange(DAY_PROPERTY, 0, day);
 		} else {
@@ -695,6 +695,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
 			monthChooser.setMonth(month);
 			this.setDay(day);
 		}
+		setFocus();
 	}
 
 	private int diffMonth(int pMonthDiff) {
