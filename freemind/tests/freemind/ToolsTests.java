@@ -105,7 +105,7 @@ public class ToolsTests extends FreeMindTestBase {
 		File mapFile = new File("/Users/foltin/tmp/im.mm");
 		String result = Tools.fileToRelativeUrlString(input, mapFile);
 //		final String hmm = Tools.urlToFile(new URL(result)).getPath();
-		assertEquals("Correct relative result", "../downloads/Ja\u0308nstra\u00dfe%20270c.pdf", result);
+		assertEquals("Correct relative result", "file:///../downloads/Ja\u0308nstra\u00dfe%20270c.pdf", result);
 		
 	}
 

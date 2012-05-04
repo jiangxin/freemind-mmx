@@ -364,80 +364,68 @@ public class Tools {
 	public static String toRelativeURL(URL base, URL target) {
 		// Precondition: If URL is a path to folder, then it must end with '/'
 		// character.
-		if ((base.getProtocol().equals(target.getProtocol()))
-				&& (base.getHost().equals(target.getHost()))) {
-
-			String baseString = base.getFile();
-			String targetString = target.getFile();
-			String result = "";
-
-			// remove filename from URL
-			baseString = baseString.substring(0,
-					baseString.lastIndexOf("/") + 1);
-
-			// remove filename from URL
-			targetString = targetString.substring(0,
-					targetString.lastIndexOf("/") + 1);
-
-			// Maybe this causes problems under windows
-			StringTokenizer baseTokens = new StringTokenizer(baseString, "/");
-
-			// Maybe this causes problems under windows
-			StringTokenizer targetTokens = new StringTokenizer(targetString,
-					"/");
-
-			String nextBaseToken = "", nextTargetToken = "";
-
-			// Algorithm
-
-			while (baseTokens.hasMoreTokens() && targetTokens.hasMoreTokens()) {
-				nextBaseToken = baseTokens.nextToken();
-				nextTargetToken = targetTokens.nextToken();
-				if (!(nextBaseToken.equals(nextTargetToken))) {
-					while (true) {
-						result = result.concat("../");
-						if (!baseTokens.hasMoreTokens()) {
-							break;
-						}
-						nextBaseToken = baseTokens.nextToken();
-					}
-					while (true) {
-						result = result.concat(nextTargetToken + "/");
-						if (!targetTokens.hasMoreTokens()) {
-							break;
-						}
-						nextTargetToken = targetTokens.nextToken();
-					}
-					String temp = target.getFile();
-					result = result.concat(temp.substring(
-							temp.lastIndexOf("/") + 1, temp.length()));
-					return result;
-				}
-			}
-
-			while (baseTokens.hasMoreTokens()) {
-				result = result.concat("../");
-				baseTokens.nextToken();
-			}
-
-			while (targetTokens.hasMoreTokens()) {
-				nextTargetToken = targetTokens.nextToken();
-				result = result.concat(nextTargetToken + "/");
-			}
-
-			String temp = target.getFile();
-			result = result.concat(temp.substring(temp.lastIndexOf("/") + 1,
-					temp.length()));
-			return result;
+		if (!base.getProtocol().equals(target.getProtocol())
+				|| !base.getHost().equals(target.getHost())) {
+			return target.toString();
 		}
-		return target.toString();
+		String baseString = base.getFile();
+		String targetString = target.getFile();
+		String result = "";
+
+		// remove filename from URL
+		baseString = baseString.substring(0, baseString.lastIndexOf("/") + 1);
+
+		// remove filename from URL
+		targetString = targetString.substring(0,
+				targetString.lastIndexOf("/") + 1);
+
+		// Maybe this causes problems under windows
+		StringTokenizer baseTokens = new StringTokenizer(baseString, "/");
+
+		// Maybe this causes problems under windows
+		StringTokenizer targetTokens = new StringTokenizer(targetString, "/");
+
+		String nextBaseToken = "", nextTargetToken = "";
+
+		// Algorithm
+
+		while (baseTokens.hasMoreTokens() && targetTokens.hasMoreTokens()) {
+			nextBaseToken = baseTokens.nextToken();
+			nextTargetToken = targetTokens.nextToken();
+			if (!(nextBaseToken.equals(nextTargetToken))) {
+				break;
+			}
+		}
+
+		while (true) {
+			result = result.concat("../");
+			if (!baseTokens.hasMoreTokens()) {
+				break;
+			}
+			nextBaseToken = baseTokens.nextToken();
+		}
+		while (true) {
+			result = result.concat(nextTargetToken + "/");
+			if (!targetTokens.hasMoreTokens()) {
+				break;
+			}
+			nextTargetToken = targetTokens.nextToken();
+		}
+
+		String temp = target.getFile();
+		result = target.getProtocol()+"://" + target.getHost() + "/" + result.concat(temp.substring(temp.lastIndexOf("/") + 1,
+				temp.length()));
+		return result;
 	}
-	
+
 	/**
-	 * If the preferences say, that links should be relative, a relative url is returned.
+	 * If the preferences say, that links should be relative, a relative url is
+	 * returned.
 	 * 
-	 * @param input the file that is treated
-	 * @param pMapFile the file, that input is made relative to
+	 * @param input
+	 *            the file that is treated
+	 * @param pMapFile
+	 *            the file, that input is made relative to
 	 * @return
 	 */
 	public static String fileToRelativeUrlString(File input, File pMapFile) {
@@ -1384,18 +1372,18 @@ public class Tools {
 
 	public static class MindMapNodePair {
 		MindMapNode first;
-	
+
 		MindMapNode second;
-	
+
 		public MindMapNodePair(MindMapNode first, MindMapNode second) {
 			this.first = first;
 			this.second = second;
 		}
-	
+
 		public MindMapNode getCorresponding() {
 			return first;
 		}
-	
+
 		public MindMapNode getCloneNode() {
 			return second;
 		}
@@ -1492,7 +1480,7 @@ public class Tools {
 	public static boolean isAboveJava4() {
 		return JAVA_VERSION.compareTo("1.4.0") > 0;
 	}
-	
+
 	public static File urlToFile(URL pUrl) throws URISyntaxException {
 		// fix for java1.4 and java5 only.
 		if (isBelowJava6()) {
@@ -1780,10 +1768,10 @@ public class Tools {
 	 * copied from HomePane.java 15 mai 2006
 	 * 
 	 * Sweet Home 3D, Copyright (c) 2006 Emmanuel PUYBARET / eTeks
-	 * <info@eteks.com> 
+	 * <info@eteks.com>
 	 * 
-	 * - This listener manages accelerator keys that may require
-	 *   the use of shift key depending on keyboard layout (like + - or ?)
+	 * - This listener manages accelerator keys that may require the use of
+	 * shift key depending on keyboard layout (like + - or ?)
 	 */
 	public static void invokeActionsToKeyboardLayoutDependantCharacters(
 			KeyEvent pEvent, Action[] specialKeyActions, Object pObject) {
