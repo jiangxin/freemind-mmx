@@ -23,6 +23,7 @@ package tests.freemind;
 import java.io.File;
 import java.io.Reader;
 import java.io.StringReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Vector;
@@ -102,11 +103,40 @@ public class ToolsTests extends FreeMindTestBase {
 	
 	public void testRelativeUrls() throws Exception {
 		File input = new File("/Users/foltin/downloads/Ja\u0308nstra\u00dfe 270c.pdf");
+		String expected = "../downloads/Ja\u0308nstra\u00dfe%20270c.pdf";
 		File mapFile = new File("/Users/foltin/tmp/im.mm");
-		String result = Tools.fileToRelativeUrlString(input, mapFile);
-//		final String hmm = Tools.urlToFile(new URL(result)).getPath();
-		assertEquals("Correct relative result", "file:///../downloads/Ja\u0308nstra\u00dfe%20270c.pdf", result);
+		testCorrectRelativism(input, expected, mapFile);
 		
+	}
+	public void testRelativeUrls2() throws Exception {
+		File input = new File("/Users/foltin/downloads/subdir1/subdir2/Ja\u0308nstra\u00dfe 270c.pdf");
+		String expected = "../downloads/subdir1/subdir2/Ja\u0308nstra\u00dfe%20270c.pdf";
+		File mapFile = new File("/Users/foltin/tmp/im.mm");
+		testCorrectRelativism(input, expected, mapFile);
+		
+	}
+	public void testRelativeUrls3() throws Exception {
+		File input = new File("/Users/foltin/downloads/Ja\u0308nstra\u00dfe 270c.pdf");
+		String expected = "../../../downloads/Ja\u0308nstra\u00dfe%20270c.pdf";
+		File mapFile = new File("/Users/foltin/tmp/subdir1/subdir2/im.mm");
+		testCorrectRelativism(input, expected, mapFile);
+		
+	}
+	public void testRelativeUrlsSpaces() throws Exception {
+		File input = new File("/Users/foltin/downloads/subd ir1/subdi r2/Ja\u0308nstra\u00dfe 270c.pdf");
+		String expected = "../downloads/subd%20ir1/subdi%20r2/Ja\u0308nstra\u00dfe%20270c.pdf";
+		File mapFile = new File("/Users/foltin/tmp/im.mm");
+		testCorrectRelativism(input, expected, mapFile);
+		
+	}
+
+	protected void testCorrectRelativism(File input, String expected,
+			File mapFile) throws MalformedURLException {
+		String relative = Tools.fileToRelativeUrlString(input, mapFile);
+		assertEquals("Correct relative result", expected, relative);
+		URL u = new URL(Tools.fileToUrl(mapFile), relative);
+		URL e = Tools.fileToUrl(input);
+		assertEquals("Correct absolute  result", e.toExternalForm(), u.toExternalForm());
 	}
 
 }

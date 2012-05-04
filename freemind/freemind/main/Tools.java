@@ -413,7 +413,8 @@ public class Tools {
 		}
 
 		String temp = target.getFile();
-		result = target.getProtocol()+"://" + target.getHost() + "/" + result.concat(temp.substring(temp.lastIndexOf("/") + 1,
+		String prefix = ""; //target.getProtocol()+"://" + target.getHost() + "/";
+		result = prefix + result.concat(temp.substring(temp.lastIndexOf("/") + 1,
 				temp.length()));
 		return result;
 	}
