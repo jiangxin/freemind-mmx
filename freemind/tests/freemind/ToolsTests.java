@@ -88,13 +88,25 @@ public class ToolsTests extends FreeMindTestBase {
 	}
 	
 	public void testUrlConversion() throws Exception {
-		File input = new File("/Users/foltin/downloads/Jänstraße 270c.pdf");
-		File mapFile = new File("/Users/foltin/tmp/Immobilien.mm");
+		File input = new File("/Users/foltin/downloads/Ja\u0308nstra\u00dfe 270c.pdf");
+		System.out.println("input file " + input);
 		URL url = Tools.fileToUrl(input);
 		String externalForm = HtmlTools.unicodeToHTMLUnicodeEntity(url.toExternalForm(), false);
-		assertEquals("Correct url representation", "????", externalForm);
+		System.out.println("External form: " + externalForm);
+		// convert back:
+		String unescapeHTMLUnicodeEntity = HtmlTools.unescapeHTMLUnicodeEntity(externalForm);
+		File urlToFile = Tools.urlToFile(new URL(unescapeHTMLUnicodeEntity));
+		assertEquals("Forth and back should give the same", input.getAbsolutePath(), urlToFile.getAbsolutePath());
+		
+	}
+	
+	public void testRelativeUrls() throws Exception {
+		File input = new File("/Users/foltin/downloads/Ja\u0308nstra\u00dfe 270c.pdf");
+		File mapFile = new File("/Users/foltin/tmp/im.mm");
 		String result = Tools.fileToRelativeUrlString(input, mapFile);
-		assertEquals("Correct conversion", "???", result);
+//		final String hmm = Tools.urlToFile(new URL(result)).getPath();
+		assertEquals("Correct relative result", "../downloads/Ja\u0308nstra\u00dfe%20270c.pdf", result);
+		
 	}
 
 }

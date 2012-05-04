@@ -311,6 +311,10 @@ public class HtmlTools {
 		return HTML_PATTERN.matcher(text.toLowerCase(Locale.ENGLISH)).matches();
 	}
 
+	/**
+	 * Changes all unicode characters into &#xxx values.
+	 * Opposite to {@link HtmlTools#unescapeHTMLUnicodeEntity(String)}
+	 */
 	public static String unicodeToHTMLUnicodeEntity(String text, boolean pPreserveNewlines) {
 		/*
 		 * Heuristic reserve for expansion : factor 1.2
@@ -339,6 +343,8 @@ public class HtmlTools {
 	 * Converts XML unicode entity-encoded characters into plain Java unicode
 	 * characters; for example, ''&amp;#xff;'' gets converted. Removes all
 	 * XML-invalid entity characters, such as &amp;#xb;.
+	 * 
+	 * Opposite to {@link HtmlTools#unicodeToHTMLUnicodeEntity(String, boolean)}
 	 * 
 	 * @param text
 	 *            input
