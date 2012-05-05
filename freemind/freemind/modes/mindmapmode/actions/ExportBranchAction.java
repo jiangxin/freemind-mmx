@@ -130,13 +130,8 @@ public class ExportBranchAction extends AbstractAction {
 			// TODO: Keep formatting of node.
 			mMindMapController.setNodeText(newNode, node.getText());
 
-			try {
-				String linkString = Tools.toRelativeURL(mMindMapController
-						.getModel().getURL(), Tools.fileToUrl(chosenFile));
-				mMindMapController.setLink(newNode, linkString);
-			} catch (MalformedURLException ex) {
-				Resources.getInstance().logException(ex);
-			}
+			String linkString = Tools.fileToRelativeUrlString(chosenFile, mMindMapController.getModel().getFile());
+			mMindMapController.setLink(newNode, linkString);
 			mMindMapController.newMap(map);
 			// old map should not be save automatically!!
 		}
