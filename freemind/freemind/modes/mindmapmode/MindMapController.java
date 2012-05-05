@@ -254,9 +254,8 @@ public class MindMapController extends ControllerAdapter implements
 					.show().getResult();
 			if (showResult != JOptionPane.OK_OPTION) {
 				getFrame().out(
-						Tools.expandPlaceholders(
-								getText("file_not_reloaded"), getMap()
-										.getFile().toString()));
+						Tools.expandPlaceholders(getText("file_not_reloaded"),
+								getMap().getFile().toString()));
 				mReturnValue = false;
 				return;
 			}
@@ -486,7 +485,8 @@ public class MindMapController extends ControllerAdapter implements
 		getActionFactory().registerUndoHandler(
 				new UndoActionHandler(this, undo, redo));
 		// debug:
-//		getActionFactory().registerHandler(new freemind.modes.mindmapmode.actions.xml.PrintActionHandler(this));
+		// getActionFactory().registerHandler(new
+		// freemind.modes.mindmapmode.actions.xml.PrintActionHandler(this));
 
 		cut = new CutAction(this);
 		paste = new PasteAction(this);
@@ -1300,9 +1300,8 @@ public class MindMapController extends ControllerAdapter implements
 			URL absolute = null;
 			try {
 				String relative = selected.getLink();
-				absolute = Tools.isAbsolutePath(relative) ? Tools
-						.fileToUrl(new File(relative)) : new URL(
-						Tools.fileToUrl(getMap().getFile()), relative);
+				absolute = new URL(Tools.fileToUrl(getMap().getFile()),
+						relative);
 			} catch (MalformedURLException ex) {
 				JOptionPane.showMessageDialog(getView(),
 						"Couldn't create valid URL for:" + getMap().getFile());
@@ -1338,9 +1337,8 @@ public class MindMapController extends ControllerAdapter implements
 			URL absolute = null;
 			try {
 				String relative = selected.getLink();
-				absolute = Tools.isAbsolutePath(relative) ? Tools
-						.fileToUrl(new File(relative)) : new URL(
-						Tools.fileToUrl(getMap().getFile()), relative);
+				absolute = new URL(Tools.fileToUrl(getMap().getFile()),
+						relative);
 			} catch (MalformedURLException ex) {
 				JOptionPane.showMessageDialog(getView(),
 						"Couldn't create valid URL.");
@@ -1674,47 +1672,10 @@ public class MindMapController extends ControllerAdapter implements
 		filter.addExtension("gif");
 		filter.setDescription("JPG, PNG and GIF Images");
 
-		// Are there any selected nodes with pictures?
-		boolean picturesAmongSelecteds = false;
-		for (ListIterator e = getSelecteds().listIterator(); e.hasNext();) {
-			String link = ((MindMapNode) e.next()).getLink();
-			if (link != null) {
-				if (filter.accept(new File(link))) {
-					picturesAmongSelecteds = true;
-					break;
-				}
-			}
-		}
-
-		try {
-			// FIXME: Is this used?????
-			if (picturesAmongSelecteds) {
-				for (ListIterator e = getSelecteds().listIterator(); e
-						.hasNext();) {
-					MindMapNode node = (MindMapNode) e.next();
-					if (node.getLink() != null) {
-						String possiblyRelative = node.getLink();
-						String relative = Tools
-								.isAbsolutePath(possiblyRelative) ? Tools
-								.fileToUrl(new File(possiblyRelative))
-								.toString() : possiblyRelative;
-						if (relative != null) {
-							String strText = "<html><img src=\"" + relative
-									+ "\">";
-							setLink(node, null);
-							setNodeText(node, strText);
-						}
-					}
-				}
-			} else {
-				String relative = getLinkByFileChooser(filter);
-				if (relative != null) {
-					String strText = "<html><img src=\"" + relative + "\">";
-					setNodeText((MindMapNode) getSelected(), strText);
-				}
-			}
-		} catch (MalformedURLException e) {
-			freemind.main.Resources.getInstance().logException(e);
+		String relative = getLinkByFileChooser(filter);
+		if (relative != null) {
+			String strText = "<html><body><img src=\"" + relative + "\"/></body></html>";
+			setNodeText((MindMapNode) getSelected(), strText);
 		}
 	}
 
@@ -1829,12 +1790,10 @@ public class MindMapController extends ControllerAdapter implements
 				MindMapNode selNode = (MindMapNode) iterator.next();
 				link = selNode.getLink();
 				if (link != null) {
-					for (int i = link.length() - 1; i >= 0; i--) {
-						char c = link.charAt(i);
-						if (c == File.separatorChar) {
-							link = link.substring(0, i + 1);
-							break;
-						}
+					// as link is an URL, '/' is the only correct one.
+					final int i = link.lastIndexOf('/');
+					if (i >= 0) {
+						link = link.substring(0, i + 1);
 					}
 					logger.info("Opening link for directory " + link);
 					loadURL(link);
@@ -2364,8 +2323,12 @@ public class MindMapController extends ControllerAdapter implements
 		nodeHookFactory = pNodeHookFactory;
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.modes.mindmapmode.actions.MindMapActions#createModeControllerHook(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.modes.mindmapmode.actions.MindMapActions#createModeControllerHook
+	 * (java.lang.String)
 	 */
 	public void createModeControllerHook(String pHookName) {
 		HookFactory hookFactory = getHookFactory();
@@ -2381,7 +2344,7 @@ public class MindMapController extends ControllerAdapter implements
 	 */
 	public void obtainFocusForSelected() {
 		getController().obtainFocusForSelected();
-		
+
 	}
 
 }

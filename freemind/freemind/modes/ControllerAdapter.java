@@ -83,6 +83,7 @@ import freemind.controller.actions.generated.instance.NodeListMember;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain;
+import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
