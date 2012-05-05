@@ -1719,7 +1719,6 @@ public class MindMapController extends ControllerAdapter implements
 	}
 
 	protected String getLinkByFileChooser(FileFilter fileFilter) {
-		URL link;
 		String relative = null;
 		File input;
 		FreeMindFileDialog chooser = getFileChooser(fileFilter);
@@ -1738,23 +1737,7 @@ public class MindMapController extends ControllerAdapter implements
 		int returnVal = chooser.showOpenDialog(getFrame().getContentPane());
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			input = chooser.getSelectedFile();
-			try {
-				link = Tools.fileToUrl(input);
-				relative = link.toString();
-			} catch (MalformedURLException ex) {
-				getController().errorMessage(getText("url_error"));
-				return null;
-			}
-			if (getFrame().getProperty("links").equals("relative")) {
-				// Create relative URL
-				try {
-					relative = Tools.toRelativeURL(
-							Tools.fileToUrl(getMap().getFile()), link);
-				} catch (MalformedURLException ex) {
-					getController().errorMessage(getText("url_error"));
-					return null;
-				}
-			}
+			relative = Tools.fileToRelativeUrlString(input, getMap().getFile());
 		}
 		return relative;
 	}

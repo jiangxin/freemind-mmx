@@ -122,6 +122,13 @@ public class ToolsTests extends FreeMindTestBase {
 		testCorrectRelativism(input, expected, mapFile);
 		
 	}
+	public void testRelativeUrls4() throws Exception {
+		File input = new File("/Users/foltin/downloads/Ja\u0308nstra\u00dfe 270c.pdf");
+		String expected = "Ja\u0308nstra\u00dfe%20270c.pdf";
+		File mapFile = new File("/Users/foltin/downloads/im.mm");
+		testCorrectRelativism(input, expected, mapFile);
+		
+	}
 	public void testRelativeUrlsSpaces() throws Exception {
 		File input = new File("/Users/foltin/downloads/subd ir1/subdi r2/Ja\u0308nstra\u00dfe 270c.pdf");
 		String expected = "../downloads/subd%20ir1/subdi%20r2/Ja\u0308nstra\u00dfe%20270c.pdf";

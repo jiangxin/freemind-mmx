@@ -236,7 +236,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 				MindMapNode node = mMindMapController.newNode(file.getName(),
 						target.getMap());
 				node.setLeft(isLeft);
-				node.setLink(file.getAbsolutePath());
+				node.setLink(Tools.fileToRelativeUrlString(file, mMindMapController.getModel().getFile()));
 				insertNodeInto((MindMapNodeModel) node, target, asSibling,
 						isLeft, false);
 				// addUndoAction(node);

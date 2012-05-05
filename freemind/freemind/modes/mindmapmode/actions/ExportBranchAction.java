@@ -108,15 +108,10 @@ public class ExportBranchAction extends AbstractAction {
 			 * to the new Map.
 			 */
 			MindMapNodeModel parent = (MindMapNodeModel) node.getParentNode();
-			try {
-				// set a link from the new root to the old map
-				String linkToNewMapString = Tools.toRelativeURL(Tools
-						.fileToUrl(chosenFile), mMindMapController.getModel()
-						.getURL());
-				mMindMapController.setLink(node, linkToNewMapString);
-			} catch (MalformedURLException ex) {
-				Resources.getInstance().logException(ex);
-			}
+			// set a link from the new root to the old map
+			String linkToNewMapString = Tools.fileToRelativeUrlString(
+					chosenFile, mMindMapController.getModel().getFile());
+			mMindMapController.setLink(node, linkToNewMapString);
 			int nodePosition = parent.getChildPosition(node);
 			mMindMapController.deleteNode(node);
 			// save node:

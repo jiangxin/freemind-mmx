@@ -356,65 +356,63 @@ public class Tools {
 
 	/**
 	 * This method converts an absolute url to an url relative to a given
-	 * base-url. The algorithm is somewhat chaotic, but it works (Maybe rewrite
-	 * it). Be careful, the method is ".mm"-specific. Something like this should
-	 * be included in the librarys, but I couldn't find it. You can create a new
-	 * absolute url with "new URL(URL context, URL relative)".
+	 * base-url. Something like this should be included in the librarys, but I
+	 * couldn't find it. You can create a new absolute url with
+	 * "new URL(URL context, URL relative)".
 	 */
 	public static String toRelativeURL(URL base, URL target) {
 		// Precondition: If URL is a path to folder, then it must end with '/'
 		// character.
-		if (!base.getProtocol().equals(target.getProtocol())
+		if (base == null || !base.getProtocol().equals(target.getProtocol())
 				|| !base.getHost().equals(target.getHost())) {
 			return target.toString();
 		}
 		String baseString = base.getFile();
 		String targetString = target.getFile();
 		String result = "";
-
 		// remove filename from URL
-		baseString = baseString.substring(0, baseString.lastIndexOf("/") + 1);
-
+		targetString = targetString.substring(0, targetString.lastIndexOf("/")+1);
 		// remove filename from URL
-		targetString = targetString.substring(0,
-				targetString.lastIndexOf("/") + 1);
-
-		// Maybe this causes problems under windows
-		StringTokenizer baseTokens = new StringTokenizer(baseString, "/");
-
-		// Maybe this causes problems under windows
-		StringTokenizer targetTokens = new StringTokenizer(targetString, "/");
-
-		String nextBaseToken = "", nextTargetToken = "";
+		baseString = baseString.substring(0, baseString.lastIndexOf("/")+1);
 
 		// Algorithm
-
-		while (baseTokens.hasMoreTokens() && targetTokens.hasMoreTokens()) {
-			nextBaseToken = baseTokens.nextToken();
-			nextTargetToken = targetTokens.nextToken();
-			if (!(nextBaseToken.equals(nextTargetToken))) {
+		// look for same start:
+		int index = targetString.length()-1;
+		while (!baseString.startsWith(targetString.substring(0, index+1))) {
+			// remove last part:
+			index = targetString.lastIndexOf("/", index - 1);
+			if (index < 0) {
+				// no common part. This is strange, as both should start with /,
+				// but...
 				break;
 			}
 		}
 
-		while (true) {
+		// now, baseString is targetString + "/" + rest. we determine
+		// rest=baseStringRest now.
+		String baseStringRest = baseString
+				.substring(index, baseString.length());
+
+		// Maybe this causes problems under windows
+		StringTokenizer baseTokens = new StringTokenizer(baseStringRest, "/");
+
+		// Maybe this causes problems under windows
+		StringTokenizer targetTokens = new StringTokenizer(
+				targetString.substring(index + 1), "/");
+
+		String nextTargetToken = "";
+
+		while (baseTokens.hasMoreTokens()) {
 			result = result.concat("../");
-			if (!baseTokens.hasMoreTokens()) {
-				break;
-			}
-			nextBaseToken = baseTokens.nextToken();
+			baseTokens.nextToken();
 		}
-		while (true) {
-			result = result.concat(nextTargetToken + "/");
-			if (!targetTokens.hasMoreTokens()) {
-				break;
-			}
+		while (targetTokens.hasMoreTokens()) {
 			nextTargetToken = targetTokens.nextToken();
+			result = result.concat(nextTargetToken + "/");
 		}
 
 		String temp = target.getFile();
-		String prefix = ""; //target.getProtocol()+"://" + target.getHost() + "/";
-		result = prefix + result.concat(temp.substring(temp.lastIndexOf("/") + 1,
+		result = result.concat(temp.substring(temp.lastIndexOf("/") + 1,
 				temp.length()));
 		return result;
 	}
@@ -427,7 +425,7 @@ public class Tools {
 	 *            the file that is treated
 	 * @param pMapFile
 	 *            the file, that input is made relative to
-	 * @return
+	 * @return in case of trouble the absolute path.
 	 */
 	public static String fileToRelativeUrlString(File input, File pMapFile) {
 		URL link;
@@ -443,7 +441,7 @@ public class Tools {
 		} catch (MalformedURLException ex) {
 			freemind.main.Resources.getInstance().logException(ex);
 		}
-		return null;
+		return input.getAbsolutePath();
 	}
 
 	/**
@@ -1467,6 +1465,8 @@ public class Tools {
 			.getProperty("java.version");
 
 	public static URL fileToUrl(File pFile) throws MalformedURLException {
+		if (pFile == null)
+			return null;
 		// fix for java1.4 and java5 only.
 		if (isBelowJava6()) {
 			return pFile.toURI().toURL();
