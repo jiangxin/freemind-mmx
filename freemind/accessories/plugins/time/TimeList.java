@@ -922,6 +922,10 @@ public class TimeList extends MindMapHookAdapter implements
 	public static class NodeHolder implements Comparable {
 		private final MindMapNode node;
 		private String untaggedNodeText = null;
+		/**
+		 * Holds the original node content to cache the untaggedNodeText and to
+		 * see whether or not the cache is dirty.
+		 */
 		private String originalNodeText = null;
 
 		/**
@@ -941,12 +945,13 @@ public class TimeList extends MindMapHookAdapter implements
 
 		public String getUntaggedNodeText() {
 			String nodeText = node.getText();
+			// cache empty or dirty?:
 			if (untaggedNodeText == null
 					|| (originalNodeText != null && !originalNodeText
 							.equals(nodeText))) {
 				originalNodeText = nodeText;
 				// remove tags:
-				untaggedNodeText = HtmlTools.removeHtmlTagsFromString(nodeText)
+				untaggedNodeText = HtmlTools.htmlToPlain(nodeText)
 						.replaceAll("\\s+", " ");
 			}
 			return untaggedNodeText;
