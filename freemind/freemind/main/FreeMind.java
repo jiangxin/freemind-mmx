@@ -45,6 +45,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -580,7 +581,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				} else {
 					command = browser_command;
 				}
-				// logger.info("Starting browser with "+command);
+				logger.info("Starting browser with "+command);
 				Runtime.getRuntime().exec(command);
 			} catch (IOException x) {
 				controller
@@ -597,10 +598,18 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			try {
 				// ask for property about browser: fc, 26.11.2003.
 				Object[] messageArguments = { correctedUrl, url.toString() };
-				MessageFormat formatter = new MessageFormat(
-						getProperty("default_browser_command_mac"));
-				browser_command = formatter.format(messageArguments);
-				Runtime.getRuntime().exec(browser_command);
+				if("file".equals(url.getProtocol())){
+					// Bug in the apple's open function. For files, a pure filename must be given.
+					String[] command = {getProperty("default_browser_command_mac_open"), "file:" + Tools.urlToFile(url).getAbsolutePath()};
+					logger.info("Starting command: " + Arrays.deepToString(command));
+					Runtime.getRuntime().exec(command, null, null);
+				} else {
+					MessageFormat formatter = new MessageFormat(
+							getProperty("default_browser_command_mac"));
+					browser_command = formatter.format(messageArguments);
+					logger.info("Starting command: " + browser_command);
+					Runtime.getRuntime().exec(browser_command);
+				}
 			} catch (IOException ex2) {
 				controller
 						.errorMessage("Could not invoke browser.\n\nFreemind excecuted the following statement on a command line:\n\""
@@ -622,6 +631,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				MessageFormat formatter = new MessageFormat(
 						getProperty("default_browser_command_other_os"));
 				browser_command = formatter.format(messageArguments);
+				logger.info("Starting command: " + browser_command);
 				Runtime.getRuntime().exec(browser_command);
 			} catch (IOException ex2) {
 				controller
