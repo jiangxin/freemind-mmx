@@ -606,7 +606,7 @@ public class FreeMindMapController extends JMapController implements
 		public void actionPerformed(ActionEvent pE) {
 			if (isEnabledCheck()) {
 				PositionHolder posHolder = (PositionHolder) mPositionHolderVector
-						.get(mPositionHolderIndex+1);
+						.get(mPositionHolderIndex + 1);
 				getMap().setCursorPosition(
 						new Coordinate(posHolder.lat, posHolder.lon));
 				map.setDisplayPositionByLatLon(posHolder.lat, posHolder.lon,
@@ -616,11 +616,13 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 		protected boolean isEnabledCheck() {
-			return mPositionHolderIndex >= 0 && mPositionHolderIndex < mPositionHolderVector.size() - 1;
+			return mPositionHolderIndex >= 0
+					&& mPositionHolderIndex < mPositionHolderVector.size() - 1;
 		}
 
 		public boolean isEnabled(JMenuItem pItem, Action pAction) {
-			return isEnabledCheck();
+			return true; // disables the keyboard checks as well:
+							// isEnabledCheck();
 		}
 
 	}
@@ -634,7 +636,7 @@ public class FreeMindMapController extends JMapController implements
 		public void actionPerformed(ActionEvent pE) {
 			if (isEnabledCheck()) {
 				PositionHolder posHolder = (PositionHolder) mPositionHolderVector
-						.get(mPositionHolderIndex-1);
+						.get(mPositionHolderIndex - 1);
 				getMap().setCursorPosition(
 						new Coordinate(posHolder.lat, posHolder.lon));
 				map.setDisplayPositionByLatLon(posHolder.lat, posHolder.lon,
@@ -648,7 +650,8 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 		public boolean isEnabled(JMenuItem pItem, Action pAction) {
-			return isEnabledCheck();
+			return true; // disables the keyboard checks as well:
+							// isEnabledCheck();
 		}
 
 	}
@@ -684,12 +687,9 @@ public class FreeMindMapController extends JMapController implements
 			if (posHolder == null) {
 				return;
 			}
-			Coordinate coordinates = new Coordinate(posHolder.lat, posHolder.lon);
-			getMap().setCursorPosition(
-					coordinates);
-			map.setDisplayPositionByLatLon(posHolder.lat, posHolder.lon,
-					posHolder.zoom);
-			storeMapPosition(coordinates);
+			Coordinate coordinates = new Coordinate(posHolder.lat,
+					posHolder.lon);
+			setCursorPosition(coordinates, null, posHolder.zoom);
 		}
 
 		public PositionHolder getPosHolder() {
@@ -872,8 +872,8 @@ public class FreeMindMapController extends JMapController implements
 			if (mCurrentPopupPositionHolder == null) {
 				return;
 			}
-			getMap().setCursorPosition(
-					mCurrentPopupPositionHolder.getPosition());
+			setCursorPosition(mCurrentPopupPositionHolder.getPosition(), null,
+					0);
 			Point pos = getMap().getMapPosition(
 					mCurrentPopupPositionHolder.getPosition(), true);
 			// unfold node (and its parents):
@@ -1220,7 +1220,7 @@ public class FreeMindMapController extends JMapController implements
 	public void addAccelerator(JMenuItem menuItem, String key) {
 		String keyProp = mMindMapController.getFrame().getProperty(key);
 		KeyStroke keyStroke = KeyStroke.getKeyStroke(keyProp);
-		menuItem.setAccelerator(keyStroke);
+		// menuItem.setAccelerator(keyStroke);
 		menuItem.getAction().putValue(Action.ACCELERATOR_KEY, keyStroke);
 	}
 
@@ -1295,7 +1295,7 @@ public class FreeMindMapController extends JMapController implements
 				x_min = Math.min(x_min, x);
 				y_min = Math.min(y_min, y);
 				if (node == selected) {
-					getMap().setCursorPosition(hook.getPosition());
+					setCursorPosition(hook.getPosition(), null, 0);
 					changeTileSource(hook.getTileSource(), map);
 				}
 			}
@@ -1331,23 +1331,38 @@ public class FreeMindMapController extends JMapController implements
 
 	public void setCursorPosition(MapNodePositionHolder hook, int zoom) {
 		Coordinate position = hook.getPosition();
+		Coordinate mapCenter = hook.getMapCenter();
+		setCursorPosition(position, mapCenter, zoom);
+	}
+
+	/**
+	 * @param position
+	 * @param mapCenter
+	 *            if null, the map center isn't changed.
+	 * @param zoom
+	 *            is only of relevance, if mapCenter != null
+	 */
+	protected void setCursorPosition(Coordinate position, Coordinate mapCenter,
+			int zoom) {
 		getMap().setCursorPosition(position);
 		if (zoom > getMaxZoom()) {
 			zoom = getMaxZoom();
 		}
-		// move map:
-		Coordinate mapCenter = hook.getMapCenter();
-		logger.fine("Set display position to " + mapCenter + " and cursor to "
-				+ position + " and zoom " + zoom + " where max zoom is "
-				+ getMaxZoom());
-		map.setDisplayPositionByLatLon(mapCenter.getLat(), mapCenter.getLon(),
-				zoom);
+		if (mapCenter != null) {
+			// move map:
+			logger.fine("Set display position to " + mapCenter
+					+ " and cursor to " + position + " and zoom " + zoom
+					+ " where max zoom is " + getMaxZoom());
+			map.setDisplayPositionByLatLon(mapCenter.getLat(),
+					mapCenter.getLon(), zoom);
+		}
 		// is the cursor now visible? if not, display it directly.
 		if (map.getMapPosition(position, true) == null) {
 			map.setDisplayPositionByLatLon(position.getLat(),
 					position.getLon(), zoom);
 
 		}
+		storeMapPosition(position);
 	}
 
 	/**
@@ -1620,7 +1635,7 @@ public class FreeMindMapController extends JMapController implements
 			MapNodePositionHolder posHolder = checkHit(e);
 			if (posHolder != null) {
 				mCurrentPopupPositionHolder = posHolder;
-				getMap().setCursorPosition(posHolder.getPosition());
+				setCursorPosition(posHolder.getPosition(), null, 0);
 				getContextPopupMenu()
 						.show(e.getComponent(), e.getX(), e.getY());
 				e.consume();

@@ -340,8 +340,8 @@ public class MapDialog extends MindMapHookAdapter implements
 			// TODO: Better would be to store these data per map.
 			map.setDisplayPositionByLatLon(storage.getMapCenterLatitude(),
 					storage.getMapCenterLongitude(), storage.getZoom());
-			map.setCursorPosition(new Coordinate(storage.getCursorLatitude(),
-					storage.getCursorLongitude()));
+			getFreeMindMapController().setCursorPosition(new Coordinate(storage.getCursorLatitude(),
+					storage.getCursorLongitude()), null, 0);
 			FreeMindMapController
 					.changeTileSource(storage.getTileSource(), map);
 			map.setZoomContolsVisible(storage.getZoomControlsVisible());
