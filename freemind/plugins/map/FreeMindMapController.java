@@ -1345,16 +1345,18 @@ public class FreeMindMapController extends JMapController implements
 	protected void setCursorPosition(Coordinate position, Coordinate mapCenter,
 			int zoom) {
 		getMap().setCursorPosition(position);
-		if (zoom > getMaxZoom()) {
-			zoom = getMaxZoom();
-		}
 		if (mapCenter != null) {
+			if (zoom > getMaxZoom()) {
+				zoom = getMaxZoom();
+			}
 			// move map:
 			logger.fine("Set display position to " + mapCenter
 					+ " and cursor to " + position + " and zoom " + zoom
 					+ " where max zoom is " + getMaxZoom());
 			map.setDisplayPositionByLatLon(mapCenter.getLat(),
 					mapCenter.getLon(), zoom);
+		} else {
+			zoom = map.getZoom();
 		}
 		// is the cursor now visible? if not, display it directly.
 		if (map.getMapPosition(position, true) == null) {
