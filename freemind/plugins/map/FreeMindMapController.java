@@ -149,6 +149,8 @@ public class FreeMindMapController extends JMapController implements
 
 	private static final float PAGE_DOWN_FACTOR = 0.85f;
 
+	private static final int POSITION_HOLDER_LIMIT = 1000;
+
 	protected static java.util.logging.Logger logger = freemind.main.Resources
 			.getInstance().getLogger("plugins.map.FreeMindMapController");
 
@@ -189,7 +191,11 @@ public class FreeMindMapController extends JMapController implements
 	private Coordinate mRectangularStart;
 
 	private Vector mPositionHolderVector = new Vector();
-	
+	/**
+	 * Marks the index of the current position or -1 if none.
+	 */
+	private int mPositionHolderIndex = -1;
+
 	public static class TileSourceStore {
 		TileSource mTileSource;
 		String mLayerName;
@@ -201,63 +207,65 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 	}
-	
+
 	public static class TransportMap extends AbstractOsmTileSource {
 
 		// http://b.tile2.opencyclemap.org/transport/14/8800/5373.png
-        private static final String PATTERN = "http://%s.tile2.opencyclemap.org/transport";
+		private static final String PATTERN = "http://%s.tile2.opencyclemap.org/transport";
 
-        private static final String[] SERVER = { "a", "b", "c" };
+		private static final String[] SERVER = { "a", "b", "c" };
 
-        private int SERVER_NUM = 0;
-
-        public TransportMap() {
-            super("OSM Transport Map", PATTERN);
-        }
-
-        public String getBaseUrl() {
-            String url = String.format(this.baseUrl, new Object[] { SERVER[SERVER_NUM] });
-            SERVER_NUM = (SERVER_NUM + 1) % SERVER.length;
-            return url;
-        }
-
-        public int getMaxZoom() {
-            return 18;
-        }
-
-        public TileUpdate getTileUpdate() {
-            return TileUpdate.LastModified;
-        }
-    }
-
-	public static class MapQuestOpenMap extends AbstractOsmTileSource {
-		
-		// http://otile1.mqcdn.com/tiles/1.0.0/osm/14/8800/5374.png
-		private static final String PATTERN = "http://otile%s.mqcdn.com/tiles/1.0.0/osm";
-		
-		private static final String[] SERVER = { "1", "2", "3", "4" };
-		
 		private int SERVER_NUM = 0;
-		
-		public MapQuestOpenMap() {
-			super("OSM MapQuest.Open Map", PATTERN);
+
+		public TransportMap() {
+			super("OSM Transport Map", PATTERN);
 		}
-		
+
 		public String getBaseUrl() {
-			String url = String.format(this.baseUrl, new Object[] { SERVER[SERVER_NUM] });
+			String url = String.format(this.baseUrl,
+					new Object[] { SERVER[SERVER_NUM] });
 			SERVER_NUM = (SERVER_NUM + 1) % SERVER.length;
 			return url;
 		}
-		
+
 		public int getMaxZoom() {
 			return 18;
 		}
-		
+
 		public TileUpdate getTileUpdate() {
 			return TileUpdate.LastModified;
 		}
 	}
-	
+
+	public static class MapQuestOpenMap extends AbstractOsmTileSource {
+
+		// http://otile1.mqcdn.com/tiles/1.0.0/osm/14/8800/5374.png
+		private static final String PATTERN = "http://otile%s.mqcdn.com/tiles/1.0.0/osm";
+
+		private static final String[] SERVER = { "1", "2", "3", "4" };
+
+		private int SERVER_NUM = 0;
+
+		public MapQuestOpenMap() {
+			super("OSM MapQuest.Open Map", PATTERN);
+		}
+
+		public String getBaseUrl() {
+			String url = String.format(this.baseUrl,
+					new Object[] { SERVER[SERVER_NUM] });
+			SERVER_NUM = (SERVER_NUM + 1) % SERVER.length;
+			return url;
+		}
+
+		public int getMaxZoom() {
+			return 18;
+		}
+
+		public TileUpdate getTileUpdate() {
+			return TileUpdate.LastModified;
+		}
+	}
+
 	private static TileSourceStore[] mTileSources = new TileSourceStore[] {
 			new TileSourceStore(new OsmTileSource.Mapnik(), "M"),
 			new TileSourceStore(new OsmTileSource.CycleMap(), "C"),
@@ -589,6 +597,62 @@ public class FreeMindMapController extends JMapController implements
 
 	}
 
+	private final class MoveForwardAction extends AbstractAction implements
+			MenuItemEnabledListener {
+		public MoveForwardAction() {
+			super(getText("MapControllerPopupDialog.moveForward"));
+		}
+
+		public void actionPerformed(ActionEvent pE) {
+			if (isEnabledCheck()) {
+				PositionHolder posHolder = (PositionHolder) mPositionHolderVector
+						.get(mPositionHolderIndex+1);
+				getMap().setCursorPosition(
+						new Coordinate(posHolder.lat, posHolder.lon));
+				map.setDisplayPositionByLatLon(posHolder.lat, posHolder.lon,
+						posHolder.zoom);
+				mPositionHolderIndex++;
+			}
+		}
+
+		protected boolean isEnabledCheck() {
+			return mPositionHolderIndex >= 0 && mPositionHolderIndex < mPositionHolderVector.size() - 1;
+		}
+
+		public boolean isEnabled(JMenuItem pItem, Action pAction) {
+			return isEnabledCheck();
+		}
+
+	}
+
+	private final class MoveBackwardAction extends AbstractAction implements
+			MenuItemEnabledListener {
+		public MoveBackwardAction() {
+			super(getText("MapControllerPopupDialog.moveBackward"));
+		}
+
+		public void actionPerformed(ActionEvent pE) {
+			if (isEnabledCheck()) {
+				PositionHolder posHolder = (PositionHolder) mPositionHolderVector
+						.get(mPositionHolderIndex-1);
+				getMap().setCursorPosition(
+						new Coordinate(posHolder.lat, posHolder.lon));
+				map.setDisplayPositionByLatLon(posHolder.lat, posHolder.lon,
+						posHolder.zoom);
+				mPositionHolderIndex--;
+			}
+		}
+
+		protected boolean isEnabledCheck() {
+			return mPositionHolderIndex > 0;
+		}
+
+		public boolean isEnabled(JMenuItem pItem, Action pAction) {
+			return isEnabledCheck();
+		}
+
+	}
+
 	private final class PositionHolder {
 		double lat;
 		double lon;
@@ -599,6 +663,11 @@ public class FreeMindMapController extends JMapController implements
 			lat = pLat;
 			lon = pLon;
 			zoom = pZoom;
+		}
+
+		public String toString() {
+			return "PositionHolder [lat=" + lat + ", lon=" + lon + ", zoom="
+					+ zoom + "]";
 		}
 
 	}
@@ -615,10 +684,12 @@ public class FreeMindMapController extends JMapController implements
 			if (posHolder == null) {
 				return;
 			}
+			Coordinate coordinates = new Coordinate(posHolder.lat, posHolder.lon);
 			getMap().setCursorPosition(
-					new Coordinate(posHolder.lat, posHolder.lon));
+					coordinates);
 			map.setDisplayPositionByLatLon(posHolder.lat, posHolder.lon,
 					posHolder.zoom);
+			storeMapPosition(coordinates);
 		}
 
 		public PositionHolder getPosHolder() {
@@ -1055,8 +1126,8 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addSeparator("main/view/");
 		for (int i = 0; i < mTileSources.length; i++) {
 			TileSource source = mTileSources[i].mTileSource;
-			addAccelerator(menuHolder
-					.addAction(new ChangeTileSource(source), "main/view/" + i),
+			addAccelerator(menuHolder.addAction(new ChangeTileSource(source),
+					"main/view/" + i),
 					"keystroke_plugins/map/MapDialog_tileSource_" + i);
 		}
 		menuHolder.addSeparator("main/view/");
@@ -1087,6 +1158,13 @@ public class FreeMindMapController extends JMapController implements
 				"main/navigation/MoveHome"),
 				"keystroke_plugins/map/MapDialogMoveHome");
 		menuHolder.addSeparator("main/navigation/");
+		addAccelerator(menuHolder.addAction(new MoveBackwardAction(),
+				"main/navigation/moveBackward"),
+				"keystroke_plugins/map/MapDialog_moveBackward");
+		addAccelerator(menuHolder.addAction(new MoveForwardAction(),
+				"main/navigation/moveForward"),
+				"keystroke_plugins/map/MapDialog_moveForward");
+		menuHolder.addSeparator("main/navigation/");
 		addAccelerator(menuHolder.addAction(new MoveLeftAction(),
 				"main/navigation/moveLeft"),
 				"keystroke_plugins/map/MapDialog_moveLeft");
@@ -1100,7 +1178,7 @@ public class FreeMindMapController extends JMapController implements
 				"main/navigation/moveDown"),
 				"keystroke_plugins/map/MapDialog_moveDown");
 		menuHolder.addSeparator("main/navigation/");
-		
+
 		menuHolder.updateMenus(menu, "main/");
 		mMapDialog.setJMenuBar(menu);
 		/* Popup menu */
@@ -1422,6 +1500,7 @@ public class FreeMindMapController extends JMapController implements
 		setMouseControl(false);
 		Point point = pEvent.getPoint();
 		Tools.convertPointToAncestor((Component) pEvent.getSource(), point, map);
+		storeMapPosition(getMap().getCursorPosition());
 		MapEditTextFieldControl editControl = new MapEditTextFieldControl(
 				nodeView, newNode, targetNode);
 		EditNodeTextField textfield = new MapEditNoteTextField(nodeView, "",
@@ -1456,7 +1535,9 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void setCursorPosition(MouseEvent e) {
-		getMap().setCursorPosition(map.getPosition(e.getPoint()));
+		final Coordinate coordinates = map.getPosition(e.getPoint());
+		storeMapPosition(coordinates);
+		getMap().setCursorPosition(coordinates);
 	}
 
 	public void mousePressed(MouseEvent e) {
@@ -1597,12 +1678,13 @@ public class FreeMindMapController extends JMapController implements
 
 		if (e.getButton() == movementMouseButton || Tools.isMacOsX()
 				&& e.getButton() == MouseEvent.BUTTON1) {
+			final Coordinate coordinates = getCoordinateFromMouseEvent(e);
 			if (isMapNodeMoving) {
 				// check for minimal drag distance:
 				Point currentPoint = new Point(e.getPoint());
 				correctPointByMapCenter(currentPoint);
 				if (mDragStartingPoint.distance(currentPoint) > MapMarkerLocation.CIRCLE_RADIUS) {
-					Coordinate mousePosition = getCoordinateFromMouseEvent(e);
+					Coordinate mousePosition = coordinates;
 					mMapNodeMovingSource.changePosition(mousePosition,
 							map.getPosition(), map.getZoom(),
 							getTileSourceAsString());
@@ -1632,7 +1714,7 @@ public class FreeMindMapController extends JMapController implements
 				Vector mapNodePositionHolders = new Vector();
 				// take only those elements in the correct rectangle:
 				Rectangle r = getMap().getRectangle(mRectangularStart,
-						getCoordinateFromMouseEvent(e));
+						coordinates);
 				if (r != null) {
 					MindMapNode last = null;
 					for (Iterator it = mMapHook.getMapNodePositionHolders()
@@ -1658,8 +1740,26 @@ public class FreeMindMapController extends JMapController implements
 			mIsRectangularSelect = false;
 			mRectangularStart = null;
 			isMapNodeMoving = false;
+			if (lastDragPoint != null) {
+				storeMapPosition(coordinates);
+			}
 			lastDragPoint = null;
 			isMoving = false;
+		}
+	}
+
+	protected void storeMapPosition(final Coordinate coordinates) {
+		final PositionHolder holder = new PositionHolder(coordinates.getLat(),
+				coordinates.getLon(), getMap().getZoom());
+		mPositionHolderIndex++;
+		logger.info("Storing position " + holder + " at index "
+				+ mPositionHolderIndex);
+		mPositionHolderVector.insertElementAt(holder, mPositionHolderIndex);
+		// assure that max size is below limit.
+		while (mPositionHolderVector.size() >= POSITION_HOLDER_LIMIT
+				&& mPositionHolderIndex > 0) {
+			mPositionHolderVector.remove(0);
+			mPositionHolderIndex--;
 		}
 	}
 
@@ -1956,9 +2056,11 @@ public class FreeMindMapController extends JMapController implements
 		if (tileSourceByName != null) {
 			layer = tileSourceByName.mLayerName;
 		}
-		/* The embedded link would work for IE, too. 
-		 * But it is not easy to configure as a bounding box is necessary. 
-		 * It reads like osm.org/export/embed.html?bbox=... */
+		/*
+		 * The embedded link would work for IE, too. But it is not easy to
+		 * configure as a bounding box is necessary. It reads like
+		 * osm.org/export/embed.html?bbox=...
+		 */
 		String link = "http://www.openstreetmap.org/?" + "mlat="
 				+ position.getLat() + "&mlon=" + position.getLon() + "&lat="
 				+ mapCenter.getLat() + "&lon=" + mapCenter.getLon() + "&zoom="
@@ -1977,7 +2079,7 @@ public class FreeMindMapController extends JMapController implements
 				&& (Character.isLetter(pEvent.getKeyChar()))
 				&& ((pEvent.getModifiers() & MODIFIERS_WITHOUT_SHIFT) == 0)) {
 			// open search bar and process event.
-//			logger.info("Key event processed: " + pEvent);
+			// logger.info("Key event processed: " + pEvent);
 			mMapHook.toggleSearchBar(pEvent);
 			mMapHook.setSingleSearch();
 		}
