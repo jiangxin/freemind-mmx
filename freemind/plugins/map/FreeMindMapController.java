@@ -80,6 +80,8 @@ import org.openstreetmap.gui.jmapviewer.tilesources.AbstractOsmTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
 import plugins.map.MapDialog.SearchResultListModel;
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
+import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 import freemind.common.XmlBindingTools;
 import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.MenuItemSelectedListener;
@@ -189,12 +191,6 @@ public class FreeMindMapController extends JMapController implements
 	private boolean mIsRectangularSelect;
 
 	private Coordinate mRectangularStart;
-
-	private Vector mPositionHolderVector = new Vector();
-	/**
-	 * Marks the index of the current position or -1 if none.
-	 */
-	private int mPositionHolderIndex = -1;
 
 	public static class TileSourceStore {
 		TileSource mTileSource;
@@ -605,19 +601,19 @@ public class FreeMindMapController extends JMapController implements
 
 		public void actionPerformed(ActionEvent pE) {
 			if (isEnabledCheck()) {
-				PositionHolder posHolder = (PositionHolder) mPositionHolderVector
-						.get(mPositionHolderIndex + 1);
+				PositionHolder posHolder = (PositionHolder) getPositionHolderVector()
+						.get(getPositionHolderIndex() + 1);
 				getMap().setCursorPosition(
 						new Coordinate(posHolder.lat, posHolder.lon));
 				map.setDisplayPositionByLatLon(posHolder.lat, posHolder.lon,
 						posHolder.zoom);
-				mPositionHolderIndex++;
+				setPositionHolderIndex(getPositionHolderIndex() + 1);
 			}
 		}
 
 		protected boolean isEnabledCheck() {
-			return mPositionHolderIndex >= 0
-					&& mPositionHolderIndex < mPositionHolderVector.size() - 1;
+			return getPositionHolderIndex() >= 0
+					&& getPositionHolderIndex() < getPositionHolderVector().size() - 1;
 		}
 
 		public boolean isEnabled(JMenuItem pItem, Action pAction) {
@@ -635,18 +631,18 @@ public class FreeMindMapController extends JMapController implements
 
 		public void actionPerformed(ActionEvent pE) {
 			if (isEnabledCheck()) {
-				PositionHolder posHolder = (PositionHolder) mPositionHolderVector
-						.get(mPositionHolderIndex - 1);
+				PositionHolder posHolder = (PositionHolder) getPositionHolderVector()
+						.get(getPositionHolderIndex() - 1);
 				getMap().setCursorPosition(
 						new Coordinate(posHolder.lat, posHolder.lon));
 				map.setDisplayPositionByLatLon(posHolder.lat, posHolder.lon,
 						posHolder.zoom);
-				mPositionHolderIndex--;
+				setPositionHolderIndex(getPositionHolderIndex() - 1);
 			}
 		}
 
 		protected boolean isEnabledCheck() {
-			return mPositionHolderIndex > 0;
+			return getPositionHolderIndex() > 0;
 		}
 
 		public boolean isEnabled(JMenuItem pItem, Action pAction) {
@@ -1768,15 +1764,15 @@ public class FreeMindMapController extends JMapController implements
 	protected void storeMapPosition(final Coordinate coordinates) {
 		final PositionHolder holder = new PositionHolder(coordinates.getLat(),
 				coordinates.getLon(), getMap().getZoom());
-		mPositionHolderIndex++;
+		setPositionHolderIndex(getPositionHolderIndex() + 1);
 		logger.info("Storing position " + holder + " at index "
-				+ mPositionHolderIndex);
-		mPositionHolderVector.insertElementAt(holder, mPositionHolderIndex);
+				+ getPositionHolderIndex());
+		getPositionHolderVector().insertElementAt(holder, getPositionHolderIndex());
 		// assure that max size is below limit.
-		while (mPositionHolderVector.size() >= POSITION_HOLDER_LIMIT
-				&& mPositionHolderIndex > 0) {
-			mPositionHolderVector.remove(0);
-			mPositionHolderIndex--;
+		while (getPositionHolderVector().size() >= POSITION_HOLDER_LIMIT
+				&& getPositionHolderIndex() > 0) {
+			getPositionHolderVector().remove(0);
+			setPositionHolderIndex(getPositionHolderIndex() - 1);
 		}
 	}
 
@@ -2138,6 +2134,18 @@ public class FreeMindMapController extends JMapController implements
 				break;
 			}
 		}
+	}
+
+	private Vector getPositionHolderVector() {
+		return mMapHook.getRegistration().getPositionHolderVector();
+	}
+
+	private int getPositionHolderIndex() {
+		return mMapHook.getRegistration().getPositionHolderIndex();
+	}
+
+	private void setPositionHolderIndex(int positionHolderIndex) {
+		mMapHook.getRegistration().setPositionHolderIndex(positionHolderIndex);
 	}
 
 }
