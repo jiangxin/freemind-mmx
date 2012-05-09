@@ -14,6 +14,7 @@
 					<xs:element ref="select_node_action"/>
 					<xs:element ref="cut_node_action"/>
 					<xs:element ref="paste_node_action"/>
+					<xs:element ref="undo_paste_node_action"/>
 					<xs:element ref="revert_xml_action"/>
 					<xs:element ref="bold_node_action"/>
 					<xs:element ref="italic_node_action"/>
@@ -139,6 +140,21 @@
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
+	</xs:element>
+
+	<!-- Undo paste Action
+		The node is given in NodeCoordinates (see PasteAction) and amount of new nodes.
+		-->
+	<xs:element name="undo_paste_node_action">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="node_action">
+					<xs:attribute name="isLeft" use="required" type="xs:boolean" />
+					<xs:attribute name="asSibling" use="required" type="xs:boolean" />
+					<xs:attribute name="node_amount" use="required" type="xs:int" />
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
 	</xs:element>
 
 	<!-- Revert Action

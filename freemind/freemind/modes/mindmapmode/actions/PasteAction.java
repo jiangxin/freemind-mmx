@@ -52,6 +52,7 @@ import freemind.controller.actions.generated.instance.PasteNodeAction;
 import freemind.controller.actions.generated.instance.TransferableContent;
 import freemind.controller.actions.generated.instance.TransferableFile;
 import freemind.controller.actions.generated.instance.TransferableImage;
+import freemind.controller.actions.generated.instance.UndoPasteNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindCommon;
@@ -59,6 +60,7 @@ import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
+import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
@@ -72,6 +74,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 
 	private static java.util.logging.Logger logger;
 	private final MindMapController mMindMapController;
+	private UndoPasteHandler mUndoPasteHandler;
 
 	public PasteAction(MindMapController pMindMapController) {
 		super(pMindMapController.getText("paste"), new ImageIcon(
@@ -85,6 +88,12 @@ public class PasteAction extends AbstractAction implements ActorXml {
 		setEnabled(false);
 		this.mMindMapController.getActionFactory().registerActor(this,
 				getDoActionClass());
+		
+		// special undo handler for paste.
+		mUndoPasteHandler = new UndoPasteHandler(mMindMapController);
+		this.mMindMapController.getActionFactory().registerActor(mUndoPasteHandler,
+				UndoPasteNodeAction.class);
+		
 
 	}
 
@@ -121,16 +130,27 @@ public class PasteAction extends AbstractAction implements ActorXml {
 	/**
 	 * @param t
 	 * @param coord
-	 * @param pUndoAction is filled automatically when not null.
+	 * @param pUndoAction
+	 *            is filled automatically when not null.
 	 * @return a new PasteNodeAction.
 	 */
 	public PasteNodeAction getPasteNodeAction(Transferable t,
-			NodeCoordinate coord, CompoundAction pUndoAction) {
+			NodeCoordinate coord, UndoPasteNodeAction pUndoAction) {
 		PasteNodeAction pasteAction = new PasteNodeAction();
-		pasteAction.setNode(mMindMapController.getNodeID(coord.target));
-		pasteAction.setTransferableContent(getTransferableContent(t, pUndoAction));
+		final String targetId = mMindMapController.getNodeID(coord.target);
+		pasteAction.setNode(targetId);
+		pasteAction.setTransferableContent(getTransferableContent(t,
+				pUndoAction));
 		pasteAction.setAsSibling(coord.asSibling);
 		pasteAction.setIsLeft(coord.isLeft);
+		if (pUndoAction != null) {
+			pUndoAction.setNode(targetId);
+			pUndoAction.setAsSibling(coord.asSibling);
+			pUndoAction.setIsLeft(coord.isLeft);
+			String s = mMindMapController.marshall(pUndoAction);
+			logger.fine("Undo action: " + s);
+
+		}
 		return pasteAction;
 	}
 
@@ -157,17 +177,19 @@ public class PasteAction extends AbstractAction implements ActorXml {
 	 */
 	public boolean paste(Transferable t, MindMapNode target, boolean asSibling,
 			boolean isLeft) {
-		CompoundAction undoAction = new CompoundAction();
+		UndoPasteNodeAction undoAction = new UndoPasteNodeAction();
 		PasteNodeAction pasteAction;
-		pasteAction = getPasteNodeAction(t, new NodeCoordinate(
-				target, asSibling, isLeft), undoAction);
+		pasteAction = getPasteNodeAction(t, new NodeCoordinate(target,
+				asSibling, isLeft), undoAction);
 		// Undo-action
-		/* how to construct the undo action for a complex paste?
-		 * a) Paste pastes a number of new nodes that are adjacent. This number should be determined.
-		 * b) The new ids of the nodes must be given to the PasteAction. They must be used.
-		 * c) The cut action can cut exactly these node ids.
-		 * d) But, as there are many possibilities which data flavor is pasted, it has to be determined before, which one will be taken.
+		/*
+		 * how to construct the undo action for a complex paste? a) Paste pastes
+		 * a number of new nodes that are adjacent. This number should be
+		 * determined.
 		 * 
+		 * 
+		 * d) But, as there are many possibilities which data flavor is pasted,
+		 * it has to be determined before, which one will be taken.
 		 */
 		mMindMapController.getActionFactory().startTransaction("paste");
 		boolean result = mMindMapController.getActionFactory().executeAction(
@@ -236,7 +258,8 @@ public class PasteAction extends AbstractAction implements ActorXml {
 				MindMapNode node = mMindMapController.newNode(file.getName(),
 						target.getMap());
 				node.setLeft(isLeft);
-				node.setLink(Tools.fileToRelativeUrlString(file, mMindMapController.getModel().getFile()));
+				node.setLink(Tools.fileToRelativeUrlString(file,
+						mMindMapController.getModel().getFile()));
 				insertNodeInto((MindMapNodeModel) node, target, asSibling,
 						isLeft, false);
 				// addUndoAction(node);
@@ -745,8 +768,9 @@ public class PasteAction extends AbstractAction implements ActorXml {
 		mMindMapController.insertNodeInto(node, parent);
 	}
 
-	private TransferableContent getTransferableContent(Transferable t, CompoundAction pUndoAction) {
-
+	private TransferableContent getTransferableContent(Transferable t,
+			UndoPasteNodeAction pUndoAction) {
+		boolean amountAlreadySet = false;
 		try {
 			TransferableContent trans = new TransferableContent();
 			if (t.isDataFlavorSupported(MindMapNodesSelection.mindMapNodesFlavor)) {
@@ -754,6 +778,13 @@ public class PasteAction extends AbstractAction implements ActorXml {
 				textFromClipboard = (String) t
 						.getTransferData(MindMapNodesSelection.mindMapNodesFlavor);
 				trans.setTransferable(HtmlTools.makeValidXml(textFromClipboard));
+				if (pUndoAction != null && !amountAlreadySet) {
+					pUndoAction
+							.setNodeAmount(Tools.countOccurrences(
+									textFromClipboard,
+									ControllerAdapter.NODESEPARATOR)+1);
+					amountAlreadySet = true;
+				}
 			}
 			if (t.isDataFlavorSupported(DataFlavor.stringFlavor)) {
 				String textFromClipboard;
@@ -761,6 +792,12 @@ public class PasteAction extends AbstractAction implements ActorXml {
 						.getTransferData(DataFlavor.stringFlavor);
 				trans.setTransferableAsPlainText(HtmlTools
 						.makeValidXml(textFromClipboard));
+				if (pUndoAction != null && !amountAlreadySet) {
+					// determine amount of new nodes using the algorithm:
+					final int childCount = determineAmountOfNewNodes(t);
+					pUndoAction.setNodeAmount(childCount);
+					amountAlreadySet = true;
+				}
 			}
 			if (t.isDataFlavorSupported(MindMapNodesSelection.rtfFlavor)) {
 				// byte[] textFromClipboard = (byte[])
@@ -773,6 +810,12 @@ public class PasteAction extends AbstractAction implements ActorXml {
 						.getTransferData(MindMapNodesSelection.htmlFlavor);
 				trans.setTransferableAsHtml(HtmlTools
 						.makeValidXml(textFromClipboard));
+				if (pUndoAction != null && !amountAlreadySet) {
+					// on html paste, the string text is taken and "improved". Thus, we count its lines.
+					final int childCount = determineAmountOfNewNodes(t);
+					pUndoAction.setNodeAmount(childCount);
+					amountAlreadySet = true;
+				}
 			}
 			if (t.isDataFlavorSupported(MindMapNodesSelection.fileListFlavor)) {
 				/*
@@ -787,6 +830,10 @@ public class PasteAction extends AbstractAction implements ActorXml {
 					TransferableFile transferableFile = new TransferableFile();
 					transferableFile.setFileName(fileName.getAbsolutePath());
 					trans.addTransferableFile(transferableFile);
+				}
+				if (pUndoAction != null && !amountAlreadySet) {
+					pUndoAction.setNodeAmount(fileList.size());
+					amountAlreadySet = true;
 				}
 			}
 			if (t.isDataFlavorSupported(DataFlavor.imageFlavor)) {
@@ -832,6 +879,10 @@ public class PasteAction extends AbstractAction implements ActorXml {
 
 					trans.setTransferableAsImage(imgfilepath);
 
+					if (pUndoAction != null && !amountAlreadySet) {
+						pUndoAction.setNodeAmount(1);
+						amountAlreadySet = true;
+					}
 				} // getData throws this.
 				catch (UnsupportedFlavorException ufe) {
 					freemind.main.Resources.getInstance().logException(ufe);
@@ -847,6 +898,19 @@ public class PasteAction extends AbstractAction implements ActorXml {
 			freemind.main.Resources.getInstance().logException(e);
 		}
 		return null;
+	}
+
+	/* TODO: This is a bit dirty here. Better would be to separate
+	 * the algorithm from the node creation and use the pure algo.
+	 */
+	protected int determineAmountOfNewNodes(Transferable t)
+			throws UnsupportedFlavorException, IOException {
+		// create a new node for testing purposes.
+		MindMapNodeModel parent = new MindMapNodeModel(mMindMapController.getFrame(),
+				mMindMapController.getMap());
+		pasteStringWithoutRedisplay(t, parent, false, false);
+		final int childCount = parent.getChildCount();
+		return childCount;
 	}
 
 	private Transferable getTransferable(TransferableContent trans) {

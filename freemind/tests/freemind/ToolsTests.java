@@ -146,4 +146,9 @@ public class ToolsTests extends FreeMindTestBase {
 		assertEquals("Correct absolute  result", e.toExternalForm(), u.toExternalForm());
 	}
 
+	public void testOccurrences() throws Exception {
+		assertEquals("Correct amount", 5, Tools.countOccurrences("abababaa", "a"));
+		assertEquals("Correct amount", 3, Tools.countOccurrences("abababaa", "ab"));
+	}
+	
 }

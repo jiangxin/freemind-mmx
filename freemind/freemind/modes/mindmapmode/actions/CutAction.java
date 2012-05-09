@@ -35,6 +35,7 @@ import javax.swing.JOptionPane;
 import freemind.common.OptionalDontShowMeAgainDialog;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.CutNodeAction;
+import freemind.controller.actions.generated.instance.UndoPasteNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.FreeMind;
 import freemind.modes.MindMapNode;
@@ -111,7 +112,7 @@ public class CutAction extends AbstractAction implements ActorXml {
 			NodeCoordinate coord = new NodeCoordinate(node, node.isLeft());
 			Transferable copy = mMindMapController.copy(node, true);
 			XmlAction pasteNodeAction = mMindMapController.paste
-					.getPasteNodeAction(copy, coord, null);
+					.getPasteNodeAction(copy, coord, (UndoPasteNodeAction) null);
 			logger.fine("Undo for cut: "
 					+ mMindMapController.marshall(pasteNodeAction));
 			// The paste actions are reversed because of the strange

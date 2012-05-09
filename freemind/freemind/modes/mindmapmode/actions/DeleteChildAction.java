@@ -34,6 +34,7 @@ import javax.swing.JOptionPane;
 import freemind.common.OptionalDontShowMeAgainDialog;
 import freemind.controller.actions.generated.instance.DeleteNodeAction;
 import freemind.controller.actions.generated.instance.PasteNodeAction;
+import freemind.controller.actions.generated.instance.UndoPasteNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.FreeMind;
@@ -160,7 +161,7 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
 		// Undo-action
 		PasteNodeAction pasteNodeAction = null;
 		pasteNodeAction = mMindMapController.paste.getPasteNodeAction(copy,
-				coord, null);
+				coord, (UndoPasteNodeAction) null);
 
 		DeleteNodeAction deleteAction = getDeleteNodeAction(newId);
 		mMindMapController.getActionFactory().executeAction(
