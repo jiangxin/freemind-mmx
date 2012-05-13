@@ -22,6 +22,7 @@ package accessories.plugins;
 
 import java.util.HashMap;
 
+import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
@@ -39,6 +40,7 @@ public class ShadowClonePlugin extends PermanentMindMapNodeHookAdapter {
 		super.loadFrom(child);
 		HashMap values = loadNameValuePairs(child);
 		mOriginalNodeId = (String) values.get(XML_STORAGE_ORIGINAL);
+		logger.info("Setting mOriginalNodeId to " + mOriginalNodeId);
 	}
 
 	public void save(XMLElement xml) {
@@ -82,6 +84,7 @@ public class ShadowClonePlugin extends PermanentMindMapNodeHookAdapter {
 
 	public void setOriginalNodeId(String pOriginalNodeId) {
 		mOriginalNodeId = pOriginalNodeId;
+		logger.info("Setting mOriginalNodeId to " + mOriginalNodeId);
 		startupMapHook();
 	}
 }

@@ -164,6 +164,9 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 	}
 
 	public static ClonePlugin getHook(MindMapNode originalNode) {
+		if(originalNode == null) {
+			return null;
+		}
 		for (Iterator it2 = originalNode.getActivatedHooks().iterator(); it2
 				.hasNext();) {
 			PermanentNodeHook hook = (PermanentNodeHook) it2.next();
