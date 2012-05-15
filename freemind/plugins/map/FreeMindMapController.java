@@ -617,8 +617,7 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 		public boolean isEnabled(JMenuItem pItem, Action pAction) {
-			return true; // disables the keyboard checks as well:
-							// isEnabledCheck();
+			return isEnabledCheck();
 		}
 
 	}
@@ -646,8 +645,7 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 		public boolean isEnabled(JMenuItem pItem, Action pAction) {
-			return true; // disables the keyboard checks as well:
-							// isEnabledCheck();
+			return isEnabledCheck();
 		}
 
 	}
@@ -1154,10 +1152,12 @@ public class FreeMindMapController extends JMapController implements
 				"main/navigation/MoveHome"),
 				"keystroke_plugins/map/MapDialogMoveHome");
 		menuHolder.addSeparator("main/navigation/");
-		addAccelerator(menuHolder.addAction(new MoveBackwardAction(),
+		mMoveBackwardAction = new MoveBackwardAction();
+		addAccelerator(menuHolder.addAction(mMoveBackwardAction,
 				"main/navigation/moveBackward"),
 				"keystroke_plugins/map/MapDialog_moveBackward");
-		addAccelerator(menuHolder.addAction(new MoveForwardAction(),
+		mMoveForwardAction = new MoveForwardAction();
+		addAccelerator(menuHolder.addAction(mMoveForwardAction,
 				"main/navigation/moveForward"),
 				"keystroke_plugins/map/MapDialog_moveForward");
 		menuHolder.addSeparator("main/navigation/");
@@ -1680,6 +1680,10 @@ public class FreeMindMapController extends JMapController implements
 
 	private Action mZoomOutAction;
 
+	private MoveForwardAction mMoveForwardAction;
+
+	private MoveBackwardAction mMoveBackwardAction;
+
 	public void mouseReleased(MouseEvent e) {
 		if (!mClickEnabled) {
 			return;
@@ -1774,6 +1778,9 @@ public class FreeMindMapController extends JMapController implements
 			getPositionHolderVector().remove(0);
 			setPositionHolderIndex(getPositionHolderIndex() - 1);
 		}
+		// update actions
+		mMoveForwardAction.setEnabled(mMoveForwardAction.isEnabled());
+		mMoveBackwardAction.setEnabled(mMoveBackwardAction.isEnabled());
 	}
 
 	protected void setCursor(int defaultCursor, boolean pVisible) {

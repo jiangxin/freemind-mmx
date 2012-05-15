@@ -58,6 +58,8 @@
 			<menu_category name="find">
 				<menu_action field="find" key_ref="keystroke_find"/>
 				<menu_action field="findNext" key_ref="keystroke_find_next"/>
+				<menu_category name="findReplace"/>
+				<menu_category name="otherFinds"/>
 			</menu_category>
 	
 		</menu_category>

@@ -74,7 +74,7 @@
 		class_name="plugins.map.SearchInMapForNodeTextAction" 
 		instanciation="Other">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
-		<plugin_menu location="menu_bar/edit/find/SearchInMapForNodeTextAction"/>
+		<plugin_menu location="menu_bar/edit/find/otherFinds/SearchInMapForNodeTextAction"/>
 	</plugin_action>
 
 
