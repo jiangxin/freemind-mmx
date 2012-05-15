@@ -119,6 +119,17 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		if (originalNode.isRoot()) {
 			throw new IllegalArgumentException("Root can't be cloned");
 		}
+		// next error case: the original node must not contain other clones!
+		Vector childs = new Vector();
+		childs.addAll(originalNode.getChildren());
+		while(!childs.isEmpty()) {
+			MindMapNode node = (MindMapNode) childs.firstElement();
+			childs.remove(0);
+			childs.addAll(node.getChildren());
+			if(getHook(node)!= null || getShadowHook(node) != null) {
+				throw new IllegalArgumentException("There is already the clone '" + node.getShortText(getMindMapController()) + "' inside. Clones can't be stacked.");
+			}
+		}
 		// insert clone:
 		List listOfChilds = pDestinationNode.getChildren();
 		Vector listOfChildIds = new Vector();

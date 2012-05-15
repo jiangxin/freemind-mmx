@@ -75,13 +75,10 @@ import org.openstreetmap.gui.jmapviewer.JMapController;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
 import org.openstreetmap.gui.jmapviewer.OsmMercator;
 import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
-import org.openstreetmap.gui.jmapviewer.interfaces.TileSource.TileUpdate;
 import org.openstreetmap.gui.jmapviewer.tilesources.AbstractOsmTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
 import plugins.map.MapDialog.SearchResultListModel;
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 import freemind.common.XmlBindingTools;
 import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.MenuItemSelectedListener;
@@ -1101,7 +1098,7 @@ public class FreeMindMapController extends JMapController implements
 		Action exportAction = new ExportMapAction();
 		/** Menu **/
 		StructuredMenuHolder menuHolder = new StructuredMenuHolder();
-		JMenuBar menu = new JMenuBar();
+		mMenuBar = new JMenuBar();
 		JMenu mainItem = new JMenu(getText("MapControllerPopupDialog.Actions"));
 		menuHolder.addMenu(mainItem, "main/actions/.");
 		addAccelerator(menuHolder.addAction(placeAction, "main/actions/place"),
@@ -1175,8 +1172,8 @@ public class FreeMindMapController extends JMapController implements
 				"keystroke_plugins/map/MapDialog_moveDown");
 		menuHolder.addSeparator("main/navigation/");
 
-		menuHolder.updateMenus(menu, "main/");
-		mMapDialog.setJMenuBar(menu);
+		menuHolder.updateMenus(mMenuBar, "main/");
+		mMapDialog.setJMenuBar(mMenuBar);
 		/* Popup menu */
 		menuHolder.addAction(newNodeAction, "popup/newNode");
 		menuHolder.addSeparator("popup/");
@@ -1683,6 +1680,8 @@ public class FreeMindMapController extends JMapController implements
 	private MoveForwardAction mMoveForwardAction;
 
 	private MoveBackwardAction mMoveBackwardAction;
+
+	JMenuBar mMenuBar;
 
 	public void mouseReleased(MouseEvent e) {
 		if (!mClickEnabled) {
