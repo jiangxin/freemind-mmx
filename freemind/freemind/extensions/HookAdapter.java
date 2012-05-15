@@ -52,6 +52,9 @@ public class HookAdapter implements MindMapHook {
 	/**
 	 */
 	public HookAdapter() {
+		if (logger == null)
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
 		baseClass = null;
 	}
 
@@ -109,8 +112,6 @@ public class HookAdapter implements MindMapHook {
 	 */
 	public void setController(ModeController controller) {
 		this.controller = controller;
-		if (logger == null)
-			logger = controller.getFrame().getLogger(this.getClass().getName());
 	}
 
 	/*

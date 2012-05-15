@@ -474,8 +474,6 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 				// " to the cutted nodes from (old) id " + id);
 				deregisterLink(link);
 			}
-			// deregister myself to keep the registry tidy.
-			deregisterLinkTarget(target);
 		}
 		// deregister all links from me:
 		Vector links = getAllLinksFromMe(target);

@@ -513,6 +513,12 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		mCloneNodeIds.remove(getMindMapController().getNodeID(pCloneNode));
 		clearCloneCache();
 		registerPlugin();
+		if(mCloneNodeIds.isEmpty()) {
+			// remove icon
+			getNode().setStateIcon(getName(), null);
+			getMindMapController().nodeRefresh(getNode());
+			// TODO: remove myself
+		}
 	}
 
 	/*
