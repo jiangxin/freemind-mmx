@@ -288,7 +288,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	/**
-	 * @return a list of MindMapNode s including the original node!
+	 * @return a list of {@link MindMapNode}s including the original node!
 	 */
 	List/* MindMapNode */getCloneNodes() {
 		try {

@@ -22,7 +22,6 @@ package accessories.plugins;
 
 import java.util.HashMap;
 
-import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;

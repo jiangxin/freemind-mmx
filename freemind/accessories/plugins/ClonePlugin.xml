@@ -5,7 +5,7 @@
 		isPluginBase="true">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 	</plugin_registration>
-
+	<!-- Internal plugin -->
 	<plugin_action
 		documentation="%accessories/plugins/ClonePlugin.properties_documentation"
 		name="%accessories/plugins/ClonePlugin.properties_name" base="freemind.extensions.NodeHookAdapter"
@@ -23,6 +23,7 @@
 		<plugin_mode class_name="freemind.modes.mindmapmode" />
 		<plugin_menu location="menu_bar/edit/paste/paste_as_clone" />
 	</plugin_action>
+	<!-- Internal plugin -->
 	<plugin_action 
 		documentation="accessories/plugins/ShadowClonePlugin.properties_documentation" 
 		name="accessories/plugins/ShadowClonePlugin.properties_name" 
@@ -31,6 +32,17 @@
 		class_name="accessories.plugins.ShadowClonePlugin" 
 		instanciation="Once">
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+	</plugin_action>
+	<plugin_action 
+		documentation="%accessories/plugins/ShowCloneNodes.properties_documentation" 
+		name="%accessories/plugins/ShowCloneNodes.properties_name" 
+		key_stroke="%keystroke_accessories/plugins/ShowCloneNodes.properties_key" 
+		base="freemind.extensions.NodeHookAdapter" 
+		label="accessories/plugins/ShowCloneNodes.properties" 
+		class_name="accessories.plugins.ShowCloneNodes" 
+		instanciation="Once">
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/navigate/clones"/>
 	</plugin_action>
 
 	<!-- icon_path="accessories/plugins/icons/xeyes.png" -->

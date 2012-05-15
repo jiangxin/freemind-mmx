@@ -105,6 +105,9 @@
 			<menu_separator/>
 			<menu_category name="notes">
 			</menu_category>
+			<menu_separator/>
+			<menu_category name="clones">
+			</menu_category>
 		</menu_category>	
 	
 		<menu_category name="format">
