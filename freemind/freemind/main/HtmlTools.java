@@ -706,6 +706,11 @@ public class HtmlTools {
 		return output;
 	}
 
+	/**
+	 * Is used from XSLT! Don't change, unless you change the freemind_version_updater.xslt, too.
+	 * @param input
+	 * @return
+	 */
 	public static String replaceSpacesToNonbreakableSpaces(String input) {
 		StringBuffer result = new StringBuffer(input.length());
 		boolean readingSpaces = false;

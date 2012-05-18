@@ -167,6 +167,8 @@ def changeNodeChildren(currentNode, text, newNode){
 		c.setFolded(currentNode, true);
 		return;
 	}
+	return;
+	// the following must be fixed.
 	def ptext = freemind.main.HtmlTools.htmlToPlain(text);
 	def index = ptext.indexOf(":");
 	if(index < 0){
