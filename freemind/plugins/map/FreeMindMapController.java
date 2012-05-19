@@ -1766,6 +1766,10 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	protected void storeMapPosition(final Coordinate coordinates) {
+		// if position is not at the end, the locations in front are deleted.
+		while(getPositionHolderIndex() < getPositionHolderVector().size()-1){
+			getPositionHolderVector().remove(getPositionHolderVector().size()-1);			
+		}
 		final PositionHolder holder = new PositionHolder(coordinates.getLat(),
 				coordinates.getLon(), getMap().getZoom());
 		setPositionHolderIndex(getPositionHolderIndex() + 1);
@@ -1776,7 +1780,6 @@ public class FreeMindMapController extends JMapController implements
 		// assure that max size is below limit.
 		while (getPositionHolderVector().size() >= POSITION_HOLDER_LIMIT
 				&& getPositionHolderIndex() > 0) {
-			getPositionHolderVector().remove(0);
 			setPositionHolderIndex(getPositionHolderIndex() - 1);
 		}
 		// update actions
