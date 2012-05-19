@@ -1780,6 +1780,7 @@ public class FreeMindMapController extends JMapController implements
 		// assure that max size is below limit.
 		while (getPositionHolderVector().size() >= POSITION_HOLDER_LIMIT
 				&& getPositionHolderIndex() > 0) {
+			getPositionHolderVector().remove(0);
 			setPositionHolderIndex(getPositionHolderIndex() - 1);
 		}
 		// update actions
