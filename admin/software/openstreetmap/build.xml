@@ -1,0 +1,89 @@
+<!--  build JAR libraty -->
+<project name="OsmAndToFreeMindImporter" default="build" basedir=".">
+
+	<property file="local.properties" />
+
+	<property name="src.dir" value="src"/>
+	<property name="src.absolute.dir" location="${src.dir}" />
+	<property name="bin.dir" value="bin"/>
+	<property name="bin.absolute.dir" location="${bin.dir}" />
+	<property name="lib.dir" value="lib"/>
+	<property name="lib.absolute.dir" location="${lib.dir}" />
+	<property name="java.encoding" value="UTF-8" />
+
+	<path id="ant.lib.path">
+		<fileset dir="ant-lib" includes="*.jar" />
+	</path>
+
+	<path id="build.path">
+		<fileset dir="${lib.absolute.dir}">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+
+	<target name="-dirs">
+	   <mkdir dir="${bin.absolute.dir}"/>
+	</target>
+
+	<target name="clean">
+	   <delete dir="${bin.absolute.dir}"/>
+	</target>
+
+	<target name="compile" depends="-dirs">
+	 <copy todir="${bin.absolute.dir}">
+	   <fileset dir="${src.absolute.dir}">
+		<exclude name="**/*.java" />
+	   </fileset>
+         </copy>
+	 <javac srcdir="${src.absolute.dir}"
+		 destdir="${bin.absolute.dir}"
+		 encoding="${java.encoding}"
+		 classpathref="build.path"
+		 debug="on"
+		 source="1.6"
+	  />
+	</target>
+
+	<target name="jar" depends="-dirs">
+		<manifestclasspath property="lib.list" jarfile="OsmAndToFreeMindImporter.jar">
+			<classpath refid="build.path"/>
+		</manifestclasspath>
+		<echo>list is  ${lib.list}</echo>
+
+		<delete file="OsmAndToFreeMindImporter.jar" />
+		<delete file="MANIFEST.MF" />
+		<manifest file="MANIFEST.MF">
+			<attribute name="Built-By" value="${user.name}" />
+			<attribute name="Main-Class" value="com.sourceforge.freemind.PoiToFreeMind" />
+			<attribute name="Class-Path" value="${lib.list}"/>
+		</manifest>
+
+		<jar destfile="OsmAndToFreeMindImporter.jar" manifest="MANIFEST.MF">
+			<fileset dir="${bin.absolute.dir}">
+				<include name="**/*" />
+			</fileset>
+			<fileset dir="${src.absolute.dir}">
+				<include name="**/*.java" />
+			</fileset>
+		</jar>
+
+		<delete file="MANIFEST.MF" />
+	</target>
+
+	<target name="build" depends="jar">
+		<delete dir="build"/>
+		<copy todir="build">
+			<fileset dir=".">
+				<include name="OsmAndToFreeMindImporter.jar"/>
+				<include name="lib/**"/>
+				<include name="OsmAndToFreeMindImporter.sh"/>
+				<exclude name="lib/h2*"/>
+			</fileset>
+		</copy>
+		<zip destfile="build.zip">
+			<fileset dir="build">
+			</fileset>
+		</zip>
+		<delete file="OsmAndToFreeMindImporter.jar" />
+	</target>
+</project>
