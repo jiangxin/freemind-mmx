@@ -1,14 +1,18 @@
 <?xml version="1.0"?>
+
 <plugin label="accessories/plugins/LogFileViewer">
-		<plugin_action 
-		documentation="%accessories/plugins/LogFileViewer.properties_documentation" 
-		name="%accessories/plugins/LogFileViewer.properties_name" 
-		base="freemind.extensions.ModeControllerHookAdapter" 
-		label="accessories/plugins/LogFileViewer.properties" 
-		class_name="accessories.plugins.LogFileViewer"
-		key_stroke="%keystroke_accessories/plugins/LogFileViewer.properties_key" 
-		icon_path="accessories/plugins/icons/tools-report-bug.png" >
-		<plugin_mode class_name="freemind.modes.mindmapmode"/>
-		<plugin_menu location="menu_bar/help/bugs/logFileViewer"/>
+	<plugin_registration class_name="accessories.plugins.LogFileViewer$Registration"
+		isPluginBase="true">
+		<plugin_mode class_name="freemind.modes.mindmapmode" />
+	</plugin_registration>
+	
+	<plugin_action
+		documentation="%accessories/plugins/LogFileViewer.properties_documentation"
+		name="%accessories/plugins/LogFileViewer.properties_name" base="freemind.extensions.ModeControllerHookAdapter"
+		label="accessories/plugins/LogFileViewer.properties" class_name="accessories.plugins.LogFileViewer"
+		key_stroke="%keystroke_accessories/plugins/LogFileViewer.properties_key"
+		icon_path="accessories/plugins/icons/tools-report-bug.png">
+		<plugin_mode class_name="freemind.modes.mindmapmode" />
+		<plugin_menu location="menu_bar/help/bugs/logFileViewer" />
 	</plugin_action>
 </plugin>

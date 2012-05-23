@@ -44,7 +44,7 @@ public interface MindMapHook {
 	void setProperties(Properties properties);
 
 	/**
-	 * looks for a property in the plugin properties file.
+	 * looks for a property in the plugin properties file, or from the localized ressources.
 	 */
 	String getResourceString(String property);
 
