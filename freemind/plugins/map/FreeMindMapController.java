@@ -610,7 +610,8 @@ public class FreeMindMapController extends JMapController implements
 
 		protected boolean isEnabledCheck() {
 			return getPositionHolderIndex() >= 0
-					&& getPositionHolderIndex() < getPositionHolderVector().size() - 1;
+					&& getPositionHolderIndex() < getPositionHolderVector()
+							.size() - 1;
 		}
 
 		public boolean isEnabled(JMenuItem pItem, Action pAction) {
@@ -1765,12 +1766,17 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	protected void storeMapPosition(final Coordinate coordinates) {
+		// if position is not at the end, the locations in front are deleted.
+		while(getPositionHolderIndex() < getPositionHolderVector().size()-1){
+			getPositionHolderVector().remove(getPositionHolderVector().size()-1);			
+		}
 		final PositionHolder holder = new PositionHolder(coordinates.getLat(),
 				coordinates.getLon(), getMap().getZoom());
 		setPositionHolderIndex(getPositionHolderIndex() + 1);
 		logger.info("Storing position " + holder + " at index "
 				+ getPositionHolderIndex());
-		getPositionHolderVector().insertElementAt(holder, getPositionHolderIndex());
+		getPositionHolderVector().insertElementAt(holder,
+				getPositionHolderIndex());
 		// assure that max size is below limit.
 		while (getPositionHolderVector().size() >= POSITION_HOLDER_LIMIT
 				&& getPositionHolderIndex() > 0) {
@@ -1902,9 +1908,10 @@ public class FreeMindMapController extends JMapController implements
 	public void setCursorPosition(Place pPlace) {
 		map.setDisplayPositionByLatLon(pPlace.getLat(), pPlace.getLon(),
 				map.getZoom());
-		getMap().setCursorPosition(
-				new Coordinate(pPlace.getLat(), pPlace.getLon()));
-
+		Coordinate cursorPosition = new Coordinate(pPlace.getLat(),
+				pPlace.getLon());
+		getMap().setCursorPosition(cursorPosition);
+		storeMapPosition(cursorPosition);
 	}
 
 	/**
