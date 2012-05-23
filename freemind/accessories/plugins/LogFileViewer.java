@@ -27,7 +27,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Vector;
+import java.util.logging.Filter;
+import java.util.logging.Level;
 import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import javax.swing.AbstractAction;
@@ -62,9 +67,9 @@ public class LogFileViewer extends MindMapHookAdapter implements
 
 	public static class Registration implements HookRegistration {
 		/**
-		 * Maps MindMapController --> PrintActionHandler
-		 * Here, a static map is used, as the HookRegistration are registered
-		 * each time a map is changed. Thus, a normal member isn't possible here.
+		 * Maps MindMapController --> PrintActionHandler Here, a static map is
+		 * used, as the HookRegistration are registered each time a map is
+		 * changed. Thus, a normal member isn't possible here.
 		 */
 		private static HashMap mPrintActionHandler = new HashMap();
 
@@ -73,7 +78,6 @@ public class LogFileViewer extends MindMapHookAdapter implements
 		public Registration(ModeController controller, MindMap map) {
 			modeController = (MindMapController) controller;
 		}
-
 
 		public void register() {
 		}
@@ -89,18 +93,19 @@ public class LogFileViewer extends MindMapHookAdapter implements
 						printActionHandler);
 				mPrintActionHandler.put(modeController, printActionHandler);
 			} else {
-				modeController.getActionFactory().deregisterHandler(
-						(ActionHandler) mPrintActionHandler.get(modeController));
+				modeController.getActionFactory()
+						.deregisterHandler(
+								(ActionHandler) mPrintActionHandler
+										.get(modeController));
 			}
 
 		}
-		
+
 		public boolean isPrintActionActive() {
 			return mPrintActionHandler.containsKey(modeController);
 		}
 	}
 
-	
 	private static final String WINDOW_PREFERENCE_STORAGE_PROPERTY = LogFileViewer.class
 			.getName();
 
@@ -117,6 +122,8 @@ public class LogFileViewer extends MindMapHookAdapter implements
 	private LogFileLogHandler mHandler;
 
 	private JMenuBar mMenuBar;
+	
+	private UpdateTextAreaThread mUpdateTextAreaThread;
 
 	private final class CloseAction extends AbstractAction {
 
@@ -136,8 +143,6 @@ public class LogFileViewer extends MindMapHookAdapter implements
 			super(getResourceString("LogFileViewer.PrintOperationAction"));
 		}
 
-
-		
 		/*
 		 * (non-Javadoc)
 		 * 
@@ -149,18 +154,57 @@ public class LogFileViewer extends MindMapHookAdapter implements
 			getRegistration().togglePrintAction();
 		}
 
-		/* (non-Javadoc)
-		 * @see freemind.controller.MenuItemSelectedListener#isSelected(javax.swing.JMenuItem, javax.swing.Action)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * freemind.controller.MenuItemSelectedListener#isSelected(javax.swing
+		 * .JMenuItem, javax.swing.Action)
 		 */
 		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
 			return getRegistration().isPrintActionActive();
 		}
 
 	}
+
+	private final class SetLogLevelAction extends AbstractAction implements
+			MenuItemSelectedListener {
+
+		private final Level mLevel;
+
+		public SetLogLevelAction(Level pLevel) {
+			super(getResourceString("LogFileViewer.SetLogLevelAction_"
+					+ pLevel.getName()));
+			mLevel = pLevel;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent
+		 * )
+		 */
+		public void actionPerformed(ActionEvent pE) {
+			getBaseLogger().setLevel(mLevel);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * freemind.controller.MenuItemSelectedListener#isSelected(javax.swing
+		 * .JMenuItem, javax.swing.Action)
+		 */
+		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
+			return getBaseLogger().getLevel().equals(mLevel);
+		}
+
+	}
+
 	public Registration getRegistration() {
 		return (Registration) getPluginBaseClass();
 	}
-	
 
 	/*
 	 * (non-Javadoc)
@@ -209,6 +253,13 @@ public class LogFileViewer extends MindMapHookAdapter implements
 		addAccelerator(menuHolder.addAction(printOperationAction,
 				"main/actions/printOperationAction"),
 				"keystroke_accessories/plugins/LogFileViewer_printOperationAction");
+		Level[] levels = new Level[] {Level.FINEST, Level.FINER, Level.FINE, Level.INFO, Level.WARNING, Level.SEVERE, Level.OFF};
+		for (int i = 0; i < levels.length; i++) {
+			Level level = levels[i];
+			menuHolder.addAction(new SetLogLevelAction(level),
+					"main/actions/setLogLevel_"+level.getName());
+			
+		}
 		menuHolder.updateMenus(mMenuBar, "main/");
 		mLogFileViewer.setJMenuBar(mMenuBar);
 		mLogFileViewer.setSize(400, 400);
@@ -230,7 +281,15 @@ public class LogFileViewer extends MindMapHookAdapter implements
 		mLogFileViewer.setVisible(true);
 		mHandler = new LogFileLogHandler(this);
 		mHandler.setFormatter(new SimpleFormatter());
-		logger.getParent().addHandler(mHandler);
+		getBaseLogger().addHandler(mHandler);
+		mUpdateTextAreaThread = new UpdateTextAreaThread();
+		mUpdateTextAreaThread.start();
+	}
+
+	
+	
+	protected Logger getBaseLogger() {
+		return logger.getParent();
 	}
 
 	/**
@@ -246,7 +305,9 @@ public class LogFileViewer extends MindMapHookAdapter implements
 	 * 
 	 */
 	public void disposeDialog() {
-		logger.getParent().removeHandler(mHandler);
+		mUpdateTextAreaThread.commitSuicide();
+		mUpdateTextAreaThread = null;
+		getBaseLogger().removeHandler(mHandler);
 		// store window positions:
 		LogFileViewerConfigurationStorage storage = new LogFileViewerConfigurationStorage();
 		// put_additional_data_here
@@ -326,31 +387,90 @@ public class LogFileViewer extends MindMapHookAdapter implements
 	 * .logging.LogRecord)
 	 */
 	public void receiveLog(final LogRecord record) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				if (!mHandler.isLoggable(record)) {
-					return;
-				}
-				try {
-					String msg = mHandler.getFormatter().format(record);
-					// is cursor at the end?
-					final int length = mTextArea.getDocument().getLength();
-					boolean atEnd = mTextArea.getCaretPosition() == length;
-					mTextArea.getDocument().insertString(length, msg, null);
-					if (atEnd) {
-						// if at end, scroll again to the end
-						mTextArea.setCaretPosition(mTextArea.getDocument()
-								.getLength());
-					}
-
-				} catch (Exception ex) {
-					// We don't want to log anything here...
-				}
-
-			}
-		});
+		if (!mHandler.isLoggable(record)) {
+			return;
+		}
+		String msg = mHandler.getFormatter().format(record);
+		mUpdateTextAreaThread.addToInbox(msg);
 	}
 
-	
+	private class UpdateTextAreaThread extends Thread {
+		Vector mInbox = new Vector();
+		private boolean mCommitSuicide = false;
+		private boolean mSuicided = false;
+		/* (non-Javadoc)
+		 * @see java.lang.Thread#run()
+		 */
+		public void run() {
+			while(!mCommitSuicide) {
+				final Vector queue = new Vector();
+				synchronized (mInbox) {
+					if(!mInbox.isEmpty()) {
+						queue.addAll(mInbox);
+						mInbox.clear();
+					}
+				}
+				if(!queue.isEmpty()) {
+					EventQueue.invokeLater(new Runnable() {
+						public void run() {
+							try {
+								StringBuffer buffer = new StringBuffer();
+								for (Iterator it = queue.iterator(); it
+										.hasNext();) {
+									String msg = (String) it.next();
+									buffer.append(msg);
+//									buffer.append('\n');
+								}
+								String msg = buffer.toString();
+								// is cursor at the end?
+								final int length = mTextArea.getDocument().getLength();
+								boolean atEnd = mTextArea.getCaretPosition() == length;
+								mTextArea.getDocument().insertString(length, msg, null);
+								if (atEnd) {
+									// if at end, scroll again to the end
+									mTextArea.setCaretPosition(mTextArea.getDocument()
+											.getLength());
+								}
+							} catch (Exception ex) {
+								// We don't want to log anything here...
+							}
+							
+						}
+					});
+				} 
+				sleepOneSecond();
+			}
+			mSuicided = true;
+		}
+
+		/**
+		 * 
+		 */
+		public void commitSuicide() {
+			mCommitSuicide  = true;
+			int timeout = 10;
+			while(timeout-->0) {
+				if(mSuicided)
+					break;
+				sleepOneSecond();
+			}
+		}
+
+		protected void sleepOneSecond() {
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				freemind.main.Resources.getInstance().logException(e);
+				
+			}
+		}
+		
+		public void addToInbox(String msg) {
+			synchronized (mInbox) {
+				mInbox.add(msg);
+			}
+		}
+		
+	}
 	
 }
