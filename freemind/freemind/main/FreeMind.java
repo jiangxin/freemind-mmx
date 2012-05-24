@@ -21,6 +21,7 @@
 package freemind.main;
 
 import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Insets;
@@ -46,6 +47,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -212,6 +214,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	private List mStartupDoneListeners = new Vector();
 
 	private EditServer mEditServer = null;
+
+	private Vector mLoggerList = new Vector();
 
 	public static final String KEYSTROKE_MOVE_MAP_LEFT = "keystroke_MoveMapLeft";
 
@@ -704,6 +708,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public Logger getLogger(String forClass) {
 		Logger loggerForClass = java.util.logging.Logger.getLogger(forClass);
+		mLoggerList.add(loggerForClass);
 		if (mFileHandler == null && !mFileHandlerError) {
 			// initialize handlers using an old System.err:
 			final Logger parentLogger = loggerForClass.getParent();
@@ -1296,6 +1301,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			StartupDoneListener pStartupDoneListener) {
 		if (!mStartupDone)
 			mStartupDoneListeners.add(pStartupDoneListener);
+	}
+
+	public List getLoggerList() {
+		return Collections.unmodifiableList(mLoggerList);
 	}
 
 }

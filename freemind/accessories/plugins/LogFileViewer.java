@@ -28,6 +28,7 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -188,8 +189,11 @@ public class LogFileViewer extends MindMapHookAdapter implements
 		 */
 		public void actionPerformed(ActionEvent pE) {
 			getBaseHandler().setLevel(mLevel);
-			// FIXME: dirty trick here.
-			getBaseLogger().setLevel(mLevel);
+			List loggerList = getMindMapController().getFrame().getLoggerList();
+			for (Iterator it = loggerList.iterator(); it.hasNext();) {
+				Logger otherLogger = (Logger) it.next();
+				otherLogger.setLevel(mLevel);
+			}
 		}
 
 		/*
@@ -257,11 +261,14 @@ public class LogFileViewer extends MindMapHookAdapter implements
 		addAccelerator(menuHolder.addAction(printOperationAction,
 				"main/actions/printOperationAction"),
 				"keystroke_accessories/plugins/LogFileViewer_printOperationAction");
+		JMenu loggerItem = new JMenu(
+				getResourceString("MapControllerPopupDialog.LogLevels"));
+		menuHolder.addMenu(loggerItem, "main/loglevel/.");
 		Level[] levels = new Level[] {Level.FINEST, Level.FINER, Level.FINE, Level.INFO, Level.WARNING, Level.SEVERE, Level.OFF};
 		for (int i = 0; i < levels.length; i++) {
 			Level level = levels[i];
 			menuHolder.addAction(new SetLogLevelAction(level),
-					"main/actions/setLogLevel_"+level.getName());
+					"main/loglevel/setLogLevel_"+level.getName());
 			
 		}
 		menuHolder.updateMenus(mMenuBar, "main/");
@@ -412,6 +419,7 @@ public class LogFileViewer extends MindMapHookAdapter implements
 		Vector mInbox = new Vector();
 		private boolean mCommitSuicide = false;
 		private boolean mSuicided = false;
+
 		/* (non-Javadoc)
 		 * @see java.lang.Thread#run()
 		 */
@@ -452,7 +460,7 @@ public class LogFileViewer extends MindMapHookAdapter implements
 						}
 					});
 				} 
-				sleepOneSecond();
+				sleepALittle();
 			}
 			mSuicided = true;
 		}
@@ -462,17 +470,17 @@ public class LogFileViewer extends MindMapHookAdapter implements
 		 */
 		public void commitSuicide() {
 			mCommitSuicide  = true;
-			int timeout = 10;
+			int timeout = 100;
 			while(timeout-->0) {
 				if(mSuicided)
 					break;
-				sleepOneSecond();
+				sleepALittle();
 			}
 		}
 
-		protected void sleepOneSecond() {
+		protected void sleepALittle() {
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				freemind.main.Resources.getInstance().logException(e);
 				

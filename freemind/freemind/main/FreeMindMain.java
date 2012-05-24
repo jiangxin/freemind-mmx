@@ -23,6 +23,7 @@ package freemind.main;
 import java.awt.Container;
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.StringTokenizer;
@@ -272,4 +273,9 @@ public interface FreeMindMain {
 
 	public abstract void registerStartupDoneListener(
 			StartupDoneListener pStartupDoneListener);
+	
+	/**
+	 * @return a list of all loggers. Used for example for the log file viewer.
+	 */
+	public List getLoggerList();
 }
