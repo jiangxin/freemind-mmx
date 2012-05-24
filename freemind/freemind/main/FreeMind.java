@@ -59,6 +59,7 @@ import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
@@ -225,6 +226,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	public static final String RESOURCES_DON_T_SHOW_NOTE_TOOLTIPS = "resources_don_t_show_note_tooltips";
 
 	public static final String RESOURCES_SEARCH_FOR_NODE_TEXT_WITHOUT_QUESTION = "resources_search_for_node_text_without_question";
+
+	private static LogFileLogHandler sLogFileHandler;
 
 	public FreeMind(Properties pDefaultPreferences,
 			Properties pUserPreferences, File pAutoPropertiesFile) {
@@ -724,6 +727,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				stdConsoleHandler.setLevel(Level.WARNING);
 				parentLogger.addHandler(stdConsoleHandler);
 
+				sLogFileHandler = new LogFileLogHandler();
+				sLogFileHandler.setFormatter(new SimpleFormatter());
+				sLogFileHandler.setLevel(Level.INFO);
+
 				LoggingOutputStream los;
 				Logger logger = Logger.getLogger(StdFormatter.STDOUT.getName());
 				los = new LoggingOutputStream(logger, StdFormatter.STDOUT);
@@ -740,6 +747,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				// to avoid infinite recursion.
 				// freemind.main.Resources.getInstance().logExecption(e);
 			}
+		}
+		if (sLogFileHandler != null) {
+			loggerForClass.addHandler(sLogFileHandler);
 		}
 		return loggerForClass;
 	}

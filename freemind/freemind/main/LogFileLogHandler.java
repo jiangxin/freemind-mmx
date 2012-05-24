@@ -18,7 +18,7 @@
 *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-package accessories.plugins;
+package freemind.main;
 
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
@@ -29,7 +29,7 @@ import java.util.logging.LogRecord;
  */
 public class LogFileLogHandler extends Handler {
 
-	private final LogReceiver mLogReceiver;
+	private LogReceiver mLogReceiver = null;
 
 	public interface LogReceiver {
 		void receiveLog(LogRecord pRecord);
@@ -42,11 +42,19 @@ public class LogFileLogHandler extends Handler {
 		mLogReceiver = pLogReceiver;
 	}
 	
+	public LogFileLogHandler() {
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.util.logging.Handler#publish(java.util.logging.LogRecord)
 	 */
 	public void publish(LogRecord pRecord) {
-		mLogReceiver.receiveLog(pRecord);
+		if (mLogReceiver != null) {
+			if (!isLoggable(pRecord)) {
+				return;
+			}
+			mLogReceiver.receiveLog(pRecord);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -59,6 +67,14 @@ public class LogFileLogHandler extends Handler {
 	 * @see java.util.logging.Handler#close()
 	 */
 	public void close() throws SecurityException {
+	}
+
+	public LogReceiver getLogReceiver() {
+		return mLogReceiver;
+	}
+
+	public void setLogReceiver(LogReceiver pLogReceiver) {
+		mLogReceiver = pLogReceiver;
 	}
 
 }

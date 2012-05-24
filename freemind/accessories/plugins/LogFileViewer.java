@@ -29,7 +29,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
-import java.util.logging.Filter;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
@@ -45,13 +45,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.WindowConstants;
 
-import accessories.plugins.LogFileLogHandler.LogReceiver;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.LogFileViewerConfigurationStorage;
 import freemind.extensions.HookRegistration;
 import freemind.main.FreeMind;
+import freemind.main.LogFileLogHandler;
+import freemind.main.LogFileLogHandler.LogReceiver;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.Mode;
@@ -119,11 +120,11 @@ public class LogFileViewer extends MindMapHookAdapter implements
 
 	protected static java.util.logging.Logger logger = null;
 
-	private LogFileLogHandler mHandler;
-
 	private JMenuBar mMenuBar;
 	
 	private UpdateTextAreaThread mUpdateTextAreaThread;
+
+	private SimpleFormatter mSimpleFormatter;
 
 	private final class CloseAction extends AbstractAction {
 
@@ -186,6 +187,8 @@ public class LogFileViewer extends MindMapHookAdapter implements
 		 * )
 		 */
 		public void actionPerformed(ActionEvent pE) {
+			getBaseHandler().setLevel(mLevel);
+			// FIXME: dirty trick here.
 			getBaseLogger().setLevel(mLevel);
 		}
 
@@ -197,7 +200,7 @@ public class LogFileViewer extends MindMapHookAdapter implements
 		 * .JMenuItem, javax.swing.Action)
 		 */
 		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
-			return getBaseLogger().getLevel().equals(mLevel);
+			return getBaseHandler().getLevel().equals(mLevel);
 		}
 
 	}
@@ -218,6 +221,7 @@ public class LogFileViewer extends MindMapHookAdapter implements
 					this.getClass().getName());
 		}
 		mMyMindMapController = super.getMindMapController();
+		mSimpleFormatter = new SimpleFormatter();
 		// retrieve content
 		final String pathname = getMindMapController().getFrame()
 				.getFreemindDirectory()
@@ -279,17 +283,30 @@ public class LogFileViewer extends MindMapHookAdapter implements
 			// retrieve_additional_data_here
 		}
 		mLogFileViewer.setVisible(true);
-		mHandler = new LogFileLogHandler(this);
-		mHandler.setFormatter(new SimpleFormatter());
-		getBaseLogger().addHandler(mHandler);
 		mUpdateTextAreaThread = new UpdateTextAreaThread();
 		mUpdateTextAreaThread.start();
+		getBaseHandler().setLogReceiver(this);
 	}
 
 	
 	
 	protected Logger getBaseLogger() {
 		return logger.getParent();
+	}
+	
+	/**
+	 * @TODO: This is a bit dirty here, better would be to ask the resources class
+	 * for the static logger, but this would result in too much new interfaces.
+	 */
+	protected LogFileLogHandler getBaseHandler() {
+		for (int i = 0; i < logger.getHandlers().length; i++) {
+			Handler handler = logger.getHandlers()[i];
+			if (handler instanceof LogFileLogHandler) {
+				LogFileLogHandler logHandler = (LogFileLogHandler) handler;
+				return logHandler;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -307,7 +324,7 @@ public class LogFileViewer extends MindMapHookAdapter implements
 	public void disposeDialog() {
 		mUpdateTextAreaThread.commitSuicide();
 		mUpdateTextAreaThread = null;
-		getBaseLogger().removeHandler(mHandler);
+		getBaseHandler().setLogReceiver(null);
 		// store window positions:
 		LogFileViewerConfigurationStorage storage = new LogFileViewerConfigurationStorage();
 		// put_additional_data_here
@@ -387,10 +404,7 @@ public class LogFileViewer extends MindMapHookAdapter implements
 	 * .logging.LogRecord)
 	 */
 	public void receiveLog(final LogRecord record) {
-		if (!mHandler.isLoggable(record)) {
-			return;
-		}
-		String msg = mHandler.getFormatter().format(record);
+		String msg = mSimpleFormatter.format(record);
 		mUpdateTextAreaThread.addToInbox(msg);
 	}
 
