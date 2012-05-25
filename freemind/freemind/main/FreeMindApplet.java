@@ -26,8 +26,10 @@ import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.Vector;
 
 import javax.swing.JApplet;
 import javax.swing.JComponent;
@@ -426,6 +428,13 @@ public class FreeMindApplet extends JApplet implements FreeMindMain {
 			StartupDoneListener pStartupDoneListener) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.main.FreeMindMain#getLoggerList()
+	 */
+	public List getLoggerList() {
+		return new Vector();
 	}
 
 }

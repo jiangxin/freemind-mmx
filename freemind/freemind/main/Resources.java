@@ -31,6 +31,8 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import tests.freemind.FreeMindMainMock;
+
 import freemind.common.NamedObject;
 import freemind.common.TextTranslator;
 import freemind.main.FreeMindMain.VersionInformation;
@@ -70,6 +72,10 @@ public class Resources implements TextTranslator {
 	}
 
 	static public Resources getInstance() {
+		if(resourcesInstance == null) {
+			createInstance(new FreeMindMainMock());
+			System.err.println("Resources without FreeMind called.");
+		}
 		return resourcesInstance;
 	}
 

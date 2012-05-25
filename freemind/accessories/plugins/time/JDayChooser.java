@@ -408,6 +408,14 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
 		for (int k = n + i + 7; k < 49; k++) {
 			days[k].setVisible(false);
 			days[k].setText("");
+			/* this was a try to display the days of the adjacent months, too,
+			 * but some points are missing: 
+			 * - only the last week should be filled
+			 *  
+			 */
+//			days[k].setVisible(true);
+//			days[k].setEnabled(false);
+//			days[k].setText(Integer.toString(k-(n+i+6)));
 		}
 
 		drawWeeks();

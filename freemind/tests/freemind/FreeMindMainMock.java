@@ -23,8 +23,10 @@ package tests.freemind;
 import java.awt.Container;
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.swing.JComponent;
@@ -219,6 +221,13 @@ public class FreeMindMainMock implements FreeMindMain {
 			StartupDoneListener pStartupDoneListener) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.main.FreeMindMain#getLoggerList()
+	 */
+	public List getLoggerList() {
+		return new Vector();
 	}
 
 }
