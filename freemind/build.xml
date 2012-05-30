@@ -53,8 +53,9 @@
 	<property name="formsLib" location="lib/forms-1.0.5.jar:lib/SimplyHTML/SimplyHTML.jar"/>
 	<property name="simplyHtml" location="lib/SimplyHTML/SimplyHTML.jar"/>
 	<property name="spellLib" location="lib/jortho.jar"/>
+	<property name="xsltLib" location="lib/xalan.jar"/>
 
-	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:${formsLib}:${simplyHtml}:${spellLib}"/>
+	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:${formsLib}:${simplyHtml}:${spellLib}:${xsltLib}"/>
 	<path id="jars.path">
 	  <fileset dir="${src}">
 	    <include name="**/*.jar" />
@@ -247,6 +248,7 @@
 		<copy todir="${dist.lib}">
 			<fileset dir="${src}/lib">
 				<include name="jortho.jar"/>
+				<include name="xalan.jar"/>
 				<include name="forms-1.0.5.jar"/>
 				<include name="bindings.jar"/>
 				<include name="jibx/jibx-run.jar"/>
@@ -438,8 +440,16 @@
 
 	<target name="jar" depends="build">
 		<mkdir dir="${dist.lib}" />
+		<tempfile prefix="manifest" property="temp.manifest.file"/>
+		<manifest file="${temp.manifest.file}">
+			<attribute name="Built-By" value="${user.name}" />
+			<attribute name="Built-Number" value="${build.number}" />
+			<attribute name="Created-By" value="Joerg Mueller, Daniel Polansky, Christian Foltin, Dimitry Polivaev, and others." />
+			<attribute name="Main-Class" value="freemind.main.FreeMindStarter" />
+			<attribute name="Class-Path" value="freemind.jar .. commons-lang-2.0.jar forms-1.0.5.jar jibx/jibx-run.jar jibx/xpp3.jar bindings.jar jortho.jar xalan.jar SimplyHTML/gnu-regexp-1.1.4.jar SimplyHTML/SimplyHTML.jar"/>
+		</manifest>
 		<jar jarfile="${FM.jar}"
-		     manifest="${src}/MANIFEST.MF"
+		     manifest="${temp.manifest.file}"
 			update="true">
 			<fileset dir="${build}">
 				<exclude name="accessories/**"/>
@@ -459,6 +469,7 @@
 				<include name="dictionar*"/>
 			</fileset>
 		</jar>
+		<delete file="${temp.manifest.file}" failonerror="false"/>
 		<ant antfile="${acc_build}" target="jar"/>
 	</target>
 
