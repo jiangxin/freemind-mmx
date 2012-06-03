@@ -975,7 +975,7 @@ public class Tools {
 			FreeMindMain frame) throws IOException {
 		StringWriter writer = null;
 		InputStream inputStream = null;
-		java.util.logging.Logger logger = frame
+		final java.util.logging.Logger logger = frame
 				.getLogger(Tools.class.getName());
 		logger.info("Updating the reader " + pReader
 				+ " to the current version.");
@@ -1018,10 +1018,10 @@ public class Tools {
 					// create an instance of TransformerFactory
 					TransformerFactory transFact = TransformerFactory
 							.newInstance();
+					logger.info("TransformerFactory class: " + transFact.getClass());
 					Transformer trans;
 					try {
 						trans = transFact.newTransformer(xsltSource);
-
 						trans.transform(sr, result);
 						successful = true;
 					} catch (Exception ex) {
@@ -1048,6 +1048,8 @@ public class Tools {
 			successful = transformer.isSuccessful();
 			errorMessage = transformer.getErrorMessage();
 		} catch (Exception ex) {
+			Resources.getInstance().logException(ex, xsltScript);
+			errorMessage = ex.getLocalizedMessage();
 		} finally {
 			if (inputStream != null) {
 				inputStream.close();

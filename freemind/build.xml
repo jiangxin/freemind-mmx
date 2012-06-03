@@ -54,8 +54,11 @@
 	<property name="simplyHtml" location="lib/SimplyHTML/SimplyHTML.jar"/>
 	<property name="spellLib" location="lib/jortho.jar"/>
 	<property name="xsltLib" location="lib/xalan.jar"/>
+	<property name="xsltLib2" location="lib/serializer.jar"/>
+	<property name="xsltLib3" location="lib/xml-apis.jar"/>
+	<property name="xsltLib4" location="lib/xercesImpl.jar"/>
 
-	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:${formsLib}:${simplyHtml}:${spellLib}:${xsltLib}"/>
+	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:${formsLib}:${simplyHtml}:${spellLib}:${xsltLib}:${xsltLib2}:${xsltLib3}:${xsltLib4}"/>
 	<path id="jars.path">
 	  <fileset dir="${src}">
 	    <include name="**/*.jar" />
@@ -249,6 +252,9 @@
 			<fileset dir="${src}/lib">
 				<include name="jortho.jar"/>
 				<include name="xalan.jar"/>
+				<include name="serializer.jar"/>
+				<include name="xml-apis.jar"/>
+				<include name="xercesImpl.jar"/>
 				<include name="forms-1.0.5.jar"/>
 				<include name="bindings.jar"/>
 				<include name="jibx/jibx-run.jar"/>
@@ -446,7 +452,7 @@
 			<attribute name="Built-Number" value="${build.number}" />
 			<attribute name="Created-By" value="Joerg Mueller, Daniel Polansky, Christian Foltin, Dimitry Polivaev, and others." />
 			<attribute name="Main-Class" value="freemind.main.FreeMindStarter" />
-			<attribute name="Class-Path" value="freemind.jar .. commons-lang-2.0.jar forms-1.0.5.jar jibx/jibx-run.jar jibx/xpp3.jar bindings.jar jortho.jar xalan.jar SimplyHTML/gnu-regexp-1.1.4.jar SimplyHTML/SimplyHTML.jar"/>
+			<attribute name="Class-Path" value="freemind.jar .. commons-lang-2.0.jar forms-1.0.5.jar jibx/jibx-run.jar jibx/xpp3.jar bindings.jar jortho.jar xalan.jar serializer.jar xml-apis.jar xercesImpl.jar SimplyHTML/gnu-regexp-1.1.4.jar SimplyHTML/SimplyHTML.jar"/>
 		</manifest>
 		<jar jarfile="${FM.jar}"
 		     manifest="${temp.manifest.file}"

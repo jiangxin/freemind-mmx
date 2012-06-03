@@ -557,6 +557,9 @@ public class HtmlTools {
 	}
 
 	public static String toXMLEscapedText(String text) {
+		if(text == null) {
+			return "ERROR: none";
+		}
 		return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
 				.replaceAll(">", "&gt;").replaceAll("\"", "&quot;");
 	}

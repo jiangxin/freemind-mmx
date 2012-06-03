@@ -203,6 +203,9 @@ ${freedir}/lib/commons-lang-2.0.jar:\
 ${freedir}/lib/forms-1.0.5.jar:\
 ${freedir}/lib/jortho.jar:\
 ${freedir}/lib/xalan.jar:\
+${freedir}/lib/serializer.jar:\
+${freedir}/lib/xml-apis.jar:\
+${freedir}/lib/xercesImpl.jar:\
 ${freedir}"
 if [ "${JAVA_TYPE}" = "sun" ]
 then
