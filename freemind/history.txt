@@ -1,4 +1,9 @@
 ===============================
+Changes made in FreeMind 1.0.0 Beta5
+===============================
+* Added more libraries for Xalan.
+
+===============================
 Changes made in FreeMind 1.0.0 Beta4
 ===============================
 * NEW: Show clone nodes action added to navigation menu. 
