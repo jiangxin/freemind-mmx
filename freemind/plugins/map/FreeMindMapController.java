@@ -150,6 +150,8 @@ public class FreeMindMapController extends JMapController implements
 
 	private static final int POSITION_HOLDER_LIMIT = 1000;
 
+	private static final long WHEEL_ZOOM_MINIMAL_TIME_BETWEEN_CHANGES = 333;
+
 	protected static java.util.logging.Logger logger = freemind.main.Resources
 			.getInstance().getLogger("plugins.map.FreeMindMapController");
 
@@ -1684,6 +1686,8 @@ public class FreeMindMapController extends JMapController implements
 
 	JMenuBar mMenuBar;
 
+	private long mWheelZoomLastTime = 0;
+
 	public void mouseReleased(MouseEvent e) {
 		if (!mClickEnabled) {
 			return;
@@ -1767,8 +1771,9 @@ public class FreeMindMapController extends JMapController implements
 
 	protected void storeMapPosition(final Coordinate coordinates) {
 		// if position is not at the end, the locations in front are deleted.
-		while(getPositionHolderIndex() < getPositionHolderVector().size()-1){
-			getPositionHolderVector().remove(getPositionHolderVector().size()-1);			
+		while (getPositionHolderIndex() < getPositionHolderVector().size() - 1) {
+			getPositionHolderVector().remove(
+					getPositionHolderVector().size() - 1);
 		}
 		final PositionHolder holder = new PositionHolder(coordinates.getLat(),
 				coordinates.getLon(), getMap().getZoom());
@@ -1800,7 +1805,15 @@ public class FreeMindMapController extends JMapController implements
 
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		if (mWheelZoomEnabled) {
-			map.setZoom(map.getZoom() - e.getWheelRotation(), e.getPoint());
+			/*
+			 * This is problematic under Mac as the zoom is too fast. First
+			 * idea: looking for the last time the zoom was changed. It must not
+			 * be changed within 100ms again.
+			 */
+			if (System.currentTimeMillis() - mWheelZoomLastTime >= WHEEL_ZOOM_MINIMAL_TIME_BETWEEN_CHANGES) {
+				map.setZoom(map.getZoom() - e.getWheelRotation(), e.getPoint());
+				mWheelZoomLastTime = System.currentTimeMillis();
+			}
 		}
 	}
 

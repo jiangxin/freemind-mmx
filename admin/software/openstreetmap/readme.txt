@@ -2,7 +2,7 @@
               OsmAnd Point of Interest converter to FreeMind
 #######################################################################################
 
-This utility converts map files from OsmAnd, which can be downloaded here:
+This utility converts map files from OsmAnd (file extension: obf, eventually, you have to unzip files named obf.zip), which can be downloaded here:
 
   http://code.google.com/p/osmand/downloads/list?num=700
 
