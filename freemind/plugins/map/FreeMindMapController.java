@@ -666,9 +666,10 @@ public class FreeMindMapController extends JMapController implements
 			if (posHolder == null) {
 				return;
 			}
+			setZoom(posHolder.zoom);
 			Coordinate coordinates = new Coordinate(posHolder.lat,
 					posHolder.lon);
-			setCursorPosition(coordinates, null, posHolder.zoom, true);
+			setCursorPosition(coordinates);
 		}
 
 		public PositionHolder getPosHolder() {
@@ -851,8 +852,7 @@ public class FreeMindMapController extends JMapController implements
 			if (mCurrentPopupPositionHolder == null) {
 				return;
 			}
-			setCursorPosition(mCurrentPopupPositionHolder.getPosition(), null,
-					0, false);
+			setCursorPosition(mCurrentPopupPositionHolder.getPosition());
 			Point pos = getMap().getMapPosition(
 					mCurrentPopupPositionHolder.getPosition(), true);
 			// unfold node (and its parents):
@@ -1272,7 +1272,7 @@ public class FreeMindMapController extends JMapController implements
 				x_min = Math.min(x_min, x);
 				y_min = Math.min(y_min, y);
 				if (node == selected) {
-					setCursorPosition(hook.getPosition(), null, 0, false);
+					setCursorPosition(hook.getPosition());
 					changeTileSource(hook.getTileSource(), map);
 				}
 			}
@@ -1309,27 +1309,7 @@ public class FreeMindMapController extends JMapController implements
 	public void setCursorPosition(MapNodePositionHolder hook, int zoom) {
 		Coordinate position = hook.getPosition();
 		Coordinate mapCenter = hook.getMapCenter();
-		setCursorPosition(position, mapCenter, zoom, true);
-	}
-
-	/**
-	 * @param position
-	 * @param mapCenter
-	 *            if null, the map center isn't changed.
-	 * @param zoom
-	 *            is only of relevance, if mapCenter != null
-	 * @param pSetZoom
-	 *            TODO
-	 */
-	protected void setCursorPosition(Coordinate position, Coordinate mapCenter,
-			int zoom, boolean pSetZoom) {
-		if (zoom > getMaxZoom()) {
-			zoom = getMaxZoom();
-		}
-		if(zoom==0) {
-			zoom = map.getZoom();
-		}
-		getMap().setCursorPosition(position);
+		setZoom(zoom);
 		if (mapCenter != null) {
 			// move map:
 			logger.fine("Set display position to " + mapCenter
@@ -1338,17 +1318,37 @@ public class FreeMindMapController extends JMapController implements
 			map.setDisplayPositionByLatLon(mapCenter.getLat(),
 					mapCenter.getLon(), zoom);
 		}
+		setCursorPosition(position);
+	}
+
+	/**
+	 * Sets the cursor to the specified position and moves the display, such
+	 * that the cursor is visible.
+	 */
+	protected void setCursorPosition(Coordinate position) {
+		getMap().setCursorPosition(position);
 		// is the cursor now visible and the zoom correct? if not, display it
 		// directly.
-		if ((pSetZoom && zoom != map.getZoom())
-				|| map.getMapPosition(position, true) == null) {
+		if (map.getMapPosition(position, true) == null) {
 			map.setDisplayPositionByLatLon(position.getLat(),
-					position.getLon(), zoom);
-
+					position.getLon(), map.getZoom());
 		}
 		storeMapPosition(position);
 	}
 
+	/**
+	 * Sets the zoom.
+	 */
+	protected void setZoom(int zoom) {
+		if (zoom > getMaxZoom()) {
+			zoom = getMaxZoom();
+		}
+		if (zoom == 0) {
+			zoom = map.getZoom();
+		}
+		map.setZoom(zoom);
+	}
+	
 	/**
 	 * @param pTileSource
 	 * @param pMap
@@ -1619,7 +1619,7 @@ public class FreeMindMapController extends JMapController implements
 			MapNodePositionHolder posHolder = checkHit(e);
 			if (posHolder != null) {
 				mCurrentPopupPositionHolder = posHolder;
-				setCursorPosition(posHolder.getPosition(), null, 0, false);
+				setCursorPosition(posHolder.getPosition());
 				getContextPopupMenu()
 						.show(e.getComponent(), e.getX(), e.getY());
 				e.consume();
