@@ -292,7 +292,7 @@ public class FreeMindMapController extends JMapController implements
 
 		public void ok(String newText) {
 			mMindMapController.setNodeText(mNewNode, newText);
-			MapNodePositionHolder hook = placeNodes(mNewNode);
+			MapNodePositionHolder hook = placeNode(mNewNode);
 			endEdit();
 		}
 
@@ -382,7 +382,7 @@ public class FreeMindMapController extends JMapController implements
 		}
 
 		public void actionPerformed(ActionEvent actionEvent) {
-			placeNodes(mMindMapController.getSelected());
+			placeNode(mMindMapController.getSelected());
 		}
 	}
 
@@ -1205,7 +1205,7 @@ public class FreeMindMapController extends JMapController implements
 	 * @param pSelected
 	 * @return
 	 */
-	protected MapNodePositionHolder placeNodes(MindMapNode pSelected) {
+	protected MapNodePositionHolder placeNode(MindMapNode pSelected) {
 		MapNodePositionHolder hook = MapNodePositionHolder.getHook(pSelected);
 		if (hook == null) {
 			hook = addHookToNode(pSelected);
@@ -1535,8 +1535,7 @@ public class FreeMindMapController extends JMapController implements
 
 	public void setCursorPosition(MouseEvent e) {
 		final Coordinate coordinates = map.getPosition(e.getPoint());
-		storeMapPosition(coordinates);
-		getMap().setCursorPosition(coordinates);
+		setCursorPosition(coordinates);
 	}
 
 	public void mousePressed(MouseEvent e) {
@@ -1909,8 +1908,7 @@ public class FreeMindMapController extends JMapController implements
 				map.getZoom());
 		Coordinate cursorPosition = new Coordinate(pPlace.getLat(),
 				pPlace.getLon());
-		getMap().setCursorPosition(cursorPosition);
-		storeMapPosition(cursorPosition);
+		setCursorPosition(cursorPosition);
 	}
 
 	/**
