@@ -390,21 +390,6 @@ public class FreeMindMapController extends JMapController implements
 	 * @author foltin
 	 * @date 31.10.2011
 	 */
-	private final class RemovePlaceNodeAction extends AbstractAction {
-
-		public RemovePlaceNodeAction() {
-			super(getText("MapControllerPopupDialog.removeplace"));
-		}
-
-		public void actionPerformed(ActionEvent actionEvent) {
-			removeNodePosition(mMindMapController.getSelected());
-		}
-	}
-
-	/**
-	 * @author foltin
-	 * @date 31.10.2011
-	 */
 	private final class ShowNodeAction extends AbstractAction {
 
 		public ShowNodeAction() {
@@ -1085,7 +1070,6 @@ public class FreeMindMapController extends JMapController implements
 		mMouseHitsNodeTimer = new Timer(500, this);
 		mMouseHitsNodeTimer.setRepeats(false);
 		Action placeAction = new PlaceNodeAction();
-		Action removePlaceAction = new RemovePlaceNodeAction();
 		Action showAction = new ShowNodeAction();
 		mZoomInAction = new ZoomAction(1);
 		mZoomOutAction = new ZoomAction(-1);
@@ -1106,9 +1090,6 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addMenu(mainItem, "main/actions/.");
 		addAccelerator(menuHolder.addAction(placeAction, "main/actions/place"),
 				"keystroke_plugins/map/MapDialog_Place");
-		addAccelerator(menuHolder.addAction(removePlaceAction,
-				"main/actions/removeplace"),
-				"keystroke_plugins/map/MapDialog_RemovePlace");
 		menuHolder.addAction(exportAction, "main/actions/exportPng");
 		addAccelerator(menuHolder.addAction(pMapHook.getCloseAction(),
 				"main/actions/close"), "keystroke_plugins/map/MapDialog_Close");
@@ -1179,13 +1160,13 @@ public class FreeMindMapController extends JMapController implements
 		mMapDialog.setJMenuBar(mMenuBar);
 		/* Popup menu */
 		menuHolder.addAction(newNodeAction, "popup/newNode");
+		menuHolder.addAction(placeAction, "popup/place");
 		menuHolder.addSeparator("popup/");
 		menuHolder.addAction(maxmimalZoomToCursorAction,
 				"popup/maxmimalZoomToCursorAction");
 		menuHolder.addSeparator("popup/");
 		menuHolder.addAction(copyLinkToClipboardAction,
 				"popup/copyLinkToClipboardAction");
-		menuHolder.addAction(exportAction, "popup/exportPng");
 		menuHolder.updateMenus(mPopupMenu, "popup/");
 		/*
 		 * map location context menu
@@ -1344,6 +1325,9 @@ public class FreeMindMapController extends JMapController implements
 			int zoom, boolean pSetZoom) {
 		if (zoom > getMaxZoom()) {
 			zoom = getMaxZoom();
+		}
+		if(zoom==0) {
+			zoom = map.getZoom();
 		}
 		getMap().setCursorPosition(position);
 		if (mapCenter != null) {
