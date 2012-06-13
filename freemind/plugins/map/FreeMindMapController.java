@@ -1793,10 +1793,14 @@ public class FreeMindMapController extends JMapController implements
 			/*
 			 * This is problematic under Mac as the zoom is too fast. First
 			 * idea: looking for the last time the zoom was changed. It must not
-			 * be changed within 100ms again.
+			 * be changed within 100ms again. Moreover, limit the rotation number.
 			 */
 			if (System.currentTimeMillis() - mWheelZoomLastTime >= WHEEL_ZOOM_MINIMAL_TIME_BETWEEN_CHANGES) {
-				map.setZoom(map.getZoom() - e.getWheelRotation(), e.getPoint());
+				int wheelRotation = e.getWheelRotation();
+				if(Math.abs(wheelRotation)>2) {
+					wheelRotation = (int) (2 * Math.signum(wheelRotation));
+				}
+				map.setZoom(map.getZoom() - wheelRotation, e.getPoint());
 				mWheelZoomLastTime = System.currentTimeMillis();
 			}
 		}
