@@ -189,7 +189,7 @@ public abstract class XMLElementAdapter extends XMLElement {
 			if (child.getUserObject() instanceof NodeAdapter) {
 				node.insert((NodeAdapter) child.getUserObject(), -1);
 			} // to the end without preferable... (PN)
-			// node.getRealChildCount()); }
+				// node.getRealChildCount()); }
 			else if (child.getUserObject() instanceof EdgeAdapter) {
 				EdgeAdapter edge = (EdgeAdapter) child.getUserObject();
 				edge.setTarget(node);
@@ -579,31 +579,11 @@ public abstract class XMLElementAdapter extends XMLElement {
 		for (Iterator i = IDToTarget.keySet().iterator(); i.hasNext();) {
 			String key = (String) i.next();
 			NodeAdapter target = (NodeAdapter) IDToTarget.get(key);
-			String newId = registry.registerLinkTarget(target, key /*
-																	 * Proposed
-																	 * name for
-																	 * the
-																	 * target,
-																	 * is
-																	 * changed
-																	 * by the
-																	 * registry,
-																	 * if
-																	 * already
-																	 * present.
-																	 */);
-			// and in the cutted case:
-			// search for links to this ids that have been cutted earlier:
-			Vector cuttedLinks = registry
-					.getCuttedLinks(key /* old target id */);
-			for (int j = 0; j < cuttedLinks.size(); ++j) {
-				ArrowLinkAdapter link = (ArrowLinkAdapter) cuttedLinks.get(j);
-				// repair link
-				link.setTarget(target);
-				link.setDestinationLabel(newId);
-				// register link
-				registry.registerLink(link);
-			}
+			/*
+			 * key is the proposed name for the target, is changed by the
+			 * registry, if already present.
+			 */
+			String newId = registry.registerLinkTarget(target, key);
 		}
 	}
 

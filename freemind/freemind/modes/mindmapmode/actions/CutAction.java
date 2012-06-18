@@ -138,8 +138,6 @@ public class CutAction extends AbstractAction implements ActorXml {
 	 */
 	public void act(XmlAction action) {
 		CutNodeAction cutAction = (CutNodeAction) action;
-		// clear all recently cutted links from the registry:
-		mMindMapController.getModel().getLinkRegistry().clearCuttedNodeBuffer();
 		MindMapNode selectedNode = mMindMapController.getNodeFromID(cutAction
 				.getNode());
 		mMindMapController.getModel().getLinkRegistry().cutNode(selectedNode);

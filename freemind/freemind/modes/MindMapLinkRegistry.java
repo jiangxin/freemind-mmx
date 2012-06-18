@@ -70,12 +70,6 @@ public interface MindMapLinkRegistry {
 	/** Removes links to all nodes beginning from target with its children. */
 	public void cutNode(MindMapNode target);
 
-	/** Clears the set of recent cut nodes. */
-	public void clearCuttedNodeBuffer();
-
-	/** @return returns all links that have been cut out recently. */
-	public Vector /* of MindMapLink s */getCuttedLinks(String oldTargetID);
-
 	// fc, 9.8.: apparently not used.
 	// /** Returns a Vector of Nodes that point to the given node.*/
 	// public Vector /* of MindMapNode s */ getAllSources(MindMapNode target);

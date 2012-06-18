@@ -186,10 +186,6 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 	protected HashMap /* MindMapNode = Target -> ID_BasicState. */TargetToID;
 	protected HashMap /* MindMapNode = ID_BasicState -> ID. */IDToTarget;
 	protected HashMap /* id -> vector of links whose TargetToID.get(target) == id. */IDToLinks;
-	protected HashMap /*
-					 * id -> vector of links whose TargetToID.get(target) == id
-					 * and who are cut recently.
-					 */IDToCutLinks;
 	protected HashMap /* id -> link */IDToLink;
 	protected HashSet /* id */mLocallyLinkedIDs;
 	/** The map the registry belongs to. */
@@ -210,7 +206,6 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 		TargetToID = new HashMap();
 		IDToTarget = new HashMap();
 		IDToLinks = new HashMap();
-		IDToCutLinks = new HashMap();
 		IDToLink = new HashMap();
 		mLocallyLinkedIDs = new HashSet();
 		// logger.fine("New Registry");
@@ -455,23 +450,10 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 		if (state instanceof ID_Registered) {
 			// there is a registered target id.
 			String id = getLabel(target);
-			// create new vector to the links:
-			Vector vec;
-			if (IDToCutLinks.containsKey(id)) {
-				vec = (Vector) IDToCutLinks.get(id);
-				// clear this vector:
-				vec.clear();
-			} else {
-				vec = new Vector();
-				IDToCutLinks.put(id, vec);
-			}
 			// deregister all links to me:
 			Vector links = getAllLinksIntoMe(target);
 			for (int i = links.size() - 1; i >= 0; --i) {
 				MindMapLink link = (MindMapLink) links.get(i);
-				vec.add(link);
-				// logger.fine("Adding link ("+link+") to target " + target +
-				// " to the cutted nodes from (old) id " + id);
 				deregisterLink(link);
 			}
 		}
@@ -487,28 +469,6 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 			cutNode(child);
 		}
 		// logger.exiting("LinkRegistryAdapter", "cutNode", target);
-	}
-
-	/** Clears the set of recent cutted nodes. */
-	public void clearCuttedNodeBuffer() {
-		IDToCutLinks.clear();
-	};
-
-	/** @return returns all links that have been cutted out recently. */
-	public Vector /* of MindMapLink s */getCuttedLinks(String oldTargetID) {
-		Vector vec;
-		if (IDToCutLinks.containsKey(oldTargetID)) {
-			vec = (Vector) IDToCutLinks.get(oldTargetID);
-			// for(int i = 0; i < vec.size(); ++i) {
-			// vec.set(i, ((MindMapLink) vec.get(i)).clone());
-			// }
-			// logger.fine("returning link repository ("+vec+") the cutted nodes with old id "
-			// + oldTargetID);
-		} else {
-			// error case?
-			vec = new Vector();
-		}
-		return vec;
 	}
 
 	public void registerLocalHyperlinkId(String pTargetId) {
