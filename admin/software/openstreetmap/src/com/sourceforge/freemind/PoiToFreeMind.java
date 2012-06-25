@@ -52,16 +52,37 @@ public class PoiToFreeMind extends BinaryMapIndexReader {
 	}
 
 	public static void main(String[] args) throws IOException {
-		if(args.length != 2) {
-			System.err.println("Usage: create <inputfile> <outputfile>");
+		System.out.println("OsmAndToFreeMindImporter Version 1.10");
+		if(!(args.length == 2 || (args.length == 7 && "-b".equals(args[0])))) {
+			System.err.println("Usage: create [-b lat1 lon1 lat2 lon2] <inputfile> <outputfile>");
 			System.exit(1);
 		}
-		File file = new File(args[1]);
+		String inputFile;
+		String outputFile;
+		int[] boundingBox = null;
+		if(args.length == 7) {
+			boundingBox = new int[4];
+			for(int i=0;i<4;++i) {
+				final double value = Double.parseDouble(args[i+1]);
+				System.out.println("Value " + value);
+				if ((i % 2) == 1) {
+					boundingBox[i] = MapUtils.get31TileNumberX(value);
+				} else {
+					boundingBox[i] = MapUtils.get31TileNumberY(value);
+				}
+			}
+			inputFile = args[5];
+			outputFile = args[6];
+		} else {
+			inputFile = args[0];
+			outputFile = args[1];
+		}
+		File file = new File(outputFile);
 		if(file.exists()) {
 			System.err.println("Destination file " + file + " already exists. Please remove it before and retry.");
 			System.exit(1);
 		}
-		RandomAccessFile raf = new RandomAccessFile(new File(args[0]), "r");
+		RandomAccessFile raf = new RandomAccessFile(new File(inputFile), "r");
 		PoiToFreeMind reader = new PoiToFreeMind(raf);
 		println("VERSION " + reader.getVersion()); //$NON-NLS-1$
 		FileWriter writer = new FileWriter(file);
@@ -70,10 +91,23 @@ public class PoiToFreeMind extends BinaryMapIndexReader {
 		if (true) {
 			PoiRegion poiRegion = reader.getPoiIndexes().get(0);
 
-			int sleft = MapUtils.get31TileNumberX(poiRegion.getLeftLongitude());
-			int sright = MapUtils.get31TileNumberX(poiRegion.getRightLongitude());
-			int stop = MapUtils.get31TileNumberY(poiRegion.getTopLatitude());
-			int sbottom = MapUtils.get31TileNumberY(poiRegion.getBottomLatitude());
+			int sleft;
+			int sright;
+			int stop;
+			int sbottom;
+			if (boundingBox == null) {
+				sleft = MapUtils.get31TileNumberX(poiRegion.getLeftLongitude());
+				sright = MapUtils.get31TileNumberX(poiRegion
+						.getRightLongitude());
+				stop = MapUtils.get31TileNumberY(poiRegion.getTopLatitude());
+				sbottom = MapUtils.get31TileNumberY(poiRegion
+						.getBottomLatitude());
+			} else {
+				sleft = boundingBox[1];
+				sright = boundingBox[3];
+				stop = boundingBox[0];
+				sbottom = boundingBox[2];
+			}
 			SearchRequest<Amenity> req = buildSearchPoiRequest(sleft, sright, stop, sbottom, -1, new SearchPoiTypeFilter() {
 				@Override
 				public boolean accept(AmenityType type, String subcategory) {
@@ -99,7 +133,7 @@ public class PoiToFreeMind extends BinaryMapIndexReader {
 			}
 			long id = 1;
 			print(writer, "<map version=\"1.0.0\"><node TEXT=\"");
-			writeEncoded(writer, args[0]);
+			writeEncoded(writer, inputFile);
 			println(writer, "\" ID=\"" + id
 					+ "\">");
 			id++;
