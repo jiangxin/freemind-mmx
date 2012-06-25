@@ -933,6 +933,34 @@ public class FreeMindMapController extends JMapController implements
 
 	}
 
+	private final class CopyCoordinatesToClipboardAction extends AbstractAction {
+		
+		public CopyCoordinatesToClipboardAction() {
+			super(getText("MapControllerPopupDialog.CopyCoordinatesToClipboardAction"));
+		}
+		
+		public void actionPerformed(ActionEvent pE) {
+			String coordinates;
+			if (mCurrentPopupPositionHolder != null) {
+				coordinates = getCoordinates(mCurrentPopupPositionHolder.getPosition());
+			} else {
+				coordinates = getCoordinates(getMap().getCursorPosition());
+			}
+			// Put Coordinates into clipboard.
+			Tools.getClipboard().setContents(new StringSelection(coordinates), null);
+		}
+
+		/**
+		 * @param pCoordinate
+		 * @return
+		 */
+		private String getCoordinates(
+				Coordinate pCoordinate) {
+			return pCoordinate.getLat()+" "+pCoordinate.getLon();
+		}
+		
+	}
+	
 	private final class ShowNodeMapInContextMenu extends AbstractAction {
 
 		public ShowNodeMapInContextMenu() {
@@ -1082,6 +1110,7 @@ public class FreeMindMapController extends JMapController implements
 		Action newNodeAction = new NewNodeAction();
 		Action maxmimalZoomToCursorAction = new MaxmimalZoomToCursorAction();
 		Action copyLinkToClipboardAction = new CopyLinkToClipboardAction();
+		Action copyCoordinatesToClipboardAction = new CopyCoordinatesToClipboardAction();
 		Action exportAction = new ExportMapAction();
 		/** Menu **/
 		StructuredMenuHolder menuHolder = new StructuredMenuHolder();
@@ -1167,6 +1196,8 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addSeparator("popup/");
 		menuHolder.addAction(copyLinkToClipboardAction,
 				"popup/copyLinkToClipboardAction");
+		menuHolder.addAction(copyCoordinatesToClipboardAction,
+				"popup/copyCoordinatesToClipboardAction");
 		menuHolder.updateMenus(mPopupMenu, "popup/");
 		/*
 		 * map location context menu
@@ -1348,7 +1379,7 @@ public class FreeMindMapController extends JMapController implements
 		}
 		map.setZoom(zoom);
 	}
-	
+
 	/**
 	 * @param pTileSource
 	 * @param pMap
@@ -1793,11 +1824,12 @@ public class FreeMindMapController extends JMapController implements
 			/*
 			 * This is problematic under Mac as the zoom is too fast. First
 			 * idea: looking for the last time the zoom was changed. It must not
-			 * be changed within 100ms again. Moreover, limit the rotation number.
+			 * be changed within 100ms again. Moreover, limit the rotation
+			 * number.
 			 */
 			if (System.currentTimeMillis() - mWheelZoomLastTime >= WHEEL_ZOOM_MINIMAL_TIME_BETWEEN_CHANGES) {
 				int wheelRotation = e.getWheelRotation();
-				if(Math.abs(wheelRotation)>2) {
+				if (Math.abs(wheelRotation) > 2) {
 					wheelRotation = (int) (2 * Math.signum(wheelRotation));
 				}
 				map.setZoom(map.getZoom() - wheelRotation, e.getPoint());
@@ -2049,7 +2081,9 @@ public class FreeMindMapController extends JMapController implements
 		double distance = OsmMercator.getDistance(coordinate.getLat(),
 				coordinate.getLon(), cursorPosition.getLat(),
 				cursorPosition.getLon()) / 1000.0;
-		Object[] messageArguments = { new Double(distance) };
+		Object[] messageArguments = { new Double(distance),
+				new Double(coordinate.getLat()),
+				new Double(coordinate.getLon()) };
 		MessageFormat formatter = new MessageFormat(
 				mMindMapController.getText("plugins/map/MapDialog_Distance"));
 		String message = formatter.format(messageArguments);
