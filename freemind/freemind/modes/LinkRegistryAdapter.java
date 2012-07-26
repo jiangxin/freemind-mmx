@@ -223,7 +223,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 		String myProposedID = new String((proposedID != null) ? proposedID : "");
 		String returnValue;
 		do {
-			if (!myProposedID.equals("")) {
+			if (!myProposedID.isEmpty()) {
 				// there is a proposal:
 				returnValue = myProposedID;
 				// this string is tried only once:
