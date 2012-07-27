@@ -60,11 +60,11 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.Timer;
 import javax.swing.event.PopupMenuEvent;
@@ -78,7 +78,6 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.AbstractOsmTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
-import plugins.map.MapDialog.SearchResultListModel;
 import freemind.common.XmlBindingTools;
 import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.MenuItemSelectedListener;
@@ -119,6 +118,14 @@ import freemind.view.mindmapview.NodeView;
 public class FreeMindMapController extends JMapController implements
 		MouseListener, MouseMotionListener, MouseWheelListener, ActionListener,
 		KeyListener {
+	/**
+	 * @author foltin
+	 * @date 27.07.2012
+	 */
+	public interface CursorPositionListener {
+		void cursorPositionChanged(Coordinate pCursorPosition);
+	}
+
 	/**
 	 * 
 	 */
@@ -1384,6 +1391,10 @@ public class FreeMindMapController extends JMapController implements
 					position.getLon(), map.getZoom());
 		}
 		storeMapPosition(position);
+		for (Iterator it = mCursorPositionListeners.iterator(); it.hasNext();) {
+			CursorPositionListener listener = (CursorPositionListener) it.next();
+			listener.cursorPositionChanged(position);
+		}
 	}
 
 	/**
@@ -1723,6 +1734,8 @@ public class FreeMindMapController extends JMapController implements
 
 	private long mWheelZoomLastTime = 0;
 
+	private Vector mCursorPositionListeners = new Vector();
+
 	public void mouseReleased(MouseEvent e) {
 		if (!mClickEnabled) {
 			return;
@@ -1969,18 +1982,18 @@ public class FreeMindMapController extends JMapController implements
 	/**
 	 * @return true, if ok, false if error.
 	 */
-	public boolean search(SearchResultListModel dataModel, JList mResultList,
-			String mSearchText, Color mListOriginalBackgroundColor) {
+	public boolean search(MapDialog.ResultTableModel dataModel, JTable mResultTable,
+			String mSearchText, Color mTableOriginalBackgroundColor) {
 		// Display hour glass
 		boolean returnValue = true;
 		setCursor(Cursor.WAIT_CURSOR, true);
 		try {
 			dataModel.clear();
 			// doesn't work due to event thread...
-			mResultList.setBackground(Color.GRAY);
+			mResultTable.setBackground(Color.GRAY);
 			Searchresults results = getSearchResults(mSearchText);
 			if (results == null) {
-				mResultList.setBackground(Color.red);
+				mResultTable.setBackground(Color.red);
 			} else {
 				for (Iterator it = results.getListPlaceList().iterator(); it
 						.hasNext();) {
@@ -1988,11 +2001,11 @@ public class FreeMindMapController extends JMapController implements
 					logger.fine("Found place " + place.getDisplayName());
 					// error handling, if the query wasn't successful.
 					if (Tools.safeEquals("ERROR", place.getOsmType())) {
-						mResultList.setBackground(Color.red);
+						mResultTable.setBackground(Color.red);
 						returnValue = false;
 					} else {
-						mResultList.setBackground(Color.WHITE);
-						mResultList.setBackground(mListOriginalBackgroundColor);
+						mResultTable.setBackground(Color.WHITE);
+						mResultTable.setBackground(mTableOriginalBackgroundColor);
 					}
 					dataModel.addPlace(place);
 				}
@@ -2213,6 +2226,14 @@ public class FreeMindMapController extends JMapController implements
 
 	private void setPositionHolderIndex(int positionHolderIndex) {
 		mMapHook.getRegistration().setPositionHolderIndex(positionHolderIndex);
+	}
+
+	/**
+	 * @param pListener
+	 */
+	public void addCursorPositionListener(
+			CursorPositionListener pListener) {
+		mCursorPositionListeners.add(pListener);
 	}
 
 }
