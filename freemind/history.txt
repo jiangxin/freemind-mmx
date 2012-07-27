@@ -1,4 +1,9 @@
 ===============================
+Changes made in FreeMind 1.0.0 Beta6
+===============================
+* Geographical search results are displayed differently when selected.
+
+===============================
 Changes made in FreeMind 1.0.0 Beta5
 ===============================
 * Added more libraries for Xalan.

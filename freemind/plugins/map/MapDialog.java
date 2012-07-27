@@ -35,6 +35,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
@@ -211,6 +213,14 @@ public class MapDialog extends MindMapHookAdapter implements
 				removePlace(i - 1);
 			}
 		}
+		
+		public MapSearchMarkerLocation getMapSearchMarkerLocation(int index) {
+			if(index >= 0 && index < mDataModel.getSize()) {
+				Place place = mDataModel.getPlaceAt(index);
+				return (MapSearchMarkerLocation) mMapSearchMarkerLocationHash.get(place);
+			}
+			throw new IllegalArgumentException("Index " + index + " is out of range.");
+		}
 	}
 
 	/*
@@ -297,6 +307,25 @@ public class MapDialog extends MindMapHookAdapter implements
 			}
 		});
 		mResultList.addKeyListener(getFreeMindMapController());
+		mResultList.addListSelectionListener(new ListSelectionListener() {
+			
+			public void valueChanged(ListSelectionEvent pE) {
+				clearIndexes();
+				if(mResultList.getSelectedIndex()>=0) {
+					int index = pE.getFirstIndex();
+					MapSearchMarkerLocation marker = mDataModel.getMapSearchMarkerLocation(index);
+					marker.setSelected(true);
+				}
+				mResultList.repaint();
+			}
+
+			private void clearIndexes() {
+				for (int i = 0; i < mDataModel.getSize(); i++) {
+					MapSearchMarkerLocation marker = mDataModel.getMapSearchMarkerLocation(i);
+					marker.setSelected(false);
+				}
+			}
+		});
 		clearButton.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent pE) {

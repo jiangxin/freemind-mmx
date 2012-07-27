@@ -19,9 +19,12 @@
  */
 package plugins.map;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Stroke;
 
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 
@@ -30,12 +33,13 @@ import freemind.controller.actions.generated.instance.Place;
 public class MapSearchMarkerLocation implements MapMarker {
 
 	public static final int CIRCLE_RADIUS = 5;
+	public static final int CIRCLE_SELECTED_FACTOR = 2;
 	private static final int CIRCLE_DIAMETER = CIRCLE_RADIUS * 2;
 	private final MapDialog mMapDialog;
 	protected static java.util.logging.Logger logger = null;
 	private final Place mPlace;
-	
-	
+	private boolean mIsSelected;
+
 	/**
 	 * @param pMapDialog
 	 * @param pNewPlace
@@ -59,28 +63,49 @@ public class MapSearchMarkerLocation implements MapMarker {
 
 	public void paint(Graphics g, Point position) {
 		g.setColor(Color.RED);
-		g.fillOval(position.x - CIRCLE_RADIUS, position.y - CIRCLE_RADIUS, CIRCLE_DIAMETER, CIRCLE_DIAMETER);
+		if (mIsSelected) {
+			Graphics2D g2 = (Graphics2D) g;
+			Stroke oldStroke = g2.getStroke();
+			g2.setStroke(new BasicStroke(4));
+			int xo = position.x - CIRCLE_RADIUS * CIRCLE_SELECTED_FACTOR;
+			int xu = position.x + CIRCLE_RADIUS * CIRCLE_SELECTED_FACTOR;
+			int yo = position.y - CIRCLE_RADIUS * CIRCLE_SELECTED_FACTOR;
+			int yu = position.y + CIRCLE_RADIUS * CIRCLE_SELECTED_FACTOR;
+			g2.drawLine(xo, yo, xu, yu);
+			g2.drawLine(xu, yo, xo, yu);
+			g2.setStroke(oldStroke);
+		} else {
+			g.fillOval(position.x - CIRCLE_RADIUS, position.y - CIRCLE_RADIUS,
+					CIRCLE_DIAMETER, CIRCLE_DIAMETER);
+		}
 		g.setColor(Color.BLACK);
-
 	}
 
 	/**
 	 * @param pX
 	 * @param pY
-	 * @return true, if the map marker is hit by this relative coordinate (eg. 0,0 is likely a hit...).
+	 * @return true, if the map marker is hit by this relative coordinate (eg.
+	 *         0,0 is likely a hit...).
 	 */
 	public boolean checkHit(int pX, int pY) {
 		// distance to zero less than radius:
-		return (pX*pX + pY*pY) <= CIRCLE_RADIUS * CIRCLE_RADIUS;
+		return (pX * pX + pY * pY) <= CIRCLE_RADIUS * CIRCLE_RADIUS;
 	}
-	
+
 	public String toString() {
 		return "MapSearchMarkerLocation for search text "
-				+ mPlace.getDisplayName() + " at " + getLat()
-				+ " " + getLon();
+				+ mPlace.getDisplayName() + " at " + getLat() + " " + getLon();
 	}
 
 	public Place getPlace() {
 		return mPlace;
+	}
+
+	/**
+	 * @param pB
+	 */
+	public void setSelected(boolean pIsSelected) {
+		mIsSelected = pIsSelected;
+
 	}
 }
