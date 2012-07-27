@@ -815,6 +815,21 @@ public class FreeMindMapController extends JMapController implements
 
 	}
 
+	private final class GotoSearch extends AbstractAction {
+		
+		public GotoSearch() {
+			super(getText("MapControllerPopupDialog.GotoSearch"));
+		}
+		
+		public void actionPerformed(ActionEvent pE) {
+			if(!mMapHook.isSearchBarVisible()) {
+				mMapHook.toggleSearchBar();
+			} else {
+				mMapHook.focusSearchTerm();
+			}
+		}
+	}
+	
 	private final class AddMapPictureToNode extends AbstractAction {
 
 		public AddMapPictureToNode() {
@@ -1106,6 +1121,7 @@ public class FreeMindMapController extends JMapController implements
 		Action tileGridVisible = new TileGridVisible();
 		Action zoomControlsVisible = new ZoomControlsVisible();
 		Action searchControlVisible = new SearchControlVisible();
+		Action gotoSearch = new GotoSearch();
 		Action hideFoldedNodes = new HideFoldedNodes();
 		Action newNodeAction = new NewNodeAction();
 		Action maxmimalZoomToCursorAction = new MaxmimalZoomToCursorAction();
@@ -1154,6 +1170,9 @@ public class FreeMindMapController extends JMapController implements
 		addAccelerator(menuHolder.addAction(searchControlVisible,
 				"main/navigation/showSearchControl"),
 				"keystroke_plugins/map/MapDialog_toggle_search");
+		addAccelerator(menuHolder.addAction(gotoSearch,
+				"main/navigation/gotoSearch"),
+				"keystroke_plugins/map/MapDialog_goto_search");
 		menuHolder.addSeparator("main/navigation/");
 		addAccelerator(menuHolder.addAction(new SetHomeAction(),
 				"main/navigation/SetHome"),

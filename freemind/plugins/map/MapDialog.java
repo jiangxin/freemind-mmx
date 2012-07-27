@@ -428,8 +428,7 @@ public class MapDialog extends MindMapHookAdapter implements
 			mMapDialog.requestFocusInWindow();
 		} else {
 			mMapDialog.add(mSearchPanel, BorderLayout.NORTH);
-			mSearchTerm.selectAll();
-			mSearchTerm.requestFocusInWindow();
+			focusSearchTerm();
 		}
 		mMapDialog.validate();
 		mSearchBarVisible = !mSearchBarVisible;
@@ -445,6 +444,11 @@ public class MapDialog extends MindMapHookAdapter implements
 				});
 			}
 		}
+	}
+
+	protected void focusSearchTerm() {
+		mSearchTerm.selectAll();
+		mSearchTerm.requestFocusInWindow();
 	}
 
 	/**
