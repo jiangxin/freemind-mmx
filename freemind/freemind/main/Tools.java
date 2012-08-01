@@ -86,11 +86,13 @@ import javax.crypto.spec.PBEParameterSpec;
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
+import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.UIManager;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -1814,6 +1816,14 @@ public class Tools {
 			pString = pString.substring(index + pSearchString.length());
 		}
 		return amount;
+	}
+
+	public static void correctJSplitPaneKeyMap() {
+		InputMap map = (InputMap) UIManager.get("SplitPane.ancestorInputMap");
+		KeyStroke keyStrokeF6 = KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0);
+		KeyStroke keyStrokeF8 = KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0);
+		map.remove(keyStrokeF6);
+		map.remove(keyStrokeF8);
 	}
 
 }

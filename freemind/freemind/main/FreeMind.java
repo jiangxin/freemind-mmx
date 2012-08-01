@@ -1228,11 +1228,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		 */
 		mSplitPane.setResizeWeight(1.0d);
 		// split panes eat F8 and F6. This is corrected here.
-		InputMap map = (InputMap) UIManager.get("SplitPane.ancestorInputMap");
-		KeyStroke keyStrokeF6 = KeyStroke.getKeyStroke(KeyEvent.VK_F6, 0);
-		KeyStroke keyStrokeF8 = KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0);
-		map.remove(keyStrokeF6);
-		map.remove(keyStrokeF8);
+		Tools.correctJSplitPaneKeyMap();
 		mContentComponent = mSplitPane;
 		setContentComponent();
 		// set divider position:
@@ -1241,12 +1237,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		if (splitPanePosition != -1 && lastSplitPanePosition != -1) {
 			mSplitPane.setDividerLocation(splitPanePosition);
 			mSplitPane.setLastDividerLocation(lastSplitPanePosition);
-			// try {
-			// throw new IllegalArgumentException("");
-			// } catch (Exception e) {
-			// freemind.main.Resources.getInstance().logException(e);
-			// // TODO: handle exception
-			// }
 		}
 		return mSplitPane;
 	}

@@ -15,23 +15,23 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
-import javax.swing.AbstractListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
@@ -39,7 +39,6 @@ import javax.swing.WindowConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableModel;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.JMapViewer;
@@ -47,7 +46,6 @@ import org.openstreetmap.gui.jmapviewer.OsmMercator;
 import org.openstreetmap.gui.jmapviewer.OsmTileLoader;
 import org.openstreetmap.gui.jmapviewer.events.JMVCommandEvent;
 import org.openstreetmap.gui.jmapviewer.interfaces.JMapViewerEventListener;
-import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource.Mapnik;
 
 import plugins.map.FreeMindMapController.CursorPositionListener;
@@ -109,6 +107,8 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	private JPanel mSearchFieldPanel;
 
+	private JSplitPane mSearchSplitPane;
+
 	private boolean mSearchBarVisible;
 
 	private JPanel mSearchPanel;
@@ -141,6 +141,12 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	private Color mTableOriginalBackgroundColor;
 
+	/**
+	 * I know, that the JSplitPane collects this information, but I want to
+	 * handle it here.
+	 */
+	private int mLastDividerPosition = 300;
+
 	private final class CloseAction extends AbstractAction {
 
 		public CloseAction() {
@@ -156,21 +162,23 @@ public class MapDialog extends MindMapHookAdapter implements
 	 * @author foltin
 	 * @date 25.04.2012
 	 */
-	public final class ResultTableModel extends AbstractTableModel implements CursorPositionListener {
+	public final class ResultTableModel extends AbstractTableModel implements
+			CursorPositionListener {
 		/**
 		 * 
 		 */
 		private final String[] COLUMNS = new String[] {
 				SEARCH_DESCRIPTION_COLUMN_TEXT, SEARCH_DISTANCE_COLUMN_TEXT };
 		Vector mData = new Vector();
-		private Coordinate mCursorCoordinate = new Coordinate(0,0);
+		private Coordinate mCursorCoordinate = new Coordinate(0, 0);
 		private HashMap mMapSearchMarkerLocationHash = new HashMap();
 		private final TextTranslator mTextTranslator;
 
 		/**
 		 * @param pCursorCoordinate
 		 */
-		public ResultTableModel(Coordinate pCursorCoordinate, TextTranslator pTextTranslator) {
+		public ResultTableModel(Coordinate pCursorCoordinate,
+				TextTranslator pTextTranslator) {
 			super();
 			mCursorCoordinate = pCursorCoordinate;
 			mTextTranslator = pTextTranslator;
@@ -255,10 +263,10 @@ public class MapDialog extends MindMapHookAdapter implements
 			final Place place = getPlace(pRowIndex);
 			switch (pColumnIndex) {
 			case SEARCH_DISTANCE_COLUMN:
-				final double value = OsmMercator.getDistance(mCursorCoordinate.getLat(),
-						mCursorCoordinate.getLon(), place.getLat(),
-						place.getLon()) / 1000.0;
-				if(Double.isInfinite(value) || Double.isNaN(value)) {
+				final double value = OsmMercator.getDistance(
+						mCursorCoordinate.getLat(), mCursorCoordinate.getLon(),
+						place.getLat(), place.getLon()) / 1000.0;
+				if (Double.isInfinite(value) || Double.isNaN(value)) {
 					return Double.valueOf(-1.0);
 				}
 				return new Double(value);
@@ -275,9 +283,12 @@ public class MapDialog extends MindMapHookAdapter implements
 			mData.clear();
 			fireTableDataChanged();
 		}
-		
-		/* (non-Javadoc)
-		 * @see plugins.map.FreeMindMapController.CursorPositionListener#cursorPositionChanged(org.openstreetmap.gui.jmapviewer.Coordinate)
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see plugins.map.FreeMindMapController.CursorPositionListener#
+		 * cursorPositionChanged(org.openstreetmap.gui.jmapviewer.Coordinate)
 		 */
 		public void cursorPositionChanged(Coordinate pCursorPosition) {
 			mCursorCoordinate = pCursorPosition;
@@ -363,33 +374,35 @@ public class MapDialog extends MindMapHookAdapter implements
 					displaySearchItem(mResultTableModel, index);
 					return;
 				}
-				
+
 			}
 		});
 		mResultTable.addKeyListener(getFreeMindMapController());
-		mResultTable.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-			
-			public void valueChanged(ListSelectionEvent pE) {
-				clearIndexes();
-				if (mResultTable.getSelectedRow() >= 0) {
-					int index = pE.getFirstIndex();
-					MapSearchMarkerLocation marker = mResultTableModel
-							.getMapSearchMarkerLocation(index);
-					marker.setSelected(true);
-				}
-				mResultTable.repaint();
-			}
-			
-			private void clearIndexes() {
-				for (int i = 0; i < mResultTableModel.getRowCount(); i++) {
-					MapSearchMarkerLocation marker = mResultTableModel
-							.getMapSearchMarkerLocation(i);
-					marker.setSelected(false);
-				}
-			}
-		});
+		mResultTable.getSelectionModel().addListSelectionListener(
+				new ListSelectionListener() {
+
+					public void valueChanged(ListSelectionEvent pE) {
+						clearIndexes();
+						if (mResultTable.getSelectedRow() >= 0) {
+							int index = pE.getFirstIndex();
+							MapSearchMarkerLocation marker = mResultTableModel
+									.getMapSearchMarkerLocation(index);
+							marker.setSelected(true);
+						}
+						mResultTable.repaint();
+					}
+
+					private void clearIndexes() {
+						for (int i = 0; i < mResultTableModel.getRowCount(); i++) {
+							MapSearchMarkerLocation marker = mResultTableModel
+									.getMapSearchMarkerLocation(i);
+							marker.setSelected(false);
+						}
+					}
+				});
 		mResultTable.getTableHeader().setReorderingAllowed(false);
-		mResultTableModel = new ResultTableModel(getMap().getCursorPosition(), getMindMapController());
+		mResultTableModel = new ResultTableModel(getMap().getCursorPosition(),
+				getMindMapController());
 		getFreeMindMapController().addCursorPositionListener(mResultTableModel);
 		mResultTableSorter = new TableSorter(mResultTableModel);
 		mResultTable.setModel(mResultTableSorter);
@@ -413,7 +426,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		MouseListener mouseListener = new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-//					int index = mResultTable.locationToIndex(e.getPoint());
+					// int index = mResultTable.locationToIndex(e.getPoint());
 					int index = mResultTable.getSelectedRow();
 					displaySearchItem(mResultTableModel, index);
 				}
@@ -427,17 +440,49 @@ public class MapDialog extends MindMapHookAdapter implements
 				search(mSearchTerm.getText(), false);
 			}
 		});
+		final JScrollPane resultTableScrollPane = new JScrollPane(mResultTable);
 		mSearchPanel.setLayout(new BorderLayout());
 		mSearchPanel.add(mSearchFieldPanel, BorderLayout.NORTH);
-		mSearchPanel.add(new JScrollPane(mResultTable), BorderLayout.CENTER);
+		mSearchPanel.add(resultTableScrollPane, BorderLayout.CENTER);
 		mSearchBarVisible = true;
-		mMapDialog.add(mSearchPanel, BorderLayout.NORTH);
-		mMapDialog.add(map, BorderLayout.CENTER);
+		mSearchSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
+				mSearchPanel, map);
+//		Dimension minimumSize = mSearchPanel.getMinimumSize();
+//		minimumSize.height=0;
+//		mSearchPanel.setMinimumSize(minimumSize);
+		mSearchSplitPane.setContinuousLayout(true);
+		mSearchSplitPane.setOneTouchExpandable(false);
+		Tools.correctJSplitPaneKeyMap();
+		mSearchSplitPane.addPropertyChangeListener(
+				JSplitPane.DIVIDER_LOCATION_PROPERTY,
+				new PropertyChangeListener() {
+					public void propertyChange(PropertyChangeEvent pEvt) {
+						int dividerLocation = mSearchSplitPane
+								.getDividerLocation();
+						logger.info("Change event, div loc: " + dividerLocation
+								+ ", event=" + pEvt);
+						if (dividerLocation != 0) {
+							mSearchBarVisible = true;
+						}
+						if (dividerLocation > 1) {
+							mLastDividerPosition = dividerLocation;
+						}
+					}
+				});
+		mSearchSplitPane.setResizeWeight(1.0d);
+		mMapDialog.add(mSearchSplitPane, BorderLayout.CENTER);
 		mStatusLabel = new JLabel(" ");
 		mMapDialog.add(mStatusLabel, BorderLayout.SOUTH);
 
 		map.setCursorPosition(new Coordinate(49.8, 8.8));
 		map.setUseCursor(true);
+		addMarkersToMap();
+		getRegistration().registerMapNodePositionListener(this);
+		getRegistration().registerNodeVisibilityListener(this);
+		getMindMapController().registerNodeSelectionListener(this, true);
+
+		mMapDialog.setVisible(true);
+		getRegistration().setMapDialog(this);
 		// restore preferences:
 		// Retrieve window size and column positions.
 		MapWindowConfigurationStorage storage = (MapWindowConfigurationStorage) getMindMapController()
@@ -455,17 +500,13 @@ public class MapDialog extends MindMapHookAdapter implements
 			map.setTileGridVisible(storage.getTileGridVisible());
 			map.setMapMarkerVisible(storage.getShowMapMarker());
 			map.setHideFoldedNodes(storage.getHideFoldedNodes());
+			mLastDividerPosition = storage.getLastDividerPosition();
 			if (!storage.getSearchControlVisible()) {
 				toggleSearchBar();
+			} else {
+				mSearchSplitPane.setDividerLocation(mLastDividerPosition);
 			}
 		}
-		addMarkersToMap();
-		getRegistration().registerMapNodePositionListener(this);
-		getRegistration().registerNodeVisibilityListener(this);
-		getMindMapController().registerNodeSelectionListener(this, true);
-
-		mMapDialog.setVisible(true);
-		getRegistration().setMapDialog(this);
 	}
 
 	public void addMarkersToMap() {
@@ -500,15 +541,17 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	public void toggleSearchBar(AWTEvent pEvent) {
 		if (mSearchBarVisible) {
-			mResultTableModel.clear();
-			mMapDialog.remove(mSearchPanel);
-			mMapDialog.requestFocusInWindow();
+			mLastDividerPosition = mSearchSplitPane.getDividerLocation();
+			mSearchSplitPane.setDividerLocation(0);
+			mSearchBarVisible = false;
 		} else {
-			mMapDialog.add(mSearchPanel, BorderLayout.NORTH);
+			mSearchSplitPane.setDividerLocation((int) Math.max(mLastDividerPosition,
+					mSearchSplitPane.getTopComponent().getMinimumSize()
+							.getHeight()));
 			focusSearchTerm();
+			mSearchBarVisible = true;
 		}
 		mMapDialog.validate();
-		mSearchBarVisible = !mSearchBarVisible;
 		if (pEvent != null) {
 			mSearchTerm.setText("");
 			mSearchTerm.dispatchEvent(pEvent);
@@ -611,6 +654,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		storage.setShowMapMarker(map.getMapMarkersVisible());
 		storage.setSearchControlVisible(mSearchBarVisible);
 		storage.setHideFoldedNodes(map.isHideFoldedNodes());
+		storage.setLastDividerPosition(mSearchSplitPane.getDividerLocation());
 		getMindMapController().storeDialogPositions(mMapDialog, storage,
 				WINDOW_PREFERENCE_STORAGE_PROPERTY);
 
