@@ -447,28 +447,9 @@ public class MapDialog extends MindMapHookAdapter implements
 		mSearchBarVisible = true;
 		mSearchSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT,
 				mSearchPanel, map);
-//		Dimension minimumSize = mSearchPanel.getMinimumSize();
-//		minimumSize.height=0;
-//		mSearchPanel.setMinimumSize(minimumSize);
 		mSearchSplitPane.setContinuousLayout(true);
 		mSearchSplitPane.setOneTouchExpandable(false);
 		Tools.correctJSplitPaneKeyMap();
-		mSearchSplitPane.addPropertyChangeListener(
-				JSplitPane.DIVIDER_LOCATION_PROPERTY,
-				new PropertyChangeListener() {
-					public void propertyChange(PropertyChangeEvent pEvt) {
-						int dividerLocation = mSearchSplitPane
-								.getDividerLocation();
-						logger.info("Change event, div loc: " + dividerLocation
-								+ ", event=" + pEvt);
-						if (dividerLocation != 0) {
-							mSearchBarVisible = true;
-						}
-						if (dividerLocation > 1) {
-							mLastDividerPosition = dividerLocation;
-						}
-					}
-				});
 		mSearchSplitPane.setResizeWeight(1.0d);
 		mMapDialog.add(mSearchSplitPane, BorderLayout.CENTER);
 		mStatusLabel = new JLabel(" ");
@@ -541,13 +522,18 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	public void toggleSearchBar(AWTEvent pEvent) {
 		if (mSearchBarVisible) {
+			// hide search bar
 			mLastDividerPosition = mSearchSplitPane.getDividerLocation();
-			mSearchSplitPane.setDividerLocation(0);
+			mSearchSplitPane.setBottomComponent(null);
+			mMapDialog.remove(mSearchSplitPane);
+			mMapDialog.add(map, BorderLayout.CENTER);
 			mSearchBarVisible = false;
 		} else {
-			mSearchSplitPane.setDividerLocation((int) Math.max(mLastDividerPosition,
-					mSearchSplitPane.getTopComponent().getMinimumSize()
-							.getHeight()));
+			// show search bar
+			mMapDialog.remove(map);
+			mMapDialog.add(mSearchSplitPane, BorderLayout.CENTER);
+			mSearchSplitPane.setBottomComponent(map);
+			mSearchSplitPane.setDividerLocation(mLastDividerPosition);
 			focusSearchTerm();
 			mSearchBarVisible = true;
 		}
