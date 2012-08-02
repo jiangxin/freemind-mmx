@@ -56,6 +56,7 @@ import freemind.common.TextTranslator;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
 import freemind.controller.actions.generated.instance.MapWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.Place;
+import freemind.controller.actions.generated.instance.TableColumnSetting;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
@@ -450,7 +451,17 @@ public class MapDialog extends MindMapHookAdapter implements
 		mSearchSplitPane.setContinuousLayout(true);
 		mSearchSplitPane.setOneTouchExpandable(false);
 		Tools.correctJSplitPaneKeyMap();
-		mSearchSplitPane.setResizeWeight(1.0d);
+		mSearchSplitPane.setResizeWeight(0d);
+		mSearchSplitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
+			
+			public void propertyChange(PropertyChangeEvent pEvt) {
+				final int dividerLocation = mSearchSplitPane.getDividerLocation();
+				if(dividerLocation > 1) {
+					mLastDividerPosition = dividerLocation;
+					logger.info("Setting last divider to " + mLastDividerPosition);
+				}
+			}
+		});
 		mMapDialog.add(mSearchSplitPane, BorderLayout.CENTER);
 		mStatusLabel = new JLabel(" ");
 		mMapDialog.add(mStatusLabel, BorderLayout.SOUTH);
@@ -462,8 +473,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		getRegistration().registerNodeVisibilityListener(this);
 		getMindMapController().registerNodeSelectionListener(this, true);
 
-		mMapDialog.setVisible(true);
-		getRegistration().setMapDialog(this);
+		mMapDialog.validate();
 		// restore preferences:
 		// Retrieve window size and column positions.
 		MapWindowConfigurationStorage storage = (MapWindowConfigurationStorage) getMindMapController()
@@ -481,13 +491,27 @@ public class MapDialog extends MindMapHookAdapter implements
 			map.setTileGridVisible(storage.getTileGridVisible());
 			map.setMapMarkerVisible(storage.getShowMapMarker());
 			map.setHideFoldedNodes(storage.getHideFoldedNodes());
+			int column = 0;
+			for (Iterator i = storage
+					.getListTableColumnSettingList().iterator(); i
+					.hasNext();) {
+				TableColumnSetting setting = (TableColumnSetting) i
+						.next();
+				mResultTable.getColumnModel().getColumn(column)
+				.setPreferredWidth(setting.getColumnWidth());
+				mResultTableSorter.setSortingStatus(column, setting.getColumnSorting());
+				column++;
+			}
 			mLastDividerPosition = storage.getLastDividerPosition();
+			logger.info("Setting last divider to " + mLastDividerPosition);
 			if (!storage.getSearchControlVisible()) {
 				toggleSearchBar();
 			} else {
 				mSearchSplitPane.setDividerLocation(mLastDividerPosition);
 			}
 		}
+		mMapDialog.setVisible(true);
+		getRegistration().setMapDialog(this);
 	}
 
 	public void addMarkersToMap() {
@@ -524,6 +548,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		if (mSearchBarVisible) {
 			// hide search bar
 			mLastDividerPosition = mSearchSplitPane.getDividerLocation();
+			logger.info("Setting last divider to " + mLastDividerPosition);
 			mSearchSplitPane.setBottomComponent(null);
 			mMapDialog.remove(mSearchSplitPane);
 			mMapDialog.add(map, BorderLayout.CENTER);
@@ -640,7 +665,14 @@ public class MapDialog extends MindMapHookAdapter implements
 		storage.setShowMapMarker(map.getMapMarkersVisible());
 		storage.setSearchControlVisible(mSearchBarVisible);
 		storage.setHideFoldedNodes(map.isHideFoldedNodes());
-		storage.setLastDividerPosition(mSearchSplitPane.getDividerLocation());
+		storage.setLastDividerPosition(mLastDividerPosition);
+		for (int i = 0; i < mResultTable.getColumnCount(); i++) {
+			TableColumnSetting setting = new TableColumnSetting();
+			setting.setColumnWidth(mResultTable.getColumnModel().getColumn(i)
+					.getWidth());
+			setting.setColumnSorting(mResultTableSorter.getSortingStatus(i));
+			storage.addTableColumnSetting(setting);
+		}
 		getMindMapController().storeDialogPositions(mMapDialog, storage,
 				WINDOW_PREFERENCE_STORAGE_PROPERTY);
 

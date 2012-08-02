@@ -945,6 +945,9 @@
 	  <xs:complexType>
 		<xs:complexContent>
 			<xs:extension base="window_configuration_storage">
+				<xs:sequence>
+					<xs:element ref="table_column_setting" maxOccurs="unbounded" minOccurs="0"/>
+				</xs:sequence>
 				<xs:attribute use="optional" name="map_center_longitude" type="xs:double"/>
 				<xs:attribute use="optional" name="map_center_latitude" type="xs:double"/>
 				<xs:attribute use="optional" name="cursor_longitude" type="xs:double"/>
@@ -975,13 +978,20 @@
 
 
 	<!-- This element holds the sorting and size information to a column -->
-	<xs:element name="time_window_column_setting">
+	<xs:element name="table_column_setting">
 		<xs:complexType>
 		      <xs:attribute name="column_width" use="required" type="xs:int"/>
 		      <xs:attribute name="column_sorting" use="optional" type="xs:int"/>
 		</xs:complexType>
 	</xs:element>
-
+	<xs:element name="time_window_column_setting">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="table_column_setting"/>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+	
 	<!-- Script Editor settings: -->
 	<xs:element name="script_editor_window_configuration_storage">
 	  <xs:complexType>
