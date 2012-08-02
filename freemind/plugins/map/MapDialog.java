@@ -148,6 +148,8 @@ public class MapDialog extends MindMapHookAdapter implements
 	 */
 	private int mLastDividerPosition = 300;
 
+	private boolean mLimitSearchToRegion = false;
+
 	private final class CloseAction extends AbstractAction {
 
 		public CloseAction() {
@@ -941,5 +943,19 @@ public class MapDialog extends MindMapHookAdapter implements
 	public void setSingleSearch() {
 		mSingleSearch = true;
 
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean isLimitSearchToRegion() {
+		return mLimitSearchToRegion;
+	}
+
+	/**
+	 * 
+	 */
+	public void toggleLimitSearchToRegion() {
+		mLimitSearchToRegion = ! mLimitSearchToRegion;
 	}
 }

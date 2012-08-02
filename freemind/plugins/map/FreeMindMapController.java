@@ -822,21 +822,38 @@ public class FreeMindMapController extends JMapController implements
 
 	}
 
+	private final class LimitSearchToRegionAction extends AbstractAction
+			implements MenuItemSelectedListener {
+
+		public LimitSearchToRegionAction() {
+			super(getText("MapControllerPopupDialog.LimitSearchToRegionAction"));
+		}
+
+		public void actionPerformed(ActionEvent pE) {
+			mMapHook.toggleLimitSearchToRegion();
+		}
+
+		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
+			return mMapHook.isLimitSearchToRegion();
+		}
+
+	}
+
 	private final class GotoSearch extends AbstractAction {
-		
+
 		public GotoSearch() {
 			super(getText("MapControllerPopupDialog.GotoSearch"));
 		}
-		
+
 		public void actionPerformed(ActionEvent pE) {
-			if(!mMapHook.isSearchBarVisible()) {
+			if (!mMapHook.isSearchBarVisible()) {
 				mMapHook.toggleSearchBar();
 			} else {
 				mMapHook.focusSearchTerm();
 			}
 		}
 	}
-	
+
 	private final class AddMapPictureToNode extends AbstractAction {
 
 		public AddMapPictureToNode() {
@@ -956,33 +973,35 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	private final class CopyCoordinatesToClipboardAction extends AbstractAction {
-		
+
 		public CopyCoordinatesToClipboardAction() {
-			super(getText("MapControllerPopupDialog.CopyCoordinatesToClipboardAction"));
+			super(
+					getText("MapControllerPopupDialog.CopyCoordinatesToClipboardAction"));
 		}
-		
+
 		public void actionPerformed(ActionEvent pE) {
 			String coordinates;
 			if (mCurrentPopupPositionHolder != null) {
-				coordinates = getCoordinates(mCurrentPopupPositionHolder.getPosition());
+				coordinates = getCoordinates(mCurrentPopupPositionHolder
+						.getPosition());
 			} else {
 				coordinates = getCoordinates(getMap().getCursorPosition());
 			}
 			// Put Coordinates into clipboard.
-			Tools.getClipboard().setContents(new StringSelection(coordinates), null);
+			Tools.getClipboard().setContents(new StringSelection(coordinates),
+					null);
 		}
 
 		/**
 		 * @param pCoordinate
 		 * @return
 		 */
-		private String getCoordinates(
-				Coordinate pCoordinate) {
-			return pCoordinate.getLat()+" "+pCoordinate.getLon();
+		private String getCoordinates(Coordinate pCoordinate) {
+			return pCoordinate.getLat() + " " + pCoordinate.getLon();
 		}
-		
+
 	}
-	
+
 	private final class ShowNodeMapInContextMenu extends AbstractAction {
 
 		public ShowNodeMapInContextMenu() {
@@ -1177,9 +1196,12 @@ public class FreeMindMapController extends JMapController implements
 		addAccelerator(menuHolder.addAction(searchControlVisible,
 				"main/navigation/showSearchControl"),
 				"keystroke_plugins/map/MapDialog_toggle_search");
-		addAccelerator(menuHolder.addAction(gotoSearch,
-				"main/navigation/gotoSearch"),
+		addAccelerator(
+				menuHolder.addAction(gotoSearch, "main/navigation/gotoSearch"),
 				"keystroke_plugins/map/MapDialog_goto_search");
+		addAccelerator(menuHolder.addAction(new LimitSearchToRegionAction(),
+				"main/navigation/limitSearchToRegion"),
+				"keystroke_plugins/map/MapDialog_limitSearchToRegion");
 		menuHolder.addSeparator("main/navigation/");
 		addAccelerator(menuHolder.addAction(new SetHomeAction(),
 				"main/navigation/SetHome"),
@@ -1392,7 +1414,8 @@ public class FreeMindMapController extends JMapController implements
 		}
 		storeMapPosition(position);
 		for (Iterator it = mCursorPositionListeners.iterator(); it.hasNext();) {
-			CursorPositionListener listener = (CursorPositionListener) it.next();
+			CursorPositionListener listener = (CursorPositionListener) it
+					.next();
 			listener.cursorPositionChanged(position);
 		}
 	}
@@ -1982,8 +2005,9 @@ public class FreeMindMapController extends JMapController implements
 	/**
 	 * @return true, if ok, false if error.
 	 */
-	public boolean search(MapDialog.ResultTableModel dataModel, JTable mResultTable,
-			String mSearchText, Color mTableOriginalBackgroundColor) {
+	public boolean search(MapDialog.ResultTableModel dataModel,
+			JTable mResultTable, String mSearchText,
+			Color mTableOriginalBackgroundColor) {
 		// Display hour glass
 		boolean returnValue = true;
 		setCursor(Cursor.WAIT_CURSOR, true);
@@ -2005,7 +2029,8 @@ public class FreeMindMapController extends JMapController implements
 						returnValue = false;
 					} else {
 						mResultTable.setBackground(Color.WHITE);
-						mResultTable.setBackground(mTableOriginalBackgroundColor);
+						mResultTable
+								.setBackground(mTableOriginalBackgroundColor);
 					}
 					dataModel.addPlace(place);
 				}
@@ -2032,6 +2057,20 @@ public class FreeMindMapController extends JMapController implements
 				b.append("http://nominatim.openstreetmap.org/search/?q="); //$NON-NLS-1$
 				b.append(URLEncoder.encode(pText, "UTF-8"));
 				b.append("&format=xml&limit=30&accept-language=").append(Locale.getDefault().getLanguage()); //$NON-NLS-1$
+				if (mMapHook.isLimitSearchToRegion()) {
+					Coordinate topLeftCorner = getMap().getPosition(0, 0);
+					Coordinate bottomRightCorner = getMap().getPosition(
+							getMap().getWidth(), getMap().getHeight());
+					b.append("&viewbox="); 
+					b.append(topLeftCorner.getLon());
+					b.append(",");
+					b.append(bottomRightCorner.getLat());
+					b.append(",");
+					b.append(bottomRightCorner.getLon());
+					b.append(",");
+					b.append(topLeftCorner.getLat());
+					b.append("&bounded=1");
+				}
 				logger.fine("Searching for " + b.toString());
 				URL url = new URL(b.toString());
 				URLConnection urlConnection = url.openConnection();
@@ -2231,8 +2270,7 @@ public class FreeMindMapController extends JMapController implements
 	/**
 	 * @param pListener
 	 */
-	public void addCursorPositionListener(
-			CursorPositionListener pListener) {
+	public void addCursorPositionListener(CursorPositionListener pListener) {
 		mCursorPositionListeners.add(pListener);
 	}
 
