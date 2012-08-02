@@ -388,6 +388,7 @@ public class MapDialog extends MindMapHookAdapter implements
 						clearIndexes();
 						if (mResultTable.getSelectedRow() >= 0) {
 							int index = pE.getFirstIndex();
+							index = mResultTableSorter.modelIndex(index);
 							MapSearchMarkerLocation marker = mResultTableModel
 									.getMapSearchMarkerLocation(index);
 							marker.setSelected(true);
