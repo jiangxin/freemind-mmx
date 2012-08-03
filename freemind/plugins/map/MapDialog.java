@@ -150,6 +150,12 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	private boolean mLimitSearchToRegion = false;
 
+	private JLabel mSearchStringLabel;
+
+	private String mResourceSearchLocationString;
+
+	private String mResourceSearchString;
+
 	private final class CloseAction extends AbstractAction {
 
 		public CloseAction() {
@@ -283,6 +289,13 @@ public class MapDialog extends MindMapHookAdapter implements
 		 * 
 		 */
 		public void clear() {
+			// clear old search results:
+			for (Iterator it = mMapSearchMarkerLocationHash.keySet().iterator(); it.hasNext();) {
+				Place place = (Place) it.next();
+				MapSearchMarkerLocation location = (MapSearchMarkerLocation) mMapSearchMarkerLocationHash.get(place);
+				getMap().removeMapMarker(location);
+			}
+			mMapSearchMarkerLocationHash.clear();
 			mData.clear();
 			fireTableDataChanged();
 		}
@@ -333,7 +346,9 @@ public class MapDialog extends MindMapHookAdapter implements
 
 		mMapDialog.setLayout(new BorderLayout());
 		mSearchPanel = new JPanel(new BorderLayout());
-		JLabel label = new JLabel(getResourceString("MapDialog_Search"));
+		mResourceSearchString = getResourceString("MapDialog_Search");
+		mResourceSearchLocationString = getResourceString("MapDialog_Search_Location");
+		mSearchStringLabel = new JLabel(mResourceSearchString);
 		mSearchTerm = new JTextField();
 		mSearchTerm.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent pEvent) {
@@ -352,7 +367,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		JButton clearButton = new JButton(new ImageIcon(Resources.getInstance()
 				.getResource("images/clear_box.png")));
 		clearButton.setFocusable(false);
-		mSearchFieldPanel.add(label, BorderLayout.WEST);
+		mSearchFieldPanel.add(mSearchStringLabel, BorderLayout.WEST);
 		mSearchFieldPanel.add(mSearchTerm, BorderLayout.CENTER);
 		mSearchFieldPanel.add(clearButton, BorderLayout.EAST);
 		mResultTable = new JTable();
@@ -386,8 +401,11 @@ public class MapDialog extends MindMapHookAdapter implements
 
 					public void valueChanged(ListSelectionEvent pE) {
 						clearIndexes();
-						if (mResultTable.getSelectedRow() >= 0) {
-							int index = pE.getFirstIndex();
+						final int selectedRow = mResultTable.getSelectedRow();
+						if (selectedRow >= 0
+								&& selectedRow < mResultTableSorter
+										.getRowCount()) {
+							int index = selectedRow;
 							index = mResultTableSorter.modelIndex(index);
 							MapSearchMarkerLocation marker = mResultTableModel
 									.getMapSearchMarkerLocation(index);
@@ -455,16 +473,20 @@ public class MapDialog extends MindMapHookAdapter implements
 		mSearchSplitPane.setOneTouchExpandable(false);
 		Tools.correctJSplitPaneKeyMap();
 		mSearchSplitPane.setResizeWeight(0d);
-		mSearchSplitPane.addPropertyChangeListener(JSplitPane.DIVIDER_LOCATION_PROPERTY, new PropertyChangeListener() {
-			
-			public void propertyChange(PropertyChangeEvent pEvt) {
-				final int dividerLocation = mSearchSplitPane.getDividerLocation();
-				if(dividerLocation > 1) {
-					mLastDividerPosition = dividerLocation;
-					logger.info("Setting last divider to " + mLastDividerPosition);
-				}
-			}
-		});
+		mSearchSplitPane.addPropertyChangeListener(
+				JSplitPane.DIVIDER_LOCATION_PROPERTY,
+				new PropertyChangeListener() {
+
+					public void propertyChange(PropertyChangeEvent pEvt) {
+						final int dividerLocation = mSearchSplitPane
+								.getDividerLocation();
+						if (dividerLocation > 1) {
+							mLastDividerPosition = dividerLocation;
+							logger.info("Setting last divider to "
+									+ mLastDividerPosition);
+						}
+					}
+				});
 		mMapDialog.add(mSearchSplitPane, BorderLayout.CENTER);
 		mStatusLabel = new JLabel(" ");
 		mMapDialog.add(mStatusLabel, BorderLayout.SOUTH);
@@ -495,14 +517,13 @@ public class MapDialog extends MindMapHookAdapter implements
 			map.setMapMarkerVisible(storage.getShowMapMarker());
 			map.setHideFoldedNodes(storage.getHideFoldedNodes());
 			int column = 0;
-			for (Iterator i = storage
-					.getListTableColumnSettingList().iterator(); i
-					.hasNext();) {
-				TableColumnSetting setting = (TableColumnSetting) i
-						.next();
+			for (Iterator i = storage.getListTableColumnSettingList()
+					.iterator(); i.hasNext();) {
+				TableColumnSetting setting = (TableColumnSetting) i.next();
 				mResultTable.getColumnModel().getColumn(column)
-				.setPreferredWidth(setting.getColumnWidth());
-				mResultTableSorter.setSortingStatus(column, setting.getColumnSorting());
+						.setPreferredWidth(setting.getColumnWidth());
+				mResultTableSorter.setSortingStatus(column,
+						setting.getColumnSorting());
 				column++;
 			}
 			mLastDividerPosition = storage.getLastDividerPosition();
@@ -957,6 +978,12 @@ public class MapDialog extends MindMapHookAdapter implements
 	 * 
 	 */
 	public void toggleLimitSearchToRegion() {
-		mLimitSearchToRegion = ! mLimitSearchToRegion;
+		mLimitSearchToRegion = !mLimitSearchToRegion;
+		if (mLimitSearchToRegion) {
+			mSearchStringLabel.setText(mResourceSearchLocationString);
+		} else {
+			mSearchStringLabel.setText(mResourceSearchString);
+		}
+		mSearchStringLabel.validate();
 	}
 }
