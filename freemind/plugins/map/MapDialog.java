@@ -412,6 +412,7 @@ public class MapDialog extends MindMapHookAdapter implements
 							marker.setSelected(true);
 						}
 						mResultTable.repaint();
+						getMap().repaint();
 					}
 
 					private void clearIndexes() {
