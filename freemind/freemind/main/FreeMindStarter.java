@@ -27,7 +27,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.net.Authenticator;
 import java.net.MalformedURLException;
+import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.util.Locale;
 import java.util.Properties;
@@ -61,6 +63,16 @@ public class FreeMindStarter {
 				starter.readUsersPreferences(defaultPreferences);
 		starter.setDefaultLocale(userPreferences);
 
+		// proxy settings
+		if("true".equals(userPreferences.getProperty("proxy.use_settings"))) {
+			if ("true".equals(userPreferences.getProperty("proxy.is_authenticated"))) {
+				Authenticator.setDefault(new ProxyAuthenticator(userPreferences
+						.getProperty("proxy.user"), userPreferences
+						.getProperty("proxy.password")));
+			}
+			System.setProperty("http.proxyHost", userPreferences.getProperty("proxy.host"));
+			System.setProperty("http.proxyPort", userPreferences.getProperty("proxy.port"));
+		}
 		// Christopher Robin Elmersson: set
 		Toolkit xToolkit = Toolkit.getDefaultToolkit();
 
@@ -224,5 +236,19 @@ public class FreeMindStarter {
 			System.err.println("Panic! Error while loading default properties.");
 		}
 		return props;
+	}
+	
+	public static class ProxyAuthenticator extends Authenticator {
+
+	    private String user, password;
+
+	    public ProxyAuthenticator(String user, String password) {
+	        this.user = user;
+	        this.password = password;
+	    }
+
+	    protected PasswordAuthentication getPasswordAuthentication() {
+	        return new PasswordAuthentication(user, password.toCharArray());
+	    }
 	}
 }
