@@ -821,11 +821,13 @@ public class Tools {
 
 		// Decompress the data
 		byte[] buf = new byte[1024];
-		while (!decompressor.finished()) {
+		boolean errorOccured = false;
+		while (!decompressor.finished() && !errorOccured) {
 			try {
 				int count = decompressor.inflate(buf);
 				bos.write(buf, 0, count);
 			} catch (DataFormatException e) {
+				errorOccured = true;
 			}
 		}
 		try {
