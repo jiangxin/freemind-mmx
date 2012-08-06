@@ -7,13 +7,13 @@ Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
 
 ---
  freemind/Resources_zh_CN.properties | 2795 ++++++++++++++++++-----------------
- 1 files changed, 1428 insertions(+), 1367 deletions(-)
+ 1 file changed, 1428 insertions(+), 1367 deletions(-)
 
 diff --git a/freemind/Resources_zh_CN.properties b/freemind/Resources_zh_CN.properties
-index 964c273..1efc586 100644
+index 0218570..3aca6f8 100644
 --- a/freemind/Resources_zh_CN.properties
 +++ b/freemind/Resources_zh_CN.properties
-@@ -1,1368 +1,1429 @@
+@@ -1,1370 +1,1431 @@
 -#!
 -#! created/edited by Popeye version 0.54 (popeye.sourceforge.net)
 -#! encoding:ISO-8859-1
@@ -2810,5 +2810,7 @@ index 964c273..1efc586 100644
 +# new, fc, 20.12.2008
 +OptionPanel.ro=\u7f57\u9a6c\u5c3c\u4e9a
  OptionPanel.eu=Eu
+ 
+ # From https://sourceforge.net/tracker/?func=detail&atid=307118&aid=3309127&group_id=7118
 -- 
-tg: (19169f1..) t/i18n_zh_cn (depends on: tgmaster)
+tg: (8cfa48e..) t/i18n_zh_cn (depends on: tgmaster)

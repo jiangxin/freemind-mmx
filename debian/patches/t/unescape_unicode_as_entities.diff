@@ -7,10 +7,10 @@ Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
 
 ---
  freemind/freemind/main/HtmlTools.java |  109 +++++++++++++++++++++++++++++++++
- 1 files changed, 109 insertions(+), 0 deletions(-)
+ 1 file changed, 109 insertions(+)
 
 diff --git a/freemind/freemind/main/HtmlTools.java b/freemind/freemind/main/HtmlTools.java
-index 1a907cd..d437727 100644
+index 6d0a811..ac28496 100644
 --- a/freemind/freemind/main/HtmlTools.java
 +++ b/freemind/freemind/main/HtmlTools.java
 @@ -23,6 +23,7 @@ package freemind.main;
@@ -21,126 +21,125 @@ index 1a907cd..d437727 100644
  import java.util.ArrayList;
  import java.util.Iterator;
  import java.util.Locale;
-@@ -81,6 +82,9 @@ public class HtmlTools {
-         try {
-             XHTMLWriter.html2xhtml(reader, writer);
-             String resultXml = writer.toString();
-+            if (Resources.getInstance().getBoolProperty("wh_nonascii_in_utf8")) {
-+                resultXml = unescape_utf8(resultXml);
-+            }
-             // for safety:
-             if(!isWellformedXml(resultXml)) {
-                 return toXMLEscapedText(htmlText);
-@@ -652,5 +656,110 @@ public class HtmlTools {
+@@ -82,6 +83,9 @@ public class HtmlTools {
+ 		try {
+ 			XHTMLWriter.html2xhtml(reader, writer);
+ 			String resultXml = writer.toString();
++			if (Resources.getInstance().getBoolProperty("wh_nonascii_in_utf8")) {
++				resultXml = unescape_utf8(resultXml);
++			}
+ 			// for safety:
+ 			if (!isWellformedXml(resultXml)) {
+ 				return toXMLEscapedText(htmlText);
+@@ -735,4 +739,109 @@ public class HtmlTools {
  		return result.toString();
  	}
-     
-+    /* Borrow code from org.apache.commons.lang.Entities */ 
-+    public String unescape_utf8(String str) {
-+        int firstAmp = str.indexOf('&');
-+        if (firstAmp < 0) {
-+            return str;
-+        } else {
-+            StringWriter stringWriter = createStringWriter(str);
-+            try {
-+                this.doUnescapeUtf8(stringWriter, str, firstAmp);
-+            } catch (IOException e) {
-+                // This should never happen because ALL the StringWriter methods called by #escape(Writer, String) 
-+                // do not throw IOExceptions.
-+                return str;
-+            }
-+            return stringWriter.toString();
-+        }
-+    }
-+
-+    /**
-+     * Make the StringWriter 10% larger than the source String to avoid growing the writer
-+     *
-+     * @param str The source string
-+     * @return A newly created StringWriter
-+     */
-+    private StringWriter createStringWriter(String str) {
-+        return new StringWriter((int) (str.length() + (str.length() * 0.1)));
-+    }
-+
-+
-+    /**
-+     * Underlying unescape method that allows the optimisation of not starting from the 0 index again.
-+     *
-+     * @param writer
-+     *            The <code>Writer</code> to write the results to; assumed to be non-null.
-+     * @param str
-+     *            The source <code>String</code> to unescape; assumed to be non-null.
-+     * @param firstAmp
-+     *            The <code>int</code> index of the first ampersand in the source String.
-+     * @throws IOException
-+     *             when <code>Writer</code> passed throws the exception from calls to the {@link Writer#write(int)}
-+     *             methods.
-+     */
-+    private void doUnescapeUtf8(Writer writer, String str, int firstAmp) throws IOException {
-+        writer.write(str, 0, firstAmp);
-+        int len = str.length();
-+        for (int i = firstAmp; i < len; i++) {
-+            char c = str.charAt(i);
-+            if (c == '&') {
-+                int nextIdx = i + 1;
-+                int semiColonIdx = str.indexOf(';', nextIdx);
-+                if (semiColonIdx == -1) {
-+                    writer.write(c);
-+                    continue;
-+                }
-+                int amphersandIdx = str.indexOf('&', i + 1);
-+                if (amphersandIdx != -1 && amphersandIdx < semiColonIdx) {
-+                    // Then the text looks like &...&...;
-+                    writer.write(c);
-+                    continue;
-+                }
-+                String entityContent = str.substring(nextIdx, semiColonIdx);
-+                int entityValue = -1;
-+                int entityContentLen = entityContent.length();
-+                if (entityContentLen > 0) {
-+                    if (entityContent.charAt(0) == '#') { // escaped value content is an integer (decimal or
-+                        // hexidecimal)
-+                        if (entityContentLen > 1) {
-+                            char isHexChar = entityContent.charAt(1);
-+                            try {
-+                                switch (isHexChar) {
-+                                    case 'X' :
-+                                    case 'x' : {
-+                                        entityValue = Integer.parseInt(entityContent.substring(2), 16);
-+                                        break;
-+                                    }
-+                                    default : {
-+                                        entityValue = Integer.parseInt(entityContent.substring(1), 10);
-+                                    }
-+                                }
-+                                if (entityValue > 0xFFFF || entityValue < 128 ) {
-+                                    entityValue = -1;
-+                                }
-+                            } catch (NumberFormatException e) {
-+                                entityValue = -1;
-+                            }
-+                        }
-+                    } else { // escaped value content is an entity name
-+                        //entityValue = this.entityValue(entityContent);
-+                    	entityValue = -1;
-+                    }
-+                }
-+
-+                if (entityValue == -1) {
-+                    writer.write('&');
-+                    writer.write(entityContent);
-+                    writer.write(';');
-+                } else {
-+                    writer.write(entityValue);
-+                }
-+                i = semiColonIdx; // move index up to the semi-colon
-+            } else {
-+                writer.write(c);
-+            }
-+        }
-+    }
  
++	/* Borrow code from org.apache.commons.lang.Entities */ 
++	public String unescape_utf8(String str) {
++		int firstAmp = str.indexOf('&');
++		if (firstAmp < 0) {
++			return str;
++		} else {
++			StringWriter stringWriter = createStringWriter(str);
++			try {
++				this.doUnescapeUtf8(stringWriter, str, firstAmp);
++			} catch (IOException e) {
++				// This should never happen because ALL the StringWriter methods called by #escape(Writer, String) 
++				// do not throw IOExceptions.
++				return str;
++			}
++			return stringWriter.toString();
++		}
++	}
++
++	/**
++	 * Make the StringWriter 10% larger than the source String to avoid growing the writer
++	 *
++	 * @param str The source string
++	 * @return A newly created StringWriter
++	 */
++	private StringWriter createStringWriter(String str) {
++		return new StringWriter((int) (str.length() + (str.length() * 0.1)));
++	}
++
++
++	/**
++	 * Underlying unescape method that allows the optimisation of not starting from the 0 index again.
++	 *
++	 * @param writer
++	 *            The <code>Writer</code> to write the results to; assumed to be non-null.
++	 * @param str
++	 *            The source <code>String</code> to unescape; assumed to be non-null.
++	 * @param firstAmp
++	 *            The <code>int</code> index of the first ampersand in the source String.
++	 * @throws IOException
++	 *             when <code>Writer</code> passed throws the exception from calls to the {@link Writer#write(int)}
++	 *             methods.
++	 */
++	private void doUnescapeUtf8(Writer writer, String str, int firstAmp) throws IOException {
++		writer.write(str, 0, firstAmp);
++		int len = str.length();
++		for (int i = firstAmp; i < len; i++) {
++			char c = str.charAt(i);
++			if (c == '&') {
++				int nextIdx = i + 1;
++				int semiColonIdx = str.indexOf(';', nextIdx);
++				if (semiColonIdx == -1) {
++					writer.write(c);
++					continue;
++				}
++				int amphersandIdx = str.indexOf('&', i + 1);
++				if (amphersandIdx != -1 && amphersandIdx < semiColonIdx) {
++					// Then the text looks like &...&...;
++					writer.write(c);
++					continue;
++				}
++				String entityContent = str.substring(nextIdx, semiColonIdx);
++				int entityValue = -1;
++				int entityContentLen = entityContent.length();
++				if (entityContentLen > 0) {
++					if (entityContent.charAt(0) == '#') { // escaped value content is an integer (decimal or
++						// hexidecimal)
++						if (entityContentLen > 1) {
++							char isHexChar = entityContent.charAt(1);
++							try {
++								switch (isHexChar) {
++									case 'X' :
++									case 'x' : {
++										entityValue = Integer.parseInt(entityContent.substring(2), 16);
++										break;
++									}
++									default : {
++										entityValue = Integer.parseInt(entityContent.substring(1), 10);
++									}
++								}
++								if (entityValue > 0xFFFF || entityValue < 128 ) {
++									entityValue = -1;
++								}
++							} catch (NumberFormatException e) {
++								entityValue = -1;
++							}
++						}
++					} else { // escaped value content is an entity name
++						//entityValue = this.entityValue(entityContent);
++						entityValue = -1;
++					}
++				}
++
++				if (entityValue == -1) {
++					writer.write('&');
++					writer.write(entityContent);
++					writer.write(';');
++				} else {
++					writer.write(entityValue);
++				}
++				i = semiColonIdx; // move index up to the semi-colon
++			} else {
++				writer.write(c);
++			}
++		}
++	}
  }
 -- 
-tg: (19169f1..) t/unescape_unicode_as_entities (depends on: tgmaster)
+tg: (8cfa48e..) t/unescape_unicode_as_entities (depends on: tgmaster)

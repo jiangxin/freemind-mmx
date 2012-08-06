@@ -6,146 +6,144 @@ When save mindmap file, some fields save to a extra file, named .<filename>.mmx
 Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
 
 ---
- freemind/freemind/main/XMLElement.java             |   88 ++++++++++++++++-
- freemind/freemind/modes/MindMapNode.java           |    1 +
- freemind/freemind/modes/NodeAdapter.java           |  106 ++++++++++++++++++--
+ freemind/freemind/main/XMLElement.java             |   85 +++++++++++++++-
+ freemind/freemind/modes/MindMapNode.java           |    3 +
+ freemind/freemind/modes/NodeAdapter.java           |  104 ++++++++++++++++++--
  .../modes/mindmapmode/EncryptedMindMapNode.java    |    3 +-
- .../modes/mindmapmode/MindMapMapModel.java         |   58 +++++++++--
- 5 files changed, 236 insertions(+), 20 deletions(-)
+ .../modes/mindmapmode/MindMapMapModel.java         |   60 +++++++++--
+ 5 files changed, 237 insertions(+), 18 deletions(-)
 
 diff --git a/freemind/freemind/main/XMLElement.java b/freemind/freemind/main/XMLElement.java
-index e610275..cc2a5e5 100644
+index cbee403..e4c47a6 100644
 --- a/freemind/freemind/main/XMLElement.java
 +++ b/freemind/freemind/main/XMLElement.java
-@@ -291,7 +291,75 @@ public class XMLElement
-      */
-     private int parserLineNr;
+@@ -327,6 +327,75 @@ public class XMLElement {
+ 	 */
+ 	private int parserLineNr;
  
-+    // OSSXP.COM: some attribute saved in .mmx file, instead of the default .mm file.
-+    // three attlist. 0: WhiteList, 1: BlackList, 2:EmList
-+    private String special_attlist[];
- 
-+    private void _addtoAttlist(int list, String att)
-+    {
-+    	if (list >= special_attlist.length || list <0)
-+    		return;
-+    	this.special_attlist[list] += att;
-+    	this.special_attlist[list] += ":";
-+    	return;
-+    }
-+    
-+    private boolean _isInAttlist(int list, String att)
-+    {
-+    	if ( list >= special_attlist.length || list <0 || special_attlist[list].length()==0 ) {
-+    		return false;
-+    	}
-+    	return this.special_attlist[list].contains(att+':');
-+    }
++	// OSSXP.COM: some attribute saved in .mmx file, instead of the default .mm file.
++	// three attlist. 0: WhiteList, 1: BlackList, 2:EmList
++	private String special_attlist[];
 +
-+    public boolean isInWhiteAttlist(String att)
-+    {
-+    	// WHITE list is not NULL
-+    	if ( this.special_attlist[0].length()!=0 ) {
-+    		return _isInAttlist(0, att);
-+    	}
-+    	// BLACK list is not NULL
-+    	if ( this.special_attlist[1].length()!=0 ) {
-+    		return ! _isInAttlist(1, att);
-+    	}
-+    	// Default return true;
-+    	return true;
-+    }
++	private void _addtoAttlist(int list, String att)
++	{
++		if (list >= special_attlist.length || list <0)
++			return;
++		this.special_attlist[list] += att;
++		this.special_attlist[list] += ":";
++		return;
++	}
 +
-+    public boolean isInBlackAttlist(String att)
-+    {
-+    	// BLACK list is not NULL
-+    	if ( this.special_attlist[1].length()!=0 ) {
-+    		return _isInAttlist(1, att);
-+    	}
-+    	// WHITE list is not NULL
-+    	if ( this.special_attlist[0].length()!=0 ) {
-+    		return ! _isInAttlist(0, att);
-+    	}
-+    	// Default return false;
-+    	return false;
-+    }
++	private boolean _isInAttlist(int list, String att)
++	{
++		if ( list >= special_attlist.length || list <0 || special_attlist[list].length()==0 ) {
++			return false;
++		}
++		return this.special_attlist[list].contains(att+':');
++	}
 +
-+    public boolean isInEmAttlist(String att)
-+    {
-+    	return _isInAttlist(2, att);
-+    }
++	public boolean isInWhiteAttlist(String att)
++	{
++		// WHITE list is not NULL
++		if ( this.special_attlist[0].length()!=0 ) {
++			return _isInAttlist(0, att);
++		}
++		// BLACK list is not NULL
++		if ( this.special_attlist[1].length()!=0 ) {
++			return ! _isInAttlist(1, att);
++		}
++		// Default return true;
++		return true;
++	}
 +
-+    public void addtoWhiteAttlist(String att)
-+    {
-+    	_addtoAttlist(0, att);
-+    }
++	public boolean isInBlackAttlist(String att)
++	{
++		// BLACK list is not NULL
++		if ( this.special_attlist[1].length()!=0 ) {
++			return _isInAttlist(1, att);
++		}
++		// WHITE list is not NULL
++		if ( this.special_attlist[0].length()!=0 ) {
++			return ! _isInAttlist(0, att);
++		}
++		// Default return false;
++		return false;
++	}
 +
-+    public void addtoBlackAttlist(String att)
-+    {
-+    	_addtoAttlist(1, att);
-+    }
++	public boolean isInEmAttlist(String att)
++	{
++		return _isInAttlist(2, att);
++	}
 +
-+    public void addtoEmAttlist(String att)
-+    {
-+    	_addtoAttlist(2, att);
-+    }
-+    
-     /**
-      * Creates and initializes a new XML element.
-      * Calling the construction is equivalent to:
-@@ -506,6 +574,11 @@ public class XMLElement
-         this.children = new Vector();
-         this.entities = entities;
-         this.lineNr = 0;
-+        // OSSXP.COM: save some attributes out of .mm file.
-+        this.special_attlist = new String[3];
-+        for (int i = 0; i < 3; i++) {
-+        	special_attlist[i] = "";
-+        }
-         Enumeration enumerator = this.entities.keys();
-         while (enumerator.hasMoreElements()) {
-             Object key = enumerator.nextElement();
-@@ -2183,9 +2256,22 @@ public class XMLElement
-         if (! this.attributes.isEmpty()) {
-             Iterator enumerator = this.attributes.keySet().iterator();
-             while (enumerator.hasNext()) {
--                writer.write(' ');
-                 String key = (String) enumerator.next();
-                 String value = (String) this.attributes.get(key);
++	public void addtoWhiteAttlist(String att)
++	{
++		_addtoAttlist(0, att);
++	}
 +
-+                // OSSXP.COM: 
-+                if ( this.isInBlackAttlist(key) )
-+                {
-+                	continue;
-+                }
++	public void addtoBlackAttlist(String att)
++	{
++		_addtoAttlist(1, att);
++	}
 +
-+                writer.write(' ');
++	public void addtoEmAttlist(String att)
++	{
++		_addtoAttlist(2, att);
++	}
 +
-+                if ( this.isInEmAttlist(key) )
-+                {
-+                	writer.write("\n\t");
-+                }
-+
-                 writer.write(key);
-                 writer.write('='); writer.write('"');
-                 this.writeEncoded(writer, value);
+ 	/**
+ 	 * Creates and initializes a new XML element. Calling the construction is
+ 	 * equivalent to:
+@@ -588,6 +657,11 @@ public class XMLElement {
+ 		this.children = new Vector();
+ 		this.entities = entities;
+ 		this.lineNr = 0;
++		// OSSXP.COM: save some attributes out of .mm file.
++		this.special_attlist = new String[3];
++		for (int i = 0; i < 3; i++) {
++			special_attlist[i] = "";
++		}
+ 		Enumeration enumerator = this.entities.keys();
+ 		while (enumerator.hasMoreElements()) {
+ 			Object key = enumerator.nextElement();
+@@ -2348,9 +2422,18 @@ public class XMLElement {
+ 		if (!this.attributes.isEmpty()) {
+ 			Iterator enumerator = this.attributes.keySet().iterator();
+ 			while (enumerator.hasNext()) {
+-				writer.write(' ');
+ 				String key = (String) enumerator.next();
+ 				String value = (String) this.attributes.get(key);
++				// OSSXP.COM: 
++				if ( this.isInBlackAttlist(key) )
++				{
++					continue;
++				}
++				writer.write(' ');
++				if ( this.isInEmAttlist(key) )
++				{
++					writer.write("\n\t");
++				}
+ 				writer.write(key);
+ 				writer.write('=');
+ 				writer.write('"');
 diff --git a/freemind/freemind/modes/MindMapNode.java b/freemind/freemind/modes/MindMapNode.java
-index 75ce8e3..084cd0c 100644
+index a30fa04..7ca9c72 100644
 --- a/freemind/freemind/modes/MindMapNode.java
 +++ b/freemind/freemind/modes/MindMapNode.java
-@@ -254,6 +254,7 @@ public interface MindMapNode extends MutableTreeNode {
-      * @param saveChildren if true, the save recurses to all of the nodes children.
-      */
-     public XMLElement save(Writer writer, MindMapLinkRegistry registry, boolean saveHidden, boolean saveChildren) throws IOException;
-+    public XMLElement save(Writer writer, MindMapLinkRegistry registry, boolean saveHidden, boolean saveChildren, int managed_attr) throws IOException;
+@@ -337,6 +337,9 @@ public interface MindMapNode extends MutableTreeNode {
+ 	 */
+ 	public XMLElement save(Writer writer, MindMapLinkRegistry registry,
+ 			boolean saveHidden, boolean saveChildren) throws IOException;
++	public XMLElement save(Writer writer, MindMapLinkRegistry registry,
++			boolean saveHidden, boolean saveChildren,
++			int managed_attr) throws IOException;
  
-     // fc, 10.2.2005:
-     /** State icons are icons that are not saved. They indicate that
+ 	// fc, 10.2.2005:
+ 	/**
 diff --git a/freemind/freemind/modes/NodeAdapter.java b/freemind/freemind/modes/NodeAdapter.java
-index cfef28b..2a9c535 100644
+index 31f4a5a..894cc40 100644
 --- a/freemind/freemind/modes/NodeAdapter.java
 +++ b/freemind/freemind/modes/NodeAdapter.java
-@@ -56,6 +56,7 @@ import freemind.main.FreeMind;
+@@ -58,6 +58,7 @@ import freemind.main.FreeMind;
  import freemind.main.FreeMindCommon;
  import freemind.main.FreeMindMain;
  import freemind.main.HtmlTools;
@@ -153,11 +151,10 @@ index cfef28b..2a9c535 100644
  import freemind.main.Tools;
  import freemind.main.XMLElement;
  import freemind.modes.attributes.Attribute;
-@@ -957,11 +958,43 @@ freemind.main.Resources.getInstance().logException(			e);
- 	    return controller.getNodeID(this);
+@@ -1076,12 +1077,45 @@ public abstract class NodeAdapter implements MindMapNode {
+ 		return controller.getNodeID(this);
  	}
  
--    public XMLElement save(Writer writer, MindMapLinkRegistry registry, boolean saveInvisible, boolean saveChildren) throws IOException {
 +	/**
 +	 * @param writer
 +	 * @param registry
@@ -167,258 +164,269 @@ index cfef28b..2a9c535 100644
 +	 *         2          : all-in-one .mm file. the default behavior of vanilla freemind.
 +	 * @return
 +	 */
-+	public XMLElement save(Writer writer, MindMapLinkRegistry registry, boolean saveInvisible, boolean saveChildren) throws IOException {
+ 	public XMLElement save(Writer writer, MindMapLinkRegistry registry,
+ 			boolean saveInvisible, boolean saveChildren) throws IOException {
 +		return save(writer, registry, saveInvisible, saveChildren, 0);
 +	}
 +
-+	public XMLElement save(Writer writer, MindMapLinkRegistry registry, boolean saveInvisible, boolean saveChildren, int managed_attr) throws IOException {
-     	// pre save event to save all contents of the node:
-     	getModeController().firePreSaveEvent(this);
-     	XMLElement node = new XMLElement();
++	public XMLElement save(Writer writer, MindMapLinkRegistry registry,
++			boolean saveInvisible, boolean saveChildren, int managed_attr) throws IOException {
+ 		// pre save event to save all contents of the node:
+ 		getModeController().firePreSaveEvent(this);
+ 		XMLElement node = new XMLElement();
  
-+        // OSSXP.COM: new line before 'TEXT' attribute.
-+        node.addtoEmAttlist("TEXT");
-+        // OSSXP.COM: according to the managed_attr parameter, save or not save certain keys of this NODE.
-+        switch (managed_attr)
-+        {
-+        case 0:
-+        	// Save this node to .mm file without certain attributes.
-+        	if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file") && Resources.getInstance().getBoolProperty("wh_separate_attr_created")) node.addtoBlackAttlist("CREATED");
-+        	if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file") && Resources.getInstance().getBoolProperty("wh_separate_attr_modified")) node.addtoBlackAttlist("MODIFIED");
-+        	break;
-+        case 1:
-+        	// Save this node to .mmx file. Only save certain attributes.
-+        	node.addtoWhiteAttlist("ID");
-+        	if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file") && Resources.getInstance().getBoolProperty("wh_separate_attr_folded")) node.addtoWhiteAttlist("FOLDED");
-+        	if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file") && Resources.getInstance().getBoolProperty("wh_separate_attr_created")) node.addtoWhiteAttlist("CREATED");
-+        	if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file") && Resources.getInstance().getBoolProperty("wh_separate_attr_modified")) node.addtoWhiteAttlist("MODIFIED");
-+        	break;
-+        }
++		// OSSXP.COM: new line before 'TEXT' attribute.
++		node.addtoEmAttlist("TEXT");
++		// OSSXP.COM: according to the managed_attr parameter, save or not save certain keys of this NODE.
++		switch (managed_attr)
++		{
++		case 0:
++			// Save this node to .mm file without certain attributes.
++			if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file") && Resources.getInstance().getBoolProperty("wh_separate_attr_created")) node.addtoBlackAttlist("CREATED");
++			if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file") && Resources.getInstance().getBoolProperty("wh_separate_attr_modified")) node.addtoBlackAttlist("MODIFIED");
++			break;
++		case 1:
++			// Save this node to .mmx file. Only save certain attributes.
++			node.addtoWhiteAttlist("ID");
++			if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file") && Resources.getInstance().getBoolProperty("wh_separate_attr_folded")) node.addtoWhiteAttlist("FOLDED");
++			if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file") && Resources.getInstance().getBoolProperty("wh_separate_attr_created")) node.addtoWhiteAttlist("CREATED");
++			if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file") && Resources.getInstance().getBoolProperty("wh_separate_attr_modified")) node.addtoWhiteAttlist("MODIFIED");
++			break;
++		}
 +
- //    	if (!isNodeClassToBeSaved()) {
-     	node.setName(XMLElementAdapter.XML_NODE);
- //        } else {
-@@ -970,7 +1003,10 @@ freemind.main.Resources.getInstance().logException(			e);
- //        }
+ 		// if (!isNodeClassToBeSaved()) {
+ 		node.setName(XMLElementAdapter.XML_NODE);
+ 		// } else {
+@@ -1090,7 +1124,10 @@ public abstract class NodeAdapter implements MindMapNode {
+ 		// }
  
-         /** fc, 12.6.2005: XML must not contain any zero characters. */
--        String text = this.toString().replace('\0', ' ');
+ 		/** fc, 12.6.2005: XML must not contain any zero characters. */
+-		String text = this.toString().replace('\0', ' ');
 +    	// OSSXP.COM: not save TEXT attributes in .mmx file
 +    	if( node.isInWhiteAttlist("TEXT"))
 +    	{
-+        String text = this.makeValidXml(this.toString());
-         if(!HtmlTools.isHtmlNode(text)) {
-             node.setAttribute(XMLElementAdapter.XML_NODE_TEXT,text);
-         } else {
-@@ -989,6 +1025,7 @@ freemind.main.Resources.getInstance().logException(			e);
- 	        	node.addChild(htmlElement);
-         	
-         }
-+    	}
-     	// save additional info:
-     	if (getAdditionalInfo() != null) {
-             node.setAttribute(XMLElementAdapter.XML_NODE_ENCRYPTED_CONTENT,
-@@ -996,15 +1033,26 @@ freemind.main.Resources.getInstance().logException(			e);
-         }
-     	//	((MindMapEdgeModel)getEdge()).save(doc,node);
++        String text = HtmlTools.makeValidXml(this.toString());
+ 		if (!HtmlTools.isHtmlNode(text)) {
+ 			node.setAttribute(XMLElementAdapter.XML_NODE_TEXT, text);
+ 		} else {
+@@ -1111,6 +1148,7 @@ public abstract class NodeAdapter implements MindMapNode {
+ 			node.addChild(htmlElement);
  
-+        // OSSXP.COM: not save EDGE in .mmx
-+    	if( node.isInWhiteAttlist("EDGE"))
-+    	{
-     	XMLElement edge = (getEdge()).save();
-     	if (edge != null) {
-                node.addChild(edge); }
-+    	}
+ 		}
++		}
+ 		// save additional info:
+ 		if (getAdditionalInfo() != null) {
+ 			node.setAttribute(XMLElementAdapter.XML_NODE_ENCRYPTED_CONTENT,
+@@ -1118,16 +1156,27 @@ public abstract class NodeAdapter implements MindMapNode {
+ 		}
+ 		// ((MindMapEdgeModel)getEdge()).save(doc,node);
  
--        if(getCloud() != null) {
-+        // OSSXP.COM: not save CLOUD in .mmx
-+    	if( node.isInWhiteAttlist("CLOUD"))
-+    	{
-+    	if(getCloud() != null) {
-             XMLElement cloud = (getCloud()).save();
-             node.addChild(cloud);
-         }
-+    	}
++		// OSSXP.COM: not save EDGE in .mmx
++		if( node.isInWhiteAttlist("EDGE"))
++		{
+ 		XMLElement edge = (getEdge()).save();
+ 		if (edge != null) {
+ 			node.addChild(edge);
+ 		}
++		}
  
-+        // OSSXP.COM: not save ARROWLINK in .mmx
-+    	if( node.isInWhiteAttlist("ARROWLINK"))
-+    	{
-         Vector linkVector = registry.getAllLinksFromMe(this); /* Puh... */
-         for(int i = 0; i < linkVector.size(); ++i) {
-             if(linkVector.get(i) instanceof ArrowLinkAdapter) {
-@@ -1012,10 +1060,30 @@ freemind.main.Resources.getInstance().logException(			e);
-                 node.addChild(arrowLinkElement);
-             }
-         }
-+    	}
++		// OSSXP.COM: not save CLOUD in .mmx
++		if( node.isInWhiteAttlist("CLOUD"))
++		{
+ 		if (getCloud() != null) {
+ 			XMLElement cloud = (getCloud()).save();
+ 			node.addChild(cloud);
+ 		}
++		}
  
--    	if (isFolded()) {
--               node.setAttribute("FOLDED","true"); }
++		// OSSXP.COM: not save ARROWLINK in .mmx
++		if( node.isInWhiteAttlist("ARROWLINK"))
++		{
+ 		Vector linkVector = registry.getAllLinksFromMe(this); /* Puh... */
+ 		for (int i = 0; i < linkVector.size(); ++i) {
+ 			if (linkVector.get(i) instanceof ArrowLinkAdapter) {
+@@ -1136,11 +1185,29 @@ public abstract class NodeAdapter implements MindMapNode {
+ 				node.addChild(arrowLinkElement);
+ 			}
+ 		}
 -
-+        // OSSXP.COM: set FOLDED status of all nodes in .mm file to "true". Preserve orignal status in .mmx file. 
-+        switch (managed_attr)
-+        {
-+        case 0:
-+        	// Save this node to .mm file without certain attributes.
-+        	if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file") && Resources.getInstance().getBoolProperty("wh_separate_attr_folded")) 
-+         {
-+           if (!isRoot() && !isLeaf()) {
-+             node.setAttribute("FOLDED","true");
-+        	  }
-+           break;
-+         }
-+        case 1:
-+        case 2:
-+        default:
-+        	if (isFolded()) {
-+        		node.setAttribute("FOLDED","true"); 
-+        	} else {
-+        		node.setAttribute("FOLDED","false");
-+        	}
-+        }
-+        
-         // fc, 17.12.2003: Remove the left/right bug.
-         //                       VVV  save if and only if parent is root.
-     	if (!(isRoot()) && (getParentNode().isRoot())) {
-@@ -1069,6 +1137,9 @@ freemind.main.Resources.getInstance().logException(			e);
+-		if (isFolded()) {
+-			node.setAttribute("FOLDED", "true");
+ 		}
+ 
++		// OSSXP.COM: set FOLDED status of all nodes in .mm file to "true". Preserve orignal status in .mmx file. 
++		switch (managed_attr)
++		{
++		case 0:
++			// Save this node to .mm file without certain attributes.
++			if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file") && Resources.getInstance().getBoolProperty("wh_separate_attr_folded")) {
++				if (!isRoot() && !isLeaf()) {
++					node.setAttribute("FOLDED","true");
++				}
++				break;
++			}
++		case 1:
++		case 2:
++		default:
++			if (isFolded()) {
++				node.setAttribute("FOLDED","true"); 
++			} else {
++				node.setAttribute("FOLDED","false");
++			}
++		}
++	 
+ 		// fc, 17.12.2003: Remove the left/right bug.
+ 		// VVV save if and only if parent is root.
+ 		if (!(isRoot()) && (getParentNode().isRoot())) {
+@@ -1200,6 +1267,9 @@ public abstract class NodeAdapter implements MindMapNode {
  									.getLastModifiedAt()));
- 	}
-     	//font
-+        // OSSXP.COM: not save FONT in .mmx
-+    	if( node.isInWhiteAttlist("FONT"))
-+    	{
-     	if (font!=null) {
-     	    XMLElement fontElement = new XMLElement();
-     	    fontElement.setName("font");
-@@ -1084,25 +1155,38 @@ freemind.main.Resources.getInstance().logException(			e);
-     	    if (isUnderlined()) {
-                    fontElement.setAttribute("UNDERLINE","true"); }
-     	    node.addChild(fontElement); }
-+    	}
-+        // OSSXP.COM: not save ICON in .mmx
-+    	if( node.isInWhiteAttlist("ICON"))
-+    	{
-         for(int i = 0; i < getIcons().size(); ++i) {
-     	    XMLElement iconElement = new XMLElement();
-     	    iconElement.setName("icon");
-             iconElement.setAttribute("BUILTIN", ((MindIcon) getIcons().get(i)).getName());
-             node.addChild(iconElement);
-         }
-+    	}
+ 		}
+ 		// font
++		// OSSXP.COM: not save FONT in .mmx
++		if( node.isInWhiteAttlist("FONT"))
++		{
+ 		if (font != null) {
+ 			XMLElement fontElement = new XMLElement();
+ 			fontElement.setName("font");
+@@ -1222,6 +1292,10 @@ public abstract class NodeAdapter implements MindMapNode {
+ 			}
+ 			node.addChild(fontElement);
+ 		}
++		}
++		// OSSXP.COM: not save ICON in .mmx
++		if( node.isInWhiteAttlist("ICON"))
++		{
+ 		for (int i = 0; i < getIcons().size(); ++i) {
+ 			XMLElement iconElement = new XMLElement();
+ 			iconElement.setName("icon");
+@@ -1229,7 +1303,11 @@ public abstract class NodeAdapter implements MindMapNode {
+ 					((MindIcon) getIcons().get(i)).getName());
+ 			node.addChild(iconElement);
+ 		}
++		}
  
-+        // OSSXP.COM: not save HOOK in .mmx
-+    	if( node.isInWhiteAttlist("HOOK"))
-+    	{
-     	for (Iterator i = getActivatedHooks().iterator(); i.hasNext();) {
-             XMLElement hookElement = new XMLElement();
-             hookElement.setName("hook");
-             ((PermanentNodeHook) i.next()).save(hookElement);
-             node.addChild(hookElement);
-         }
-+    	}
++		// OSSXP.COM: not save HOOK in .mmx
++		if( node.isInWhiteAttlist("HOOK"))
++		{
+ 		for (Iterator i = getActivatedHooks().iterator(); i.hasNext();) {
+ 			PermanentNodeHook permHook = (PermanentNodeHook) i.next();
+ 			if (permHook instanceof DontSaveMarker) {
+@@ -1240,12 +1318,17 @@ public abstract class NodeAdapter implements MindMapNode {
+ 			permHook.save(hookElement);
+ 			node.addChild(hookElement);
+ 		}
++		}
  
-+        // OSSXP.COM: not save ATTRIBUTE in .mmx
-+    	if( node.isInWhiteAttlist("ATTRIBUTE"))
-+    	{
-     	attributes.save(node);
-+    	}
-         if (saveChildren && childrenUnfolded().hasNext()) {
-             node.writeWithoutClosingTag(writer);
-             //recursive
--            saveChildren(writer, registry, this, saveInvisible);
-+            saveChildren(writer, registry, this, saveInvisible, managed_attr);
-             node.writeClosingTag(writer);
-         } else {
-             node.write(writer);
-@@ -1114,13 +1198,17 @@ freemind.main.Resources.getInstance().logException(			e);
++		// OSSXP.COM: not save ATTRIBUTE in .mmx
++		if( node.isInWhiteAttlist("ATTRIBUTE"))
++		{
+ 		attributes.save(node);
++		}
+ 		if (saveChildren && childrenUnfolded().hasNext()) {
+ 			node.writeWithoutClosingTag(writer);
+ 			// recursive
+-			saveChildren(writer, registry, this, saveInvisible);
++			saveChildren(writer, registry, this, saveInvisible, managed_attr);
+ 			node.writeClosingTag(writer);
+ 		} else {
+ 			node.write(writer);
+@@ -1262,14 +1345,21 @@ public abstract class NodeAdapter implements MindMapNode {
  		return map.getModeController();
  	}
  
 +	// OSSXP.COM: PARAM managed_attr, controls whether or not save certain attrs (such as nodes's folded status) in .mm files. 
-     private void saveChildren(Writer writer, MindMapLinkRegistry registry, NodeAdapter node, boolean saveHidden) throws IOException {
+ 	private void saveChildren(Writer writer, MindMapLinkRegistry registry,
+ 			NodeAdapter node, boolean saveHidden) throws IOException {
 +    	saveChildren(writer, registry, node, saveHidden, 0);
-+    }
-+    private void saveChildren(Writer writer, MindMapLinkRegistry registry, NodeAdapter node, boolean saveHidden, int managed_attr) throws IOException {
-         for (ListIterator e = node.childrenUnfolded(); e.hasNext();) {
-             NodeAdapter child = (NodeAdapter) e.next();
-             if(saveHidden || child.isVisible())
--                child.save(writer, registry, saveHidden, true);
-+                child.save(writer, registry, saveHidden, true, managed_attr);
-             else
--                saveChildren(writer, registry, child, saveHidden);
-+                saveChildren(writer, registry, child, saveHidden, managed_attr);
-         }
-     }
++	}
++
++	private void saveChildren(Writer writer, MindMapLinkRegistry registry,
++			NodeAdapter node, boolean saveHidden,
++			int managed_attr) throws IOException {
+ 		for (ListIterator e = node.childrenUnfolded(); e.hasNext();) {
+ 			NodeAdapter child = (NodeAdapter) e.next();
+ 			if (saveHidden || child.isVisible())
+-				child.save(writer, registry, saveHidden, true);
++				child.save(writer, registry, saveHidden, true, managed_attr);
+ 			else
+-				saveChildren(writer, registry, child, saveHidden);
++				saveChildren(writer, registry, child, saveHidden, managed_attr);
+ 		}
+ 	}
  
 diff --git a/freemind/freemind/modes/mindmapmode/EncryptedMindMapNode.java b/freemind/freemind/modes/mindmapmode/EncryptedMindMapNode.java
-index cc50b30..534a756 100644
+index 8f6fbc5..1460553 100644
 --- a/freemind/freemind/modes/mindmapmode/EncryptedMindMapNode.java
 +++ b/freemind/freemind/modes/mindmapmode/EncryptedMindMapNode.java
-@@ -328,7 +328,8 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
-      */
-     private void generateEncryptedContent(MindMapLinkRegistry registry) throws IOException {
-         StringWriter sWriter = new StringWriter();
--        getMindMapMapModel().getXml(sWriter, true, this);
+@@ -331,7 +331,8 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
+ 	private void generateEncryptedContent(MindMapLinkRegistry registry)
+ 			throws IOException {
+ 		StringWriter sWriter = new StringWriter();
+-		getMindMapMapModel().getXml(sWriter, true, this);
 +        // OSSXP.COM: save all attributes or partial?
 +        getMindMapMapModel().getXml(sWriter, true, this, 0);
-         StringBuffer childXml = sWriter.getBuffer();
-         encryptedContent = encryptXml(childXml);
-     }
+ 		StringBuffer childXml = sWriter.getBuffer();
+ 		encryptedContent = encryptXml(childXml);
+ 	}
 diff --git a/freemind/freemind/modes/mindmapmode/MindMapMapModel.java b/freemind/freemind/modes/mindmapmode/MindMapMapModel.java
-index c83dd56..8cccc7d 100644
+index dc38a2e..bc4f7fc 100644
 --- a/freemind/freemind/modes/mindmapmode/MindMapMapModel.java
 +++ b/freemind/freemind/modes/mindmapmode/MindMapMapModel.java
-@@ -258,7 +258,26 @@ public class MindMapMapModel extends MapAdapter  {
-         	}
-             // OSSXP.COM: save file using default character set.
-             BufferedWriter fileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(file), FreeMind.DEFAULT_CHARSET ) );
--            getXml(fileout);
-+            // OSSXP.COM: save tree into .mm file, without some attrs(such as node fold status).
-+            getXml(fileout, true, 0);
-+            
-+            if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file"))
-+            {
-+              // OSSXP.COM: save variable attrs(such as node fold status) into .mmx file...
-+              String ext = Tools.getExtension(file.getName());
-+              String mmxFileName = "";
-+              if(!ext.equals("mm")) 
-+              {
-+              	mmxFileName = "." + file.getName()+".mmx";
-+              }
-+              else 
-+              {
-+              	mmxFileName = "." + Tools.removeExtension(file.getName()) + ".mmx";
-+              }
-+              File mmxfile = new File(file.getParent(), mmxFileName); 
-+              BufferedWriter mmxfileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(mmxfile), FreeMind.DEFAULT_CHARSET ) );
-+              getXml(mmxfileout, true, 1);
-+            }
+@@ -286,7 +286,26 @@ public class MindMapMapModel extends MapAdapter {
+ 			}
+ 			BufferedWriter fileout = new BufferedWriter(new OutputStreamWriter(
+ 					new FileOutputStream(file), FreeMind.DEFAULT_CHARSET));
+-			getXml(fileout);
++			// OSSXP.COM: save tree into .mm file, without some attrs(such as node fold status).
++			getXml(fileout, true, 0);
++
++			if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file"))
++			{
++				// OSSXP.COM: save variable attrs(such as node fold status) into .mmx file...
++				String ext = Tools.getExtension(file.getName());
++				String mmxFileName = "";
++				if(!ext.equals("mm")) 
++				{
++					mmxFileName = "." + file.getName()+".mmx";
++				}
++				else 
++				{
++					mmxFileName = "." + Tools.removeExtension(file.getName()) + ".mmx";
++				}
++				File mmxfile = new File(file.getParent(), mmxFileName); 
++				BufferedWriter mmxfileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(mmxfile), FreeMind.DEFAULT_CHARSET ) );
++				getXml(mmxfileout, true, 1);
++			}
  
-             if(!isInternal) {
-                 setFile(file);
-@@ -283,32 +302,53 @@ public class MindMapMapModel extends MapAdapter  {
- 
-     /** writes the content of the map to a writer.
+ 			if (!isInternal) {
+ 				setFile(file);
+@@ -313,10 +332,16 @@ public class MindMapMapModel extends MapAdapter {
+ 	 * writes the content of the map to a writer.
+ 	 * 
  	 * @throws IOException
 + 	 * @param managed_attr =0|1|2
 + 	 *         0 (default): save to .mm  file. (do not save certain attributes, such as node's fold status)
 + 	 *         1          : save to .mmx file. (only save auxiliary attributes, such as node's fold status)
 + 	 *         2          : all-in-one .mm file. the default behavior of vanilla freemind.
  	 */
--	public void getXml(Writer fileout, boolean saveInvisible) throws IOException {
-+ 	public void getXml(Writer fileout, boolean saveInvisible, int managed_attr) throws IOException {
- 		// OSSXP.COM: write xml declare.
- 		fileout.write("<?xml version=\"1.0\" encoding=\"" + FreeMind.DEFAULT_CHARSET + "\"?>\n");
+-	public void getXml(Writer fileout, boolean saveInvisible)
++	public void getXml(Writer fileout, boolean saveInvisible, int managed_attr)
+ 			throws IOException {
 -		getXml(fileout, saveInvisible, getRootNode());
++		// OSSXP.COM: write xml declare.
++		fileout.write("<?xml version=\"1.0\" encoding=\"" + FreeMind.DEFAULT_CHARSET + "\"?>\n");
 +		getXml(fileout, saveInvisible, getRootNode(), managed_attr);
  	}
- 	/** writes the content of the map to a writer.
+ 
+ 	/**
+@@ -325,23 +350,40 @@ public class MindMapMapModel extends MapAdapter {
  	 * @throws IOException
  	 */
--	public void getXml(Writer fileout, boolean saveInvisible, MindMapNode pRootNode) throws IOException {
-+	public void getXml(Writer fileout, boolean saveInvisible, MindMapNode pRootNode, int managed_attr) throws IOException {
+ 	public void getXml(Writer fileout, boolean saveInvisible,
+-			MindMapNode pRootNode) throws IOException {
++			MindMapNode pRootNode, int managed_attr) throws IOException {
  		fileout.write("<map ");
- 		fileout.write("version=\""+FreeMind.XML_VERSION+"\"");
+ 		fileout.write("version=\"" + FreeMind.XML_VERSION + "\"");
  		fileout.write(">\n");
 -		fileout.write("<!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->\n");
 -		getRegistry().save(fileout);
@@ -447,16 +455,16 @@ index c83dd56..8cccc7d 100644
  		fileout.close();
  	}
  
-     public void getXml(Writer fileout) throws IOException{
--        getXml(fileout, true);
-+        getXml(fileout, true, 0);
-     }
+ 	public void getXml(Writer fileout) throws IOException {
+-		getXml(fileout, true);
++		getXml(fileout, true, 0);
+ 	}
  
-     public void getFilteredXml(Writer fileout) throws IOException{
--        getXml(fileout, false);
-+        getXml(fileout, false, 0);
-     }
+ 	public void getFilteredXml(Writer fileout) throws IOException {
+-		getXml(fileout, false);
++		getXml(fileout, false, 0);
+ 	}
  
  	/**
 -- 
-tg: (4bd9bbf..) t/split_output_to_extra_mmx_file (depends on: t/output_encode_in_utf8)
+tg: (23e4c63..) t/split_output_to_extra_mmx_file (depends on: t/output_encode_in_utf8)

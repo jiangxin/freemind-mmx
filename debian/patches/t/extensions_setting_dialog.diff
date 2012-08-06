@@ -9,15 +9,15 @@ Setting dialog for my hackings, such as:
 Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
 
 ---
- freemind/freemind.properties                       |   13 ++++++-----
+ freemind/freemind.properties                       |   13 ++++++------
  .../freemind/preferences/layout/OptionPanel.java   |   22 ++++++++++++++++++++
  2 files changed, 29 insertions(+), 6 deletions(-)
 
 diff --git a/freemind/freemind.properties b/freemind/freemind.properties
-index fc7132f..93097ff 100644
+index 152a066..e6f22eb 100644
 --- a/freemind/freemind.properties
 +++ b/freemind/freemind.properties
-@@ -555,12 +555,13 @@ resources_signed_script_are_trusted=true
+@@ -561,12 +561,13 @@ resources_signed_script_are_trusted=true
  icons.list=idea;help;yes;messagebox_warning;stop-sign;closed;info;button_ok;button_cancel;full-1;full-2;full-3;full-4;full-5;full-6;full-7;full-8;full-9;full-0;stop;prepare;go;back;forward;up;down;attach;ksmiletris;smiley-neutral;smiley-oh;smiley-angry;smily_bad;clanbomber;desktop_new;gohome;folder;korn;Mail;kmail;list;edit;kaddressbook;knotify;password;pencil;wizard;xmag;bell;bookmark;penguin;licq;freemind_butterfly;broken-line;calendar;clock;hourglass;launch;flag-black;flag-blue;flag-green;flag-orange;flag-pink;flag;flag-yellow;family;female1;female2;male1;male2;fema;group
  # not added: encrypted;decrypted;redo;
  
@@ -38,11 +38,11 @@ index fc7132f..93097ff 100644
  # This property waits for being integrated into the OptionPanel after the 0.9.0 release.
  resources_use_margin_top_zero_for_notes=true
 diff --git a/freemind/freemind/preferences/layout/OptionPanel.java b/freemind/freemind/preferences/layout/OptionPanel.java
-index 19a6951..d7cedd5 100644
+index ddf10ed..64f57ec 100644
 --- a/freemind/freemind/preferences/layout/OptionPanel.java
 +++ b/freemind/freemind/preferences/layout/OptionPanel.java
-@@ -1154,6 +1154,28 @@ public class OptionPanel implements TextTranslator {
-         controls.add(new NumberProperty("undo_levels.tooltip", "undo_levels", 2,1000,1));
+@@ -1211,6 +1211,28 @@ public class OptionPanel implements TextTranslator {
+ 				2, 1000, 1));
  
  		/***********************************************************************
 +		 * WorldHello ****************************************************************
@@ -71,4 +71,4 @@ index 19a6951..d7cedd5 100644
  		 * ****************************************************************
  		 */
 -- 
-tg: (19169f1..) t/extensions_setting_dialog (depends on: tgmaster)
+tg: (8cfa48e..) t/extensions_setting_dialog (depends on: tgmaster)

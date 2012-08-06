@@ -6,24 +6,24 @@ Set longer autosave time interval, and ignore folding state by default.
 Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
 
 ---
- freemind/freemind.properties                       |    4 ++--
- .../freemind/preferences/layout/OptionPanel.java   |    2 +-
+ freemind/freemind.properties                          |    4 ++--
+ freemind/freemind/preferences/layout/OptionPanel.java |    2 +-
  2 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/freemind/freemind.properties b/freemind/freemind.properties
-index fc7132f..64cbf96 100644
+index 152a066..9a328f1 100644
 --- a/freemind/freemind.properties
 +++ b/freemind/freemind.properties
-@@ -342,7 +342,7 @@ selection_method = selection_method_delayed
+@@ -348,7 +348,7 @@ selection_method = selection_method_delayed
  # time between two consecutive automatic saving actions (in msec):
  # ==============================================================
  # To disable automatic saving set this number to 2000000000.
--time_for_automatic_save=60000
+-time_for_automatic_save=120000
 +time_for_automatic_save=600000
  #
  # If the files should be deleted automatically on a normal shutdown of Freemind set the following variable to true
  delete_automatic_saves_at_exit=true
-@@ -545,7 +545,7 @@ resources_execute_scripts_without_exec_restriction=false
+@@ -551,7 +551,7 @@ resources_execute_scripts_without_exec_restriction=false
  #fc, 10.4.2008:
  resources_don_t_show_note_icons=false
  resources_remove_notes_without_question=
@@ -33,11 +33,11 @@ index fc7132f..64cbf96 100644
  # fc, 18.4.2008: Empty means, that the freemind default key is used.
  resources_script_user_key_name_for_signing=
 diff --git a/freemind/freemind/preferences/layout/OptionPanel.java b/freemind/freemind/preferences/layout/OptionPanel.java
-index 19a6951..f1aa639 100644
+index ddf10ed..3432ae8 100644
 --- a/freemind/freemind/preferences/layout/OptionPanel.java
 +++ b/freemind/freemind/preferences/layout/OptionPanel.java
-@@ -534,7 +534,7 @@ public class OptionPanel implements TextTranslator {
- 		
+@@ -547,7 +547,7 @@ public class OptionPanel implements TextTranslator {
+ 
  		controls.add(new BooleanProperty(
  				"resources_save_folding_state.tooltip",
 -				FreeMind.RESOURCES_SAVE_FOLDING_STATE)); // true
@@ -46,4 +46,4 @@ index 19a6951..f1aa639 100644
  				"save_only_intrisically_needed_ids.tooltip",
  				FreeMindCommon.SAVE_ONLY_INTRISICALLY_NEEDED_IDS)); // false
 -- 
-tg: (19169f1..) t/custom_settings (depends on: tgmaster)
+tg: (8cfa48e..) t/custom_settings (depends on: tgmaster)

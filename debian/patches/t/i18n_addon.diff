@@ -8,13 +8,13 @@ Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
 ---
  freemind/Resources_en.properties    |   12 ++++++++++++
  freemind/Resources_zh_CN.properties |   12 ++++++++++++
- 2 files changed, 24 insertions(+), 0 deletions(-)
+ 2 files changed, 24 insertions(+)
 
 diff --git a/freemind/Resources_en.properties b/freemind/Resources_en.properties
-index 82690cd..4879b94 100644
+index c51887b..af3d16d 100644
 --- a/freemind/Resources_en.properties
 +++ b/freemind/Resources_en.properties
-@@ -1365,6 +1365,18 @@ icon_flag = Red Flag
+@@ -1352,6 +1352,18 @@ icon_flag = Red Flag
  #changed:
  OptionPanel.remind_use_rich_text_in_new_long_nodes=Use formatting for all nodes
  
@@ -34,7 +34,7 @@ index 82690cd..4879b94 100644
  icon_freemind_butterfly = FreeMind
  icon_full-8 = Priority 8
 diff --git a/freemind/Resources_zh_CN.properties b/freemind/Resources_zh_CN.properties
-index 1efc586..3cb9142 100644
+index 3aca6f8..844f128 100644
 --- a/freemind/Resources_zh_CN.properties
 +++ b/freemind/Resources_zh_CN.properties
 @@ -1381,6 +1381,18 @@ icon_full-9 = \u4f18\u5148\u7ea7 9
@@ -57,4 +57,4 @@ index 1efc586..3cb9142 100644
  KeyDoc=PDF\u683c\u5f0f\u7684\u952e\u6620\u5c04\u6587\u6863
  # translate only, when you have an own translation of this doc.
 -- 
-tg: (d35440d..) t/i18n_addon (depends on: t/i18n_zh_cn)
+tg: (1fbb3f1..) t/i18n_addon (depends on: t/i18n_zh_cn)

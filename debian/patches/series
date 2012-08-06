@@ -1,6 +1,5 @@
 t/custom_settings.diff -p1
 t/extensions_setting_dialog.diff -p1
-t/filter_all_illegal_xml_chars.diff -p1
 t/i18n_zh_cn.diff -p1
 t/i18n_addon.diff -p1
 t/load_mm_with_mmx_file.diff -p1

@@ -7,13 +7,13 @@ Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
 
 ---
  freemind/build.xml |    5 +++--
- 1 files changed, 3 insertions(+), 2 deletions(-)
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/freemind/build.xml b/freemind/build.xml
-index 70fa445..287a543 100644
+index 3a3d179..e7e4fc6 100644
 --- a/freemind/build.xml
 +++ b/freemind/build.xml
-@@ -173,6 +173,7 @@
+@@ -230,6 +230,7 @@
  		<copy todir="${dist}">
  			<fileset dir="${src}/windows-launcher">
  			  <include name="FreeMind.exe"/>
@@ -21,7 +21,7 @@ index 70fa445..287a543 100644
  			</fileset>
  		</copy>
  		<mkdir dir="${dist}/doc" />
-@@ -382,8 +383,8 @@
+@@ -473,8 +474,8 @@
  				<include name="patterns_updater.xslt"/>
  				<include name="Resources*"/>
  				<include name="mindmap_menus.xml"/>
@@ -29,8 +29,8 @@ index 70fa445..287a543 100644
 -				<include name="**/freemind_join_mm_mmx.xslt"/>
 +				<include name="freemind/**/freemind_version_updater.xslt"/>
 +				<include name="freemind/**/freemind_join_mm_mmx.xslt"/>
+ 				<include name="dictionar*"/>
  			</fileset>
  		</jar>
- 		<ant antfile="${acc_build}" target="jar"/>
 -- 
-tg: (4d71238..) t/linux_dist_build (depends on: t/load_mm_with_mmx_file)
+tg: (444717a..) t/linux_dist_build (depends on: t/load_mm_with_mmx_file)

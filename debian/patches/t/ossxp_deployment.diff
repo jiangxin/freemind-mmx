@@ -7,10 +7,10 @@ Signed-off-by: Jiang Xin <jiangxin@moon.ossxp.com>
 
 ---
  freemind/freemind.sh |    8 ++++++--
- 1 files changed, 6 insertions(+), 2 deletions(-)
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/freemind/freemind.sh b/freemind/freemind.sh
-index 5cd29ee..e58305b 100644
+index b101067..7b45f58 100644
 --- a/freemind/freemind.sh
 +++ b/freemind/freemind.sh
 @@ -138,6 +138,7 @@ output_debug_info() {
@@ -43,4 +43,4 @@ index 5cd29ee..e58305b 100644
  
  #--------- Call (at last) FreeMind -------------------------------------
 -- 
-tg: (19169f1..) t/ossxp_deployment (depends on: tgmaster)
+tg: (8cfa48e..) t/ossxp_deployment (depends on: tgmaster)

@@ -186,7 +186,7 @@ unpatch:
 
 debian/patches/: debian/patches
 debian/patches:
-	(cd $(FREEMINDROOT); tg export --all --quilt ../debian/patches.new)
+	(cd $(FREEMINDROOT); LANGUAGE=C tg export --all --quilt ../debian/patches.new)
 	rm -rf debian/patches && mv debian/patches.new debian/patches
 	cd debian && git status || true
 

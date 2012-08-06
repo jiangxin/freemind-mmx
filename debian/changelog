@@ -1,3 +1,9 @@
+ossxp-freemind (1.0.0~beta5-19~mmx) unstable; urgency=low
+
+  * Upstream upgrade to tag: 1_0_0_Beta5.
+
+ -- Jiang Xin <worldhello.net@gmail.com>  Fri, 17 Aug 2012 13:57:07 +0800
+
 ossxp-freemind (0.9.0-19~mmx) unstable; urgency=low
 
   * Maint FreeMind upstream using git submodule.
