@@ -1,3 +1,9 @@
+ossxp-freemind (0.9.0-19~mmx) unstable; urgency=low
+
+  * Maint FreeMind upstream using git submodule.
+
+ -- Jiang Xin <worldhello.net@gmail.com>  Tue, 07 Aug 2012 06:00:50 +0800
+
 ossxp-freemind (0.9.0-0.18.git~mmx) unstable; urgency=low
 
   * Upstream scm migrate from cvs to git.

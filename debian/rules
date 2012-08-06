@@ -6,9 +6,8 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-include /usr/share/quilt/quilt.make
-
 ANT = ant
+FREEMINDROOT=$(CURDIR)/upstream
 #docdir=file:/usr/share/doc/freemind -Dpropfolder=.freemind -Dbrowser_other=sensible-browser
 
 CFLAGS = -Wall -g
@@ -35,13 +34,13 @@ build-stamp: configure-stamp
 	dh_testdir
 
 	# Add here commands to compile the package.
-	cd $(CURDIR)/freemind && $(ANT) dist
-	mv $(CURDIR)/bin/dist/lib/freemind.jar $(CURDIR)/bin/dist/lib/freemind.vanilla.jar
+	cd $(FREEMINDROOT)/freemind && $(ANT) dist
+	mv $(FREEMINDROOT)/bin/dist/lib/freemind.jar $(FREEMINDROOT)/bin/dist/lib/freemind.vanilla.jar
 
 	touch build-stamp
 
 eol-format-stamp:
-	for i in \
+	(cd $(FREEMINDROOT); for i in \
 		freemind/build.xml \
 		freemind/freemind.properties \
 		freemind/freemind.bat \
@@ -53,10 +52,9 @@ eol-format-stamp:
 		freemind/freemind/modes/MindMapNode.java \
 		freemind/freemind/modes/NodeAdapter.java \
 		freemind/freemind.sh \
-		MANIFEST.MF \
 		; do \
-	    dos2unix $$i; sed -i -e 's/\r$$//g' -e 's/\r/\n/g' $$i ; \
-	done
+	    fromdos $$i; sed -i -e 's/\r$$//g' -e 's/\r/\n/g' $$i ; \
+	done)
 	# fix NO EOL of file: freemind.properties
 	#echo >> freemind.properties
 
@@ -66,13 +64,13 @@ eol-format-stamp:
 build-hacked-stamp: build-stamp patch oemrevpatch
 	dh_testdir
 
-	cp -Rf $(CURDIR)/debian/freemind/* $(CURDIR)/freemind/
-	cd $(CURDIR)/freemind && $(ANT) -Dlight_bulb=yes dist
-	# cd $(CURDIR)/freemind && $(ANT) $(ANTFLAGS) doc
+	cp -Rf $(CURDIR)/debian/freemind/* $(FREEMINDROOT)/freemind/
+	cd $(FREEMINDROOT)/freemind && $(ANT) -Dlight_bulb=yes dist
+	# cd $(FREEMINDROOT)/freemind && $(ANT) $(ANTFLAGS) doc
 
 	# create freemind.vanilla.sh here, it is also patched.
-	cp $(CURDIR)/bin/dist/freemind.sh $(CURDIR)/bin/dist/freemind.vanilla.sh
-	sed -i -e 's/freemind.jar/freemind.vanilla.jar/g' $(CURDIR)/bin/dist/freemind.vanilla.sh
+	cp $(FREEMINDROOT)/bin/dist/freemind.sh $(FREEMINDROOT)/bin/dist/freemind.vanilla.sh
+	sed -i -e 's/freemind.jar/freemind.vanilla.jar/g' $(FREEMINDROOT)/bin/dist/freemind.vanilla.sh
 
 	touch build-hacked-stamp
 
@@ -86,7 +84,7 @@ clean: oemrevunpatch unpatch
 	-rm -rf debian/ossxp-freemind
 
 	# Add here commands to clean up after the build process.
-	cd $(CURDIR)/freemind && $(ANT) clean
+	cd $(FREEMINDROOT)/freemind && $(ANT) clean
 
 	dh_clean 
 
@@ -98,12 +96,12 @@ install: build
 
 	# Add here commands to install the package into debian/freemind.
 	# $(MAKE) install DESTDIR=$(CURDIR)/debian/freemind
-	install -m 755 $(CURDIR)/bin/dist/freemind.sh $(CURDIR)/bin/dist/freemind.vanilla.sh $(CURDIR)/debian/ossxp-freemind/opt/freemind/
+	install -m 755 $(FREEMINDROOT)/bin/dist/freemind.sh $(FREEMINDROOT)/bin/dist/freemind.vanilla.sh $(CURDIR)/debian/ossxp-freemind/opt/freemind/
 
 	echo "#export PATH=$$PATH:/usr/lib/jdk1.6.0/bin" >  $(CURDIR)/debian/ossxp-freemind/opt/freemind/conf/freemindrc
 	echo "#export JAVA_HOME=/usr/lib/jdk1.6.0/"     >> $(CURDIR)/debian/ossxp-freemind/opt/freemind/conf/freemindrc
 
-	convert $(CURDIR)/freemind/images/FreeMindWindowIcon.png $(CURDIR)/debian/ossxp-freemind/usr/share/pixmaps/ossxp-freemind.xpm
+	convert $(FREEMINDROOT)/freemind/images/FreeMindWindowIcon.png $(CURDIR)/debian/ossxp-freemind/usr/share/pixmaps/ossxp-freemind.xpm
 
 
 	for pkg in `awk '/^Package:/ { print $$2 }' $(CURDIR)/debian/control`; do \
@@ -154,24 +152,42 @@ OEMREV=`head -1 $(CURDIR)/debian/changelog | sed -e "s/.*(.*-\([^-~+]*\).*).*/\1
 oemrevpatch:
 	echo "OEM Revision Patch"
 	@sed -ie "/public static final String HACKEDVERSION/ s/<REVISION>/r$(OEMREV)/" \
-	    $(CURDIR)/freemind/freemind/main/FreeMind.java
+	    $(FREEMINDROOT)/freemind/freemind/main/FreeMind.java
 
 oemrevunpatch:
 	echo "OEM Revision Unpatch"
 	@sed -ie "/public static final String HACKEDVERSION/ s/r$(OEMREV)/<REVISION>/" \
-	    $(CURDIR)/freemind/freemind/main/FreeMind.java
+	    $(FREEMINDROOT)/freemind/freemind/main/FreeMind.java
 
 binary: binary-indep binary-arch windows
 
 windows: post
 post:
-	cd $(CURDIR)/freemind && $(ANT) post
+	cd $(FREEMINDROOT)/freemind && $(ANT) post
+
+# QUILT_STAMPFN: stamp file to use
+QUILT_STAMPFN	= debian/stamp-patched
+
+# QUILT_PATCH_DIR: where the patches live
+QUILT_PATCH_DIR = ../debian/patches
+
+patch: eol-format-stamp $(QUILT_STAMPFN)
+$(QUILT_STAMPFN):
+	@# quilt exits with 2 as return when there was nothing to do.
+	@# That's not an error here
+	(cd $(FREEMINDROOT); QUILT_PATCHES=$(QUILT_PATCH_DIR) \
+		quilt --quiltrc /dev/null push -a || test $$? = 2)
+	touch $(QUILT_STAMPFN)
+
+unpatch:
+	(cd $(FREEMINDROOT); QUILT_PATCHES=$(QUILT_PATCH_DIR) \
+		quilt --quiltrc /dev/null pop -a -R || test $$? = 2)
+	rm -rf $(FREEMINDROOT)/.pc $(QUILT_STAMPFN)
 
 debian/patches/: debian/patches
 debian/patches:
-debian/patches:
-	tg export --all --quilt debian/patches.new
-	cp -a debian/patches.new/* debian/patches && rm -rf debian/patches.new
+	(cd $(FREEMINDROOT); tg export --all --quilt ../debian/patches.new)
+	rm -rf debian/patches && mv debian/patches.new debian/patches
 	cd debian && git status || true
 
 .PHONY: build clean binary-indep binary-arch binary install configure debian/patches windows post
