@@ -35,12 +35,13 @@ public class StringProperty extends PropertyBean implements PropertyControl {
 
 	String label;
 
-	JTextField mTextField = new JTextField();
+	JTextField mTextField;
 
 	/**
 	 */
 	public StringProperty(String description, String label) {
 		super();
+		initializeTextfield();
 		this.description = description;
 		this.label = label;
 		// mTextField.addPropertyChangeListener(new PropertyChangeListener() {
@@ -58,6 +59,13 @@ public class StringProperty extends PropertyBean implements PropertyControl {
 
 	}
 
+	/**
+	 * To be overwritten by PasswordProperty
+	 */
+	protected void initializeTextfield() {
+		mTextField = new JTextField();
+	}
+	
 	public String getDescription() {
 		return description;
 	}

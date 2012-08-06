@@ -50,6 +50,30 @@ import com.inet.jortho.SpellChecker;
  * 
  */
 public class FreeMindStarter {
+	/**
+	 * 
+	 */
+	public static final String PROXY_PORT = "proxy.port";
+	/**
+	 * 
+	 */
+	public static final String PROXY_HOST = "proxy.host";
+	/**
+	 * 
+	 */
+	public static final String PROXY_PASSWORD = "proxy.password";
+	/**
+	 * 
+	 */
+	public static final String PROXY_USER = "proxy.user";
+	/**
+	 * 
+	 */
+	public static final String PROXY_IS_AUTHENTICATED = "proxy.is_authenticated";
+	/**
+	 * 
+	 */
+	public static final String PROXY_USE_SETTINGS = "proxy.use_settings";
 	/** Doubled variable on purpose. See header of this class. */
 	static final String JAVA_VERSION = System.getProperty("java.version");
 
@@ -64,14 +88,14 @@ public class FreeMindStarter {
 		starter.setDefaultLocale(userPreferences);
 
 		// proxy settings
-		if("true".equals(userPreferences.getProperty("proxy.use_settings"))) {
-			if ("true".equals(userPreferences.getProperty("proxy.is_authenticated"))) {
+		if("true".equals(userPreferences.getProperty(PROXY_USE_SETTINGS))) {
+			if ("true".equals(userPreferences.getProperty(PROXY_IS_AUTHENTICATED))) {
 				Authenticator.setDefault(new ProxyAuthenticator(userPreferences
-						.getProperty("proxy.user"), userPreferences
-						.getProperty("proxy.password")));
+						.getProperty(PROXY_USER), userPreferences
+						.getProperty(PROXY_PASSWORD)));
 			}
-			System.setProperty("http.proxyHost", userPreferences.getProperty("proxy.host"));
-			System.setProperty("http.proxyPort", userPreferences.getProperty("proxy.port"));
+			System.setProperty("http.proxyHost", userPreferences.getProperty(PROXY_HOST));
+			System.setProperty("http.proxyPort", userPreferences.getProperty(PROXY_PORT));
 		}
 		// Christopher Robin Elmersson: set
 		Toolkit xToolkit = Toolkit.getDefaultToolkit();

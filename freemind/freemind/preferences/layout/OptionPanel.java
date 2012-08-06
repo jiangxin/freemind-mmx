@@ -59,6 +59,7 @@ import freemind.common.ComboProperty;
 import freemind.common.DontShowNotificationProperty;
 import freemind.common.NextLineProperty;
 import freemind.common.NumberProperty;
+import freemind.common.PasswordProperty;
 import freemind.common.PropertyBean;
 import freemind.common.PropertyControl;
 import freemind.common.RemindValueProperty;
@@ -70,6 +71,7 @@ import freemind.controller.actions.generated.instance.OptionPanelWindowConfigura
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindCommon;
+import freemind.main.FreeMindStarter;
 import freemind.main.Tools;
 import freemind.modes.IconInformation;
 import freemind.modes.MindIcon;
@@ -447,10 +449,10 @@ public class OptionPanel implements TextTranslator {
 		 * http://www.loc.gov/standards/iso639-2/php/English_list.php
 		 */
 		"language.tooltip", FreeMindCommon.RESOURCE_LANGUAGE, new String[] {
-				"automatic", "ar", "bg", "cs", "de", "dk", "en", "el", "es", "et",
-				"eu", "fr", "gl", "hr", "hu", "id", "it", "ja", "ko", "lt",
-				"nl", "nn", "nb", "pl", "pt_BR", "pt_PT", "ro", "ru", "sk",
-				"se", "sl", "tr", "uk_UA", "vi", "zh_TW", "zh_CN" },
+				"automatic", "ar", "bg", "cs", "de", "dk", "en", "el", "es",
+				"et", "eu", "fr", "gl", "hr", "hu", "id", "it", "ja", "ko",
+				"lt", "nl", "nn", "nb", "pl", "pt_BR", "pt_PT", "ro", "ru",
+				"sk", "se", "sl", "tr", "uk_UA", "vi", "zh_TW", "zh_CN" },
 				new TextTranslator() {
 
 					public String getText(String pKey) {
@@ -460,9 +462,8 @@ public class OptionPanel implements TextTranslator {
 					}
 				})); // automatic
 
-		controls.add (new BooleanProperty(
-				FreeMindCommon.CHECK_SPELLING + ".tooltip",
-				FreeMindCommon.CHECK_SPELLING)); // true
+		controls.add(new BooleanProperty(FreeMindCommon.CHECK_SPELLING
+				+ ".tooltip", FreeMindCommon.CHECK_SPELLING)); // true
 
 		// INTERNAL PROPERTY.
 		// controls
@@ -486,8 +487,24 @@ public class OptionPanel implements TextTranslator {
 		// "properties_folder")); // .freemind
 
 		controls.add(new NextLineProperty());
+		controls.add(new SeparatorProperty("proxy"));
+		controls.add(new BooleanProperty(FreeMindStarter.PROXY_USE_SETTINGS
+				+ ".tooltip", FreeMindStarter.PROXY_USE_SETTINGS));
+		controls.add(new StringProperty(FreeMindStarter.PROXY_HOST+".tooltip",
+				FreeMindStarter.PROXY_HOST)); 
+		controls.add(new NumberProperty(FreeMindStarter.PROXY_PORT+".tooltip", FreeMindStarter.PROXY_PORT, 1,
+				65535, 1)); 
+		controls.add(new BooleanProperty(FreeMindStarter.PROXY_IS_AUTHENTICATED
+				+ ".tooltip", FreeMindStarter.PROXY_IS_AUTHENTICATED));
+		controls.add(new StringProperty(FreeMindStarter.PROXY_USER+".tooltip",
+				FreeMindStarter.PROXY_USER)); 
+		controls.add(new PasswordProperty(FreeMindStarter.PROXY_PASSWORD+".tooltip",
+				FreeMindStarter.PROXY_PASSWORD)); 
+
+		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("files"));
-		controls.add(new NumberProperty(null, "last_opened_list_length", 0, 200, 1)); // 25
+		controls.add(new NumberProperty(null, "last_opened_list_length", 0,
+				200, 1)); // 25
 		controls.add(new BooleanProperty(FreeMindCommon.LOAD_LAST_MAP
 				+ ".tooltip", FreeMindCommon.LOAD_LAST_MAP)); // true
 		controls.add(new BooleanProperty(FreeMind.RESOURCES_DON_T_OPEN_PORT
