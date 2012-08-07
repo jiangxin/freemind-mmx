@@ -91,8 +91,8 @@ public class FreeMindStarter {
 		if("true".equals(userPreferences.getProperty(PROXY_USE_SETTINGS))) {
 			if ("true".equals(userPreferences.getProperty(PROXY_IS_AUTHENTICATED))) {
 				Authenticator.setDefault(new ProxyAuthenticator(userPreferences
-						.getProperty(PROXY_USER), userPreferences
-						.getProperty(PROXY_PASSWORD)));
+						.getProperty(PROXY_USER), Tools.decompress(userPreferences
+						.getProperty(PROXY_PASSWORD))));
 			}
 			System.setProperty("http.proxyHost", userPreferences.getProperty(PROXY_HOST));
 			System.setProperty("http.proxyPort", userPreferences.getProperty(PROXY_PORT));
