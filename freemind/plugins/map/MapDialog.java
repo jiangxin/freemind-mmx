@@ -571,6 +571,8 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	public void toggleSearchBar(AWTEvent pEvent) {
 		if (mSearchBarVisible) {
+			// clear results
+			mResultTableModel.clear();
 			// hide search bar
 			mLastDividerPosition = mSearchSplitPane.getDividerLocation();
 			logger.info("Setting last divider to " + mLastDividerPosition);
