@@ -198,6 +198,13 @@ public class FreeMindMapController extends JMapController implements
 
 	private Coordinate mRectangularStart;
 
+	private Vector mPositionHolderVector = new Vector();
+	/**
+	 * Marks the index of the current position or -1 if none.
+	 */
+	private int mPositionHolderIndex = -1;
+	
+
 	public static class TileSourceStore {
 		TileSource mTileSource;
 		String mLayerName;
@@ -642,7 +649,7 @@ public class FreeMindMapController extends JMapController implements
 
 	}
 
-	private final class PositionHolder {
+	public final static class PositionHolder {
 		double lat;
 		double lon;
 		int zoom;
@@ -657,6 +664,37 @@ public class FreeMindMapController extends JMapController implements
 		public String toString() {
 			return "PositionHolder [lat=" + lat + ", lon=" + lon + ", zoom="
 					+ zoom + "]";
+		}
+
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			long temp;
+			temp = Double.doubleToLongBits(lat);
+			result = prime * result + (int) (temp ^ (temp >>> 32));
+			temp = Double.doubleToLongBits(lon);
+			result = prime * result + (int) (temp ^ (temp >>> 32));
+			result = prime * result + zoom;
+			return result;
+		}
+
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			PositionHolder other = (PositionHolder) obj;
+			if (Double.doubleToLongBits(lat) != Double
+					.doubleToLongBits(other.lat))
+				return false;
+			if (Double.doubleToLongBits(lon) != Double
+					.doubleToLongBits(other.lon))
+				return false;
+			if (zoom != other.zoom)
+				return false;
+			return true;
 		}
 
 	}
@@ -1841,23 +1879,32 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	protected void storeMapPosition(final Coordinate coordinates) {
-		// if position is not at the end, the locations in front are deleted.
-		while (getPositionHolderIndex() < getPositionHolderVector().size() - 1) {
-			getPositionHolderVector().remove(
-					getPositionHolderVector().size() - 1);
-		}
 		final PositionHolder holder = new PositionHolder(coordinates.getLat(),
 				coordinates.getLon(), getMap().getZoom());
-		setPositionHolderIndex(getPositionHolderIndex() + 1);
+		final Vector positionHolderVector = getPositionHolderVector();
+		if (getPositionHolderIndex()>=0) {
+			// check for equalness
+			PositionHolder currentPosition = (PositionHolder) positionHolderVector
+					.get(getPositionHolderIndex());
+			if(currentPosition.equals(holder)) {
+				return;
+			}
+		}
+		// if position is not at the end, the locations in front are deleted.
+		while (getPositionHolderIndex() < positionHolderVector.size() - 1) {
+			positionHolderVector.remove(
+					positionHolderVector.size() - 1);
+		}
 		logger.info("Storing position " + holder + " at index "
 				+ getPositionHolderIndex());
-		getPositionHolderVector().insertElementAt(holder,
-				getPositionHolderIndex());
+		positionHolderVector.insertElementAt(holder,
+				getPositionHolderIndex()+1);
+		setPositionHolderIndex(getPositionHolderIndex() + 1);
 		// assure that max size is below limit.
-		while (getPositionHolderVector().size() >= POSITION_HOLDER_LIMIT
+		while (positionHolderVector.size() >= POSITION_HOLDER_LIMIT
 				&& getPositionHolderIndex() > 0) {
-			getPositionHolderVector().remove(0);
 			setPositionHolderIndex(getPositionHolderIndex() - 1);
+			positionHolderVector.remove(0);
 		}
 		// update actions
 		mMoveForwardAction.setEnabled(mMoveForwardAction.isEnabled());
@@ -2255,16 +2302,28 @@ public class FreeMindMapController extends JMapController implements
 		}
 	}
 
-	private Vector getPositionHolderVector() {
-		return mMapHook.getRegistration().getPositionHolderVector();
+	public Vector getPositionHolderVector() {
+		return mPositionHolderVector;
 	}
 
-	private int getPositionHolderIndex() {
-		return mMapHook.getRegistration().getPositionHolderIndex();
+	public int getPositionHolderIndex() {
+		return mPositionHolderIndex;
 	}
 
-	private void setPositionHolderIndex(int positionHolderIndex) {
-		mMapHook.getRegistration().setPositionHolderIndex(positionHolderIndex);
+	
+	/**
+	 * @param positionHolderIndex
+	 * @return true, if positionHolderIndex is ok.
+	 */
+	public boolean checkPositionHolderIndex(int positionHolderIndex) {
+		return !(positionHolderIndex < -1 || positionHolderIndex>= mPositionHolderVector.size()); 
+	}
+	
+	public void setPositionHolderIndex(int positionHolderIndex) {
+		if(!checkPositionHolderIndex(positionHolderIndex)) {
+			throw new IllegalArgumentException("Index out of range " + positionHolderIndex);
+		}
+		mPositionHolderIndex = positionHolderIndex;
 	}
 
 	/**

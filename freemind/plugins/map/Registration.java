@@ -200,12 +200,6 @@ public class Registration implements HookRegistration, ActorXml,
 
 	private IntHolder mCachePurgerSemaphore = new IntHolder(0);
 	
-	private Vector mPositionHolderVector = new Vector();
-	/**
-	 * Marks the index of the current position or -1 if none.
-	 */
-	private int mPositionHolderIndex = -1;
-	
 	private static final class MapDialogPropertyContributor implements
 			FreemindPropertyContributor {
 
@@ -581,18 +575,6 @@ public class Registration implements HookRegistration, ActorXml,
 				freemind.main.Resources.getInstance().logException(e);
 			}
 		}
-	}
-
-	public Vector getPositionHolderVector() {
-		return mPositionHolderVector;
-	}
-
-	public int getPositionHolderIndex() {
-		return mPositionHolderIndex;
-	}
-
-	public void setPositionHolderIndex(int pPositionHolderIndex) {
-		mPositionHolderIndex = pPositionHolderIndex;
 	}
 
 }

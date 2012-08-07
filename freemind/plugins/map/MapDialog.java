@@ -54,6 +54,7 @@ import plugins.map.Registration.NodeVisibilityListener;
 import accessories.plugins.time.TableSorter;
 import freemind.common.TextTranslator;
 import freemind.controller.MapModuleManager.MapModuleChangeObserver;
+import freemind.controller.actions.generated.instance.MapLocationStorage;
 import freemind.controller.actions.generated.instance.MapWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.Place;
 import freemind.controller.actions.generated.instance.TableColumnSetting;
@@ -290,9 +291,11 @@ public class MapDialog extends MindMapHookAdapter implements
 		 */
 		public void clear() {
 			// clear old search results:
-			for (Iterator it = mMapSearchMarkerLocationHash.keySet().iterator(); it.hasNext();) {
+			for (Iterator it = mMapSearchMarkerLocationHash.keySet().iterator(); it
+					.hasNext();) {
 				Place place = (Place) it.next();
-				MapSearchMarkerLocation location = (MapSearchMarkerLocation) mMapSearchMarkerLocationHash.get(place);
+				MapSearchMarkerLocation location = (MapSearchMarkerLocation) mMapSearchMarkerLocationHash
+						.get(place);
 				getMap().removeMapMarker(location);
 			}
 			mMapSearchMarkerLocationHash.clear();
@@ -505,14 +508,6 @@ public class MapDialog extends MindMapHookAdapter implements
 		MapWindowConfigurationStorage storage = (MapWindowConfigurationStorage) getMindMapController()
 				.decorateDialog(mMapDialog, WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		if (storage != null) {
-			// TODO: Better would be to store these data per map.
-			map.setDisplayPositionByLatLon(storage.getMapCenterLatitude(),
-					storage.getMapCenterLongitude(), storage.getZoom());
-			final Coordinate position = new Coordinate(
-					storage.getCursorLatitude(), storage.getCursorLongitude());
-			getFreeMindMapController().setCursorPosition(position);
-			FreeMindMapController
-					.changeTileSource(storage.getTileSource(), map);
 			map.setZoomContolsVisible(storage.getZoomControlsVisible());
 			map.setTileGridVisible(storage.getTileGridVisible());
 			map.setMapMarkerVisible(storage.getShowMapMarker());
@@ -528,12 +523,33 @@ public class MapDialog extends MindMapHookAdapter implements
 				column++;
 			}
 			mLastDividerPosition = storage.getLastDividerPosition();
-			logger.info("Setting last divider to " + mLastDividerPosition);
+			mLimitSearchToRegion = storage.getLimitSearchToVisibleArea();
 			if (!storage.getSearchControlVisible()) {
 				toggleSearchBar();
 			} else {
 				mSearchSplitPane.setDividerLocation(mLastDividerPosition);
 			}
+			// restore last map positions
+			final Vector positionHolderVector = getFreeMindMapController().getPositionHolderVector();
+			for (Iterator it = storage.getListMapLocationStorageList()
+					.iterator(); it.hasNext();) {
+				MapLocationStorage location = (MapLocationStorage) it.next();
+				positionHolderVector.add(
+						new FreeMindMapController.PositionHolder(location
+								.getCursorLatitude(), location
+								.getCursorLongitude(), location.getZoom()));
+			}
+			if(getFreeMindMapController().checkPositionHolderIndex(storage.getMapLocationStorageIndex())) {
+				getFreeMindMapController().setPositionHolderIndex(storage.getMapLocationStorageIndex());
+			}
+			// TODO: Better would be to store these data per map.
+			map.setDisplayPositionByLatLon(storage.getMapCenterLatitude(),
+					storage.getMapCenterLongitude(), storage.getZoom());
+			final Coordinate position = new Coordinate(
+					storage.getCursorLatitude(), storage.getCursorLongitude());
+			getFreeMindMapController().setCursorPosition(position);
+			FreeMindMapController
+			.changeTileSource(storage.getTileSource(), map);
 		}
 		mMapDialog.setVisible(true);
 		getRegistration().setMapDialog(this);
@@ -691,6 +707,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		storage.setZoomControlsVisible(map.getZoomContolsVisible());
 		storage.setShowMapMarker(map.getMapMarkersVisible());
 		storage.setSearchControlVisible(mSearchBarVisible);
+		storage.setLimitSearchToVisibleArea(mLimitSearchToRegion);
 		storage.setHideFoldedNodes(map.isHideFoldedNodes());
 		storage.setLastDividerPosition(mLastDividerPosition);
 		for (int i = 0; i < mResultTable.getColumnCount(); i++) {
@@ -700,6 +717,15 @@ public class MapDialog extends MindMapHookAdapter implements
 			setting.setColumnSorting(mResultTableSorter.getSortingStatus(i));
 			storage.addTableColumnSetting(setting);
 		}
+		for (Iterator it = getFreeMindMapController().getPositionHolderVector().iterator(); it.hasNext();) {
+			FreeMindMapController.PositionHolder pos = (FreeMindMapController.PositionHolder) it.next();
+			MapLocationStorage mapLocationStorage = new MapLocationStorage();
+			mapLocationStorage.setCursorLatitude(pos.lat);
+			mapLocationStorage.setCursorLongitude(pos.lon);
+			mapLocationStorage.setZoom(pos.zoom);
+			storage.addMapLocationStorage(mapLocationStorage);
+		}
+		storage.setMapLocationStorageIndex(getFreeMindMapController().getPositionHolderIndex());
 		getMindMapController().storeDialogPositions(mMapDialog, storage,
 				WINDOW_PREFERENCE_STORAGE_PROPERTY);
 
