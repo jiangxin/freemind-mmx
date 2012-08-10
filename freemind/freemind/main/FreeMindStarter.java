@@ -31,8 +31,10 @@ import java.net.Authenticator;
 import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
 import java.net.URL;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
@@ -100,6 +102,9 @@ public class FreeMindStarter {
 		// Christopher Robin Elmersson: set
 		Toolkit xToolkit = Toolkit.getDefaultToolkit();
 
+		// workaround for java bug http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=7075600
+		System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
+		
 		try {
 			java.lang.reflect.Field awtAppClassNameField =
 					xToolkit.getClass().getDeclaredField("awtAppClassName");

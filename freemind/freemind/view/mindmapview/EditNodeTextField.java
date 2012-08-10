@@ -322,6 +322,7 @@ public class EditNodeTextField extends EditNodeBase {
 		textfield.removeKeyListener((KeyListener) textFieldListener);
 		textfield.removeMouseListener((MouseListener) textFieldListener);
 		mFocusListener.removeComponentListener((ComponentListener) textFieldListener);
+		// workaround for java bug http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=7075600, see FreeMindStarter
 		parent.remove(textfield);
 		parent.revalidate();
 		parent.repaint(bounds);
