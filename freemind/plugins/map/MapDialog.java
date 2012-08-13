@@ -497,7 +497,6 @@ public class MapDialog extends MindMapHookAdapter implements
 
 		map.setCursorPosition(new Coordinate(49.8, 8.8));
 		map.setUseCursor(true);
-		addMarkersToMap();
 		getRegistration().registerMapNodePositionListener(this);
 		getRegistration().registerNodeVisibilityListener(this);
 		getMindMapController().registerNodeSelectionListener(this, true);
@@ -551,6 +550,7 @@ public class MapDialog extends MindMapHookAdapter implements
 			FreeMindMapController
 			.changeTileSource(storage.getTileSource(), map);
 		}
+		addMarkersToMap();
 		mMapDialog.setVisible(true);
 		getRegistration().setMapDialog(this);
 	}

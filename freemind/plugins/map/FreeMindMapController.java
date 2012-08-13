@@ -1202,6 +1202,18 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addAction(exportAction, "main/actions/exportPng");
 		addAccelerator(menuHolder.addAction(pMapHook.getCloseAction(),
 				"main/actions/close"), "keystroke_plugins/map/MapDialog_Close");
+		
+		JMenu searchItem = new JMenu(getText("MapControllerPopupDialog.Search"));
+		menuHolder.addMenu(searchItem, "main/search/.");
+		addAccelerator(menuHolder.addAction(searchControlVisible,
+				"main/search/showSearchControl"),
+				"keystroke_plugins/map/MapDialog_toggle_search");
+		addAccelerator(
+				menuHolder.addAction(gotoSearch, "main/search/gotoSearch"),
+				"keystroke_plugins/map/MapDialog_goto_search");
+		addAccelerator(menuHolder.addAction(new LimitSearchToRegionAction(),
+				"main/search/limitSearchToRegion"),
+				"keystroke_plugins/map/MapDialog_limitSearchToRegion");
 		JMenu viewItem = new JMenu(getText("MapControllerPopupDialog.Views"));
 		menuHolder.addMenu(viewItem, "main/view/.");
 		menuHolder.addAction(showAction, "main/view/showNode");
@@ -1219,7 +1231,8 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addAction(tileGridVisible, "main/view/tileGridVisible");
 		menuHolder.addAction(zoomControlsVisible,
 				"main/view/zoomControlsVisible");
-		menuHolder.addAction(hideFoldedNodes, "main/view/hideFoldedNodes");
+		addAccelerator(menuHolder.addAction(hideFoldedNodes, "main/view/hideFoldedNodes"),
+				"keystroke_plugins/map/MapDialog_hideFoldedNodes");
 		menuHolder.addSeparator("main/view/");
 		addAccelerator(
 				menuHolder.addAction(mZoomInAction, "main/view/ZoomInAction"),
@@ -1231,16 +1244,7 @@ public class FreeMindMapController extends JMapController implements
 		JMenu navigationItem = new JMenu(
 				getText("MapControllerPopupDialog.Navigation"));
 		menuHolder.addMenu(navigationItem, "main/navigation/.");
-		addAccelerator(menuHolder.addAction(searchControlVisible,
-				"main/navigation/showSearchControl"),
-				"keystroke_plugins/map/MapDialog_toggle_search");
-		addAccelerator(
-				menuHolder.addAction(gotoSearch, "main/navigation/gotoSearch"),
-				"keystroke_plugins/map/MapDialog_goto_search");
-		addAccelerator(menuHolder.addAction(new LimitSearchToRegionAction(),
-				"main/navigation/limitSearchToRegion"),
-				"keystroke_plugins/map/MapDialog_limitSearchToRegion");
-		menuHolder.addSeparator("main/navigation/");
+//		menuHolder.addSeparator("main/navigation/");
 		addAccelerator(menuHolder.addAction(new SetHomeAction(),
 				"main/navigation/SetHome"),
 				"keystroke_plugins/map/MapDialogSetHome");
