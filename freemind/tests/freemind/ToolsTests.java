@@ -20,17 +20,14 @@
 
 package tests.freemind;
 
+import java.awt.print.Paper;
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.Permission;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -202,4 +199,19 @@ public class ToolsTests extends FreeMindTestBase {
 		junit.textui.TestRunner.run(ToolsTests.class);
 	}
 
+	public void testPageFormatStorage() throws Exception {
+		Paper paper = new Paper();
+		paper.setImageableArea(1d, 2d, 3d, 4d);
+		paper.setSize(5d, 6d);
+		String pageFormatAsString = Tools.getPageFormatAsString(paper);
+		Paper paper2 = new Paper();
+		Tools.setPageFormatFromString(paper2, pageFormatAsString);
+		assertEquals(paper.getHeight(), paper2.getHeight(), 0d);
+		assertEquals(paper.getWidth(), paper2.getWidth(), 0d);
+		assertEquals(paper.getImageableHeight(), paper2.getImageableHeight(), 0d);
+		assertEquals(paper.getImageableWidth(), paper2.getImageableWidth(), 0d);
+		assertEquals(paper.getImageableX(), paper2.getImageableX(), 0d);
+		assertEquals(paper.getImageableY(), paper2.getImageableY(), 0d);
+	}
+	
 }

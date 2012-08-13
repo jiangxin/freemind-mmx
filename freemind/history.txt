@@ -4,7 +4,8 @@ Changes made in FreeMind 1.0.0 Beta6
 * Geographical search results are displayed differently when selected.
 * Geographical search results are displayed as table including its distance to the cursor.
 * Geographical search can be limited to the visible map
-* http-Proxies can be used
+* http-Proxies can be used, Settings can be entered in the preferences dialog.
+* Page format for print jobs is stored in preferences and restored on each startup.
 
 ===============================
 Changes made in FreeMind 1.0.0 Beta5

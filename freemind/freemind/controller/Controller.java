@@ -41,6 +41,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
+import java.awt.print.Paper;
 import java.awt.print.PrinterJob;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -114,6 +115,10 @@ import freemind.view.mindmapview.MapView;
  */
 public class Controller implements MapModuleChangeObserver {
 
+	/**
+	 * 
+	 */
+	private static final String PAGE_FORMAT_PROPERTY = "page_format";
 	private HashSet mMapTitleChangeListenerSet = new HashSet();
 	private HashSet mZoomListenerSet = new HashSet();
 	private HashSet mMapTitleContributorSet = new HashSet();
@@ -1066,15 +1071,22 @@ public class Controller implements MapModuleChangeObserver {
 		}
 		if (pageFormat == null) {
 			pageFormat = printerJob.defaultPage();
-			if (Tools.safeEquals(getProperty("page_orientation"), "landscape")) {
-				pageFormat.setOrientation(PageFormat.LANDSCAPE);
-			} else if (Tools.safeEquals(getProperty("page_orientation"),
-					"portrait")) {
-				pageFormat.setOrientation(PageFormat.PORTRAIT);
-			} else if (Tools.safeEquals(getProperty("page_orientation"),
-					"reverse_landscape")) {
-				pageFormat.setOrientation(PageFormat.REVERSE_LANDSCAPE);
-			}
+		}
+		if (Tools.safeEquals(getProperty("page_orientation"), "landscape")) {
+			pageFormat.setOrientation(PageFormat.LANDSCAPE);
+		} else if (Tools.safeEquals(getProperty("page_orientation"),
+				"portrait")) {
+			pageFormat.setOrientation(PageFormat.PORTRAIT);
+		} else if (Tools.safeEquals(getProperty("page_orientation"),
+				"reverse_landscape")) {
+			pageFormat.setOrientation(PageFormat.REVERSE_LANDSCAPE);
+		}
+		String pageFormatProperty = getProperty(PAGE_FORMAT_PROPERTY);
+		if (!pageFormatProperty.isEmpty()) {
+			logger.info("Page format (stored): " + pageFormatProperty);
+			final Paper storedPaper = new Paper();
+			Tools.setPageFormatFromString(storedPaper, pageFormatProperty);
+			pageFormat.setPaper(storedPaper);
 		}
 		return true;
 	}
@@ -1141,6 +1153,7 @@ public class Controller implements MapModuleChangeObserver {
 				try {
 					frame.setWaitingCursor(true);
 					printerJob.print();
+					storePageFormat();
 				} catch (Exception ex) {
 					freemind.main.Resources.getInstance().logException(ex);
 				} finally {
@@ -1254,13 +1267,7 @@ public class Controller implements MapModuleChangeObserver {
 
 			// Ask user for page format (e.g., portrait/landscape)
 			pageFormat = printerJob.pageDialog(pageFormat);
-			if (pageFormat.getOrientation() == PageFormat.LANDSCAPE) {
-				setProperty("page_orientation", "landscape");
-			} else if (pageFormat.getOrientation() == PageFormat.PORTRAIT) {
-				setProperty("page_orientation", "portrait");
-			} else if (pageFormat.getOrientation() == PageFormat.REVERSE_LANDSCAPE) {
-				setProperty("page_orientation", "reverse_landscape");
-			}
+			storePageFormat();
 		}
 	}
 
@@ -2093,6 +2100,17 @@ public class Controller implements MapModuleChangeObserver {
 		mTabbedPane.setComponentAt(selectedIndex, frame.getContentComponent());
 		// double call, due to mac strangeness.
 		obtainFocusForSelected();
+	}
+
+	protected void storePageFormat() {
+		if (pageFormat.getOrientation() == PageFormat.LANDSCAPE) {
+			setProperty("page_orientation", "landscape");
+		} else if (pageFormat.getOrientation() == PageFormat.PORTRAIT) {
+			setProperty("page_orientation", "portrait");
+		} else if (pageFormat.getOrientation() == PageFormat.REVERSE_LANDSCAPE) {
+			setProperty("page_orientation", "reverse_landscape");
+		}
+		setProperty(PAGE_FORMAT_PROPERTY, Tools.getPageFormatAsString(pageFormat.getPaper()));
 	}
 
 }

@@ -42,6 +42,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -1826,6 +1828,49 @@ public class Tools {
 		KeyStroke keyStrokeF8 = KeyStroke.getKeyStroke(KeyEvent.VK_F8, 0);
 		map.remove(keyStrokeF6);
 		map.remove(keyStrokeF8);
+	}
+
+	/**
+	 * @param pPageFormat
+	 * @param pPageFormatProperty
+	 */
+	public static void setPageFormatFromString(Paper pPaper,
+			String pPageFormatProperty) {
+		try {
+			// parse string:
+			StringTokenizer tokenizer = new StringTokenizer(pPageFormatProperty, ";");
+			if(tokenizer.countTokens() != 6) {
+				logger.warning("Page format property has not the correct format:" + pPageFormatProperty);
+				return;
+			}
+			pPaper.setSize(nt(tokenizer), nt(tokenizer));
+			pPaper.setImageableArea(nt(tokenizer), nt(tokenizer), nt(tokenizer), nt(tokenizer));
+		} catch(Exception e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
+	}
+
+	/**
+	 * @param pTokenizer
+	 * @return
+	 */
+	private static double nt(StringTokenizer pTokenizer) {
+		String nextToken = pTokenizer.nextToken();
+		try {
+			return Double.parseDouble(nextToken);
+		} catch(Exception e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
+		return 0;
+	}
+
+	/**
+	 * @param pPageFormat
+	 * @return
+	 */
+	public static String getPageFormatAsString(Paper pPaper) {
+		return pPaper.getWidth()+";"+pPaper.getHeight()+";"+pPaper.getImageableX()+";"+pPaper.getImageableY()+";"+
+				pPaper.getImageableWidth()+";"+pPaper.getImageableHeight();
 	}
 
 }
