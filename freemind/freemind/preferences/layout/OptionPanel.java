@@ -756,11 +756,12 @@ public class OptionPanel implements TextTranslator {
 
 		controls.add(new BooleanProperty(null, "el__show_icon_for_attributes")); // true
 
-		controls.add(new SeparatorProperty("icon_properties"));
+		controls.add(new SeparatorProperty("note_properties"));
 		controls.add(new BooleanProperty(null,
 				FreeMind.RESOURCES_DON_T_SHOW_NOTE_ICONS));
 		controls.add(new BooleanProperty(null,
 				FreeMind.RESOURCES_DON_T_SHOW_NOTE_TOOLTIPS));
+		controls.add(new SeparatorProperty("icon_properties"));
 		controls.add(new StringProperty("icon_order_description",
 				MindIcon.PROPERTY_STRING_ICONS_LIST));
 		/***********************************************************************
