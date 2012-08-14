@@ -110,22 +110,22 @@ public class ExportPdfDialog extends JDialog {
 	 */
 	private void initialize() {
 		this.setModal(true);
-		this.setTitle("PDF Export Settings");
+		this.setTitle(controller.getResourceString("ExportPdfDialog.PDF_Export_Settings"));
 
 		this.setPreferredSize(new Dimension(400, 150));
 		// Page size
-		JLabel labelPaper = new JLabel("Size:");
+		JLabel labelPaper = new JLabel(controller.getResourceString("ExportPdfDialog.Size_"));
 		java.util.Arrays.sort(formatsCollection);
 		listBox = new JComboBox(formatsCollection);
 		listBox.setEditable(false);
 		listBox.setPreferredSize(new Dimension(100, 25));
 
 		// Page orientation
-		birdButtonLandscape = new JRadioButton("Landscape");
+		birdButtonLandscape = new JRadioButton(controller.getResourceString("ExportPdfDialog.Landscape"));
 		birdButtonLandscape.setMnemonic(KeyEvent.VK_L);
 		birdButtonLandscape.setSelected(true);
 
-		birdButtonPortrait = new JRadioButton("Portrait");
+		birdButtonPortrait = new JRadioButton(controller.getResourceString("ExportPdfDialog.Portrait"));
 		birdButtonPortrait.setMnemonic(KeyEvent.VK_P);
 
 		group = new ButtonGroup();
@@ -141,20 +141,26 @@ public class ExportPdfDialog extends JDialog {
 			}
 
 		});
-		jOKButton.setText("OK");
+		jOKButton.setText(controller.getResourceString("ExportPdfDialog.OK"));
 
 		// panels and layout
 		JPanel panel1 = new JPanel();
-		panel1.setBorder(BorderFactory.createTitledBorder("Paper"));
+		panel1.setBorder(BorderFactory.createTitledBorder(controller.getResourceString("ExportPdfDialog.Paper")));
+		GridBagLayout gridbag1 = new GridBagLayout();
+		panel1.setLayout(gridbag1);
 
 		JPanel panel2 = new JPanel();
-		panel2.setBorder(BorderFactory.createTitledBorder("Orientation"));
+		panel2.setBorder(BorderFactory.createTitledBorder(controller.getResourceString("ExportPdfDialog.Orientation")));
 
 		GridBagLayout gridbag = new GridBagLayout();
 		GridBagConstraints c = new GridBagConstraints();
 
-		panel1.add(labelPaper);
-		panel1.add(listBox);
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.gridx = 0;
+		c.gridy = 0;
+		panel1.add(labelPaper, c);
+		c.gridx = 1;
+		panel1.add(listBox, c);
 		panel2.add(birdButtonLandscape);
 		panel2.add(birdButtonPortrait);
 
