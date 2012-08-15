@@ -67,6 +67,7 @@ import freemind.common.SeparatorProperty;
 import freemind.common.StringProperty;
 import freemind.common.TextTranslator;
 import freemind.common.XmlBindingTools;
+import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.OptionPanelWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.main.FreeMind;
@@ -684,6 +685,9 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new BooleanProperty(
 
 		"use_tabbed_pane.tooltip", FreeMind.RESOURCES_USE_TABBED_PANE)); // true
+		controls.add(new NumberProperty(StructuredMenuHolder.AMOUNT_OF_VISIBLE_MENU_ITEMS+".tooltip",
+				StructuredMenuHolder.AMOUNT_OF_VISIBLE_MENU_ITEMS, 10, Integer.MAX_VALUE, 1)); 
+
 		// controls.add(new BooleanProperty(
 		//
 		// "use_split_pane.tooltip", FreeMind.RESOURCES_USE_SPLIT_PANE)); //

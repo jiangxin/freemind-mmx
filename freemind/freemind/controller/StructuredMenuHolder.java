@@ -52,6 +52,10 @@ import freemind.main.Tools;
  */
 public class StructuredMenuHolder {
 
+	/**
+	 * 
+	 */
+	public static final String AMOUNT_OF_VISIBLE_MENU_ITEMS = "AMOUNT_OF_VISIBLE_MENU_ITEMS";
 	public static final int ICON_SIZE = 16;
 	private String mOutputString;
 	private static Icon blindIcon = new BlindIcon(ICON_SIZE);
@@ -324,29 +328,52 @@ public class StructuredMenuHolder {
 
 	private static class MenuItemAdder implements MenuAdder {
 
-		private JMenu myItem;
+		/**
+		 * 
+		 */
+		private int mAmountOfVisibleMenuItems = 20;
+		private int mItemCounter = 0;
+		private int mMenuCounter = 0;
+		
+		private JMenu mBaseMenuItem;
+
+		private JMenu myMenuItem;
 
 		private StructuredMenuListener listener;
 
-		public MenuItemAdder(JMenu myItem) {
-			this.myItem = myItem;
+		public MenuItemAdder(JMenu pMenuItem) {
+			this.myMenuItem = pMenuItem;
+			this.mBaseMenuItem = myMenuItem;
+			mAmountOfVisibleMenuItems = Resources.getInstance().getIntProperty(AMOUNT_OF_VISIBLE_MENU_ITEMS, 20);
 			listener = new StructuredMenuListener();
-			myItem.addMenuListener(listener);
+			pMenuItem.addMenuListener(listener);
 		}
 
 		public void addMenuItem(StructuredMenuItemHolder holder) {
+			mItemCounter++;
+			if(mItemCounter > mAmountOfVisibleMenuItems) {
+				String label = Resources.getInstance().getResourceString("StructuredMenuHolder.next");
+				if(mMenuCounter > 0) {
+					label += " " + mMenuCounter;
+				}
+				JMenu jMenu = new JMenu(label);
+				mBaseMenuItem.add(jMenu);
+				myMenuItem = jMenu;
+				mItemCounter = 0;
+				mMenuCounter++;
+			}
 			Tools.setLabelAndMnemonic(holder.getMenuItem(), null);
 			JMenuItem item = holder.getMenuItem();
 			adjustMenuItem(item);
 			listener.addItem(holder);
-			myItem.add(item);
+			myMenuItem.add(item);
 		}
 
 		public void addSeparator() {
-			if (lastItemIsASeparator(myItem)) {
+			if (lastItemIsASeparator(myMenuItem)) {
 				return;
 			}
-			myItem.addSeparator();
+			myMenuItem.addSeparator();
 		}
 
 		// public void addAction(Action action) {
