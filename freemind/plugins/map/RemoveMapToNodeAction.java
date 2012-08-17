@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import freemind.modes.MindMapNode;
+import freemind.modes.common.plugins.MapNodePositionHolderBase;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 
 /**
@@ -43,12 +44,12 @@ public class RemoveMapToNodeAction extends MindMapNodeHookAdapter {
 		List selecteds = getMindMapController().getSelecteds();
 		for (Iterator it = selecteds.iterator(); it.hasNext();) {
 			MindMapNode node = (MindMapNode) it.next();
-			MapNodePositionHolder hook = MapNodePositionHolder.getHook(node);
+			MapNodePositionHolderBase hook = MapNodePositionHolder.getHook(node);
 			if(hook != null) {
 				List nodeSelected = Arrays.asList(new MindMapNode[] { node });
 				// double add = remove
 				getMindMapController().addHook(node, nodeSelected,
-						MapNodePositionHolder.NODE_MAP_HOOK_NAME);
+						MapNodePositionHolderBase.NODE_MAP_HOOK_NAME);
 
 			}
 		}

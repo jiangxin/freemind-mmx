@@ -55,14 +55,4 @@ public class PermanentMindMapNodeHookAdapter extends PermanentNodeHookAdapter {
 		return hook;
 	}
 
-	/**
-     */
-	protected void setToolTip(String key, String value) {
-		setToolTip(getNode(), key, value);
-	}
-
-	protected void setToolTip(MindMapNode node, String key, String value) {
-		getMindMapController().setToolTip(node, key, value);
-	}
-
 }

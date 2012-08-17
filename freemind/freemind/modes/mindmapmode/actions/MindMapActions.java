@@ -258,15 +258,6 @@ public interface MindMapActions {
 	public MindMapNode getRootNode();
 
 	/**
-	 * @param key
-	 *            key value patterns is used to ensure, that more than one
-	 *            tooltip can be displayed.
-	 * @param value
-	 *            null if you want to delete this tooltip.
-	 */
-	public void setToolTip(MindMapNode node, String key, String value);
-
-	/**
 	 * Moves the node to a new position.
 	 */
 	public void moveNodePosition(MindMapNode node, int vGap, int hGap,

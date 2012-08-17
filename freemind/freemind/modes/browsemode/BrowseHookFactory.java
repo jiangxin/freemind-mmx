@@ -31,6 +31,7 @@ import freemind.extensions.HookInstanciationMethod;
 import freemind.extensions.ModeControllerHook;
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHookSubstituteUnknown;
+import freemind.modes.common.plugins.MapNodePositionHolderBase;
 import freemind.modes.common.plugins.ReminderHookBase;
 
 /**
@@ -86,6 +87,8 @@ public class BrowseHookFactory extends HookFactoryAdapter {
 		NodeHook hook;
 		if (hookName.equals(ReminderHookBase.PLUGIN_LABEL)) {
 			hook = new BrowseReminderHook();
+		} else if (hookName.equals(MapNodePositionHolderBase.NODE_MAP_HOOK_NAME)) {
+			hook = new MapNodePositionHolderBase();
 		} else {
 			hook = new PermanentNodeHookSubstituteUnknown(hookName);
 		}

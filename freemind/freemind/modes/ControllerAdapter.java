@@ -1584,4 +1584,14 @@ public abstract class ControllerAdapter implements ModeController, DirectoryResu
 				.getModuleGivenModeController(this);
 	}
 
+	/**
+    *
+    */
+
+	public void setToolTip(MindMapNode node, String key, String value) {
+		node.setToolTip(key, value);
+		nodeRefresh(node);
+	}
+
+
 }

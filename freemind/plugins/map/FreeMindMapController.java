@@ -89,6 +89,7 @@ import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
+import freemind.modes.common.plugins.MapNodePositionHolderBase;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.view.mindmapview.EditNodeBase;
 import freemind.view.mindmapview.EditNodeTextField;
@@ -306,7 +307,7 @@ public class FreeMindMapController extends JMapController implements
 
 		public void ok(String newText) {
 			mMindMapController.setNodeText(mNewNode, newText);
-			MapNodePositionHolder hook = placeNode(mNewNode);
+			MapNodePositionHolderBase hook = placeNode(mNewNode);
 			endEdit();
 		}
 
@@ -1326,7 +1327,7 @@ public class FreeMindMapController extends JMapController implements
 	 * @param pSelected
 	 * @return
 	 */
-	protected MapNodePositionHolder placeNode(MindMapNode pSelected) {
+	protected MapNodePositionHolderBase placeNode(MindMapNode pSelected) {
 		MapNodePositionHolder hook = MapNodePositionHolder.getHook(pSelected);
 		if (hook == null) {
 			hook = addHookToNode(pSelected);
@@ -1353,7 +1354,7 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public void removeNodePosition(MindMapNode selected) {
-		MapNodePositionHolder hook = MapNodePositionHolder.getHook(selected);
+		MapNodePositionHolderBase hook = MapNodePositionHolder.getHook(selected);
 		if (hook != null) {
 			// double add == remove
 			addHookToNode(selected);
@@ -1513,7 +1514,7 @@ public class FreeMindMapController extends JMapController implements
 		MapNodePositionHolder hook;
 		List selecteds = Arrays.asList(new MindMapNode[] { selected });
 		mMindMapController.addHook(selected, selecteds,
-				MapNodePositionHolder.NODE_MAP_HOOK_NAME);
+				MapNodePositionHolderBase.NODE_MAP_HOOK_NAME);
 		hook = MapNodePositionHolder.getHook(selected);
 		return hook;
 	}

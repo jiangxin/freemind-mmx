@@ -171,9 +171,9 @@ public class BrowseController extends ViewControllerAdapter {
 
 			arrowLinkPopup.addSeparator();
 			// add all links from target and from source:
-			HashSet NodeAlreadyVisited = new HashSet();
-			NodeAlreadyVisited.add(link.getSource());
-			NodeAlreadyVisited.add(link.getTarget());
+			HashSet nodeAlreadyVisited = new HashSet();
+			nodeAlreadyVisited.add(link.getSource());
+			nodeAlreadyVisited.add(link.getTarget());
 			Vector links = getModel().getLinkRegistry().getAllLinks(
 					link.getSource());
 			links.addAll(getModel().getLinkRegistry().getAllLinks(
@@ -181,11 +181,11 @@ public class BrowseController extends ViewControllerAdapter {
 			for (int i = 0; i < links.size(); ++i) {
 				BrowseArrowLinkModel foreign_link = (BrowseArrowLinkModel) links
 						.get(i);
-				if (NodeAlreadyVisited.add(foreign_link.getTarget())) {
+				if (nodeAlreadyVisited.add(foreign_link.getTarget())) {
 					arrowLinkPopup.add(getGotoLinkNodeAction(foreign_link
 							.getTarget()));
 				}
-				if (NodeAlreadyVisited.add(foreign_link.getSource())) {
+				if (nodeAlreadyVisited.add(foreign_link.getSource())) {
 					arrowLinkPopup.add(getGotoLinkNodeAction(foreign_link
 							.getSource()));
 				}

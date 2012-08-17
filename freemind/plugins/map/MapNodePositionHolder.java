@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 
@@ -36,35 +35,19 @@ import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
-import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
+import freemind.modes.common.plugins.MapNodePositionHolderBase;
+import freemind.modes.mindmapmode.MindMapController;
 import freemind.view.mindmapview.NodeView;
 
 /**
  * @author foltin
  * @date 27.10.2011
  */
-public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
-	public final static String NODE_MAP_HOOK_NAME = "plugins/map/MapNodePositionHolder.properties";
-	public final static String NODE_MAP_LOCATION_ICON = "node_map_location_icon";
-
-	private static final String XML_STORAGE_POS_LON = "XML_STORAGE_POS_LON";
-	private static final String XML_STORAGE_POS_LAT = "XML_STORAGE_POS_LAT";
-	private static final String XML_STORAGE_MAP_LON = "XML_STORAGE_MAP_LON";
-	private static final String XML_STORAGE_MAP_LAT = "XML_STORAGE_MAP_LAT";
-	private static final String XML_STORAGE_ZOOM = "XML_STORAGE_ZOOM";
-	private static final String XML_STORAGE_TILE_SOURCE = "XML_STORAGE_TILE_SOURCE";
-	private static final String XML_STORAGE_MAP_TOOLTIP_LOCATION = "XML_STORAGE_MAP_TOOLTIP_LOCATION";
-	private static final String NODE_MAP_STORE_TOOLTIP = "node_map_store_tooltip";
-	private static final String NODE_MAP_SHOW_TOOLTIP = "node_map_show_tooltip";
-
+public class MapNodePositionHolder extends MapNodePositionHolderBase {
 	private Coordinate mPosition = new Coordinate(0, 0);
 	private Coordinate mMapCenter = new Coordinate(0, 0);
 	private String mTileSource = null;
 	private int mZoom = 1;
-	private static ImageIcon sMapLocationIcon;
-	private String mTooltipLocation = null;
-	private File mTooltipFile = null;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -74,8 +57,6 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	public void invoke(MindMapNode pNode) {
 		super.invoke(pNode);
 		getRegistration().registerMapNode(this);
-		setStateIcon(pNode, true);
-		showTooltip();
 	}
 
 	protected Registration getRegistration() {
@@ -83,8 +64,7 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	}
 
 	public void showTooltip() {
-		if (Resources.getInstance().getBoolProperty(NODE_MAP_SHOW_TOOLTIP) && 
-				!Tools.safeEquals(mTooltipLocation, "false")) {
+		if (isTooltipDesired()) {
 			if (mTooltipLocation != null) {
 				/* We only need the tooltip on disk.*/
 				File tooltipFile = getTooltipFile(false);
@@ -106,7 +86,6 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 	 * @see freemind.extensions.PermanentNodeHookAdapter#shutdownMapHook()
 	 */
 	public void shutdownMapHook() {
-		setStateIcon(getNode(), false);
 		getRegistration().deregisterMapNode(this);
 		super.shutdownMapHook();
 	}
@@ -133,11 +112,6 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 			values.put(XML_STORAGE_MAP_TOOLTIP_LOCATION, mTooltipLocation);
 		}
 		saveNameValuePairs(values, xml);
-	}
-
-	protected void setStateIcon(MindMapNode node, boolean enabled) {
-		node.setStateIcon(NODE_MAP_LOCATION_ICON,
-				(enabled) ? getMapLocationIcon() : null);
 	}
 
 	/**
@@ -170,8 +144,9 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 		mMapCenter.setLat(fromString(values.get(XML_STORAGE_MAP_LAT)));
 		mMapCenter.setLon(fromString(values.get(XML_STORAGE_MAP_LON)));
 		mZoom = intFromString(values.get(XML_STORAGE_ZOOM));
-		// if no value stored, the get method returns null.
-		mTooltipLocation = (String) values.get(XML_STORAGE_MAP_TOOLTIP_LOCATION);
+		// is done in super implementation
+//		// if no value stored, the get method returns null.
+//		mTooltipLocation = (String) values.get(XML_STORAGE_MAP_TOOLTIP_LOCATION);
 		mTileSource = (String) values.get(XML_STORAGE_TILE_SOURCE);
 	}
 
@@ -279,20 +254,6 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 		return null;
 	}
 
-	public static ImageIcon getMapLocationIcon() {
-		// icon
-		if (sMapLocationIcon == null) {
-			sMapLocationIcon = new ImageIcon(Resources.getInstance()
-					.getResource("images/map_location.png"));
-		}
-		return sMapLocationIcon;
-	}
-
-	public void addTooltip() {
-		String imageHtml = getImageHtml();
-		setToolTip(NODE_MAP_HOOK_NAME, imageHtml);
-	}
-
 	public String getImageHtml() {
 		String imageTag = "ERROR";
 		try {
@@ -368,6 +329,13 @@ public class MapNodePositionHolder extends PermanentMindMapNodeHookAdapter {
 
 	public String getNodeId() {
 		return getMindMapController().getNodeID(getNode());
+	}
+
+	/**
+	 * @return
+	 */
+	private MindMapController getMindMapController() {
+		return (MindMapController) getController();
 	}
 
 	/**

@@ -1540,15 +1540,6 @@ public class MindMapController extends ControllerAdapter implements
 		setLinkByTextField.setLink(node, link);
 	}
 
-	/**
-     *
-     */
-
-	public void setToolTip(MindMapNode node, String key, String value) {
-		node.setToolTip(key, value);
-		nodeRefresh(node);
-	}
-
 	// edit begins with home/end or typing (PN 6.2)
 	public void edit(KeyEvent e, boolean addNew, boolean editLong) {
 		edit.edit(e, addNew, editLong);
