@@ -750,4 +750,12 @@ public class MindMapControllerMock implements ModeController {
 	 */
 	public void changeSelection(NodeView pNode, boolean pIsSelected) {
 	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.ModeController#setToolTip(freemind.modes.MindMapNode, java.lang.String, java.lang.String)
+	 */
+	public void setToolTip(MindMapNode pNode, String pKey, String pValue) {
+		// TODO Auto-generated method stub
+		
+	}
 }

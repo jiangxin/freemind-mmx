@@ -277,10 +277,10 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	private static TileSourceStore[] mTileSources = new TileSourceStore[] {
-			new TileSourceStore(new OsmTileSource.Mapnik(), "M"),
-			new TileSourceStore(new OsmTileSource.CycleMap(), "C"),
-			new TileSourceStore(new TransportMap(), "T"),
-			new TileSourceStore(new MapQuestOpenMap(), "Q")
+			new TileSourceStore(new OsmTileSource.Mapnik(), MapNodePositionHolderBase.SHORT_MAPNIK),
+			new TileSourceStore(new OsmTileSource.CycleMap(), MapNodePositionHolderBase.SHORT_CYCLE_MAP),
+			new TileSourceStore(new TransportMap(), MapNodePositionHolderBase.SHORT_TRANSPORT_MAP),
+			new TileSourceStore(new MapQuestOpenMap(), MapNodePositionHolderBase.SHORT_MAP_QUEST_OPEN_MAP)
 	/* , new BingAerialTileSource() license problems.... */
 	};
 

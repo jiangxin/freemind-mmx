@@ -47,5 +47,7 @@ public class BrowsePopupMenu extends JPopupMenu {
 
 		add(c.toggleFolded, "keystroke_toggle_folded");
 		add(c.toggleChildrenFolded, "keystroke_toggle_children_folded");
+		addSeparator();
+		add(c.followMapLink, "keystroke_follow_map_link");
 	}
 }

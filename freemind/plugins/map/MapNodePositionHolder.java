@@ -204,6 +204,12 @@ public class MapNodePositionHolder extends MapNodePositionHolderBase {
 		return mPosition;
 	}
 
+	public static MapNodePositionHolder getHook(MindMapNode node) {
+		return (MapNodePositionHolder) getBaseHook(node);
+	}
+	
+
+	
 	/**
 	 * @param pTileSource
 	 */
@@ -244,16 +250,6 @@ public class MapNodePositionHolder extends MapNodePositionHolderBase {
 
 	/**
 	 */
-	public static MapNodePositionHolder getHook(MindMapNode node) {
-		for (Iterator j = node.getActivatedHooks().iterator(); j.hasNext();) {
-			PermanentNodeHook element = (PermanentNodeHook) j.next();
-			if (element instanceof MapNodePositionHolder) {
-				return (MapNodePositionHolder) element;
-			}
-		}
-		return null;
-	}
-
 	public String getImageHtml() {
 		String imageTag = "ERROR";
 		try {

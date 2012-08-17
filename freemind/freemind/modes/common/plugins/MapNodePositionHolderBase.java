@@ -22,9 +22,11 @@ package freemind.modes.common.plugins;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import javax.swing.ImageIcon;
 
+import freemind.extensions.PermanentNodeHook;
 import freemind.extensions.PermanentNodeHookAdapter;
 import freemind.main.Resources;
 import freemind.main.Tools;
@@ -48,9 +50,18 @@ public class MapNodePositionHolderBase extends PermanentNodeHookAdapter {
 	protected static final String XML_STORAGE_MAP_TOOLTIP_LOCATION = "XML_STORAGE_MAP_TOOLTIP_LOCATION";
 	protected static final String NODE_MAP_STORE_TOOLTIP = "node_map_store_tooltip";
 	protected static final String NODE_MAP_SHOW_TOOLTIP = "node_map_show_tooltip";
-	private static ImageIcon sMapLocationIcon;
+	public static final String TILE_SOURCE_MAP_QUEST_OPEN_MAP = "plugins.map.FreeMindMapController.MapQuestOpenMap";
+	public static final String TILE_SOURCE_TRANSPORT_MAP = "plugins.map.FreeMindMapController.TransportMap";
+	public static final String TILE_SOURCE_CYCLE_MAP = "org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource$CycleMap";
+	public static final String TILE_SOURCE_MAPNIK = "org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource$Mapnik";
+	public static final String SHORT_MAP_QUEST_OPEN_MAP = "Q";
+	public static final String SHORT_TRANSPORT_MAP = "T";
+	public static final String SHORT_CYCLE_MAP = "C";
+	public static final String SHORT_MAPNIK = "M";
+	public static ImageIcon sMapLocationIcon;
 	protected String mTooltipLocation = null;
 	protected File mTooltipFile = null;
+	private HashMap mValues;
 
 	public static ImageIcon getMapLocationIcon() {
 		// icon
@@ -112,9 +123,9 @@ public class MapNodePositionHolderBase extends PermanentNodeHookAdapter {
 
 	public void loadFrom(XMLElement pChild) {
 		super.loadFrom(pChild);
-		HashMap values = loadNameValuePairs(pChild);
+		mValues = loadNameValuePairs(pChild);
 		// if no value stored, the get method returns null.
-		mTooltipLocation = (String) values
+		mTooltipLocation = (String) mValues
 				.get(XML_STORAGE_MAP_TOOLTIP_LOCATION);
 	}
 
@@ -136,5 +147,25 @@ public class MapNodePositionHolderBase extends PermanentNodeHookAdapter {
 	protected void hideTooltip() {
 		setToolTip(NODE_MAP_HOOK_NAME, null);		
 	}
+
+	public static MapNodePositionHolderBase getBaseHook(MindMapNode node) {
+		for (Iterator j = node.getActivatedHooks().iterator(); j.hasNext();) {
+			PermanentNodeHook element = (PermanentNodeHook) j.next();
+			if (element instanceof MapNodePositionHolderBase) {
+				return (MapNodePositionHolderBase) element;
+			}
+		}
+		return null;
+	}
+
+	public String[] getBarePosition() {
+		return new String[] {(String) mValues.get(XML_STORAGE_POS_LAT), 
+				(String) mValues.get(XML_STORAGE_POS_LON), 
+				(String) mValues.get(XML_STORAGE_MAP_LAT),
+				(String) mValues.get(XML_STORAGE_MAP_LON),
+				(String) mValues.get(XML_STORAGE_ZOOM),
+				(String) mValues.get(XML_STORAGE_TILE_SOURCE)};
+	}
+
 }
 
