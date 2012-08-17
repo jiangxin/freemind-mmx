@@ -6,8 +6,10 @@
 # Uncomment this to turn on verbose mode.
 #export DH_VERBOSE=1
 
-ANT = ant
 FREEMINDROOT=$(CURDIR)/upstream
+ANT = ant
+# DO NOT use "sed -i -e ...", because "-i" not compatible on Mac
+SED = sed
 #docdir=file:/usr/share/doc/freemind -Dpropfolder=.freemind -Dbrowser_other=sensible-browser
 
 CFLAGS = -Wall -g
@@ -53,7 +55,9 @@ eol-format-stamp:
 		freemind/freemind/modes/NodeAdapter.java \
 		freemind/freemind.sh \
 		; do \
-	    fromdos $$i; sed -i -e 's/\r$$//g' -e 's/\r/\n/g' $$i ; \
+			fromdos $$i; \
+			$(SED) -e 's/\r$$//g' -e 's/\r/\n/g' $$i > $$i.bak; \
+			mv $$i.bak $$i; \
 	done)
 	# fix NO EOL of file: freemind.properties
 	#echo >> freemind.properties
@@ -61,16 +65,19 @@ eol-format-stamp:
 	touch eol-format-stamp
 
 #build-hacked-stamp: build-stamp eol-format-stamp patch oemrevpatch
-build-hacked-stamp: build-stamp patch oemrevpatch
+build-hacked-stamp: build-stamp patch
 	dh_testdir
 
-	cp -Rf $(CURDIR)/debian/freemind/* $(FREEMINDROOT)/freemind/
 	cd $(FREEMINDROOT)/freemind && $(ANT) -Dlight_bulb=yes dist
 	# cd $(FREEMINDROOT)/freemind && $(ANT) $(ANTFLAGS) doc
 
 	# create freemind.vanilla.sh here, it is also patched.
 	cp $(FREEMINDROOT)/bin/dist/freemind.sh $(FREEMINDROOT)/bin/dist/freemind.vanilla.sh
-	sed -i -e 's/freemind.jar/freemind.vanilla.jar/g' $(FREEMINDROOT)/bin/dist/freemind.vanilla.sh
+	$(SED) -e 's/freemind.jar/freemind.vanilla.jar/g' \
+		$(FREEMINDROOT)/bin/dist/freemind.vanilla.sh > \
+		$(FREEMINDROOT)/bin/dist/freemind.vanilla.sh.bak
+	mv $(FREEMINDROOT)/bin/dist/freemind.vanilla.sh.bak \
+		$(FREEMINDROOT)/bin/dist/freemind.vanilla.sh
 
 	touch build-hacked-stamp
 
@@ -148,16 +155,22 @@ binary-indep: build install
 binary-arch: build install
 # We have nothing to do by default.
 
-OEMREV=`head -1 $(CURDIR)/debian/changelog | sed -e "s/.*(.*-\([^-~+]*\).*).*/\1/"`
+OEMREV=`head -1 $(CURDIR)/debian/changelog | $(SED) -e "s/.*(.*-\([^-~+]*\).*).*/\1/"`
 oemrevpatch:
 	echo "OEM Revision Patch"
-	@sed -ie "/public static final String HACKEDVERSION/ s/<REVISION>/r$(OEMREV)/" \
-	    $(FREEMINDROOT)/freemind/freemind/main/FreeMind.java
+	@$(SED) -e "/public static final String HACKEDVERSION/ s/<REVISION>/r$(OEMREV)/" \
+	    $(FREEMINDROOT)/freemind/freemind/main/FreeMind.java > \
+	    $(FREEMINDROOT)/freemind/freemind/main/FreeMind.java.bak
+	mv $(FREEMINDROOT)/freemind/freemind/main/FreeMind.java.bak \
+		$(FREEMINDROOT)/freemind/freemind/main/FreeMind.java
 
 oemrevunpatch:
 	echo "OEM Revision Unpatch"
-	@sed -ie "/public static final String HACKEDVERSION/ s/r$(OEMREV)/<REVISION>/" \
-	    $(FREEMINDROOT)/freemind/freemind/main/FreeMind.java
+	@$(SED) -e "/public static final String HACKEDVERSION/ s/r$(OEMREV)/<REVISION>/" \
+		$(FREEMINDROOT)/freemind/freemind/main/FreeMind.java > \
+		$(FREEMINDROOT)/freemind/freemind/main/FreeMind.java.bak
+	mv $(FREEMINDROOT)/freemind/freemind/main/FreeMind.java.bak \
+		$(FREEMINDROOT)/freemind/freemind/main/FreeMind.java
 
 binary: binary-indep binary-arch windows
 
@@ -171,12 +184,14 @@ QUILT_STAMPFN	= debian/stamp-patched
 # QUILT_PATCH_DIR: where the patches live
 QUILT_PATCH_DIR = ../debian/patches
 
-patch: eol-format-stamp $(QUILT_STAMPFN)
+patch: eol-format-stamp $(QUILT_STAMPFN) oemrevpatch
 $(QUILT_STAMPFN):
 	@# quilt exits with 2 as return when there was nothing to do.
 	@# That's not an error here
 	(cd $(FREEMINDROOT); QUILT_PATCHES=$(QUILT_PATCH_DIR) \
 		quilt --quiltrc /dev/null push -a || test $$? = 2)
+	# copy saxon.jar and FreeMind.vanilla.exe
+	cp -Rf $(CURDIR)/debian/freemind/* $(FREEMINDROOT)/freemind/
 	touch $(QUILT_STAMPFN)
 
 unpatch:
