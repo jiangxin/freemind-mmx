@@ -24,12 +24,12 @@ import javax.swing.Action;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 
-import freemind.modes.ControllerAdapter;
+public class BrowsePopupMenu extends JPopupMenu implements PopupMenuListener {
 
-public class BrowsePopupMenu extends JPopupMenu {
-
-	private ControllerAdapter c;
+	private BrowseController c;
 
 	protected void add(Action action, String keystroke) {
 		JMenuItem item = add(action);
@@ -49,5 +49,26 @@ public class BrowsePopupMenu extends JPopupMenu {
 		add(c.toggleChildrenFolded, "keystroke_toggle_children_folded");
 		addSeparator();
 		add(c.followMapLink, "keystroke_follow_map_link");
+		addPopupMenuListener(this);
 	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.event.PopupMenuListener#popupMenuWillBecomeVisible(javax.swing.event.PopupMenuEvent)
+	 */
+	public void popupMenuWillBecomeVisible(PopupMenuEvent pE) {
+		c.followMapLink.setEnabled(c.followMapLink.isEnabled(null, null));
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.event.PopupMenuListener#popupMenuWillBecomeInvisible(javax.swing.event.PopupMenuEvent)
+	 */
+	public void popupMenuWillBecomeInvisible(PopupMenuEvent pE) {
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.event.PopupMenuListener#popupMenuCanceled(javax.swing.event.PopupMenuEvent)
+	 */
+	public void popupMenuCanceled(PopupMenuEvent pE) {
+	}
+	
 }

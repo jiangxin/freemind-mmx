@@ -515,7 +515,7 @@ public class StructuredMenuHolder {
 		}
 
 		public void menuSelected(MenuEvent arg0) {
-			// System.out.println("Selected menu items " + item);
+//			System.out.println("Selected menu items " + arg0);
 			for (Iterator i = menuItemHolder.iterator(); i.hasNext();) {
 				StructuredMenuItemHolder holder = (StructuredMenuItemHolder) i
 						.next();

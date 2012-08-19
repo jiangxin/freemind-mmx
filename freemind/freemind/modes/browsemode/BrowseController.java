@@ -36,11 +36,12 @@ import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JToolBar;
 
-import freemind.controller.FreeMindPopupMenu;
 import freemind.controller.MenuBar;
+import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.StructuredMenuHolder;
 import freemind.extensions.HookFactory;
 import freemind.main.Tools;
@@ -73,14 +74,14 @@ public class BrowseController extends ViewControllerAdapter {
 	private ImageIcon noteIcon;
 	public FollowMapLink followMapLink;
 
-	public static class FollowMapLink extends AbstractAction {
+	public static class FollowMapLink extends AbstractAction implements MenuItemEnabledListener {
 
 		private ViewControllerAdapter modeController;
 
 		private Logger logger;
 
 		public FollowMapLink(ViewControllerAdapter controller) {
-			super(controller.getText("follow_map_link"));
+			super(controller.getText("follow_map_link"), MapNodePositionHolderBase.getMapLocationIcon());
 			this.modeController = controller;
 			logger = modeController.getFrame().getLogger(
 					this.getClass().getName());
@@ -88,9 +89,7 @@ public class BrowseController extends ViewControllerAdapter {
 
 		public void actionPerformed(ActionEvent e) {
 
-			MindMapNode selected = modeController.getSelected();
-			MapNodePositionHolderBase hook = MapNodePositionHolderBase
-					.getBaseHook(selected);
+			MapNodePositionHolderBase hook = getHook();
 			if (hook != null) {
 				String[] barePositions = hook.getBarePosition();
 				try {
@@ -122,6 +121,20 @@ public class BrowseController extends ViewControllerAdapter {
 					freemind.main.Resources.getInstance().logException(e1);
 				}
 			}
+		}
+
+		protected MapNodePositionHolderBase getHook() {
+			MindMapNode selected = modeController.getSelected();
+			MapNodePositionHolderBase hook = MapNodePositionHolderBase
+					.getBaseHook(selected);
+			return hook;
+		}
+
+		/* (non-Javadoc)
+		 * @see freemind.controller.MenuItemEnabledListener#isEnabled(javax.swing.JMenuItem, javax.swing.Action)
+		 */
+		public boolean isEnabled(JMenuItem pItem, Action pAction) {
+			return getHook() != null;
 		}
 
 	}
