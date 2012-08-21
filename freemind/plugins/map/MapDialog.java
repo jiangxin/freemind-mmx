@@ -392,7 +392,7 @@ public class MapDialog extends MindMapHookAdapter implements
 						&& pEvent.getModifiers() == 0) {
 					logger.info("Set result in map.");
 					pEvent.consume();
-					displaySearchItem(mResultTableModel, index);
+					displaySearchItem(index);
 					return;
 				}
 
@@ -454,7 +454,7 @@ public class MapDialog extends MindMapHookAdapter implements
 				if (e.getClickCount() == 2) {
 					// int index = mResultTable.locationToIndex(e.getPoint());
 					int index = mResultTable.getSelectedRow();
-					displaySearchItem(mResultTableModel, index);
+					displaySearchItem(index);
 				}
 			}
 		};
@@ -522,7 +522,10 @@ public class MapDialog extends MindMapHookAdapter implements
 				column++;
 			}
 			mLastDividerPosition = storage.getLastDividerPosition();
-			mLimitSearchToRegion = storage.getLimitSearchToVisibleArea();
+			// default is false, so if true, toggle it.
+			if(storage.getLimitSearchToVisibleArea()) {
+				toggleLimitSearchToRegion();
+			}
 			if (!storage.getSearchControlVisible()) {
 				toggleSearchBar();
 			} else {
@@ -932,9 +935,9 @@ public class MapDialog extends MindMapHookAdapter implements
 		return map;
 	}
 
-	public void displaySearchItem(final ResultTableModel pResultTableModel,
-			int index) {
-		Place place = pResultTableModel.getPlace(index);
+	public void displaySearchItem(int index) {
+		index = mResultTableSorter.modelIndex(index);
+		Place place = mResultTableModel.getPlace(index);
 		getFreeMindMapController().setCursorPosition(place);
 		if (mSingleSearch && isSearchBarVisible()) {
 			toggleSearchBar();
@@ -972,11 +975,11 @@ public class MapDialog extends MindMapHookAdapter implements
 		final int rowCount = mResultTableModel.getRowCount();
 		if (resultOk && pSelectFirstResult) {
 			if (rowCount > 0) {
-				displaySearchItem(mResultTableModel, 0);
+				displaySearchItem(0);
 			}
 		}
 		if (mSingleSearch && rowCount == 1) {
-			displaySearchItem(mResultTableModel, 0);
+			displaySearchItem(0);
 			this.map.requestFocus();
 			return;
 		}
