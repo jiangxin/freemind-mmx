@@ -364,7 +364,6 @@ public class MapDialog extends MindMapHookAdapter implements
 				}
 			}
 		});
-		mSearchTerm.addKeyListener(getFreeMindMapController());
 		mSearchFieldPanel = new JPanel();
 		mSearchFieldPanel.setLayout(new BorderLayout(10, 0));
 		JButton clearButton = new JButton(new ImageIcon(Resources.getInstance()
@@ -398,7 +397,6 @@ public class MapDialog extends MindMapHookAdapter implements
 
 			}
 		});
-		mResultTable.addKeyListener(getFreeMindMapController());
 		mResultTable.getSelectionModel().addListSelectionListener(
 				new ListSelectionListener() {
 
@@ -598,6 +596,7 @@ public class MapDialog extends MindMapHookAdapter implements
 			mSearchSplitPane.setBottomComponent(null);
 			mMapDialog.remove(mSearchSplitPane);
 			mMapDialog.add(map, BorderLayout.CENTER);
+			mMapDialog.requestFocusInWindow();
 			mSearchBarVisible = false;
 		} else {
 			// show search bar
@@ -608,7 +607,7 @@ public class MapDialog extends MindMapHookAdapter implements
 			focusSearchTerm();
 			mSearchBarVisible = true;
 		}
-		mMapDialog.validate();
+		mMapDialog.revalidate();
 		if (pEvent != null) {
 			mSearchTerm.setText("");
 			mSearchTerm.dispatchEvent(pEvent);
