@@ -20,7 +20,9 @@
 
 package tests.freemind;
 
+import java.io.File;
 import java.io.StringReader;
+import java.net.URL;
 
 import com.lightdev.app.shtm.SHTMLPanel;
 
@@ -280,5 +282,19 @@ public class HtmlConversionTests extends FreeMindTestBase {
 				+ HtmlTools.NBSP + HtmlTools.NBSP,
 				HtmlTools.replaceSpacesToNonbreakableSpaces("  xy   "));
 	}
-
+	
+//	public void testUrlToCommandConversion() throws Exception {
+//		final String codedUrlString = "&#x422;&#x430;&#x43a;_ru.txt";
+//		String urlString = HtmlTools.unescapeHTMLUnicodeEntity(codedUrlString);
+//		URL mapUrl = Tools.fileToUrl(new File("/home/foltin/tmp/Neue Mindmap.mm"));
+//		URL url = new URL(mapUrl, urlString);
+//		String correctedUrl = new String(url.toExternalForm());
+//		correctedUrl = correctedUrl.replace('\\', '/').replaceAll(" ",
+//				"%20");
+//		String command = "rundll32 url.dll,FileProtocolHandler "
+//				+ url.toString();
+//
+//		assertEquals("", command);
+////		assertEquals("", url.toString());
+//	}
 }

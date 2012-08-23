@@ -138,7 +138,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	private Logger logger = null;
 
-	protected static final VersionInformation VERSION = new VersionInformation("1.0.0 Beta 5");
+	protected static final VersionInformation VERSION = new VersionInformation(
+			"1.0.0 Beta 5");
 
 	public static final String XML_VERSION = "1.0.0";
 
@@ -565,7 +566,11 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 				// build string for default browser:
 				// ask for property about browser: fc, 26.11.2003.
-				Object[] messageArguments = { url.toString() };
+				String[] newEnv = new String[1];
+				String envProp = "JENV_1";
+				String envRef = "%" + envProp + "%";
+				newEnv[0] = envProp + "=" + url.toString();
+				Object[] messageArguments = { envRef };
 				MessageFormat formatter = new MessageFormat(
 						getProperty(propertyString));
 				browser_command = formatter.format(messageArguments);
@@ -574,22 +579,20 @@ public class FreeMind extends JFrame implements FreeMindMain {
 					// command = "rundll32 url.dll,FileProtocolHandler "+
 					// Tools.urlGetFile(url);
 					// bug fix by Dan:
-					command = "rundll32 url.dll,FileProtocolHandler "
-							+ url.toString();
+					command = "rundll32 url.dll,FileProtocolHandler " + envRef;
 					// see
 					// http://rsb.info.nih.gov/ij/developer/source/ij/plugin/BrowserLauncher.java.html
 					if (System.getProperty("os.name")
 							.startsWith("Windows 2000"))
 						command = "rundll32 shell32.dll,ShellExec_RunDLL "
-								+ url.toString();
+								+ envRef;
 				} else if (url.toString().startsWith("mailto:")) {
-					command = "rundll32 url.dll,FileProtocolHandler "
-							+ url.toString();
+					command = "rundll32 url.dll,FileProtocolHandler " + envRef;
 				} else {
 					command = browser_command;
 				}
-				logger.info("Starting browser with "+command);
-				Runtime.getRuntime().exec(command);
+				logger.info("Starting browser with " + command);
+				Runtime.getRuntime().exec(command, newEnv, null);
 			} catch (IOException x) {
 				controller
 						.errorMessage("Could not invoke browser.\n\nFreemind excecuted the following statement on a command line:\n\""
@@ -605,10 +608,14 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			try {
 				// ask for property about browser: fc, 26.11.2003.
 				Object[] messageArguments = { correctedUrl, url.toString() };
-				if("file".equals(url.getProtocol())){
-					// Bug in the apple's open function. For files, a pure filename must be given.
-					String[] command = {getProperty("default_browser_command_mac_open"), "file:" + Tools.urlToFile(url).getAbsolutePath()};
-					logger.info("Starting command: " + Arrays.deepToString(command));
+				if ("file".equals(url.getProtocol())) {
+					// Bug in the apple's open function. For files, a pure
+					// filename must be given.
+					String[] command = {
+							getProperty("default_browser_command_mac_open"),
+							"file:" + Tools.urlToFile(url).getAbsolutePath() };
+					logger.info("Starting command: "
+							+ Arrays.deepToString(command));
 					Runtime.getRuntime().exec(command, null, null);
 				} else {
 					MessageFormat formatter = new MessageFormat(
