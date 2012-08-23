@@ -607,7 +607,7 @@ public class MapDialog extends MindMapHookAdapter implements
 			focusSearchTerm();
 			mSearchBarVisible = true;
 		}
-		mMapDialog.revalidate();
+		mMapDialog.validate();
 		if (pEvent != null) {
 			mSearchTerm.setText("");
 			mSearchTerm.dispatchEvent(pEvent);
