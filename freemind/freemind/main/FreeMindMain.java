@@ -131,6 +131,7 @@ public interface FreeMindMain {
 	public static final int VERSION_TYPE_BETA = 1;
 	public static final int VERSION_TYPE_RC = 2;
 	public static final int VERSION_TYPE_RELEASE = 3;
+	public static final String ENABLE_NODE_MOVEMENT = "enable_node_movement";
 
 	public static class VersionInformation {
 		public int mMaj = 0;

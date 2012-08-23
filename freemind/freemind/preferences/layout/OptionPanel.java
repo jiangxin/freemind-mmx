@@ -491,16 +491,19 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new SeparatorProperty("proxy"));
 		controls.add(new BooleanProperty(FreeMindStarter.PROXY_USE_SETTINGS
 				+ ".tooltip", FreeMindStarter.PROXY_USE_SETTINGS));
-		controls.add(new StringProperty(FreeMindStarter.PROXY_HOST+".tooltip",
-				FreeMindStarter.PROXY_HOST)); 
-		controls.add(new NumberProperty(FreeMindStarter.PROXY_PORT+".tooltip", FreeMindStarter.PROXY_PORT, 1,
-				65535, 1)); 
+		controls.add(new StringProperty(
+				FreeMindStarter.PROXY_HOST + ".tooltip",
+				FreeMindStarter.PROXY_HOST));
+		controls.add(new NumberProperty(
+				FreeMindStarter.PROXY_PORT + ".tooltip",
+				FreeMindStarter.PROXY_PORT, 1, 65535, 1));
 		controls.add(new BooleanProperty(FreeMindStarter.PROXY_IS_AUTHENTICATED
 				+ ".tooltip", FreeMindStarter.PROXY_IS_AUTHENTICATED));
-		controls.add(new StringProperty(FreeMindStarter.PROXY_USER+".tooltip",
-				FreeMindStarter.PROXY_USER)); 
-		controls.add(new PasswordProperty(FreeMindStarter.PROXY_PASSWORD+".tooltip",
-				FreeMindStarter.PROXY_PASSWORD)); 
+		controls.add(new StringProperty(
+				FreeMindStarter.PROXY_USER + ".tooltip",
+				FreeMindStarter.PROXY_USER));
+		controls.add(new PasswordProperty(FreeMindStarter.PROXY_PASSWORD
+				+ ".tooltip", FreeMindStarter.PROXY_PASSWORD));
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("files"));
@@ -685,8 +688,10 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new BooleanProperty(
 
 		"use_tabbed_pane.tooltip", FreeMind.RESOURCES_USE_TABBED_PANE)); // true
-		controls.add(new NumberProperty(StructuredMenuHolder.AMOUNT_OF_VISIBLE_MENU_ITEMS+".tooltip",
-				StructuredMenuHolder.AMOUNT_OF_VISIBLE_MENU_ITEMS, 10, Integer.MAX_VALUE, 1)); 
+		controls.add(new NumberProperty(
+				StructuredMenuHolder.AMOUNT_OF_VISIBLE_MENU_ITEMS + ".tooltip",
+				StructuredMenuHolder.AMOUNT_OF_VISIBLE_MENU_ITEMS, 10,
+				Integer.MAX_VALUE, 1));
 
 		// controls.add(new BooleanProperty(
 		//
@@ -1156,10 +1161,9 @@ public class OptionPanel implements TextTranslator {
 		 */
 		controls.add(new NewTabProperty("Behaviour"));
 		controls.add(new SeparatorProperty("behaviour"));
-		controls.add(new ComboProperty(
-
-		"placenewbranches.tooltip", "placenewbranches", new String[] { "first",
-				"last" }, this)); // last
+		controls.add(new BooleanProperty("enable_node_movement.tooltip", "enable_node_movement")); 
+		controls.add(new ComboProperty("placenewbranches.tooltip",
+				"placenewbranches", new String[] { "first", "last" }, this)); // last
 		controls.add(new BooleanProperty("draganddrop.tooltip", "draganddrop")); // true
 
 		controls.add(new BooleanProperty("unfold_on_paste.tooltip",
@@ -1176,13 +1180,11 @@ public class OptionPanel implements TextTranslator {
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("key_typing"));
-		controls.add(new BooleanProperty(
+		controls.add(new BooleanProperty("disable_key_type.tooltip",
+				"disable_key_type")); // false
 
-		"disable_key_type.tooltip", "disable_key_type")); // false
-
-		controls.add(new BooleanProperty(
-
-		"key_type_adds_new.tooltip", "key_type_adds_new")); // false
+		controls.add(new BooleanProperty("key_type_adds_new.tooltip",
+				"key_type_adds_new")); // false
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("resources_notifications"));

@@ -125,7 +125,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 
 		parent.add(this, index);
 
-		if (!model.isRoot()) {
+		if (!model.isRoot() && "true".equals(map.getController().getProperty(FreeMindMain.ENABLE_NODE_MOVEMENT))) {
 			motionListenerView = new NodeMotionListenerView(this);
 			map.add(motionListenerView, map.getComponentCount() - 1);
 		}

@@ -7,6 +7,7 @@ Changes made in FreeMind 1.0.0 Beta6
 * http-Proxies can be used, Settings can be entered in the preferences dialog.
 * Page format for print jobs is stored in preferences and restored on each startup.
 * NEW: viewer for maps in the browse mode/java applet.
+* Free node movement is now switched off by default and can be enabled in the preferences.
 
 ===============================
 Changes made in FreeMind 1.0.0 Beta5
