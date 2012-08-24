@@ -589,7 +589,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 					command = browser_command;
 				}
 				logger.info("Starting browser with "+command);
-				Runtime.getRuntime().exec(command);
+//				Runtime.getRuntime().exec(command);
+				execWindows(command);
 			} catch (IOException x) {
 				controller
 						.errorMessage("Could not invoke browser.\n\nFreemind excecuted the following statement on a command line:\n\""
@@ -650,6 +651,32 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		}
 	}
 
+	/**
+	 * @param cmd precondition: the command can be split by spaces and the last argument is the only
+	 * one that contains unicode chars. Moreover, we are under Windows.
+	 * @throws IOException
+	 */
+	private void execWindows(String pCommand) throws IOException {
+		// taken and adapted from http://stackoverflow.com/questions/1876507/java-runtime-exec-on-windows-fails-with-unicode-in-arguments
+		StringTokenizer st = new StringTokenizer(pCommand, " ");
+		String[] cmd = new String[st.countTokens()];
+		int i=0;
+		while(st.hasMoreTokens()) {
+			cmd[i++] = st.nextToken();
+		}
+		Map newEnv = new HashMap();
+		newEnv.putAll(System.getenv());
+		// exchange last argument by environment
+		String envName = "JENV_1";
+	    newEnv.put(envName, cmd[cmd.length-1]);
+	    cmd[cmd.length-1] = "%" + envName + "%";
+
+		ProcessBuilder pb = new ProcessBuilder(cmd);
+		Map env = pb.environment();
+		env.putAll(newEnv);
+		final Process p = pb.start();
+	}
+	
 	private String transpose(String input, char findChar, String replaceString) {
 		String res = new String();
 		for (int i = 0; i < input.length(); ++i) {
