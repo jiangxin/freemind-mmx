@@ -292,7 +292,10 @@ public class LogFileViewer extends MindMapHookAdapter implements
 		mLogFileViewer.setVisible(true);
 		mUpdateTextAreaThread = new UpdateTextAreaThread();
 		mUpdateTextAreaThread.start();
-		getBaseHandler().setLogReceiver(this);
+		LogFileLogHandler baseHandler = getBaseHandler();
+		if (baseHandler != null) {
+			baseHandler.setLogReceiver(this);
+		}
 	}
 
 	
@@ -331,7 +334,10 @@ public class LogFileViewer extends MindMapHookAdapter implements
 	public void disposeDialog() {
 		mUpdateTextAreaThread.commitSuicide();
 		mUpdateTextAreaThread = null;
-		getBaseHandler().setLogReceiver(null);
+		LogFileLogHandler baseHandler = getBaseHandler();
+		if (baseHandler != null) {
+			baseHandler.setLogReceiver(null);
+		}
 		// store window positions:
 		LogFileViewerConfigurationStorage storage = new LogFileViewerConfigurationStorage();
 		// put_additional_data_here
