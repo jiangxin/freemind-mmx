@@ -22,7 +22,6 @@ package freemind.main;
 
 import java.awt.BorderLayout;
 import java.awt.Cursor;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.Toolkit;
@@ -575,7 +574,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 				if (url.getProtocol().equals("file")) {
 					if (!Tools.isBelowJava6()) {
-						Desktop.getDesktop().open(file);
 						Class desktopClass = Class.forName("java.awt.Desktop");
 						Method getDesktopMethod = desktopClass.getMethod(
 								"getDesktop", new Class[] {});
