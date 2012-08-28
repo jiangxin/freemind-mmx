@@ -26,31 +26,32 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Stroke;
 
-import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
-
 import freemind.controller.actions.generated.instance.Place;
 
-public class MapSearchMarkerLocation implements MapMarker {
+public class MapSearchMarkerLocation extends MapMarkerBase {
 
-	public static final int CIRCLE_RADIUS = 5;
 	public static final int CIRCLE_SELECTED_FACTOR = 2;
 	private static final int CIRCLE_DIAMETER = CIRCLE_RADIUS * 2;
-	private final MapDialog mMapDialog;
-	protected static java.util.logging.Logger logger = null;
 	private final Place mPlace;
-	private boolean mIsSelected;
 
 	/**
 	 * @param pMapDialog
 	 * @param pNewPlace
 	 */
 	public MapSearchMarkerLocation(MapDialog pMapDialog, Place pNewPlace) {
-		if (logger == null) {
-			logger = freemind.main.Resources.getInstance().getLogger(
-					this.getClass().getName());
-		}
-		mMapDialog = pMapDialog;
+		super(pMapDialog);
+		mBulletColor = Color.RED;
 		mPlace = pNewPlace;
+		update();
+	}
+
+	/**
+	 * Either start or when something changes on the node, this method is called.
+	 */
+	public void update() {
+		setText(mPlace.getDisplayName());
+		setForeground(mBulletColor);
+		setSize(getPreferredSize());
 	}
 
 	public double getLat() {
@@ -61,37 +62,26 @@ public class MapSearchMarkerLocation implements MapMarker {
 		return mPlace.getLon();
 	}
 
-	public void paint(Graphics g, Point position) {
-		g.setColor(Color.RED);
-		if (mIsSelected) {
-			Graphics2D g2 = (Graphics2D) g;
+
+	/* (non-Javadoc)
+	 * @see plugins.map.MapMarkerBase#paintCenter(java.awt.Graphics, java.awt.Point)
+	 */
+	protected void paintCenter(Graphics pG, Point pPosition) {
+		if (isSelected()) {
+			Graphics2D g2 = (Graphics2D) pG;
 			Stroke oldStroke = g2.getStroke();
 			g2.setStroke(new BasicStroke(4));
-			int xo = position.x - CIRCLE_RADIUS * CIRCLE_SELECTED_FACTOR;
-			int xu = position.x + CIRCLE_RADIUS * CIRCLE_SELECTED_FACTOR;
-			int yo = position.y - CIRCLE_RADIUS * CIRCLE_SELECTED_FACTOR;
-			int yu = position.y + CIRCLE_RADIUS * CIRCLE_SELECTED_FACTOR;
+			int xo = pPosition.x - CIRCLE_RADIUS * CIRCLE_SELECTED_FACTOR;
+			int xu = pPosition.x + CIRCLE_RADIUS * CIRCLE_SELECTED_FACTOR;
+			int yo = pPosition.y - CIRCLE_RADIUS * CIRCLE_SELECTED_FACTOR;
+			int yu = pPosition.y + CIRCLE_RADIUS * CIRCLE_SELECTED_FACTOR;
 			g2.drawLine(xo, yo, xu, yu);
 			g2.drawLine(xu, yo, xo, yu);
 			g2.setStroke(oldStroke);
 		} else {
-			g.fillOval(position.x - CIRCLE_RADIUS, position.y - CIRCLE_RADIUS,
-					CIRCLE_DIAMETER, CIRCLE_DIAMETER);
+			super.paintCenter(pG, pPosition);
 		}
-		g.setColor(Color.BLACK);
 	}
-
-	/**
-	 * @param pX
-	 * @param pY
-	 * @return true, if the map marker is hit by this relative coordinate (eg.
-	 *         0,0 is likely a hit...).
-	 */
-	public boolean checkHit(int pX, int pY) {
-		// distance to zero less than radius:
-		return (pX * pX + pY * pY) <= CIRCLE_RADIUS * CIRCLE_RADIUS;
-	}
-
 	public String toString() {
 		return "MapSearchMarkerLocation for search text "
 				+ mPlace.getDisplayName() + " at " + getLat() + " " + getLon();
@@ -101,11 +91,4 @@ public class MapSearchMarkerLocation implements MapMarker {
 		return mPlace;
 	}
 
-	/**
-	 * @param pB
-	 */
-	public void setSelected(boolean pIsSelected) {
-		mIsSelected = pIsSelected;
-
-	}
 }
