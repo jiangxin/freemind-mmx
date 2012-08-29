@@ -49,6 +49,9 @@ public abstract class MapMarkerBase extends JLabel implements MapMarker {
 	protected Color mSelectedBackgroundColor = Color.GRAY;
 	protected Color mBackgroundColor = Color.WHITE;
 
+	protected float[] mTextShorteningPerZoom = new float[] { 0f, 0f, 0.1f, 0.2f,
+			0.3f, 0.4f, 0.5f, 0.75f, 0.8f, 0.9f, 0.95f, 0.97f };
+
 	/**
 	 * 
 	 */
@@ -61,30 +64,39 @@ public abstract class MapMarkerBase extends JLabel implements MapMarker {
 		}
 	}
 
-	public void paint(Graphics g, Point position) {
-			paintCenter(g, position);
-			if (isSelected()) {
-				g.setColor(mSelectedBackgroundColor);
-			} else {
-				g.setColor(mBackgroundColor);
-			}
-			Point newPoint = adjustToTextfieldLocation(position);
-			int node_y = newPoint.y;
-			int node_x = newPoint.x;
-			g.fillRect(node_x, node_y, this.getWidth(), this.getHeight());
-			g.setColor(mBulletColor);
-	
-			g.translate(node_x, node_y);
-			this.paint(g);
-			g.translate(-node_x, -node_y);
-	
+	public void paint(Graphics pGraphics, Point position) {
+		Graphics g = pGraphics.create();
+		paintCenter(g, position);
+		if (isSelected()) {
+			g.setColor(mSelectedBackgroundColor);
+		} else {
+			g.setColor(mBackgroundColor);
 		}
+		Point newPoint = adjustToTextfieldLocation(position);
+		final JCursorMapViewer map = mMapDialog.getMap();
+		int inversZoom = map.getTileController().getTileSource().getMaxZoom()
+				- map.getZoom();
+		inversZoom = Math.min(mTextShorteningPerZoom.length-1, inversZoom);
+		int normalWidth = (int) (this.getWidth() * (1f - mTextShorteningPerZoom[inversZoom]));
+		int node_y = newPoint.y;
+		int node_x = newPoint.x;
+		g.fillRect(node_x, node_y, normalWidth, this.getHeight());
+		g.setColor(mBulletColor);
+
+		g.translate(node_x, node_y);
+		g.clipRect(0, 0, normalWidth, getHeight());
+		this.paint(g);
+		g.translate(-node_x, -node_y);
+
+	}
 
 	protected void paintCenter(Graphics g, Point position) {
 		g.setColor(mBulletColor);
-		g.fillOval(position.x - CIRCLE_RADIUS, position.y - CIRCLE_RADIUS, CIRCLE_DIAMETER, CIRCLE_DIAMETER);
+		g.fillOval(position.x - CIRCLE_RADIUS, position.y - CIRCLE_RADIUS,
+				CIRCLE_DIAMETER, CIRCLE_DIAMETER);
 		g.setColor(getForeground());
-		g.drawOval(position.x - CIRCLE_RADIUS, position.y - CIRCLE_RADIUS, CIRCLE_DIAMETER, CIRCLE_DIAMETER);
+		g.drawOval(position.x - CIRCLE_RADIUS, position.y - CIRCLE_RADIUS,
+				CIRCLE_DIAMETER, CIRCLE_DIAMETER);
 	}
 
 	public static Point adjustToTextfieldLocation(Point position) {
@@ -93,11 +105,12 @@ public abstract class MapMarkerBase extends JLabel implements MapMarker {
 		newPoint.y = newPoint.y - CIRCLE_RADIUS;
 		return newPoint;
 	}
-	
+
 	/**
 	 * @param pX
 	 * @param pY
-	 * @return true, if the map marker is hit by this relative coordinate (eg. 0,0 is likely a hit...).
+	 * @return true, if the map marker is hit by this relative coordinate (eg.
+	 *         0,0 is likely a hit...).
 	 */
 	public boolean checkHit(int pX, int pY) {
 		int x = pX;
@@ -105,22 +118,21 @@ public abstract class MapMarkerBase extends JLabel implements MapMarker {
 		// translation:
 		x -= CIRCLE_RADIUS;
 		y += CIRCLE_RADIUS;
-		if(x >= 0 && y >= 0 && x <= getWidth() && y <= getHeight())
+		if (x >= 0 && y >= 0 && x <= getWidth() && y <= getHeight())
 			return true;
 		// distance to zero less than radius:
-		return (pX*pX + pY*pY) <= CIRCLE_RADIUS * CIRCLE_RADIUS;
+		return (pX * pX + pY * pY) <= CIRCLE_RADIUS * CIRCLE_RADIUS;
 	}
 
 	/**
 	 * @param pSel
 	 */
 	public void setSelected(boolean pSelected) {
-		mSelected  = pSelected;
+		mSelected = pSelected;
 	}
 
 	public boolean isSelected() {
 		return mSelected;
 	}
-
 
 }
