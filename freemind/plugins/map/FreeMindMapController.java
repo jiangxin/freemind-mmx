@@ -873,6 +873,7 @@ public class FreeMindMapController extends JMapController implements
 
 		public void actionPerformed(ActionEvent pE) {
 			mMapHook.toggleLimitSearchToRegion();
+			mMapHook.focusSearchTerm();
 		}
 
 		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {

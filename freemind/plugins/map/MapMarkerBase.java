@@ -49,8 +49,10 @@ public abstract class MapMarkerBase extends JLabel implements MapMarker {
 	protected Color mSelectedBackgroundColor = Color.GRAY;
 	protected Color mBackgroundColor = Color.WHITE;
 
-	protected float[] mTextShorteningPerZoom = new float[] { 0f, 0f, 0.1f, 0.2f,
+	protected float[] mTextWidthShorteningPerZoom = new float[] { 0f, 0f, 0.1f, 0.2f,
 			0.3f, 0.4f, 0.5f, 0.75f, 0.8f, 0.9f, 0.95f, 0.97f };
+	protected float[] mTextHeightShorteningPerZoom = new float[] { 0f, 0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 0.1f, 0.2f, 0.4f, 0.8f, 0.80f, 0.80f };
 
 	/**
 	 * 
@@ -76,15 +78,18 @@ public abstract class MapMarkerBase extends JLabel implements MapMarker {
 		final JCursorMapViewer map = mMapDialog.getMap();
 		int inversZoom = map.getFreeMindMapController().getMaxZoom()
 				- map.getZoom();
-		inversZoom = Math.min(mTextShorteningPerZoom.length-1, inversZoom);
-		int normalWidth = (int) (this.getWidth() * (1f - mTextShorteningPerZoom[inversZoom]));
+		inversZoom = Math.min(mTextWidthShorteningPerZoom.length-1, inversZoom);
+		final int destWidth = Math.min(this.getWidth(), map.getWidth());
+		int normalWidth = (int) (destWidth * (1f - mTextWidthShorteningPerZoom[inversZoom]));
+		final int destHeight = Math.min(this.getHeight(), map.getHeight());
+		int normalHeight = (int) (destHeight * (1f - mTextHeightShorteningPerZoom[inversZoom]));
 		int node_y = newPoint.y;
 		int node_x = newPoint.x;
-		g.fillRect(node_x, node_y, normalWidth, this.getHeight());
+		g.fillRect(node_x, node_y, normalWidth, normalHeight);
 		g.setColor(mBulletColor);
 
 		g.translate(node_x, node_y);
-		g.clipRect(0, 0, normalWidth, getHeight());
+		g.clipRect(0, 0, normalWidth, normalHeight);
 		this.paint(g);
 		g.translate(-node_x, -node_y);
 
