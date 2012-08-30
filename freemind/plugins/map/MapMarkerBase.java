@@ -74,7 +74,7 @@ public abstract class MapMarkerBase extends JLabel implements MapMarker {
 		}
 		Point newPoint = adjustToTextfieldLocation(position);
 		final JCursorMapViewer map = mMapDialog.getMap();
-		int inversZoom = map.getTileController().getTileSource().getMaxZoom()
+		int inversZoom = map.getFreeMindMapController().getMaxZoom()
 				- map.getZoom();
 		inversZoom = Math.min(mTextShorteningPerZoom.length-1, inversZoom);
 		int normalWidth = (int) (this.getWidth() * (1f - mTextShorteningPerZoom[inversZoom]));
