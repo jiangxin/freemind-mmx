@@ -388,7 +388,7 @@ public class MapDialog extends MindMapHookAdapter implements
 					return;
 				}
 				if (pEvent.getKeyCode() == KeyEvent.VK_ENTER
-						&& pEvent.getModifiers() == 0) {
+						&& pEvent.getModifiers() == 0 && index >= 0) {
 					logger.info("Set result in map.");
 					pEvent.consume();
 					displaySearchItem(index);
@@ -935,6 +935,9 @@ public class MapDialog extends MindMapHookAdapter implements
 	}
 
 	public void displaySearchItem(int index) {
+		if(index < 0) {
+			throw new IllegalArgumentException("Index " + index + " out of bounds.");
+		}
 		index = mResultTableSorter.modelIndex(index);
 		Place place = mResultTableModel.getPlace(index);
 		getFreeMindMapController().setCursorPosition(place);
