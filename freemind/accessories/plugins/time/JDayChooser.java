@@ -462,12 +462,8 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
 		if (d < 1) {
 			d = 1;
 		}
-		Calendar tmpCalendar = (Calendar) calendar.clone();
-		tmpCalendar.set(Calendar.DAY_OF_MONTH, 1);
-		tmpCalendar.add(Calendar.MONTH, 1);
-		tmpCalendar.add(Calendar.DATE, -1);
 
-		int maxDaysInMonth = tmpCalendar.get(Calendar.DATE);
+		int maxDaysInMonth = getDaysInMonth();
 
 		if (d > maxDaysInMonth) {
 			d = maxDaysInMonth;

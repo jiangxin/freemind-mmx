@@ -363,7 +363,7 @@ public abstract class MainView extends JLabel {
 	}
 
 	/**
-	 * @return true if a link is to be displayed and the curser is the hand now.
+	 * @return true if a link is to be displayed and the cursor is the hand now.
 	 */
 	public boolean updateCursor(double xCoord) {
 		boolean followLink = isInFollowLinkRegion(xCoord);
