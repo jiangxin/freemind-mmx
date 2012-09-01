@@ -30,6 +30,7 @@
 					<string>Editor</string>
 				</dict>
 			</array>
+			<key>NSHighResolutionCapable</key><true/>
 		</xsl:otherwise>
 	</xsl:choose>
 	<xsl:apply-templates/>
