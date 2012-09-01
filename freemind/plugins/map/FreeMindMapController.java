@@ -2354,6 +2354,7 @@ public class FreeMindMapController extends JMapController implements
 	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	public void actionPerformed(ActionEvent pE) {
+		String statusText = "";
 		// here, we look wether or not the cursor is above a node.
 		MapMarkerBase mapMarker = checkHit(mTimerMouseEvent);
 		if (mapMarker instanceof MapMarkerLocation) {
@@ -2361,28 +2362,26 @@ public class FreeMindMapController extends JMapController implements
 					.getNodePositionHolder();
 
 			logger.fine("Looking for hit on node " + posHolder);
-			String statusText = "";
 			if (posHolder != null) {
 				statusText = Tools.getNodeTextHierarchy(posHolder.getNode(),
 						mMapHook.getMindMapController()) + ". ";
 			}
-			// calculate the distance to the cursor
-			Coordinate coordinate = getCoordinateFromMouseEvent(mTimerMouseEvent);
-			Coordinate cursorPosition = getMap().getCursorPosition();
-			double distance = OsmMercator.getDistance(coordinate.getLat(),
-					coordinate.getLon(), cursorPosition.getLat(),
-					cursorPosition.getLon()) / 1000.0;
-			Object[] messageArguments = { new Double(distance),
-					new Double(coordinate.getLat()),
-					new Double(coordinate.getLon()) };
-			MessageFormat formatter = new MessageFormat(
-					mMindMapController
-							.getText("plugins/map/MapDialog_Distance"));
-			String message = formatter.format(messageArguments);
-			statusText += message;
-			mMapHook.getStatusLabel().setText(statusText);
 		}
-
+		// calculate the distance to the cursor
+		Coordinate coordinate = getCoordinateFromMouseEvent(mTimerMouseEvent);
+		Coordinate cursorPosition = getMap().getCursorPosition();
+		double distance = OsmMercator.getDistance(coordinate.getLat(),
+				coordinate.getLon(), cursorPosition.getLat(),
+				cursorPosition.getLon()) / 1000.0;
+		Object[] messageArguments = { new Double(distance),
+				new Double(coordinate.getLat()),
+				new Double(coordinate.getLon()) };
+		MessageFormat formatter = new MessageFormat(
+				mMindMapController
+						.getText("plugins/map/MapDialog_Distance"));
+		String message = formatter.format(messageArguments);
+		statusText += message;
+		mMapHook.getStatusLabel().setText(statusText);
 	}
 
 	protected void selectContextMenuNode() {
