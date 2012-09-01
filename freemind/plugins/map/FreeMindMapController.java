@@ -2135,7 +2135,7 @@ public class FreeMindMapController extends JMapController implements
 		StringBuilder b = new StringBuilder();
 		boolean limitSearchToRegion = mMapHook.isLimitSearchToRegion();
 		try {
-			if (false) {
+			if (true) {
 				b.append("http://nominatim.openstreetmap.org/search/?email=christianfoltin%40users.sourceforge.net&q="); //$NON-NLS-1$
 				b.append(URLEncoder.encode(pText, "UTF-8"));
 				b.append("&format=xml&limit=30&accept-language=").append(Locale.getDefault().getLanguage()); //$NON-NLS-1$
