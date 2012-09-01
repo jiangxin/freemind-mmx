@@ -60,5 +60,9 @@ public class MapMarkerLocation extends MapMarkerBase {
 				+ " " + getLon();
 	}
 
+	public MapNodePositionHolder getNodePositionHolder() {
+		return mNodePositionHolder;
+	}
+
 
 }

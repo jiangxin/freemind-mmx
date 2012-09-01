@@ -1317,6 +1317,9 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addAction(new AddMapPictureToNode(),
 				"contextPopup/addPictureToNode");
 		menuHolder.updateMenus(getContextPopupMenu(), "contextPopup/");
+		menuHolder.addAction(maxmimalZoomToCursorAction,
+				"searchPopup/maxmimalZoomToCursorAction");
+		menuHolder.updateMenus(getSearchPopupMenu(), "searchPopup/");
 
 		mMapDialog.addKeyListener(this);
 	}
@@ -1689,8 +1692,10 @@ public class FreeMindMapController extends JMapController implements
 				return;
 			}
 			// detect collision with map marker:
-			MapNodePositionHolder posHolder = checkHit(e);
-			if (posHolder != null) {
+			MapMarkerBase mapMarker = checkHit(e);
+			if (mapMarker instanceof MapMarkerLocation) {
+				MapNodePositionHolder posHolder = ((MapMarkerLocation) mapMarker)
+						.getNodePositionHolder();
 				mDragStartingPoint = new Point(e.getPoint());
 				correctPointByMapCenter(mDragStartingPoint);
 				isMapNodeMoving = true;
@@ -1708,26 +1713,23 @@ public class FreeMindMapController extends JMapController implements
 		dragStartingPoint.translate(center.x, center.y);
 	}
 
-	public MapNodePositionHolder checkHit(MouseEvent e) {
+	public MapMarkerBase checkHit(MouseEvent e) {
 		// check for hit on map marker:
-		for (Iterator it = mMapHook.getMarkerMap().entrySet().iterator(); it
-				.hasNext();) {
-			Entry holder = (Entry) it.next();
-			MapNodePositionHolder posHolder = (MapNodePositionHolder) holder
-					.getKey();
-			MapMarkerLocation location = (MapMarkerLocation) holder.getValue();
-			Coordinate locationC = posHolder.getPosition();
+		for (Iterator it = map.getMapMarkerList().iterator(); it.hasNext();) {
+			MapMarkerBase location = (MapMarkerBase) it.next();
+			Coordinate locationC = new Coordinate(location.getLat(),
+					location.getLon());
 			Point locationXY = map.getMapPosition(locationC, true);
 			if (locationXY == null) {
 				continue;
 			}
 			boolean checkHitResult = location.checkHit(e.getX() - locationXY.x,
 					e.getY() - locationXY.y);
-			logger.fine("Checking for hit for location " + posHolder.getNode()
+			logger.fine("Checking for hit for location " + location
 					+ " at location " + locationXY + " to event " + e.getX()
 					+ " and " + e.getY() + " is " + checkHitResult);
 			if (checkHitResult) {
-				return posHolder;
+				return location;
 			}
 		}
 		return null;
@@ -1748,14 +1750,25 @@ public class FreeMindMapController extends JMapController implements
 		if (e.isPopupTrigger()) {
 			JPopupMenu popupmenu = getPopupMenu();
 			// check for hit on map marker:
-			MapNodePositionHolder posHolder = checkHit(e);
-			if (posHolder != null) {
+			MapMarkerBase mapMarker = checkHit(e);
+			if (mapMarker instanceof MapMarkerLocation) {
+				MapNodePositionHolder posHolder = ((MapMarkerLocation) mapMarker)
+						.getNodePositionHolder();
 				mCurrentPopupPositionHolder = posHolder;
 				setCursorPosition(posHolder.getPosition());
 				getContextPopupMenu()
 						.show(e.getComponent(), e.getX(), e.getY());
 				e.consume();
 				return;
+			}
+			if (mapMarker instanceof MapSearchMarkerLocation) {
+				MapSearchMarkerLocation location = (MapSearchMarkerLocation) mapMarker;
+				setCursorPosition(new Coordinate(location.getLat(),
+						location.getLon()));
+				getSearchPopupMenu().show(e.getComponent(), e.getX(), e.getY());
+				e.consume();
+				return;
+
 			}
 			mCurrentPopupPositionHolder = null;
 			if (popupmenu != null) {
@@ -1807,6 +1820,8 @@ public class FreeMindMapController extends JMapController implements
 	private long mWheelZoomLastTime = 0;
 
 	private Vector mCursorPositionListeners = new Vector();
+
+	private JPopupMenu mSearchPopupMenu;
 
 	public void mouseReleased(MouseEvent e) {
 		if (!mClickEnabled) {
@@ -1979,6 +1994,14 @@ public class FreeMindMapController extends JMapController implements
 		return mContextPopupMenu;
 	}
 
+	public JPopupMenu getSearchPopupMenu() {
+		if (mSearchPopupMenu == null) {
+			mSearchPopupMenu = new JPopupMenu();
+			mSearchPopupMenu.addPopupMenuListener(popupListenerSingleton);
+		}
+		return mSearchPopupMenu;
+	}
+
 	/**
 	 * Sets the mouse button that is used for moving the map. Possible values
 	 * are:
@@ -2084,7 +2107,7 @@ public class FreeMindMapController extends JMapController implements
 					if (Tools.safeEquals("ERROR", place.getOsmType())) {
 						mResultTable.setBackground(Color.RED);
 						returnValue = false;
-					} else if(Tools.safeEquals("WARNING", place.getOsmType())) {
+					} else if (Tools.safeEquals("WARNING", place.getOsmType())) {
 						mResultTable.setBackground(Color.YELLOW);
 						returnValue = false;
 					} else {
@@ -2113,7 +2136,7 @@ public class FreeMindMapController extends JMapController implements
 		StringBuilder b = new StringBuilder();
 		boolean limitSearchToRegion = mMapHook.isLimitSearchToRegion();
 		try {
-			if (true) {
+			if (false) {
 				b.append("http://nominatim.openstreetmap.org/search/?email=christianfoltin%40users.sourceforge.net&q="); //$NON-NLS-1$
 				b.append(URLEncoder.encode(pText, "UTF-8"));
 				b.append("&format=xml&limit=30&accept-language=").append(Locale.getDefault().getLanguage()); //$NON-NLS-1$
@@ -2276,9 +2299,10 @@ public class FreeMindMapController extends JMapController implements
 						+ "ery' icon='http://nominatim.openstreetma"
 						+ "p.org/images/mapicons/shopping_bakery.p."
 						+ "20.png'/></searchresults>";
-				result = XML_VERSION_1_0_ENCODING_UTF_8
-						+ "<searchresults timestamp=\"Tue, 08 Nov 11 22:49:54 -0500\" attribution=\"Data Copyright OpenStreetMap Contributors, Some Rights Reserved. CC-BY-SA 2.0.\" querystring=\"innsbruck\" polygon=\"false\" exclude_place_ids=\"228452,25664166,26135863,25440203\" more_url=\"http://open.mapquestapi.com/nominatim/v1/search?format=xml&amp;exclude_place_ids=228452,25664166,26135863,25440203&amp;accept-language=&amp;q=innsbruck\">\n"
-						+ "</searchresults>";
+				// result = XML_VERSION_1_0_ENCODING_UTF_8
+				// +
+				// "<searchresults timestamp=\"Tue, 08 Nov 11 22:49:54 -0500\" attribution=\"Data Copyright OpenStreetMap Contributors, Some Rights Reserved. CC-BY-SA 2.0.\" querystring=\"innsbruck\" polygon=\"false\" exclude_place_ids=\"228452,25664166,26135863,25440203\" more_url=\"http://open.mapquestapi.com/nominatim/v1/search?format=xml&amp;exclude_place_ids=228452,25664166,26135863,25440203&amp;accept-language=&amp;q=innsbruck\">\n"
+				// + "</searchresults>";
 
 			}
 			results = (Searchresults) XmlBindingTools.getInstance().unMarshall(
@@ -2293,8 +2317,11 @@ public class FreeMindMapController extends JMapController implements
 			logger.warning("Result was " + result);
 			results.addPlace(getErrorPlace(errorString, "ERROR"));
 		}
-		if(limitSearchToRegion && results.getListPlaceList().isEmpty()) {
-			results.addPlace(getErrorPlace(mMindMapController.getText("plugins.map.FreeMindMapController.LimitedSearchWithoutResult"), "WARNING"));			
+		if (limitSearchToRegion && results.getListPlaceList().isEmpty()) {
+			results.addPlace(getErrorPlace(
+					mMindMapController
+							.getText("plugins.map.FreeMindMapController.LimitedSearchWithoutResult"),
+					"WARNING"));
 		}
 		return results;
 	}
@@ -2329,27 +2356,33 @@ public class FreeMindMapController extends JMapController implements
 	 */
 	public void actionPerformed(ActionEvent pE) {
 		// here, we look wether or not the cursor is above a node.
-		MapNodePositionHolder posHolder = checkHit(mTimerMouseEvent);
-		logger.fine("Looking for hit on node " + posHolder);
-		String statusText = "";
-		if (posHolder != null) {
-			statusText = Tools.getNodeTextHierarchy(posHolder.getNode(),
-					mMapHook.getMindMapController()) + ". ";
+		MapMarkerBase mapMarker = checkHit(mTimerMouseEvent);
+		if (mapMarker instanceof MapMarkerLocation) {
+			MapNodePositionHolder posHolder = ((MapMarkerLocation) mapMarker)
+					.getNodePositionHolder();
+
+			logger.fine("Looking for hit on node " + posHolder);
+			String statusText = "";
+			if (posHolder != null) {
+				statusText = Tools.getNodeTextHierarchy(posHolder.getNode(),
+						mMapHook.getMindMapController()) + ". ";
+			}
+			// calculate the distance to the cursor
+			Coordinate coordinate = getCoordinateFromMouseEvent(mTimerMouseEvent);
+			Coordinate cursorPosition = getMap().getCursorPosition();
+			double distance = OsmMercator.getDistance(coordinate.getLat(),
+					coordinate.getLon(), cursorPosition.getLat(),
+					cursorPosition.getLon()) / 1000.0;
+			Object[] messageArguments = { new Double(distance),
+					new Double(coordinate.getLat()),
+					new Double(coordinate.getLon()) };
+			MessageFormat formatter = new MessageFormat(
+					mMindMapController
+							.getText("plugins/map/MapDialog_Distance"));
+			String message = formatter.format(messageArguments);
+			statusText += message;
+			mMapHook.getStatusLabel().setText(statusText);
 		}
-		// calculate the distance to the cursor
-		Coordinate coordinate = getCoordinateFromMouseEvent(mTimerMouseEvent);
-		Coordinate cursorPosition = getMap().getCursorPosition();
-		double distance = OsmMercator.getDistance(coordinate.getLat(),
-				coordinate.getLon(), cursorPosition.getLat(),
-				cursorPosition.getLon()) / 1000.0;
-		Object[] messageArguments = { new Double(distance),
-				new Double(coordinate.getLat()),
-				new Double(coordinate.getLon()) };
-		MessageFormat formatter = new MessageFormat(
-				mMindMapController.getText("plugins/map/MapDialog_Distance"));
-		String message = formatter.format(messageArguments);
-		statusText += message;
-		mMapHook.getStatusLabel().setText(statusText);
 
 	}
 
