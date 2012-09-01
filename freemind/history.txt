@@ -9,6 +9,7 @@ Changes made in FreeMind 1.0.0 Beta6
 * NEW: viewer for maps in the browse mode/java applet.
 * Free node movement is now switched off by default and can be enabled in the preferences.
 * FIXED: Hyperlink open for local file references with unicode characters (for java 6 or higher).
+* Improved display on Retina. Thanks to Rika!
 
 ===============================
 Changes made in FreeMind 1.0.0 Beta5
