@@ -605,8 +605,7 @@ public class FreeMindMapController extends JMapController implements
 			if (isEnabledCheck()) {
 				PositionHolder posHolder = (PositionHolder) getPositionHolderVector()
 						.get(getPositionHolderIndex() + 1);
-				getMap().setCursorPosition(
-						new Coordinate(posHolder.lat, posHolder.lon));
+				getMap().setCursorPosition(posHolder.getCoordinate());
 				map.setDisplayPositionByLatLon(posHolder.lat, posHolder.lon,
 						posHolder.zoom);
 				setPositionHolderIndex(getPositionHolderIndex() + 1);
@@ -635,8 +634,7 @@ public class FreeMindMapController extends JMapController implements
 			if (isEnabledCheck()) {
 				PositionHolder posHolder = (PositionHolder) getPositionHolderVector()
 						.get(getPositionHolderIndex() - 1);
-				getMap().setCursorPosition(
-						new Coordinate(posHolder.lat, posHolder.lon));
+				getMap().setCursorPosition(posHolder.getCoordinate());
 				map.setDisplayPositionByLatLon(posHolder.lat, posHolder.lon,
 						posHolder.zoom);
 				setPositionHolderIndex(getPositionHolderIndex() - 1);
@@ -668,6 +666,10 @@ public class FreeMindMapController extends JMapController implements
 		public String toString() {
 			return "PositionHolder [lat=" + lat + ", lon=" + lon + ", zoom="
 					+ zoom + "]";
+		}
+
+		public Coordinate getCoordinate() {
+			return new Coordinate(lat, lon);
 		}
 
 		public int hashCode() {
@@ -716,8 +718,7 @@ public class FreeMindMapController extends JMapController implements
 				return;
 			}
 			setZoom(posHolder.zoom);
-			Coordinate coordinates = new Coordinate(posHolder.lat,
-					posHolder.lon);
+			Coordinate coordinates = posHolder.getCoordinate();
 			setCursorPosition(coordinates);
 		}
 
@@ -1717,8 +1718,7 @@ public class FreeMindMapController extends JMapController implements
 		// check for hit on map marker:
 		for (Iterator it = map.getMapMarkerList().iterator(); it.hasNext();) {
 			MapMarkerBase location = (MapMarkerBase) it.next();
-			Coordinate locationC = new Coordinate(location.getLat(),
-					location.getLon());
+			Coordinate locationC = location.getCoordinate();
 			Point locationXY = map.getMapPosition(locationC, true);
 			if (locationXY == null) {
 				continue;
@@ -1763,8 +1763,7 @@ public class FreeMindMapController extends JMapController implements
 			}
 			if (mapMarker instanceof MapSearchMarkerLocation) {
 				MapSearchMarkerLocation location = (MapSearchMarkerLocation) mapMarker;
-				setCursorPosition(new Coordinate(location.getLat(),
-						location.getLon()));
+				setCursorPosition(location.getCoordinate());
 				getSearchPopupMenu().show(e.getComponent(), e.getX(), e.getY());
 				e.consume();
 				return;

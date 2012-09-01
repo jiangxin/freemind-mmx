@@ -26,6 +26,7 @@ import java.awt.Point;
 
 import javax.swing.JLabel;
 
+import org.openstreetmap.gui.jmapviewer.Coordinate;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 
 /**
@@ -138,6 +139,10 @@ public abstract class MapMarkerBase extends JLabel implements MapMarker {
 
 	public boolean isSelected() {
 		return mSelected;
+	}
+	
+	public Coordinate getCoordinate() {
+		return new Coordinate(getLat(), getLon());
 	}
 
 }
