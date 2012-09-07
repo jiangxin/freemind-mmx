@@ -88,6 +88,10 @@ public class NumberProperty extends PropertyBean implements PropertyControl {
 	public String getValue() {
 		return spinner.getValue().toString();
 	}
+	
+	public int getIntValue() {
+		return ((Integer)(spinner.getValue())).intValue();
+	}
 
 	public void layout(DefaultFormBuilder builder, TextTranslator pTranslator) {
 		// JLabel label = builder

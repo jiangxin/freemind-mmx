@@ -1,10 +1,14 @@
 ===============================
+Changes made in FreeMind 1.0.0 Beta7
+===============================
+
+===============================
 Changes made in FreeMind 1.0.0 Beta6
 ===============================
 * Geographical search results are displayed differently when selected.
 * Geographical search results are displayed as table including its distance to the cursor.
 * Geographical search can be limited to the visible map
-* http-Proxies can be used, Settings can be entered in the preferences dialog.
+* Http-Proxies can be used, settings can be entered in the preferences dialog.
 * Page format for print jobs is stored in preferences and restored on each startup.
 * NEW: viewer for maps in the browse mode/java applet.
 * Free node movement is now switched off by default and can be enabled in the preferences.

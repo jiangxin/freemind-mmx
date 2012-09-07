@@ -1,0 +1,127 @@
+/*FreeMind - A Program for creating and viewing Mindmaps
+ *Copyright (C) 2000-2008  Joerg Mueller, Daniel Polansky, Christian Foltin and others.
+ *
+ *See COPYING for Details
+ *
+ *This program is free software; you can redistribute it and/or
+ *modify it under the terms of the GNU General Public License
+ *as published by the Free Software Foundation; either version 2
+ *of the License, or (at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program; if not, write to the Free Software
+ *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ *
+ * Created on 28.12.2008
+ */
+/* $Id: DatabaseConnector.java,v 1.1.2.4 2009/02/05 22:12:37 christianfoltin Exp $ */
+
+package plugins.collaboration.socket;
+
+import java.net.Socket;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Vector;
+
+import freemind.common.NumberProperty;
+import freemind.common.StringProperty;
+import freemind.extensions.PermanentNodeHook;
+import freemind.modes.mindmapmode.MindMapController;
+
+/**
+ * @author foltin
+ * 
+ */
+public class MindMapClient extends SocketBasics {
+
+	private static final String HOST_PROPERTY = "plugins.collaboration.database.host";
+	private ClientCommunication mClientCommunication;
+	private int mPort;
+	/**
+     *
+     */
+
+	public void startupMapHook() {
+		super.startupMapHook();
+		MindMapController controller = getMindMapController();
+		try {
+			SocketConnectionHook connectionHook = isConnected();
+			if (connectionHook != null) {
+				// I'm already present, so remove me.
+				logger.info("Deregister filter, so that the hook isn't reported to the database.");
+				// TODO:REMOVE ME
+				// ClientCommunication updateThread =
+				// connectionHook.getUpdateThread();
+				// updateThread.deregisterFilter();
+				// updateThread.removeUser();
+				logger.info("Shutting down the permanent hook.");
+				togglePermanentHook(controller);
+				return;
+			}
+			StringProperty passwordProperty = new StringProperty(
+					PASSWORD_DESCRIPTION, PASSWORD);
+			StringProperty hostProperty = new StringProperty(HOST_DESCRIPTION,
+					HOST);
+			NumberProperty portProperty = getPortProperty();
+			// get last value
+			hostProperty.setValue(controller.getFrame().getProperty(
+					HOST_PROPERTY));
+			Vector controls = new Vector();
+			controls.add(passwordProperty);
+			controls.add(hostProperty);
+			controls.add(portProperty);
+			FormDialog dialog = new FormDialog(controller);
+			dialog.setUp(controls);
+			if (!dialog.isSuccess())
+				return;
+			logger.info("Connect...");
+			setPortProperty(portProperty);
+			// store value for next time.
+			controller.getFrame().setProperty(HOST_PROPERTY,
+					hostProperty.getValue());
+			mPassword = passwordProperty.getValue();
+			logger.info("Starting client thread...");
+			mPort = portProperty.getIntValue();
+			Socket mServer = new Socket(hostProperty.getValue(), mPort);
+			mClientCommunication = new ClientCommunication(this,
+					"Client Communication", mServer, getMindMapController());
+			mClientCommunication.start();
+		} catch (Exception e) {
+			freemind.main.Resources.getInstance().logException(e);
+			// TODO: Need a better message here.
+			controller.getController().errorMessage(e.getLocalizedMessage());
+			return;
+		}
+	}
+
+	private SocketConnectionHook isConnected() {
+		Collection activatedHooks = getMindMapController().getRootNode()
+				.getActivatedHooks();
+		for (Iterator it = activatedHooks.iterator(); it.hasNext();) {
+			PermanentNodeHook hook = (PermanentNodeHook) it.next();
+			if (hook instanceof SocketConnectionHook) {
+				return (SocketConnectionHook) hook;
+			}
+		}
+		return null;
+	}
+
+	public Integer getRole() {
+		return ROLE_SLAVE;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see plugins.collaboration.socket.SocketBasics#getPort()
+	 */
+	public int getPort() {
+		return mPort;
+	}
+
+}

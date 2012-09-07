@@ -887,6 +887,106 @@
 		</xs:complexContent>
 	  </xs:complexType>
 	</xs:element>
+	<!--  ===================================================== -->
+	<!--  ====      Collaboration using bare TCP           ==== -->
+	<!--  ===================================================== -->
+	  <xs:complexType name="collaboration_action_base">
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+
+	<xs:element name="collaboration_require_lock">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="collaboration_action_base">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<xs:element name="collaboration_user_information">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="collaboration_action_base">
+	  			<xs:sequence>
+	  				<xs:element name="user_id" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+	  			</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+	<xs:element name="collaboration_who_are_you">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="collaboration_action_base">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+	<xs:element name="collaboration_hello">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="collaboration_action_base">
+				<xs:attribute name="user_id" use="required" type="xs:string"/>
+				<xs:attribute name="password" use="required" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+	<xs:element name="collaboration_welcome">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="collaboration_action_base">
+				<xs:attribute name="map" use="optional" type="xs:string"/>
+				<xs:attribute name="filename" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+	<!-- Both from server or to server. -->
+	<xs:element name="collaboration_goodbye">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="collaboration_action_base">
+				<xs:attribute name="user_id" use="required" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<xs:element name="collaboration_unable_to_lock">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="collaboration_action_base">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<xs:element name="collaboration_receive_lock">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="collaboration_action_base">
+				<xs:attribute name="id" use="required" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<!-- Both to server and from server -->
+	<xs:element name="collaboration_transaction">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="collaboration_action_base">
+				<xs:attribute name="id" use="required" type="xs:string"/>
+				<xs:attribute name="do_action" use="required" type="xs:string"/>
+				<xs:attribute name="undo_action" use="required" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
 
 	<!-- =======================================================================================
 						Window positions to be stored in the auto.properties

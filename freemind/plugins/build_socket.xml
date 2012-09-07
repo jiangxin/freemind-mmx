@@ -1,0 +1,14 @@
+<project name="freemind_plugins" default="dist" basedir=".">
+	
+	<property name="plugin.xml" location="${src}/plugins/CollaborationSocket.xml" />
+	<property name="plugin.dir" value="plugins/collaboration/socket"/>
+	<property name="local.plugin.dir" location="${src}/plugins/collaboration/socket"/>
+	<property name="plugin.jar" value="socket_plugin.jar" />
+	<property name="plugin.zip" value="socket_plugin-${ver}.zip" />
+	<property name="additional.lib" value="${local.plugin.dir}/hsqldb.jar:${local.plugin.dir}/socket_plugin.jar"/>
+	<property name="additional.lib.pattern" value="${plugin.dir}/*.jar"/>
+
+	<import file="build_import.xml" />
+
+
+</project>

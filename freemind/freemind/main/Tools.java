@@ -1599,6 +1599,14 @@ public class Tools {
 		}
 		return hostname;
 	}
+	
+	public static String getUserName() {
+		// Get host name
+		String hostname = getHostName();
+		return System.getProperty("user.name") + "@" + hostname;
+	}
+
+
 
 	public static String marshall(XmlAction action) {
 		return XmlBindingTools.getInstance().marshall(action);
