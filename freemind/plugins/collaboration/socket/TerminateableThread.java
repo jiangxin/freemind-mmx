@@ -47,13 +47,19 @@ public abstract class TerminateableThread extends Thread {
 
 	public void run() {
 		while (!mShouldTerminate) {
+			boolean shouldBeCalledDirectlyAgain = false;
 			try {
-				boolean shouldBeCalledDirectlyAgain = processAction();
-				if(!shouldBeCalledDirectlyAgain) {
-					Thread.sleep(mSleepTime);
-				}
+				shouldBeCalledDirectlyAgain = processAction();
 			} catch (Exception e) {
 				freemind.main.Resources.getInstance().logException(e);
+			}
+			if(!shouldBeCalledDirectlyAgain) {
+				try {
+					Thread.sleep(mSleepTime);
+				} catch (InterruptedException e) {
+					freemind.main.Resources.getInstance().logException(e);
+					
+				}
 			}
 		}
 		mIsTerminated = true;

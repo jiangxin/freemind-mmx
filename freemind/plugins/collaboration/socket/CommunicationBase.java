@@ -84,7 +84,9 @@ public abstract class CommunicationBase extends TerminateableThread {
 	 */
 	public synchronized void send(CollaborationActionBase pCommand) {
 		try {
-			String text = Tools.compress(Tools.marshall(pCommand));
+			final String marshalledText = Tools.marshall(pCommand);
+			logger.info(getName() + " :Sending " + marshalledText);
+			String text = Tools.compress(marshalledText);
 			out.writeUTF(text);
 		} catch (IOException e) {
 			freemind.main.Resources.getInstance().logException(e);
@@ -92,7 +94,9 @@ public abstract class CommunicationBase extends TerminateableThread {
 	}
 
 	public CollaborationActionBase receive(String pText) {
-		return (CollaborationActionBase) Tools.unMarshall(Tools.decompress(pText));
+		final String decompressedText = Tools.decompress(pText);
+		logger.info(getName() + " :Received " + decompressedText);
+		return (CollaborationActionBase) Tools.unMarshall(decompressedText);
 	}
 
 	public boolean processAction() throws Exception {

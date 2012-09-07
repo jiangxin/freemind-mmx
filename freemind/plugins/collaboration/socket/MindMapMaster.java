@@ -23,7 +23,6 @@
 
 package plugins.collaboration.socket;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.InvocationTargetException;
@@ -84,7 +83,9 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 		 */
 		public boolean processAction() throws Exception {
 			try {
+				logger.finest("Waiting for message");
 				Socket client = mServer.accept();
+				logger.info("Received new client.");
 				ServerCommunication c = new ServerCommunication(
 						MindMapMaster.this, client, getMindMapController());
 				c.start();
@@ -140,7 +141,7 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 		try {
 			mPort = getPortProperty().getIntValue();
 			mServer = new ServerSocket(mPort);
-			mServer.setSoTimeout(10000);
+			mServer.setSoTimeout(500);
 			mListener = new MasterThread();
 			mListener.start();
 		} catch (Exception e) {
@@ -152,6 +153,7 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 			}
 			return;
 		}
+		logger.info("Starting server. Done.");
 	}
 
 	public void loadFrom(XMLElement pChild) {
