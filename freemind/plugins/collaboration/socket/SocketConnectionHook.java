@@ -36,6 +36,8 @@ import freemind.view.mindmapview.NodeView;
 public class SocketConnectionHook extends SocketBasics implements
 		PermanentNodeHook, DontSaveMarker {
 
+	private ClientCommunication mClientCommunication;
+
 	/**
      *
      */
@@ -59,7 +61,9 @@ public class SocketConnectionHook extends SocketBasics implements
 	public void shutdownMapHook() {
 		// this is the internal call. shutdown
 		logger.info("Shut down of the permanent hook.");
-//TODO:		shutdownConnection();
+		if(mClientCommunication != null) {
+			mClientCommunication.shutdown();
+		}
 		super.shutdownMapHook();
 	}
 
@@ -104,7 +108,48 @@ public class SocketConnectionHook extends SocketBasics implements
 	 * @see plugins.collaboration.socket.SocketBasics#getPort()
 	 */
 	public int getPort() {
-		return 0;
+		return mClientCommunication.getPort();
+	}
+
+	/* (non-Javadoc)
+	 * @see plugins.collaboration.socket.SocketBasics#lock()
+	 */
+	protected String lock() throws UnableToGetLockException,
+			InterruptedException {
+		return mClientCommunication.sendLockRequest();
+	}
+
+	/* (non-Javadoc)
+	 * @see plugins.collaboration.socket.SocketBasics#broadcastCommand(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	protected void broadcastCommand(String pDoAction, String pUndoAction,
+			String pLockId) throws Exception {
+		mClientCommunication.sendCommand(pDoAction, pUndoAction, pLockId);
+	}
+
+	/* (non-Javadoc)
+	 * @see plugins.collaboration.socket.SocketBasics#unlock()
+	 */
+	protected void unlock() {
+	}
+
+	/**
+	 * @param pClientCommunication
+	 */
+	public void setClientCommunication(ClientCommunication pClientCommunication) {
+		mClientCommunication = pClientCommunication;
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see plugins.collaboration.socket.SocketBasics#shutdown()
+	 */
+	public void shutdown() {
+		mClientCommunication.shutdown();
+	}
+
+	public ClientCommunication getClientCommunication() {
+		return mClientCommunication;
 	}
 
 }

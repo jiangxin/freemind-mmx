@@ -27,8 +27,10 @@ import java.net.Socket;
 
 import freemind.controller.actions.generated.instance.CollaborationActionBase;
 import freemind.controller.actions.generated.instance.CollaborationGoodbye;
+import freemind.controller.actions.generated.instance.CollaborationTransaction;
 import freemind.main.Tools;
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 /**
  * @author foltin
@@ -56,12 +58,18 @@ public abstract class CommunicationBase extends TerminateableThread {
 	protected MindMapController mController;
 	protected DataOutputStream out;
 	protected DataInputStream in;
+	protected static final int ROUNDTRIP_ROUNDS = 200;
+	protected static final int ROUNDTRIP_TIMEOUT = 20000;
 	protected static final int STATE_IDLE = 0;
 	protected static final int STATE_WAIT_FOR_HELLO = 1;
 	protected static final int STATE_WAIT_FOR_COMMAND = 2;
 	protected static final int STATE_WAIT_FOR_WHO_ARE_YOU = 3;
 	protected static final int STATE_WAIT_FOR_WELCOME = 4;
-	protected int mCurrentState = STATE_IDLE;
+	protected static final int STATE_WAIT_FOR_LOCK = 5;
+	protected static final int STATE_LOCK_RECEIVED = 6;
+
+	private int mCurrentState = STATE_IDLE;
+	private String mCurrentStateMutex = "lockme";
 
 	public void shutdown(boolean pWithShutdown) {
 		try {
@@ -81,16 +89,19 @@ public abstract class CommunicationBase extends TerminateableThread {
 
 	/**
 	 * @param pMessage
+	 * @return true, if successful.
 	 */
-	public synchronized void send(CollaborationActionBase pCommand) {
+	public synchronized boolean send(CollaborationActionBase pCommand) {
 		try {
 			final String marshalledText = Tools.marshall(pCommand);
 			logger.info(getName() + " :Sending " + marshalledText);
 			String text = Tools.compress(marshalledText);
 			out.writeUTF(text);
+			return true;
 		} catch (IOException e) {
 			freemind.main.Resources.getInstance().logException(e);
 		}
+		return false;
 	}
 
 	public CollaborationActionBase receive(String pText) {
@@ -107,6 +118,7 @@ public abstract class CommunicationBase extends TerminateableThread {
 			if(command == null) {
 				continue;
 			}
+			logger.info("Received command of type " + command.getClass());
 			processCommand(command);
 			didSomething = true;
 		}
@@ -120,6 +132,42 @@ public abstract class CommunicationBase extends TerminateableThread {
 	}
 	int  mCounter = 1;
 
-	public abstract void processCommand(CollaborationActionBase command);
+	public abstract void processCommand(CollaborationActionBase command) throws Exception;
 
+	protected int getCurrentState() {
+		synchronized (mCurrentStateMutex) {
+			return mCurrentState;
+		}
+	}
+
+	protected void setCurrentState(int pCurrentState) {
+		synchronized (mCurrentStateMutex) {
+			mCurrentState = pCurrentState;
+		}
+	}
+
+	
+	/**
+	 * @param pDoAction
+	 * @param pUndoAction
+	 * @param pLockId 
+	 */
+	public void sendCommand(String pDoAction, String pUndoAction, String pLockId) {
+		CollaborationTransaction trans = new CollaborationTransaction();
+		trans.setDoAction(pDoAction);
+		trans.setUndoAction(pUndoAction);
+		trans.setId(pLockId);
+		send(trans);
+	}
+
+	public void close() throws IOException {
+		mSocket.close();
+	}
+
+	public ActionPair getActionPair(CollaborationTransaction trans) {
+		return new ActionPair(
+				mController.unMarshall(trans.getDoAction()),
+				mController.unMarshall(trans.getUndoAction()));
+	}
+	
 }

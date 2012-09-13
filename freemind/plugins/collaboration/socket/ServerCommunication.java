@@ -25,81 +25,97 @@ package plugins.collaboration.socket;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.StringWriter;
 import java.net.Socket;
 
+import plugins.collaboration.socket.SocketBasics.UnableToGetLockException;
 import freemind.controller.actions.generated.instance.CollaborationActionBase;
+import freemind.controller.actions.generated.instance.CollaborationGoodbye;
 import freemind.controller.actions.generated.instance.CollaborationHello;
+import freemind.controller.actions.generated.instance.CollaborationReceiveLock;
+import freemind.controller.actions.generated.instance.CollaborationRequireLock;
+import freemind.controller.actions.generated.instance.CollaborationTransaction;
+import freemind.controller.actions.generated.instance.CollaborationUnableToLock;
 import freemind.controller.actions.generated.instance.CollaborationWelcome;
 import freemind.controller.actions.generated.instance.CollaborationWhoAreYou;
 import freemind.modes.mindmapmode.MindMapController;
 
 public class ServerCommunication extends CommunicationBase {
-	protected MindMapMaster mConnection = null;
+	protected MindMapMaster mMindMapMaster = null;
 
 	public ServerCommunication(MindMapMaster pSocketStarter, Socket pClient,
 			MindMapController pMindMapController) throws Exception {
 		super("Client Communication", pClient, pMindMapController,
 				new DataOutputStream(pClient.getOutputStream()),
 				new DataInputStream(pClient.getInputStream()));
-		mConnection = pSocketStarter;
+		mMindMapMaster = pSocketStarter;
 		CollaborationWhoAreYou commandWho = new CollaborationWhoAreYou();
 		send(commandWho);
-		mCurrentState = STATE_WAIT_FOR_HELLO;
+		setCurrentState(STATE_WAIT_FOR_HELLO);
 	}
 
-	public void processResults() {
-		try {
-			// while (rs.next()) {
-			// long nextPk = rs.getLong(SocketBasics.ROW_PK);
-			// mPrimaryKey = nextPk + 1;
-			// String doAction = rs.getString(SocketBasics.ROW_ACTION);
-			// String undoAction = rs.getString(SocketBasics.ROW_UNDOACTION);
-			// String map = rs.getString(SocketBasics.ROW_MAP);
-			// logger.info("Got the following from database: " + nextPk + ", "
-			// + doAction + ", " + undoAction + ", " + map);
-			// if (doAction != null && undoAction != null) {
-			// XmlAction xmlDoAction = mController.unMarshall(doAction);
-			// XmlAction xmlUndoAction = mController
-			// .unMarshall(undoAction);
-			// ActionPair pair = new ActionPair(xmlDoAction, xmlUndoAction);
-			// executeTransaction(pair);
-			// } else if (map != null) {
-			// createNewMap(map);
-			// } else {
-			// logger.info("Shutting down was signalled.");
-			// rs.close();
-			// // session has ended.
-			// SocketBasics.togglePermanentHook(mController);
-			// // and end.
-			// return;
-			// }
-			// }
-			// rs.close();
-		} catch (Exception e) {
-			freemind.main.Resources.getInstance().logException(e);
+	public void processCommand(CollaborationActionBase pCommand)
+			throws IOException {
+		if (pCommand instanceof CollaborationGoodbye) {
+			CollaborationGoodbye goodbye = (CollaborationGoodbye) pCommand;
+			logger.info("Goodbye received from " + goodbye.getUserId());
+			mMindMapMaster.closeConnection(this);
+			return;
 		}
-	}
-
-	public void processCommand(CollaborationActionBase command) {
-		switch (mCurrentState) {
+		switch (getCurrentState()) {
 		case STATE_WAIT_FOR_HELLO:
-			if (command instanceof CollaborationHello) {
-				CollaborationHello commandHello = (CollaborationHello) command;
+			if (pCommand instanceof CollaborationHello) {
+				CollaborationHello commandHello = (CollaborationHello) pCommand;
+				setName(commandHello.getUserId());
 				// verify password:
-				if (mConnection.getPassword()
-						.equals(commandHello.getPassword())) {
+				if (mMindMapMaster.getPassword().equals(
+						commandHello.getPassword())) {
 					// send map:
 					CollaborationWelcome welcomeCommand = new CollaborationWelcome();
-					welcomeCommand.setMap("</map>");
-					welcomeCommand.setFilename("///");
+					logger.info("Store map in welcome command...");
+					StringWriter writer = new StringWriter();
+					mController.getMap().getXml(writer);
+					welcomeCommand.setMap(writer.toString());
+					welcomeCommand.setFilename(mController.getMap().getFile()
+							.getName());
 					send(welcomeCommand);
-					mCurrentState = STATE_IDLE;
+					setCurrentState(STATE_IDLE);
 				}
 			}
 			break;
 		case STATE_WAIT_FOR_COMMAND:
+			if (pCommand instanceof CollaborationTransaction) {
+				CollaborationTransaction trans = (CollaborationTransaction) pCommand;
+				try {
+					mMindMapMaster.broadcastCommand(trans.getDoAction(),
+							trans.getUndoAction(), trans.getId());
+					mMindMapMaster.executeTransaction(getActionPair(trans));
+				} catch (Exception e) {
+					freemind.main.Resources.getInstance().logException(e);
+				} finally {
+					mMindMapMaster.unlock();
+					setCurrentState(STATE_IDLE);
+				}
+			}
 			break;
 		case STATE_IDLE:
+			if (pCommand instanceof CollaborationRequireLock) {
+				try {
+					String lockId = mMindMapMaster.lock();
+					logger.info("Got lock for " + getName());
+					CollaborationReceiveLock lockCommand = new CollaborationReceiveLock();
+					lockCommand.setId(lockId);
+					send(lockCommand);
+					setCurrentState(STATE_WAIT_FOR_COMMAND);
+				} catch (UnableToGetLockException e) {
+					freemind.main.Resources.getInstance().logException(e);
+					CollaborationUnableToLock unableToLock = new CollaborationUnableToLock();
+					send(unableToLock);
+				} catch (InterruptedException e) {
+					freemind.main.Resources.getInstance().logException(e);
+				}
+			}
 			break;
 		}
 	}

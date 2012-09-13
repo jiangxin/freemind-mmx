@@ -19,7 +19,7 @@
  *
  * Created on 28.12.2008
  */
-/* $Id: DatabaseBasics.java,v 1.1.2.4 2009/02/04 19:31:21 christianfoltin Exp $ */
+/* $Id: SocketBasics.java,v 1.1.2.4 2009/02/04 19:31:21 christianfoltin Exp $ */
 package plugins.collaboration.socket;
 
 import java.awt.BorderLayout;
@@ -29,9 +29,13 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -40,6 +44,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
@@ -51,23 +56,30 @@ import freemind.common.PropertyBean;
 import freemind.common.PropertyControl;
 import freemind.controller.Controller;
 import freemind.controller.MapModuleManager.MapTitleContributor;
+import freemind.extensions.PermanentNodeHook;
 import freemind.main.Resources;
 import freemind.main.Tools;
+import freemind.modes.MapAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
+import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.MindMapMapModel;
+import freemind.modes.mindmapmode.MindMapNodeModel;
+import freemind.modes.mindmapmode.actions.xml.ActionFilter.FinalActionFilter;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 import freemind.view.MapModule;
 
 public abstract class SocketBasics extends MindMapNodeHookAdapter implements
-		MapTitleContributor {
+		MapTitleContributor, FinalActionFilter {
 
-	public final static String SLAVE_HOOK_NAME = "plugins/collaboration/database/database_slave_plugin";
-	public final static String SLAVE_STARTER_NAME = "plugins/collaboration/database/database_slave_starter_plugin";
+	public final static String SLAVE_HOOK_NAME = "plugins/collaboration/socket/socket_slave_plugin";
+	public final static String SLAVE_STARTER_NAME = "plugins/collaboration/socket/socket_slave_starter_plugin";
 	protected static final Integer ROLE_MASTER = Integer.valueOf(0);
 	protected static final Integer ROLE_SLAVE = Integer.valueOf(1);
-	private static final String PORT_PROPERTY = "plugins.collaboration.database.port";
-	private static final String DATABASE_BASICS_CLASS = "plugins.collaboration.database.DatabaseBasics";
+	private static final String PORT_PROPERTY = "plugins.collaboration.socket.port";
+	private static final String DATABASE_BASICS_CLASS = "plugins.collaboration.socket.SocketBasics";
 
 	protected static final String PASSWORD = DATABASE_BASICS_CLASS
 			+ ".password";
@@ -90,11 +102,20 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	protected static final String TITLE = DATABASE_BASICS_CLASS + ".title";
 
 	protected static java.util.logging.Logger logger = null;
+
 	public interface ResultHandler {
 		void processResults(ResultSet rs);
 	}
 
 	protected String mPassword;
+	protected boolean mFilterEnabled = true;
+	/**
+	 * Mapping id (to be skipped) to the time, it was instantiated. The time is
+	 * useful to drop orphans.
+	 */
+	private HashMap mLockIdsToBeSkipped = new HashMap();
+
+	// protected ClientCommunication mCommunication = null;
 
 	public SocketBasics() {
 		super();
@@ -256,7 +277,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	}
 
 	public abstract int getPort();
-	
+
 	public String getMapTitle(String pOldTitle, MapModule pMapModule,
 			MindMap pModel) {
 		String title = pOldTitle;
@@ -264,24 +285,24 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 			return pOldTitle;
 		}
 		String userString = "";
-//		if (mUpdateThread != null) {
-//			try {
-//				boolean first = true;
-//				Vector users = mUpdateThread.getUsers();
-//				for (Iterator it = users.iterator(); it.hasNext();) {
-//					String user = (String) it.next();
-//					if (first)
-//						first = false;
-//					else
-//						userString += ", ";
-//					userString += user;
-//				}
-//			} catch (SQLException e) {
-//				// TODO Auto-generated catch block
-//				freemind.main.Resources.getInstance().logException(e);
-//
-//			}
-//		}
+		// if (mUpdateThread != null) {
+		// try {
+		// boolean first = true;
+		// Vector users = mUpdateThread.getUsers();
+		// for (Iterator it = users.iterator(); it.hasNext();) {
+		// String user = (String) it.next();
+		// if (first)
+		// first = false;
+		// else
+		// userString += ", ";
+		// userString += user;
+		// }
+		// } catch (SQLException e) {
+		// // TODO Auto-generated catch block
+		// freemind.main.Resources.getInstance().logException(e);
+		//
+		// }
+		// }
 		return pOldTitle
 				+ Resources.getInstance().format(
 						TITLE,
@@ -292,5 +313,95 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	public String getPassword() {
 		return mPassword;
 	}
+
+	/**
+	 * Try to lock, send update package to master (perhaps, myself), execute
+	 * action and unlock
+	 */
+	public ActionPair filterAction(ActionPair pPair) {
+		if (pPair == null || !mFilterEnabled)
+			return pPair;
+		String doAction = getMindMapController().marshall(pPair.getDoAction());
+		String undoAction = getMindMapController().marshall(
+				pPair.getUndoAction());
+		try {
+			String lockId = lock();
+			mLockIdsToBeSkipped.put(lockId,
+					new Long(System.currentTimeMillis()));
+			/*
+			 * If I am the client, the command returns to me before I continue
+			 * here.
+			 */
+			broadcastCommand(doAction, undoAction, lockId);
+		} catch (UnableToGetLockException e) {
+			freemind.main.Resources.getInstance().logException(e);
+			return null;
+		} catch (Exception e) {
+			freemind.main.Resources.getInstance().logException(e);
+			return null;
+		} finally {
+			unlock();
+		}
+		return pPair;
+	}
+
+	protected static class UnableToGetLockException extends Exception {
+
+	}
+
+	/**
+	 * @return The id associated with this lock.
+	 * @throws UnableToGetLockException
+	 * @throws InterruptedException
+	 */
+	protected abstract String lock() throws UnableToGetLockException,
+			InterruptedException;
+
+	/**
+	 * Should send the command to the master, or, if the master itself, sends it
+	 * to the clients.
+	 * 
+	 * @throws Exception
+	 */
+	protected abstract void broadcastCommand(String pDoAction,
+			String pUndoAction, String pLockId) throws Exception;
+
+	/**
+	 * Unlocks the previous lock
+	 */
+	protected abstract void unlock();
+
+	protected void deregisterFilter() {
+		logger.info("Deregistering filter");
+		getMindMapController().getActionFactory().deregisterFilter(this);
+	}
+
+	protected void registerFilter() {
+		logger.info("Registering filter");
+		getMindMapController().getActionFactory().registerFilter(this);
+	}
+
+	protected void executeTransaction(final ActionPair pair) {
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				mFilterEnabled = false;
+				try {
+					getMindMapController().getActionFactory().startTransaction(
+							"update");
+					getMindMapController().getActionFactory().executeAction(
+							pair);
+					getMindMapController().getActionFactory().endTransaction(
+							"update");
+				} finally {
+					mFilterEnabled = true;
+				}
+			}
+		});
+	}
+
+	/**
+	 * Closes the connection.
+	 */
+	public abstract void shutdown();
 
 }

@@ -23,14 +23,29 @@ package plugins.collaboration.socket;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 
+import plugins.collaboration.socket.SocketBasics.UnableToGetLockException;
 import freemind.controller.actions.generated.instance.CollaborationActionBase;
+import freemind.controller.actions.generated.instance.CollaborationGoodbye;
 import freemind.controller.actions.generated.instance.CollaborationHello;
+import freemind.controller.actions.generated.instance.CollaborationReceiveLock;
+import freemind.controller.actions.generated.instance.CollaborationRequireLock;
+import freemind.controller.actions.generated.instance.CollaborationTransaction;
 import freemind.controller.actions.generated.instance.CollaborationWelcome;
 import freemind.controller.actions.generated.instance.CollaborationWhoAreYou;
+import freemind.extensions.PermanentNodeHook;
 import freemind.main.Tools;
+import freemind.modes.MapAdapter;
+import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.MindMapMapModel;
+import freemind.modes.mindmapmode.MindMapNodeModel;
 
 /**
  * @author foltin
@@ -38,24 +53,26 @@ import freemind.modes.mindmapmode.MindMapController;
  */
 public class ClientCommunication extends CommunicationBase {
 
-	private MindMapClient mSocketConnector;
+	private String mLockId;
+	private String mPassword;
+	private SocketConnectionHook mSocketConnectionHook = null;
 
 	/**
-	 * @param pSocketConnector 
 	 * @param pName
 	 * @param pClient
 	 * @param pController
+	 * @param pPassword 
 	 * @param pOut
 	 * @param pIn
 	 * @throws IOException
 	 */
-	public ClientCommunication(MindMapClient pSocketConnector, String pName, Socket pClient,
-			MindMapController pController) throws IOException {
+	public ClientCommunication(String pName, Socket pClient,
+			MindMapController pController, String pPassword) throws IOException {
 		super(pName, pClient, pController, new DataOutputStream(
 				pClient.getOutputStream()), new DataInputStream(
 				pClient.getInputStream()));
-		mSocketConnector = pSocketConnector;
-		mCurrentState = STATE_WAIT_FOR_WHO_ARE_YOU;
+		mPassword = pPassword;
+		setCurrentState(STATE_WAIT_FOR_WHO_ARE_YOU);
 	}
 
 	/*
@@ -65,28 +82,176 @@ public class ClientCommunication extends CommunicationBase {
 	 * plugins.collaboration.socket.CommunicationBase#processCommand(freemind
 	 * .controller.actions.generated.instance.CollaborationActionBase)
 	 */
-	public void processCommand(CollaborationActionBase pCommand) {
-		switch (mCurrentState) {
+	public void processCommand(CollaborationActionBase pCommand) throws IOException {
+		if (pCommand instanceof CollaborationGoodbye) {
+			CollaborationGoodbye goodbye = (CollaborationGoodbye) pCommand;
+			logger.info("Goodbye received from "+ goodbye.getUserId());
+			SocketBasics.togglePermanentHook(getMindMapController());
+			return;
+		}
+		boolean commandHandled = false;
+		switch (getCurrentState()) {
 		case STATE_WAIT_FOR_WHO_ARE_YOU:
 			if (pCommand instanceof CollaborationWhoAreYou) {
-//				CollaborationWhoAreYou whoCommand = (CollaborationWhoAreYou) pCommand;
+				// CollaborationWhoAreYou whoCommand = (CollaborationWhoAreYou)
+				// pCommand;
 				// send hello:
 				CollaborationHello helloCommand = new CollaborationHello();
 				helloCommand.setUserId(Tools.getUserName());
-				helloCommand.setPassword(mSocketConnector.getPassword());
+				helloCommand.setPassword(mPassword);
 				send(helloCommand);
-				mCurrentState = STATE_WAIT_FOR_WELCOME;
+				setCurrentState(STATE_WAIT_FOR_WELCOME);
+				commandHandled = true;
 			}
 			break;
 		case STATE_WAIT_FOR_WELCOME:
+			if (pCommand instanceof CollaborationWelcome) {
+				CollaborationWelcome collWelcome = (CollaborationWelcome) pCommand;
+				createNewMap(collWelcome.getMap());
+				setCurrentState(STATE_IDLE);
+				commandHandled = true;
+			}
 			break;
 		case STATE_IDLE:
+			if (pCommand instanceof CollaborationTransaction) {
+				CollaborationTransaction trans = (CollaborationTransaction) pCommand;
+				// check if it is from me!
+				if(!Tools.safeEquals(mLockId, trans.getId())) {
+					if (mSocketConnectionHook != null) {
+						// it is not from me, so handle it:
+						mSocketConnectionHook
+								.executeTransaction(getActionPair(trans));
+					}
+				}
+				commandHandled = true;
+			}
 			break;
+		case STATE_WAIT_FOR_LOCK:
+			if (pCommand instanceof CollaborationReceiveLock) {
+				CollaborationReceiveLock lockReceived = (CollaborationReceiveLock) pCommand;
+				this.mLockId = lockReceived.getId();
+				setCurrentState(STATE_LOCK_RECEIVED);
+				commandHandled = true;
+			}
 		default:
+			logger.warning("Unknown state " + getCurrentState());
+
+		}
+		if (!commandHandled) {
 			logger.warning("Received unknown message of type "
 					+ pCommand.getClass());
-
 		}
 	}
 
+	/**
+	 * Sends the lock requests, blocks until timeout or answer and returns the associated id.
+	 * Exception otherwise.
+	 * @throws InterruptedException 
+	 * @throws UnableToGetLockException 
+	 */
+	public synchronized String sendLockRequest() throws InterruptedException, UnableToGetLockException {
+		// TODO: Global lock needed?
+		mLockId = null;
+		CollaborationRequireLock lockRequest = new CollaborationRequireLock();
+		setCurrentState(STATE_WAIT_FOR_LOCK);
+		if(!send(lockRequest)) {
+			setCurrentState(STATE_IDLE);
+			throw new SocketBasics.UnableToGetLockException();
+		}
+		final int sleepTime = ROUNDTRIP_TIMEOUT/ROUNDTRIP_ROUNDS;
+		int timeout = ROUNDTRIP_ROUNDS;
+		while(getCurrentState() != STATE_LOCK_RECEIVED && timeout >= 0) {
+			sleep(sleepTime);
+			timeout--;
+		}
+		setCurrentState(STATE_IDLE);
+		if(timeout < 0) {
+			throw new SocketBasics.UnableToGetLockException();
+		}
+		return mLockId;
+	}
+
+	void createNewMap(String map) throws IOException {
+		{
+//			// deregister from old controller:
+//			deregisterFilter();
+			logger.info("Restoring the map...");
+			MindMapController newModeController = (MindMapController) getMindMapController()
+					.getMode().createModeController();
+			MapAdapter newModel = new MindMapMapModel(getMindMapController().getFrame(),
+					newModeController);
+			HashMap IDToTarget = new HashMap();
+			StringReader reader = new StringReader(map);
+			MindMapNodeModel rootNode = (MindMapNodeModel) newModeController
+					.createNodeTreeFromXml(reader, IDToTarget);
+			reader.close();
+			newModel.setRoot(rootNode);
+			rootNode.setMap(newModel);
+			getMindMapController().newMap(newModel);
+			newModeController.invokeHooksRecursively((NodeAdapter) rootNode,
+					newModel);
+			setController(newModeController);
+			// add new hook
+			SocketBasics.togglePermanentHook(getMindMapController());
+			// tell him about this thread.
+			Collection activatedHooks = getMindMapController().getRootNode()
+					.getActivatedHooks();
+			for (Iterator it = activatedHooks.iterator(); it.hasNext();) {
+				PermanentNodeHook hook = (PermanentNodeHook) it.next();
+				if (hook instanceof SocketConnectionHook) {
+					SocketConnectionHook connHook = null;
+					connHook = (SocketConnectionHook) hook;
+					// Tell the hook about me
+					connHook.setClientCommunication(this);
+					/* register as listener, as I am a slave. */
+					connHook.registerFilter();
+					this.mSocketConnectionHook = connHook;
+					break;
+				}
+			}
+		}
+	}
+
+	/**
+	 * @param pNewModeController
+	 */
+	private void setController(MindMapController pNewModeController) {
+		mController = pNewModeController;
+	}
+
+	/**
+	 * @return
+	 */
+	private MindMapController getMindMapController() {
+		return mController;
+	}
+
+	/* (non-Javadoc)
+	 * @see plugins.collaboration.socket.SocketBasics#shutdown()
+	 */
+	public void shutdown() {
+		try {
+			CollaborationGoodbye goodbye = new CollaborationGoodbye();
+			goodbye.setUserId(getName());
+			send(goodbye);
+		} catch (Exception e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
+		try {
+			commitSuicide();
+			close();
+		} catch (IOException e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
+	}
+
+	/**
+	 * @return
+	 */
+	public int getPort() {
+		return mSocket.getLocalPort();
+	}
+
+
+	
 }

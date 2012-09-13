@@ -23,10 +23,13 @@
 
 package plugins.collaboration.database;
 
+import java.lang.reflect.InvocationTargetException;
+
 import freemind.extensions.DontSaveMarker;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.view.mindmapview.NodeView;
 
 /**
@@ -106,6 +109,32 @@ public class DatabaseConnectionHook extends DatabaseBasics implements
 
 	public Integer getRole() {
 		return ROLE_SLAVE;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.extensions.PermanentNodeHook#executeTransaction(freemind.modes.mindmapmode.actions.xml.ActionPair)
+	 */
+	protected void executeTransaction(final ActionPair pair)
+			throws InterruptedException, InvocationTargetException {
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.extensions.PermanentNodeHook#registerFilter()
+	 */
+	public void registerFilter() {
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.extensions.PermanentNodeHook#deregisterFilter()
+	 */
+	public void deregisterFilter() {
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.extensions.PermanentNodeHook#filterAction(freemind.modes.mindmapmode.actions.xml.ActionPair)
+	 */
+	public ActionPair filterAction(ActionPair pPair) {
+		return null;
 	}
 
 }

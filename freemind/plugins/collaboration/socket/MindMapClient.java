@@ -40,8 +40,7 @@ import freemind.modes.mindmapmode.MindMapController;
 public class MindMapClient extends SocketBasics {
 
 	private static final String HOST_PROPERTY = "plugins.collaboration.database.host";
-	private ClientCommunication mClientCommunication;
-	private int mPort;
+
 	/**
      *
      */
@@ -54,11 +53,11 @@ public class MindMapClient extends SocketBasics {
 			if (connectionHook != null) {
 				// I'm already present, so remove me.
 				logger.info("Deregister filter, so that the hook isn't reported to the database.");
-				// TODO:REMOVE ME
-				// ClientCommunication updateThread =
-				// connectionHook.getUpdateThread();
-				// updateThread.deregisterFilter();
-				// updateThread.removeUser();
+				ClientCommunication updateThread = connectionHook
+						.getClientCommunication();
+				connectionHook.deregisterFilter();
+				// TODO:REMOVE USER
+//				updateThread.removeUser();
 				logger.info("Shutting down the permanent hook.");
 				togglePermanentHook(controller);
 				return;
@@ -86,11 +85,12 @@ public class MindMapClient extends SocketBasics {
 					hostProperty.getValue());
 			mPassword = passwordProperty.getValue();
 			logger.info("Starting client thread...");
-			mPort = portProperty.getIntValue();
-			Socket mServer = new Socket(hostProperty.getValue(), mPort);
-			mClientCommunication = new ClientCommunication(this,
-					"Client Communication", mServer, getMindMapController());
-			mClientCommunication.start();
+			int port = portProperty.getIntValue();
+			Socket server = new Socket(hostProperty.getValue(), port);
+			ClientCommunication clientCommunication = new ClientCommunication(
+					"Client Communication", server, getMindMapController(),
+					mPassword);
+			clientCommunication.start();
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
 			// TODO: Need a better message here.
@@ -121,7 +121,44 @@ public class MindMapClient extends SocketBasics {
 	 * @see plugins.collaboration.socket.SocketBasics#getPort()
 	 */
 	public int getPort() {
-		return mPort;
+		return 0;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see plugins.collaboration.socket.SocketBasics#lock()
+	 */
+	protected String lock() throws UnableToGetLockException,
+			InterruptedException {
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * plugins.collaboration.socket.SocketBasics#sendCommand(java.lang.String,
+	 * java.lang.String)
+	 */
+	protected void broadcastCommand(String pDoAction, String pUndoAction,
+			String pLockId) throws Exception {
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see plugins.collaboration.socket.SocketBasics#unlock()
+	 */
+	protected void unlock() {
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see plugins.collaboration.socket.SocketBasics#shutdown()
+	 */
+	public void shutdown() {
 	}
 
 }

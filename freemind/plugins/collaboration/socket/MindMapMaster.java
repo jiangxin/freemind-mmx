@@ -24,33 +24,20 @@
 package plugins.collaboration.socket;
 
 import java.io.IOException;
-import java.io.StringReader;
-import java.lang.reflect.InvocationTargetException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Vector;
-
-import javax.swing.SwingUtilities;
 
 import freemind.common.NumberProperty;
 import freemind.common.StringProperty;
-import freemind.controller.actions.generated.instance.CollaborationActionBase;
+import freemind.controller.actions.generated.instance.CollaborationGoodbye;
 import freemind.extensions.DontSaveMarker;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
-import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
-import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.MindMapMapModel;
-import freemind.modes.mindmapmode.MindMapNodeModel;
-import freemind.modes.mindmapmode.actions.xml.ActionFilter.FinalActionFilter;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.view.mindmapview.NodeView;
 
 /**
@@ -58,16 +45,15 @@ import freemind.view.mindmapview.NodeView;
  * 
  */
 public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
-		DontSaveMarker, FinalActionFilter {
+		DontSaveMarker {
 
 	MasterThread mListener;
 	ServerSocket mServer;
 	Vector connections = new Vector();
-	protected boolean mFilterEnabled = true;
 	protected boolean mLockEnabled = false;
-	private ServerCommunication mLockedBy = null;
-	private long mLockedAt = 0L;
+	private String mLockMutex = "";
 	private int mPort;
+	private String mLockId;
 
 	private class MasterThread extends TerminateableThread {
 
@@ -78,7 +64,9 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 			super("Master");
 		}
 
-		/* (non-Javadoc)
+		/*
+		 * (non-Javadoc)
+		 * 
 		 * @see plugins.collaboration.socket.TerminateableThread#processAction()
 		 */
 		public boolean processAction() throws Exception {
@@ -94,14 +82,7 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 			}
 			return true;
 		}
-		
-	}
-	
 
-	public synchronized void broadcast(CollaborationActionBase message) {
-		for (int i = 0; i < connections.size(); i++) {
-			((ServerCommunication) connections.elementAt(i)).send(message);
-		}
 	}
 
 	public synchronized void closeConnection(ServerCommunication client) {
@@ -133,7 +114,7 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 		});
 		if (!dialog.isSuccess())
 			return;
-		/* Store port value in preferences. */ 
+		/* Store port value in preferences. */
 		setPortProperty(portProperty);
 		mPassword = passwordProperty.getValue();
 		// start server:
@@ -178,7 +159,19 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 	 * 
 	 */
 	private void signalEndOfSession() {
-		// TODO Send information to all		
+		CollaborationGoodbye goodbye = new CollaborationGoodbye();
+		goodbye.setUserId(getName());
+		for (int i = 0; i < connections.size(); i++) {
+			final ServerCommunication serverCommunication = (ServerCommunication) connections.elementAt(i);
+			try {
+				serverCommunication.send(goodbye);
+				serverCommunication.commitSuicide();
+				serverCommunication.close();
+			} catch (IOException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+		}
+
 	}
 
 	public void onAddChild(MindMapNode pAddedChildNode) {
@@ -218,96 +211,70 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 		return ROLE_MASTER;
 	}
 
-	/** 
-	 * These are local changes here. Only possible, if no lock is set.
-	 */
-	public ActionPair filterAction(ActionPair pPair) {
-		if (pPair == null || !mFilterEnabled)
-			return pPair;
-		String doAction = getMindMapController().marshall(pPair.getDoAction());
-		String undoAction = getMindMapController().marshall(pPair.getUndoAction());
-		// try {
-		// } catch (SQLException e) {
-		// freemind.main.Resources.getInstance().logException(e);
-		// }
-		return pPair;
-	}
-
-	protected void deregisterFilter() {
-		logger.info("Deregistering filter");
-		getMindMapController().getActionFactory().deregisterFilter(this);
-	}
-
-	protected void registerFilter() {
-		logger.info("Registering filter");
-		getMindMapController().getActionFactory().registerFilter(this);
-	}
-	
-	private void executeTransaction(final ActionPair pair)
-			throws InterruptedException, InvocationTargetException {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				mFilterEnabled = false;
-				try {
-					getMindMapController().getActionFactory().startTransaction("update");
-					getMindMapController().getActionFactory().executeAction(pair);
-					getMindMapController().getActionFactory().endTransaction("update");
-				} finally {
-					mFilterEnabled = true;
-				}
-			}
-		});
-	}
-
-	private void createNewMap(String map) throws IOException {
-		{
-			// deregister from old controller:
-			deregisterFilter();
-			logger.info("Restoring the map...");
-			MindMapController newModeController = (MindMapController) getMindMapController()
-					.getMode().createModeController();
-			MapAdapter newModel = new MindMapMapModel(getMindMapController().getFrame(),
-					newModeController);
-			HashMap IDToTarget = new HashMap();
-			StringReader reader = new StringReader(map);
-			MindMapNodeModel rootNode = (MindMapNodeModel) newModeController
-					.createNodeTreeFromXml(reader, IDToTarget);
-			reader.close();
-			newModel.setRoot(rootNode);
-			rootNode.setMap(newModel);
-			getMindMapController().newMap(newModel);
-			newModeController.invokeHooksRecursively((NodeAdapter) rootNode,
-					newModel);
-			setController(newModeController);
-			// add new hook
-			SocketBasics.togglePermanentHook(getMindMapController());
-			// tell him about this thread.
-			Collection activatedHooks = getMindMapController().getRootNode()
-					.getActivatedHooks();
-			for (Iterator it = activatedHooks.iterator(); it.hasNext();) {
-				PermanentNodeHook hook = (PermanentNodeHook) it.next();
-				if (hook instanceof SocketConnectionHook) {
-					SocketConnectionHook connHook = (SocketConnectionHook) hook;
-					// TODO: Tell anybody??
-//					connHook.setUpdateThread(this);
-					break;
-				}
-			}
-			/* register as listener, as I am a slave. */
-			registerFilter();
-		}
-	}
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#getPort()
 	 */
 	public int getPort() {
 		return mPort;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see plugins.collaboration.socket.SocketBasics#lock()
+	 */
+	protected String lock() throws UnableToGetLockException,
+			InterruptedException {
+		synchronized (mLockMutex) {
+			if (mLockEnabled) {
+				throw new UnableToGetLockException();
+			}
+			mLockEnabled = true;
+			String lockId = "Lock_" + Math.random();
+			mLockId = lockId;
+			logger.info("New lock " + lockId);
+			return lockId;
+		}
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * plugins.collaboration.socket.SocketBasics#sendCommand(java.lang.String,
+	 * java.lang.String, java.lang.String)
+	 */
+	protected void broadcastCommand(String pDoAction, String pUndoAction,
+			String pLockId) throws Exception {
+		for (int i = 0; i < connections.size(); i++) {
+			((ServerCommunication) connections.elementAt(i)).sendCommand(pDoAction, pUndoAction, pLockId);
+		}
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see plugins.collaboration.socket.SocketBasics#unlock()
+	 */
+	protected void unlock() {
+		synchronized (mLockMutex) {
+			if (!mLockEnabled) {
+				throw new IllegalStateException();
+			}
+			logger.info("Release lock " + mLockId);
+			mLockEnabled = false;
+			mLockId = "none";
+		}
+	}
 
+	/* (non-Javadoc)
+	 * @see plugins.collaboration.socket.SocketBasics#shutdown()
+	 */
+	public void shutdown() {
+		// TODO Auto-generated method stub
+		
+	}
 
-	
 }
