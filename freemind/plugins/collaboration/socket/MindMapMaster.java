@@ -91,6 +91,7 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 
 	public void startupMapHook() {
 		super.startupMapHook();
+		// TODO: Restart check?
 		MindMapController controller = getMindMapController();
 		final StringProperty passwordProperty = new StringProperty(
 				PASSWORD_DESCRIPTION, PASSWORD);
@@ -134,6 +135,7 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 			}
 			return;
 		}
+		registerFilter();
 		logger.info("Starting server. Done.");
 	}
 
@@ -275,6 +277,15 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 	public void shutdown() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public String getLockId() {
+		synchronized (mLockMutex) {
+			if (!mLockEnabled) {
+				throw new IllegalStateException();
+			}
+			return mLockId;
+		}
 	}
 
 }

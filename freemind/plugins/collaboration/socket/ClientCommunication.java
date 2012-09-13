@@ -61,7 +61,7 @@ public class ClientCommunication extends CommunicationBase {
 	 * @param pName
 	 * @param pClient
 	 * @param pController
-	 * @param pPassword 
+	 * @param pPassword
 	 * @param pOut
 	 * @param pIn
 	 * @throws IOException
@@ -82,60 +82,63 @@ public class ClientCommunication extends CommunicationBase {
 	 * plugins.collaboration.socket.CommunicationBase#processCommand(freemind
 	 * .controller.actions.generated.instance.CollaborationActionBase)
 	 */
-	public void processCommand(CollaborationActionBase pCommand) throws IOException {
+	public void processCommand(CollaborationActionBase pCommand)
+			throws IOException {
 		if (pCommand instanceof CollaborationGoodbye) {
 			CollaborationGoodbye goodbye = (CollaborationGoodbye) pCommand;
-			logger.info("Goodbye received from "+ goodbye.getUserId());
+			logger.info("Goodbye received from " + goodbye.getUserId());
 			SocketBasics.togglePermanentHook(getMindMapController());
 			return;
 		}
 		boolean commandHandled = false;
-		switch (getCurrentState()) {
-		case STATE_WAIT_FOR_WHO_ARE_YOU:
-			if (pCommand instanceof CollaborationWhoAreYou) {
-				// CollaborationWhoAreYou whoCommand = (CollaborationWhoAreYou)
-				// pCommand;
-				// send hello:
-				CollaborationHello helloCommand = new CollaborationHello();
-				helloCommand.setUserId(Tools.getUserName());
-				helloCommand.setPassword(mPassword);
-				send(helloCommand);
-				setCurrentState(STATE_WAIT_FOR_WELCOME);
-				commandHandled = true;
+		if (pCommand instanceof CollaborationWhoAreYou) {
+			if (getCurrentState() != STATE_WAIT_FOR_WHO_ARE_YOU) {
+				logger.warning("Wrong state for " + pCommand.getClass() + ": "
+						+ getCurrentState());
 			}
-			break;
-		case STATE_WAIT_FOR_WELCOME:
-			if (pCommand instanceof CollaborationWelcome) {
-				CollaborationWelcome collWelcome = (CollaborationWelcome) pCommand;
-				createNewMap(collWelcome.getMap());
-				setCurrentState(STATE_IDLE);
-				commandHandled = true;
+			// send hello:
+			CollaborationHello helloCommand = new CollaborationHello();
+			helloCommand.setUserId(Tools.getUserName());
+			helloCommand.setPassword(mPassword);
+			send(helloCommand);
+			setCurrentState(STATE_WAIT_FOR_WELCOME);
+			commandHandled = true;
+		}
+		if (pCommand instanceof CollaborationWelcome) {
+			if (getCurrentState() != STATE_WAIT_FOR_WELCOME) {
+				logger.warning("Wrong state for " + pCommand.getClass() + ": "
+						+ getCurrentState());
 			}
-			break;
-		case STATE_IDLE:
-			if (pCommand instanceof CollaborationTransaction) {
-				CollaborationTransaction trans = (CollaborationTransaction) pCommand;
-				// check if it is from me!
-				if(!Tools.safeEquals(mLockId, trans.getId())) {
-					if (mSocketConnectionHook != null) {
-						// it is not from me, so handle it:
-						mSocketConnectionHook
-								.executeTransaction(getActionPair(trans));
-					}
+			CollaborationWelcome collWelcome = (CollaborationWelcome) pCommand;
+			createNewMap(collWelcome.getMap());
+			setCurrentState(STATE_IDLE);
+			commandHandled = true;
+		}
+		if (pCommand instanceof CollaborationTransaction) {
+			if (getCurrentState() != STATE_IDLE) {
+				logger.warning("Wrong state for " + pCommand.getClass() + ": "
+						+ getCurrentState());
+			}
+			CollaborationTransaction trans = (CollaborationTransaction) pCommand;
+			// check if it is from me!
+			if (!Tools.safeEquals(mLockId, trans.getId())) {
+				if (mSocketConnectionHook != null) {
+					// it is not from me, so handle it:
+					mSocketConnectionHook
+							.executeTransaction(getActionPair(trans));
 				}
-				commandHandled = true;
 			}
-			break;
-		case STATE_WAIT_FOR_LOCK:
-			if (pCommand instanceof CollaborationReceiveLock) {
-				CollaborationReceiveLock lockReceived = (CollaborationReceiveLock) pCommand;
-				this.mLockId = lockReceived.getId();
-				setCurrentState(STATE_LOCK_RECEIVED);
-				commandHandled = true;
+			commandHandled = true;
+		}
+		if (pCommand instanceof CollaborationReceiveLock) {
+			if (getCurrentState() != STATE_WAIT_FOR_LOCK) {
+				logger.warning("Wrong state for " + pCommand.getClass() + ": "
+						+ getCurrentState());
 			}
-		default:
-			logger.warning("Unknown state " + getCurrentState());
-
+			CollaborationReceiveLock lockReceived = (CollaborationReceiveLock) pCommand;
+			this.mLockId = lockReceived.getId();
+			setCurrentState(STATE_LOCK_RECEIVED);
+			commandHandled = true;
 		}
 		if (!commandHandled) {
 			logger.warning("Received unknown message of type "
@@ -144,28 +147,30 @@ public class ClientCommunication extends CommunicationBase {
 	}
 
 	/**
-	 * Sends the lock requests, blocks until timeout or answer and returns the associated id.
-	 * Exception otherwise.
-	 * @throws InterruptedException 
-	 * @throws UnableToGetLockException 
+	 * Sends the lock requests, blocks until timeout or answer and returns the
+	 * associated id. Exception otherwise.
+	 * 
+	 * @throws InterruptedException
+	 * @throws UnableToGetLockException
 	 */
-	public synchronized String sendLockRequest() throws InterruptedException, UnableToGetLockException {
+	public synchronized String sendLockRequest() throws InterruptedException,
+			UnableToGetLockException {
 		// TODO: Global lock needed?
 		mLockId = null;
 		CollaborationRequireLock lockRequest = new CollaborationRequireLock();
 		setCurrentState(STATE_WAIT_FOR_LOCK);
-		if(!send(lockRequest)) {
+		if (!send(lockRequest)) {
 			setCurrentState(STATE_IDLE);
 			throw new SocketBasics.UnableToGetLockException();
 		}
-		final int sleepTime = ROUNDTRIP_TIMEOUT/ROUNDTRIP_ROUNDS;
+		final int sleepTime = ROUNDTRIP_TIMEOUT / ROUNDTRIP_ROUNDS;
 		int timeout = ROUNDTRIP_ROUNDS;
-		while(getCurrentState() != STATE_LOCK_RECEIVED && timeout >= 0) {
+		while (getCurrentState() != STATE_LOCK_RECEIVED && timeout >= 0) {
 			sleep(sleepTime);
 			timeout--;
 		}
 		setCurrentState(STATE_IDLE);
-		if(timeout < 0) {
+		if (timeout < 0) {
 			throw new SocketBasics.UnableToGetLockException();
 		}
 		return mLockId;
@@ -173,13 +178,13 @@ public class ClientCommunication extends CommunicationBase {
 
 	void createNewMap(String map) throws IOException {
 		{
-//			// deregister from old controller:
-//			deregisterFilter();
+			// // deregister from old controller:
+			// deregisterFilter();
 			logger.info("Restoring the map...");
 			MindMapController newModeController = (MindMapController) getMindMapController()
 					.getMode().createModeController();
-			MapAdapter newModel = new MindMapMapModel(getMindMapController().getFrame(),
-					newModeController);
+			MapAdapter newModel = new MindMapMapModel(getMindMapController()
+					.getFrame(), newModeController);
 			HashMap IDToTarget = new HashMap();
 			StringReader reader = new StringReader(map);
 			MindMapNodeModel rootNode = (MindMapNodeModel) newModeController
@@ -226,7 +231,9 @@ public class ClientCommunication extends CommunicationBase {
 		return mController;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#shutdown()
 	 */
 	public void shutdown() {
@@ -252,6 +259,4 @@ public class ClientCommunication extends CommunicationBase {
 		return mSocket.getLocalPort();
 	}
 
-
-	
 }

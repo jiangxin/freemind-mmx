@@ -19,7 +19,6 @@
  *
  * Created on 03.02.2009
  */
-/*$Id: UpdateThread.java,v 1.1.2.1 2009/02/04 19:31:21 christianfoltin Exp $*/
 
 package plugins.collaboration.socket;
 
@@ -39,8 +38,16 @@ import freemind.controller.actions.generated.instance.CollaborationTransaction;
 import freemind.controller.actions.generated.instance.CollaborationUnableToLock;
 import freemind.controller.actions.generated.instance.CollaborationWelcome;
 import freemind.controller.actions.generated.instance.CollaborationWhoAreYou;
+import freemind.main.Tools;
 import freemind.modes.mindmapmode.MindMapController;
 
+/**
+ * This class handles the communication from the master to a single client. It
+ * is thus instanciated for each client (by the MindMapMaster).
+ * 
+ * @author foltin
+ * @date 13.09.2012
+ */
 public class ServerCommunication extends CommunicationBase {
 	protected MindMapMaster mMindMapMaster = null;
 
@@ -56,16 +63,21 @@ public class ServerCommunication extends CommunicationBase {
 	}
 
 	public void processCommand(CollaborationActionBase pCommand)
-			throws IOException {
+			throws Exception {
 		if (pCommand instanceof CollaborationGoodbye) {
 			CollaborationGoodbye goodbye = (CollaborationGoodbye) pCommand;
 			logger.info("Goodbye received from " + goodbye.getUserId());
 			mMindMapMaster.closeConnection(this);
 			return;
 		}
-		switch (getCurrentState()) {
-		case STATE_WAIT_FOR_HELLO:
-			if (pCommand instanceof CollaborationHello) {
+		boolean commandHandled = false;
+		if (pCommand instanceof CollaborationHello) {
+			// here, we are strict in checking the state, as not the whole world
+			// should get access to the map!
+			if (getCurrentState() != STATE_WAIT_FOR_HELLO) {
+				logger.warning("Wrong state for " + pCommand.getClass() + ": "
+						+ getCurrentState());
+			} else {
 				CollaborationHello commandHello = (CollaborationHello) pCommand;
 				setName(commandHello.getUserId());
 				// verify password:
@@ -81,42 +93,58 @@ public class ServerCommunication extends CommunicationBase {
 							.getName());
 					send(welcomeCommand);
 					setCurrentState(STATE_IDLE);
+					commandHandled = true;
 				}
 			}
-			break;
-		case STATE_WAIT_FOR_COMMAND:
-			if (pCommand instanceof CollaborationTransaction) {
-				CollaborationTransaction trans = (CollaborationTransaction) pCommand;
-				try {
+		}
+
+		if (pCommand instanceof CollaborationTransaction) {
+			if (getCurrentState() != STATE_WAIT_FOR_COMMAND) {
+				logger.warning("Wrong state for " + pCommand.getClass() + ": "
+						+ getCurrentState());
+			}
+			CollaborationTransaction trans = (CollaborationTransaction) pCommand;
+			try {
+				if (!Tools
+						.safeEquals(mMindMapMaster.getLockId(), trans.getId())) {
+					logger.severe("Wrong transaction id received. Expected: "
+							+ mMindMapMaster.getLockId() + ", received: "
+							+ trans.getId());
+				} else {
 					mMindMapMaster.broadcastCommand(trans.getDoAction(),
 							trans.getUndoAction(), trans.getId());
 					mMindMapMaster.executeTransaction(getActionPair(trans));
-				} catch (Exception e) {
-					freemind.main.Resources.getInstance().logException(e);
-				} finally {
-					mMindMapMaster.unlock();
-					setCurrentState(STATE_IDLE);
 				}
+			} finally {
+				mMindMapMaster.unlock();
+				setCurrentState(STATE_IDLE);
+				commandHandled = true;
 			}
-			break;
-		case STATE_IDLE:
-			if (pCommand instanceof CollaborationRequireLock) {
-				try {
-					String lockId = mMindMapMaster.lock();
-					logger.info("Got lock for " + getName());
-					CollaborationReceiveLock lockCommand = new CollaborationReceiveLock();
-					lockCommand.setId(lockId);
-					send(lockCommand);
-					setCurrentState(STATE_WAIT_FOR_COMMAND);
-				} catch (UnableToGetLockException e) {
-					freemind.main.Resources.getInstance().logException(e);
-					CollaborationUnableToLock unableToLock = new CollaborationUnableToLock();
-					send(unableToLock);
-				} catch (InterruptedException e) {
-					freemind.main.Resources.getInstance().logException(e);
-				}
+		}
+		if (pCommand instanceof CollaborationRequireLock) {
+			if (getCurrentState() != STATE_IDLE) {
+				logger.warning("Wrong state for " + pCommand.getClass() + ": "
+						+ getCurrentState());
 			}
-			break;
+			try {
+				String lockId = mMindMapMaster.lock();
+				logger.info("Got lock for " + getName());
+				CollaborationReceiveLock lockCommand = new CollaborationReceiveLock();
+				lockCommand.setId(lockId);
+				send(lockCommand);
+				setCurrentState(STATE_WAIT_FOR_COMMAND);
+				commandHandled = true;
+			} catch (UnableToGetLockException e) {
+				freemind.main.Resources.getInstance().logException(e);
+				CollaborationUnableToLock unableToLock = new CollaborationUnableToLock();
+				send(unableToLock);
+			} catch (InterruptedException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+		}
+		if (!commandHandled) {
+			logger.warning("Received unknown message of type "
+					+ pCommand.getClass());
 		}
 	}
 

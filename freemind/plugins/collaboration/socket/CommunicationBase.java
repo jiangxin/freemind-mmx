@@ -118,7 +118,6 @@ public abstract class CommunicationBase extends TerminateableThread {
 			if(command == null) {
 				continue;
 			}
-			logger.info("Received command of type " + command.getClass());
 			processCommand(command);
 			didSomething = true;
 		}
