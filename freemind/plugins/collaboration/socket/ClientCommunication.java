@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import plugins.collaboration.socket.SocketBasics.UnableToGetLockException;
+import sun.security.util.DerEncoder;
 import freemind.controller.actions.generated.instance.CollaborationActionBase;
 import freemind.controller.actions.generated.instance.CollaborationGoodbye;
 import freemind.controller.actions.generated.instance.CollaborationHello;
@@ -56,7 +57,8 @@ public class ClientCommunication extends CommunicationBase {
 	private String mLockId;
 	private String mPassword;
 	private SocketConnectionHook mSocketConnectionHook = null;
-
+	private boolean mReceivedGoodbye = false;
+	
 	/**
 	 * @param pName
 	 * @param pClient
@@ -87,6 +89,9 @@ public class ClientCommunication extends CommunicationBase {
 		if (pCommand instanceof CollaborationGoodbye) {
 			CollaborationGoodbye goodbye = (CollaborationGoodbye) pCommand;
 			logger.info("Goodbye received from " + goodbye.getUserId());
+			mReceivedGoodbye  = true;
+			// first deregister, as otherwise, the toggle hook command is tried to be sent over the wire.
+			mSocketConnectionHook.deregisterFilter();
 			SocketBasics.togglePermanentHook(getMindMapController());
 			return;
 		}
@@ -238,6 +243,7 @@ public class ClientCommunication extends CommunicationBase {
 	 */
 	public void shutdown() {
 		try {
+			// TODO: Send only, if own goodbye.
 			CollaborationGoodbye goodbye = new CollaborationGoodbye();
 			goodbye.setUserId(getName());
 			send(goodbye);
@@ -245,7 +251,7 @@ public class ClientCommunication extends CommunicationBase {
 			freemind.main.Resources.getInstance().logException(e);
 		}
 		try {
-			commitSuicide();
+			mShouldTerminate = true;
 			close();
 		} catch (IOException e) {
 			freemind.main.Resources.getInstance().logException(e);

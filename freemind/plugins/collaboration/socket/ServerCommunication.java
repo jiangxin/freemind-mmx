@@ -24,7 +24,6 @@ package plugins.collaboration.socket;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.net.Socket;
 
@@ -68,6 +67,8 @@ public class ServerCommunication extends CommunicationBase {
 			CollaborationGoodbye goodbye = (CollaborationGoodbye) pCommand;
 			logger.info("Goodbye received from " + goodbye.getUserId());
 			mMindMapMaster.closeConnection(this);
+			close();
+			mShouldTerminate = true;
 			return;
 		}
 		boolean commandHandled = false;

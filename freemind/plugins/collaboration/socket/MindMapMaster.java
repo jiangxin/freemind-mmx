@@ -47,7 +47,11 @@ import freemind.view.mindmapview.NodeView;
 public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 		DontSaveMarker {
 
-	MasterThread mListener;
+	/**
+	 * 
+	 */
+	public static final int SOCKET_TIMEOUT_IN_MILLIES = 500;
+	MasterThread mListener = null;
 	ServerSocket mServer;
 	Vector connections = new Vector();
 	protected boolean mLockEnabled = false;
@@ -74,6 +78,7 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 				logger.finest("Waiting for message");
 				Socket client = mServer.accept();
 				logger.info("Received new client.");
+				client.setSoTimeout(SOCKET_TIMEOUT_IN_MILLIES);
 				ServerCommunication c = new ServerCommunication(
 						MindMapMaster.this, client, getMindMapController());
 				c.start();
@@ -91,7 +96,13 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 
 	public void startupMapHook() {
 		super.startupMapHook();
-		// TODO: Restart check?
+		// Restart check, as the startup command is given, even if the mindmap
+		// is changed via
+		// the tab bar. So, this method must be idempotent...
+		if (mListener != null) {
+			// we were already here, so
+			return;
+		}
 		MindMapController controller = getMindMapController();
 		final StringProperty passwordProperty = new StringProperty(
 				PASSWORD_DESCRIPTION, PASSWORD);
@@ -123,7 +134,7 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 		try {
 			mPort = getPortProperty().getIntValue();
 			mServer = new ServerSocket(mPort);
-			mServer.setSoTimeout(500);
+			mServer.setSoTimeout(SOCKET_TIMEOUT_IN_MILLIES);
 			mListener = new MasterThread();
 			mListener.start();
 		} catch (Exception e) {
@@ -162,9 +173,10 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 	 */
 	private void signalEndOfSession() {
 		CollaborationGoodbye goodbye = new CollaborationGoodbye();
-		goodbye.setUserId(getName());
+		goodbye.setUserId(Tools.getUserName());
 		for (int i = 0; i < connections.size(); i++) {
-			final ServerCommunication serverCommunication = (ServerCommunication) connections.elementAt(i);
+			final ServerCommunication serverCommunication = (ServerCommunication) connections
+					.elementAt(i);
 			try {
 				serverCommunication.send(goodbye);
 				serverCommunication.commitSuicide();
@@ -251,7 +263,8 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 	protected void broadcastCommand(String pDoAction, String pUndoAction,
 			String pLockId) throws Exception {
 		for (int i = 0; i < connections.size(); i++) {
-			((ServerCommunication) connections.elementAt(i)).sendCommand(pDoAction, pUndoAction, pLockId);
+			((ServerCommunication) connections.elementAt(i)).sendCommand(
+					pDoAction, pUndoAction, pLockId);
 		}
 	}
 
@@ -271,12 +284,14 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#shutdown()
 	 */
 	public void shutdown() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public String getLockId() {

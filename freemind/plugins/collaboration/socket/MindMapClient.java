@@ -86,9 +86,10 @@ public class MindMapClient extends SocketBasics {
 			mPassword = passwordProperty.getValue();
 			logger.info("Starting client thread...");
 			int port = portProperty.getIntValue();
-			Socket server = new Socket(hostProperty.getValue(), port);
+			Socket serverConnection = new Socket(hostProperty.getValue(), port);
+			serverConnection.setSoTimeout(MindMapMaster.SOCKET_TIMEOUT_IN_MILLIES);
 			ClientCommunication clientCommunication = new ClientCommunication(
-					"Client Communication", server, getMindMapController(),
+					"Client Communication", serverConnection, getMindMapController(),
 					mPassword);
 			clientCommunication.start();
 		} catch (Exception e) {

@@ -24,6 +24,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 import freemind.controller.actions.generated.instance.CollaborationActionBase;
 import freemind.controller.actions.generated.instance.CollaborationGoodbye;
@@ -39,6 +40,7 @@ import freemind.modes.mindmapmode.actions.xml.ActionPair;
 public abstract class CommunicationBase extends TerminateableThread {
 
 	Socket mSocket;
+
 	/**
 	 * @param pName
 	 * @param pClient
@@ -55,6 +57,7 @@ public abstract class CommunicationBase extends TerminateableThread {
 		out = pOut;
 		in = pIn;
 	}
+
 	protected MindMapController mController;
 	protected DataOutputStream out;
 	protected DataInputStream in;
@@ -80,8 +83,8 @@ public abstract class CommunicationBase extends TerminateableThread {
 				send(goodbyeAction);
 			}
 			// TODO: Fixme
-//			mClient.close();
-//			mConnection = null;
+			// mClient.close();
+			// mConnection = null;
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
 		}
@@ -112,16 +115,17 @@ public abstract class CommunicationBase extends TerminateableThread {
 
 	public boolean processAction() throws Exception {
 		boolean didSomething = false;
-		String text;
-		while ((text = in.readUTF()) != null) {
+		try {
+			// Non blocking!!
+			String text = in.readUTF();
 			CollaborationActionBase command = receive(text);
-			if(command == null) {
-				continue;
+			if (command != null) {
+				processCommand(command);
+				didSomething = true;
 			}
-			processCommand(command);
-			didSomething = true;
+		} catch (SocketTimeoutException e) {
 		}
-	
+
 		mCounter--;
 		if (mCounter <= 0) {
 			mCounter = 10;
@@ -129,9 +133,11 @@ public abstract class CommunicationBase extends TerminateableThread {
 		}
 		return didSomething;
 	}
-	int  mCounter = 1;
 
-	public abstract void processCommand(CollaborationActionBase command) throws Exception;
+	int mCounter = 1;
+
+	public abstract void processCommand(CollaborationActionBase command)
+			throws Exception;
 
 	protected int getCurrentState() {
 		synchronized (mCurrentStateMutex) {
@@ -145,11 +151,10 @@ public abstract class CommunicationBase extends TerminateableThread {
 		}
 	}
 
-	
 	/**
 	 * @param pDoAction
 	 * @param pUndoAction
-	 * @param pLockId 
+	 * @param pLockId
 	 */
 	public void sendCommand(String pDoAction, String pUndoAction, String pLockId) {
 		CollaborationTransaction trans = new CollaborationTransaction();
@@ -164,9 +169,8 @@ public abstract class CommunicationBase extends TerminateableThread {
 	}
 
 	public ActionPair getActionPair(CollaborationTransaction trans) {
-		return new ActionPair(
-				mController.unMarshall(trans.getDoAction()),
+		return new ActionPair(mController.unMarshall(trans.getDoAction()),
 				mController.unMarshall(trans.getUndoAction()));
 	}
-	
+
 }

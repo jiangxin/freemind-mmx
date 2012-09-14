@@ -59,6 +59,7 @@ public class SocketConnectionHook extends SocketBasics implements
 	}
 
 	public void shutdownMapHook() {
+		deregisterFilter();
 		// this is the internal call. shutdown
 		logger.info("Shut down of the permanent hook.");
 		if(mClientCommunication != null) {

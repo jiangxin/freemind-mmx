@@ -135,7 +135,7 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 									.getChildren().firstElement();
 							if (Tools.safeEquals(parameters.getName(),
 									PermanentNodeHookAdapter.PARAMETERS)) {
-								// standard safe mechanism
+								// standard save mechanism
 								for (Iterator it = parameters
 										.enumerateAttributeNames(); it
 										.hasNext();) {
@@ -149,10 +149,10 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 								}
 
 							} else {
-								logger.warning("Unusual safe mechanism, implement me.");
+								logger.warning("Unusual save mechanism, implement me.");
 							}
 						} else {
-							logger.warning("Unusual safe mechanism, implement me.");
+							logger.warning("Unusual save mechanism, implement me.");
 						}
 						/*
 						 * fc, 30.7.2004: we have to break. otherwise the
