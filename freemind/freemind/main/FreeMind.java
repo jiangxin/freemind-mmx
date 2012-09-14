@@ -137,7 +137,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	private Logger logger = null;
 
-	protected static final VersionInformation VERSION = new VersionInformation("1.0.0 Beta 6");
+	protected static final VersionInformation VERSION = new VersionInformation("1.0.0 Beta 7");
 
 	public static final String XML_VERSION = "1.0.0";
 
@@ -525,7 +525,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		String osName = System.getProperty("os.name");
 		String urlString = url.toString();
 
-		final File file = Tools.urlToFile(url);
 		if (osName.substring(0, 3).equals("Win")) {
 			String propertyString = new String(
 					"default_browser_command_windows");
@@ -573,6 +572,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				browser_command = formatter.format(messageArguments);
 
 				if (url.getProtocol().equals("file")) {
+					final File file = Tools.urlToFile(url);
 					if (!Tools.isBelowJava6()) {
 						Class desktopClass = Class.forName("java.awt.Desktop");
 						Method getDesktopMethod = desktopClass.getMethod(
@@ -622,6 +622,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				if ("file".equals(url.getProtocol())) {
 					// Bug in the apple's open function. For files, a pure
 					// filename must be given.
+					final File file = Tools.urlToFile(url);
 					String[] command = {
 							getProperty("default_browser_command_mac_open"),
 							"file:" + file.getAbsolutePath() };
