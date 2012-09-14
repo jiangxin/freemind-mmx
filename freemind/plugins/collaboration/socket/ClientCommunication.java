@@ -38,6 +38,7 @@ import freemind.controller.actions.generated.instance.CollaborationHello;
 import freemind.controller.actions.generated.instance.CollaborationReceiveLock;
 import freemind.controller.actions.generated.instance.CollaborationRequireLock;
 import freemind.controller.actions.generated.instance.CollaborationTransaction;
+import freemind.controller.actions.generated.instance.CollaborationUserInformation;
 import freemind.controller.actions.generated.instance.CollaborationWelcome;
 import freemind.controller.actions.generated.instance.CollaborationWhoAreYou;
 import freemind.extensions.PermanentNodeHook;
@@ -58,6 +59,7 @@ public class ClientCommunication extends CommunicationBase {
 	private String mPassword;
 	private SocketConnectionHook mSocketConnectionHook = null;
 	private boolean mReceivedGoodbye = false;
+	private String mUsers;
 	
 	/**
 	 * @param pName
@@ -96,6 +98,11 @@ public class ClientCommunication extends CommunicationBase {
 			return;
 		}
 		boolean commandHandled = false;
+		if (pCommand instanceof CollaborationUserInformation) {
+			CollaborationUserInformation userInfo = (CollaborationUserInformation) pCommand;
+			mUsers = userInfo.getUserIds();
+			commandHandled = true;
+		}
 		if (pCommand instanceof CollaborationWhoAreYou) {
 			if (getCurrentState() != STATE_WAIT_FOR_WHO_ARE_YOU) {
 				logger.warning("Wrong state for " + pCommand.getClass() + ": "
@@ -243,10 +250,12 @@ public class ClientCommunication extends CommunicationBase {
 	 */
 	public void shutdown() {
 		try {
-			// TODO: Send only, if own goodbye.
-			CollaborationGoodbye goodbye = new CollaborationGoodbye();
-			goodbye.setUserId(getName());
-			send(goodbye);
+			if (!mReceivedGoodbye) {
+				// Send only, if own goodbye.
+				CollaborationGoodbye goodbye = new CollaborationGoodbye();
+				goodbye.setUserId(getName());
+				send(goodbye);
+			}
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
 		}
@@ -263,6 +272,13 @@ public class ClientCommunication extends CommunicationBase {
 	 */
 	public int getPort() {
 		return mSocket.getLocalPort();
+	}
+
+	/**
+	 * @return
+	 */
+	public String getUsers() {
+		return mUsers;
 	}
 
 }

@@ -22,6 +22,8 @@
 				    <exclude name="build_latex.xml"  if="include_latex"/>
 					<!-- Jabber is outdated. -->
 				    <exclude name="build_jabber.xml"/>
+					<!-- Database is outdated. It is replaced by Socket -->
+				    <exclude name="build_database.xml"/>
 				</fileset>
 			</subant>
 		</sequential>

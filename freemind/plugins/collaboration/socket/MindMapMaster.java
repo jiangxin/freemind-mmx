@@ -32,6 +32,7 @@ import java.util.Vector;
 import freemind.common.NumberProperty;
 import freemind.common.StringProperty;
 import freemind.controller.actions.generated.instance.CollaborationGoodbye;
+import freemind.controller.actions.generated.instance.CollaborationUserInformation;
 import freemind.extensions.DontSaveMarker;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.Tools;
@@ -53,13 +54,16 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 	public static final int SOCKET_TIMEOUT_IN_MILLIES = 500;
 	MasterThread mListener = null;
 	ServerSocket mServer;
-	Vector connections = new Vector();
+	Vector mConnections = new Vector();
 	protected boolean mLockEnabled = false;
 	private String mLockMutex = "";
 	private int mPort;
 	private String mLockId;
 
 	private class MasterThread extends TerminateableThread {
+
+		private static final long TIME_BETWEEN_USER_INFORMATION_IN_MILLIES = 5000;
+		private long mLastTimeUserInformationSent = 0;
 
 		/**
 		 * @param pName
@@ -82,8 +86,26 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 				ServerCommunication c = new ServerCommunication(
 						MindMapMaster.this, client, getMindMapController());
 				c.start();
-				connections.addElement(c);
+				synchronized (mConnections) {
+					mConnections.addElement(c);
+				}
 			} catch (SocketTimeoutException e) {
+			}
+			if (System.currentTimeMillis() - mLastTimeUserInformationSent > TIME_BETWEEN_USER_INFORMATION_IN_MILLIES) {
+				mLastTimeUserInformationSent = System.currentTimeMillis();
+				CollaborationUserInformation userInfo = new CollaborationUserInformation();
+				userInfo.setUserIds(getUsers());
+				synchronized (mConnections) {
+					for (int i = 0; i < mConnections.size(); i++) {
+						try {
+							((ServerCommunication) mConnections.elementAt(i))
+									.send(userInfo);
+						} catch (Exception e) {
+							freemind.main.Resources.getInstance().logException(
+									e);
+						}
+					}
+				}
 			}
 			return true;
 		}
@@ -91,7 +113,9 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 	}
 
 	public synchronized void closeConnection(ServerCommunication client) {
-		connections.remove(client);
+		synchronized (mConnections) {
+			mConnections.remove(client);
+		}
 	}
 
 	public void startupMapHook() {
@@ -174,18 +198,20 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 	private void signalEndOfSession() {
 		CollaborationGoodbye goodbye = new CollaborationGoodbye();
 		goodbye.setUserId(Tools.getUserName());
-		for (int i = 0; i < connections.size(); i++) {
-			final ServerCommunication serverCommunication = (ServerCommunication) connections
-					.elementAt(i);
-			try {
-				serverCommunication.send(goodbye);
-				serverCommunication.commitSuicide();
-				serverCommunication.close();
-			} catch (IOException e) {
-				freemind.main.Resources.getInstance().logException(e);
+		synchronized (mConnections) {
+			for (int i = 0; i < mConnections.size(); i++) {
+				final ServerCommunication serverCommunication = (ServerCommunication) mConnections
+						.elementAt(i);
+				try {
+					serverCommunication.send(goodbye);
+					serverCommunication.commitSuicide();
+					serverCommunication.close();
+				} catch (IOException e) {
+					freemind.main.Resources.getInstance().logException(e);
+				}
 			}
+			mConnections.clear();
 		}
-
 	}
 
 	public void onAddChild(MindMapNode pAddedChildNode) {
@@ -262,9 +288,11 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 	 */
 	protected void broadcastCommand(String pDoAction, String pUndoAction,
 			String pLockId) throws Exception {
-		for (int i = 0; i < connections.size(); i++) {
-			((ServerCommunication) connections.elementAt(i)).sendCommand(
-					pDoAction, pUndoAction, pLockId);
+		synchronized (mConnections) {
+			for (int i = 0; i < mConnections.size(); i++) {
+				((ServerCommunication) mConnections.elementAt(i)).sendCommand(
+						pDoAction, pUndoAction, pLockId);
+			}
 		}
 	}
 
@@ -301,6 +329,24 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 			}
 			return mLockId;
 		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see plugins.collaboration.socket.SocketBasics#getUsers()
+	 */
+	public String getUsers() {
+		StringBuffer users = new StringBuffer(Tools.getUserName());
+		synchronized (mConnections) {
+			for (int i = 0; i < mConnections.size(); i++) {
+				users.append(',');
+				users.append(' ');
+				users.append(((ServerCommunication) mConnections.elementAt(i))
+						.getName());
+			}
+		}
+		return users.toString();
 	}
 
 }

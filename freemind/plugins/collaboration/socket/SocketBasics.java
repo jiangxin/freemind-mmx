@@ -29,13 +29,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
-import java.io.StringReader;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -56,16 +51,11 @@ import freemind.common.PropertyBean;
 import freemind.common.PropertyControl;
 import freemind.controller.Controller;
 import freemind.controller.MapModuleManager.MapTitleContributor;
-import freemind.extensions.PermanentNodeHook;
 import freemind.main.Resources;
 import freemind.main.Tools;
-import freemind.modes.MapAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
-import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.MindMapMapModel;
-import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.actions.xml.ActionFilter.FinalActionFilter;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
@@ -109,13 +99,6 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 
 	protected String mPassword;
 	protected boolean mFilterEnabled = true;
-	/**
-	 * Mapping id (to be skipped) to the time, it was instantiated. The time is
-	 * useful to drop orphans.
-	 */
-	private HashMap mLockIdsToBeSkipped = new HashMap();
-
-	// protected ClientCommunication mCommunication = null;
 
 	public SocketBasics() {
 		super();
@@ -277,32 +260,14 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	}
 
 	public abstract int getPort();
+	public abstract String getUsers();
 
 	public String getMapTitle(String pOldTitle, MapModule pMapModule,
 			MindMap pModel) {
-		String title = pOldTitle;
 		if (pModel.getModeController() != getMindMapController()) {
 			return pOldTitle;
 		}
-		String userString = "";
-		// if (mUpdateThread != null) {
-		// try {
-		// boolean first = true;
-		// Vector users = mUpdateThread.getUsers();
-		// for (Iterator it = users.iterator(); it.hasNext();) {
-		// String user = (String) it.next();
-		// if (first)
-		// first = false;
-		// else
-		// userString += ", ";
-		// userString += user;
-		// }
-		// } catch (SQLException e) {
-		// // TODO Auto-generated catch block
-		// freemind.main.Resources.getInstance().logException(e);
-		//
-		// }
-		// }
+		String userString = getUsers();
 		return pOldTitle
 				+ Resources.getInstance().format(
 						TITLE,
@@ -326,8 +291,6 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 				pPair.getUndoAction());
 		try {
 			String lockId = lock();
-			mLockIdsToBeSkipped.put(lockId,
-					new Long(System.currentTimeMillis()));
 			/*
 			 * If I am the client, the command returns to me before I continue
 			 * here.

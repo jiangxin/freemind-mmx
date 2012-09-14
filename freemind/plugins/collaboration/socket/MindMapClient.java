@@ -162,4 +162,11 @@ public class MindMapClient extends SocketBasics {
 	public void shutdown() {
 	}
 
+	/* (non-Javadoc)
+	 * @see plugins.collaboration.socket.SocketBasics#getUsers()
+	 */
+	public String getUsers() {
+		return "";
+	}
+
 }

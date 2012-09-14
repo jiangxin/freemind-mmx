@@ -74,22 +74,6 @@ public abstract class CommunicationBase extends TerminateableThread {
 	private int mCurrentState = STATE_IDLE;
 	private String mCurrentStateMutex = "lockme";
 
-	public void shutdown(boolean pWithShutdown) {
-		try {
-			if (pWithShutdown) {
-				// send shutdown
-				CollaborationGoodbye goodbyeAction = new CollaborationGoodbye();
-				goodbyeAction.setUserId("my");
-				send(goodbyeAction);
-			}
-			// TODO: Fixme
-			// mClient.close();
-			// mConnection = null;
-		} catch (Exception e) {
-			freemind.main.Resources.getInstance().logException(e);
-		}
-	}
-
 	/**
 	 * @param pMessage
 	 * @return true, if successful.

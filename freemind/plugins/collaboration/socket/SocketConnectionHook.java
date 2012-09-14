@@ -153,4 +153,11 @@ public class SocketConnectionHook extends SocketBasics implements
 		return mClientCommunication;
 	}
 
+	/* (non-Javadoc)
+	 * @see plugins.collaboration.socket.SocketBasics#getUsers()
+	 */
+	public String getUsers() {
+		return mClientCommunication.getUsers();
+	}
+
 }
