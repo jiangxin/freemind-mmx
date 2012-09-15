@@ -274,6 +274,7 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 			mLockEnabled = true;
 			String lockId = "Lock_" + Math.random();
 			mLockId = lockId;
+			// FIXME: Add timeout such that lock can't be held forever
 			logger.info("New lock " + lockId);
 			return lockId;
 		}

@@ -39,6 +39,10 @@ import freemind.modes.mindmapmode.actions.xml.ActionPair;
  */
 public abstract class CommunicationBase extends TerminateableThread {
 
+	/**
+	 * 
+	 */
+	private static final String STRING_CONTINUATION_SUFFIX = "<cont>";
 	Socket mSocket;
 
 	/**
@@ -70,9 +74,11 @@ public abstract class CommunicationBase extends TerminateableThread {
 	protected static final int STATE_WAIT_FOR_WELCOME = 4;
 	protected static final int STATE_WAIT_FOR_LOCK = 5;
 	protected static final int STATE_LOCK_RECEIVED = 6;
+	private static final int MAX_STRING_LENGTH_TO_SEND = 65500;
 
 	private int mCurrentState = STATE_IDLE;
 	private String mCurrentStateMutex = "lockme";
+	private StringBuffer mCurrentCommand = new StringBuffer();
 
 	/**
 	 * @param pMessage
@@ -83,7 +89,16 @@ public abstract class CommunicationBase extends TerminateableThread {
 			final String marshalledText = Tools.marshall(pCommand);
 			logger.info(getName() + " :Sending " + marshalledText);
 			String text = Tools.compress(marshalledText);
-			out.writeUTF(text);
+			// split into pieces, as the writeUTF method is only able to send
+			// 65535 bytes...
+			int index = 0;
+			while (index + MAX_STRING_LENGTH_TO_SEND < text.length()) {
+				out.writeUTF(text.substring(index, index
+						+ MAX_STRING_LENGTH_TO_SEND)
+						+ STRING_CONTINUATION_SUFFIX);
+				index += MAX_STRING_LENGTH_TO_SEND;
+			}
+			out.writeUTF(text.substring(index));
 			return true;
 		} catch (IOException e) {
 			freemind.main.Resources.getInstance().logException(e);
@@ -91,21 +106,27 @@ public abstract class CommunicationBase extends TerminateableThread {
 		return false;
 	}
 
-	public CollaborationActionBase receive(String pText) {
-		final String decompressedText = Tools.decompress(pText);
-		logger.info(getName() + " :Received " + decompressedText);
-		return (CollaborationActionBase) Tools.unMarshall(decompressedText);
-	}
-
 	public boolean processAction() throws Exception {
 		boolean didSomething = false;
 		try {
 			// Non blocking!!
 			String text = in.readUTF();
-			CollaborationActionBase command = receive(text);
-			if (command != null) {
-				processCommand(command);
+			if (text.endsWith(STRING_CONTINUATION_SUFFIX)) {
+				mCurrentCommand.append(text.substring(0, text.length()
+						- STRING_CONTINUATION_SUFFIX.length()));
 				didSomething = true;
+			} else {
+				mCurrentCommand.append(text);
+				final String textValue = mCurrentCommand.toString();
+				mCurrentCommand.setLength(0);
+				final String decompressedText = Tools.decompress(textValue);
+				logger.info(getName() + " :Received " + decompressedText);
+				CollaborationActionBase command = (CollaborationActionBase) Tools
+						.unMarshall(decompressedText);
+				if (command != null) {
+					processCommand(command);
+					didSomething = true;
+				}
 			}
 		} catch (SocketTimeoutException e) {
 		}
