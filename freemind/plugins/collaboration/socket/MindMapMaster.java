@@ -59,10 +59,13 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 	private String mLockMutex = "";
 	private int mPort;
 	private String mLockId;
+	private long mLockedAt;
+	private String mLockUserName;
 
 	private class MasterThread extends TerminateableThread {
 
 		private static final long TIME_BETWEEN_USER_INFORMATION_IN_MILLIES = 5000;
+		private static final long TIME_FOR_ORPHANED_LOCK = 5000;
 		private long mLastTimeUserInformationSent = 0;
 
 		/**
@@ -91,8 +94,9 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 				}
 			} catch (SocketTimeoutException e) {
 			}
-			if (System.currentTimeMillis() - mLastTimeUserInformationSent > TIME_BETWEEN_USER_INFORMATION_IN_MILLIES) {
-				mLastTimeUserInformationSent = System.currentTimeMillis();
+			final long now = System.currentTimeMillis();
+			if (now - mLastTimeUserInformationSent > TIME_BETWEEN_USER_INFORMATION_IN_MILLIES) {
+				mLastTimeUserInformationSent = now;
 				CollaborationUserInformation userInfo = new CollaborationUserInformation();
 				userInfo.setUserIds(getUsers());
 				synchronized (mConnections) {
@@ -105,6 +109,13 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 									e);
 						}
 					}
+				}
+			}
+			// timeout such that lock can't be held forever
+			synchronized (mLockMutex) {
+				if (mLockEnabled && now-mLockedAt > TIME_FOR_ORPHANED_LOCK) {
+					logger.warning("Release lock " + mLockId + " held by " + mLockUserName);
+					clearLock();
 				}
 			}
 			return true;
@@ -265,7 +276,7 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#lock()
 	 */
-	protected String lock() throws UnableToGetLockException,
+	protected String lock(String pUserName) throws UnableToGetLockException,
 			InterruptedException {
 		synchronized (mLockMutex) {
 			if (mLockEnabled) {
@@ -274,8 +285,9 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 			mLockEnabled = true;
 			String lockId = "Lock_" + Math.random();
 			mLockId = lockId;
-			// FIXME: Add timeout such that lock can't be held forever
-			logger.info("New lock " + lockId);
+			mLockedAt = System.currentTimeMillis();
+			mLockUserName = pUserName;
+			logger.info("New lock " + lockId + " by " + mLockUserName);
 			return lockId;
 		}
 	}
@@ -307,10 +319,15 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 			if (!mLockEnabled) {
 				throw new IllegalStateException();
 			}
-			logger.info("Release lock " + mLockId);
-			mLockEnabled = false;
-			mLockId = "none";
+			logger.fine("Release lock " + mLockId + " held by " + mLockUserName);
+			clearLock();
 		}
+	}
+
+	public void clearLock() {
+		mLockEnabled = false;
+		mLockId = "none";
+		mLockUserName = null;
 	}
 
 	/*
