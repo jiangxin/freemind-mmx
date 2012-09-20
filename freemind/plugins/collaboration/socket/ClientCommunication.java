@@ -253,7 +253,7 @@ public class ClientCommunication extends CommunicationBase {
 			if (!mReceivedGoodbye) {
 				// Send only, if own goodbye.
 				CollaborationGoodbye goodbye = new CollaborationGoodbye();
-				goodbye.setUserId(getName());
+				goodbye.setUserId(Tools.getUserName());
 				send(goodbye);
 			}
 		} catch (Exception e) {

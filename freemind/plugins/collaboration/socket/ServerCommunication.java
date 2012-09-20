@@ -103,23 +103,24 @@ public class ServerCommunication extends CommunicationBase {
 			if (getCurrentState() != STATE_WAIT_FOR_COMMAND) {
 				logger.warning("Wrong state for " + pCommand.getClass() + ": "
 						+ getCurrentState());
-			}
-			CollaborationTransaction trans = (CollaborationTransaction) pCommand;
-			try {
-				if (!Tools
-						.safeEquals(mMindMapMaster.getLockId(), trans.getId())) {
-					logger.severe("Wrong transaction id received. Expected: "
-							+ mMindMapMaster.getLockId() + ", received: "
-							+ trans.getId());
-				} else {
-					mMindMapMaster.broadcastCommand(trans.getDoAction(),
-							trans.getUndoAction(), trans.getId());
-					mMindMapMaster.executeTransaction(getActionPair(trans));
+			} else {
+				CollaborationTransaction trans = (CollaborationTransaction) pCommand;
+				try {
+					if (!Tools
+							.safeEquals(mMindMapMaster.getLockId(), trans.getId())) {
+						logger.severe("Wrong transaction id received. Expected: "
+								+ mMindMapMaster.getLockId() + ", received: "
+								+ trans.getId());
+					} else {
+						mMindMapMaster.broadcastCommand(trans.getDoAction(),
+								trans.getUndoAction(), trans.getId());
+						mMindMapMaster.executeTransaction(getActionPair(trans));
+					}
+				} finally {
+					mMindMapMaster.unlock();
+					setCurrentState(STATE_IDLE);
+					commandHandled = true;
 				}
-			} finally {
-				mMindMapMaster.unlock();
-				setCurrentState(STATE_IDLE);
-				commandHandled = true;
 			}
 		}
 		if (pCommand instanceof CollaborationRequireLock) {
@@ -128,7 +129,7 @@ public class ServerCommunication extends CommunicationBase {
 						+ getCurrentState());
 			}
 			try {
-				String lockId = mMindMapMaster.lock();
+				String lockId = mMindMapMaster.lock(this.getName());
 				logger.info("Got lock for " + getName());
 				CollaborationReceiveLock lockCommand = new CollaborationReceiveLock();
 				lockCommand.setId(lockId);

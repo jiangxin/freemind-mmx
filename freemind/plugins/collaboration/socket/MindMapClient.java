@@ -130,7 +130,7 @@ public class MindMapClient extends SocketBasics {
 	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#lock()
 	 */
-	protected String lock() throws UnableToGetLockException,
+	protected String lock(String pUserName) throws UnableToGetLockException,
 			InterruptedException {
 		return null;
 	}

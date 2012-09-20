@@ -115,7 +115,7 @@ public class SocketConnectionHook extends SocketBasics implements
 	/* (non-Javadoc)
 	 * @see plugins.collaboration.socket.SocketBasics#lock()
 	 */
-	protected String lock() throws UnableToGetLockException,
+	protected String lock(String pUserName) throws UnableToGetLockException,
 			InterruptedException {
 		return mClientCommunication.sendLockRequest();
 	}

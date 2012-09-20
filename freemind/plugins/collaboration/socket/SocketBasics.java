@@ -99,9 +99,11 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 
 	protected String mPassword;
 	protected boolean mFilterEnabled = true;
+	private String mUserName;
 
 	public SocketBasics() {
 		super();
+		mUserName = Tools.getUserName();
 	}
 
 	/**
@@ -290,7 +292,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 		String undoAction = getMindMapController().marshall(
 				pPair.getUndoAction());
 		try {
-			String lockId = lock();
+			String lockId = lock(getUserName());
 			/*
 			 * If I am the client, the command returns to me before I continue
 			 * here.
@@ -313,13 +315,21 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	}
 
 	/**
+	 * @param pUserName the user the lock belongs to.
 	 * @return The id associated with this lock.
 	 * @throws UnableToGetLockException
 	 * @throws InterruptedException
 	 */
-	protected abstract String lock() throws UnableToGetLockException,
+	protected abstract String lock(String pUserName) throws UnableToGetLockException,
 			InterruptedException;
 
+	/**
+	 * @return the user's name (to acquire a named lock)
+	 */
+	protected String getUserName() {
+		return mUserName;
+	}
+	
 	/**
 	 * Should send the command to the master, or, if the master itself, sends it
 	 * to the clients.
