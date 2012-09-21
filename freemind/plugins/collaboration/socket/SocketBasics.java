@@ -29,6 +29,8 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.ResultSet;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -69,27 +71,27 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	protected static final Integer ROLE_MASTER = Integer.valueOf(0);
 	protected static final Integer ROLE_SLAVE = Integer.valueOf(1);
 	private static final String PORT_PROPERTY = "plugins.collaboration.socket.port";
-	private static final String DATABASE_BASICS_CLASS = "plugins.collaboration.socket.SocketBasics";
+	private static final String SOCKET_BASICS_CLASS = "plugins.collaboration.socket.SocketBasics";
 
-	protected static final String PASSWORD = DATABASE_BASICS_CLASS
+	protected static final String PASSWORD = SOCKET_BASICS_CLASS
 			+ ".password";
-	protected static final String PASSWORD_DESCRIPTION = DATABASE_BASICS_CLASS
+	protected static final String PASSWORD_DESCRIPTION = SOCKET_BASICS_CLASS
 			+ ".password.description";
 
-	protected static final String PASSWORD_VERIFICATION = DATABASE_BASICS_CLASS
+	protected static final String PASSWORD_VERIFICATION = SOCKET_BASICS_CLASS
 			+ ".password_verification";
-	protected static final String PASSWORD_VERIFICATION_DESCRIPTION = DATABASE_BASICS_CLASS
+	protected static final String PASSWORD_VERIFICATION_DESCRIPTION = SOCKET_BASICS_CLASS
 			+ ".password_verification_description";
 
-	protected static final String HOST = DATABASE_BASICS_CLASS + ".host";
-	protected static final String HOST_DESCRIPTION = DATABASE_BASICS_CLASS
+	protected static final String HOST = SOCKET_BASICS_CLASS + ".host";
+	protected static final String HOST_DESCRIPTION = SOCKET_BASICS_CLASS
 			+ ".host.description";
 
-	protected static final String PORT = DATABASE_BASICS_CLASS + ".port";
-	protected static final String PORT_DESCRIPTION = DATABASE_BASICS_CLASS
+	protected static final String PORT = SOCKET_BASICS_CLASS + ".port";
+	protected static final String PORT_DESCRIPTION = SOCKET_BASICS_CLASS
 			+ ".port.description";
 
-	protected static final String TITLE = DATABASE_BASICS_CLASS + ".title";
+	protected static final String TITLE = SOCKET_BASICS_CLASS + ".title";
 
 	protected static java.util.logging.Logger logger = null;
 
@@ -262,6 +264,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	}
 
 	public abstract int getPort();
+
 	public abstract String getUsers();
 
 	public String getMapTitle(String pOldTitle, MapModule pMapModule,
@@ -270,10 +273,18 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 			return pOldTitle;
 		}
 		String userString = getUsers();
+		String hostName = Tools.getHostName();
+		try {
+			hostName += " (" + InetAddress.getLocalHost().getHostAddress() + ")";
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			freemind.main.Resources.getInstance().logException(e);
+			
+		}
 		return pOldTitle
 				+ Resources.getInstance().format(
 						TITLE,
-						new Object[] { this.getRole(), Tools.getHostName(),
+						new Object[] { this.getRole(), hostName,
 								new Integer(this.getPort()), userString });
 	}
 
@@ -315,13 +326,14 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	}
 
 	/**
-	 * @param pUserName the user the lock belongs to.
+	 * @param pUserName
+	 *            the user the lock belongs to.
 	 * @return The id associated with this lock.
 	 * @throws UnableToGetLockException
 	 * @throws InterruptedException
 	 */
-	protected abstract String lock(String pUserName) throws UnableToGetLockException,
-			InterruptedException;
+	protected abstract String lock(String pUserName)
+			throws UnableToGetLockException, InterruptedException;
 
 	/**
 	 * @return the user's name (to acquire a named lock)
@@ -329,7 +341,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	protected String getUserName() {
 		return mUserName;
 	}
-	
+
 	/**
 	 * Should send the command to the master, or, if the master itself, sends it
 	 * to the clients.
