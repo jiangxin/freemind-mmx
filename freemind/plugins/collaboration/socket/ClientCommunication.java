@@ -30,6 +30,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import javax.swing.JOptionPane;
+
 import plugins.collaboration.socket.SocketBasics.UnableToGetLockException;
 import sun.security.util.DerEncoder;
 import freemind.controller.actions.generated.instance.CollaborationActionBase;
@@ -41,6 +43,7 @@ import freemind.controller.actions.generated.instance.CollaborationTransaction;
 import freemind.controller.actions.generated.instance.CollaborationUserInformation;
 import freemind.controller.actions.generated.instance.CollaborationWelcome;
 import freemind.controller.actions.generated.instance.CollaborationWhoAreYou;
+import freemind.controller.actions.generated.instance.CollaborationWrongCredentials;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.Tools;
 import freemind.modes.MapAdapter;
@@ -60,7 +63,7 @@ public class ClientCommunication extends CommunicationBase {
 	private SocketConnectionHook mSocketConnectionHook = null;
 	private boolean mReceivedGoodbye = false;
 	private CollaborationUserInformation mUserInfo;
-	
+
 	/**
 	 * @param pName
 	 * @param pClient
@@ -91,10 +94,7 @@ public class ClientCommunication extends CommunicationBase {
 		if (pCommand instanceof CollaborationGoodbye) {
 			CollaborationGoodbye goodbye = (CollaborationGoodbye) pCommand;
 			logger.info("Goodbye received from " + goodbye.getUserId());
-			mReceivedGoodbye  = true;
-			// first deregister, as otherwise, the toggle hook command is tried to be sent over the wire.
-			mSocketConnectionHook.deregisterFilter();
-			SocketBasics.togglePermanentHook(getMindMapController());
+			terminateSocket();
 			return;
 		}
 		boolean commandHandled = false;
@@ -126,6 +126,18 @@ public class ClientCommunication extends CommunicationBase {
 			setCurrentState(STATE_IDLE);
 			commandHandled = true;
 		}
+		if (pCommand instanceof CollaborationWrongCredentials) {
+			if (getCurrentState() != STATE_WAIT_FOR_WELCOME) {
+				logger.warning("Wrong state for " + pCommand.getClass() + ": "
+						+ getCurrentState());
+			}
+			// Over and out.
+			terminateSocket();
+			// Display error message!
+			getMindMapController().getController().errorMessage(
+					getMindMapController().getText("socket_wrong_password"));
+			commandHandled = true;
+		}
 		if (pCommand instanceof CollaborationTransaction) {
 			if (getCurrentState() != STATE_IDLE) {
 				logger.warning("Wrong state for " + pCommand.getClass() + ": "
@@ -155,6 +167,20 @@ public class ClientCommunication extends CommunicationBase {
 		if (!commandHandled) {
 			logger.warning("Received unknown message of type "
 					+ pCommand.getClass());
+		}
+	}
+
+	public void terminateSocket() {
+		mReceivedGoodbye = true;
+		if (mSocketConnectionHook != null) {
+			// first deregister, as otherwise, the toggle hook command is tried to
+			// be sent over the wire.
+			mSocketConnectionHook.deregisterFilter();
+			// Terminates socket by shutdownHook.
+			SocketBasics.togglePermanentHook(getMindMapController());
+		} else {
+			// Terminate socket.
+			shutdown();
 		}
 	}
 

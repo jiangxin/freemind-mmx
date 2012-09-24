@@ -966,6 +966,15 @@
 	  </xs:complexType>
 	</xs:element>
 
+	<xs:element name="collaboration_wrong_credentials">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="collaboration_action_base">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
 	<xs:element name="collaboration_receive_lock">
 	  <xs:complexType>
 		<xs:complexContent>

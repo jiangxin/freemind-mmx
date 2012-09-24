@@ -24,6 +24,7 @@ package plugins.collaboration.socket;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.net.Socket;
 
@@ -37,6 +38,7 @@ import freemind.controller.actions.generated.instance.CollaborationTransaction;
 import freemind.controller.actions.generated.instance.CollaborationUnableToLock;
 import freemind.controller.actions.generated.instance.CollaborationWelcome;
 import freemind.controller.actions.generated.instance.CollaborationWhoAreYou;
+import freemind.controller.actions.generated.instance.CollaborationWrongCredentials;
 import freemind.main.Tools;
 import freemind.modes.mindmapmode.MindMapController;
 
@@ -66,9 +68,7 @@ public class ServerCommunication extends CommunicationBase {
 		if (pCommand instanceof CollaborationGoodbye) {
 			CollaborationGoodbye goodbye = (CollaborationGoodbye) pCommand;
 			logger.info("Goodbye received from " + goodbye.getUserId());
-			mMindMapMaster.closeConnection(this);
-			close();
-			mShouldTerminate = true;
+			terminateSocket();
 			return;
 		}
 		boolean commandHandled = false;
@@ -94,8 +94,16 @@ public class ServerCommunication extends CommunicationBase {
 							.getName());
 					send(welcomeCommand);
 					setCurrentState(STATE_IDLE);
-					commandHandled = true;
+				} else {
+					// Send error message
+					CollaborationWrongCredentials wrongMessage = new CollaborationWrongCredentials();
+					try {
+						send(wrongMessage);
+					} finally {
+						terminateSocket();
+					}
 				}
+				commandHandled = true;
 			}
 		}
 
@@ -148,6 +156,12 @@ public class ServerCommunication extends CommunicationBase {
 			logger.warning("Received unknown message of type "
 					+ pCommand.getClass());
 		}
+	}
+
+	public void terminateSocket() throws IOException {
+		mMindMapMaster.closeConnection(this);
+		close();
+		mShouldTerminate = true;
 	}
 
 }
