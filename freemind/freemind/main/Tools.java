@@ -1881,4 +1881,16 @@ public class Tools {
 				pPaper.getImageableWidth()+";"+pPaper.getImageableHeight();
 	}
 
+	/**
+	 * @return
+	 */
+	public static String getHostIpAsString() {
+		try {
+			return InetAddress.getLocalHost().getHostAddress();
+		} catch (UnknownHostException e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
+		return null;
+	}
+
 }

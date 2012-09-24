@@ -23,6 +23,7 @@
 
 package plugins.collaboration.socket;
 
+import freemind.controller.actions.generated.instance.CollaborationUserInformation;
 import freemind.extensions.DontSaveMarker;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.XMLElement;
@@ -62,7 +63,7 @@ public class SocketConnectionHook extends SocketBasics implements
 		deregisterFilter();
 		// this is the internal call. shutdown
 		logger.info("Shut down of the permanent hook.");
-		if(mClientCommunication != null) {
+		if (mClientCommunication != null) {
 			mClientCommunication.shutdown();
 		}
 		super.shutdownMapHook();
@@ -105,14 +106,18 @@ public class SocketConnectionHook extends SocketBasics implements
 		return ROLE_SLAVE;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#getPort()
 	 */
 	public int getPort() {
 		return mClientCommunication.getPort();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#lock()
 	 */
 	protected String lock(String pUserName) throws UnableToGetLockException,
@@ -120,15 +125,21 @@ public class SocketConnectionHook extends SocketBasics implements
 		return mClientCommunication.sendLockRequest();
 	}
 
-	/* (non-Javadoc)
-	 * @see plugins.collaboration.socket.SocketBasics#broadcastCommand(java.lang.String, java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * plugins.collaboration.socket.SocketBasics#broadcastCommand(java.lang.
+	 * String, java.lang.String, java.lang.String)
 	 */
 	protected void broadcastCommand(String pDoAction, String pUndoAction,
 			String pLockId) throws Exception {
 		mClientCommunication.sendCommand(pDoAction, pUndoAction, pLockId);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#unlock()
 	 */
 	protected void unlock() {
@@ -139,10 +150,12 @@ public class SocketConnectionHook extends SocketBasics implements
 	 */
 	public void setClientCommunication(ClientCommunication pClientCommunication) {
 		mClientCommunication = pClientCommunication;
-		
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#shutdown()
 	 */
 	public void shutdown() {
@@ -153,11 +166,13 @@ public class SocketConnectionHook extends SocketBasics implements
 		return mClientCommunication;
 	}
 
-	/* (non-Javadoc)
-	 * @see plugins.collaboration.socket.SocketBasics#getUsers()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see plugins.collaboration.socket.SocketBasics#getMasterInformation()
 	 */
-	public String getUsers() {
-		return mClientCommunication.getUsers();
+	public CollaborationUserInformation getMasterInformation() {
+		return mClientCommunication.getUserInfo();
 	}
 
 }

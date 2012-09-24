@@ -30,6 +30,7 @@ import java.util.Vector;
 
 import freemind.common.NumberProperty;
 import freemind.common.StringProperty;
+import freemind.controller.actions.generated.instance.CollaborationUserInformation;
 import freemind.extensions.PermanentNodeHook;
 import freemind.modes.mindmapmode.MindMapController;
 
@@ -163,10 +164,10 @@ public class MindMapClient extends SocketBasics {
 	}
 
 	/* (non-Javadoc)
-	 * @see plugins.collaboration.socket.SocketBasics#getUsers()
+	 * @see plugins.collaboration.socket.SocketBasics#getMasterInformation()
 	 */
-	public String getUsers() {
-		return "";
+	public CollaborationUserInformation getMasterInformation() {
+		return null;
 	}
 
 }

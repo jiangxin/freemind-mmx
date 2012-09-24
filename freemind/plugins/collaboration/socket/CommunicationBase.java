@@ -177,5 +177,9 @@ public abstract class CommunicationBase extends TerminateableThread {
 		return new ActionPair(mController.unMarshall(trans.getDoAction()),
 				mController.unMarshall(trans.getUndoAction()));
 	}
+	
+	public String getIpToSocket() {
+		return mSocket.getInetAddress().getHostAddress();
+	}
 
 }

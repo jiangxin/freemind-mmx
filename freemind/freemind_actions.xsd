@@ -911,6 +911,9 @@
 		<xs:complexContent>
 			<xs:extension base="collaboration_action_base">
 				<xs:attribute name="user_ids" use="required" type="xs:string"/>
+				<xs:attribute name="master_ip" use="required" type="xs:string"/>
+				<xs:attribute name="master_port" use="required" type="xs:int"/>
+				<xs:attribute name="master_hostname" use="required" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>

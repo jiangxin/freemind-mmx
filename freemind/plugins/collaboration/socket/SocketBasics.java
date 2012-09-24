@@ -29,8 +29,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.sql.ResultSet;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -53,6 +51,7 @@ import freemind.common.PropertyBean;
 import freemind.common.PropertyControl;
 import freemind.controller.Controller;
 import freemind.controller.MapModuleManager.MapTitleContributor;
+import freemind.controller.actions.generated.instance.CollaborationUserInformation;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
@@ -73,8 +72,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	private static final String PORT_PROPERTY = "plugins.collaboration.socket.port";
 	private static final String SOCKET_BASICS_CLASS = "plugins.collaboration.socket.SocketBasics";
 
-	protected static final String PASSWORD = SOCKET_BASICS_CLASS
-			+ ".password";
+	protected static final String PASSWORD = SOCKET_BASICS_CLASS + ".password";
 	protected static final String PASSWORD_DESCRIPTION = SOCKET_BASICS_CLASS
 			+ ".password.description";
 
@@ -265,28 +263,26 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 
 	public abstract int getPort();
 
-	public abstract String getUsers();
-
 	public String getMapTitle(String pOldTitle, MapModule pMapModule,
 			MindMap pModel) {
 		if (pModel.getModeController() != getMindMapController()) {
 			return pOldTitle;
 		}
-		String userString = getUsers();
-		String hostName = Tools.getHostName();
-		try {
-			hostName += " (" + InetAddress.getLocalHost().getHostAddress() + ")";
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			freemind.main.Resources.getInstance().logException(e);
-			
+		CollaborationUserInformation userInfo = getMasterInformation();
+		if (userInfo == null) {
+			return pOldTitle;
 		}
 		return pOldTitle
 				+ Resources.getInstance().format(
 						TITLE,
-						new Object[] { this.getRole(), hostName,
-								new Integer(this.getPort()), userString });
+						new Object[] { this.getRole(),
+								userInfo.getMasterHostname(),
+								userInfo.getMasterIp(),
+								new Integer(userInfo.getMasterPort()),
+								userInfo.getUserIds() });
 	}
+
+	public abstract CollaborationUserInformation getMasterInformation();
 
 	public String getPassword() {
 		return mPassword;

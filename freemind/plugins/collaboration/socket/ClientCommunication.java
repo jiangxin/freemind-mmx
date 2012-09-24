@@ -59,7 +59,7 @@ public class ClientCommunication extends CommunicationBase {
 	private String mPassword;
 	private SocketConnectionHook mSocketConnectionHook = null;
 	private boolean mReceivedGoodbye = false;
-	private String mUsers;
+	private CollaborationUserInformation mUserInfo;
 	
 	/**
 	 * @param pName
@@ -100,7 +100,7 @@ public class ClientCommunication extends CommunicationBase {
 		boolean commandHandled = false;
 		if (pCommand instanceof CollaborationUserInformation) {
 			CollaborationUserInformation userInfo = (CollaborationUserInformation) pCommand;
-			mUsers = userInfo.getUserIds();
+			mUserInfo = userInfo;
 			commandHandled = true;
 		}
 		if (pCommand instanceof CollaborationWhoAreYou) {
@@ -274,11 +274,8 @@ public class ClientCommunication extends CommunicationBase {
 		return mSocket.getLocalPort();
 	}
 
-	/**
-	 * @return
-	 */
-	public String getUsers() {
-		return mUsers;
+	public CollaborationUserInformation getUserInfo() {
+		return mUserInfo;
 	}
 
 }

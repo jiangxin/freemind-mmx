@@ -97,13 +97,18 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 			final long now = System.currentTimeMillis();
 			if (now - mLastTimeUserInformationSent > TIME_BETWEEN_USER_INFORMATION_IN_MILLIES) {
 				mLastTimeUserInformationSent = now;
-				CollaborationUserInformation userInfo = new CollaborationUserInformation();
-				userInfo.setUserIds(getUsers());
+				CollaborationUserInformation userInfo = getMasterInformation();
 				synchronized (mConnections) {
 					for (int i = 0; i < mConnections.size(); i++) {
 						try {
-							((ServerCommunication) mConnections.elementAt(i))
-									.send(userInfo);
+							final ServerCommunication connection = (ServerCommunication) mConnections
+									.elementAt(i);
+							/* to each server, the IP address is chosen that belongs to this connection.
+							 * E.g. if the connection is routed over one of several network interfaces,
+							 * the address of this interface is reported.
+							 */
+							userInfo.setMasterIp(connection.getIpToSocket());
+							connection.send(userInfo);
 						} catch (Exception e) {
 							freemind.main.Resources.getInstance().logException(
 									e);
@@ -113,8 +118,9 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 			}
 			// timeout such that lock can't be held forever
 			synchronized (mLockMutex) {
-				if (mLockEnabled && now-mLockedAt > TIME_FOR_ORPHANED_LOCK) {
-					logger.warning("Release lock " + mLockId + " held by " + mLockUserName);
+				if (mLockEnabled && now - mLockedAt > TIME_FOR_ORPHANED_LOCK) {
+					logger.warning("Release lock " + mLockId + " held by "
+							+ mLockUserName);
 					clearLock();
 				}
 			}
@@ -365,6 +371,15 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 			}
 		}
 		return users.toString();
+	}
+
+	public CollaborationUserInformation getMasterInformation() {
+		CollaborationUserInformation userInfo = new CollaborationUserInformation();
+		userInfo.setUserIds(getUsers());
+		userInfo.setMasterHostname(Tools.getHostName());
+		userInfo.setMasterPort(getPort());
+		userInfo.setMasterIp(Tools.getHostIpAsString());
+		return userInfo;
 	}
 
 }
