@@ -1,4 +1,16 @@
 ===============================
+Changes made in FreeMind 1.0.0 Beta8
+===============================
+* New collaboration plugin based on plain sockets written.
+  * Features:
+    * Locking support (it is not possible to change at two sites at the same time).
+    * Notifications about changes are sent to the master and then distributed to clients.
+    * Minimal security added: a password must be known to connect. But, each message (even the password) is sent open.
+    * Compression: each message over the network is compressed. 
+    * The connection parameters to the master are displayed in the title bar of each member. Thus, it is easy to invite others.
+    * The members are displayed in the title of each member as well (update interval: 5 seconds).
+
+===============================
 Changes made in FreeMind 1.0.0 Beta7
 ===============================
 * Bug fix: open hyperlinks that are not local links fixed.
