@@ -23,7 +23,9 @@
 
 package plugins.collaboration.socket;
 
+import java.net.ConnectException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
@@ -32,6 +34,7 @@ import freemind.common.NumberProperty;
 import freemind.common.StringProperty;
 import freemind.controller.actions.generated.instance.CollaborationUserInformation;
 import freemind.extensions.PermanentNodeHook;
+import freemind.main.Resources;
 import freemind.modes.mindmapmode.MindMapController;
 
 /**
@@ -49,6 +52,10 @@ public class MindMapClient extends SocketBasics {
 	public void startupMapHook() {
 		super.startupMapHook();
 		MindMapController controller = getMindMapController();
+		StringProperty passwordProperty = new StringProperty(
+				PASSWORD_DESCRIPTION, PASSWORD);
+		StringProperty hostProperty = new StringProperty(HOST_DESCRIPTION, HOST);
+		NumberProperty portProperty = getPortProperty();
 		try {
 			SocketConnectionHook connectionHook = isConnected();
 			if (connectionHook != null) {
@@ -58,16 +65,11 @@ public class MindMapClient extends SocketBasics {
 						.getClientCommunication();
 				connectionHook.deregisterFilter();
 				// TODO:REMOVE USER
-//				updateThread.removeUser();
+				// updateThread.removeUser();
 				logger.info("Shutting down the permanent hook.");
 				togglePermanentHook(controller);
 				return;
 			}
-			StringProperty passwordProperty = new StringProperty(
-					PASSWORD_DESCRIPTION, PASSWORD);
-			StringProperty hostProperty = new StringProperty(HOST_DESCRIPTION,
-					HOST);
-			NumberProperty portProperty = getPortProperty();
 			// get last value
 			hostProperty.setValue(controller.getFrame().getProperty(
 					HOST_PROPERTY));
@@ -88,15 +90,32 @@ public class MindMapClient extends SocketBasics {
 			logger.info("Starting client thread...");
 			int port = portProperty.getIntValue();
 			Socket serverConnection = new Socket(hostProperty.getValue(), port);
-			serverConnection.setSoTimeout(MindMapMaster.SOCKET_TIMEOUT_IN_MILLIES);
+			serverConnection
+					.setSoTimeout(MindMapMaster.SOCKET_TIMEOUT_IN_MILLIES);
 			ClientCommunication clientCommunication = new ClientCommunication(
-					"Client Communication", serverConnection, getMindMapController(),
-					mPassword);
+					"Client Communication", serverConnection,
+					getMindMapController(), mPassword);
 			clientCommunication.start();
+		} catch (UnknownHostException e) {
+			freemind.main.Resources.getInstance().logException(e);
+			controller.getController().errorMessage(
+					Resources.getInstance().format(
+							UNKNWON_HOST_EXCEPTION_MESSAGE,
+							new Object[] { e.getMessage() }));
+			return;
+		} catch (ConnectException e) {
+			freemind.main.Resources.getInstance().logException(e);
+			controller.getController().errorMessage(
+					Resources.getInstance().format(
+							CONNECT_EXCEPTION_MESSAGE,
+							new Object[] { portProperty.getValue(),
+									hostProperty.getValue(), e.getMessage() }));
+			return;
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
-			// TODO: Need a better message here.
-			controller.getController().errorMessage(e.getLocalizedMessage());
+			// Need a better message here.
+			controller.getController().errorMessage(
+					e.getClass().getName() + ": " + e.getLocalizedMessage());
 			return;
 		}
 	}
@@ -163,7 +182,9 @@ public class MindMapClient extends SocketBasics {
 	public void shutdown() {
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#getMasterInformation()
 	 */
 	public CollaborationUserInformation getMasterInformation() {

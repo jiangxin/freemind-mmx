@@ -179,7 +179,7 @@ public abstract class CommunicationBase extends TerminateableThread {
 	}
 	
 	public String getIpToSocket() {
-		return mSocket.getInetAddress().getHostAddress();
+		return mSocket.getLocalAddress().getHostAddress();
 	}
 
 }

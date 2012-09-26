@@ -90,6 +90,8 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 			+ ".port.description";
 
 	protected static final String TITLE = SOCKET_BASICS_CLASS + ".title";
+	protected static final String UNKNWON_HOST_EXCEPTION_MESSAGE = SOCKET_BASICS_CLASS + ".unknown_host_exception";
+	protected static final String CONNECT_EXCEPTION_MESSAGE = SOCKET_BASICS_CLASS + ".connection_exception";;
 
 	protected static java.util.logging.Logger logger = null;
 
