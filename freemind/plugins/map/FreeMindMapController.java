@@ -2140,7 +2140,7 @@ public class FreeMindMapController extends JMapController implements
 		StringBuilder b = new StringBuilder();
 		boolean limitSearchToRegion = mMapHook.isLimitSearchToRegion();
 		try {
-			if (false) {
+			if (true) {
 				b.append("http://nominatim.openstreetmap.org/search/?email=christianfoltin%40users.sourceforge.net&q="); //$NON-NLS-1$
 				b.append(URLEncoder.encode(pText, "UTF-8"));
 				b.append("&format=xml&limit=30&accept-language=").append(Locale.getDefault().getLanguage()); //$NON-NLS-1$
@@ -2303,10 +2303,10 @@ public class FreeMindMapController extends JMapController implements
 						+ "ery' icon='http://nominatim.openstreetma"
 						+ "p.org/images/mapicons/shopping_bakery.p."
 						+ "20.png'/></searchresults>";
-				// result = XML_VERSION_1_0_ENCODING_UTF_8
-				// +
-				// "<searchresults timestamp=\"Tue, 08 Nov 11 22:49:54 -0500\" attribution=\"Data Copyright OpenStreetMap Contributors, Some Rights Reserved. CC-BY-SA 2.0.\" querystring=\"innsbruck\" polygon=\"false\" exclude_place_ids=\"228452,25664166,26135863,25440203\" more_url=\"http://open.mapquestapi.com/nominatim/v1/search?format=xml&amp;exclude_place_ids=228452,25664166,26135863,25440203&amp;accept-language=&amp;q=innsbruck\">\n"
-				// + "</searchresults>";
+//				 result = XML_VERSION_1_0_ENCODING_UTF_8
+//				 +
+//				 "<searchresults timestamp=\"Tue, 08 Nov 11 22:49:54 -0500\" attribution=\"Data Copyright OpenStreetMap Contributors, Some Rights Reserved. CC-BY-SA 2.0.\" querystring=\"innsbruck\" polygon=\"false\" exclude_place_ids=\"228452,25664166,26135863,25440203\" more_url=\"http://open.mapquestapi.com/nominatim/v1/search?format=xml&amp;exclude_place_ids=228452,25664166,26135863,25440203&amp;accept-language=&amp;q=innsbruck\">\n"
+//				 + "</searchresults>";
 
 			}
 			results = (Searchresults) XmlBindingTools.getInstance().unMarshall(
@@ -2321,11 +2321,18 @@ public class FreeMindMapController extends JMapController implements
 			logger.warning("Result was " + result);
 			results.addPlace(getErrorPlace(errorString, "ERROR"));
 		}
-		if (limitSearchToRegion && results.getListPlaceList().isEmpty()) {
-			results.addPlace(getErrorPlace(
-					mMindMapController
-							.getText("plugins.map.FreeMindMapController.LimitedSearchWithoutResult"),
-					"WARNING"));
+		if (results.getListPlaceList().isEmpty()) {
+			String textId;
+			if (limitSearchToRegion) {
+				textId = "plugins.map.FreeMindMapController.LimitedSearchWithoutResult";
+			} else {
+				textId = "plugins.map.FreeMindMapController.SearchWithoutResult";
+			}
+			Object[] messageArguments = { pText };
+			MessageFormat formatter = new MessageFormat(
+					mMindMapController.getText(textId));
+			String message = formatter.format(messageArguments);
+			results.addPlace(getErrorPlace(message, "WARNING"));
 		}
 		return results;
 	}
@@ -2382,8 +2389,7 @@ public class FreeMindMapController extends JMapController implements
 				new Double(coordinate.getLat()),
 				new Double(coordinate.getLon()) };
 		MessageFormat formatter = new MessageFormat(
-				mMindMapController
-						.getText("plugins/map/MapDialog_Distance"));
+				mMindMapController.getText("plugins/map/MapDialog_Distance"));
 		String message = formatter.format(messageArguments);
 		statusText += message;
 		mMapHook.getStatusLabel().setText(statusText);
