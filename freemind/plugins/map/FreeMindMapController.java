@@ -1616,19 +1616,7 @@ public class FreeMindMapController extends JMapController implements
 	 */
 	private void newNode(MouseEvent pEvent) {
 		final MindMapNode targetNode = mMindMapController.getSelected();
-		int childPosition;
-		MindMapNode parent;
-		if (targetNode.isRoot()) {
-			parent = targetNode;
-			childPosition = 0;
-		} else {
-			// new sibling:
-			parent = targetNode.getParentNode();
-			childPosition = parent.getChildPosition(targetNode);
-			childPosition++;
-		}
-		final MindMapNode newNode = mMindMapController.addNewNode(parent,
-				childPosition, targetNode.isLeft());
+		final MindMapNode newNode = insertNewNode(targetNode);
 		final NodeView nodeView = mMindMapController.getNodeView(newNode);
 		mMindMapController.select(nodeView);
 		// inline editing:
@@ -1642,6 +1630,23 @@ public class FreeMindMapController extends JMapController implements
 		EditNodeTextField textfield = new MapEditNoteTextField(nodeView, "",
 				null, mMindMapController, editControl, map, point);
 		textfield.show();
+	}
+
+	public MindMapNode insertNewNode(final MindMapNode targetNode) {
+		int childPosition;
+		MindMapNode parent;
+		if (targetNode.isRoot()) {
+			parent = targetNode;
+			childPosition = 0;
+		} else {
+			// new sibling:
+			parent = targetNode.getParentNode();
+			childPosition = parent.getChildPosition(targetNode);
+			childPosition++;
+		}
+		final MindMapNode newNode = mMindMapController.addNewNode(parent,
+				childPosition, targetNode.isLeft());
+		return newNode;
 	}
 
 	/**
@@ -2135,7 +2140,7 @@ public class FreeMindMapController extends JMapController implements
 		StringBuilder b = new StringBuilder();
 		boolean limitSearchToRegion = mMapHook.isLimitSearchToRegion();
 		try {
-			if (true) {
+			if (false) {
 				b.append("http://nominatim.openstreetmap.org/search/?email=christianfoltin%40users.sourceforge.net&q="); //$NON-NLS-1$
 				b.append(URLEncoder.encode(pText, "UTF-8"));
 				b.append("&format=xml&limit=30&accept-language=").append(Locale.getDefault().getLanguage()); //$NON-NLS-1$
@@ -2506,6 +2511,17 @@ public class FreeMindMapController extends JMapController implements
 	 */
 	public void addCursorPositionListener(CursorPositionListener pListener) {
 		mCursorPositionListeners.add(pListener);
+	}
+
+	/**
+	 * @param pSelected
+	 * @param pPlace
+	 */
+	public void addNode(MindMapNode pSelected, Place pPlace) {
+		final MindMapNode targetNode = pSelected;
+		final MindMapNode newNode = insertNewNode(targetNode);
+		mMindMapController.setNodeText(newNode, pPlace.getDisplayName());
+		placeNode(newNode);
 	}
 
 }

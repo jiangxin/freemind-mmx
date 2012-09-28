@@ -394,6 +394,14 @@ public class MapDialog extends MindMapHookAdapter implements
 					displaySearchItem(index);
 					return;
 				}
+				if (pEvent.getKeyCode() == KeyEvent.VK_ENTER
+						&& pEvent.isControlDown() && index >= 0) {
+					logger.info("Add result to map.");
+					pEvent.consume();
+					displaySearchItem(index);
+					getFreeMindMapController().addNode(getMindMapController().getSelected(), getPlace(index));
+					return;
+				}
 
 			}
 		});
@@ -935,16 +943,21 @@ public class MapDialog extends MindMapHookAdapter implements
 	}
 
 	public void displaySearchItem(int index) {
-		if(index < 0) {
-			throw new IllegalArgumentException("Index " + index + " out of bounds.");
-		}
-		index = mResultTableSorter.modelIndex(index);
-		Place place = mResultTableModel.getPlace(index);
+		Place place = getPlace(index);
 		getFreeMindMapController().setCursorPosition(place);
 		if (mSingleSearch && isSearchBarVisible()) {
 			toggleSearchBar();
 		}
 		mSingleSearch = false;
+	}
+
+	public Place getPlace(int index) {
+		if(index < 0) {
+			throw new IllegalArgumentException("Index " + index + " out of bounds.");
+		}
+		index = mResultTableSorter.modelIndex(index);
+		Place place = mResultTableModel.getPlace(index);
+		return place;
 	}
 
 	public JDialog getMapDialog() {
