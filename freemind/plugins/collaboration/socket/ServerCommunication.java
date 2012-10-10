@@ -159,9 +159,9 @@ public class ServerCommunication extends CommunicationBase {
 	}
 
 	public void terminateSocket() throws IOException {
-		mMindMapMaster.closeConnection(this);
+		mMindMapMaster.removeConnection(this);
+		commitSuicide();
 		close();
-		mShouldTerminate = true;
 	}
 
 }

@@ -271,18 +271,20 @@ public class ClientCommunication extends CommunicationBase {
 	 * @see plugins.collaboration.socket.SocketBasics#shutdown()
 	 */
 	public void shutdown() {
+		// we don't want to read anymore, as we send the goodbye anyway!
+		commitSuicide();
 		try {
 			if (!mReceivedGoodbye) {
 				// Send only, if own goodbye.
 				CollaborationGoodbye goodbye = new CollaborationGoodbye();
 				goodbye.setUserId(Tools.getUserName());
 				send(goodbye);
+				// in between, the socket has been closed.
 			}
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
 		}
 		try {
-			mShouldTerminate = true;
 			close();
 		} catch (IOException e) {
 			freemind.main.Resources.getInstance().logException(e);

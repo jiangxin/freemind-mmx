@@ -129,10 +129,12 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 
 	}
 
-	public synchronized void closeConnection(ServerCommunication client) {
+	public synchronized void removeConnection(ServerCommunication client) {
 		synchronized (mConnections) {
 			mConnections.remove(client);
 		}
+		// correct the map title, as we probably don't have clients anymore
+		getMindMapController().getController().setTitle();
 	}
 
 	public void startupMapHook() {

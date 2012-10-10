@@ -2,6 +2,7 @@
 Changes made in FreeMind 1.0.0 Beta9
 ===============================
 * Fixed undo problem in collaboration mode
+* Fixed shutdown of clients and master.
 
 ===============================
 Changes made in FreeMind 1.0.0 Beta8
