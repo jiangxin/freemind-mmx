@@ -104,7 +104,9 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	protected static final String UNKNWON_HOST_EXCEPTION_MESSAGE = SOCKET_BASICS_CLASS
 			+ ".unknown_host_exception";
 	protected static final String CONNECT_EXCEPTION_MESSAGE = SOCKET_BASICS_CLASS
-			+ ".connection_exception";;
+			+ ".connection_exception";
+	protected static final String SOCKET_CREATION_EXCEPTION_MESSAGE = SOCKET_BASICS_CLASS
+			+ ".socket_creation_exception";;
 
 	protected static java.util.logging.Logger logger = null;
 
@@ -308,7 +310,8 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 		if (pAction instanceof CompoundAction) {
 			CompoundAction compound = (CompoundAction) pAction;
 			boolean result = false;
-			for (Iterator it = compound.getListChoiceList().iterator(); it.hasNext();) {
+			for (Iterator it = compound.getListChoiceList().iterator(); it
+					.hasNext();) {
 				XmlAction action = (XmlAction) it.next();
 				result |= visit(action, pSearchString);
 			}
@@ -334,14 +337,14 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 		if (pPair == null || !mFilterEnabled)
 			return pPair;
 		// Don't send any hook instantiations to others.
-		if(visit(pPair.getDoAction(), SocketConnectionHook.SLAVE_HOOK_NAME)) {
+		if (visit(pPair.getDoAction(), SocketConnectionHook.SLAVE_HOOK_NAME)) {
 			return pPair;
 		}
-		if(visit(pPair.getDoAction(), MindMapMaster.MASTER_HOOK_NAME)) {
+		if (visit(pPair.getDoAction(), MindMapMaster.MASTER_HOOK_NAME)) {
 			return pPair;
 		}
 		// search for undo (little bad hack!)
-		if(visit(pPair.getDoAction(), "")) {
+		if (visit(pPair.getDoAction(), "")) {
 			return pPair;
 		}
 		String doAction = getMindMapController().marshall(pPair.getDoAction());

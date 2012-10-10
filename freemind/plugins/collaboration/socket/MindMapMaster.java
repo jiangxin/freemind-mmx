@@ -35,6 +35,7 @@ import freemind.controller.actions.generated.instance.CollaborationGoodbye;
 import freemind.controller.actions.generated.instance.CollaborationUserInformation;
 import freemind.extensions.DontSaveMarker;
 import freemind.extensions.PermanentNodeHook;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
@@ -134,6 +135,10 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 			mConnections.remove(client);
 		}
 		// correct the map title, as we probably don't have clients anymore
+		setTitle();
+	}
+
+	protected void setTitle() {
 		getMindMapController().getController().setTitle();
 	}
 
@@ -182,15 +187,19 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 			mListener.start();
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
-			// TODO: Need a better message here.
-			controller.getController().errorMessage(e.getLocalizedMessage());
+			controller.getController().errorMessage(
+					Resources.getInstance().format(
+							SOCKET_CREATION_EXCEPTION_MESSAGE,
+							new Object[] { portProperty.getValue(),
+									e.getMessage() }));
 			if (mListener != null) {
 				mListener.commitSuicide();
 			}
-			return;
+			throw new IllegalArgumentException("Socket creation error");
 		}
 		registerFilter();
 		logger.info("Starting server. Done.");
+		setTitle();
 	}
 
 	public void loadFrom(XMLElement pChild) {
@@ -207,6 +216,13 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 		if (mListener != null) {
 			signalEndOfSession();
 			mListener.commitSuicide();
+		}
+		try {
+			if (mServer != null) {
+				mServer.close();
+			}
+		} catch (IOException e) {
+			freemind.main.Resources.getInstance().logException(e);
 		}
 		super.shutdownMapHook();
 	}

@@ -42,7 +42,7 @@ public abstract class CommunicationBase extends TerminateableThread {
 	 * 
 	 */
 	private static final String STRING_CONTINUATION_SUFFIX = "<cont>";
-	private Socket mSocket;
+	protected Socket mSocket;
 
 	/**
 	 * @param pName
