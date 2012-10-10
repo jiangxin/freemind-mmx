@@ -110,10 +110,10 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
 		mMindMapController.fireNodePreDeleteEvent(selectedNode);
 		// deregister node:
 		mMindMapController.getModel().getLinkRegistry()
-				.deregisterLinkTarget(selectedNode);		
+				.deregisterLinkTarget(selectedNode);
 		MapView view = mMindMapController.getView();
 		NodeView nodeView = view.getNodeView(selectedNode);
-		if(view.getSelecteds().size()>1) {
+		if (view.getSelecteds().size() > 1) {
 			view.deselect(nodeView);
 		} else {
 			view.selectAsTheOnlyOneSelected(view.getNodeView(parent));
@@ -153,7 +153,6 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
 
 	public void deleteNode(MindMapNode selectedNode) {
 		String newId = mMindMapController.getNodeID(selectedNode);
-		mMindMapController.getActionFactory().startTransaction(text);
 
 		Transferable copy = mMindMapController.copy(selectedNode, true);
 		NodeCoordinate coord = new NodeCoordinate(selectedNode,
@@ -164,9 +163,8 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
 				coord, (UndoPasteNodeAction) null);
 
 		DeleteNodeAction deleteAction = getDeleteNodeAction(newId);
-		mMindMapController.getActionFactory().executeAction(
+		mMindMapController.doTransaction(text,
 				new ActionPair(deleteAction, pasteNodeAction));
-		mMindMapController.getActionFactory().endTransaction(text);
 	}
 
 	public DeleteNodeAction getDeleteNodeAction(String newId) {

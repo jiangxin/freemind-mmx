@@ -60,12 +60,8 @@ public class CloudAction extends NodeGeneralAction implements NodeActorXml,
 	}
 
 	public void setCloud(MindMapNode node, boolean enable) {
-		modeController.getActionFactory().startTransaction(
-				(String) getValue(NAME));
-		modeController.getActionFactory().executeAction(
-				getActionPair(node, enable));
-		modeController.getActionFactory().endTransaction(
-				(String) getValue(NAME));
+		modeController.doTransaction(
+				(String) getValue(NAME), getActionPair(node, enable));
 
 	}
 

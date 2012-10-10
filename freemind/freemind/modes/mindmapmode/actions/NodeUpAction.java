@@ -72,12 +72,8 @@ public class NodeUpAction extends AbstractAction implements ActorXml {
 				direction);
 		MoveNodesAction undoAction = createMoveNodesAction(selected, selecteds,
 				-direction);
-		modeController.getActionFactory().startTransaction(
-				(String) getValue(NAME));
-		modeController.getActionFactory().executeAction(
-				new ActionPair(doAction, undoAction));
-		modeController.getActionFactory().endTransaction(
-				(String) getValue(NAME));
+		modeController.doTransaction(
+				(String) getValue(NAME), new ActionPair(doAction, undoAction));
 	}
 
 	public void _moveNodes(MindMapNode selected, List selecteds, int direction) {
@@ -134,7 +130,7 @@ public class NodeUpAction extends AbstractAction implements ActorXml {
 				mapView.makeTheSelected(nodeView);
 			}
 			// focus fix
-			modeController.getController().obtainFocusForSelected(); 
+			modeController.getController().obtainFocusForSelected();
 		}
 	}
 

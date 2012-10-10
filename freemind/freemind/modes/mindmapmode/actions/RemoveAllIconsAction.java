@@ -89,12 +89,8 @@ public class RemoveAllIconsAction extends NodeGeneralAction implements
 	}
 
 	public void removeAllIcons(MindMapNode node) {
-		modeController.getActionFactory().startTransaction(
-				(String) getValue(NAME));
-		modeController.getActionFactory().executeAction(
-				apply(modeController.getMap(), node));
-		modeController.getActionFactory().endTransaction(
-				(String) getValue(NAME));
+		modeController.doTransaction(
+				(String) getValue(NAME), apply(modeController.getMap(), node));
 	}
 
 	public Class getDoActionClass() {

@@ -65,7 +65,8 @@ public class MindMapModeAttributeController implements AttributeController {
 				if (model.getName(i).equals(oldName)) {
 					final ActionPair setAttributeNameActionPair = setAttributeNameActor
 							.createActionPair(model, i, newName.toString());
-					controller.getActionFactory().executeAction(
+					controller.doTransaction(
+							"setAttributeNameActionPair",
 							setAttributeNameActionPair);
 				}
 			}
@@ -98,7 +99,8 @@ public class MindMapModeAttributeController implements AttributeController {
 						&& model.getValue(i).equals(oldValue)) {
 					final ActionPair setAttributeValueActionPair = setAttributeValueActor
 							.createActionPair(model, i, newValue.toString());
-					controller.getActionFactory().executeAction(
+					controller.doTransaction(
+							"setAttributeValueActionPair",
 							setAttributeValueActionPair);
 				}
 			}
@@ -125,7 +127,8 @@ public class MindMapModeAttributeController implements AttributeController {
 				if (model.getName(i).equals(name)) {
 					final ActionPair removeAttributeActionPair = removeAttributeActor
 							.createActionPair(model, i);
-					controller.getActionFactory().executeAction(
+					controller.doTransaction(
+							"removeAttributeActionPair",
 							removeAttributeActionPair);
 				}
 			}
@@ -156,7 +159,8 @@ public class MindMapModeAttributeController implements AttributeController {
 						&& model.getValue(i).equals(value)) {
 					final ActionPair removeAttributeActionPair = removeAttributeActor
 							.createActionPair(model, i);
-					controller.getActionFactory().executeAction(
+					controller.doTransaction(
+							"removeAttributeActionPair",
 							removeAttributeActionPair);
 				}
 			}
@@ -221,7 +225,6 @@ public class MindMapModeAttributeController implements AttributeController {
 
 	public void performSetValueAt(NodeAttributeTableModel model, Object o,
 			int row, int col) {
-		startTransaction("performSetValueAt");
 		Attribute attribute = model.getAttribute(row);
 
 		AttributeRegistry attributes = getAttributeRegistry();
@@ -230,10 +233,9 @@ public class MindMapModeAttributeController implements AttributeController {
 			String name = o.toString().trim();
 			if (attribute.getName().equals(name))
 				return;
-			final ActionPair setAttributeNameActionPair = setAttributeNameActor
-					.createActionPair(model, row, name);
-			controller.getActionFactory().executeAction(
-					setAttributeNameActionPair);
+			controller.doTransaction(
+					"setAttributeNameActionPair",
+					setAttributeNameActor.createActionPair(model, row, name));
 			try {
 				AttributeRegistryElement element = attributes.getElement(name);
 				String value = model.getValueAt(row, 1).toString();
@@ -242,18 +244,19 @@ public class MindMapModeAttributeController implements AttributeController {
 					final ActionPair setAttributeValueActionPair = setAttributeValueActor
 							.createActionPair(model, row, element.getValues()
 									.firstElement().toString());
-					controller.getActionFactory().executeAction(
+					controller.doTransaction(
+							"setAttributeValueActionPair",
 							setAttributeValueActionPair);
 				}
 			} catch (NoSuchElementException ex) {
-				final ActionPair registryAttributeActionPair = registryAttributeActor
-						.createActionPair(name);
-				controller.getActionFactory().executeAction(
-						registryAttributeActionPair);
-				final ActionPair setAttributeValueActionPair = setAttributeValueActor
-						.createActionPair(model, row, "");
-				controller.getActionFactory().executeAction(
-						setAttributeValueActionPair);
+				controller.doTransaction(
+						"registryAttributeActionPair",
+						registryAttributeActor.createActionPair(name));
+				controller.getActionFactory()
+						.doTransaction(
+								"setAttributeValueActionPair",
+								setAttributeValueActor.createActionPair(model,
+										row, ""));
 			}
 			break;
 		}
@@ -263,36 +266,26 @@ public class MindMapModeAttributeController implements AttributeController {
 				return;
 			final ActionPair setValueActionPair = setAttributeValueActor
 					.createActionPair(model, row, value);
-			controller.getActionFactory().executeAction(setValueActionPair);
+			controller.doTransaction("setValueActionPair",
+					setValueActionPair);
 			String name = model.getValueAt(row, 0).toString();
 			AttributeRegistryElement element = attributes.getElement(name);
 			int index = element.getValues().getIndexOf(value);
 			if (index == -1) {
 				final ActionPair registryAttributeValueActionPair = registryAttributeValueActor
 						.createActionPair(name, value);
-				controller.getActionFactory().executeAction(
+				controller.doTransaction(
+						"registryAttributeValueActionPair",
 						registryAttributeValueActionPair);
 			}
 			break;
 		}
 		}
 
-		endTransaction("performSetValueAt");
-	}
-
-	private void endTransaction(String name) {
-		controller.getActionFactory().endTransaction(
-				this.getClass().getName() + "." + name);
-	}
-
-	private void startTransaction(String name) {
-		controller.getActionFactory().startTransaction(
-				this.getClass().getName() + "." + name);
 	}
 
 	public void performInsertRow(NodeAttributeTableModel model, int row,
 			String name, String value) {
-		startTransaction("performInsertRow");
 		AttributeRegistry attributes = getAttributeRegistry();
 		if (name.equals(""))
 			return;
@@ -305,90 +298,72 @@ public class MindMapModeAttributeController implements AttributeController {
 				} else {
 					final ActionPair registryNewAttributeActionPair = registryAttributeValueActor
 							.createActionPair(name, value);
-					controller.getActionFactory().executeAction(
-							registryNewAttributeActionPair);
+					controller.doTransaction(
+							"performInsertRow", registryNewAttributeActionPair);
 				}
 			}
 		} catch (NoSuchElementException ex) {
-			final ActionPair registryAttributeActionPair = registryAttributeActor
-					.createActionPair(name);
-			controller.getActionFactory().executeAction(
-					registryAttributeActionPair);
-			final ActionPair registryAttributeValueActionPair = registryAttributeValueActor
-					.createActionPair(name, value);
-			controller.getActionFactory().executeAction(
-					registryAttributeValueActionPair);
+			controller.doTransaction("performInsertRow",
+					registryAttributeActor.createActionPair(name));
+			controller.doTransaction(
+					"registryAttributeValueActor",
+					registryAttributeValueActor.createActionPair(name, value));
 		}
 		final ActionPair insertAttributeActionPair = insertAttributeActor
 				.createActionPair(model, row, name, value);
-		controller.getActionFactory().executeAction(insertAttributeActionPair);
-		endTransaction("performInsertRow");
+		controller.doTransaction(
+				"insertAttributeActionPair", insertAttributeActionPair);
 	}
 
 	public void performRemoveRow(NodeAttributeTableModel model, int row) {
-		startTransaction("performRemoveRow");
-		final ActionPair removeAttributeActionPair = removeAttributeActor
-				.createActionPair(model, row);
-		controller.getActionFactory().executeAction(removeAttributeActionPair);
-		endTransaction("performRemoveRow");
+		controller.doTransaction("performRemoveRow",
+				removeAttributeActor.createActionPair(model, row));
 	}
 
 	public void performSetColumnWidth(NodeAttributeTableModel model, int col,
 			int width) {
 		if (width == model.getLayout().getColumnWidth(col))
 			return;
-		startTransaction("performSetColumnWidth");
-		final ActionPair setAttributeColumnWidthActionPair = setAttributeColumnWidthActor
-				.createActionPair(model, col, width);
-		controller.getActionFactory().executeAction(
-				setAttributeColumnWidthActionPair);
-		endTransaction("performSetColumnWidth");
+		controller.doTransaction(
+				"performSetColumnWidth",
+				setAttributeColumnWidthActor
+						.createActionPair(model, col, width));
 	}
 
 	public void performRemoveAttributeValue(String name, String value) {
-		startTransaction("performRemoveAttributeValue");
-		final ActionPair removeAttributeActionPair = unregistryAttributeValueActor
-				.createActionPair(name, value);
-		controller.getActionFactory().executeAction(removeAttributeActionPair);
+		controller.doTransaction(
+				"removeAttributeActionPair",
+				unregistryAttributeValueActor.createActionPair(name, value));
 		Visitor remover = new AttributeValueRemover(name, value);
 		Iterator iterator = new Iterator(remover);
 		MindMapNode root = controller.getRootNode();
 		iterator.iterate(root);
-		endTransaction("performRemoveAttributeValue");
 	}
 
 	public void performReplaceAttributeValue(String name, String oldValue,
 			String newValue) {
-		startTransaction("performReplaceAttributeValue");
-		final ActionPair replaceAttributeActionPair = replaceAttributeValueActor
-				.createActionPair(name, oldValue, newValue);
-		controller.getActionFactory().executeAction(replaceAttributeActionPair);
+		controller.doTransaction(
+				"replaceAttributeActionPair",
+				replaceAttributeValueActor.createActionPair(name, oldValue,
+						newValue));
 		Visitor replacer = new AttributeChanger(name, oldValue, newValue);
 		Iterator iterator = new Iterator(replacer);
 		MindMapNode root = controller.getRootNode();
 		iterator.iterate(root);
-		endTransaction("performReplaceAttributeValue");
-
 	}
 
 	public void performSetFontSize(AttributeRegistry registry, int size) {
 		if (size == registry.getFontSize())
 			return;
-		startTransaction("performSetFontSize");
-		final ActionPair setFontSizeActionPair = setAttributeFontSizeActor
-				.createActionPair(size);
-		controller.getActionFactory().executeAction(setFontSizeActionPair);
-		endTransaction("performSetFontSize");
+		controller.doTransaction("setFontSizeActionPair",
+				setAttributeFontSizeActor.createActionPair(size));
 	}
 
 	public void performSetVisibility(int index, boolean isVisible) {
 		if (getAttributeRegistry().getElement(index).isVisible() == isVisible)
 			return;
-		startTransaction("performSetVisibility");
-		final ActionPair setVisibilityActionPair = setAttributeVisibleActor
-				.createActionPair(index, isVisible);
-		controller.getActionFactory().executeAction(setVisibilityActionPair);
-		endTransaction("performSetVisibility");
+		controller.doTransaction("setVisibilityActionPair",
+				setAttributeVisibleActor.createActionPair(index, isVisible));
 	}
 
 	public void performSetRestriction(int index, boolean isRestricted) {
@@ -402,54 +377,45 @@ public class MindMapModeAttributeController implements AttributeController {
 
 		if (currentValue == isRestricted)
 			return;
-		startTransaction("performSetRestriction");
-		final ActionPair setRestrictionActionPair = setAttributeRestrictedActor
-				.createActionPair(index, isRestricted);
-		controller.getActionFactory().executeAction(setRestrictionActionPair);
-		endTransaction("performSetRestriction");
+		controller.doTransaction(
+				"setRestrictionActionPair",
+				setAttributeRestrictedActor.createActionPair(index,
+						isRestricted));
 	}
 
 	public void performReplaceAtributeName(String oldName, String newName) {
 		if (oldName.equals("") || newName.equals("") || oldName.equals(newName))
 			return;
-		startTransaction("performReplaceAtributeName");
 		AttributeRegistry registry = getAttributeRegistry();
 		int iOld = registry.getElements().indexOf(oldName);
 		AttributeRegistryElement oldElement = registry.getElement(iOld);
 		final SortedComboBoxModel values = oldElement.getValues();
-		final ActionPair registryNewAttributeActionPair = registryAttributeActor
-				.createActionPair(newName);
-		controller.getActionFactory().executeAction(
-				registryNewAttributeActionPair);
+		controller.doTransaction(
+				"registryNewAttributeActionPair",
+				registryAttributeActor.createActionPair(newName));
 		for (int i = 0; i < values.getSize(); i++) {
-			final ActionPair registryNewAttributeValueActionPair = registryAttributeValueActor
-					.createActionPair(newName, values.getElementAt(i)
-							.toString());
-			controller.getActionFactory().executeAction(
-					registryNewAttributeValueActionPair);
+			controller.doTransaction(
+					"registryNewAttributeValueActionPair",
+					registryAttributeValueActor.createActionPair(newName,
+							values.getElementAt(i).toString()));
 		}
 		Visitor replacer = new AttributeRenamer(oldName, newName);
 		Iterator iterator = new Iterator(replacer);
 		MindMapNode root = controller.getRootNode();
 		iterator.iterate(root);
-		final ActionPair unregistryOldAttributeActionPair = unregistryAttributeActor
-				.createActionPair(oldName);
-		controller.getActionFactory().executeAction(
-				unregistryOldAttributeActionPair);
-		endTransaction("performReplaceAtributeName");
+		controller.doTransaction(
+				"unregistryOldAttributeActionPair",
+				unregistryAttributeActor.createActionPair(oldName));
 	}
 
 	public void performRemoveAttribute(String name) {
-		startTransaction("performReplaceAtributeName");
-		final ActionPair unregistryOldAttributeActionPair = unregistryAttributeActor
-				.createActionPair(name);
-		controller.getActionFactory().executeAction(
-				unregistryOldAttributeActionPair);
+		controller.doTransaction(
+				"unregistryOldAttributeActionPair",
+				unregistryAttributeActor.createActionPair(name));
 		Visitor remover = new AttributeRemover(name);
 		Iterator iterator = new Iterator(remover);
 		MindMapNode root = controller.getRootNode();
 		iterator.iterate(root);
-		endTransaction("performReplaceAtributeName");
 	}
 
 	public void performRegistryAttribute(String name) {
@@ -459,12 +425,9 @@ public class MindMapModeAttributeController implements AttributeController {
 			final AttributeRegistryElement element = getAttributeRegistry()
 					.getElement(name);
 		} catch (NoSuchElementException ex) {
-			startTransaction("performRegistryAttribute");
-			final ActionPair registryNewAttributeActionPair = registryAttributeActor
-					.createActionPair(name);
-			controller.getActionFactory().executeAction(
-					registryNewAttributeActionPair);
-			endTransaction("performRegistryAttribute");
+			controller.doTransaction(
+					"registryNewAttributeActionPair",
+					registryAttributeActor.createActionPair(name));
 			return;
 		}
 
@@ -479,24 +442,17 @@ public class MindMapModeAttributeController implements AttributeController {
 			if (element.getValues().contains(value)) {
 				return;
 			}
-			startTransaction("performRegistryAttributeValue");
-			final ActionPair registryNewAttributeActionPair = registryAttributeValueActor
-					.createActionPair(name, value);
-			controller.getActionFactory().executeAction(
-					registryNewAttributeActionPair);
-			endTransaction("performRegistryAttributeValue");
+			controller.doTransaction(
+					"registryNewAttributeActionPair",
+					registryAttributeValueActor.createActionPair(name, value));
 			return;
 		} catch (NoSuchElementException ex) {
-			startTransaction("performRegistryAttributeValue");
-			final ActionPair registryAttributeActionPair = registryAttributeActor
-					.createActionPair(name);
-			controller.getActionFactory().executeAction(
-					registryAttributeActionPair);
-			final ActionPair registryAttributeValueActionPair = registryAttributeValueActor
-					.createActionPair(name, value);
-			controller.getActionFactory().executeAction(
-					registryAttributeValueActionPair);
-			endTransaction("performRegistryAttributeValue");
+			controller.doTransaction(
+					"registryAttributeActionPair",
+					registryAttributeActor.createActionPair(name));
+			controller.doTransaction(
+					"registryAttributeValueActionPair",
+					registryAttributeValueActor.createActionPair(name, value));
 			return;
 		}
 

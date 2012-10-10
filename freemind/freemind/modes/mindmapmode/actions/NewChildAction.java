@@ -124,7 +124,7 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 				// fc, 21.8.07: we don't do anything here and get a new child
 				// instead.
 				newNodeMode = MindMapController.NEW_CHILD;
-				//@fallthrough
+				// @fallthrough
 			}
 		}
 
@@ -155,21 +155,19 @@ public class NewChildAction extends AbstractAction implements ActorXml {
 
 	public MindMapNode addNewNode(MindMapNode parent, int index,
 			boolean newNodeIsLeft) {
-		if(index == -1) {
+		if (index == -1) {
 			index = parent.getChildCount();
 		}
 		// bug fix from Dimitri.
 		c.getModel().getLinkRegistry().registerLinkTarget(parent);
 		String newId = c.getModel().getLinkRegistry().generateUniqueID(null);
-		c.getActionFactory().startTransaction(c.getText("new_child"));
 		NewNodeAction newNodeAction = getAddNodeAction(parent, index, newId,
 				newNodeIsLeft);
 		// Undo-action
 		DeleteNodeAction deleteAction = c.deleteChild
 				.getDeleteNodeAction(newId);
-		c.getActionFactory().executeAction(
+		c.doTransaction(c.getText("new_child"),
 				new ActionPair(newNodeAction, deleteAction));
-		c.getActionFactory().endTransaction(c.getText("new_child"));
 		return (MindMapNode) parent.getChildAt(index);
 	}
 

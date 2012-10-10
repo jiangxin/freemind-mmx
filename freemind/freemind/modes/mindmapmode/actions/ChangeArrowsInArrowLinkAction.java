@@ -66,10 +66,8 @@ public class ChangeArrowsInArrowLinkAction extends FreemindAction implements
 
 	public void changeArrowsOfArrowLink(MindMapArrowLinkModel arrowLink,
 			boolean hasStartArrow, boolean hasEndArrow) {
-		controller.getActionFactory().startTransaction((String) getValue(NAME));
-		controller.getActionFactory().executeAction(
+		controller.doTransaction((String) getValue(NAME),
 				getActionPair(arrowLink, hasStartArrow, hasEndArrow));
-		controller.getActionFactory().endTransaction((String) getValue(NAME));
 	}
 
 	/**

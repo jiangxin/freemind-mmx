@@ -118,21 +118,13 @@ public class IconAction extends FreemindAction implements ActorXml,
 	}
 
 	public void addIcon(MindMapNode node, MindIcon icon) {
-		modeController.getActionFactory().startTransaction(
-				(String) getValue(NAME));
-		modeController.getActionFactory().executeAction(
-				getAddLastIconActionPair(node, icon));
-		modeController.getActionFactory().endTransaction(
-				(String) getValue(NAME));
+		modeController.doTransaction(
+				(String) getValue(NAME), getAddLastIconActionPair(node, icon));
 	}
 
 	private void toggleIcon(MindMapNode node, MindIcon icon) {
-		modeController.getActionFactory().startTransaction(
-				(String) getValue(NAME));
-		modeController.getActionFactory().executeAction(
-				getToggleIconActionPair(node, icon));
-		modeController.getActionFactory().endTransaction(
-				(String) getValue(NAME));
+		modeController.doTransaction(
+				(String) getValue(NAME), getToggleIconActionPair(node, icon));
 	}
 
 	private void removeIcon(MindMapNode node, MindIcon icon, boolean removeFirst) {
@@ -141,11 +133,8 @@ public class IconAction extends FreemindAction implements ActorXml,
 		if (removeIconActionPair == null) {
 			return;
 		}
-		modeController.getActionFactory().startTransaction(
-				(String) getValue(NAME));
-		modeController.getActionFactory().executeAction(removeIconActionPair);
-		modeController.getActionFactory().endTransaction(
-				(String) getValue(NAME));
+		modeController.doTransaction(
+				(String) getValue(NAME), removeIconActionPair);
 	}
 
 	/**

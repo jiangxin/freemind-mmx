@@ -1,4 +1,9 @@
 ===============================
+Changes made in FreeMind 1.0.0 Beta9
+===============================
+* Fixed undo problem in collaboration mode
+
+===============================
 Changes made in FreeMind 1.0.0 Beta8
 ===============================
 * New collaboration plugin based on plain sockets written.

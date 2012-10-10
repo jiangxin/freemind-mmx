@@ -238,9 +238,7 @@ public class UpdateThread extends Thread implements ResultHandler,
 			public void run() {
 				mFilterEnabled = false;
 				try {
-					mController.getActionFactory().startTransaction("update");
-					mController.getActionFactory().executeAction(pair);
-					mController.getActionFactory().endTransaction("update");
+					mController.doTransaction("update", pair);
 				} finally {
 					mFilterEnabled = true;
 				}

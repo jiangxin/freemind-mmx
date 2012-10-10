@@ -27,8 +27,6 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
 
-import freemind.extensions.HookFactory;
-import freemind.extensions.ModeControllerHook;
 import freemind.modes.mindmapmode.MindMapController;
 
 public class MindMapControllerHookAction extends AbstractAction implements

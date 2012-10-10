@@ -1666,7 +1666,8 @@ public class MindMapController extends ControllerAdapter implements
 
 		String relative = getLinkByFileChooser(filter);
 		if (relative != null) {
-			String strText = "<html><body><img src=\"" + relative + "\"/></body></html>";
+			String strText = "<html><body><img src=\"" + relative
+					+ "\"/></body></html>";
 			setNodeText((MindMapNode) getSelected(), strText);
 		}
 	}
@@ -2256,10 +2257,8 @@ public class MindMapController extends ControllerAdapter implements
 		EditNoteToNodeAction doAction = createEditNoteToNodeAction(node, text);
 		EditNoteToNodeAction undoAction = createEditNoteToNodeAction(node,
 				oldNoteText);
-		getActionFactory().startTransaction(ACCESSORIES_PLUGINS_NODE_NOTE);
-		getActionFactory().executeAction(new ActionPair(doAction, undoAction));
-		getActionFactory().endTransaction(ACCESSORIES_PLUGINS_NODE_NOTE);
-
+		getActionFactory().doTransaction(ACCESSORIES_PLUGINS_NODE_NOTE,
+				new ActionPair(doAction, undoAction));
 	}
 
 	public void registerPlugin(MindMapControllerPlugin pPlugin) {
@@ -2337,6 +2336,10 @@ public class MindMapController extends ControllerAdapter implements
 	public void obtainFocusForSelected() {
 		getController().obtainFocusForSelected();
 
+	}
+
+	public boolean doTransaction(String pName, ActionPair pPair) {
+		return actionFactory.doTransaction(pName, pPair);
 	}
 
 }

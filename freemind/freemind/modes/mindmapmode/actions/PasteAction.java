@@ -47,7 +47,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import freemind.controller.MindMapNodesSelection;
-import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.PasteNodeAction;
 import freemind.controller.actions.generated.instance.TransferableContent;
 import freemind.controller.actions.generated.instance.TransferableFile;
@@ -88,12 +87,11 @@ public class PasteAction extends AbstractAction implements ActorXml {
 		setEnabled(false);
 		this.mMindMapController.getActionFactory().registerActor(this,
 				getDoActionClass());
-		
+
 		// special undo handler for paste.
 		mUndoPasteHandler = new UndoPasteHandler(mMindMapController);
-		this.mMindMapController.getActionFactory().registerActor(mUndoPasteHandler,
-				UndoPasteNodeAction.class);
-		
+		this.mMindMapController.getActionFactory().registerActor(
+				mUndoPasteHandler, UndoPasteNodeAction.class);
 
 	}
 
@@ -191,11 +189,8 @@ public class PasteAction extends AbstractAction implements ActorXml {
 		 * d) But, as there are many possibilities which data flavor is pasted,
 		 * it has to be determined before, which one will be taken.
 		 */
-		mMindMapController.getActionFactory().startTransaction("paste");
-		boolean result = mMindMapController.getActionFactory().executeAction(
+		return mMindMapController.doTransaction("paste",
 				new ActionPair(pasteAction, undoAction));
-		mMindMapController.getActionFactory().endTransaction("paste");
-		return result;
 	}
 
 	public static class NodeCoordinate {
@@ -782,7 +777,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 					pUndoAction
 							.setNodeAmount(Tools.countOccurrences(
 									textFromClipboard,
-									ControllerAdapter.NODESEPARATOR)+1);
+									ControllerAdapter.NODESEPARATOR) + 1);
 					amountAlreadySet = true;
 				}
 			}
@@ -811,7 +806,8 @@ public class PasteAction extends AbstractAction implements ActorXml {
 				trans.setTransferableAsHtml(HtmlTools
 						.makeValidXml(textFromClipboard));
 				if (pUndoAction != null && !amountAlreadySet) {
-					// on html paste, the string text is taken and "improved". Thus, we count its lines.
+					// on html paste, the string text is taken and "improved".
+					// Thus, we count its lines.
 					final int childCount = determineAmountOfNewNodes(t);
 					pUndoAction.setNodeAmount(childCount);
 					amountAlreadySet = true;
@@ -900,14 +896,15 @@ public class PasteAction extends AbstractAction implements ActorXml {
 		return null;
 	}
 
-	/* TODO: This is a bit dirty here. Better would be to separate
-	 * the algorithm from the node creation and use the pure algo.
+	/*
+	 * TODO: This is a bit dirty here. Better would be to separate the algorithm
+	 * from the node creation and use the pure algo.
 	 */
 	protected int determineAmountOfNewNodes(Transferable t)
 			throws UnsupportedFlavorException, IOException {
 		// create a new node for testing purposes.
-		MindMapNodeModel parent = new MindMapNodeModel(mMindMapController.getFrame(),
-				mMindMapController.getMap());
+		MindMapNodeModel parent = new MindMapNodeModel(
+				mMindMapController.getFrame(), mMindMapController.getMap());
 		pasteStringWithoutRedisplay(t, parent, false, false);
 		final int childCount = parent.getChildCount();
 		return childCount;

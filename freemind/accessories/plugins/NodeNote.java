@@ -19,7 +19,6 @@
 /* $Id: NodeNote.java,v 1.1.4.7.2.45 2010/01/25 20:17:59 christianfoltin Exp $ */
 package accessories.plugins;
 
-import java.awt.EventQueue;
 import java.awt.KeyboardFocusManager;
 
 import javax.swing.JSplitPane;

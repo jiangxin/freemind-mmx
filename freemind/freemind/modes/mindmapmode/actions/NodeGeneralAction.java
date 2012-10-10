@@ -132,26 +132,20 @@ public class NodeGeneralAction extends AbstractXmlAction {
 				ActionPair pair = actor.apply(this.modeController.getMap(),
 						selected);
 				if (pair != null) {
-					doAction
-
-					.addChoice(pair.getDoAction());
+					doAction.addChoice(pair.getDoAction());
 					undo.addAtChoice(0, pair.getUndoAction());
 				}
 			}
 			if (doAction.sizeChoiceList() == 0)
 				return;
-			modeController.getActionFactory().startTransaction(
-					(String) getValue(NAME));
-			modeController.getActionFactory().executeAction(
+			modeController.doTransaction((String) getValue(NAME),
 					new ActionPair(doAction, undo));
-			modeController.getActionFactory().endTransaction(
-					(String) getValue(NAME));
 		}
 
 	}
 
 	protected void execute(ActionPair pair) {
-		modeController.getActionFactory().executeAction(pair);
+		modeController.doTransaction(getShortDescription(), pair);
 	}
 
 	/*

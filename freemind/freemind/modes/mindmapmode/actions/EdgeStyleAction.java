@@ -54,15 +54,11 @@ public class EdgeStyleAction extends NodeGeneralAction implements NodeActorXml {
 	}
 
 	public void setEdgeStyle(MindMapNode node, String style) {
-		if(Tools.safeEquals(style, getStyle(node))) {
+		if (Tools.safeEquals(style, getStyle(node))) {
 			return;
 		}
-		modeController.getActionFactory().startTransaction(
-				(String) getValue(NAME));
-		modeController.getActionFactory().executeAction(
-				getActionPair(node, style));
-		modeController.getActionFactory().endTransaction(
-				(String) getValue(NAME));
+		modeController.doTransaction(
+				(String) getValue(NAME), getActionPair(node, style));
 
 	}
 

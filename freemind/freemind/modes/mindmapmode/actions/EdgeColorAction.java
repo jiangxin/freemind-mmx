@@ -69,11 +69,8 @@ public class EdgeColorAction extends AbstractAction implements ActorXml {
 				color);
 		EdgeColorFormatAction undoAction = createEdgeColorFormatAction(node,
 				((EdgeAdapter) node.getEdge()).getRealColor());
-		controller.getActionFactory().startTransaction(
-				this.getClass().getName());
-		controller.getActionFactory().executeAction(
+		controller.doTransaction(this.getClass().getName(),
 				new ActionPair(doAction, undoAction));
-		controller.getActionFactory().endTransaction(this.getClass().getName());
 
 	}
 

@@ -31,10 +31,8 @@ import java.net.Authenticator;
 import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
 import java.net.URL;
-import java.util.Collections;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.Vector;
 
 import javax.swing.JOptionPane;
 

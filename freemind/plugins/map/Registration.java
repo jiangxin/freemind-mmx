@@ -95,8 +95,8 @@ public class Registration implements HookRegistration, ActorXml,
 			}
 
 			public boolean accept(File pPathname) {
-				return pPathname.getName().endsWith(".tags") &&
-						pPathname.lastModified() <= mYoungestFileToAccept;
+				return pPathname.getName().endsWith(".tags")
+						&& pPathname.lastModified() <= mYoungestFileToAccept;
 			}
 		}
 
@@ -118,9 +118,9 @@ public class Registration implements HookRegistration, ActorXml,
 		 * @see java.util.TimerTask#run()
 		 */
 		public void run() {
-			// the jobs must not overtake themselves. 
+			// the jobs must not overtake themselves.
 			synchronized (mCachePurgerSemaphore) {
-				if(mCachePurgerSemaphore.getValue()>0) {
+				if (mCachePurgerSemaphore.getValue() > 0) {
 					return;
 				}
 				mCachePurgerSemaphore.setValue(1);
@@ -148,12 +148,13 @@ public class Registration implements HookRegistration, ActorXml,
 			logger.fine("Start purging for subdir " + pCacheDirectory);
 			File[] listTagFiles = pCacheDirectory.listFiles(new AgeFilter(
 					System.currentTimeMillis() - mCacheMaxAge));
-			if(listTagFiles == null) {
+			if (listTagFiles == null) {
 				return;
 			}
 			for (int i = 0; i < listTagFiles.length; i++) {
 				File tagFile = listTagFiles[i];
-				File imageFile = new File(tagFile.getPath().replace(".tags", ".png"));
+				File imageFile = new File(tagFile.getPath().replace(".tags",
+						".png"));
 				try {
 					logger.finest("Deleting " + tagFile);
 					logger.finest("Deleting " + imageFile);
@@ -199,7 +200,7 @@ public class Registration implements HookRegistration, ActorXml,
 	private static Boolean sTimerSemaphore = new Boolean(false);
 
 	private IntHolder mCachePurgerSemaphore = new IntHolder(0);
-	
+
 	private static final class MapDialogPropertyContributor implements
 			FreemindPropertyContributor {
 
@@ -233,7 +234,7 @@ public class Registration implements HookRegistration, ActorXml,
 		mTileController = new TileController(mTileSource, mTileCache, this);
 		mTileController.setTileLoader(createTileLoader(this));
 		mOptionContributor = new MapDialogPropertyContributor(this.controller);
-		
+
 		synchronized (sTimerSemaphore) {
 			if (sTimer == null) {
 				// only once in the system
@@ -409,9 +410,8 @@ public class Registration implements HookRegistration, ActorXml,
 				pHolder.getPosition(), pHolder.getMapCenter(),
 				pHolder.getZoom(), pHolder.getTileSource());
 		ActionFactory actionFactory = controller.getActionFactory();
-		actionFactory.startTransaction(PLUGINS_MAP_NODE_POSITION);
-		actionFactory.executeAction(new ActionPair(doAction, undoAction));
-		actionFactory.endTransaction(PLUGINS_MAP_NODE_POSITION);
+		actionFactory.doTransaction(PLUGINS_MAP_NODE_POSITION, new ActionPair(
+				doAction, undoAction));
 	}
 
 	/**

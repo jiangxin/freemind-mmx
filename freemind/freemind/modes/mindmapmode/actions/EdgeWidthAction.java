@@ -51,15 +51,11 @@ public class EdgeWidthAction extends NodeGeneralAction implements NodeActorXml {
 	}
 
 	public void setEdgeWidth(MindMapNode node, int width) {
-		if(width == getWidth(node)) {
+		if (width == getWidth(node)) {
 			return;
 		}
-		modeController.getActionFactory().startTransaction(
-				(String) getValue(NAME));
-		modeController.getActionFactory().executeAction(
-				getActionPair(node, width));
-		modeController.getActionFactory().endTransaction(
-				(String) getValue(NAME));
+		modeController.doTransaction(
+				(String) getValue(NAME), getActionPair(node, width));
 
 	}
 

@@ -297,8 +297,6 @@ public class EditAction extends AbstractAction implements ActorXml {
 	public void setNodeText(MindMapNode selected, String newText) {
 		String oldText = selected.toString();
 
-		mMindMapController.getActionFactory().startTransaction(
-				mMindMapController.getText("edit_node"));
 		EditNodeAction EditAction = new EditNodeAction();
 		EditAction.setNode(mMindMapController.getNodeID(selected));
 		EditAction.setText(newText);
@@ -307,11 +305,9 @@ public class EditAction extends AbstractAction implements ActorXml {
 		undoEditAction.setNode(mMindMapController.getNodeID(selected));
 		undoEditAction.setText(oldText);
 
-		mMindMapController.getActionFactory().executeAction(
+		mMindMapController.doTransaction(
+				mMindMapController.getText("edit_node"),
 				new ActionPair(EditAction, undoEditAction));
-		mMindMapController.getActionFactory().endTransaction(
-				mMindMapController.getText("edit_node"));
-
 	}
 
 	protected MindMapController getMindMapController() {

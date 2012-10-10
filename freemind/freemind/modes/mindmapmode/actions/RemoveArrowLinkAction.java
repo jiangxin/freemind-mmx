@@ -65,9 +65,7 @@ public class RemoveArrowLinkAction extends FreemindAction implements ActorXml {
 	}
 
 	public void removeReference(MindMapLink arrowLink) {
-		controller.getActionFactory().startTransaction((String) getValue(NAME));
-		controller.getActionFactory().executeAction(getActionPair(arrowLink));
-		controller.getActionFactory().endTransaction((String) getValue(NAME));
+		controller.doTransaction((String) getValue(NAME), getActionPair(arrowLink));
 	}
 
 	/**

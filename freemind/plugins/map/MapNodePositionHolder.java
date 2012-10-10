@@ -24,13 +24,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import javax.imageio.ImageIO;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
 
-import freemind.extensions.PermanentNodeHook;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLElement;

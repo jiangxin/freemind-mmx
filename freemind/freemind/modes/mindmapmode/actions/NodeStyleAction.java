@@ -63,13 +63,8 @@ public class NodeStyleAction extends NodeGeneralAction implements NodeActorXml,
 	}
 
 	public void setStyle(MindMapNode node, String style) {
-		modeController.getActionFactory().startTransaction(
-				(String) getValue(NAME));
-		modeController.getActionFactory().executeAction(
-				getActionPair(node, style));
-		modeController.getActionFactory().endTransaction(
-				(String) getValue(NAME));
-
+		modeController.doTransaction(
+				(String) getValue(NAME), getActionPair(node, style));
 	}
 
 	private ActionPair getActionPair(MindMapNode targetNode, String style) {

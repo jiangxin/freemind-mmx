@@ -29,7 +29,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.sql.ResultSet;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -52,6 +51,10 @@ import freemind.common.PropertyControl;
 import freemind.controller.Controller;
 import freemind.controller.MapModuleManager.MapTitleContributor;
 import freemind.controller.actions.generated.instance.CollaborationUserInformation;
+import freemind.controller.actions.generated.instance.CompoundAction;
+import freemind.controller.actions.generated.instance.HookNodeAction;
+import freemind.controller.actions.generated.instance.UndoXmlAction;
+import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
@@ -65,8 +68,16 @@ import freemind.view.MapModule;
 public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 		MapTitleContributor, FinalActionFilter {
 
-	public final static String SLAVE_HOOK_NAME = "plugins/collaboration/socket/socket_slave_plugin";
-	public final static String SLAVE_STARTER_NAME = "plugins/collaboration/socket/socket_slave_starter_plugin";
+	/**
+	 * 
+	 */
+	private static final String PLUGINS_COLLABORATION_SOCKET = "plugins/collaboration/socket/";
+	public final static String MASTER_HOOK_NAME = PLUGINS_COLLABORATION_SOCKET
+			+ "socket_master_plugin";
+	public final static String SLAVE_HOOK_NAME = PLUGINS_COLLABORATION_SOCKET
+			+ "socket_slave_plugin";
+	public final static String SLAVE_STARTER_NAME = PLUGINS_COLLABORATION_SOCKET
+			+ "socket_slave_starter_plugin";
 	protected static final Integer ROLE_MASTER = Integer.valueOf(0);
 	protected static final Integer ROLE_SLAVE = Integer.valueOf(1);
 	private static final String PORT_PROPERTY = "plugins.collaboration.socket.port";
@@ -90,14 +101,12 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 			+ ".port.description";
 
 	protected static final String TITLE = SOCKET_BASICS_CLASS + ".title";
-	protected static final String UNKNWON_HOST_EXCEPTION_MESSAGE = SOCKET_BASICS_CLASS + ".unknown_host_exception";
-	protected static final String CONNECT_EXCEPTION_MESSAGE = SOCKET_BASICS_CLASS + ".connection_exception";;
+	protected static final String UNKNWON_HOST_EXCEPTION_MESSAGE = SOCKET_BASICS_CLASS
+			+ ".unknown_host_exception";
+	protected static final String CONNECT_EXCEPTION_MESSAGE = SOCKET_BASICS_CLASS
+			+ ".connection_exception";;
 
 	protected static java.util.logging.Logger logger = null;
-
-	public interface ResultHandler {
-		void processResults(ResultSet rs);
-	}
 
 	protected String mPassword;
 	protected boolean mFilterEnabled = true;
@@ -291,32 +300,74 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	}
 
 	/**
+	 * @param pAction
+	 * @param pSearchString
+	 * @return
+	 */
+	private boolean visit(XmlAction pAction, String pSearchString) {
+		if (pAction instanceof CompoundAction) {
+			CompoundAction compound = (CompoundAction) pAction;
+			boolean result = false;
+			for (Iterator it = compound.getListChoiceList().iterator(); it.hasNext();) {
+				XmlAction action = (XmlAction) it.next();
+				result |= visit(action, pSearchString);
+			}
+			return result;
+		}
+		if (pAction instanceof UndoXmlAction) {
+			return pSearchString.isEmpty();
+		}
+		if (pAction instanceof HookNodeAction) {
+			HookNodeAction hookNodeAction = (HookNodeAction) pAction;
+			if (Tools.safeEquals(hookNodeAction.getHookName(), pSearchString)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Try to lock, send update package to master (perhaps, myself), execute
 	 * action and unlock
 	 */
 	public ActionPair filterAction(ActionPair pPair) {
 		if (pPair == null || !mFilterEnabled)
 			return pPair;
+		// Don't send any hook instantiations to others.
+		if(visit(pPair.getDoAction(), SocketConnectionHook.SLAVE_HOOK_NAME)) {
+			return pPair;
+		}
+		if(visit(pPair.getDoAction(), MindMapMaster.MASTER_HOOK_NAME)) {
+			return pPair;
+		}
+		// search for undo (little bad hack!)
+		if(visit(pPair.getDoAction(), "")) {
+			return pPair;
+		}
 		String doAction = getMindMapController().marshall(pPair.getDoAction());
 		String undoAction = getMindMapController().marshall(
 				pPair.getUndoAction());
 		try {
 			String lockId = lock(getUserName());
 			/*
-			 * If I am the client, the command returns to me before I continue
-			 * here.
+			 * Blocking broadcast call: Client: send to master (who broadcasts
+			 * the command afterwards), Master: send to all clients.
 			 */
 			broadcastCommand(doAction, undoAction, lockId);
 		} catch (UnableToGetLockException e) {
 			freemind.main.Resources.getInstance().logException(e);
-			return null;
+			return getEmptyActionPair();
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
-			return null;
+			return getEmptyActionPair();
 		} finally {
 			unlock();
 		}
 		return pPair;
+	}
+
+	public ActionPair getEmptyActionPair() {
+		return new ActionPair(new CompoundAction(), new CompoundAction());
 	}
 
 	protected static class UnableToGetLockException extends Exception {
@@ -354,14 +405,14 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	 */
 	protected abstract void unlock();
 
-	protected void deregisterFilter() {
-		logger.info("Deregistering filter");
-		getMindMapController().getActionFactory().deregisterFilter(this);
-	}
-
 	protected void registerFilter() {
 		logger.info("Registering filter");
 		getMindMapController().getActionFactory().registerFilter(this);
+	}
+
+	protected void deregisterFilter() {
+		logger.info("Deregistering filter");
+		getMindMapController().getActionFactory().deregisterFilter(this);
 	}
 
 	protected void executeTransaction(final ActionPair pair) {
@@ -369,12 +420,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 			public void run() {
 				mFilterEnabled = false;
 				try {
-					getMindMapController().getActionFactory().startTransaction(
-							"update");
-					getMindMapController().getActionFactory().executeAction(
-							pair);
-					getMindMapController().getActionFactory().endTransaction(
-							"update");
+					getMindMapController().doTransaction("update", pair);
 				} finally {
 					mFilterEnabled = true;
 				}

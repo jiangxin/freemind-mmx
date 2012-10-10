@@ -70,12 +70,8 @@ public class ToggleFoldedAction extends AbstractAction implements ActorXml {
 				CommonToggleFoldedAction.reset(listIterator), fold, false);
 		CompoundAction undoAction = createFoldAction(
 				CommonToggleFoldedAction.reset(listIterator), !fold, true);
-		modeController.getActionFactory().startTransaction(
-				(String) getValue(NAME));
-		modeController.getActionFactory().executeAction(
-				new ActionPair(doAction, undoAction));
-		modeController.getActionFactory().endTransaction(
-				(String) getValue(NAME));
+		modeController.doTransaction(
+				(String) getValue(NAME), new ActionPair(doAction, undoAction));
 	}
 
 	private CompoundAction createFoldAction(ListIterator iterator,
@@ -152,12 +148,8 @@ public class ToggleFoldedAction extends AbstractAction implements ActorXml {
 		if (doAction == null || undoAction == null) {
 			return;
 		}
-		modeController.getActionFactory().startTransaction(
-				(String) getValue(NAME));
-		modeController.getActionFactory().executeAction(
-				new ActionPair(doAction, undoAction));
-		modeController.getActionFactory().endTransaction(
-				(String) getValue(NAME));
+		modeController.doTransaction(
+				(String) getValue(NAME), new ActionPair(doAction, undoAction));
 	}
 
 }

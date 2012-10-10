@@ -93,12 +93,9 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 			undoAction = createHookNodeUndoAction(focussed, selecteds, hookName);
 		}
 		if (getInstanciationMethod(hookName).isUndoable()) {
-			getController().getActionFactory().startTransaction(
-					(String) getValue(NAME));
-			getController().getActionFactory().executeAction(
+			getController().doTransaction(
+					(String) getValue(NAME),
 					new ActionPair(doAction, undoAction));
-			getController().getActionFactory().endTransaction(
-					(String) getValue(NAME));
 		} else {
 			// direct invocation without undo and such stuff.
 			invoke(focussed, selecteds, hookName, null);
@@ -388,12 +385,8 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 			doAction = createHookNodeUndoAction(pFocussed, pSelecteds,
 					pHookName);
 		}
-		getController().getActionFactory().startTransaction(
-				(String) getValue(NAME));
-		getController().getActionFactory().executeAction(
-				new ActionPair(undoAction, doAction));
-		getController().getActionFactory().endTransaction(
-				(String) getValue(NAME));
+		getController().doTransaction(
+				(String) getValue(NAME), new ActionPair(undoAction, doAction));
 	}
 
 }

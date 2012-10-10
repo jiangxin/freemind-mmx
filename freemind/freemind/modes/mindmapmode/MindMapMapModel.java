@@ -48,7 +48,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import freemind.common.OptionalDontShowMeAgainDialog;

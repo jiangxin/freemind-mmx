@@ -121,10 +121,8 @@ public class CutAction extends AbstractAction implements ActorXml {
 
 		}
 		if (doAction.sizeChoiceList() > 0) {
-			mMindMapController.getActionFactory().startTransaction(text);
-			mMindMapController.getActionFactory().executeAction(
+			mMindMapController.doTransaction(text,
 					new ActionPair(doAction, undo));
-			mMindMapController.getActionFactory().endTransaction(text);
 		}
 		return totalCopy;
 	}

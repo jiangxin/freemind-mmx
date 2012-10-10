@@ -62,9 +62,8 @@ public class SetLinkByTextFieldAction extends FreemindAction implements
 	}
 
 	public void setLink(MindMapNode node, String link) {
-		controller.getActionFactory().startTransaction((String) getValue(NAME));
-		controller.getActionFactory().executeAction(getActionPair(node, link));
-		controller.getActionFactory().endTransaction((String) getValue(NAME));
+		controller.doTransaction((String) getValue(NAME),
+				getActionPair(node, link));
 	}
 
 	public void act(XmlAction action) {

@@ -214,4 +214,32 @@ public class ToolsTests extends FreeMindTestBase {
 		assertEquals(paper.getImageableY(), paper2.getImageableY(), 0d);
 	}
 	
+	private class A{
+		
+	}
+	private class B extends A {
+		
+	}
+	
+	private boolean visit(A pA) {
+		return true;
+	}
+	private boolean visit(B pA) {
+		return false;
+	}
+	/**
+	 * 
+	 */
+	public void testVisitor() {
+		A a = new A();
+		B b = new B();
+		A castedB = b;
+		assertTrue(visit(a));
+		assertFalse(visit(b));
+		/* 
+		 * I don't understand this: no polymorphism is applied to the call of visit in this case, as the visit(a) method
+		 * is called, although, a is of class B! If anybody can explain this to me, please write an email to me (chris).
+		 */
+		assertTrue(visit(castedB));
+	}
 }

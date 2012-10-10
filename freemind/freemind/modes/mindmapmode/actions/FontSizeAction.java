@@ -65,15 +65,11 @@ public class FontSizeAction extends NodeGeneralAction implements NodeActorXml {
 	/**
      */
 	public void setFontSize(MindMapNode node, String fontSizeValue) {
-		if(Tools.safeEquals(fontSizeValue, node.getFontSize())) {
+		if (Tools.safeEquals(fontSizeValue, node.getFontSize())) {
 			return;
 		}
-		modeController.getActionFactory().startTransaction(
-				(String) getValue(NAME));
-		modeController.getActionFactory().executeAction(
-				getActionPair(node, fontSizeValue));
-		modeController.getActionFactory().endTransaction(
-				(String) getValue(NAME));
+		modeController.doTransaction(
+				(String) getValue(NAME), getActionPair(node, fontSizeValue));
 
 	}
 

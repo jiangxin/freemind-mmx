@@ -51,10 +51,8 @@ public class ChangeArrowLinkEndPoints extends FreemindAction implements
 
 	public void setArrowLinkEndPoints(MindMapArrowLink link, Point startPoint,
 			Point endPoint) {
-		controller.getActionFactory().startTransaction((String) getValue(NAME));
-		controller.getActionFactory().executeAction(
+		controller.doTransaction((String) getValue(NAME),
 				getActionPair(link, startPoint, endPoint));
-		controller.getActionFactory().endTransaction((String) getValue(NAME));
 
 	}
 

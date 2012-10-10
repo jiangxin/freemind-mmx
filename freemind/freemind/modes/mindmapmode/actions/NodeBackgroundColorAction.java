@@ -88,11 +88,8 @@ public class NodeBackgroundColorAction extends FreemindAction implements
 				node, color);
 		NodeBackgroundColorFormatAction undoAction = createNodeBackgroundColorFormatAction(
 				node, node.getBackgroundColor());
-		controller.getActionFactory().startTransaction(
-				this.getClass().getName());
-		controller.getActionFactory().executeAction(
+		controller.doTransaction(this.getClass().getName(),
 				new ActionPair(doAction, undoAction));
-		controller.getActionFactory().endTransaction(this.getClass().getName());
 	}
 
 	public NodeBackgroundColorFormatAction createNodeBackgroundColorFormatAction(

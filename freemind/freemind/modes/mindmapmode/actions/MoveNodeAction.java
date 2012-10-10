@@ -89,12 +89,9 @@ public class MoveNodeAction extends NodeGeneralAction implements NodeActorXml {
 				&& hGap == node.getHGap() && shiftY == node.getShiftY()) {
 			return;
 		}
-		modeController.getActionFactory().startTransaction(
-				(String) getValue(NAME));
-		modeController.getActionFactory().executeAction(
+		modeController.doTransaction(
+				(String) getValue(NAME),
 				getActionPair(node, parentVGap, hGap, shiftY));
-		modeController.getActionFactory().endTransaction(
-				(String) getValue(NAME));
 	}
 
 }

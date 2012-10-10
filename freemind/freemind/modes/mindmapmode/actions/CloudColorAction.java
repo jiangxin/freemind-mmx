@@ -75,11 +75,8 @@ public class CloudColorAction extends FreemindAction implements ActorXml,
 		CloudColorXmlAction doAction = createCloudColorXmlAction(node, color);
 		CloudColorXmlAction undoAction = createCloudColorXmlAction(node,
 				(node.getCloud() == null) ? null : node.getCloud().getColor());
-		controller.getActionFactory().startTransaction(
-				this.getClass().getName());
-		controller.getActionFactory().executeAction(
+		controller.doTransaction(this.getClass().getName(),
 				new ActionPair(doAction, undoAction));
-		controller.getActionFactory().endTransaction(this.getClass().getName());
 	}
 
 	public CloudColorXmlAction createCloudColorXmlAction(MindMapNode node,

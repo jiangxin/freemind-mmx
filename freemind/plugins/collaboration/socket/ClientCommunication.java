@@ -24,16 +24,12 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
-import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import javax.swing.JOptionPane;
-
 import plugins.collaboration.socket.SocketBasics.UnableToGetLockException;
-import sun.security.util.DerEncoder;
 import freemind.controller.actions.generated.instance.CollaborationActionBase;
 import freemind.controller.actions.generated.instance.CollaborationGoodbye;
 import freemind.controller.actions.generated.instance.CollaborationHello;

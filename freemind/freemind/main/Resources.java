@@ -32,7 +32,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import tests.freemind.FreeMindMainMock;
-
 import freemind.common.NamedObject;
 import freemind.common.TextTranslator;
 import freemind.main.FreeMindMain.VersionInformation;

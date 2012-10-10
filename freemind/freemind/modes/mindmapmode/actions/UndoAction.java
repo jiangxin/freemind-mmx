@@ -122,8 +122,8 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
 		undoAction.setRemedia(redoActionString);
 
 		isUndoAction = true;
-		this.controller.getActionFactory().executeAction(
-				new ActionPair(undoAction, redoAction));
+		this.controller.doTransaction("CallUndo", new ActionPair(undoAction,
+				redoAction));
 		isUndoAction = false;
 	}
 
@@ -141,8 +141,8 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
 				.getDescription());
 		XmlAction redoAction = this.controller.unMarshall(undoAction
 				.getRemedia());
-		this.controller.getActionFactory().executeAction(
-				new ActionPair(doAction, redoAction));
+		this.controller.doTransaction("ExecuteUndo", new ActionPair(doAction,
+				redoAction));
 	}
 
 	public Class getDoActionClass() {

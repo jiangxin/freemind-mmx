@@ -96,14 +96,14 @@ public class ActionFactory {
 		registeredFilters.remove(newFilter);
 	}
 
-	public void startTransaction(String name) {
+	private void startTransaction(String name) {
 		for (Iterator i = registeredHandler.iterator(); i.hasNext();) {
 			ActionHandler handler = (ActionHandler) i.next();
 			handler.startTransaction(name);
 		}
 	}
 
-	public void endTransaction(String name) {
+	private void endTransaction(String name) {
 		for (Iterator i = registeredHandler.iterator(); i.hasNext();) {
 			ActionHandler handler = (ActionHandler) i.next();
 			handler.endTransaction(name);
@@ -111,10 +111,20 @@ public class ActionFactory {
 	}
 
 	/**
+	 * @return see {@link #executeAction(ActionPair)}
+	 */
+	public boolean doTransaction(String pName, ActionPair pPair) {
+		this.startTransaction(pName);
+		boolean result = this.executeAction(pPair);
+		this.endTransaction(pName);
+		return result;
+	}
+	
+	/**
 	 * @return the success of the action. If an exception arises, the method
 	 *         returns false.
 	 */
-	public boolean executeAction(ActionPair pair) {
+	private boolean executeAction(ActionPair pair) {
 		if (pair == null)
 			return false;
 		boolean returnValue = true;

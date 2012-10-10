@@ -150,12 +150,8 @@ public class AddArrowLinkAction extends FreemindAction implements ActorXml {
 	 * target.
 	 */
 	public void addLink(MindMapNode source, MindMapNode target) {
-		modeController.getActionFactory().startTransaction(
-				(String) getValue(NAME));
-		modeController.getActionFactory().executeAction(
-				getActionPair(source, target));
-		modeController.getActionFactory().endTransaction(
-				(String) getValue(NAME));
+		modeController.doTransaction(
+				(String) getValue(NAME), getActionPair(source, target));
 	}
 
 	/**

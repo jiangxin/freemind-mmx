@@ -60,12 +60,9 @@ public class ChangeRootNode extends MindMapNodeHookAdapter {
 		MindMapNode focussed = getMindMapController().getSelected();
 		MindMapNode rootNode = getMindMapController().getRootNode();
 
-		getMindMapController().getActionFactory().startTransaction(
-				TRANSACTION_NAME);
-		getMindMapController().getActionFactory().executeAction(
+		getMindMapController().doTransaction(
+				TRANSACTION_NAME,
 				new ActionPair(getAction(focussed), getAction(rootNode)));
-		getMindMapController().getActionFactory().endTransaction(
-				TRANSACTION_NAME);
 
 	};
 
