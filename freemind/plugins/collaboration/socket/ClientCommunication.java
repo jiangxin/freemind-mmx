@@ -173,11 +173,15 @@ public class ClientCommunication extends CommunicationBase {
 			// be sent over the wire.
 			mSocketConnectionHook.deregisterFilter();
 			// Terminates socket by shutdownHook.
-			SocketBasics.togglePermanentHook(getMindMapController());
+			toggleHook();
 		} else {
 			// Terminate socket.
 			shutdown();
 		}
+	}
+
+	public void toggleHook() {
+		SocketBasics.togglePermanentHook(getMindMapController(), SocketBasics.SLAVE_HOOK_LABEL);
 	}
 
 	/**
@@ -231,7 +235,7 @@ public class ClientCommunication extends CommunicationBase {
 					newModel);
 			setController(newModeController);
 			// add new hook
-			SocketBasics.togglePermanentHook(getMindMapController());
+			toggleHook();
 			// tell him about this thread.
 			Collection activatedHooks = getMindMapController().getRootNode()
 					.getActivatedHooks();

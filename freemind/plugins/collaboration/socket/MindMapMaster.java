@@ -29,6 +29,8 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.util.Vector;
 
+import javax.swing.SwingUtilities;
+
 import freemind.common.NumberProperty;
 import freemind.common.StringProperty;
 import freemind.controller.actions.generated.instance.CollaborationGoodbye;
@@ -62,6 +64,7 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 	private String mLockId;
 	private long mLockedAt;
 	private String mLockUserName;
+	private boolean mMasterStarted;
 
 	private class MasterThread extends TerminateableThread {
 
@@ -147,7 +150,7 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 		// Restart check, as the startup command is given, even if the mindmap
 		// is changed via
 		// the tab bar. So, this method must be idempotent...
-		if (mListener != null) {
+		if (mMasterStarted) {
 			// we were already here, so
 			return;
 		}
@@ -172,13 +175,16 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 						passwordProperty2.getValue());
 			}
 		});
-		if (!dialog.isSuccess())
+		if (!dialog.isSuccess()) {
+			switchMeOff();
 			return;
+		}
 		/* Store port value in preferences. */
 		setPortProperty(portProperty);
 		mPassword = passwordProperty.getValue();
 		// start server:
 		logger.info("Start server...");
+		mMasterStarted = true;
 		try {
 			mPort = getPortProperty().getIntValue();
 			mServer = new ServerSocket(mPort);
@@ -192,14 +198,23 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 							SOCKET_CREATION_EXCEPTION_MESSAGE,
 							new Object[] { portProperty.getValue(),
 									e.getMessage() }));
-			if (mListener != null) {
-				mListener.commitSuicide();
-			}
-			throw new IllegalArgumentException("Socket creation error");
+			switchMeOff();
+			return;
 		}
 		registerFilter();
 		logger.info("Starting server. Done.");
 		setTitle();
+	}
+
+	public void switchMeOff() {
+		final MindMapController mindMapController = getMindMapController();
+		// this is not nice, but in the starting phase of the hook, it can't be switched off.
+		SwingUtilities.invokeLater(new Runnable() {
+
+			public void run() {
+				togglePermanentHook(mindMapController, MASTER_HOOK_LABEL);
+				
+			}});
 	}
 
 	public void loadFrom(XMLElement pChild) {
@@ -224,6 +239,7 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 		} catch (IOException e) {
 			freemind.main.Resources.getInstance().logException(e);
 		}
+		mMasterStarted = false;
 		super.shutdownMapHook();
 	}
 

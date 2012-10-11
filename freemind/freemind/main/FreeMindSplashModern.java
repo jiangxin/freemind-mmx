@@ -79,8 +79,9 @@ public class FreeMindSplashModern extends JFrame implements IFreeMindSplash {
 			});
 			logger.info("Beginnig task:" + messageId);
 			lastTaskId = messageId;
-			// make it the top most window.
-			FreeMindSplashModern.this.toFront();
+			// this is not nice, as other windows are probably more important!
+//			// make it the top most window.
+//			FreeMindSplashModern.this.toFront();
 		}
 
 		public int getActualValue() {
