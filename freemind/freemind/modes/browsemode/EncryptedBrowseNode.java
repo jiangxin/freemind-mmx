@@ -19,7 +19,7 @@
  *
  * Created on 10.01.2006
  */
-/* $Id: EncryptedBrowseNode.java,v 1.1.2.1.2.9 2008/12/09 21:09:43 christianfoltin Exp $ */
+
 package freemind.modes.browsemode;
 
 import java.io.IOException;

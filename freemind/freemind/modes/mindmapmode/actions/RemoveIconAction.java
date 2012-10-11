@@ -19,7 +19,7 @@
  *
  * Created on 29.09.2004
  */
-/* $Id: RemoveIconAction.java,v 1.1.2.3 2008/04/10 20:49:21 dpolivaev Exp $ */
+
 
 package freemind.modes.mindmapmode.actions;
 

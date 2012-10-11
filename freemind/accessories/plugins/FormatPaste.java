@@ -19,7 +19,7 @@
  *
  * Created on 06.10.2004
  */
-/* $Id: FormatPaste.java,v 1.1.4.4.2.2 2006/07/25 20:28:19 christianfoltin Exp $ */
+
 
 package accessories.plugins;
 

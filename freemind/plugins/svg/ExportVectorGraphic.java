@@ -19,7 +19,7 @@
  *
  * Created on 10.11.2004
  */
-/* $Id: ExportVectorGraphic.java,v 1.1.4.3.2.11 2009/07/04 20:38:27 christianfoltin Exp $ */
+
 package plugins.svg;
 
 //import java.awt.BasicStroke;

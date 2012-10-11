@@ -19,7 +19,7 @@
  *
  * Created on 06.10.2004
  */
-/* $Id: CloudAction.java,v 1.1.2.2.2.5 2008/03/14 21:15:23 christianfoltin Exp $ */
+
 
 package freemind.modes.mindmapmode.actions;
 

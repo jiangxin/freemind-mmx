@@ -19,7 +19,7 @@
  *
  * Created on 31.01.2006
  */
-/* $Id: PersistentEditableComboBox.java,v 1.1.2.2.2.1 2006/04/05 21:26:27 dpolivaev Exp $ */
+
 package freemind.modes.common.dialogs;
 
 import java.awt.event.ActionEvent;

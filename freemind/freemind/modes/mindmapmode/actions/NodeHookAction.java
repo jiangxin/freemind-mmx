@@ -19,7 +19,7 @@
  *
  * Created on 26.07.2004
  */
-/* $Id: NodeHookAction.java,v 1.1.2.2.2.6 2008/01/13 20:55:35 christianfoltin Exp $ */
+
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;

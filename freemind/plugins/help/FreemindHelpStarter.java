@@ -19,7 +19,7 @@
  *
  * Created on 29.08.2004
  */
-/* $Id: FreemindHelpStarter.java,v 1.1.4.1.16.3 2006/11/26 10:21:30 dpolivaev Exp $ */
+
 
 package plugins.help;
 

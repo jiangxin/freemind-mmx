@@ -19,7 +19,7 @@
  *
  * Created on 21.08.2004
  */
-/* $Id: NodeUpAction.java,v 1.1.2.2.2.4 2009/05/16 20:26:13 christianfoltin Exp $ */
+
 
 package freemind.modes.mindmapmode.actions;
 

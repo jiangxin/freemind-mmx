@@ -16,7 +16,7 @@
  * this program; if not, write to the Free Software Foundation, Inc., 59 Temple
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
-/* $Id: EncryptedMindMapNode.java,v 1.1.2.11.2.18 2011/01/09 21:03:13 christianfoltin Exp $ */
+
 
 package freemind.modes.mindmapmode;
 

@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: EnterPasswordDialog.java,v 1.1.2.1.2.4 2009/09/23 19:21:49 christianfoltin Exp $ */
+
 
 package freemind.modes.common.dialogs;
 

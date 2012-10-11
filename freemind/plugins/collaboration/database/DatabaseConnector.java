@@ -19,7 +19,7 @@
  *
  * Created on 28.12.2008
  */
-/* $Id: DatabaseConnector.java,v 1.1.2.4 2009/02/05 22:12:37 christianfoltin Exp $ */
+
 
 package plugins.collaboration.database;
 

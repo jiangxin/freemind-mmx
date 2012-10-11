@@ -19,7 +19,7 @@
  *
  * Created on 01.11.2004
  */
-/* $Id: ExportPdf.java,v 1.1.4.2.2.6 2008/03/22 16:45:24 christianfoltin Exp $ */
+
 
 package plugins.svg;
 

@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/* $Id: ActionFactory.java,v 1.1.2.2.2.10 2009/11/28 21:34:18 christianfoltin Exp $ */
+
 
 package freemind.modes.mindmapmode.actions.xml;
 

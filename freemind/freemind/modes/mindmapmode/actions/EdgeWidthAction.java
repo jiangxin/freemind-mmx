@@ -20,7 +20,7 @@
  * 
  * Created on 05.10.2004
  */
-/* $Id: EdgeWidthAction.java,v 1.1.2.2.2.2 2007/08/17 20:41:57 christianfoltin Exp $ */
+
 
 package freemind.modes.mindmapmode.actions;
 

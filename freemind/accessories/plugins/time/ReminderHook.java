@@ -19,7 +19,7 @@
  *
  * Created on 11.01.2006
  */
-/* $Id: ReminderHook.java,v 1.1.2.1 2007/01/03 23:47:43 christianfoltin Exp $ */
+
 package accessories.plugins.time;
 
 import freemind.modes.MindMapNode;

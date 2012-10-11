@@ -20,7 +20,7 @@
  * 
  * Created on 05.10.2004
  */
-/* $Id: NodeStyleAction.java,v 1.1.2.2.2.7 2008/05/13 18:58:10 christianfoltin Exp $ */
+
 
 package freemind.modes.mindmapmode.actions;
 

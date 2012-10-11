@@ -19,7 +19,7 @@
  *
  * Created on 11.11.2010
  */
-/* $Id: JumpLastEditLocation.java,v 1.1.4.3.2.3 2007/08/12 08:03:07 dpolivaev Exp $ */
+
 package accessories.plugins;
 
 import java.util.Iterator;

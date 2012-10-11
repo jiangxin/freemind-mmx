@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/* $Id: PrintActionHandler.java,v 1.1.2.1.2.4 2009/06/29 17:22:30 christianfoltin Exp $ */
+
 
 package freemind.modes.mindmapmode.actions.xml;
 

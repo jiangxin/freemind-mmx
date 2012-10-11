@@ -19,7 +19,7 @@
  *
  * Created on 10.05.2005
  */
-/* $Id: FreemindPropertyListener.java,v 1.1.2.3.2.1 2006/04/05 21:26:31 dpolivaev Exp $ */
+
 package freemind.preferences;
 
 /**

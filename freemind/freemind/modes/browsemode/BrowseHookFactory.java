@@ -19,7 +19,7 @@
  *
  * Created on 31.12.2005
  */
-/* $Id: BrowseHookFactory.java,v 1.1.2.1.2.2 2006/10/10 18:51:53 christianfoltin Exp $ */
+
 package freemind.modes.browsemode;
 
 import java.util.List;
