@@ -80,38 +80,11 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 
 	protected HashMap /* source -> vector of links with same source */SourceToLinks = new HashMap();
 
-	/** State parent interface. */
-	public interface ID_BasicState {
-		/** Returns null for many states. */
-		public String getID();
-
-		public String toString();
-	};
-
-	/**
-	 * This state interface expresses the state that a node is blank (i.e.
-	 * without an id, normal state).
-	 */
-	public interface ID_Blank extends ID_BasicState {
-	};
-
-	/**
-	 * This state interface expresses the state that a node has an ID, but is
-	 * abstract.
-	 */
-	public interface ID_UsedState extends ID_BasicState {
-		public MindMapNode getTarget();
-	};
-
-	/** This state interface expresses the state that a node has an ID. */
-	public interface ID_Registered extends ID_UsedState {
-	};
-
 	// //////////////////////////////////////////////////////////////////////////////////////
 	// // State Model /////
 	// //////////////////////////////////////////////////////////////////////////////////////
 	/** State parent interface. */
-	public class ID_BasicStateAdapter implements ID_BasicState {
+	public class ID_BasicState {
 		protected String ID;
 
 		/** Returns null for many states. */
@@ -128,41 +101,38 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 	 * This state interface expresses the state that a node is blank (i.e.
 	 * without an id, normal state).
 	 */
-	public class ID_BlankAdapter extends ID_BasicStateAdapter implements
-			ID_Blank {
+	public class ID_BlankAdapter extends ID_BasicState {
 	};
 
 	/**
 	 * This state interface expresses the state that a node has an ID, but is
 	 * abstract.
 	 */
-	protected abstract class ID_UsedStateAdapter extends ID_BasicStateAdapter
-			implements ID_UsedState {
+	protected abstract class ID_UsedState extends ID_BasicState {
 		protected MindMapNode target;
 
 		public MindMapNode getTarget() {
 			return this.target;
 		};
 
-		public ID_UsedStateAdapter(MindMapNode target, String ID) {
+		public ID_UsedState(MindMapNode target, String ID) {
 			this.target = target;
 			this.ID = ID;
 		};
 
 		/** For cloning. */
-		protected ID_UsedStateAdapter() {
+		protected ID_UsedState() {
 		};
 
-		protected void clone(ID_UsedStateAdapter state) {
+		protected void clone(ID_UsedState state) {
 			this.target = state.target;
 			this.ID = state.ID;
 		}
 	};
 
 	/** This state interface expresses the state that a node has an ID. */
-	protected class ID_RegisteredAdapter extends ID_UsedStateAdapter implements
-			ID_Registered {
-		public ID_RegisteredAdapter(MindMapNode target, String ID) {
+	protected class ID_Registered extends ID_UsedState {
+		public ID_Registered(MindMapNode target, String ID) {
 			super(target, ID);
 		};
 
@@ -170,14 +140,6 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 		// clone(adapter);
 		// };
 	};
-
-	// /** This state interface expresses the state that a node was recently
-	// cutted and waits to be inserted at another place.
-	// After inserting the states changes to ID_Registered.
-	// */
-	// public class ID_PendingAdapter extends ID_UsedStateAdapter implements
-	// ID_Pending {
-	// };
 
 	// //////////////////////////////////////////////////////////////////////////////////////
 	// // Attributes /////
@@ -188,27 +150,25 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 	protected HashMap /* id -> vector of links whose TargetToID.get(target) == id. */IDToLinks;
 	protected HashMap /* id -> link */IDToLink;
 	protected HashSet /* id */mLocallyLinkedIDs;
-	/** The map the registry belongs to. */
-	// protected MindMap map;
 
-	// Logging: for applets the logging must be anonymously. This will be
-	// generalized later. fc, 22.12.2003.
-	private static java.util.logging.Logger logger = java.util.logging.Logger
-			.getAnonymousLogger(); // getLogger("freemind.modes.LinkRegistryAdapter");
 	// bug fix from Dimitri.
 	protected static Random ran = new Random();
 
+	protected static java.util.logging.Logger logger = null;
+	
 	// //////////////////////////////////////////////////////////////////////////////////////
 	// // Methods /////
 	// //////////////////////////////////////////////////////////////////////////////////////
 	public LinkRegistryAdapter(/* MindMap map */) {
-		// this.map = map;
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
 		TargetToID = new HashMap();
 		IDToTarget = new HashMap();
 		IDToLinks = new HashMap();
 		IDToLink = new HashMap();
 		mLocallyLinkedIDs = new HashSet();
-		// logger.fine("New Registry");
 	};
 
 	public String generateUniqueID(String proposedID) {
@@ -269,7 +229,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 		}
 		// generate new id:
 		String newID = generateUniqueID(proposedID);
-		ID_Registered state = new ID_RegisteredAdapter(target, newID);
+		ID_Registered state = new ID_Registered(target, newID);
 		TargetToID.put(target, state);
 		IDToTarget.put(newID, target);
 
