@@ -19,7 +19,7 @@
  *
  * Created on 09.05.2004
  */
-/* $Id: CutAction.java,v 1.1.2.2.2.13 2008/12/09 21:09:43 christianfoltin Exp $ */
+
 
 package freemind.modes.mindmapmode.actions;
 

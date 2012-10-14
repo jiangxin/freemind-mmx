@@ -19,7 +19,7 @@
  *
  * Created on 07.10.2004
  */
-/* $Id: AddLocalLinkAction.java,v 1.1.2.1.2.3 2008/02/20 20:54:05 christianfoltin Exp $ */
+
 
 package freemind.modes.mindmapmode.actions;
 

@@ -19,7 +19,7 @@
  *
  * Created on 25.02.2006
  */
-/* $Id: StylePatternFrame.java,v 1.1.2.10.2.9 2008/04/11 16:58:32 christianfoltin Exp $ */
+
 package freemind.modes.mindmapmode.dialogs;
 
 import java.awt.BorderLayout;

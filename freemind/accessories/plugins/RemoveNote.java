@@ -19,7 +19,7 @@
  *
  * Created on 06.10.2004
  */
-/* $Id: RemoveNote.java,v 1.1.2.4 2008/04/12 20:11:37 christianfoltin Exp $ */
+
 
 package accessories.plugins;
 

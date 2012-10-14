@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeManagement.java,v 1.1.2.7 2008/03/26 21:25:35 christianfoltin Exp $ */
+
 package accessories.plugins.time;
 
 import java.awt.Container;

@@ -19,7 +19,7 @@
  *
  * Created on 11.11.2005
  */
-/* $Id: CommonMouseMotionManager.java,v 1.1.2.1.2.3 2007/04/21 15:11:21 dpolivaev Exp $ */
+
 package freemind.modes.common.listeners;
 
 import java.awt.Rectangle;

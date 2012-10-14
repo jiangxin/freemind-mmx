@@ -19,7 +19,7 @@
  *
  * Created on 06.05.2005
  */
-/* $Id: OptionPanel.java,v 1.1.2.25.2.57 2010/02/27 21:27:14 christianfoltin Exp $ */
+
 package freemind.preferences.layout;
 
 import java.awt.BorderLayout;

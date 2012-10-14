@@ -19,7 +19,7 @@
  *
  * Created on 16.10.2004
  */
-/* $Id: GotoLinkNodeAction.java,v 1.1.2.1.2.2 2008/01/09 21:31:15 christianfoltin Exp $ */
+
 
 package freemind.modes.common;
 

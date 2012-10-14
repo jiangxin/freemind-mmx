@@ -19,7 +19,7 @@
  *
  * Created on 06.02.2005
  */
-/* $Id: ReminderHookBase.java,v 1.1.2.1.2.5 2008/08/05 20:29:18 christianfoltin Exp $ */
+
 package freemind.modes.common.plugins;
 
 import java.text.MessageFormat;

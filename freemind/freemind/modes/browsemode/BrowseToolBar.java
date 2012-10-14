@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseToolBar.java,v 1.6.18.2.2.5 2007/08/05 10:29:07 dpolivaev Exp $ */
+
 
 package freemind.modes.browsemode;
 

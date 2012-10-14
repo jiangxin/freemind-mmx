@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: MapAdapter.java,v 1.24.14.10.2.29 2010/01/25 20:17:59 christianfoltin Exp $ */
+
 
 package freemind.modes;
 

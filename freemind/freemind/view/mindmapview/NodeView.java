@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: NodeView.java,v 1.27.14.22.2.70 2010/02/22 21:18:53 christianfoltin Exp $ */
+
 
 package freemind.view.mindmapview;
 

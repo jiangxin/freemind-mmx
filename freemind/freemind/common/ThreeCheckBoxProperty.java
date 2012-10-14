@@ -20,7 +20,7 @@
  * 
  * Created on 25.02.2006
  */
-/* $Id: ThreeCheckBoxProperty.java,v 1.1.2.1.2.5 2009/03/29 19:37:23 christianfoltin Exp $ */
+
 package freemind.common;
 
 import java.awt.event.ActionEvent;

@@ -19,7 +19,7 @@
  *
  * Created on 28.12.2008
  */
-/* $Id: DatabaseConnectionHook.java,v 1.1.2.1 2009/02/04 19:31:21 christianfoltin Exp $ */
+
 
 package plugins.collaboration.socket;
 

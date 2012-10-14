@@ -29,6 +29,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -65,9 +66,13 @@ public class ExportDialog extends JFrame {
 			if (!cancel) {
 				// System.out.println("voila, export methode");
 				xe = new XmlExporter();
-				xe.transForm(parent.xmlFile,
-						new File(parent.fieldXsltFileName.getText()), new File(
-								parent.fieldTargetFileName.getText()));
+				try {
+					xe.transForm(parent.xmlFile,
+							new File(parent.fieldXsltFileName.getText()), new File(
+									parent.fieldTargetFileName.getText()));
+				} catch (FileNotFoundException e1) {
+					freemind.main.Resources.getInstance().logException(e1);
+				}
 			}
 			// store values in preferences:
 			mController.getFrame().setProperty(

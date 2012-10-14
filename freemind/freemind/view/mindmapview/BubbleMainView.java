@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BubbleMainView.java,v 1.1.4.11 2008/10/18 20:09:43 christianfoltin Exp $ */
+
 package freemind.view.mindmapview;
 
 import java.awt.BasicStroke;

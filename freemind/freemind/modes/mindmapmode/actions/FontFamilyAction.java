@@ -19,7 +19,7 @@
  *
  * Created on 27.08.2004
  */
-/* $Id: FontFamilyAction.java,v 1.1.2.2.2.4 2008/03/14 21:15:24 christianfoltin Exp $ */
+
 
 package freemind.modes.mindmapmode.actions;
 

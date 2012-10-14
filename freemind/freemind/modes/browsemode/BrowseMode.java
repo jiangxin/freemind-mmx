@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: BrowseMode.java,v 1.8.18.3.2.7 2008/08/27 19:05:38 christianfoltin Exp $ */
+
 
 package freemind.modes.browsemode;
 

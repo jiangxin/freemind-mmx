@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: StylePattern.java,v 1.5.18.8.2.4 2007/09/13 20:33:06 christianfoltin Exp $ */
+
 
 package freemind.modes;
 

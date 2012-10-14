@@ -19,7 +19,7 @@
  * 
  * Created on 26.01.2006.
  */
-/* $Id: UsePlainTextAction.java,v 1.1.2.3 2007/08/07 20:09:24 christianfoltin Exp $ */
+
 package freemind.modes.mindmapmode.actions;
 
 import freemind.main.HtmlTools;

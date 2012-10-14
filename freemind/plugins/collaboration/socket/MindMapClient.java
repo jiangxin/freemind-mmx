@@ -19,7 +19,7 @@
  *
  * Created on 28.12.2008
  */
-/* $Id: DatabaseConnector.java,v 1.1.2.4 2009/02/05 22:12:37 christianfoltin Exp $ */
+
 
 package plugins.collaboration.socket;
 
@@ -45,10 +45,6 @@ public class MindMapClient extends SocketBasics {
 
 	private static final String HOST_PROPERTY = "plugins.collaboration.database.host";
 
-	/**
-     *
-     */
-
 	public void startupMapHook() {
 		super.startupMapHook();
 		MindMapController controller = getMindMapController();
@@ -60,14 +56,10 @@ public class MindMapClient extends SocketBasics {
 			SocketConnectionHook connectionHook = isConnected();
 			if (connectionHook != null) {
 				// I'm already present, so remove me.
-				logger.info("Deregister filter, so that the hook isn't reported to the database.");
-				ClientCommunication updateThread = connectionHook
-						.getClientCommunication();
+				logger.info("Deregister filter.");
 				connectionHook.deregisterFilter();
-				// TODO:REMOVE USER
-				// updateThread.removeUser();
 				logger.info("Shutting down the permanent hook.");
-				togglePermanentHook(controller);
+				togglePermanentHook(controller, SLAVE_HOOK_LABEL);
 				return;
 			}
 			// get last value

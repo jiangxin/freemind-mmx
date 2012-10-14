@@ -20,7 +20,7 @@
  * 
  * Created on 25.02.2006
  */
-/* $Id: DontShowNotificationProperty.java,v 1.1.2.1 2007/08/05 20:33:12 christianfoltin Exp $ */
+
 package freemind.common;
 
 public class DontShowNotificationProperty extends BooleanProperty {

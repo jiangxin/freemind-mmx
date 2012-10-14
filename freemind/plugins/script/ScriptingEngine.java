@@ -19,7 +19,7 @@
  *
  * Created on 02.09.2006
  */
-/* $Id: ScriptingEngine.java,v 1.1.2.22 2010/12/02 21:14:07 christianfoltin Exp $ */
+
 package plugins.script;
 
 import java.io.File;

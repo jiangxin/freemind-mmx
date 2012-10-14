@@ -19,7 +19,7 @@
  *
  * Created on 25.08.2004
  */
-/* $Id: NewPreviousSiblingAction.java,v 1.1.2.1.2.1 2006/04/05 21:26:28 dpolivaev Exp $ */
+
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
