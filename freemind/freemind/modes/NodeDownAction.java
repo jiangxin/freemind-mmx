@@ -19,7 +19,7 @@
  *
  * Created on 21.08.2004
  */
-/* $Id: NodeDownAction.java,v 1.1.4.3.2.1 2006/04/05 21:26:26 dpolivaev Exp $ */
+
 
 package freemind.modes;
 

@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2004
  */
-/* $Id: AbstractXmlAction.java,v 1.1.2.2.2.2 2006/07/25 20:28:29 christianfoltin Exp $ */
+
 
 package freemind.modes.mindmapmode.actions.xml;
 

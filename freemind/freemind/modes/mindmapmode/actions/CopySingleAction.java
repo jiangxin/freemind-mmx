@@ -19,7 +19,7 @@
  *
  * Created on 25.08.2004
  */
-/* $Id: CopySingleAction.java,v 1.1.2.1.2.5 2008/07/26 12:01:32 dpolivaev Exp $ */
+
 package freemind.modes.mindmapmode.actions;
 
 import java.awt.datatransfer.Transferable;

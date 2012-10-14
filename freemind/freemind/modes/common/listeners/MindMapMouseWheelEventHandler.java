@@ -19,7 +19,7 @@
  *
  * Created on 09.11.2005
  */
-/* $Id: MindMapMouseWheelEventHandler.java,v 1.1.2.5 2009/05/20 20:26:24 christianfoltin Exp $ */
+
 package freemind.modes.common.listeners;
 
 import java.awt.event.InputEvent;

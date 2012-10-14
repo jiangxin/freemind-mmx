@@ -20,7 +20,7 @@
  * 
  * Created on 25.08.2004
  */
-/* $Id: ItalicAction.java,v 1.1.2.2.2.4 2008/01/13 20:55:35 christianfoltin Exp $ */
+
 package freemind.modes.mindmapmode.actions;
 
 import javax.swing.Action;

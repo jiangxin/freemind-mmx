@@ -19,7 +19,7 @@
  *
  * Created on 01.11.2004
  */
-/* $Id: ExportSvg.java,v 1.1.4.1.16.5 2007/11/20 22:15:34 dpolivaev Exp $ */
+
 
 package plugins.svg;
 

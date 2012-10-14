@@ -64,7 +64,7 @@ public class SocketRegistration implements HookRegistration,
 		if (pAction instanceof NodeHookAction) {
 			NodeHookAction action = (NodeHookAction) pAction;
 			if (action.getHookName().equals(
-					MindMapClient.SLAVE_STARTER_NAME)) {
+					MindMapClient.SLAVE_STARTER_LABEL)) {
 				return isSlave();
 			}
 		}
@@ -103,7 +103,7 @@ public class SocketRegistration implements HookRegistration,
 		if (pAction instanceof NodeHookAction) {
 			NodeHookAction action = (NodeHookAction) pAction;
 			if (action.getHookName().equals(
-					MindMapClient.SLAVE_STARTER_NAME)) {
+					MindMapClient.SLAVE_STARTER_LABEL)) {
 				return !isMaster();
 			}
 		}

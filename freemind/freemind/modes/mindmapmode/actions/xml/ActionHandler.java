@@ -19,7 +19,7 @@
  *
  * Created on 24.04.2004
  */
-/* $Id: ActionHandler.java,v 1.1.2.1.2.3 2007/08/12 08:14:15 dpolivaev Exp $ */
+
 
 package freemind.modes.mindmapmode.actions.xml;
 

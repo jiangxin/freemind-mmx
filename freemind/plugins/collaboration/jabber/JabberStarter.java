@@ -19,7 +19,7 @@
  *
  * Created on 29.08.2004
  */
-/* $Id: JabberStarter.java,v 1.1.2.1.12.1 2006/04/05 21:26:32 dpolivaev Exp $ */
+
 
 package plugins.collaboration.jabber;
 

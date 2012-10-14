@@ -19,7 +19,7 @@
  *
  * Created on 28.12.2008
  */
-/* $Id: SocketBasics.java,v 1.1.2.4 2009/02/04 19:31:21 christianfoltin Exp $ */
+
 package plugins.collaboration.socket;
 
 import java.awt.BorderLayout;
@@ -72,11 +72,11 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	 * 
 	 */
 	private static final String PLUGINS_COLLABORATION_SOCKET = "plugins/collaboration/socket/";
-	public final static String MASTER_HOOK_NAME = PLUGINS_COLLABORATION_SOCKET
+	public final static String MASTER_HOOK_LABEL = PLUGINS_COLLABORATION_SOCKET
 			+ "socket_master_plugin";
-	public final static String SLAVE_HOOK_NAME = PLUGINS_COLLABORATION_SOCKET
+	public final static String SLAVE_HOOK_LABEL = PLUGINS_COLLABORATION_SOCKET
 			+ "socket_slave_plugin";
-	public final static String SLAVE_STARTER_NAME = PLUGINS_COLLABORATION_SOCKET
+	public final static String SLAVE_STARTER_LABEL = PLUGINS_COLLABORATION_SOCKET
 			+ "socket_slave_starter_plugin";
 	protected static final Integer ROLE_MASTER = Integer.valueOf(0);
 	protected static final Integer ROLE_SLAVE = Integer.valueOf(1);
@@ -141,10 +141,11 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 		super.shutdownMapHook();
 	}
 
-	protected static void togglePermanentHook(MindMapController controller) {
+	public static void togglePermanentHook(MindMapController controller,
+			final String hookName) {
 		MindMapNode rootNode = controller.getRootNode();
 		List selecteds = Arrays.asList(new MindMapNode[] { rootNode });
-		controller.addHook(rootNode, selecteds, SLAVE_HOOK_NAME);
+		controller.addHook(rootNode, selecteds, hookName);
 	}
 
 	protected void setPortProperty(final NumberProperty portProperty) {
@@ -337,10 +338,10 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 		if (pPair == null || !mFilterEnabled)
 			return pPair;
 		// Don't send any hook instantiations to others.
-		if (visit(pPair.getDoAction(), SocketConnectionHook.SLAVE_HOOK_NAME)) {
+		if (visit(pPair.getDoAction(), SocketConnectionHook.SLAVE_HOOK_LABEL)) {
 			return pPair;
 		}
-		if (visit(pPair.getDoAction(), MindMapMaster.MASTER_HOOK_NAME)) {
+		if (visit(pPair.getDoAction(), MindMapMaster.MASTER_HOOK_LABEL)) {
 			return pPair;
 		}
 		// search for undo (little bad hack!)

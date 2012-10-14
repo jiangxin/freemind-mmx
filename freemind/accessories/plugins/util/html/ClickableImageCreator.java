@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: ClickableImageCreator.java,v 1.1.2.1.12.7 2010/12/04 18:55:03 christianfoltin Exp $ */
+
 
 package accessories.plugins.util.html;
 

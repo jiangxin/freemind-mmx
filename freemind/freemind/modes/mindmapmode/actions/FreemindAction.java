@@ -19,7 +19,7 @@
  *
  * Created on 19.07.2004
  */
-/* $Id: FreemindAction.java,v 1.1.2.1.2.3 2008/01/04 22:52:30 christianfoltin Exp $ */
+
 
 package freemind.modes.mindmapmode.actions;
 

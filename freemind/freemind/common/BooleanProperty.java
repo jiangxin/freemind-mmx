@@ -20,7 +20,7 @@
  * 
  * Created on 25.02.2006
  */
-/* $Id: BooleanProperty.java,v 1.1.2.3.2.3 2009/12/05 23:21:32 christianfoltin Exp $ */
+
 package freemind.common;
 
 import java.awt.event.ItemEvent;

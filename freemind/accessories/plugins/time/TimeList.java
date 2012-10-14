@@ -19,7 +19,7 @@
  *
  * Created on 04.02.2005
  */
-/* $Id: TimeList.java,v 1.1.2.6 2008/12/09 21:09:43 christianfoltin Exp $ */
+
 package accessories.plugins.time;
 
 import java.awt.Container;

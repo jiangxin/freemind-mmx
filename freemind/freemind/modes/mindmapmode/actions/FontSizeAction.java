@@ -19,7 +19,7 @@
  *
  * Created on 27.08.2004
  */
-/* $Id: FontSizeAction.java,v 1.1.2.2.2.3 2006/10/10 18:51:53 christianfoltin Exp $ */
+
 
 package freemind.modes.mindmapmode.actions;
 

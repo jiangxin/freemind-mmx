@@ -16,7 +16,7 @@
  *along with this program; if not, write to the Free Software
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
-/* $Id: EncryptNode.java,v 1.1.2.8.2.7 2008/05/01 12:41:42 christianfoltin Exp $ */
+
 
 /*
  * Created on 14.12.2004

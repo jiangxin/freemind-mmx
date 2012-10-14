@@ -19,7 +19,7 @@
  *
  * Created on 02.05.2005
  */
-/* $Id: RemoveReminderHook.java,v 1.1.2.2 2009/02/04 19:31:21 christianfoltin Exp $ */
+
 package accessories.plugins.time;
 
 import java.util.Arrays;

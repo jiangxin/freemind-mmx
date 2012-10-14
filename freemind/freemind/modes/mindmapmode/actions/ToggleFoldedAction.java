@@ -19,7 +19,7 @@
  *
  * Created on 12.08.2004
  */
-/* $Id: ToggleFoldedAction.java,v 1.1.2.2.2.3 2008/04/12 21:46:04 christianfoltin Exp $ */
+
 
 package freemind.modes.mindmapmode.actions;
 

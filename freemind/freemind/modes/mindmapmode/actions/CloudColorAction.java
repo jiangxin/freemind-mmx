@@ -20,7 +20,7 @@
  * 
  * Created on 19.09.2004
  */
-/* $Id: CloudColorAction.java,v 1.1.2.2 2006/02/15 21:18:45 christianfoltin Exp $ */
+
 
 package freemind.modes.mindmapmode.actions;
 

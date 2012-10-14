@@ -19,7 +19,7 @@
  *
  * Created on 25.08.2004
  */
-/* $Id: ActionFilter.java,v 1.1.2.1.2.3 2009/02/04 19:31:21 christianfoltin Exp $ */
+
 package freemind.modes.mindmapmode.actions.xml;
 
 /**

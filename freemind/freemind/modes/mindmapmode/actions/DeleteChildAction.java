@@ -19,7 +19,7 @@
  *
  * Created on 05.05.2004
  */
-/* $Id: DeleteChildAction.java,v 1.1.2.2.2.12 2009/09/23 19:21:49 christianfoltin Exp $ */
+
 
 package freemind.modes.mindmapmode.actions;
 

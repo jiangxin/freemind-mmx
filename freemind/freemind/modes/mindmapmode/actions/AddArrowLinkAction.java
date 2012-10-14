@@ -19,7 +19,7 @@
  *
  * Created on 07.10.2004
  */
-/* $Id: AddArrowLinkAction.java,v 1.1.2.2.2.2 2006/07/25 20:28:21 christianfoltin Exp $ */
+
 
 package freemind.modes.mindmapmode.actions;
 
