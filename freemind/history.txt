@@ -3,6 +3,7 @@ Changes made in FreeMind 1.0.0 Beta9
 ===============================
 * Fixed undo problem in collaboration mode
 * Fixed shutdown of clients and master.
+* Fixed export to directories with spaces under MacOSX (and probably other OS)
 
 ===============================
 Changes made in FreeMind 1.0.0 Beta8

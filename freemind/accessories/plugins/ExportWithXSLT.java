@@ -28,6 +28,7 @@ package accessories.plugins;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
@@ -336,11 +337,11 @@ public class ExportWithXSLT extends ExportHook {
 	}
 
 	public boolean transform(Source xmlSource, InputStream xsltStream,
-			File resultFile, String areaCode) {
+			File resultFile, String areaCode) throws FileNotFoundException {
 		// System.out.println("set xsl");
 		Source xsltSource = new StreamSource(xsltStream);
 		// System.out.println("set result");
-		Result result = new StreamResult(resultFile);
+		Result result = new StreamResult(new FileOutputStream(resultFile));
 
 		// create an instance of TransformerFactory
 		try {

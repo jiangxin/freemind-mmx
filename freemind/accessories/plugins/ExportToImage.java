@@ -25,6 +25,7 @@ package accessories.plugins;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -96,11 +97,11 @@ public class ExportToImage extends ExportHook {
 	}
 
 	public void transForm(Source xmlSource, InputStream xsltStream,
-			File resultFile, String areaCode) {
+			File resultFile, String areaCode) throws FileNotFoundException {
 		// System.out.println("set xsl");
 		Source xsltSource = new StreamSource(xsltStream);
 		// System.out.println("set result");
-		Result result = new StreamResult(resultFile);
+		Result result = new StreamResult(new FileOutputStream(resultFile));
 
 		// create an instance of TransformerFactory
 		try {
@@ -120,7 +121,6 @@ public class ExportToImage extends ExportHook {
 			// System.err.println("error applying the xslt file "+e);
 			freemind.main.Resources.getInstance().logException(e);
 		}
-		;
 		return;
 	}
 

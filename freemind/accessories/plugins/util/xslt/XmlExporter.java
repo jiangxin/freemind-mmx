@@ -26,6 +26,8 @@
 package accessories.plugins.util.xslt;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
@@ -44,13 +46,13 @@ public class XmlExporter {
 	public XmlExporter() {
 	}
 
-	public void transForm(File xmlFile, File xsltFile, File resultFile) {
+	public void transForm(File xmlFile, File xsltFile, File resultFile) throws FileNotFoundException {
 		// System.out.println("set source");
 		Source xmlSource = new StreamSource(xmlFile);
 		// System.out.println("set xsl");
 		Source xsltSource = new StreamSource(xsltFile);
 		// System.out.println("set result");
-		Result result = new StreamResult(resultFile);
+		Result result = new StreamResult(new FileOutputStream(resultFile));
 
 		// create an instance of TransformerFactory
 		try {
