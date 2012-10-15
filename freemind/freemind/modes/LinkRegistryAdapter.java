@@ -80,36 +80,23 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 
 	}
 
-	protected HashMap /* source -> vector of links with same source */SourceToLinks = new HashMap();
-
-	// //////////////////////////////////////////////////////////////////////////////////////
-	// // State Model /////
-	// //////////////////////////////////////////////////////////////////////////////////////
-	/** This state interface expresses the state that a node has an ID. */
-	protected class ID_Registered {
-		protected String ID;
-		
-		public String getID() {
-			return ID;
-		};
-		
-		public String toString() {
-			return "ID_Registered, ID=" + ((ID == null) ? "null" : ID);
-		};
-		public ID_Registered(String ID) {
-			this.ID = ID;
-		};
-	};
+	/** source -> vector of links with same source */
+	protected HashMap SourceToLinks = new HashMap();
 
 	// //////////////////////////////////////////////////////////////////////////////////////
 	// // Attributes /////
 	// //////////////////////////////////////////////////////////////////////////////////////
 
-	protected HashMap /* MindMapNode = Target -> ID_Registered. */TargetToID;
-	protected HashMap /* MindMapNode = ID_Registered -> ID. */IDToTarget;
-	protected HashMap /* id -> vector of links whose TargetToID.get(target) == id. */IDToLinks;
-	protected HashMap /* id -> link */IDToLink;
-	protected HashSet /* id */mLocallyLinkedIDs;
+	/** MindMapNode = Target -> ID. */
+	protected HashMap TargetToID;
+	/** MindMapNode-> ID. */
+	protected HashMap IDToTarget;
+	/** id -> vector of links whose TargetToID.get(target) == id. */
+	protected HashMap IDToLinks;
+	/** id -> link */
+	protected HashMap IDToLink;
+	/** id */
+	protected HashSet mLocallyLinkedIDs;
 
 	// bug fix from Dimitri.
 	protected static Random ran = new Random();
@@ -166,48 +153,46 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 	}
 
 	public String registerLinkTarget(MindMapNode pTarget, String pProposedID) {
-		return _registerLinkTarget(pTarget, pProposedID).getID();
+		return _registerLinkTarget(pTarget, pProposedID);
 	}
 
 	/**
 	 * The main method. Registeres a node with a new (or an existing) node-id.
-	 * If the state of the id is pending, then it is set to registered again.
 	 */
-	public ID_Registered _registerLinkTarget(MindMapNode target) {
+	public String _registerLinkTarget(MindMapNode target) {
 		return _registerLinkTarget(target, null);
 	}
 
-	public ID_Registered _registerLinkTarget(MindMapNode target,
-			String proposedID) {
+	public String _registerLinkTarget(MindMapNode target, String proposedID) {
 		// id already exists?
 		if (TargetToID.containsKey(target)) {
-			ID_Registered state = (ID_Registered) TargetToID.get(target);
-			if (state != null)
-				return state;
+			String id = (String) TargetToID.get(target);
+			if (id != null)
+				return id;
 			// blank state.
 			// is equal to no state.
 		}
 		// generate new id:
-		String newID = generateUniqueID(proposedID);
-		ID_Registered state = new ID_Registered(newID);
-		TargetToID.put(target, state);
-		IDToTarget.put(newID, target);
+		String newId = generateUniqueID(proposedID);
+		TargetToID.put(target, newId);
+		IDToTarget.put(newId, target);
 
 		// logger.fine("Register target node:"+target+", with ID="+newID);
-		getAssignedLinksVector(state);/*
-									 * This is to allocate the link target in
-									 * the IDToLinks map!.
-									 */
-		return state;
+		/*
+		 * This is to allocate the link target in
+		 * the IDToLinks map!.
+		 */
+		getAssignedLinksVector(newId);
+		return newId;
 	};
 
 	/**
 	 * @param node
 	 * @return null, if not registered.
 	 */
-	public ID_Registered getState(MindMapNode node) {
+	public String getState(MindMapNode node) {
 		if (TargetToID.containsKey(node))
-			return (ID_Registered) TargetToID.get(node);
+			return (String) TargetToID.get(node);
 		return null;
 	};
 
@@ -217,8 +202,8 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 	}
 
 	private Vector /* of MindMapLink s */getAssignedLinksVector(
-			ID_Registered state) {
-		String id = state.getID();
+			String newId) {
+		String id = newId;
 		// look, if target is already present:
 		Vector vec;
 		if (IDToLinks.containsKey(id)) {
@@ -236,9 +221,9 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 	/** If there are still targets registered, they are removed, too. */
 	public void deregisterLinkTarget(MindMapNode target)
 			throws java.lang.IllegalArgumentException {
-		ID_Registered state = getState(target);
-		if (state != null) {
-			Vector vec = getAssignedLinksVector(state);
+		String id = getState(target);
+		if (id != null) {
+			Vector vec = getAssignedLinksVector(id);
 			for (int i = vec.size() - 1; i >= 0; --i) {
 				deregisterLink((MindMapLink) vec.get(i));
 			}
@@ -247,8 +232,8 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 			// java.lang.IllegalArgumentException("Cannot remove a link target, if there are sources pointing to.");
 			// logger.fine("Deregister target node:"+target);
 			TargetToID.remove(target);
-			IDToTarget.remove(state.getID());
-			IDToLinks.remove(state.getID());
+			IDToTarget.remove(id);
+			IDToLinks.remove(id);
 		}
 	}
 
@@ -267,8 +252,8 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 		MindMapNode target = link.getTarget();
 		logger.info("Register link (" + link + ") from source node:" + source
 				+ " to target " + target);
-		ID_Registered state = _registerLinkTarget(target);
-		Vector vec = getAssignedLinksVector(state);
+		String id = _registerLinkTarget(target);
+		Vector vec = getAssignedLinksVector(id);
 		// already present?
 		for (int i = 0; i < vec.size(); ++i) {
 			if (vec.get(i) == link)
@@ -294,8 +279,8 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 	public void deregisterLink(MindMapLink link) {
 		MindMapNode source = link.getSource();
 		MindMapNode target = link.getTarget();
-		ID_Registered state = _registerLinkTarget(target);
-		Vector vec = getAssignedLinksVector(state);
+		String id = _registerLinkTarget(target);
+		Vector vec = getAssignedLinksVector(id);
 		for (int i = vec.size() - 1; i >= 0; --i) {
 			// logger.fine("Test for equal node:"+source+" to vector(i) " +
 			// vec.get(i));
@@ -319,9 +304,9 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 	public Vector /* of MindMapNode s */getAllSources(MindMapNode target) {
 		Vector returnValue;
 		returnValue = new Vector();
-		ID_Registered state = getState(target);
-		if (state != null) {
-			Vector vec = getAssignedLinksVector(state);
+		String id = getState(target);
+		if (id != null) {
+			Vector vec = getAssignedLinksVector(id);
 			for (int i = 0; i < vec.size(); ++i) {
 				returnValue.add(((MindMapLink) vec.get(i)).getSource());
 			}
@@ -341,9 +326,9 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 	/** @return returns all links to this node. */
 	public Vector /* of MindMapLink s */getAllLinksIntoMe(MindMapNode target) {
 		Vector returnValue = new Vector();
-		ID_Registered state = getState(target);
-		if (state != null) {
-			Vector vec = getAssignedLinksVector(state);
+		String id = getState(target);
+		if (id != null) {
+			Vector vec = getAssignedLinksVector(id);
 			/* "clone" */
 			returnValue.addAll(vec);
 		}
@@ -361,19 +346,14 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 	}
 
 	public String getLabel(MindMapNode target) {
-		ID_Registered state = getState(target);
-		if (state != null) {
-			return state.getID();
-		}
-		return null;
+		return getState(target);
 	}
 
 	public void cutNode(MindMapNode target) {
 		// logger.entering("LinkRegistryAdapter", "cutNode", target);
-		ID_Registered state = getState(target);
-		if (state != null) {
+		String id = getState(target);
+		if (id != null) {
 			// there is a registered target id.
-			String id = getLabel(target);
 			// deregister all links to me:
 			Vector links = getAllLinksIntoMe(target);
 			for (int i = links.size() - 1; i >= 0; --i) {
