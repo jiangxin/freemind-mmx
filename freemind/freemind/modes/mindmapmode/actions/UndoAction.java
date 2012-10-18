@@ -119,7 +119,7 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
 
 		UndoXmlAction redoAction = new UndoXmlAction();
 		redoAction.setDescription(doActionString);
-		undoAction.setRemedia(redoActionString);
+		redoAction.setRemedia(redoActionString);
 
 		isUndoAction = true;
 		this.controller.doTransaction("CallUndo", new ActionPair(undoAction,
@@ -165,6 +165,7 @@ public class UndoAction extends AbstractXmlAction implements ActorXml {
 		long currentTime = System.currentTimeMillis();
 		if ((actionPairList.size() > 0)
 				&& (actionFrameStarted || currentTime - timeOfLastAdd < TIME_TO_BEGIN_NEW_ACTION)) {
+			// the actions are gathered in one compound action.
 			ActionPair firstPair = (ActionPair) actionPairList.get(0);
 			CompoundAction action;
 			CompoundAction remedia;
