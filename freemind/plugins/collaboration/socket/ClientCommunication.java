@@ -136,7 +136,11 @@ public class ClientCommunication extends CommunicationBase {
 		if (pCommand instanceof CollaborationTransaction) {
 			CollaborationTransaction trans = (CollaborationTransaction) pCommand;
 			// check if it is from me!
-			if (!mLockIds.contains(trans.getId())) {
+			boolean removeResult;
+			synchronized (mLockIds) {
+				removeResult = mLockIds.remove(trans.getId());
+			}
+			if (!removeResult) {
 				// it is not from me, so handle it:
 				if (getCurrentState() != STATE_IDLE) {
 					printWrongState(pCommand);
@@ -145,8 +149,6 @@ public class ClientCommunication extends CommunicationBase {
 					mSocketConnectionHook
 							.executeTransaction(getActionPair(trans));
 				}
-			} else {
-				mLockIds.remove(trans.getId());
 			}
 			commandHandled = true;
 		}
@@ -156,7 +158,9 @@ public class ClientCommunication extends CommunicationBase {
 			}
 			CollaborationReceiveLock lockReceived = (CollaborationReceiveLock) pCommand;
 			this.mLockId = lockReceived.getId();
-			mLockIds.add(mLockId);
+			synchronized (mLockIds) {
+				mLockIds.add(mLockId);
+			}
 			setCurrentState(STATE_LOCK_RECEIVED);
 			commandHandled = true;
 		}
