@@ -27,6 +27,7 @@ import java.io.StringReader;
 import java.net.Socket;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import plugins.collaboration.socket.SocketBasics.UnableToGetLockException;
@@ -55,6 +56,7 @@ import freemind.modes.mindmapmode.MindMapNodeModel;
 public class ClientCommunication extends CommunicationBase {
 
 	private String mLockId;
+	private HashSet mLockIds = new HashSet();
 	private String mPassword;
 	private SocketConnectionHook mSocketConnectionHook = null;
 	private boolean mReceivedGoodbye = false;
@@ -101,8 +103,7 @@ public class ClientCommunication extends CommunicationBase {
 		}
 		if (pCommand instanceof CollaborationWhoAreYou) {
 			if (getCurrentState() != STATE_WAIT_FOR_WHO_ARE_YOU) {
-				logger.warning("Wrong state for " + pCommand.getClass() + ": "
-						+ getCurrentState());
+				printWrongState(pCommand);
 			}
 			// send hello:
 			CollaborationHello helloCommand = new CollaborationHello();
@@ -114,8 +115,7 @@ public class ClientCommunication extends CommunicationBase {
 		}
 		if (pCommand instanceof CollaborationWelcome) {
 			if (getCurrentState() != STATE_WAIT_FOR_WELCOME) {
-				logger.warning("Wrong state for " + pCommand.getClass() + ": "
-						+ getCurrentState());
+				printWrongState(pCommand);
 			}
 			CollaborationWelcome collWelcome = (CollaborationWelcome) pCommand;
 			createNewMap(collWelcome.getMap());
@@ -124,8 +124,7 @@ public class ClientCommunication extends CommunicationBase {
 		}
 		if (pCommand instanceof CollaborationWrongCredentials) {
 			if (getCurrentState() != STATE_WAIT_FOR_WELCOME) {
-				logger.warning("Wrong state for " + pCommand.getClass() + ": "
-						+ getCurrentState());
+				printWrongState(pCommand);
 			}
 			// Over and out.
 			terminateSocket();
@@ -135,28 +134,29 @@ public class ClientCommunication extends CommunicationBase {
 			commandHandled = true;
 		}
 		if (pCommand instanceof CollaborationTransaction) {
-			if (getCurrentState() != STATE_IDLE) {
-				logger.warning("Wrong state for " + pCommand.getClass() + ": "
-						+ getCurrentState());
-			}
 			CollaborationTransaction trans = (CollaborationTransaction) pCommand;
 			// check if it is from me!
-			if (!Tools.safeEquals(mLockId, trans.getId())) {
+			if (!mLockIds.contains(trans.getId())) {
+				// it is not from me, so handle it:
+				if (getCurrentState() != STATE_IDLE) {
+					printWrongState(pCommand);
+				}
 				if (mSocketConnectionHook != null) {
-					// it is not from me, so handle it:
 					mSocketConnectionHook
 							.executeTransaction(getActionPair(trans));
 				}
+			} else {
+				mLockIds.remove(trans.getId());
 			}
 			commandHandled = true;
 		}
 		if (pCommand instanceof CollaborationReceiveLock) {
 			if (getCurrentState() != STATE_WAIT_FOR_LOCK) {
-				logger.warning("Wrong state for " + pCommand.getClass() + ": "
-						+ getCurrentState());
+				printWrongState(pCommand);
 			}
 			CollaborationReceiveLock lockReceived = (CollaborationReceiveLock) pCommand;
 			this.mLockId = lockReceived.getId();
+			mLockIds.add(mLockId);
 			setCurrentState(STATE_LOCK_RECEIVED);
 			commandHandled = true;
 		}
@@ -169,7 +169,8 @@ public class ClientCommunication extends CommunicationBase {
 	public void terminateSocket() {
 		mReceivedGoodbye = true;
 		if (mSocketConnectionHook != null) {
-			// first deregister, as otherwise, the toggle hook command is tried to
+			// first deregister, as otherwise, the toggle hook command is tried
+			// to
 			// be sent over the wire.
 			mSocketConnectionHook.deregisterFilter();
 			// Terminates socket by shutdownHook.
@@ -181,7 +182,8 @@ public class ClientCommunication extends CommunicationBase {
 	}
 
 	public void toggleHook() {
-		SocketBasics.togglePermanentHook(getMindMapController(), SocketBasics.SLAVE_HOOK_LABEL);
+		SocketBasics.togglePermanentHook(getMindMapController(),
+				SocketBasics.SLAVE_HOOK_LABEL);
 	}
 
 	/**

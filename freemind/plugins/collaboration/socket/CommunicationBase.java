@@ -28,6 +28,7 @@ import java.net.SocketTimeoutException;
 
 import freemind.controller.actions.generated.instance.CollaborationActionBase;
 import freemind.controller.actions.generated.instance.CollaborationTransaction;
+import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Tools;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
@@ -85,8 +86,9 @@ public abstract class CommunicationBase extends TerminateableThread {
 	 */
 	public synchronized boolean send(CollaborationActionBase pCommand) {
 		try {
+			printCommand("Send", pCommand);
 			final String marshalledText = Tools.marshall(pCommand);
-			logger.info(getName() + " :Sending " + marshalledText);
+			logger.fine(getName() + " :Sending " + marshalledText);
 			String text = Tools.compress(marshalledText);
 			// split into pieces, as the writeUTF method is only able to send
 			// 65535 bytes...
@@ -119,10 +121,11 @@ public abstract class CommunicationBase extends TerminateableThread {
 				final String textValue = mCurrentCommand.toString();
 				mCurrentCommand.setLength(0);
 				final String decompressedText = Tools.decompress(textValue);
-				logger.info(getName() + " :Received " + decompressedText);
+				logger.fine(getName() + " :Received " + decompressedText);
 				CollaborationActionBase command = (CollaborationActionBase) Tools
 						.unMarshall(decompressedText);
 				if (command != null) {
+					printCommand("Receive", command);
 					processCommand(command);
 					didSomething = true;
 				}
@@ -136,6 +139,19 @@ public abstract class CommunicationBase extends TerminateableThread {
 			mController.getController().setTitle();
 		}
 		return didSomething;
+	}
+
+	/**
+	 * @param pDirection 
+	 * @param pCommand
+	 */
+	private void printCommand(String pDirection, CollaborationActionBase pCommand) {
+		if (pCommand instanceof CollaborationTransaction) {
+			CollaborationTransaction trans = (CollaborationTransaction) pCommand;
+			XmlAction doAction = mController.unMarshall(trans.getDoAction());
+			String out = pDirection + ": " + doAction.getClass().getName().replaceAll(".*\\.", "") + " (Id: " + trans.getId()+")";
+			logger.info(out);
+		}
 	}
 
 	int mCounter = 1;
@@ -180,5 +196,37 @@ public abstract class CommunicationBase extends TerminateableThread {
 	public String getIpToSocket() {
 		return mSocket.getLocalAddress().getHostAddress();
 	}
+
+	protected void printWrongState(CollaborationActionBase pCommand) {
+		logger.warning("Wrong state for " + pCommand.getClass() + ": "
+				+ printState(getCurrentState()));
+	}
+
+
+	
+	/**
+	 * @param pCurrentState
+	 * @return
+	 */
+	protected String printState(int pCurrentState) {
+		switch (pCurrentState) {
+		case STATE_IDLE:
+			return "STATE_IDLE";
+		case STATE_WAIT_FOR_HELLO:
+			return "STATE_WAIT_FOR_HELLO";
+		case STATE_WAIT_FOR_COMMAND:
+			return "STATE_WAIT_FOR_COMMAND";
+		case STATE_WAIT_FOR_WHO_ARE_YOU:
+			return "STATE_WAIT_FOR_WHO_ARE_YOU";
+		case STATE_WAIT_FOR_WELCOME:
+			return "STATE_WAIT_FOR_WELCOME";
+		case STATE_WAIT_FOR_LOCK:
+			return "STATE_WAIT_FOR_LOCK";
+		case STATE_LOCK_RECEIVED:
+			return "STATE_LOCK_RECEIVED";
+		}
+		return "UNKNOWN: " + pCurrentState;
+	}
+
 
 }

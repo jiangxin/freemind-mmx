@@ -76,8 +76,7 @@ public class ServerCommunication extends CommunicationBase {
 			// here, we are strict in checking the state, as not the whole world
 			// should get access to the map!
 			if (getCurrentState() != STATE_WAIT_FOR_HELLO) {
-				logger.warning("Wrong state for " + pCommand.getClass() + ": "
-						+ getCurrentState());
+				printWrongState(pCommand);
 			} else {
 				CollaborationHello commandHello = (CollaborationHello) pCommand;
 				setName(commandHello.getUserId());
@@ -109,8 +108,7 @@ public class ServerCommunication extends CommunicationBase {
 
 		if (pCommand instanceof CollaborationTransaction) {
 			if (getCurrentState() != STATE_WAIT_FOR_COMMAND) {
-				logger.warning("Wrong state for " + pCommand.getClass() + ": "
-						+ getCurrentState());
+				printWrongState(pCommand);
 			} else {
 				CollaborationTransaction trans = (CollaborationTransaction) pCommand;
 				try {
@@ -133,8 +131,7 @@ public class ServerCommunication extends CommunicationBase {
 		}
 		if (pCommand instanceof CollaborationRequireLock) {
 			if (getCurrentState() != STATE_IDLE) {
-				logger.warning("Wrong state for " + pCommand.getClass() + ": "
-						+ getCurrentState());
+				printWrongState(pCommand);
 			}
 			try {
 				String lockId = mMindMapMaster.lock(this.getName());

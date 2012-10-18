@@ -201,7 +201,8 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 		return (MindMapNode) target;
 	}
 
-	private Vector /* of MindMapLink s */getAssignedLinksVector(
+	/** @return a Vector of {@link MindMapLink}s */
+	private Vector getAssignedLinksVector(
 			String newId) {
 		String id = newId;
 		// look, if target is already present:
@@ -227,9 +228,6 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 			for (int i = vec.size() - 1; i >= 0; --i) {
 				deregisterLink((MindMapLink) vec.get(i));
 			}
-			// if(vec.size() != 0)
-			// throw new
-			// java.lang.IllegalArgumentException("Cannot remove a link target, if there are sources pointing to.");
 			// logger.fine("Deregister target node:"+target);
 			TargetToID.remove(target);
 			IDToTarget.remove(id);

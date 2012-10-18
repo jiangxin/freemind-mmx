@@ -29,6 +29,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -303,6 +304,9 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	}
 
 	/**
+	 * Deep search inside the {@link XmlAction} to find a hook (i.e. myself) or
+	 * an {@link UndoXmlAction}. Both should not be send over the wire.
+	 * 
 	 * @param pAction
 	 * @param pSearchString
 	 * @return
