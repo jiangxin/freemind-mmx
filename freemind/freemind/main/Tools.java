@@ -68,6 +68,7 @@ import java.security.spec.KeySpec;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -102,6 +103,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import freemind.common.XmlBindingTools;
+import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
@@ -1890,6 +1892,24 @@ public class Tools {
 			freemind.main.Resources.getInstance().logException(e);
 		}
 		return null;
+	}
+
+	public static String printXmlAction(XmlAction pAction) {
+		final String classString = pAction.getClass().getName().replaceAll(".*\\.", "");
+		if (pAction instanceof CompoundAction) {
+			CompoundAction compound = (CompoundAction) pAction;
+			StringBuffer buf = new StringBuffer("[");
+			for (Iterator it = compound.getListChoiceList().iterator(); it.hasNext();) {
+				if(buf.length()>1) {
+					buf.append(',');
+				}
+				XmlAction subAction = (XmlAction) it.next();
+				buf.append(printXmlAction(subAction));
+			}
+			buf.append(']');
+			return classString + " " + buf.toString();
+		}
+		return classString;
 	}
 
 }

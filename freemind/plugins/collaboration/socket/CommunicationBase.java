@@ -25,11 +25,9 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.Iterator;
 
 import freemind.controller.actions.generated.instance.CollaborationActionBase;
 import freemind.controller.actions.generated.instance.CollaborationTransaction;
-import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Tools;
 import freemind.modes.mindmapmode.MindMapController;
@@ -151,27 +149,9 @@ public abstract class CommunicationBase extends TerminateableThread {
 		if (pCommand instanceof CollaborationTransaction) {
 			CollaborationTransaction trans = (CollaborationTransaction) pCommand;
 			XmlAction doAction = mController.unMarshall(trans.getDoAction());
-			String out = pDirection + ": " + printXmlAction(doAction) + " (Id: " + trans.getId()+")";
+			String out = pDirection + ": " + Tools.printXmlAction(doAction) + " (Id: " + trans.getId()+")";
 			logger.info(out);
 		}
-	}
-
-	protected String printXmlAction(XmlAction action) {
-		final String classString = action.getClass().getName().replaceAll(".*\\.", "");
-		if (action instanceof CompoundAction) {
-			CompoundAction compound = (CompoundAction) action;
-			StringBuffer buf = new StringBuffer("[");
-			for (Iterator it = compound.getListChoiceList().iterator(); it.hasNext();) {
-				if(buf.length()>1) {
-					buf.append(',');
-				}
-				XmlAction subAction = (XmlAction) it.next();
-				buf.append(printXmlAction(subAction));
-			}
-			buf.append(']');
-			return classString + " " + buf.toString();
-		}
-		return classString;
 	}
 
 	int mCounter = 1;

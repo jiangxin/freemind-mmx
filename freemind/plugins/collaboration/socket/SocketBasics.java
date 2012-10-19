@@ -53,7 +53,6 @@ import freemind.controller.MapModuleManager.MapTitleContributor;
 import freemind.controller.actions.generated.instance.CollaborationUserInformation;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.HookNodeAction;
-import freemind.controller.actions.generated.instance.UndoXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Resources;
 import freemind.main.Tools;
@@ -303,8 +302,8 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	}
 
 	/**
-	 * Deep search inside the {@link XmlAction} to find a hook (i.e. myself) or
-	 * an {@link UndoXmlAction}. Both should not be send over the wire.
+	 * Deep search inside the {@link XmlAction} to find a hook (i.e. myself). 
+	 * They should not be send over the wire.
 	 * 
 	 * @param pAction
 	 * @param pSearchString
@@ -320,9 +319,6 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 				result |= visit(action, pSearchString);
 			}
 			return result;
-		}
-		if (pAction instanceof UndoXmlAction) {
-			return pSearchString.isEmpty();
 		}
 		if (pAction instanceof HookNodeAction) {
 			HookNodeAction hookNodeAction = (HookNodeAction) pAction;
@@ -345,10 +341,6 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 			return pPair;
 		}
 		if (visit(pPair.getDoAction(), MindMapMaster.MASTER_HOOK_LABEL)) {
-			return pPair;
-		}
-		// search for undo (little bad hack!)
-		if (visit(pPair.getDoAction(), "")) {
 			return pPair;
 		}
 		String doAction = getMindMapController().marshall(pPair.getDoAction());

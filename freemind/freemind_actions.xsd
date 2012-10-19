@@ -30,7 +30,6 @@
 					<xs:element ref="delete_node_action"/>
 					<xs:element ref="edit_node_action"/>
 					<xs:element ref="new_node_action"/>
-					<xs:element ref="undo_xml_action"/>
 					<xs:element ref="fold_action"/>
 					<xs:element ref="move_nodes_action"/>
 					<xs:element ref="hook_node_action"/>
@@ -531,22 +530,6 @@
 				<xs:attribute name="newId"    use="optional" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
-	  </xs:complexType>
-	</xs:element>
-
-	<!-- Undo Action -->
-	<xs:element name="undo_xml_action">
-	  <xs:complexType>
-	  	<xs:complexContent>
-	  		<xs:extension base="xml_action">
-	  			<xs:sequence>
-	  			<!-- description contains the marshalled doAction for this undoAction. The doAction is performed by undo. -->
-	  				<xs:element name="description" type="xs:string" maxOccurs="1" minOccurs="1"></xs:element>
-	  			<!-- remedia contains the marshalled redoAction for this undoAction. The redoAction is performed by redo following undo. -->
-	  				<xs:element name="remedia" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
-	  			</xs:sequence>
-	  		</xs:extension>
-	  	</xs:complexContent>
 	  </xs:complexType>
 	</xs:element>
 
