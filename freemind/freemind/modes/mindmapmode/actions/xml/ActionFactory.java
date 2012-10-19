@@ -128,21 +128,21 @@ public class ActionFactory {
 		if (pair == null)
 			return false;
 		boolean returnValue = true;
+		// register for undo first, as the filter things are repeated when the undo is executed as well!
+		if (undoActionHandler != null) {
+			try {
+				undoActionHandler.executeAction(pair);
+			} catch (Exception e) {
+				freemind.main.Resources.getInstance().logException(e);
+				returnValue = false;
+			}
+		}
+		
 		ActionPair filteredPair = pair;
 		// first filter:
 		for (Iterator i = registeredFilters.iterator(); i.hasNext();) {
 			ActionFilter filter = (ActionFilter) i.next();
 			filteredPair = filter.filterAction(filteredPair);
-		}
-
-		// register for undo
-		if (undoActionHandler != null) {
-			try {
-				undoActionHandler.executeAction(filteredPair);
-			} catch (Exception e) {
-				freemind.main.Resources.getInstance().logException(e);
-				returnValue = false;
-			}
 		}
 
 		Object[] aArray = registeredHandler.toArray();

@@ -18,7 +18,6 @@
  * Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-
 package freemind.main;
 
 //maybe move this class to another package like tools or something...
@@ -104,6 +103,8 @@ import javax.xml.transform.stream.StreamSource;
 
 import freemind.common.XmlBindingTools;
 import freemind.controller.actions.generated.instance.CompoundAction;
+import freemind.controller.actions.generated.instance.FormatNodeAction;
+import freemind.controller.actions.generated.instance.NodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
@@ -376,14 +377,15 @@ public class Tools {
 		String targetString = target.getFile();
 		String result = "";
 		// remove filename from URL
-		targetString = targetString.substring(0, targetString.lastIndexOf("/")+1);
+		targetString = targetString.substring(0,
+				targetString.lastIndexOf("/") + 1);
 		// remove filename from URL
-		baseString = baseString.substring(0, baseString.lastIndexOf("/")+1);
+		baseString = baseString.substring(0, baseString.lastIndexOf("/") + 1);
 
 		// Algorithm
 		// look for same start:
-		int index = targetString.length()-1;
-		while (!baseString.startsWith(targetString.substring(0, index+1))) {
+		int index = targetString.length() - 1;
+		while (!baseString.startsWith(targetString.substring(0, index + 1))) {
 			// remove last part:
 			index = targetString.lastIndexOf("/", index - 1);
 			if (index < 0) {
@@ -982,8 +984,8 @@ public class Tools {
 			FreeMindMain frame) throws IOException {
 		StringWriter writer = null;
 		InputStream inputStream = null;
-		final java.util.logging.Logger logger = frame
-				.getLogger(Tools.class.getName());
+		final java.util.logging.Logger logger = frame.getLogger(Tools.class
+				.getName());
 		logger.info("Updating the reader " + pReader
 				+ " to the current version.");
 		boolean successful = false;
@@ -1025,7 +1027,8 @@ public class Tools {
 					// create an instance of TransformerFactory
 					TransformerFactory transFact = TransformerFactory
 							.newInstance();
-					logger.info("TransformerFactory class: " + transFact.getClass());
+					logger.info("TransformerFactory class: "
+							+ transFact.getClass());
 					Transformer trans;
 					try {
 						trans = transFact.newTransformer(xsltSource);
@@ -1600,14 +1603,12 @@ public class Tools {
 		}
 		return hostname;
 	}
-	
+
 	public static String getUserName() {
 		// Get host name
 		String hostname = getHostName();
 		return System.getProperty("user.name") + "@" + hostname;
 	}
-
-
 
 	public static String marshall(XmlAction action) {
 		return XmlBindingTools.getInstance().marshall(action);
@@ -1817,12 +1818,11 @@ public class Tools {
 	 * @param pSearchString
 	 * @return the amount of occurrences of pSearchString in pString.
 	 */
-	public static int countOccurrences(String pString,
-			String pSearchString) {
+	public static int countOccurrences(String pString, String pSearchString) {
 		int amount = 0;
-		while(true) {
+		while (true) {
 			final int index = pString.indexOf(pSearchString);
-			if(index<0) {
+			if (index < 0) {
 				break;
 			}
 			amount++;
@@ -1847,14 +1847,17 @@ public class Tools {
 			String pPageFormatProperty) {
 		try {
 			// parse string:
-			StringTokenizer tokenizer = new StringTokenizer(pPageFormatProperty, ";");
-			if(tokenizer.countTokens() != 6) {
-				logger.warning("Page format property has not the correct format:" + pPageFormatProperty);
+			StringTokenizer tokenizer = new StringTokenizer(
+					pPageFormatProperty, ";");
+			if (tokenizer.countTokens() != 6) {
+				logger.warning("Page format property has not the correct format:"
+						+ pPageFormatProperty);
 				return;
 			}
 			pPaper.setSize(nt(tokenizer), nt(tokenizer));
-			pPaper.setImageableArea(nt(tokenizer), nt(tokenizer), nt(tokenizer), nt(tokenizer));
-		} catch(Exception e) {
+			pPaper.setImageableArea(nt(tokenizer), nt(tokenizer),
+					nt(tokenizer), nt(tokenizer));
+		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
 		}
 	}
@@ -1867,7 +1870,7 @@ public class Tools {
 		String nextToken = pTokenizer.nextToken();
 		try {
 			return Double.parseDouble(nextToken);
-		} catch(Exception e) {
+		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
 		}
 		return 0;
@@ -1878,8 +1881,10 @@ public class Tools {
 	 * @return
 	 */
 	public static String getPageFormatAsString(Paper pPaper) {
-		return pPaper.getWidth()+";"+pPaper.getHeight()+";"+pPaper.getImageableX()+";"+pPaper.getImageableY()+";"+
-				pPaper.getImageableWidth()+";"+pPaper.getImageableHeight();
+		return pPaper.getWidth() + ";" + pPaper.getHeight() + ";"
+				+ pPaper.getImageableX() + ";" + pPaper.getImageableY() + ";"
+				+ pPaper.getImageableWidth() + ";"
+				+ pPaper.getImageableHeight();
 	}
 
 	/**
@@ -1895,12 +1900,14 @@ public class Tools {
 	}
 
 	public static String printXmlAction(XmlAction pAction) {
-		final String classString = pAction.getClass().getName().replaceAll(".*\\.", "");
+		final String classString = pAction.getClass().getName()
+				.replaceAll(".*\\.", "");
 		if (pAction instanceof CompoundAction) {
 			CompoundAction compound = (CompoundAction) pAction;
 			StringBuffer buf = new StringBuffer("[");
-			for (Iterator it = compound.getListChoiceList().iterator(); it.hasNext();) {
-				if(buf.length()>1) {
+			for (Iterator it = compound.getListChoiceList().iterator(); it
+					.hasNext();) {
+				if (buf.length() > 1) {
 					buf.append(',');
 				}
 				XmlAction subAction = (XmlAction) it.next();
@@ -1910,6 +1917,10 @@ public class Tools {
 			return classString + " " + buf.toString();
 		}
 		return classString;
+	}
+
+	public static XmlAction deepCopy(XmlAction action) {
+		return (XmlAction) unMarshall(marshall(action));
 	}
 
 }

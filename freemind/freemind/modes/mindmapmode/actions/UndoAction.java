@@ -33,6 +33,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
 import freemind.controller.actions.generated.instance.CompoundAction;
+import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Tools;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.AbstractXmlAction;
@@ -101,6 +102,7 @@ public class UndoAction extends AbstractXmlAction {
 
 	protected void undoDoAction(ActionPair pair) {
 		logger.info("Undo, doing: " + Tools.printXmlAction(pair.getUndoAction()));
+		logger.info("Redo, would: " + Tools.printXmlAction(pair.getDoAction()));
 		isUndoAction = true;
 		this.controller.doTransaction("Undo",
 				new ActionPair(pair.getUndoAction(), pair.getDoAction()));
@@ -120,6 +122,8 @@ public class UndoAction extends AbstractXmlAction {
 	}
 
 	public void add(ActionPair pair) {
+		XmlAction dcDo = Tools.deepCopy(pair.getDoAction());
+		XmlAction dcUndo = Tools.deepCopy(pair.getUndoAction());
 		long currentTime = System.currentTimeMillis();
 		if ((actionPairList.size() > 0)
 				&& (actionFrameStarted || currentTime - timeOfLastAdd < TIME_TO_BEGIN_NEW_ACTION)) {
@@ -140,10 +144,11 @@ public class UndoAction extends AbstractXmlAction {
 				action = (CompoundAction) firstPair.getDoAction();
 				remedia = (CompoundAction) firstPair.getUndoAction();
 			}
-			action.addChoice(pair.getDoAction());
-			remedia.addAtChoice(0, pair.getUndoAction());
+			action.addChoice(dcDo);
+			remedia.addAtChoice(0, dcUndo);
 		} else {
-			actionPairList.add(0, pair);
+			ActionPair storagePair = new ActionPair(dcDo, dcUndo);
+			actionPairList.add(0, storagePair);
 			// and cut vector, if bigger than given size:
 			int maxEntries = 100;
 			try {

@@ -430,8 +430,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	private void getNewCompoundAction(NodeAction nodeAction,
 			Tools.MindMapNodePair correspondingNodePair, CompoundAction compound) {
 		// deep copy:
-		NodeAction copiedNodeAction = (NodeAction) getMindMapController()
-				.unMarshall(getMindMapController().marshall(nodeAction));
+		NodeAction copiedNodeAction = (NodeAction) Tools.deepCopy(nodeAction);
 		// special cases:
 		if (copiedNodeAction instanceof MoveNodesAction) {
 			MoveNodesAction moveAction = (MoveNodesAction) copiedNodeAction;
@@ -513,7 +512,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		mCloneNodeIds.remove(getMindMapController().getNodeID(pCloneNode));
 		clearCloneCache();
 		registerPlugin();
-		if(mCloneNodeIds.isEmpty()) {
+		if (mCloneNodeIds.isEmpty()) {
 			// remove icon
 			getNode().setStateIcon(getName(), null);
 			getMindMapController().nodeRefresh(getNode());

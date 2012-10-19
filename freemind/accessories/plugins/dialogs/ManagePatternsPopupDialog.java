@@ -498,10 +498,8 @@ public class ManagePatternsPopupDialog extends JDialog implements
 		writePatternBackToModel();
 		setLastSelectedPattern(null);
 		Pattern oldPattern = mPatternListModel.getPatternAt(selectedIndex);
-		// deep copy via xml:
-		XmlBindingTools instance = XmlBindingTools.getInstance();
-		Pattern newPattern = (Pattern) instance.unMarshall(instance
-				.marshall(oldPattern));
+		// deep copy:
+		Pattern newPattern = (Pattern) Tools.deepCopy(oldPattern);
 		newPattern.setName(searchForNameForNewPattern());
 		mPatternListModel.addPattern(newPattern, selectedIndex);
 		mList.setSelectedIndex(selectedIndex);

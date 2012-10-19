@@ -32,6 +32,7 @@ import freemind.controller.actions.generated.instance.NewNodeAction;
 import freemind.controller.actions.generated.instance.NodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
+import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.ModeController;
 import freemind.modes.mindmapmode.MindMapController;
@@ -110,8 +111,8 @@ public class FormatNewNodes implements ActionHandler, ActionFilter,
 			for (Iterator i = formatActions.values().iterator(); i.hasNext();) {
 				NodeAction formatAction = (NodeAction) i.next();
 				// deep copy:
-				FormatNodeAction copiedFormatAction = (FormatNodeAction) controller
-						.unMarshall(controller.marshall(formatAction));
+				FormatNodeAction copiedFormatAction = (FormatNodeAction) Tools
+						.deepCopy(formatAction);
 				copiedFormatAction.setNode(newNodeAction.getNewId());
 				compound.addChoice(copiedFormatAction);
 			}
