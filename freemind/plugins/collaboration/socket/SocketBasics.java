@@ -59,13 +59,13 @@ import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.xml.ActionFilter.FinalActionFilter;
+import freemind.modes.mindmapmode.actions.xml.ActionFilter.FirstActionFilter;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 import freemind.view.MapModule;
 
 public abstract class SocketBasics extends MindMapNodeHookAdapter implements
-		MapTitleContributor, FinalActionFilter {
+		MapTitleContributor, FirstActionFilter {
 
 	/**
 	 * 

@@ -20,7 +20,6 @@
  * Created on 24.04.2004
  */
 
-
 package freemind.modes.mindmapmode.actions.xml;
 
 import java.util.HashMap;
@@ -30,6 +29,7 @@ import java.util.Vector;
 import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.mindmapmode.actions.xml.ActionFilter.FinalActionFilter;
+import freemind.modes.mindmapmode.actions.xml.ActionFilter.FirstActionFilter;
 
 /**
  * @author foltin
@@ -86,10 +86,28 @@ public class ActionFactory {
 				/* Insert as the last one here. */
 				registeredFilters.insertElementAt(newFilter,
 						registeredFilters.size());
+			} else if (newFilter instanceof FirstActionFilter) {
+				/* Insert as the first one here. */
+				registeredFilters.insertElementAt(newFilter, 0);
 			} else {
-				registeredFilters.add(newFilter);
+				/* Insert before FinalActionFilters */
+				int index = 0;
+				for (Iterator it = registeredFilters.iterator(); it.hasNext();) {
+					ActionFilter filter = (ActionFilter) it.next();
+					if (filter instanceof FinalActionFilter) {
+						break;
+					}
+					index++;
+				}
+				registeredFilters.insertElementAt(newFilter, index);
 			}
 		}
+		// int count = 0;
+		// for (Iterator it = registeredFilters.iterator(); it.hasNext();) {
+		// ActionFilter filter = (ActionFilter) it.next();
+		// logger.info("Filter " + count + ": " + filter.getClass().getName());
+		// count++;
+		// }
 	}
 
 	public void deregisterFilter(ActionFilter newFilter) {
@@ -119,7 +137,7 @@ public class ActionFactory {
 		this.endTransaction(pName);
 		return result;
 	}
-	
+
 	/**
 	 * @return the success of the action. If an exception arises, the method
 	 *         returns false.
@@ -128,7 +146,8 @@ public class ActionFactory {
 		if (pair == null)
 			return false;
 		boolean returnValue = true;
-		// register for undo first, as the filter things are repeated when the undo is executed as well!
+		// register for undo first, as the filter things are repeated when the
+		// undo is executed as well!
 		if (undoActionHandler != null) {
 			try {
 				undoActionHandler.executeAction(pair);
@@ -137,7 +156,7 @@ public class ActionFactory {
 				returnValue = false;
 			}
 		}
-		
+
 		ActionPair filteredPair = pair;
 		// first filter:
 		for (Iterator i = registeredFilters.iterator(); i.hasNext();) {
