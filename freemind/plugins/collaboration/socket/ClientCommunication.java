@@ -20,10 +20,12 @@
 
 package plugins.collaboration.socket;
 
+import java.awt.EventQueue;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.util.Collection;
 import java.util.HashMap;

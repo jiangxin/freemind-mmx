@@ -134,6 +134,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	}
 
 	public void shutdownMapHook() {
+		Tools.printStackTrace();
 		Controller controller = getMindMapController().getController();
 		controller.deregisterMapTitleContributor(this);
 		controller.setTitle();
@@ -415,16 +416,12 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	}
 
 	protected void executeTransaction(final ActionPair pair) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				mFilterEnabled = false;
-				try {
-					getMindMapController().doTransaction("update", pair);
-				} finally {
-					mFilterEnabled = true;
-				}
-			}
-		});
+		mFilterEnabled = false;
+		try {
+			getMindMapController().doTransaction("update", pair);
+		} finally {
+			mFilterEnabled = true;
+		}
 	}
 
 	/**

@@ -31,7 +31,7 @@ public abstract class ArrowLinkAdapter extends LinkAdapter implements
 
 	/** the zero is the start point of the line; */
 	protected Point startInclination;
-	/** the zero is the start point of the line; */
+	/** the zero is the end point of the line; */
 	protected Point endInclination;
 	protected String startArrow;
 	protected String endArrow;

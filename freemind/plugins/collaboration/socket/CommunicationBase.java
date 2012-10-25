@@ -20,6 +20,7 @@
 
 package plugins.collaboration.socket;
 
+import java.awt.EventQueue;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -122,11 +123,21 @@ public abstract class CommunicationBase extends TerminateableThread {
 				mCurrentCommand.setLength(0);
 				final String decompressedText = Tools.decompress(textValue);
 				logger.fine(getName() + " :Received " + decompressedText);
-				CollaborationActionBase command = (CollaborationActionBase) Tools
+				final CollaborationActionBase command = (CollaborationActionBase) Tools
 						.unMarshall(decompressedText);
 				if (command != null) {
 					printCommand("Receive", command);
-					processCommand(command);
+					EventQueue.invokeLater(new Runnable() {
+						public void run() {
+							// inserted in event queue here, to avoid
+							// concurrency issues.
+							try {
+								processCommand(command);
+							} catch (Exception e) {
+								freemind.main.Resources.getInstance().logException(e);
+							}
+						}
+					});
 					didSomething = true;
 				}
 			}
@@ -142,14 +153,16 @@ public abstract class CommunicationBase extends TerminateableThread {
 	}
 
 	/**
-	 * @param pDirection 
+	 * @param pDirection
 	 * @param pCommand
 	 */
-	private void printCommand(String pDirection, CollaborationActionBase pCommand) {
+	private void printCommand(String pDirection,
+			CollaborationActionBase pCommand) {
 		if (pCommand instanceof CollaborationTransaction) {
 			CollaborationTransaction trans = (CollaborationTransaction) pCommand;
 			XmlAction doAction = mController.unMarshall(trans.getDoAction());
-			String out = pDirection + ": " + Tools.printXmlAction(doAction) + " (Id: " + trans.getId()+")";
+			String out = pDirection + ": " + Tools.printXmlAction(doAction)
+					+ " (Id: " + trans.getId() + ")";
 			logger.info(out);
 		}
 	}
@@ -192,7 +205,7 @@ public abstract class CommunicationBase extends TerminateableThread {
 		return new ActionPair(mController.unMarshall(trans.getDoAction()),
 				mController.unMarshall(trans.getUndoAction()));
 	}
-	
+
 	public String getIpToSocket() {
 		return mSocket.getLocalAddress().getHostAddress();
 	}
@@ -202,8 +215,6 @@ public abstract class CommunicationBase extends TerminateableThread {
 				+ printState(getCurrentState()));
 	}
 
-
-	
 	/**
 	 * @param pCurrentState
 	 * @return
@@ -227,6 +238,5 @@ public abstract class CommunicationBase extends TerminateableThread {
 		}
 		return "UNKNOWN: " + pCurrentState;
 	}
-
 
 }

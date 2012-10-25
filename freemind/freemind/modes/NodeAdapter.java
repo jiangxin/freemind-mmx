@@ -1017,6 +1017,7 @@ public abstract class NodeAdapter implements MindMapNode {
 		// perform "nodeChanged"
 		// calls without having its own updateNodeHook method to be called
 		// again.
+		String name = hook.getName();
 		createActivatedHooks();
 		if (activatedHooks.contains(hook)) {
 			activatedHooks.remove(hook);
@@ -1029,6 +1030,7 @@ public abstract class NodeAdapter implements MindMapNode {
 		hooks.remove(hook);
 		if (hooks.size() == 0)
 			hooks = null;
+		logger.fine("Removed hook " + name + " at " + hook + ".");
 	}
 
 	public void removeAllHooks() {
@@ -1128,7 +1130,7 @@ public abstract class NodeAdapter implements MindMapNode {
 			node.addChild(cloud);
 		}
 
-		Vector linkVector = registry.getAllLinksFromMe(this); /* Puh... */
+		Vector linkVector = registry.getAllLinksFromMe(this); 
 		for (int i = 0; i < linkVector.size(); ++i) {
 			if (linkVector.get(i) instanceof ArrowLinkAdapter) {
 				XMLElement arrowLinkElement = ((ArrowLinkAdapter) linkVector

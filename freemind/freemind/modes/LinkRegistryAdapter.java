@@ -298,7 +298,7 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 		return null;
 	}
 
-	/** Returns a Vector of Nodes that point to the given target node. */
+	/** @return Returns a Vector of {@link MindMapNode}s that point to the given target node. */
 	public Vector /* of MindMapNode s */getAllSources(MindMapNode target) {
 		Vector returnValue;
 		returnValue = new Vector();
@@ -321,8 +321,8 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 		return returnValue;
 	};
 
-	/** @return returns all links to this node. */
-	public Vector /* of MindMapLink s */getAllLinksIntoMe(MindMapNode target) {
+	/** @return returns all links to this node as {@link MindMapLink} vector. */
+	public Vector getAllLinksIntoMe(MindMapNode target) {
 		Vector returnValue = new Vector();
 		String id = getState(target);
 		if (id != null) {
@@ -333,8 +333,8 @@ public class LinkRegistryAdapter implements MindMapLinkRegistry {
 		return returnValue;
 	}
 
-	/** @return returns all links from this node. */
-	public Vector /* of MindMapLink s */getAllLinksFromMe(MindMapNode source) {
+	/** @return returns all links from this node as {@link MindMapLink} vector. */
+	public Vector getAllLinksFromMe(MindMapNode source) {
 		Vector returnValue = new Vector();
 		Collection vec = (Collection) SourceToLinks.get(source);
 		if (vec != null) {
