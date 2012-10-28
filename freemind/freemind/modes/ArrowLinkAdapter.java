@@ -124,8 +124,8 @@ public abstract class ArrowLinkAdapter extends LinkAdapter implements
 		if (style != null) {
 			arrowLink.setAttribute("STYLE", style);
 		}
-		if (getUniqueID() != null) {
-			arrowLink.setAttribute("ID", getUniqueID());
+		if (getUniqueId() != null) {
+			arrowLink.setAttribute("ID", getUniqueId());
 		}
 		if (color != null) {
 			arrowLink.setAttribute("COLOR", Tools.colorToXml(color));
@@ -149,6 +149,13 @@ public abstract class ArrowLinkAdapter extends LinkAdapter implements
 		if (getEndArrow() != null)
 			arrowLink.setAttribute("ENDARROW", (getEndArrow()));
 		return arrowLink;
+	}
+	
+	public ArrowLinkTarget createArrowLinkTarget(MindMapLinkRegistry pRegistry) {
+		ArrowLinkTarget linkTarget = new ArrowLinkTarget(source, target, frame);
+		linkTarget.setUniqueId(getUniqueId());
+		linkTarget.setSourceLabel(pRegistry.getLabel(source));
+		return linkTarget;
 	}
 
 }

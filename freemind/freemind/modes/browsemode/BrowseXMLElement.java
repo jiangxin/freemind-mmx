@@ -26,6 +26,7 @@ import java.util.Vector;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
 import freemind.modes.ArrowLinkAdapter;
+import freemind.modes.ArrowLinkTarget;
 import freemind.modes.CloudAdapter;
 import freemind.modes.EdgeAdapter;
 import freemind.modes.ModeController;
@@ -53,7 +54,7 @@ public class BrowseXMLElement extends XMLElementAdapter {
 	protected XMLElement createAnotherElement() {
 		// We do not need to initialize the things of XMLElement.
 		return new BrowseXMLElement(mModeController, mArrowLinkAdapters,
-				mIDToTarget);
+				mIdToTarget);
 	}
 
 	protected NodeAdapter createNodeAdapter(FreeMindMain frame, String nodeClass) {
@@ -77,6 +78,12 @@ public class BrowseXMLElement extends XMLElementAdapter {
 		return new BrowseArrowLinkModel(source, target, frame);
 	}
 
+	protected ArrowLinkTarget createArrowLinkTarget(NodeAdapter source,
+			NodeAdapter target, FreeMindMain frame) {
+		// FIXME: Need an implementation here
+		return null;
+	}
+	
 	protected NodeAdapter createEncryptedNode(String additionalInfo) {
 		NodeAdapter node = createNodeAdapter(frame, ENCRYPTED_BROWSE_NODE);
 		setUserObject(node);

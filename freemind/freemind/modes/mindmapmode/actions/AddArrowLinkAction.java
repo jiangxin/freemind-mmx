@@ -30,6 +30,7 @@ import freemind.controller.actions.generated.instance.AddArrowLinkXmlAction;
 import freemind.controller.actions.generated.instance.RemoveArrowLinkXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Tools;
+import freemind.modes.ArrowLinkTarget;
 import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
@@ -95,7 +96,7 @@ public class AddArrowLinkAction extends FreemindAction implements ActorXml {
 					target, modeController.getFrame());
 			linkModel.setDestinationLabel(getLinkRegistry().getLabel(target));
 			// give label:
-			linkModel.setUniqueID(getLinkRegistry().generateUniqueLinkID(
+			linkModel.setUniqueId(getLinkRegistry().generateUniqueLinkId(
 					proposedId));
 			// check for other attributes:
 			if (arrowAction.getColor() != null) {
@@ -129,7 +130,7 @@ public class AddArrowLinkAction extends FreemindAction implements ActorXml {
 
 	private ActionPair getActionPair(MindMapNode source, MindMapNode target) {
 		AddArrowLinkXmlAction doAction = createAddArrowLinkXmlAction(source,
-				target, getLinkRegistry().generateUniqueLinkID(null));
+				target, getLinkRegistry().generateUniqueLinkId(null));
 		// now, the id is clear:
 		RemoveArrowLinkXmlAction undoAction = removeAction
 				.createRemoveArrowLinkXmlAction(doAction.getNewId());

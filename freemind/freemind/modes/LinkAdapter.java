@@ -38,7 +38,7 @@ public abstract class LinkAdapter extends LineAdapter implements MindMapLink {
 	String destinationLabel;
 	String referenceText;
 	MindMapNode source;
-	private String uniqueID;
+	private String uniqueId;
 
 	public LinkAdapter(MindMapNode source, MindMapNode target,
 			FreeMindMain frame) {
@@ -85,18 +85,18 @@ public abstract class LinkAdapter extends LineAdapter implements MindMapLink {
 	// }
 
 	/**
-	 * @return Returns the uniqueID.
+	 * @return Returns the uniqueId.
 	 */
-	public String getUniqueID() {
-		return uniqueID;
+	public String getUniqueId() {
+		return uniqueId;
 	}
 
 	/**
-	 * @param uniqueID
+	 * @param uniqueId
 	 *            The uniqueID to set.
 	 */
-	public void setUniqueID(String uniqueID) {
-		this.uniqueID = uniqueID;
+	public void setUniqueId(String uniqueId) {
+		this.uniqueId = uniqueId;
 	}
 
 	protected Color getStandardColor() {

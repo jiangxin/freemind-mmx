@@ -38,7 +38,7 @@ public interface MindMapLink extends MindMapLine {
 	MindMapNode getSource();
 
 	/** The id is automatically set on creation. Is saved and restored. */
-	String getUniqueID();
+	String getUniqueId();
 
 	// public Object clone();
 

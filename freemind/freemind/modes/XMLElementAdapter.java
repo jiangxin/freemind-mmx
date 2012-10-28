@@ -17,7 +17,6 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-
 package freemind.modes;
 
 import java.awt.Font;
@@ -56,7 +55,7 @@ public abstract class XMLElementAdapter extends XMLElement {
 
 	// arrow link attributes:
 	protected Vector mArrowLinkAdapters;
-	protected HashMap /* id -> target */mIDToTarget;
+	protected HashMap /* id -> target */mIdToTarget;
 	public static final String XML_NODE_TEXT = "TEXT";
 	public static final String XML_NODE = "node";
 	public static final String XML_NODE_ATTRIBUTE = "attribute";
@@ -92,11 +91,11 @@ public abstract class XMLElementAdapter extends XMLElement {
 	}
 
 	protected XMLElementAdapter(ModeController modeController,
-			Vector ArrowLinkAdapters, HashMap IDToTarget) {
+			Vector arrowLinkAdapters, HashMap IDToTarget) {
 		this.mModeController = modeController;
 		this.frame = modeController.getFrame();
-		this.mArrowLinkAdapters = ArrowLinkAdapters;
-		this.mIDToTarget = IDToTarget;
+		this.mArrowLinkAdapters = arrowLinkAdapters;
+		this.mIdToTarget = IDToTarget;
 		if (logger == null) {
 			logger = frame.getLogger(this.getClass().getName());
 		}
@@ -115,6 +114,9 @@ public abstract class XMLElementAdapter extends XMLElement {
 			FreeMindMain frame);
 
 	abstract protected ArrowLinkAdapter createArrowLinkAdapter(
+			NodeAdapter source, NodeAdapter target, FreeMindMain frame);
+
+	abstract protected ArrowLinkTarget createArrowLinkTarget(
 			NodeAdapter source, NodeAdapter target, FreeMindMain frame);
 
 	abstract protected NodeAdapter createEncryptedNode(String additionalInfo);
@@ -149,6 +151,8 @@ public abstract class XMLElementAdapter extends XMLElement {
 			userObject = createCloudAdapter(null, frame);
 		} else if (name.equals("arrowlink")) {
 			userObject = createArrowLinkAdapter(null, null, frame);
+		} else if (name.equals("linktarget")) {
+			userObject = createArrowLinkTarget(null, null, frame);
 		} else if (name.equals("font")) {
 			userObject = null;
 		} else if (name.equals(XML_NODE_ATTRIBUTE)) {
@@ -205,6 +209,11 @@ public abstract class XMLElementAdapter extends XMLElement {
 				// annotate this link: (later processed by caller.).
 				// System.out.println("arrowLink="+arrowLink);
 				mArrowLinkAdapters.add(arrowLink);
+			} else if (child.getUserObject() instanceof ArrowLinkTarget) {
+				ArrowLinkTarget arrowLinkTarget = (ArrowLinkTarget) child
+						.getUserObject();
+				arrowLinkTarget.setTarget(node);
+				mArrowLinkAdapters.add(arrowLinkTarget);
 			} else if (child.getName().equals("font")) {
 				node.setFont((Font) child.getUserObject());
 			} else if (child.getName().equals(XML_NODE_ATTRIBUTE)) {
@@ -322,7 +331,7 @@ public abstract class XMLElementAdapter extends XMLElement {
 			if (name.equals("STYLE")) {
 				arrowLink.setStyle(sValue);
 			} else if (name.equals("ID")) {
-				arrowLink.setUniqueID(sValue);
+				arrowLink.setUniqueId(sValue);
 			} else if (name.equals("COLOR")) {
 				arrowLink.setColor(Tools.xmlToColor(sValue));
 			} else if (name.equals("DESTINATION")) {
@@ -339,6 +348,16 @@ public abstract class XMLElementAdapter extends XMLElement {
 				arrowLink.setEndArrow(sValue);
 			} else if (name.equals("WIDTH")) {
 				arrowLink.setWidth(Integer.parseInt(sValue));
+			}
+			return;
+		}
+
+		if (userObject instanceof ArrowLinkTarget) {
+			ArrowLinkTarget arrowLinkTarget = (ArrowLinkTarget) userObject;
+			if (name.equals("ID")) {
+				arrowLinkTarget.setUniqueId(sValue);
+			} else if (name.equals("SOURCE")) {
+				arrowLinkTarget.setSourceLabel(sValue);
 			}
 			return;
 		}
@@ -448,7 +467,7 @@ public abstract class XMLElementAdapter extends XMLElement {
 		} else if (name.equals("ID")) {
 			// do not set label but annotate in list:
 			// System.out.println("(sValue, node) = " + sValue + ", "+ node);
-			mIDToTarget.put(sValue, node);
+			mIdToTarget.put(sValue, node);
 		} else if (name.equals("VSHIFT")) {
 			node.setShiftY(Integer.parseInt(sValue));
 		} else if (name.equals("VGAP")) {
@@ -512,70 +531,101 @@ public abstract class XMLElementAdapter extends XMLElement {
 	/**
 	 * Completes the links within the getMap(). They are registered in the
 	 * registry.
+	 * 
+	 * Case I: Source+Destination are pasted (Ia: cut, Ib: copy) Case II: Source
+	 * is pasted, Destination remains unchanged in the map (IIa: cut, IIb: copy)
+	 * Case III: Destination is pasted, Source remains unchanged in the map
+	 * (IIIa: cut, IIIb: copy)
 	 */
 	public void processUnfinishedLinks(MindMapLinkRegistry registry) {
 		// add labels to the nodes:
-		setIDs(mIDToTarget, registry);
+		setIds(mIdToTarget, registry);
 		// complete arrow links with right labels:
 		for (int i = 0; i < mArrowLinkAdapters.size(); ++i) {
-			ArrowLinkAdapter arrowLink = (ArrowLinkAdapter) mArrowLinkAdapters
-					.get(i);
-			String oldID = arrowLink.getDestinationLabel();
-			NodeAdapter target = null;
-			String newID = null;
-			// find oldID in target list:
-			if (mIDToTarget.containsKey(oldID)) {
-				// link present in the xml text
-				target = (NodeAdapter) mIDToTarget.get(oldID);
-				newID = registry.getLabel(target);
-			} else if (registry.getTargetForID(oldID) != null) {
-				// link is already present in the getMap() (paste).
-				target = (NodeAdapter) registry.getTargetForID(oldID);
-				if (target == null) {
+			Object arrowObject = mArrowLinkAdapters.get(i);
+			if (arrowObject instanceof ArrowLinkAdapter) {
+				ArrowLinkAdapter arrowLink = (ArrowLinkAdapter) arrowObject;
+				// here, the source is in the paste, and the destination is now
+				// searched:
+				String oldId = arrowLink.getDestinationLabel();
+				NodeAdapter target = null;
+				String newId = null;
+				// find oldId in target list:
+				if (mIdToTarget.containsKey(oldId)) {
+					// link target present in the paste as well and has probably
+					// been renamed (case I)
+					target = (NodeAdapter) mIdToTarget.get(oldId);
+					newId = registry.getLabel(target);
+				} else if (registry.getTargetForId(oldId) != null) {
+					// link target remains in the map (case II)
+					target = (NodeAdapter) registry.getTargetForId(oldId);
+					newId = oldId;
+				} else {
 					// link target is in nowhere-land
-					logger.severe("Found the label "
-							+ oldID
-							+ ", but not the corresponding node in the map. The link "
-							+ arrowLink + " is not restored.");
+					logger.severe("Cannot find the label " + oldId
+							+ " in the map. The link " + arrowLink
+							+ " is not restored.");
 					continue;
 				}
-				newID = registry.getLabel(target);
-				if (!newID.equals(oldID)) {
-					logger.severe("Servere internal error. Looked for id "
-							+ oldID + " but found " + newID + " in the node "
-							+ target + ".");
-					continue;
-				}
-			} else {
-				// link target is in nowhere-land
-				logger.severe("Cannot find the label " + oldID
-						+ " in the map. The link " + arrowLink
-						+ " is not restored.");
-				for (Iterator iterator = mIDToTarget.keySet().iterator(); iterator
-						.hasNext();) {
-					String id = (String) iterator.next();
-					logger.severe("Old-Id: "
-							+ id
-							+ " = new id: "
-							+ ((MindMapNode) mIDToTarget.get(id))
-									.getObjectId(mModeController));
-				}
-				continue;
+				// set the new ID:
+				arrowLink.setDestinationLabel(newId);
+				// set the target:
+				arrowLink.setTarget(target);
+				// add the arrowLink:
+				registry.registerLink(arrowLink);
 			}
-			// set the new ID:
-			arrowLink.setDestinationLabel(newID);
-			// set the target:
-			arrowLink.setTarget(target);
-			// add the arrowLink:
-			// System.out.println("Node = " + target+
-			// ", oldID="+oldID+", newID="+newID);
-			registry.registerLink(arrowLink);
-
+			if (arrowObject instanceof ArrowLinkTarget) {
+				ArrowLinkTarget linkTarget = (ArrowLinkTarget) arrowObject;
+				// do the same as above and start to search for the source.
+				String oldId = linkTarget.getSourceLabel();
+				NodeAdapter source = null;
+				// find oldId in target list:
+				if (mIdToTarget.containsKey(oldId)) {
+					// link source present in the paste as well and has probably
+					// been renamed (case I), do nothing, as the source does all.
+					continue;
+				} else if (registry.getTargetForId(oldId) != null) {
+					// link source remains in the map (case III)
+					source = (NodeAdapter) registry.getTargetForId(oldId);
+				} else {
+					// link source is in nowhere-land
+					logger.severe("Cannot find the label " + oldId
+							+ " in the map. The link target " + linkTarget
+							+ " is not restored.");
+					continue;
+				}
+				// set the source:
+				linkTarget.setSource(source);
+				// here, it is getting more complex: case IIIa: the arrowLink remains,
+				// case IIIb: the arrowLink has to be doubled! First, distinguish between a and b.
+				MindMapNode target = linkTarget.getTarget();
+				String targetCurrentId = registry.getLabel(target);
+				if (!mIdToTarget.containsKey(targetCurrentId)) {
+					// the id of target has changed, we have case IIIb.
+					MindMapLink link = registry.getLinkForId(linkTarget.getUniqueId());
+					if(link == null) {
+						logger.severe("Cannot find the label " + linkTarget.getUniqueId()
+								+ " for the link in the map. The link target " + linkTarget
+								+ " is not restored.");
+					} else {
+						// double the link. 
+						MindMapLink clone = (MindMapLink) link.clone();
+						clone.setTarget(target);
+						((ArrowLinkAdapter) clone).setDestinationLabel(targetCurrentId); 
+						// add the new arrowLink and give it a new id
+						registry.registerLink(clone);
+						linkTarget.setUniqueId(clone.getUniqueId());
+					}
+				} else {
+					// case IIIa: The link must only be re-added:
+					// FIXME: something to do, here?
+				}
+			}
 		}
 	}
 
 	/** Recursive method to set the ids of the nodes. */
-	private void setIDs(HashMap IDToTarget, MindMapLinkRegistry registry) {
+	private void setIds(HashMap IDToTarget, MindMapLinkRegistry registry) {
 		for (Iterator i = IDToTarget.keySet().iterator(); i.hasNext();) {
 			String key = (String) i.next();
 			NodeAdapter target = (NodeAdapter) IDToTarget.get(key);
@@ -592,10 +642,10 @@ public abstract class XMLElementAdapter extends XMLElement {
 	}
 
 	public HashMap getIDToTarget() {
-		return mIDToTarget;
+		return mIdToTarget;
 	}
 
 	public void setIDToTarget(HashMap pToTarget) {
-		mIDToTarget = pToTarget;
+		mIdToTarget = pToTarget;
 	}
 }

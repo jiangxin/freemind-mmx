@@ -157,7 +157,7 @@ public abstract class LineAdapter implements MindMapLine {
 	protected abstract void setStandardColor(Color standardColor);
 
 	/**
-	 * See @see setStandardColor
+	 * See {@link LineAdapter.setStandardColor}
 	 */
 	protected abstract Color getStandardColor();
 

@@ -72,7 +72,7 @@ public class RemoveArrowLinkAction extends FreemindAction implements ActorXml {
      */
 	private ActionPair getActionPair(MindMapLink arrowLink) {
 		return new ActionPair(
-				createRemoveArrowLinkXmlAction(arrowLink.getUniqueID()),
+				createRemoveArrowLinkXmlAction(arrowLink.getUniqueId()),
 				createAddArrowLinkXmlAction(arrowLink));
 	}
 
@@ -93,7 +93,7 @@ public class RemoveArrowLinkAction extends FreemindAction implements ActorXml {
 	public void act(XmlAction action) {
 		if (action instanceof RemoveArrowLinkXmlAction) {
 			RemoveArrowLinkXmlAction removeAction = (RemoveArrowLinkXmlAction) action;
-			MindMapLink arrowLink = getLinkRegistry().getLinkForID(
+			MindMapLink arrowLink = getLinkRegistry().getLinkForId(
 					removeAction.getId());
 			if (arrowLink == null) {
 				// strange: link not found:
@@ -126,7 +126,7 @@ public class RemoveArrowLinkAction extends FreemindAction implements ActorXml {
 		AddArrowLinkXmlAction action = new AddArrowLinkXmlAction();
 		action.setNode(link.getSource().getObjectId(controller));
 		action.setDestination(link.getTarget().getObjectId(controller));
-		action.setNewId(link.getUniqueID());
+		action.setNewId(link.getUniqueId());
 		action.setColor(Tools.colorToXml(link.getColor()));
 		if (link instanceof MindMapArrowLink) {
 			MindMapArrowLink arrowLink = (MindMapArrowLink) link;

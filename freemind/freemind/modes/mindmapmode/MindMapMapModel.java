@@ -58,7 +58,6 @@ import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
-import freemind.modes.LinkRegistryAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.MindMapNode;
@@ -97,7 +96,7 @@ public class MindMapMapModel extends MapAdapter {
 				: new DummyLockManager();
 
 		// register new LinkRegistryAdapter
-		linkRegistry = new LinkRegistryAdapter();
+		linkRegistry = new MindMapLinkRegistry();
 
 		if (root == null)
 			root = new MindMapNodeModel(frame.getResourceString("new_mindmap"),

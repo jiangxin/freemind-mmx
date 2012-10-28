@@ -1176,7 +1176,7 @@ public abstract class ControllerAdapter implements ModeController, DirectoryResu
 	 */
 	public NodeAdapter getNodeFromID(String nodeID) {
 		NodeAdapter node = (NodeAdapter) getMap().getLinkRegistry()
-				.getTargetForID(nodeID);
+				.getTargetForId(nodeID);
 		if (node == null) {
 			throw new IllegalArgumentException("Node belonging to the node id "
 					+ nodeID + " not found in map " + getMap().getFile());

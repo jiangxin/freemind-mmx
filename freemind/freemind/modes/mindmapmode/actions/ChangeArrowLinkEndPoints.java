@@ -76,7 +76,7 @@ public class ChangeArrowLinkEndPoints extends FreemindAction implements
 		if (action instanceof ArrowLinkPointXmlAction) {
 			ArrowLinkPointXmlAction pointAction = (ArrowLinkPointXmlAction) action;
 			MindMapArrowLink link = (MindMapArrowLink) getLinkRegistry()
-					.getLinkForID(pointAction.getId());
+					.getLinkForId(pointAction.getId());
 			link.setStartInclination(Tools.xmlToPoint(pointAction
 					.getStartPoint()));
 			link.setEndInclination(Tools.xmlToPoint(pointAction.getEndPoint()));
@@ -111,7 +111,7 @@ public class ChangeArrowLinkEndPoints extends FreemindAction implements
 		ArrowLinkPointXmlAction action = new ArrowLinkPointXmlAction();
 		action.setStartPoint(Tools.PointToXml(startPoint));
 		action.setEndPoint(Tools.PointToXml(endPoint));
-		action.setId(arrowLink.getUniqueID());
+		action.setId(arrowLink.getUniqueId());
 		return action;
 	}
 

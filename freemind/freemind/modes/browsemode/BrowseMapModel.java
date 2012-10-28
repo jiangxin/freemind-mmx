@@ -29,7 +29,6 @@ import java.security.AccessControlException;
 import java.util.HashMap;
 
 import freemind.main.FreeMindMain;
-import freemind.modes.LinkRegistryAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.ModeController;
@@ -55,7 +54,7 @@ public class BrowseMapModel extends MapAdapter {
 			setRoot(new BrowseNodeModel(getFrame().getResourceString(
 					"new_mindmap"), getFrame(), modeController.getMap()));
 		// register new LinkRegistryAdapter
-		linkRegistry = new LinkRegistryAdapter();
+		linkRegistry = new MindMapLinkRegistry();
 	}
 
 	//

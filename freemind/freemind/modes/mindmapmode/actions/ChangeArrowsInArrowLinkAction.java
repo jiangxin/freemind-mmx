@@ -83,7 +83,7 @@ public class ChangeArrowsInArrowLinkAction extends FreemindAction implements
 	public void act(XmlAction action) {
 		if (action instanceof ArrowLinkArrowXmlAction) {
 			ArrowLinkArrowXmlAction arrowAction = (ArrowLinkArrowXmlAction) action;
-			MindMapLink link = getLinkRegistry().getLinkForID(
+			MindMapLink link = getLinkRegistry().getLinkForId(
 					arrowAction.getId());
 			((ArrowLinkAdapter) link)
 					.setStartArrow(arrowAction.getStartArrow());
@@ -111,7 +111,7 @@ public class ChangeArrowsInArrowLinkAction extends FreemindAction implements
 		ArrowLinkArrowXmlAction action = new ArrowLinkArrowXmlAction();
 		action.setStartArrow(hasStartArrow);
 		action.setEndArrow(hasEndArrow);
-		action.setId(arrowLink.getUniqueID());
+		action.setId(arrowLink.getUniqueId());
 		return action;
 	}
 

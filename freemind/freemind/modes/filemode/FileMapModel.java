@@ -26,7 +26,6 @@ import java.io.Writer;
 import java.net.URL;
 
 import freemind.main.FreeMindMain;
-import freemind.modes.LinkRegistryAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.MindMapNode;
@@ -49,7 +48,7 @@ public class FileMapModel extends MapAdapter {
 		super(frame, modeController);
 		setRoot(new FileNodeModel(root, getFrame(), this));
 		getRootNode().setFolded(false);
-		linkRegistry = new LinkRegistryAdapter();
+		linkRegistry = new MindMapLinkRegistry();
 	}
 
 	//

@@ -1139,6 +1139,16 @@ public abstract class NodeAdapter implements MindMapNode {
 			}
 		}
 
+		// virtual link targets:
+		Vector targetVector = registry.getAllLinksIntoMe(this);
+		for (int i = 0; i < targetVector.size(); ++i) {
+			if (targetVector.get(i) instanceof ArrowLinkAdapter) {
+				XMLElement arrowLinkTargetElement = ((ArrowLinkAdapter) targetVector
+						.get(i)).createArrowLinkTarget(registry).save();
+				node.addChild(arrowLinkTargetElement);
+			}
+		}
+		
 		if (isFolded()) {
 			node.setAttribute("FOLDED", "true");
 		}
