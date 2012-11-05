@@ -22,6 +22,8 @@ package freemind.modes;
 
 import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
+import freemind.modes.mindmapmode.MindMapArrowLinkModel;
+import freemind.view.mindmapview.MapView;
 
 /**
  * Stores targets of arrow links. It is used to enable cut/copy+paste for every
@@ -30,12 +32,8 @@ import freemind.main.XMLElement;
  * @author foltin
  * @date 27.10.2012
  */
-public class ArrowLinkTarget {
-	private String mUniqueId;
-	private MindMapNode mSource;
+public class ArrowLinkTarget extends ArrowLinkAdapter {
 	private String mSourceLabel;
-	private MindMapNode mTarget;
-	private FreeMindMain mFrame;
 
 	/**
 	 * @param pSource
@@ -44,26 +42,7 @@ public class ArrowLinkTarget {
 	 */
 	public ArrowLinkTarget(MindMapNode pSource, MindMapNode pTarget,
 			FreeMindMain pFrame) {
-		mSource = pSource;
-		setTarget(pTarget);
-		mFrame = pFrame;
-	}
-
-	MindMapNode getSource() {
-		return mSource;
-	}
-
-	/** The id is automatically set on creation. Is saved and restored. */
-	public String getUniqueId() {
-		return mUniqueId;
-	}
-
-	public void setUniqueId(String uniqueId) {
-		mUniqueId = uniqueId;
-	}
-
-	public void setSource(MindMapNode source) {
-		mSource = source;
+		super(pSource, pTarget, pFrame);
 	}
 
 	public String getSourceLabel() {
@@ -75,23 +54,26 @@ public class ArrowLinkTarget {
 	}
 
 	public XMLElement save() {
-		XMLElement arrowLink = new XMLElement();
+		XMLElement arrowLink = super.save();
 		arrowLink.setName("linktarget");
-
-		if (getUniqueId() != null) {
-			arrowLink.setAttribute("ID", getUniqueId());
-		}
 		if (getSourceLabel() != null) {
 			arrowLink.setAttribute("SOURCE", getSourceLabel());
 		}
 		return arrowLink;
 	}
 
-	public MindMapNode getTarget() {
-		return mTarget;
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapArrowLink#changeInclination(freemind.view.mindmapview.MapView, int, int, int, int)
+	 */
+	public void changeInclination(MapView pMap, int pOriginX, int pOriginY,
+			int pDeltaX, int pDeltaY) {
 	}
 
-	public void setTarget(MindMapNode pTarget) {
-		mTarget = pTarget;
+	public ArrowLinkAdapter createArrowLinkAdapter(MindMapLinkRegistry pRegistry) {
+		ArrowLinkAdapter linkAdapter = new MindMapArrowLinkModel(source, target, frame);
+		copy(linkAdapter);
+		return linkAdapter;
 	}
+
+
 }

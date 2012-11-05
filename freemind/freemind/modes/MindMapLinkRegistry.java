@@ -96,7 +96,7 @@ public class MindMapLinkRegistry {
 	/** id -> link */
 	protected HashMap mIdToLink;
 	/** id */
-	protected HashSet mLocallyLinkedIDs;
+	protected HashSet mLocallyLinkedIds;
 
 	// bug fix from Dimitri.
 	protected static Random ran = new Random();
@@ -115,11 +115,12 @@ public class MindMapLinkRegistry {
 		mIdToTarget = new HashMap();
 		mIdToLinks = new HashMap();
 		mIdToLink = new HashMap();
-		mLocallyLinkedIDs = new HashSet();
+		mLocallyLinkedIds = new HashSet();
 	};
 
 	/**
-	 * This can be used, if the id has to be known, before a node can be labeled.
+	 * This can be used, if the id has to be known, before a node can be
+	 * labeled.
 	 */
 	public String generateUniqueID(String proposedID) {
 		return generateID(proposedID, mIdToLinks, "ID_");
@@ -189,8 +190,7 @@ public class MindMapLinkRegistry {
 
 		// logger.fine("Register target node:"+target+", with ID="+newID);
 		/*
-		 * This is to allocate the link target in
-		 * the IDToLinks map!.
+		 * This is to allocate the link target in the IDToLinks map!.
 		 */
 		getAssignedLinksVector(newId);
 		return newId;
@@ -216,8 +216,7 @@ public class MindMapLinkRegistry {
 	}
 
 	/** @return a Vector of {@link MindMapLink}s */
-	private Vector getAssignedLinksVector(
-			String newId) {
+	private Vector getAssignedLinksVector(String newId) {
 		String id = newId;
 		// look, if target is already present:
 		Vector vec;
@@ -236,12 +235,19 @@ public class MindMapLinkRegistry {
 	/** If there are still targets registered, they are removed, too. */
 	public void deregisterLinkTarget(MindMapNode target)
 			throws java.lang.IllegalArgumentException {
+		// deregister all links :
+		Vector links = getAllLinks(target);
+		for (int i = links.size() - 1; i >= 0; --i) {
+			MindMapLink link = (MindMapLink) links.get(i);
+			deregisterLink(link);
+		}
+		// and process my sons:
+		for (ListIterator e = target.childrenUnfolded(); e.hasNext();) {
+			MindMapNode child = (MindMapNode) e.next();
+			deregisterLinkTarget(child);
+		}
 		String id = getState(target);
 		if (id != null) {
-			Vector vec = getAssignedLinksVector(id);
-			for (int i = vec.size() - 1; i >= 0; --i) {
-				deregisterLink((MindMapLink) vec.get(i));
-			}
 			// logger.fine("Deregister target node:"+target);
 			mTargetToId.remove(target);
 			mIdToTarget.remove(id);
@@ -289,7 +295,6 @@ public class MindMapLinkRegistry {
 	};
 
 	public void deregisterLink(MindMapLink link) {
-		MindMapNode source = link.getSource();
 		MindMapNode target = link.getTarget();
 		String id = _registerLinkTarget(target);
 		Vector vec = getAssignedLinksVector(id);
@@ -298,8 +303,8 @@ public class MindMapLinkRegistry {
 			// vec.get(i));
 			if (vec.get(i) == link) {
 				vec.removeElementAt(i);
-				// logger.fine("Deregister link  ("+link+") from source node:"+source+" to target "
-				// + target);
+				logger.info("Deregister link  (" + link + ") from source node:"
+						+ link.getSource() + " to target " + target);
 			}
 		}
 		mIdToLink.remove(link.getUniqueId());
@@ -309,14 +314,17 @@ public class MindMapLinkRegistry {
 	 * Reverses the getUniqueID method: searches for a link with the id given as
 	 * the argument.
 	 */
-	public MindMapLink getLinkForId(String ID) {
-		if (mIdToLink.containsKey(ID)) {
-			return (MindMapLink) mIdToLink.get(ID);
+	public MindMapLink getLinkForId(String pId) {
+		if (mIdToLink.containsKey(pId)) {
+			return (MindMapLink) mIdToLink.get(pId);
 		}
 		return null;
 	}
 
-	/** @return Returns a Vector of {@link MindMapNode}s that point to the given target node. */
+	/**
+	 * @return Returns a Vector of {@link MindMapNode}s that point to the given
+	 *         target node.
+	 */
 	public Vector /* of MindMapNode s */getAllSources(MindMapNode target) {
 		Vector returnValue;
 		returnValue = new Vector();
@@ -366,38 +374,11 @@ public class MindMapLinkRegistry {
 		return getState(target);
 	}
 
-	/** Removes links to all nodes beginning from target with its children. */
-	public void cutNode(MindMapNode target) {
-		// logger.entering("LinkRegistryAdapter", "cutNode", target);
-		String id = getState(target);
-		if (id != null) {
-			// there is a registered target id.
-			// deregister all links to me:
-			Vector links = getAllLinksIntoMe(target);
-			for (int i = links.size() - 1; i >= 0; --i) {
-				MindMapLink link = (MindMapLink) links.get(i);
-				deregisterLink(link);
-			}
-		}
-		// deregister all links from me:
-		Vector links = getAllLinksFromMe(target);
-		for (int i = links.size() - 1; i >= 0; --i) {
-			MindMapLink link = (MindMapLink) links.get(i);
-			deregisterLink(link);
-		}
-		// and process my sons:
-		for (ListIterator e = target.childrenUnfolded(); e.hasNext();) {
-			MindMapNode child = (MindMapNode) e.next();
-			cutNode(child);
-		}
-		// logger.exiting("LinkRegistryAdapter", "cutNode", target);
-	}
-
 	public void registerLocalHyperlinkId(String pTargetId) {
-		mLocallyLinkedIDs.add(pTargetId);
+		mLocallyLinkedIds.add(pTargetId);
 	}
 
 	public boolean isTargetOfLocalHyperlinks(String pTargetId) {
-		return mLocallyLinkedIDs.contains(pTargetId);
+		return mLocallyLinkedIds.contains(pTargetId);
 	}
 }

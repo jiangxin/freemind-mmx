@@ -26,6 +26,7 @@ package freemind.modes.mindmapmode.actions;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -113,10 +114,13 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
 				.deregisterLinkTarget(selectedNode);
 		MapView view = mMindMapController.getView();
 		NodeView nodeView = view.getNodeView(selectedNode);
-		if (view.getSelecteds().size() > 1) {
+		// Deselect only, if selected!
+		LinkedList selecteds = view.getSelecteds();
+		if (selecteds.contains(nodeView)){
 			view.deselect(nodeView);
-		} else {
-			view.selectAsTheOnlyOneSelected(view.getNodeView(parent));
+			if(selecteds.size() == 1) {
+				view.selectAsTheOnlyOneSelected(view.getNodeView(parent));
+			}
 		}
 		mMindMapController.removeNodeFromParent(selectedNode);
 		// post event

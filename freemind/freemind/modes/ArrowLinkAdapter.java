@@ -153,9 +153,24 @@ public abstract class ArrowLinkAdapter extends LinkAdapter implements
 	
 	public ArrowLinkTarget createArrowLinkTarget(MindMapLinkRegistry pRegistry) {
 		ArrowLinkTarget linkTarget = new ArrowLinkTarget(source, target, frame);
-		linkTarget.setUniqueId(getUniqueId());
 		linkTarget.setSourceLabel(pRegistry.getLabel(source));
+		copy(linkTarget);
 		return linkTarget;
+	}
+
+	protected void copy(ArrowLinkAdapter linkTarget) {
+		linkTarget.setUniqueId(getUniqueId());
+		linkTarget.setColor(getColor());
+		linkTarget.setDestinationLabel(getDestinationLabel());
+		linkTarget.setEndArrow(getEndArrow());
+		linkTarget.setEndInclination(getEndInclination());
+		linkTarget.setReferenceText(getReferenceText());
+		linkTarget.setStartArrow(getStartArrow());
+		linkTarget.setStartInclination(getStartInclination());
+		linkTarget.setStyle(getStyle());
+		linkTarget.setTarget(getTarget());
+		linkTarget.setWidth(getWidth());
+		linkTarget.setSource(getSource());
 	}
 
 }

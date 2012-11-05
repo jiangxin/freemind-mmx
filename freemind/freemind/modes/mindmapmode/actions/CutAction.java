@@ -138,7 +138,7 @@ public class CutAction extends AbstractAction implements ActorXml {
 		CutNodeAction cutAction = (CutNodeAction) action;
 		MindMapNode selectedNode = mMindMapController.getNodeFromID(cutAction
 				.getNode());
-		mMindMapController.getModel().getLinkRegistry().cutNode(selectedNode);
+		mMindMapController.getModel().getLinkRegistry().deregisterLinkTarget(selectedNode);
 		mMindMapController.deleteChild.deleteWithoutUndo(selectedNode);
 	}
 

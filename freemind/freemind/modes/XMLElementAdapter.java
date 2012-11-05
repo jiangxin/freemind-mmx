@@ -202,6 +202,13 @@ public abstract class XMLElementAdapter extends XMLElement {
 				CloudAdapter cloud = (CloudAdapter) child.getUserObject();
 				cloud.setTarget(node);
 				node.setCloud(cloud);
+			} else if (child.getUserObject() instanceof ArrowLinkTarget) {
+				// ArrowLinkTarget is derived from ArrowLinkAdapter, so it must
+				// be checked first.
+				ArrowLinkTarget arrowLinkTarget = (ArrowLinkTarget) child
+						.getUserObject();
+				arrowLinkTarget.setTarget(node);
+				mArrowLinkAdapters.add(arrowLinkTarget);
 			} else if (child.getUserObject() instanceof ArrowLinkAdapter) {
 				ArrowLinkAdapter arrowLink = (ArrowLinkAdapter) child
 						.getUserObject();
@@ -209,11 +216,6 @@ public abstract class XMLElementAdapter extends XMLElement {
 				// annotate this link: (later processed by caller.).
 				// System.out.println("arrowLink="+arrowLink);
 				mArrowLinkAdapters.add(arrowLink);
-			} else if (child.getUserObject() instanceof ArrowLinkTarget) {
-				ArrowLinkTarget arrowLinkTarget = (ArrowLinkTarget) child
-						.getUserObject();
-				arrowLinkTarget.setTarget(node);
-				mArrowLinkAdapters.add(arrowLinkTarget);
 			} else if (child.getName().equals("font")) {
 				node.setFont((Font) child.getUserObject());
 			} else if (child.getName().equals(XML_NODE_ATTRIBUTE)) {
@@ -349,15 +351,11 @@ public abstract class XMLElementAdapter extends XMLElement {
 			} else if (name.equals("WIDTH")) {
 				arrowLink.setWidth(Integer.parseInt(sValue));
 			}
-			return;
-		}
-
-		if (userObject instanceof ArrowLinkTarget) {
-			ArrowLinkTarget arrowLinkTarget = (ArrowLinkTarget) userObject;
-			if (name.equals("ID")) {
-				arrowLinkTarget.setUniqueId(sValue);
-			} else if (name.equals("SOURCE")) {
-				arrowLinkTarget.setSourceLabel(sValue);
+			if (userObject instanceof ArrowLinkTarget) {
+				ArrowLinkTarget arrowLinkTarget = (ArrowLinkTarget) userObject;
+				if (name.equals("SOURCE")) {
+					arrowLinkTarget.setSourceLabel(sValue);
+				}
 			}
 			return;
 		}
@@ -543,7 +541,60 @@ public abstract class XMLElementAdapter extends XMLElement {
 		// complete arrow links with right labels:
 		for (int i = 0; i < mArrowLinkAdapters.size(); ++i) {
 			Object arrowObject = mArrowLinkAdapters.get(i);
-			if (arrowObject instanceof ArrowLinkAdapter) {
+			if (arrowObject instanceof ArrowLinkTarget) {
+				ArrowLinkTarget linkTarget = (ArrowLinkTarget) arrowObject;
+				// do the same as for ArrowLinkAdapter and start to search for the source.
+				String oldId = linkTarget.getSourceLabel();
+				MindMapNode source = (MindMapNode) registry.getTargetForId(oldId);
+				// find oldId in target list:
+				if (mIdToTarget.containsKey(oldId)) {
+					// link source present in the paste as well and has probably
+					// been renamed (case I), do nothing, as the source does
+					// all.
+					continue;
+				} else if (source == null) {
+					// link source is in nowhere-land
+					logger.severe("Cannot find the label " + oldId
+							+ " in the map. The link target " + linkTarget
+							+ " is not restored.");
+					continue;
+				}
+				// link source remains in the map (case III)
+				// set the source:
+				linkTarget.setSource(source);
+				// here, it is getting more complex: case IIIa: the arrowLink
+				// has to be recreated.
+				// case IIIb: the arrowLink has to be doubled! First,
+				// distinguish between a and b.
+				MindMapNode target = linkTarget.getTarget();
+				String targetCurrentId = registry.getLabel(target);
+				if (!mIdToTarget.containsKey(targetCurrentId)) {
+					// the id of target has changed, we have case IIIb.
+					MindMapLink link = registry.getLinkForId(linkTarget
+							.getUniqueId());
+					if (link == null) {
+						logger.severe("Cannot find the label "
+								+ linkTarget.getUniqueId()
+								+ " for the link in the map. The link target "
+								+ linkTarget + " is not restored.");
+						continue;
+					} else {
+						// double the link.
+						MindMapLink clone = (MindMapLink) link.clone();
+						clone.setTarget(target);
+						((ArrowLinkAdapter) clone)
+								.setDestinationLabel(targetCurrentId);
+						// add the new arrowLink and give it a new id
+						registry.registerLink(clone);
+						linkTarget.setUniqueId(clone.getUniqueId());
+					}
+				} else {
+					// case IIIa: The link must only be re-added:
+					// change from linkTarget to ArrowLinkAdapter and add it:
+					ArrowLinkAdapter linkAdapter = linkTarget.createArrowLinkAdapter(registry);
+					registry.registerLink(linkAdapter);
+				}
+			} else if (arrowObject instanceof ArrowLinkAdapter) {
 				ArrowLinkAdapter arrowLink = (ArrowLinkAdapter) arrowObject;
 				// here, the source is in the paste, and the destination is now
 				// searched:
@@ -573,53 +624,6 @@ public abstract class XMLElementAdapter extends XMLElement {
 				arrowLink.setTarget(target);
 				// add the arrowLink:
 				registry.registerLink(arrowLink);
-			}
-			if (arrowObject instanceof ArrowLinkTarget) {
-				ArrowLinkTarget linkTarget = (ArrowLinkTarget) arrowObject;
-				// do the same as above and start to search for the source.
-				String oldId = linkTarget.getSourceLabel();
-				NodeAdapter source = null;
-				// find oldId in target list:
-				if (mIdToTarget.containsKey(oldId)) {
-					// link source present in the paste as well and has probably
-					// been renamed (case I), do nothing, as the source does all.
-					continue;
-				} else if (registry.getTargetForId(oldId) != null) {
-					// link source remains in the map (case III)
-					source = (NodeAdapter) registry.getTargetForId(oldId);
-				} else {
-					// link source is in nowhere-land
-					logger.severe("Cannot find the label " + oldId
-							+ " in the map. The link target " + linkTarget
-							+ " is not restored.");
-					continue;
-				}
-				// set the source:
-				linkTarget.setSource(source);
-				// here, it is getting more complex: case IIIa: the arrowLink remains,
-				// case IIIb: the arrowLink has to be doubled! First, distinguish between a and b.
-				MindMapNode target = linkTarget.getTarget();
-				String targetCurrentId = registry.getLabel(target);
-				if (!mIdToTarget.containsKey(targetCurrentId)) {
-					// the id of target has changed, we have case IIIb.
-					MindMapLink link = registry.getLinkForId(linkTarget.getUniqueId());
-					if(link == null) {
-						logger.severe("Cannot find the label " + linkTarget.getUniqueId()
-								+ " for the link in the map. The link target " + linkTarget
-								+ " is not restored.");
-					} else {
-						// double the link. 
-						MindMapLink clone = (MindMapLink) link.clone();
-						clone.setTarget(target);
-						((ArrowLinkAdapter) clone).setDestinationLabel(targetCurrentId); 
-						// add the new arrowLink and give it a new id
-						registry.registerLink(clone);
-						linkTarget.setUniqueId(clone.getUniqueId());
-					}
-				} else {
-					// case IIIa: The link must only be re-added:
-					// FIXME: something to do, here?
-				}
 			}
 		}
 	}
