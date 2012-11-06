@@ -116,7 +116,7 @@ public class MindMapLinkRegistry {
 		mIdToLinks = new HashMap();
 		mIdToLink = new HashMap();
 		mLocallyLinkedIds = new HashSet();
-	};
+	}
 
 	/**
 	 * This can be used, if the id has to be known, before a node can be
@@ -131,7 +131,7 @@ public class MindMapLinkRegistry {
 	 */
 	public String generateUniqueLinkId(String proposedID) {
 		return generateID(proposedID, mIdToLink, "Arrow_ID_");
-	};
+	}
 
 	private String generateID(String proposedID, HashMap hashMap, String prefix) {
 		String myProposedID = new String((proposedID != null) ? proposedID : "");
@@ -152,7 +152,7 @@ public class MindMapLinkRegistry {
 			}
 		} while (hashMap.containsKey(returnValue));
 		return returnValue;
-	};
+	}
 
 	public void registerLinkTarget(MindMapNode pTarget) {
 		_registerLinkTarget(pTarget);
@@ -194,7 +194,7 @@ public class MindMapLinkRegistry {
 		 */
 		getAssignedLinksVector(newId);
 		return newId;
-	};
+	}
 
 	/**
 	 * @param node
@@ -204,7 +204,7 @@ public class MindMapLinkRegistry {
 		if (mTargetToId.containsKey(node))
 			return (String) mTargetToId.get(node);
 		return null;
-	};
+	}
 
 	/**
 	 * Reverses the getLabel method: searches for a node with the id given as
@@ -292,7 +292,7 @@ public class MindMapLinkRegistry {
 			}
 		}
 		mIdToLink.put(link.getUniqueId(), link);
-	};
+	}
 
 	public void deregisterLink(MindMapLink link) {
 		MindMapNode target = link.getTarget();
@@ -308,7 +308,7 @@ public class MindMapLinkRegistry {
 			}
 		}
 		mIdToLink.remove(link.getUniqueId());
-	};
+	}
 
 	/**
 	 * Reverses the getUniqueID method: searches for a link with the id given as
@@ -336,7 +336,7 @@ public class MindMapLinkRegistry {
 			}
 		}
 		return returnValue;
-	};
+	}
 
 	/** @return returns all links from or to this node. */
 	public Vector /* of MindMapLink s */getAllLinks(MindMapNode node) {
@@ -346,7 +346,7 @@ public class MindMapLinkRegistry {
 		// Dimitry : logger is a performance killer here
 		// //logger.fine("All links  ("+returnValue+") from  node:"+node);
 		return returnValue;
-	};
+	}
 
 	/** @return returns all links to this node as {@link MindMapLink} vector. */
 	public Vector getAllLinksIntoMe(MindMapNode target) {
