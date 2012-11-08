@@ -27,6 +27,9 @@ import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
 
 /**
+ * This implements the "destination" of a clone. It clones every action from a
+ * source node (and vice versa).
+ * 
  * @author foltin
  * @date 29.04.2011
  */

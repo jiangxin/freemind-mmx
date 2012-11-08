@@ -41,7 +41,8 @@ import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.NodeHookAction;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 
-/**
+/** This is the "paste node as clone" action from the menu.
+ * 
  * @author foltin
  * @date 25.4.2011
  * 

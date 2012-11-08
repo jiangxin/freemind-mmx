@@ -3,8 +3,15 @@
 
  <xs:element name='Parameters'>
   <xs:complexType>
-	  <!--Is the time management plugin.-->
    <xs:attribute name='REMINDUSERAT' type='xs:integer' use='optional'/>
+   <xs:attribute name='ORIGINAL_ID' type='xs:string' use='optional'/>
+   <xs:attribute name='XML_STORAGE_MAP_LAT' type='xs:string' use='optional'/>
+   <xs:attribute name='XML_STORAGE_MAP_LON' type='xs:string' use='optional'/>
+   <xs:attribute name='XML_STORAGE_MAP_TOOLTIP_LOCATION' type='xs:string' use='optional'/>
+   <xs:attribute name='XML_STORAGE_POS_LAT' type='xs:string' use='optional'/>
+   <xs:attribute name='XML_STORAGE_POS_LON' type='xs:string' use='optional'/>
+   <xs:attribute name='XML_STORAGE_TILE_SOURCE' type='xs:string' use='optional'/>
+   <xs:attribute name='XML_STORAGE_ZOOM' type='xs:string' use='optional'/>
   </xs:complexType>
  </xs:element>
  <!--Used for node notes.-->
@@ -15,6 +22,19 @@
  <xs:element name='arrowlink'>
   <xs:complexType>
    <xs:attribute name='COLOR' type='xs:string' use='optional'/>
+   <xs:attribute name='DESTINATION' type='xs:string' use='required'/>
+   <xs:attribute name='ENDARROW' type='xs:string' use='optional'/>
+   <xs:attribute name='ENDINCLINATION' type='xs:string' use='optional'/>
+   <xs:attribute name='ID' type='xs:string' use='optional'/>
+   <xs:attribute name='STARTARROW' type='xs:string' use='optional'/>
+   <xs:attribute name='STARTINCLINATION' type='xs:string' use='optional'/>
+  </xs:complexType>
+ </xs:element>
+
+ <xs:element name='linktarget'>
+  <xs:complexType>
+   <xs:attribute name='COLOR' type='xs:string' use='optional'/>
+   <xs:attribute name='SOURCE' type='xs:string' use='required'/>
    <xs:attribute name='DESTINATION' type='xs:string' use='required'/>
    <xs:attribute name='ENDARROW' type='xs:string' use='optional'/>
    <xs:attribute name='ENDINCLINATION' type='xs:string' use='optional'/>
@@ -116,6 +136,7 @@
   <xs:complexType>
    <xs:choice minOccurs='0' maxOccurs='unbounded'>
     <xs:element ref='arrowlink'/>
+    <xs:element ref='linktarget'/>
     <xs:element ref='cloud'/>
     <xs:element ref='edge'/>
     <xs:element ref='font'/>
