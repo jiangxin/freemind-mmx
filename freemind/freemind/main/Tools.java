@@ -66,11 +66,13 @@ import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.Vector;
@@ -132,6 +134,10 @@ public class Tools {
 	private static Set availableFontFamilyNames = null; // Keep set of platform
 
 	private static String sEnvFonts[] = null;
+
+
+	// bug fix from Dimitri.
+	public static Random ran = new Random();
 
 	// fonts
 
@@ -1921,6 +1927,27 @@ public class Tools {
 
 	public static XmlAction deepCopy(XmlAction action) {
 		return (XmlAction) unMarshall(marshall(action));
+	}
+
+	public static String generateID(String proposedID, HashMap hashMap, String prefix) {
+		String myProposedID = new String((proposedID != null) ? proposedID : "");
+		String returnValue;
+		do {
+			if (!myProposedID.isEmpty()) {
+				// there is a proposal:
+				returnValue = myProposedID;
+				// this string is tried only once:
+				myProposedID = "";
+			} else {
+				/*
+				 * The prefix is to enable the id to be an ID in the sense of
+				 * XML/DTD.
+				 */
+				returnValue = prefix
+						+ Integer.toString(Tools.ran.nextInt(2000000000));
+			}
+		} while (hashMap.containsKey(returnValue));
+		return returnValue;
 	}
 
 }

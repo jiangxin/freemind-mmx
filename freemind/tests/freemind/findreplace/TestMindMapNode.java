@@ -180,7 +180,7 @@ final class TestMindMapNode implements MindMapNode {
 		return null;
 	}
 
-	public boolean isChildOf(MindMapNode node) {
+	public boolean isDescendantOf(MindMapNode node) {
 		return false;
 	}
 
@@ -476,7 +476,7 @@ final class TestMindMapNode implements MindMapNode {
 		return true;
 	}
 
-	public boolean isChildOfOrEqual(MindMapNode pParentNode) {
+	public boolean isDescendantOfOrEqual(MindMapNode pParentNode) {
 		// TODO Auto-generated method stub
 		return false;
 	}

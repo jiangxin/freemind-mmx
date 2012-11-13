@@ -70,6 +70,9 @@
 			--><xsl:when test="@version='1.0.0'"><!--
 			-->1001000<!-- 
 			--></xsl:when><!--
+			--><xsl:when test="@version='1.0.1'"><!--
+			-->1002000<!-- 
+			--></xsl:when><!--
 			--><xsl:otherwise><!--
 			-->-1<!--
 			--></xsl:otherwise><!--
@@ -100,6 +103,33 @@
 	<xsl:template match="node/@AA_NODE_CLASS"/>
 	<xsl:template match="node/@ADDITIONAL_INFO"/>
 	<xsl:template match="node/attrlayout"/>
+	<!-- Only for old clones: -->
+	<xsl:template match="hook[@NAME='accessories/plugins/ClonePlugin.properties' and not(Parameters)]">
+		<hook NAME="accessories/plugins/ClonePlugin.properties">
+				<xsl:element name="Parameters">
+					<xsl:attribute name="CLONE_ID">
+						<xsl:text>CONVERTED_</xsl:text><xsl:value-of 
+							select="../@ID"/>
+					</xsl:attribute>
+				</xsl:element>
+		</hook>
+	
+	</xsl:template>
+	<xsl:template match="hook[@NAME='accessories/plugins/ShadowClonePlugin.properties']">
+		<hook NAME="accessories/plugins/ClonePlugin.properties">
+				<xsl:element name="Parameters">
+					<xsl:attribute name="CLONE_IDS">
+						<xsl:value-of 
+							select="Parameters/@ORIGINAL_ID"/><xsl:text>,</xsl:text>
+					</xsl:attribute>
+					<xsl:attribute name="CLONE_ID">
+						<xsl:text>CONVERTED_</xsl:text><xsl:value-of 
+							select="Parameters/@ORIGINAL_ID"/>
+					</xsl:attribute>
+				</xsl:element>
+		</hook>
+	
+	</xsl:template>
 	
 	<xsl:template match="node">
 		<xsl:param name="version">-1</xsl:param>

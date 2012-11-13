@@ -163,6 +163,9 @@ public class PermanentNodeHookAdapter extends NodeHookAdapter implements
 	 */
 	protected HashMap loadNameValuePairs(XMLElement xml) {
 		HashMap result = new HashMap();
+		if(xml.getChildren().isEmpty()) {
+			return result;
+		}
 		XMLElement child = (XMLElement) xml.getChildren().get(0);
 		if (child != null && PARAMETERS.equals(child.getName())) {
 			for (Iterator i = child.enumerateAttributeNames(); i.hasNext();) {

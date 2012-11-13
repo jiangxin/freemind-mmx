@@ -52,7 +52,7 @@ public abstract class NodeHookAdapter extends HookAdapter implements NodeHook {
 
 	/**
 	 */
-	protected MindMapNode getNode() {
+	public MindMapNode getNode() {
 		return node;
 	}
 

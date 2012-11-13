@@ -632,24 +632,24 @@ public abstract class NodeAdapter implements MindMapNode {
 		return getText();
 	}
 
-	public boolean isChildOf(MindMapNode pParentNode) {
+	public boolean isDescendantOf(MindMapNode pParentNode) {
 		if (this.isRoot())
 			return false;
 		else if (pParentNode == getParentNode())
 			return true;
 		else
-			return getParentNode().isChildOf(pParentNode);
+			return getParentNode().isDescendantOf(pParentNode);
 	}
 
 	public boolean isRoot() {
 		return (parent == null);
 	}
 
-	public boolean isChildOfOrEqual(MindMapNode pParentNode) {
+	public boolean isDescendantOfOrEqual(MindMapNode pParentNode) {
 		if (this == pParentNode) {
 			return true;
 		}
-		return isChildOf(pParentNode);
+		return isDescendantOf(pParentNode);
 	}
 
 	public boolean hasChildren() {

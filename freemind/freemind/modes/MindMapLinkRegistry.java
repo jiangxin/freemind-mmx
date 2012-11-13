@@ -24,8 +24,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.ListIterator;
-import java.util.Random;
 import java.util.Vector;
+
+import freemind.main.Tools;
 
 /**
  * Interface for the registry, which manages the ids of nodes and the existing
@@ -98,9 +99,6 @@ public class MindMapLinkRegistry {
 	/** id */
 	protected HashSet mLocallyLinkedIds;
 
-	// bug fix from Dimitri.
-	protected static Random ran = new Random();
-
 	protected static java.util.logging.Logger logger = null;
 
 	// //////////////////////////////////////////////////////////////////////////////////////
@@ -123,35 +121,14 @@ public class MindMapLinkRegistry {
 	 * labeled.
 	 */
 	public String generateUniqueID(String proposedID) {
-		return generateID(proposedID, mIdToLinks, "ID_");
+		return Tools.generateID(proposedID, mIdToLinks, "ID_");
 	}
 
 	/**
 	 * This can be used, if the id has to be known, before a link can be labled.
 	 */
 	public String generateUniqueLinkId(String proposedID) {
-		return generateID(proposedID, mIdToLink, "Arrow_ID_");
-	}
-
-	private String generateID(String proposedID, HashMap hashMap, String prefix) {
-		String myProposedID = new String((proposedID != null) ? proposedID : "");
-		String returnValue;
-		do {
-			if (!myProposedID.isEmpty()) {
-				// there is a proposal:
-				returnValue = myProposedID;
-				// this string is tried only once:
-				myProposedID = "";
-			} else {
-				/*
-				 * The prefix is to enable the id to be an ID in the sense of
-				 * XML/DTD.
-				 */
-				returnValue = prefix
-						+ Integer.toString(ran.nextInt(2000000000));
-			}
-		} while (hashMap.containsKey(returnValue));
-		return returnValue;
+		return Tools.generateID(proposedID, mIdToLink, "Arrow_ID_");
 	}
 
 	public void registerLinkTarget(MindMapNode pTarget) {
