@@ -19,6 +19,8 @@
  */
 package accessories.plugins;
 
+import java.awt.EventQueue;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -56,7 +58,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	 * Includes the original node. This is a cached list with the MindMapNodes
 	 * belonging to the {@link ClonePlugin#mCloneNodeIds mCloneNodeIds}.
 	 */
-	private Vector mCloneNodes;
+	private HashSet mCloneNodes;
 
 	private static ImageIcon sCloneIcon;
 	private static ImageIcon sOriginalIcon;
@@ -85,15 +87,26 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	public void clearCloneCache() {
-		mCloneNodes = new Vector();
+		mCloneNodes = new HashSet();
 	}
 
 	private void disablePlugin() {
 		getMindMapController().getController().errorMessage(
 				getMindMapController().getText("clone_plugin_impossible"));
-		Vector selecteds = Tools.getVectorWithSingleElement(getNode());
-		// double add = remove.
-		getMindMapController().addHook(getNode(), selecteds, PLUGIN_LABEL);
+		toggleHook();
+	}
+
+	/** double add = remove. 
+	 * 
+	 */
+	protected void toggleHook() {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				Vector selecteds = Tools.getVectorWithSingleElement(getNode());
+				getMindMapController().addHook(getNode(), selecteds,
+						PLUGIN_LABEL);
+			}
+		});
 	}
 
 	public void save(XMLElement xml) {
@@ -140,7 +153,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		 * active and is not newly invoked. Hmm, what to do?
 		 */
 		MindMapNode originalNode = getNode();
-		List/* MindMapNode */cloneNodes = getCloneNodes();
+		HashSet cloneNodes = getCloneNodes();
 		logger.fine("Invoke shadow class with orig: "
 				+ printNodeId(originalNode) + " and clones "
 				+ printNodeIds(cloneNodes));
@@ -164,6 +177,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 			mCloneId = registration.generateNewCloneId(null);
 		}
 		registration.registerClone(mCloneId, this);
+		// the clone list contains itself, too.
+		addClone(getNode());
 	}
 
 	protected Registration getRegistration() {
@@ -172,16 +187,12 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 
 	private void deregisterPlugin() {
 		getRegistration().deregisterClone(mCloneId, this);
-		for (Iterator it = getCloneNodes().iterator(); it.hasNext();) {
-			MindMapNode cloneNode = (MindMapNode) it.next();
-			selectShadowNode(cloneNode, false, cloneNode);
-		}
 		getMindMapController().deregisterNodeSelectionListener(this);
 		getMindMapController().deregisterNodeLifetimeListener(this);
 	}
 
 	public void onCreateNodeHook(MindMapNode node) {
-		List cloneNodes = getCloneNodes();
+		HashSet cloneNodes = getCloneNodes();
 		for (Iterator it = cloneNodes.iterator(); it.hasNext();) {
 			MindMapNode clone = (MindMapNode) it.next();
 			for (Iterator it2 = cloneNodes.iterator(); it2.hasNext();) {
@@ -240,7 +251,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	/**
 	 * @return a list of {@link MindMapNode}s including the original node!
 	 */
-	List/* MindMapNode */getCloneNodes() {
+	HashSet getCloneNodes() {
 		try {
 			// is list up to date?
 			if (mCloneNodes != null) {
@@ -283,7 +294,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		// build list of indices up to a clone/original is found.
 		Vector indexVector = new Vector();
 		MindMapNode child = pNode;
-		List cloneNodes = getCloneNodes();
+		HashSet cloneNodes = getCloneNodes();
 		logger.fine("Searching for corresponding for " + printNodeId(pNode)
 				+ " in " + printNodeIds(cloneNodes));
 		/*
@@ -301,7 +312,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 			child = child.getParentNode();
 		}
 		MindMapNode originalNode = child;
-		List/* MindMapNode */targets = cloneNodes;
+		HashSet targets = cloneNodes;
 		CloneLoop: for (Iterator itClone = targets.iterator(); itClone
 				.hasNext();) {
 			MindMapNode target = (MindMapNode) itClone.next();
@@ -344,7 +355,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	 * @param pTargets
 	 * @return
 	 */
-	private String printNodeIds(List pTargets) {
+	private String printNodeIds(Collection pTargets) {
 		Vector strings = new Vector();
 		for (Iterator it = pTargets.iterator(); it.hasNext();) {
 			MindMapNode node = (MindMapNode) it.next();
@@ -391,7 +402,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 			// remove icon
 			getNode().setStateIcon(getName(), null);
 			getMindMapController().nodeRefresh(getNode());
-			// TODO: remove myself
+			// remove myself
+			toggleHook();
 		}
 	}
 

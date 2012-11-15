@@ -226,6 +226,13 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 			for (Iterator it = v.iterator(); it.hasNext();) {
 				MindMapNode otherCloneNode = (MindMapNode) it.next();
 				ClonePlugin otherClone = ClonePlugin.getHook(otherCloneNode);
+				if (otherClone == null) {
+					it.remove();
+					logger.warning("Found clone node "
+							+ controller.getNodeID(otherCloneNode)
+							+ " which isn't a clone any more.");
+					continue;
+				}
 				// inform all others
 				otherClone.addClone(node);
 				// inform this clone about its brothers
@@ -245,6 +252,13 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 			for (Iterator it = v.iterator(); it.hasNext();) {
 				MindMapNode otherCloneNode = (MindMapNode) it.next();
 				ClonePlugin otherClone = ClonePlugin.getHook(otherCloneNode);
+				if (otherClone == null) {
+					it.remove();
+					logger.warning("Found clone node "
+							+ controller.getNodeID(otherCloneNode)
+							+ " which isn't a clone any more.");
+					continue;
+				}
 				otherClone.removeClone(node);
 			}
 			if (v.isEmpty()) {
@@ -300,11 +314,11 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		}
 
 		private XmlAction cloneAction(NodeAction nodeAction, MindMapNode node) {
-			if(mClonesMap.containsKey(node)) {
+			if (mClonesMap.containsKey(node)) {
 				// ok, there is an action for a clone itself. be careful:
-//				if(nodeAction instanceof MoveNodeXmlAction) {
-//					return nodeAction;
-//				}
+				// if(nodeAction instanceof MoveNodeXmlAction) {
+				// return nodeAction;
+				// }
 			}
 			if (nodeAction instanceof CutNodeAction) {
 				for (Iterator i = mClonesMap.keySet().iterator(); i.hasNext();) {
