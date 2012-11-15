@@ -47,8 +47,6 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	public static final String PLUGIN_LABEL = "accessories/plugins/ClonePlugin.properties";
 	public static final String XML_STORAGE_CLONES = "CLONE_IDS";
 	public static final String XML_STORAGE_CLONE_ID = "CLONE_ID";
-	/* for backward compatibility */
-	private static final String XML_STORAGE_ORIGINAL = "ORIGINAL_ID";
 
 	/**
 	 * This is the master list. {@link ClonePlugin#mCloneNodes mCloneNodes}
@@ -59,8 +57,6 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	 * belonging to the {@link ClonePlugin#mCloneNodeIds mCloneNodeIds}.
 	 */
 	private Vector mCloneNodes;
-
-	private boolean mIsDisabled = false;
 
 	private static ImageIcon sCloneIcon;
 	private static ImageIcon sOriginalIcon;
@@ -93,14 +89,11 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	private void disablePlugin() {
-		// TODO: Abspeichern!
 		getMindMapController().getController().errorMessage(
-				"This is not possible. Cloning will be disabled.");
-		mIsDisabled = true;
-	}
-
-	private boolean isDisabled() {
-		return mIsDisabled;
+				getMindMapController().getText("clone_plugin_impossible"));
+		Vector selecteds = Tools.getVectorWithSingleElement(getNode());
+		// double add = remove.
+		getMindMapController().addHook(getNode(), selecteds, PLUGIN_LABEL);
 	}
 
 	public void save(XMLElement xml) {
@@ -123,11 +116,6 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		mCloneNodes = null;
 		mCloneNodeIds = new HashSet();
 		HashMap values = loadNameValuePairs(child);
-		String xmlId = (String) values.get(XML_STORAGE_ORIGINAL);
-		if(xmlId != null) {
-			// TODO: we have a former shadowclone here, convert it:
-			
-		}
 		String cloneIds = (String) values.get(XML_STORAGE_CLONES);
 		if (cloneIds != null) {
 			StringTokenizer st = new StringTokenizer(cloneIds, ",");
@@ -193,9 +181,6 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	public void onCreateNodeHook(MindMapNode node) {
-		if (isDisabled()) {
-			return;
-		}
 		List cloneNodes = getCloneNodes();
 		for (Iterator it = cloneNodes.iterator(); it.hasNext();) {
 			MindMapNode clone = (MindMapNode) it.next();

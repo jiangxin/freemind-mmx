@@ -1185,8 +1185,7 @@ public abstract class ControllerAdapter implements ModeController, DirectoryResu
 	}
 
 	public String getNodeID(MindMapNode selected) {
-		getMap().getLinkRegistry().registerLinkTarget(selected);
-		return getMap().getLinkRegistry().getLabel(selected);
+		return getMap().getLinkRegistry().registerLinkTarget(selected);
 	}
 
 	public MindMapNode getSelected() {

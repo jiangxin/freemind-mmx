@@ -35,6 +35,7 @@ import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.MindMapNodesSelection;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.CutNodeAction;
+import freemind.controller.actions.generated.instance.MoveNodeXmlAction;
 import freemind.controller.actions.generated.instance.MoveNodesAction;
 import freemind.controller.actions.generated.instance.NewNodeAction;
 import freemind.controller.actions.generated.instance.NodeAction;
@@ -42,6 +43,7 @@ import freemind.controller.actions.generated.instance.NodeListMember;
 import freemind.controller.actions.generated.instance.PasteNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.Tools.MindMapNodePair;
 import freemind.modes.MindMap;
@@ -95,7 +97,10 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		String originalNodeId = getMindMapController().getNodeID(originalNode);
 		logger.info("Original node " + originalNode + ", id " + originalNodeId);
 		if (originalNode.isRoot()) {
-			throw new IllegalArgumentException("Root can't be cloned");
+			getMindMapController().getController().errorMessage(
+					getMindMapController().getText(
+							"clone_plugin_no_root_cloning"));
+			return;
 		}
 		// next error case: the original node must not contain other clones!
 		Vector childs = new Vector();
@@ -105,10 +110,15 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 			childs.remove(0);
 			childs.addAll(node.getChildren());
 			if (ClonePlugin.getHook(node) != null) {
-				throw new IllegalArgumentException(
-						"There is already the clone '"
-								+ node.getShortText(getMindMapController())
-								+ "' inside. Clones can't be stacked.");
+				getMindMapController()
+						.getController()
+						.errorMessage(
+								Resources
+										.getInstance()
+										.format("clone_plugin_no_stacking",
+												new Object[] { node
+														.getShortText(getMindMapController()) }));
+				return;
 			}
 		}
 		// insert clone:
@@ -136,6 +146,10 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		 * String, HashSet of {@link MindMapNode}s
 		 */
 		private HashMap mCloneIdsMap = new HashMap();
+		/**
+		 * This is the reverse of mCloneIdsMap: {@link MindMapNode} to cloneId.
+		 */
+		private HashMap mClonesMap = new HashMap();
 
 		private final MindMapController controller;
 
@@ -198,8 +212,7 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		}
 
 		public String generateNewCloneId(String pProposedID) {
-			return Tools.generateID(pProposedID, mCloneIdsMap,
-					"CLONE_");
+			return Tools.generateID(pProposedID, mCloneIdsMap, "CLONE_");
 		}
 
 		/**
@@ -207,29 +220,32 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		 * @return true, if the pCloneId is new (not already registered)
 		 */
 		public boolean registerClone(String pCloneId, ClonePlugin pPlugin) {
-			boolean vectorPresent = mCloneIdsMap
-					.containsKey(pCloneId);
+			boolean vectorPresent = mCloneIdsMap.containsKey(pCloneId);
 			HashSet v = getHashSetToCloneId(pCloneId);
+			MindMapNode node = pPlugin.getNode();
 			for (Iterator it = v.iterator(); it.hasNext();) {
 				MindMapNode otherCloneNode = (MindMapNode) it.next();
 				ClonePlugin otherClone = ClonePlugin.getHook(otherCloneNode);
 				// inform all others
-				otherClone.addClone(pPlugin.getNode());
+				otherClone.addClone(node);
 				// inform this clone about its brothers
 				pPlugin.addClone(otherCloneNode);
 			}
-			v.add(pPlugin.getNode());
+			v.add(node);
+			mClonesMap.put(node, pCloneId);
 			return !vectorPresent;
 		}
 
 		public void deregisterClone(String pCloneId, ClonePlugin pPlugin) {
 			HashSet v = getHashSetToCloneId(pCloneId);
-			v.remove(pPlugin.getNode());
+			MindMapNode node = pPlugin.getNode();
+			v.remove(node);
+			mClonesMap.remove(node);
 			// inform all others
 			for (Iterator it = v.iterator(); it.hasNext();) {
 				MindMapNode otherCloneNode = (MindMapNode) it.next();
 				ClonePlugin otherClone = ClonePlugin.getHook(otherCloneNode);
-				otherClone.removeClone(pPlugin.getNode());
+				otherClone.removeClone(node);
 			}
 			if (v.isEmpty()) {
 				// remove entire clone
@@ -249,6 +265,10 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		}
 
 		public ActionPair filterAction(ActionPair pair) {
+			// shortcut for no clones for speed up.
+			if (mCloneIdsMap.isEmpty()) {
+				return pair;
+			}
 			XmlAction doAction = pair.getDoAction();
 			doAction = cloneAction(doAction);
 			pair.setDoAction(doAction);
@@ -280,18 +300,19 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		}
 
 		private XmlAction cloneAction(NodeAction nodeAction, MindMapNode node) {
+			if(mClonesMap.containsKey(node)) {
+				// ok, there is an action for a clone itself. be careful:
+//				if(nodeAction instanceof MoveNodeXmlAction) {
+//					return nodeAction;
+//				}
+			}
 			if (nodeAction instanceof CutNodeAction) {
-				for (Iterator i = mCloneIdsMap.values().iterator(); i
-						.hasNext();) {
-					HashSet clones = (HashSet) i.next();
-					for (Iterator it = clones.iterator(); it.hasNext();) {
-						MindMapNode clone = (MindMapNode) it.next();
-						if (clone.isDescendantOfOrEqual(node)) {
-							// the complete node is cut.
-							logger.fine("Node " + printNodeId(clone)
-									+ " is cut.");
-							return nodeAction;
-						}
+				for (Iterator i = mClonesMap.keySet().iterator(); i.hasNext();) {
+					MindMapNode clone = (MindMapNode) i.next();
+					if (clone.isDescendantOfOrEqual(node)) {
+						// the complete node is cut.
+						logger.fine("Node " + printNodeId(clone) + " is cut.");
+						return nodeAction;
 					}
 				}
 			}
@@ -322,25 +343,9 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		 */
 		private List getCorrespondingNodes(MindMapNode pNode,
 				boolean includeNodeItself) {
-			// build list of indices up to a clone/original is found.
-			MindMapNode child = pNode;
-			for (Iterator it = mCloneIdsMap.values().iterator(); it
-					.hasNext();) {
-				HashSet cloneNodes = (HashSet) it.next();
-				List cloneset = getCorrespondingNodesForCloneset(
-						includeNodeItself, child, cloneNodes);
-				// first match
-				if (!cloneset.isEmpty()) {
-					return cloneset;
-				}
-			}
-			return Collections.EMPTY_LIST;
-		}
-
-		protected List getCorrespondingNodesForCloneset(
-				boolean includeNodeItself, MindMapNode child, HashSet cloneNodes) {
 			Vector indexVector = new Vector();
-			while (!cloneNodes.contains(child)) {
+			MindMapNode child = pNode;
+			while (!mClonesMap.containsKey(child)) {
 				if (child.isRoot()) {
 					// nothing found!
 					return Collections.EMPTY_LIST;
@@ -351,7 +356,7 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 			}
 			Vector returnValue = new Vector();
 			MindMapNode originalNode = child;
-			HashSet targets = cloneNodes;
+			HashSet targets = (HashSet) mCloneIdsMap.get(mClonesMap.get(child));
 			CloneLoop: for (Iterator itClone = targets.iterator(); itClone
 					.hasNext();) {
 				MindMapNode cloneNode = (MindMapNode) itClone.next();

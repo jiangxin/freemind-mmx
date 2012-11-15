@@ -131,8 +131,8 @@ public class MindMapLinkRegistry {
 		return Tools.generateID(proposedID, mIdToLink, "Arrow_ID_");
 	}
 
-	public void registerLinkTarget(MindMapNode pTarget) {
-		_registerLinkTarget(pTarget);
+	public String registerLinkTarget(MindMapNode pTarget) {
+		return _registerLinkTarget(pTarget);
 
 	}
 
