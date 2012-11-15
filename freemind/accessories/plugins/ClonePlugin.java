@@ -96,7 +96,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		toggleHook();
 	}
 
-	/** double add = remove. 
+	/**
+	 * double add = remove.
 	 * 
 	 */
 	protected void toggleHook() {
@@ -397,8 +398,9 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	public void removeClone(MindMapNode pCloneNode) {
 		mCloneNodeIds.remove(getMindMapController().getNodeID(pCloneNode));
 		clearCloneCache();
-		registerPlugin();
-		if (mCloneNodeIds.isEmpty()) {
+		if (mCloneNodeIds.isEmpty()
+				|| (mCloneNodeIds.size() == 1 && mCloneNodeIds
+						.contains(getNodeId()))) {
 			// remove icon
 			getNode().setStateIcon(getName(), null);
 			getMindMapController().nodeRefresh(getNode());

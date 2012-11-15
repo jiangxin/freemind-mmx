@@ -80,4 +80,9 @@ public abstract class NodeHookAdapter extends HookAdapter implements NodeHook {
 		this.map = map;
 	}
 
+	public String getNodeId() {
+		return getController().getNodeID(getNode());
+	}
+
+
 }
