@@ -22,6 +22,8 @@ package freemind.modes;
 import java.awt.Font;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Vector;
 
 import freemind.extensions.PermanentNodeHook;
@@ -537,7 +539,15 @@ public abstract class XMLElementAdapter extends XMLElement {
 	 */
 	public void processUnfinishedLinks(MindMapLinkRegistry registry) {
 		// add labels to the nodes:
-		setIds(mIdToTarget, registry);
+		for (Iterator i1 = mIdToTarget.keySet().iterator(); i1.hasNext();) {
+			String key = (String) i1.next();
+			NodeAdapter target1 = (NodeAdapter) mIdToTarget.get(key);
+			/*
+			 * key is the proposed name for the target, is changed by the
+			 * registry, if already present.
+			 */
+			registry.registerLinkTarget(target1, key);
+		}
 		// complete arrow links with right labels:
 		for (int i = 0; i < mArrowLinkAdapters.size(); ++i) {
 			Object arrowObject = mArrowLinkAdapters.get(i);
@@ -625,19 +635,6 @@ public abstract class XMLElementAdapter extends XMLElement {
 				// add the arrowLink:
 				registry.registerLink(arrowLink);
 			}
-		}
-	}
-
-	/** Recursive method to set the ids of the nodes. */
-	private void setIds(HashMap IDToTarget, MindMapLinkRegistry registry) {
-		for (Iterator i = IDToTarget.keySet().iterator(); i.hasNext();) {
-			String key = (String) i.next();
-			NodeAdapter target = (NodeAdapter) IDToTarget.get(key);
-			/*
-			 * key is the proposed name for the target, is changed by the
-			 * registry, if already present.
-			 */
-			String newId = registry.registerLinkTarget(target, key);
 		}
 	}
 

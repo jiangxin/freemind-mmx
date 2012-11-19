@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
@@ -51,7 +52,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	public static final String XML_STORAGE_CLONE_ID = "CLONE_ID";
 
 	/**
-	 * This is the master list. {@link ClonePlugin#mCloneNodes mCloneNodes}
+	 * This is the master list. {@link ClonePlugin#mCloneNodes mCloneNodes} is
+	 * derived from it. It contains id strings.
 	 */
 	private HashSet mCloneNodeIds;
 	/**
@@ -105,7 +107,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 			public void run() {
 				Vector selecteds = Tools.getVectorWithSingleElement(getNode());
 				getMindMapController().addHook(getNode(), selecteds,
-						PLUGIN_LABEL);
+						PLUGIN_LABEL, null);
 			}
 		});
 	}
@@ -113,16 +115,20 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	public void save(XMLElement xml) {
 		super.save(xml);
 		HashMap values = new HashMap();
+		values.put(XML_STORAGE_CLONES, getCloneIdsAsString());
+		values.put(XML_STORAGE_CLONE_ID, mCloneId);
+		saveNameValuePairs(values, xml);
+		logger.fine("Saved clone plugin");
+	}
+
+	public String getCloneIdsAsString() {
 		StringBuffer cloneIds = new StringBuffer();
 		for (Iterator it = mCloneNodeIds.iterator(); it.hasNext();) {
 			String cloneId = (String) it.next();
 			cloneIds.append(cloneId);
 			cloneIds.append(",");
 		}
-		values.put(XML_STORAGE_CLONES, cloneIds);
-		values.put(XML_STORAGE_CLONE_ID, mCloneId);
-		saveNameValuePairs(values, xml);
-		logger.fine("Saved clone plugin");
+		return cloneIds.toString();
 	}
 
 	public void loadFrom(XMLElement child) {
@@ -417,8 +423,6 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	 * (freemind.modes.MindMapNode, boolean)
 	 */
 	public void onSelectionChange(NodeView pNode, boolean pIsSelected) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public static ClonePlugin getHook(MindMapNode originalNode) {
@@ -434,6 +438,34 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 			}
 		}
 		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.extensions.PermanentNodeHookAdapter#processUnfinishedLinks()
+	 */
+	public void processUnfinishedLinks() {
+		super.processUnfinishedLinks();
+		HashSet cloneNodes = getCloneNodes();
+		// activate other clones, if not already activated.
+		for (Iterator it = cloneNodes.iterator(); it.hasNext();) {
+			MindMapNode cloneNode = (MindMapNode) it.next();
+			ClonePlugin hook = getHook(cloneNode);
+			if (hook == null && cloneNode != null) {
+				// add hook to clone partner:
+				Vector selecteds = Tools.getVectorWithSingleElement(cloneNode);
+				// Transport the data to the plugin, as this method calls
+				// invoke.
+				Properties hookProperties = new Properties();
+				hookProperties.setProperty(XML_STORAGE_CLONE_ID, mCloneId);
+				hookProperties.setProperty(XML_STORAGE_CLONES, getCloneIdsAsString());
+				getMindMapController().addHook(cloneNode, selecteds,
+						PLUGIN_LABEL, hookProperties);
+			}
+		}
+
 	}
 
 }

@@ -53,6 +53,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
@@ -1708,8 +1709,8 @@ public class MindMapController extends ControllerAdapter implements
 		super.loadURL(relative);
 	}
 
-	public void addHook(MindMapNode focussed, List selecteds, String hookName) {
-		nodeHookAction.addHook(focussed, selecteds, hookName);
+	public void addHook(MindMapNode focussed, List selecteds, String hookName, Properties pHookProperties) {
+		nodeHookAction.addHook(focussed, selecteds, hookName, pHookProperties);
 	}
 
 	public void removeHook(MindMapNode focussed, List selecteds, String hookName) {

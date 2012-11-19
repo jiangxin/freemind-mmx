@@ -26,6 +26,7 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseWheelEvent;
 import java.util.List;
+import java.util.Properties;
 
 import freemind.controller.actions.generated.instance.Pattern;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -220,7 +221,7 @@ public interface MindMapActions {
 	public void paste(MindMapNode node, MindMapNode parent);
 
 	// hooks, fc 28.2.2004:
-	public void addHook(MindMapNode focussed, List selecteds, String hookName);
+	public void addHook(MindMapNode focussed, List selecteds, String hookName, Properties pHookProperties);
 
 	public void removeHook(MindMapNode focussed, List selecteds, String hookName);
 

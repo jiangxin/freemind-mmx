@@ -414,7 +414,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 	private void addHook(MindMapNode node) {
 		// add the hook:
 		getMindMapController().addHook(node,
-				Tools.getVectorWithSingleElement(node), REMINDER_HOOK_NAME);
+				Tools.getVectorWithSingleElement(node), REMINDER_HOOK_NAME, null);
 	}
 
 	/**

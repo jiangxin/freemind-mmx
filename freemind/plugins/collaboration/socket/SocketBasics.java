@@ -145,7 +145,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 			final String hookName) {
 		MindMapNode rootNode = controller.getRootNode();
 		List selecteds = Arrays.asList(new MindMapNode[] { rootNode });
-		controller.addHook(rootNode, selecteds, hookName);
+		controller.addHook(rootNode, selecteds, hookName, null);
 	}
 
 	protected void setPortProperty(final NumberProperty portProperty) {

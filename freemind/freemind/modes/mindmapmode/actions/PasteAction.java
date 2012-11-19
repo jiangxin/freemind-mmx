@@ -303,6 +303,11 @@ public class PasteAction extends AbstractAction implements ActorXml {
 						mMindMapController.invokeHooksRecursively(importNode,
 								mMindMapController.getModel());
 					}
+					for (ListIterator i = node.childrenUnfolded(); i.hasNext();) {
+						MindMapNodeModel importNode = (MindMapNodeModel) i
+								.next();
+						mMindMapController.processUnfinishedLinksInHooks(importNode);
+					}
 				} catch (Exception e) {
 					freemind.main.Resources.getInstance().logException(e);
 				}
@@ -575,6 +580,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 			insertNodeInto(node, target, asSibling, isLeft, changeSide);
 			mMindMapController.invokeHooksRecursively(node,
 					mMindMapController.getModel());
+			mMindMapController.processUnfinishedLinksInHooks(node);
 			return node;
 		} catch (IOException ee) {
 			freemind.main.Resources.getInstance().logException(ee);

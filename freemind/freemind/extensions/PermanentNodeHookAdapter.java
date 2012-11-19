@@ -236,6 +236,8 @@ public class PermanentNodeHookAdapter extends NodeHookAdapter implements
 		return null;
 	}
 
+	public void processUnfinishedLinks() {
+	}
 
 	
 }

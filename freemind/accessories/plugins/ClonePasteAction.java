@@ -84,7 +84,7 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 			if (clonePlugin == null) {
 				Vector selecteds = Tools.getVectorWithSingleElement(copiedNode);
 				getMindMapController().addHook(copiedNode, selecteds,
-						ClonePlugin.PLUGIN_LABEL);
+						ClonePlugin.PLUGIN_LABEL, null);
 			}
 			// finally, we construct a new one:
 			Transferable copy = getMindMapController().copy(copiedNode, true);
@@ -316,9 +316,9 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		private XmlAction cloneAction(NodeAction nodeAction, MindMapNode node) {
 			if (mClonesMap.containsKey(node)) {
 				// ok, there is an action for a clone itself. be careful:
-				// if(nodeAction instanceof MoveNodeXmlAction) {
-				// return nodeAction;
-				// }
+//				if (nodeAction instanceof MoveNodesAction) {
+//					return nodeAction;
+//				}
 			}
 			if (nodeAction instanceof CutNodeAction) {
 				for (Iterator i = mClonesMap.keySet().iterator(); i.hasNext();) {

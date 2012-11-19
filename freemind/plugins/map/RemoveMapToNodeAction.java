@@ -49,7 +49,7 @@ public class RemoveMapToNodeAction extends MindMapNodeHookAdapter {
 				List nodeSelected = Arrays.asList(new MindMapNode[] { node });
 				// double add = remove
 				getMindMapController().addHook(node, nodeSelected,
-						MapNodePositionHolderBase.NODE_MAP_HOOK_NAME);
+						MapNodePositionHolderBase.NODE_MAP_HOOK_NAME, null);
 
 			}
 		}
