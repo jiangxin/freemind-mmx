@@ -244,12 +244,12 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		}
 
 		public void deregisterClone(String pCloneId, ClonePlugin pPlugin) {
-			HashSet v = getHashSetToCloneId(pCloneId);
+			HashSet cloneSet = getHashSetToCloneId(pCloneId);
 			MindMapNode node = pPlugin.getNode();
-			v.remove(node);
+			cloneSet.remove(node);
 			mClonesMap.remove(node);
 			// inform all others
-			for (Iterator it = v.iterator(); it.hasNext();) {
+			for (Iterator it = cloneSet.iterator(); it.hasNext();) {
 				MindMapNode otherCloneNode = (MindMapNode) it.next();
 				ClonePlugin otherClone = ClonePlugin.getHook(otherCloneNode);
 				if (otherClone == null) {
@@ -261,9 +261,9 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 				}
 				otherClone.removeClone(node);
 			}
-			if (v.isEmpty()) {
+			if (cloneSet.isEmpty()) {
 				// remove entire clone
-				mCloneIdsMap.remove(v);
+				mCloneIdsMap.remove(cloneSet);
 			}
 		}
 

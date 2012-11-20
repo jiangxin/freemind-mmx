@@ -66,6 +66,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	private static ImageIcon sOriginalIcon;
 	private static boolean sShowIcon = true;
 	private String mCloneId;
+	private boolean mDisabled = false;
 
 	public ClonePlugin() {
 	}
@@ -93,9 +94,16 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	private void disablePlugin() {
+		mDisabled = true;
 		getMindMapController().getController().errorMessage(
 				getMindMapController().getText("clone_plugin_impossible"));
-		toggleHook();
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				if(getHook(getNode())!=null) {
+					toggleHook();
+				}
+			}
+		});
 	}
 
 	/**
@@ -103,13 +111,9 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	 * 
 	 */
 	protected void toggleHook() {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				Vector selecteds = Tools.getVectorWithSingleElement(getNode());
-				getMindMapController().addHook(getNode(), selecteds,
-						PLUGIN_LABEL, null);
-			}
-		});
+		Vector selecteds = Tools.getVectorWithSingleElement(getNode());
+		getMindMapController()
+				.addHook(getNode(), selecteds, PLUGIN_LABEL, null);
 	}
 
 	public void save(XMLElement xml) {
@@ -154,6 +158,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	private void registerPlugin() {
+		if(mDisabled)
+			return;
 		/*
 		 * test for error cases: - orig is child of clone now - if clone is a
 		 * child of clone, this is here not reachable, as the plugin remains
@@ -196,6 +202,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		getRegistration().deregisterClone(mCloneId, this);
 		getMindMapController().deregisterNodeSelectionListener(this);
 		getMindMapController().deregisterNodeLifetimeListener(this);
+		// disable icon.
+		removeStateIcon();
 	}
 
 	public void onCreateNodeHook(MindMapNode node) {
@@ -407,12 +415,16 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		if (mCloneNodeIds.isEmpty()
 				|| (mCloneNodeIds.size() == 1 && mCloneNodeIds
 						.contains(getNodeId()))) {
-			// remove icon
-			getNode().setStateIcon(getName(), null);
-			getMindMapController().nodeRefresh(getNode());
+			removeStateIcon();
 			// remove myself
 			toggleHook();
 		}
+	}
+
+	public void removeStateIcon() {
+		// remove icon
+		getNode().setStateIcon(getName(), null);
+		getMindMapController().nodeRefresh(getNode());
 	}
 
 	/*
@@ -448,6 +460,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	 */
 	public void processUnfinishedLinks() {
 		super.processUnfinishedLinks();
+		if(mDisabled)
+			return;
 		HashSet cloneNodes = getCloneNodes();
 		// activate other clones, if not already activated.
 		for (Iterator it = cloneNodes.iterator(); it.hasNext();) {
@@ -460,7 +474,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 				// invoke.
 				Properties hookProperties = new Properties();
 				hookProperties.setProperty(XML_STORAGE_CLONE_ID, mCloneId);
-				hookProperties.setProperty(XML_STORAGE_CLONES, getCloneIdsAsString());
+				hookProperties.setProperty(XML_STORAGE_CLONES,
+						getCloneIdsAsString());
 				getMindMapController().addHook(cloneNode, selecteds,
 						PLUGIN_LABEL, hookProperties);
 			}
