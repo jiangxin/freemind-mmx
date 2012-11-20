@@ -202,8 +202,9 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		getRegistration().deregisterClone(mCloneId, this);
 		getMindMapController().deregisterNodeSelectionListener(this);
 		getMindMapController().deregisterNodeLifetimeListener(this);
-		// disable icon.
-		removeStateIcon();
+		// remove icon
+		getNode().setStateIcon(getName(), null);
+		getMindMapController().nodeRefresh(getNode());
 	}
 
 	public void onCreateNodeHook(MindMapNode node) {
@@ -415,16 +416,9 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		if (mCloneNodeIds.isEmpty()
 				|| (mCloneNodeIds.size() == 1 && mCloneNodeIds
 						.contains(getNodeId()))) {
-			removeStateIcon();
 			// remove myself
 			toggleHook();
 		}
-	}
-
-	public void removeStateIcon() {
-		// remove icon
-		getNode().setStateIcon(getName(), null);
-		getMindMapController().nodeRefresh(getNode());
 	}
 
 	/*
