@@ -45,7 +45,7 @@ import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
 import freemind.view.mindmapview.NodeView;
 
 public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
-		NodeSelectionListener, NodeLifetimeListener {
+		NodeLifetimeListener {
 
 	public static final String PLUGIN_LABEL = "accessories/plugins/ClonePlugin.properties";
 	public static final String XML_STORAGE_CLONES = "CLONE_IDS";
@@ -62,9 +62,6 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	 */
 	private HashSet mCloneNodes;
 
-	private static ImageIcon sCloneIcon;
-	private static ImageIcon sOriginalIcon;
-	private static boolean sShowIcon = true;
 	private String mCloneId;
 	private boolean mDisabled = false;
 
@@ -73,14 +70,6 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 
 	public void invoke(MindMapNode node) {
 		super.invoke(node);
-		if (sCloneIcon == null) {
-			sCloneIcon = new ImageIcon(getMindMapController().getResource(
-					"images/clone.png"));
-			sOriginalIcon = new ImageIcon(getMindMapController().getResource(
-					"images/clone_original.png"));
-			sShowIcon = Resources.getInstance().getBoolProperty(
-					FreeMind.RESOURCES_DON_T_SHOW_CLONE_ICONS);
-		}
 		registerPlugin();
 	}
 
@@ -178,12 +167,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 				return;
 			}
 		}
-		getMindMapController().registerNodeSelectionListener(this, false);
 		getMindMapController().registerNodeLifetimeListener(this);
-		for (Iterator it = cloneNodes.iterator(); it.hasNext();) {
-			MindMapNode cloneNode = (MindMapNode) it.next();
-			selectShadowNode(cloneNode, true, cloneNode);
-		}
 		Registration registration = getRegistration();
 		if (mCloneId == null) {
 			// hmm, it seems, that I am the first. Let's generate an id:
@@ -200,7 +184,6 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 
 	private void deregisterPlugin() {
 		getRegistration().deregisterClone(mCloneId, this);
-		getMindMapController().deregisterNodeSelectionListener(this);
 		getMindMapController().deregisterNodeLifetimeListener(this);
 		// remove icon
 		getNode().setStateIcon(getName(), null);
@@ -224,44 +207,6 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	public void onPostDeleteNode(MindMapNode node, MindMapNode parent) {
-	}
-
-	/**
-	 * Is sent when a node is selected.
-	 */
-	public void onFocusNode(NodeView node) {
-		markShadowNode(node, true);
-	}
-
-	/**
-	 * Is sent when a node is deselected.
-	 */
-	public void onLostFocusNode(NodeView node) {
-		markShadowNode(node, false);
-	}
-
-	private void markShadowNode(NodeView node, boolean pEnableShadow) {
-		try {
-			MindMapNode model = node.getModel();
-			List/* pair of MindMapNodePair */shadowNodes = getCorrespondingNodes(
-					model, false);
-			for (Iterator it = shadowNodes.iterator(); it.hasNext();) {
-				Tools.MindMapNodePair shadowNode = (Tools.MindMapNodePair) it
-						.next();
-				selectShadowNode(shadowNode.getCorresponding(), pEnableShadow,
-						shadowNode.getCloneNode());
-			}
-		} catch (IllegalArgumentException e) {
-			freemind.main.Resources.getInstance().logException(e);
-		}
-	}
-
-	public void onUpdateNodeHook(MindMapNode pNode) {
-
-	}
-
-	public void onSaveNode(MindMapNode pNode) {
-
 	}
 
 	/**
@@ -295,66 +240,6 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	/**
-	 * This is the main method here. It returns to a given node its cloned nodes
-	 * on the other side.
-	 * 
-	 * @param pNode
-	 *            is checked to be son of one of the clones/original.
-	 * @return a list of {@link MindMapNodePair}s where the first is the
-	 *         corresponding node and the second is the clone. If the return
-	 *         value is empty, the node isn't son of any.
-	 */
-	private List/* MindMapNodePair */getCorrespondingNodes(MindMapNode pNode,
-			boolean includeNodeItself) {
-		Vector returnValue = new Vector();
-		// build list of indices up to a clone/original is found.
-		Vector indexVector = new Vector();
-		MindMapNode child = pNode;
-		HashSet cloneNodes = getCloneNodes();
-		logger.fine("Searching for corresponding for " + printNodeId(pNode)
-				+ " in " + printNodeIds(cloneNodes));
-		/*
-		 * FIXME: Design flaw here: the index based correspondence is more than
-		 * week. Imagine moving nodes up/down or inserting nodes with many
-		 * children. One the clones, the index way may leed into an asylum....
-		 */
-		while (!cloneNodes.contains(child)) {
-			if (child.isRoot()) {
-				// nothing found!
-				return returnValue;
-			}
-			indexVector.add(0, new Integer(child.getParentNode()
-					.getChildPosition(child)));
-			child = child.getParentNode();
-		}
-		MindMapNode originalNode = child;
-		HashSet targets = cloneNodes;
-		CloneLoop: for (Iterator itClone = targets.iterator(); itClone
-				.hasNext();) {
-			MindMapNode target = (MindMapNode) itClone.next();
-			MindMapNode cloneNode = target;
-			if (!includeNodeItself && cloneNode == originalNode)
-				continue;
-			for (Iterator it = indexVector.iterator(); it.hasNext();) {
-				int index = ((Integer) it.next()).intValue();
-				if (target.getChildCount() <= index) {
-					logger.warning("Index " + index
-							+ " in other tree not found from "
-							+ printNodeIds(targets) + " originating from "
-							+ printNodeId(cloneNode));
-					// with crossed fingers.
-					continue CloneLoop;
-				}
-				target = (MindMapNode) target.getChildAt(index);
-			}
-			logger.fine("Found corresponding node " + printNodeId(target)
-					+ " on clone " + printNodeId(cloneNode));
-			returnValue.add(new Tools.MindMapNodePair(target, cloneNode));
-		}
-		return returnValue;
-	}
-
-	/**
 	 * @param pCloneNode
 	 * @return
 	 */
@@ -380,26 +265,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		return "" + strings;
 	}
 
-	private void selectShadowNode(MindMapNode node, boolean pEnableShadow,
-			MindMapNode pCloneNode) {
-		if (!sShowIcon) {
-			return;
-		}
-		while (node != null) {
-			ImageIcon i = pEnableShadow ? sCloneIcon : null;
-			if (node == pCloneNode) {
-				i = sOriginalIcon;
-			}
-			node.setStateIcon(getName(), i);
-			getMindMapController().nodeRefresh(node);
-			if (node == pCloneNode)
-				break;
-			node = node.getParentNode();
-			// comment this out to get a complete marked path to the root of the
-			// clones.
-			break;
-		}
-	}
+	
 
 	private void checkForChainError(MindMapNode originalNode, MindMapNode node,
 			MindMapNode cloneNode) {
@@ -419,16 +285,6 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 			// remove myself
 			toggleHook();
 		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * freemind.modes.ModeController.NodeSelectionListener#onSelectionChange
-	 * (freemind.modes.MindMapNode, boolean)
-	 */
-	public void onSelectionChange(NodeView pNode, boolean pIsSelected) {
 	}
 
 	public static ClonePlugin getHook(MindMapNode originalNode) {
