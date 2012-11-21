@@ -24,25 +24,17 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
-import javax.swing.ImageIcon;
-
 import accessories.plugins.ClonePasteAction.Registration;
 import freemind.extensions.PermanentNodeHook;
-import freemind.main.FreeMind;
-import freemind.main.Resources;
 import freemind.main.Tools;
-import freemind.main.Tools.MindMapNodePair;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController.NodeLifetimeListener;
-import freemind.modes.ModeController.NodeSelectionListener;
 import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
-import freemind.view.mindmapview.NodeView;
 
 public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		NodeLifetimeListener {
