@@ -37,6 +37,7 @@ import freemind.controller.MindMapNodesSelection;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.CutNodeAction;
 import freemind.controller.actions.generated.instance.DeleteNodeAction;
+import freemind.controller.actions.generated.instance.HookNodeAction;
 import freemind.controller.actions.generated.instance.MoveNodeXmlAction;
 import freemind.controller.actions.generated.instance.MoveNodesAction;
 import freemind.controller.actions.generated.instance.NewNodeAction;
@@ -340,25 +341,17 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 				for (int i = 0; i < moveAction.getListNodeListMemberList()
 						.size(); i++) {
 					NodeListMember member = moveAction.getNodeListMember(i);
-					NodeAdapter memberNode = controller.getNodeFromID(member
-							.getNode());
-					List correspondingMoveNodes = getCorrespondingNodes(
-							moveAction, memberNode);
-					if (!correspondingMoveNodes.isEmpty()) {
-						// search for this clone:
-						for (Iterator it = correspondingMoveNodes.iterator(); it
-								.hasNext();) {
-							Tools.MindMapNodePair pair = (Tools.MindMapNodePair) it
-									.next();
-							if (pair.getCloneNode() == correspondingNodePair
-									.getCloneNode()) {
-								// found:
-								member.setNode(controller.getNodeID(pair
-										.getCorresponding()));
-								break;
-							}
-						}
-					}
+					changeNodeListMember(correspondingNodePair, moveAction,
+							member);
+				}
+			}
+			if (copiedNodeAction instanceof HookNodeAction) {
+				HookNodeAction hookAction = (HookNodeAction) copiedNodeAction;
+				for (int i = 0; i < hookAction.getListNodeListMemberList()
+						.size(); i++) {
+					NodeListMember member = hookAction.getNodeListMember(i);
+					changeNodeListMember(correspondingNodePair, hookAction,
+							member);
 				}
 			}
 			if (copiedNodeAction instanceof NewNodeAction) {
@@ -379,6 +372,29 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 				compound.addChoice(copiedNodeAction);
 			} else {
 				compound.addAtChoice(0, copiedNodeAction);
+			}
+		}
+
+		public void changeNodeListMember(
+				Tools.MindMapNodePair correspondingNodePair,
+				NodeAction pAction, NodeListMember member) {
+			NodeAdapter memberNode = controller.getNodeFromID(member.getNode());
+			List correspondingMoveNodes = getCorrespondingNodes(pAction,
+					memberNode);
+			if (!correspondingMoveNodes.isEmpty()) {
+				// search for this clone:
+				for (Iterator it = correspondingMoveNodes.iterator(); it
+						.hasNext();) {
+					Tools.MindMapNodePair pair = (Tools.MindMapNodePair) it
+							.next();
+					if (pair.getCloneNode() == correspondingNodePair
+							.getCloneNode()) {
+						// found:
+						member.setNode(controller.getNodeID(pair
+								.getCorresponding()));
+						break;
+					}
+				}
 			}
 		}
 

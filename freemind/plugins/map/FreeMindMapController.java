@@ -1521,7 +1521,7 @@ public class FreeMindMapController extends JMapController implements
 
 	public MapNodePositionHolder addHookToNode(MindMapNode selected) {
 		MapNodePositionHolder hook;
-		List selecteds = Arrays.asList(new MindMapNode[] { selected });
+		List selecteds = Tools.getVectorWithSingleElement(selected);
 		mMindMapController.addHook(selected, selecteds,
 				MapNodePositionHolderBase.NODE_MAP_HOOK_NAME, null);
 		hook = MapNodePositionHolder.getHook(selected);
