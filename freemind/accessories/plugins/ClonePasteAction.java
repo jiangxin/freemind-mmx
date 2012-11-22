@@ -314,6 +314,83 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		}
 
 		private XmlAction cloneAction(NodeAction nodeAction, MindMapNode node) {
+			List correspondingNodes = getCorrespondingNodes(nodeAction, node);
+			if (correspondingNodes.isEmpty()) {
+				return nodeAction;
+			}
+			// create new action:
+			CompoundAction compound = new CompoundAction();
+			compound.addChoice(nodeAction);
+			for (Iterator it = correspondingNodes.iterator(); it.hasNext();) {
+				Tools.MindMapNodePair pair = (Tools.MindMapNodePair) it.next();
+				getNewCompoundAction(nodeAction, pair, compound);
+			}
+			return compound;
+		}
+
+		private void getNewCompoundAction(NodeAction nodeAction,
+				Tools.MindMapNodePair correspondingNodePair,
+				CompoundAction compound) {
+			// deep copy:
+			NodeAction copiedNodeAction = (NodeAction) Tools
+					.deepCopy(nodeAction);
+			// special cases:
+			if (copiedNodeAction instanceof MoveNodesAction) {
+				MoveNodesAction moveAction = (MoveNodesAction) copiedNodeAction;
+				for (int i = 0; i < moveAction.getListNodeListMemberList()
+						.size(); i++) {
+					NodeListMember member = moveAction.getNodeListMember(i);
+					NodeAdapter memberNode = controller.getNodeFromID(member
+							.getNode());
+					List correspondingMoveNodes = getCorrespondingNodes(
+							moveAction, memberNode);
+					if (!correspondingMoveNodes.isEmpty()) {
+						// search for this clone:
+						for (Iterator it = correspondingMoveNodes.iterator(); it
+								.hasNext();) {
+							Tools.MindMapNodePair pair = (Tools.MindMapNodePair) it
+									.next();
+							if (pair.getCloneNode() == correspondingNodePair
+									.getCloneNode()) {
+								// found:
+								member.setNode(controller.getNodeID(pair
+										.getCorresponding()));
+								break;
+							}
+						}
+					}
+				}
+			}
+			if (copiedNodeAction instanceof NewNodeAction) {
+				NewNodeAction newNodeAction = (NewNodeAction) copiedNodeAction;
+				String newId = mMap.getLinkRegistry().generateUniqueID(null);
+				newNodeAction.setNewId(newId);
+			}
+			copiedNodeAction.setNode(controller.getNodeID(correspondingNodePair
+					.getCorresponding()));
+			if (copiedNodeAction instanceof PasteNodeAction) {
+				/*
+				 * difficult thing here: if something is pasted, the paste
+				 * action itself contains the node ids of the paste. The first
+				 * pasted action will get that node id. This should be the
+				 * corresponding node itself. This presumably corrects a bug
+				 * that the selection on move actions is changing.
+				 */
+				compound.addChoice(copiedNodeAction);
+			} else {
+				compound.addAtChoice(0, copiedNodeAction);
+			}
+		}
+
+		/**
+		 * Method takes into account, that some actions are
+		 * 
+		 * @param nodeAction
+		 * @param node
+		 * @return
+		 */
+		public List getCorrespondingNodes(NodeAction nodeAction,
+				MindMapNode node) {
 			boolean startWithParent = false;
 			if (nodeAction instanceof MoveNodesAction
 					|| nodeAction instanceof MoveNodeXmlAction
@@ -327,17 +404,7 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 			}
 			List/* MindMapNodePair */correspondingNodes = getCorrespondingNodes(
 					node, startWithParent);
-			if (correspondingNodes.isEmpty()) {
-				return nodeAction;
-			}
-			// create new action:
-			CompoundAction compound = new CompoundAction();
-			compound.addChoice(nodeAction);
-			for (Iterator it = correspondingNodes.iterator(); it.hasNext();) {
-				Tools.MindMapNodePair pair = (Tools.MindMapNodePair) it.next();
-				getNewCompoundAction(nodeAction, pair, compound);
-			}
-			return compound;
+			return correspondingNodes;
 		}
 
 		/**
@@ -400,60 +467,6 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		private void addNodePosition(Vector indexVector, MindMapNode child) {
 			indexVector.add(0, new Integer(child.getParentNode()
 					.getChildPosition(child)));
-		}
-
-		private void getNewCompoundAction(NodeAction nodeAction,
-				Tools.MindMapNodePair correspondingNodePair,
-				CompoundAction compound) {
-			// deep copy:
-			NodeAction copiedNodeAction = (NodeAction) Tools
-					.deepCopy(nodeAction);
-			// special cases:
-			if (copiedNodeAction instanceof MoveNodesAction) {
-				MoveNodesAction moveAction = (MoveNodesAction) copiedNodeAction;
-				for (int i = 0; i < moveAction.getListNodeListMemberList()
-						.size(); i++) {
-					NodeListMember member = moveAction.getNodeListMember(i);
-					NodeAdapter memberNode = controller.getNodeFromID(member
-							.getNode());
-					List correspondingMoveNodes = getCorrespondingNodes(
-							memberNode, false);
-					if (!correspondingMoveNodes.isEmpty()) {
-						// search for this clone:
-						for (Iterator it = correspondingMoveNodes.iterator(); it
-								.hasNext();) {
-							Tools.MindMapNodePair pair = (Tools.MindMapNodePair) it
-									.next();
-							if (pair.getCloneNode() == correspondingNodePair
-									.getCloneNode()) {
-								// found:
-								member.setNode(controller.getNodeID(pair
-										.getCorresponding()));
-								break;
-							}
-						}
-					}
-				}
-			}
-			if (copiedNodeAction instanceof NewNodeAction) {
-				NewNodeAction newNodeAction = (NewNodeAction) copiedNodeAction;
-				String newId = mMap.getLinkRegistry().generateUniqueID(null);
-				newNodeAction.setNewId(newId);
-			}
-			copiedNodeAction.setNode(controller.getNodeID(correspondingNodePair
-					.getCorresponding()));
-			if (copiedNodeAction instanceof PasteNodeAction) {
-				/*
-				 * difficult thing here: if something is pasted, the paste
-				 * action itself contains the node ids of the paste. The first
-				 * pasted action will get that node id. This should be the
-				 * corresponding node itself. This presumably corrects a bug
-				 * that the selection on move actions is changing.
-				 */
-				compound.addChoice(copiedNodeAction);
-			} else {
-				compound.addAtChoice(0, copiedNodeAction);
-			}
 		}
 
 		/**
