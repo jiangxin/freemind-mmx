@@ -21,6 +21,7 @@
 package accessories.plugins;
 
 import java.awt.EventQueue;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -63,7 +64,7 @@ public class ShowCloneNodes extends MindMapNodeHookAdapter{
 		ClonePlugin hook = ClonePlugin.getHook(node);
 		if(hook != null) {
 			// original found. 
-			Vector clones = new Vector(hook.getCloneNodes());
+			HashSet clones = hook.getCloneNodes();
 			newSelecteds.addAll(clones);
 		}
 	}

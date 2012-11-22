@@ -1185,8 +1185,8 @@ public abstract class ControllerAdapter implements ModeController, DirectoryResu
 		getController().getMapModuleManager().updateMapModuleName();
 	}
 
-	/* ***********************************************************
-	 * Helper methods **********************************************************
+	/**
+	 * @throws  {@link IllegalArgumentException} when node isn't found.
 	 */
 	public NodeAdapter getNodeFromID(String nodeID) {
 		NodeAdapter node = (NodeAdapter) getMap().getLinkRegistry()

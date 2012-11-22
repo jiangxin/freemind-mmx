@@ -80,7 +80,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 				getMindMapController().getText("clone_plugin_impossible"));
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				if(getHook(getNode())!=null) {
+				if (getHook(getNode()) != null) {
 					toggleHook();
 				}
 			}
@@ -139,7 +139,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	private void registerPlugin() {
-		if(mDisabled)
+		if (mDisabled)
 			return;
 		/*
 		 * test for error cases: - orig is child of clone now - if clone is a
@@ -205,28 +205,29 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	 * @return a list of {@link MindMapNode}s including the original node!
 	 */
 	HashSet getCloneNodes() {
-		try {
-			// is list up to date?
-			if (mCloneNodes != null) {
-				for (Iterator it = mCloneNodes.iterator(); it.hasNext();) {
-					MindMapNode cloneNode = (MindMapNode) it.next();
-					if (cloneNode.getParentNode() == null) {
-						clearCloneCache();
-					}
+		// is list up to date?
+		if (mCloneNodes != null) {
+			for (Iterator it = mCloneNodes.iterator(); it.hasNext();) {
+				MindMapNode cloneNode = (MindMapNode) it.next();
+				if (cloneNode.getParentNode() == null) {
+					clearCloneCache();
 				}
-			} else {
-				clearCloneCache();
 			}
-			if (mCloneNodes.isEmpty()) {
-				mCloneNodes.add(getNode());
-				for (Iterator it = mCloneNodeIds.iterator(); it.hasNext();) {
-					String cloneId = (String) it.next();
+		} else {
+			clearCloneCache();
+		}
+		if (mCloneNodes.isEmpty()) {
+			mCloneNodes.add(getNode());
+			for (Iterator it = mCloneNodeIds.iterator(); it.hasNext();) {
+				String cloneId = (String) it.next();
+				try {
 					mCloneNodes.add(getMindMapController().getNodeFromID(
 							cloneId));
+				} catch (IllegalArgumentException e) {
+					// freemind.main.Resources.getInstance().logException(e);
+					it.remove();
 				}
 			}
-		} catch (IllegalArgumentException e) {
-			// freemind.main.Resources.getInstance().logException(e);
 		}
 		return mCloneNodes;
 	}
@@ -256,8 +257,6 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		}
 		return "" + strings;
 	}
-
-	
 
 	private void checkForChainError(MindMapNode originalNode, MindMapNode node,
 			MindMapNode cloneNode) {
@@ -302,7 +301,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	 */
 	public void processUnfinishedLinks() {
 		super.processUnfinishedLinks();
-		if(mDisabled)
+		if (mDisabled)
 			return;
 		HashSet cloneNodes = getCloneNodes();
 		// activate other clones, if not already activated.

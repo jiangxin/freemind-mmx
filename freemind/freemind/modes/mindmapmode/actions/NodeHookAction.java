@@ -222,7 +222,7 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 				if (hook instanceof PermanentNodeHook) {
 					PermanentNodeHook permHook = (PermanentNodeHook) hook;
 					logger.finest("This is a permanent hook " + hookName);
-					// the focussed receives the focus:
+					// the focused receives the focus:
 					if (currentDestinationNode == adaptedFocussedNode) {
 						permHook.onFocusNode(mMindMapController
 								.getNodeView(currentDestinationNode));
