@@ -105,4 +105,9 @@ public interface PermanentNodeHook extends NodeHook {
 	/**
 	 */
 	void loadFrom(XMLElement child);
+
+	/**
+	 * Can be used to adjust some things after a paste action. (Currently it is used for clones).
+	 */
+	void processUnfinishedLinks();
 }

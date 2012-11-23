@@ -21,6 +21,7 @@
 package accessories.plugins;
 
 import java.awt.EventQueue;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -47,11 +48,6 @@ public class ShowCloneNodes extends MindMapNodeHookAdapter{
 		for (Iterator it = selecteds.iterator(); it.hasNext();) {
 			MindMapNode node = (MindMapNode) it.next();
 			addClonesToList(newSelecteds, node);
-			final ShadowClonePlugin shadowHook = ClonePasteAction.getShadowHook(node);
-			if(shadowHook != null) {
-				MindMapNode originalNode = shadowHook.getOriginalNode();
-				addClonesToList(newSelecteds, originalNode);
-			}
 			newSelecteds.remove(node);
 		}
 		if (!newSelecteds.isEmpty()) {
@@ -65,10 +61,10 @@ public class ShowCloneNodes extends MindMapNodeHookAdapter{
 	}
 
 	protected void addClonesToList(Vector newSelecteds, MindMapNode node) {
-		ClonePlugin hook = ClonePasteAction.getHook(node);
+		ClonePlugin hook = ClonePlugin.getHook(node);
 		if(hook != null) {
 			// original found. 
-			Vector clones = new Vector(hook.getCloneNodes());
+			HashSet clones = hook.getCloneNodes();
 			newSelecteds.addAll(clones);
 		}
 	}

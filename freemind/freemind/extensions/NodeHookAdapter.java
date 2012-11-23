@@ -52,7 +52,7 @@ public abstract class NodeHookAdapter extends HookAdapter implements NodeHook {
 
 	/**
 	 */
-	protected MindMapNode getNode() {
+	public MindMapNode getNode() {
 		return node;
 	}
 
@@ -79,5 +79,10 @@ public abstract class NodeHookAdapter extends HookAdapter implements NodeHook {
 	public void setMap(MindMap map) {
 		this.map = map;
 	}
+
+	public String getNodeId() {
+		return getController().getNodeID(getNode());
+	}
+
 
 }

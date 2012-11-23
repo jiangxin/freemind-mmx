@@ -68,7 +68,7 @@ public class MindMapNodeDropListener implements DropTargetListener {
 		MindMapNode selected = mMindMapController.getSelected();
 		if (!node.isWriteable())
 			return false;
-		return ((node != selected) && !node.isChildOf(selected));
+		return ((node != selected) && !node.isDescendantOf(selected));
 		// I think (node!=selected) is a hack for windows
 	}
 

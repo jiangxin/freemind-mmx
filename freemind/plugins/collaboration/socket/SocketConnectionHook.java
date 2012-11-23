@@ -175,4 +175,10 @@ public class SocketConnectionHook extends SocketBasics implements
 		return mClientCommunication.getUserInfo();
 	}
 
+	/* (non-Javadoc)
+	 * @see freemind.extensions.PermanentNodeHook#processUnfinishedLinks()
+	 */
+	public void processUnfinishedLinks() {
+	}
+
 }

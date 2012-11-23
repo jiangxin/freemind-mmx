@@ -136,5 +136,7 @@ public class DatabaseConnectionHook extends DatabaseBasics implements
 	public ActionPair filterAction(ActionPair pPair) {
 		return null;
 	}
+	public void processUnfinishedLinks() {
+	}
 
 }

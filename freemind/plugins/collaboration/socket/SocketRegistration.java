@@ -60,7 +60,7 @@ public class SocketRegistration implements HookRegistration,
 	}
 
 	public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
-		logger.info(this + " is asked for " + pAction + ".");
+		logger.fine(this + " is asked for " + pAction + ".");
 		if (pAction instanceof NodeHookAction) {
 			NodeHookAction action = (NodeHookAction) pAction;
 			if (action.getHookName().equals(
@@ -99,7 +99,7 @@ public class SocketRegistration implements HookRegistration,
 	 * When one option is enabled, the other is impossible.
 	 * */
 	public boolean isEnabled(JMenuItem pItem, Action pAction) {
-		logger.info(this + " is asked for " + pAction + ".");
+		logger.fine(this + " is asked for " + pAction + ".");
 		if (pAction instanceof NodeHookAction) {
 			NodeHookAction action = (NodeHookAction) pAction;
 			if (action.getHookName().equals(

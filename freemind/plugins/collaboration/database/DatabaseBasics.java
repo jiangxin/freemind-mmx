@@ -132,7 +132,7 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements
 	protected static void togglePermanentHook(MindMapController controller) {
 		MindMapNode rootNode = controller.getRootNode();
 		List selecteds = Arrays.asList(new MindMapNode[] { rootNode });
-		controller.addHook(rootNode, selecteds, SLAVE_HOOK_NAME);
+		controller.addHook(rootNode, selecteds, SLAVE_HOOK_NAME, null);
 	}
 
 	protected void setPortProperty(final NumberProperty portProperty) {

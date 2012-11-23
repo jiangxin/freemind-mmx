@@ -24,8 +24,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.ListIterator;
-import java.util.Random;
 import java.util.Vector;
+
+import freemind.main.Tools;
 
 /**
  * Interface for the registry, which manages the ids of nodes and the existing
@@ -98,9 +99,6 @@ public class MindMapLinkRegistry {
 	/** id */
 	protected HashSet mLocallyLinkedIds;
 
-	// bug fix from Dimitri.
-	protected static Random ran = new Random();
-
 	protected static java.util.logging.Logger logger = null;
 
 	// //////////////////////////////////////////////////////////////////////////////////////
@@ -116,46 +114,25 @@ public class MindMapLinkRegistry {
 		mIdToLinks = new HashMap();
 		mIdToLink = new HashMap();
 		mLocallyLinkedIds = new HashSet();
-	};
+	}
 
 	/**
 	 * This can be used, if the id has to be known, before a node can be
 	 * labeled.
 	 */
 	public String generateUniqueID(String proposedID) {
-		return generateID(proposedID, mIdToLinks, "ID_");
+		return Tools.generateID(proposedID, mIdToLinks, "ID_");
 	}
 
 	/**
 	 * This can be used, if the id has to be known, before a link can be labled.
 	 */
 	public String generateUniqueLinkId(String proposedID) {
-		return generateID(proposedID, mIdToLink, "Arrow_ID_");
-	};
+		return Tools.generateID(proposedID, mIdToLink, "Arrow_ID_");
+	}
 
-	private String generateID(String proposedID, HashMap hashMap, String prefix) {
-		String myProposedID = new String((proposedID != null) ? proposedID : "");
-		String returnValue;
-		do {
-			if (!myProposedID.isEmpty()) {
-				// there is a proposal:
-				returnValue = myProposedID;
-				// this string is tried only once:
-				myProposedID = "";
-			} else {
-				/*
-				 * The prefix is to enable the id to be an ID in the sense of
-				 * XML/DTD.
-				 */
-				returnValue = prefix
-						+ Integer.toString(ran.nextInt(2000000000));
-			}
-		} while (hashMap.containsKey(returnValue));
-		return returnValue;
-	};
-
-	public void registerLinkTarget(MindMapNode pTarget) {
-		_registerLinkTarget(pTarget);
+	public String registerLinkTarget(MindMapNode pTarget) {
+		return _registerLinkTarget(pTarget);
 
 	}
 
@@ -194,7 +171,7 @@ public class MindMapLinkRegistry {
 		 */
 		getAssignedLinksVector(newId);
 		return newId;
-	};
+	}
 
 	/**
 	 * @param node
@@ -204,7 +181,7 @@ public class MindMapLinkRegistry {
 		if (mTargetToId.containsKey(node))
 			return (String) mTargetToId.get(node);
 		return null;
-	};
+	}
 
 	/**
 	 * Reverses the getLabel method: searches for a node with the id given as
@@ -292,7 +269,7 @@ public class MindMapLinkRegistry {
 			}
 		}
 		mIdToLink.put(link.getUniqueId(), link);
-	};
+	}
 
 	public void deregisterLink(MindMapLink link) {
 		MindMapNode target = link.getTarget();
@@ -308,7 +285,7 @@ public class MindMapLinkRegistry {
 			}
 		}
 		mIdToLink.remove(link.getUniqueId());
-	};
+	}
 
 	/**
 	 * Reverses the getUniqueID method: searches for a link with the id given as
@@ -336,7 +313,7 @@ public class MindMapLinkRegistry {
 			}
 		}
 		return returnValue;
-	};
+	}
 
 	/** @return returns all links from or to this node. */
 	public Vector /* of MindMapLink s */getAllLinks(MindMapNode node) {
@@ -346,7 +323,7 @@ public class MindMapLinkRegistry {
 		// Dimitry : logger is a performance killer here
 		// //logger.fine("All links  ("+returnValue+") from  node:"+node);
 		return returnValue;
-	};
+	}
 
 	/** @return returns all links to this node as {@link MindMapLink} vector. */
 	public Vector getAllLinksIntoMe(MindMapNode target) {

@@ -6,6 +6,9 @@ Changes made in FreeMind 1.0.0 Beta9
 * Fixed export to directories with spaces under MacOSX (and probably other OS)
 * Fixed undo and creation of nodes
 * Fixed cut/copy and paste of parts of graphical links
+* Fixed cut/copy of clones
+* Clones of clones are now possible, too.
+* Fixed adding places to clone nodes (more general: to add permanent plugins to clone nodes).
 
 ===============================
 Changes made in FreeMind 1.0.0 Beta8

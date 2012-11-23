@@ -415,5 +415,7 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 		userInfo.setMasterIp(Tools.getHostIpAsString());
 		return userInfo;
 	}
+	public void processUnfinishedLinks() {
+	}
 
 }

@@ -119,7 +119,19 @@ public class DeleteChildAction extends AbstractAction implements ActorXml {
 		if (selecteds.contains(nodeView)){
 			view.deselect(nodeView);
 			if(selecteds.size() == 1) {
-				view.selectAsTheOnlyOneSelected(view.getNodeView(parent));
+				NodeView newSelectedView;
+				int childIndex = parent.getChildPosition(selectedNode);
+				if(parent.getChildCount() > childIndex+1) {
+					// the next node
+					newSelectedView = view.getNodeView((MindMapNode) parent.getChildAt(childIndex+1));
+				} else if(childIndex > 0) {
+					// the node before:
+					newSelectedView = view.getNodeView((MindMapNode) parent.getChildAt(childIndex-1));
+				} else {
+					// no other node on same level. take the parent.
+					newSelectedView = view.getNodeView(parent);
+				}
+				view.selectAsTheOnlyOneSelected(newSelectedView);
 			}
 		}
 		mMindMapController.removeNodeFromParent(selectedNode);

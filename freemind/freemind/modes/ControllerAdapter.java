@@ -615,6 +615,20 @@ public abstract class ControllerAdapter implements ModeController, DirectoryResu
 	}
 
 	/**
+	 *
+	 */
+	public void processUnfinishedLinksInHooks(NodeAdapter node) {
+		for (Iterator i = node.childrenUnfolded(); i.hasNext();) {
+			NodeAdapter child = (NodeAdapter) i.next();
+			processUnfinishedLinksInHooks(child);
+		}
+		for (Iterator i = node.getHooks().iterator(); i.hasNext();) {
+			PermanentNodeHook hook = (PermanentNodeHook) i.next();
+			hook.processUnfinishedLinks();
+		}
+	}
+	
+	/**
 	 * fc, 24.1.2004: having two methods getSelecteds with different return
 	 * values (linkedlists of models resp. views) is asking for trouble. @see
 	 * MapView
@@ -1171,8 +1185,8 @@ public abstract class ControllerAdapter implements ModeController, DirectoryResu
 		getController().getMapModuleManager().updateMapModuleName();
 	}
 
-	/* ***********************************************************
-	 * Helper methods **********************************************************
+	/**
+	 * @throws  {@link IllegalArgumentException} when node isn't found.
 	 */
 	public NodeAdapter getNodeFromID(String nodeID) {
 		NodeAdapter node = (NodeAdapter) getMap().getLinkRegistry()
@@ -1185,8 +1199,7 @@ public abstract class ControllerAdapter implements ModeController, DirectoryResu
 	}
 
 	public String getNodeID(MindMapNode selected) {
-		getMap().getLinkRegistry().registerLinkTarget(selected);
-		return getMap().getLinkRegistry().getLabel(selected);
+		return getMap().getLinkRegistry().registerLinkTarget(selected);
 	}
 
 	public MindMapNode getSelected() {

@@ -197,7 +197,7 @@ public interface MindMapNode extends MutableTreeNode {
 	 * Returns whether the argument is parent or parent of one of the grandpa's
 	 * of this node. (transitive)
 	 */
-	boolean isChildOf(MindMapNode node);
+	boolean isDescendantOf(MindMapNode node);
 
 	/**
 	 * If the test node is identical or in the same family and elder as the
@@ -206,7 +206,7 @@ public interface MindMapNode extends MutableTreeNode {
 	 * 
 	 * @see isDecendantOf
 	 */
-	boolean isChildOfOrEqual(MindMapNode pParentNode);
+	boolean isDescendantOfOrEqual(MindMapNode pParentNode);
 
 	boolean isRoot();
 

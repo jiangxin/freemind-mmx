@@ -988,17 +988,17 @@ public class MapDialog extends MindMapHookAdapter implements
 		boolean resultOk = getFreeMindMapController().search(mResultTableModel,
 				mResultTable, searchText, mTableOriginalBackgroundColor);
 		final int rowCount = mResultTableModel.getRowCount();
-		if (resultOk && pSelectFirstResult) {
-			if (rowCount > 0) {
-				displaySearchItem(0);
-			}
-		}
-		if (mSingleSearch && rowCount == 1) {
-			displaySearchItem(0);
-			this.map.requestFocus();
-			return;
-		}
 		if (resultOk) {
+			if (mSingleSearch && rowCount == 1) {
+				displaySearchItem(0);
+				this.map.requestFocus();
+				return;
+			}
+			if (pSelectFirstResult) {
+				if (rowCount > 0) {
+					displaySearchItem(0);
+				}
+			}
 			mResultTable.requestFocus();
 		} else {
 			mSearchTerm.requestFocus();

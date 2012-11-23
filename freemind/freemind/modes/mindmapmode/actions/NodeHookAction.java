@@ -26,6 +26,9 @@ import java.awt.event.ActionEvent;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -81,9 +84,9 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 		mMindMapController.getFrame().setWaitingCursor(false);
 	}
 
-	public void addHook(MindMapNode focussed, List selecteds, String hookName) {
+	public void addHook(MindMapNode focussed, List selecteds, String hookName, Properties pHookProperties) {
 		HookNodeAction doAction = createHookNodeAction(focussed, selecteds,
-				hookName);
+				hookName, pHookProperties);
 
 		XmlAction undoAction = null;
 		// this is the non operation:
@@ -106,7 +109,7 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 			List selecteds, String hookName) {
 		CompoundAction undoAction = new CompoundAction();
 		HookNodeAction hookNodeAction = createHookNodeAction(focussed,
-				selecteds, hookName);
+				selecteds, hookName, null);
 		undoAction.addChoice(hookNodeAction);
 		HookInstanciationMethod instMethod = getInstanciationMethod(hookName);
 		// get destination nodes
@@ -167,7 +170,7 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 	}
 
 	public void invoke(MindMapNode focussed, List selecteds) {
-		addHook(focussed, selecteds, _hookName);
+		addHook(focussed, selecteds, _hookName, null);
 	}
 
 	private void invoke(MindMapNode focussed, List selecteds, String hookName,
@@ -219,7 +222,7 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 				if (hook instanceof PermanentNodeHook) {
 					PermanentNodeHook permHook = (PermanentNodeHook) hook;
 					logger.finest("This is a permanent hook " + hookName);
-					// the focussed receives the focus:
+					// the focused receives the focus:
 					if (currentDestinationNode == adaptedFocussedNode) {
 						permHook.onFocusNode(mMindMapController
 								.getNodeView(currentDestinationNode));
@@ -296,7 +299,7 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 	}
 
 	public HookNodeAction createHookNodeAction(MindMapNode focussed,
-			List selecteds, String hookName) {
+			List selecteds, String hookName, Properties pHookProperties) {
 		HookNodeAction hookNodeAction = new HookNodeAction();
 		hookNodeAction.setNode(focussed.getObjectId(getController()));
 		hookNodeAction.setHookName(hookName);
@@ -306,6 +309,15 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 			NodeListMember nodeListMember = new NodeListMember();
 			nodeListMember.setNode(node.getObjectId(getController()));
 			hookNodeAction.addNodeListMember(nodeListMember);
+		}
+		if(pHookProperties != null) {
+			for (Iterator it = pHookProperties.entrySet().iterator(); it.hasNext();) {
+				Map.Entry entry = (Map.Entry) it.next();
+				NodeChildParameter nodeChildParameter = new NodeChildParameter();
+				nodeChildParameter.setKey((String) entry.getKey());
+				nodeChildParameter.setValue((String) entry.getValue());
+				hookNodeAction.addNodeChildParameter(nodeChildParameter);
+			}
 		}
 		return hookNodeAction;
 	}
@@ -375,7 +387,7 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 	public void removeHook(MindMapNode pFocussed, List pSelecteds,
 			String pHookName) {
 		HookNodeAction undoAction = createHookNodeAction(pFocussed, pSelecteds,
-				pHookName);
+				pHookName, null);
 
 		XmlAction doAction = null;
 		// this is the non operation:
