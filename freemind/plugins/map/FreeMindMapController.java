@@ -954,6 +954,8 @@ public class FreeMindMapController extends JMapController implements
 
 	private final class MaxmimalZoomToCursorAction extends AbstractAction {
 
+		private static final int CURSOR_MAXIMAL_ZOOM_HANDBREAK = 2;
+
 		public MaxmimalZoomToCursorAction() {
 			super(
 					getText("MapControllerPopupDialog.MaxmimalZoomToCursorAction"));
@@ -961,7 +963,10 @@ public class FreeMindMapController extends JMapController implements
 
 		public void actionPerformed(ActionEvent pE) {
 			Coordinate cursorPosition = getMap().getCursorPosition();
-			int zoom = getMaxZoom() - 2;
+			int zoom = getMaxZoom() - CURSOR_MAXIMAL_ZOOM_HANDBREAK;
+			if(getMap().getZoom() >= zoom) {
+				zoom += CURSOR_MAXIMAL_ZOOM_HANDBREAK;
+			}
 			map.setDisplayPositionByLatLon(cursorPosition.getLat(),
 					cursorPosition.getLon(), zoom);
 		}
