@@ -1,4 +1,9 @@
 ===============================
+Changes made in FreeMind 1.0.0 RC 1
+===============================
+* (Existing) Option "Search in Notes" added to Preferences Dialog (under Behaviour).
+
+===============================
 Changes made in FreeMind 1.0.0 Beta9
 ===============================
 * Fixed undo problem in collaboration mode
