@@ -31,6 +31,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
 import accessories.plugins.time.TimeList.NodeHolder;
+import accessories.plugins.time.TimeList.NotesHolder;
 
 /**
  * @author foltin
@@ -49,15 +50,18 @@ public class FlatNodeTableFilterModel extends AbstractTableModel {
 	 * The column that contains the NodeHolder items
 	 */
 	private final int mNodeTextColumn;
+	private int mNoteTextColumn;
 
 	/**
 	 * @param node_text_column
+	 * @param note_text_column TODO
 	 * 
 	 */
-	public FlatNodeTableFilterModel(TableModel tableModel, int node_text_column) {
+	public FlatNodeTableFilterModel(TableModel tableModel, int node_text_column, int note_text_column) {
 		super();
 		this.mTableModel = tableModel;
 		this.mNodeTextColumn = node_text_column;
+		mNoteTextColumn = note_text_column;
 		tableModel.addTableModelListener(new TableModelHandler());
 		resetFilter();
 	}
@@ -82,6 +86,14 @@ public class FlatNodeTableFilterModel extends AbstractTableModel {
 			if (mPattern.matcher(nodeContent.toString()).matches()) {
 				// add index to array:
 				newIndexArray.add(new Integer(i));
+			} else {
+				// only check notes, when not already a hit.
+				NotesHolder noteContent = (NotesHolder) mTableModel.getValueAt(i,
+						mNoteTextColumn);
+				if (mPattern.matcher(noteContent.toString()).matches()) {
+					// add index to array:
+					newIndexArray.add(new Integer(i));
+				}
 			}
 		}
 		mIndexArray = newIndexArray;

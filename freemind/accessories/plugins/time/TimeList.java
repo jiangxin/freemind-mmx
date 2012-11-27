@@ -646,7 +646,7 @@ public class TimeList extends MindMapHookAdapter implements
 		updateModel(model, node);
 		timeTableModel = model;
 		mFlatNodeTableFilterModel = new FlatNodeTableFilterModel(
-				timeTableModel, NODE_TEXT_COLUMN);
+				timeTableModel, NODE_TEXT_COLUMN, NODE_NOTES_COLUMN);
 		if(sorter == null) {
 			sorter = new TableSorter(mFlatNodeTableFilterModel);
 			timeTable.setModel(sorter);
