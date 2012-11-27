@@ -1,4 +1,4 @@
-<map version="0.9.0">
+<map version="1.0.1">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
 <attribute_registry>
 <attribute_name NAME="CHECKPOINT_LIST" RESTRICTED="true">
@@ -476,11 +476,15 @@
 </node>
 <node CREATED="1124560950717" ID="_Freemind_Link_1249400461" MODIFIED="1124560950717" TEXT="To another">
 <arrowlink COLOR="#6600ff" DESTINATION="_Freemind_Link_880551392" ENDARROW="Default" ENDINCLINATION="47;0;" ID="Freemind_Arrow_Link_85185909" STARTARROW="None" STARTINCLINATION="47;0;"/>
+<linktarget COLOR="#b0b0b0" DESTINATION="_Freemind_Link_1249400461" ENDARROW="Default" ENDINCLINATION="41;0;" ID="Arrow_ID_854000001" SOURCE="_Freemind_Link_1212380407" STARTARROW="None" STARTINCLINATION="41;0;"/>
 </node>
 <node CREATED="1124560950717" ID="_Freemind_Link_880551392" MODIFIED="1124560950717" TEXT="With different color">
 <arrowlink DESTINATION="_Freemind_Link_1789233193" ENDARROW="Default" ENDINCLINATION="82;44;" ID="Freemind_Arrow_Link_1672464612" STARTARROW="None" STARTINCLINATION="82;44;"/>
+<linktarget COLOR="#6600ff" DESTINATION="_Freemind_Link_880551392" ENDARROW="Default" ENDINCLINATION="47;0;" ID="Freemind_Arrow_Link_85185909" SOURCE="_Freemind_Link_1249400461" STARTARROW="None" STARTINCLINATION="47;0;"/>
 </node>
-<node CREATED="1124560950717" ID="_Freemind_Link_1789233193" MODIFIED="1124560950717" TEXT="And different routing"/>
+<node CREATED="1124560950717" ID="_Freemind_Link_1789233193" MODIFIED="1124560950717" TEXT="And different routing">
+<linktarget COLOR="#b0b0b0" DESTINATION="_Freemind_Link_1789233193" ENDARROW="Default" ENDINCLINATION="82;44;" ID="Freemind_Arrow_Link_1672464612" SOURCE="_Freemind_Link_880551392" STARTARROW="None" STARTINCLINATION="82;44;"/>
+</node>
 </node>
 <node COLOR="#407000" CREATED="1124560950717" ID="_Freemind_Link_127668276" MODIFIED="1225909093216" TEXT="Node can be positioned freely">
 <node CREATED="1124560950717" HGAP="180" ID="_Freemind_Link_894936766" MODIFIED="1225909085436" TEXT="One" VSHIFT="-52"/>
@@ -493,7 +497,7 @@
   </head>
   <body>
     <p>
-      <b>Rich</b>&#160;<i>text</i>&#160;<u>nodes</u>
+      <b>Rich</b>&#xa0;<i>text</i>&#xa0;<u>nodes</u>
     </p>
   </body>
 </html></richcontent>
@@ -552,7 +556,7 @@
   </head>
   <body>
     <p>
-      This&#160;is&#160;a&#160;note&#160;attached&#160;to&#160;the&#160;node.&#160;Use&#160;the&#160;&quot;View&quot;&#160;menu&#160;to&#160;display&#160;them&#160; &#160;at&#160;the&#160;bottom.&#160;Notes&#160;may&#160;be&#160;hidden&#160;completely&#160;as&#160;they&#160;reduce&#160;the&#160;space&#160;&#160; available&#160;for&#160;mind&#160;maps.&#160;But&#160;for&#160;long&#160;text&#160;this&#160;is&#160;the&#160;best&#160;way&#160;to&#160;keep&#160; the&#160;mind&#160;map&#160;clean&#160;but&#160;to&#160;attach&#160;the&#160;text.&#160;
+      This&#xa0;is&#xa0;a&#xa0;note&#xa0;attached&#xa0;to&#xa0;the&#xa0;node.&#xa0;Use&#xa0;the&#xa0;"View"&#xa0;menu&#xa0;to&#xa0;display&#xa0;them&#xa0; &#xa0;at&#xa0;the&#xa0;bottom.&#xa0;Notes&#xa0;may&#xa0;be&#xa0;hidden&#xa0;completely&#xa0;as&#xa0;they&#xa0;reduce&#xa0;the&#xa0;space&#xa0;&#xa0; available&#xa0;for&#xa0;mind&#xa0;maps.&#xa0;But&#xa0;for&#xa0;long&#xa0;text&#xa0;this&#xa0;is&#xa0;the&#xa0;best&#xa0;way&#xa0;to&#xa0;keep&#xa0; the&#xa0;mind&#xa0;map&#xa0;clean&#xa0;but&#xa0;to&#xa0;attach&#xa0;the&#xa0;text.&#xa0;
     </p>
   </body>
 </html></richcontent>
@@ -570,6 +574,7 @@
 <node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_1700974092" MODIFIED="1225909483655" POSITION="right" TEXT="Editing node text">
 <node CREATED="1124560950717" ID="_Freemind_Link_519923426" MODIFIED="1124560950717" TEXT="To edit a node, press F2, HOME or END key, or in node context menu use Edit. To finish editing a node, press ENTER.">
 <arrowlink DESTINATION="_Freemind_Link_519923426" ENDARROW="Default" ENDINCLINATION="0;0;" ID="Freemind_Arrow_Link_1179992477" STARTARROW="None" STARTINCLINATION="0;0;"/>
+<linktarget COLOR="#b0b0b0" DESTINATION="_Freemind_Link_519923426" ENDARROW="Default" ENDINCLINATION="0;0;" ID="Freemind_Arrow_Link_1179992477" SOURCE="_Freemind_Link_519923426" STARTARROW="None" STARTINCLINATION="0;0;"/>
 </node>
 <node CREATED="1124560950717" ID="ID_259015496" MODIFIED="1124560950717" TEXT="To replace the text in a node with new one, start typing."/>
 <node CREATED="1124560950717" ID="ID_93096599" MODIFIED="1124560950717" TEXT="To force long node editor when editing a short node, press Alt + Enter."/>
@@ -579,7 +584,9 @@
 </node>
 <node CREATED="1124560950717" ID="ID_1985164174" MODIFIED="1124560950717" TEXT="To copy a selection to the clipboard while editing long node, press right mouse button and choose copy."/>
 <node CREATED="1124560950717" ID="ID_137502638" MODIFIED="1124560950717" TEXT="To insert a special symbol like &#xa9;, insert it into your favorite text editor like Microsoft Word first, and then paste it into FreeMind."/>
-<node CREATED="1124560950717" ID="_Freemind_Link_1445647544" MODIFIED="1124560950717" TEXT="By default, Enter finishes editing of a long node, and Control + Enter inserts a newline. By unchecking the check box &quot;Enter confirms&quot; you can reverse the function of the mentioned key combinations, i.e. ENTER enters new line and CONTROL ENTER finishes editing. You can set the default value of that check box in preferencess. Moreover, the value of the box is saved during a session of FreeMind."/>
+<node CREATED="1124560950717" ID="_Freemind_Link_1445647544" MODIFIED="1124560950717" TEXT="By default, Enter finishes editing of a long node, and Control + Enter inserts a newline. By unchecking the check box &quot;Enter confirms&quot; you can reverse the function of the mentioned key combinations, i.e. ENTER enters new line and CONTROL ENTER finishes editing. You can set the default value of that check box in preferencess. Moreover, the value of the box is saved during a session of FreeMind.">
+<linktarget COLOR="#b0b0b0" DESTINATION="_Freemind_Link_1445647544" ENDARROW="Default" ENDINCLINATION="118;0;" ID="Freemind_Arrow_Link_1628309717" SOURCE="ID_167040323" STARTARROW="None" STARTINCLINATION="118;0;"/>
+</node>
 <node CREATED="1124560950717" MODIFIED="1124560950717" TEXT="FreeMind fully supports unicode. Thus you can use the script of your choice."/>
 </node>
 <node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_1660149394" MODIFIED="1246895592164" POSITION="right" TEXT="Formatting a node">
@@ -713,7 +720,10 @@
 <node CREATED="1124560950717" ID="_Freemind_Link_208378337" MODIFIED="1124560950717" TEXT="To change the color of the link, use link context menu, by right-clicking the graphical link."/>
 <node CREATED="1124560950717" ID="_Freemind_Link_1484370636" MODIFIED="1124560950717" TEXT="To change the arrows of the link, use link context menu."/>
 <node CREATED="1124560950717" ID="ID_1970882825" MODIFIED="1246861703183" TEXT="To delete a link, use link context menu."/>
-<node CREATED="1124560950717" ID="_Freemind_Link_266716332" MODIFIED="1225992201863" TEXT="To navigate to one of the end nodes of the link, use link context menu."/>
+<node CREATED="1124560950717" ID="_Freemind_Link_266716332" MODIFIED="1225992201863" TEXT="To navigate to one of the end nodes of the link, use link context menu.">
+<linktarget COLOR="#66ff00" DESTINATION="_Freemind_Link_266716332" ENDARROW="Default" ENDINCLINATION="255;0;" ID="Freemind_Arrow_Link_1428344028" SOURCE="ID_985897417" STARTARROW="None" STARTINCLINATION="255;0;"/>
+<linktarget COLOR="#b0b0b0" DESTINATION="_Freemind_Link_266716332" ENDARROW="Default" ENDINCLINATION="256;22;" ID="Freemind_Arrow_Link_1273596772" SOURCE="_Freemind_Link_1015289745" STARTARROW="None" STARTINCLINATION="244;32;"/>
+</node>
 </node>
 <node CREATED="1124560950717" ID="_Freemind_Link_1015289745" MODIFIED="1124560950717" TEXT="To change the routing of an arrow link, drag it and move it.">
 <arrowlink DESTINATION="_Freemind_Link_266716332" ENDARROW="Default" ENDINCLINATION="256;22;" ID="Freemind_Arrow_Link_1273596772" STARTARROW="None" STARTINCLINATION="244;32;"/>
@@ -722,9 +732,12 @@
 <node COLOR="#996600" CREATED="1124560950717" ID="ID_46167995" MODIFIED="1124560950717" TEXT="Example">
 <node COLOR="#996600" CREATED="1124560950717" ID="_Freemind_Link_1170112929" MODIFIED="1124560950717" TEXT="Link to another part">
 <arrowlink COLOR="#9999ff" DESTINATION="_Freemind_Link_1492563156" ENDARROW="Default" ENDINCLINATION="122;0;" ID="Freemind_Arrow_Link_33407992" STARTARROW="Default" STARTINCLINATION="30;0;"/>
+<linktarget COLOR="#b0b0b0" DESTINATION="_Freemind_Link_1170112929" ENDARROW="Default" ENDINCLINATION="61;0;" ID="Freemind_Arrow_Link_1872050149" SOURCE="_Freemind_Link_1370577235" STARTARROW="None" STARTINCLINATION="61;0;"/>
 </node>
 <node COLOR="#996600" CREATED="1124560950717" FOLDED="true" ID="ID_1727670208" MODIFIED="1225992214274" TEXT="Node with folded subnode">
-<node CREATED="1124560950717" ID="_Freemind_Link_1492563156" MODIFIED="1124560950717" TEXT="Subnode"/>
+<node CREATED="1124560950717" ID="_Freemind_Link_1492563156" MODIFIED="1124560950717" TEXT="Subnode">
+<linktarget COLOR="#9999ff" DESTINATION="_Freemind_Link_1492563156" ENDARROW="Default" ENDINCLINATION="122;0;" ID="Freemind_Arrow_Link_33407992" SOURCE="_Freemind_Link_1170112929" STARTARROW="Default" STARTINCLINATION="30;0;"/>
+</node>
 </node>
 <node COLOR="#996600" CREATED="1124560950717" ID="_Freemind_Link_1370577235" MODIFIED="1124560950717" TEXT="Another link">
 <arrowlink DESTINATION="_Freemind_Link_1170112929" ENDARROW="Default" ENDINCLINATION="61;0;" ID="Freemind_Arrow_Link_1872050149" STARTARROW="None" STARTINCLINATION="61;0;"/>
@@ -760,7 +773,10 @@
 </node>
 <node CREATED="1226638251611" ID="ID_1059444785" MODIFIED="1226638262979" TEXT="Searching for ...">
 <node CREATED="1226637703016" ID="ID_677636492" MODIFIED="1226638246061" TEXT="one one (without quotations), you&apos;ll get four hits."/>
-<node CREATED="1226637912635" ID="ID_1194260195" MODIFIED="1226638280370" TEXT="one two (without quotations), you&apos;ll get two hits."/>
+<node CREATED="1226637912635" ID="ID_1194260195" MODIFIED="1226638280370" TEXT="one two (without quotations), you&apos;ll get two hits.">
+<linktarget COLOR="#b0b0b0" DESTINATION="ID_1194260195" ENDARROW="None" ENDINCLINATION="233;0;" ID="Arrow_ID_229096619" SOURCE="ID_7046300" STARTARROW="Default" STARTINCLINATION="233;0;"/>
+<linktarget COLOR="#b0b0b0" DESTINATION="ID_1194260195" ENDARROW="None" ENDINCLINATION="226;0;" ID="Arrow_ID_836438693" SOURCE="ID_210133237" STARTARROW="Default" STARTINCLINATION="226;0;"/>
+</node>
 <node CREATED="1226637732850" ID="ID_1924951486" MODIFIED="1226638246062" TEXT="&quot;one one&quot;, you&apos;ll get only one hit."/>
 </node>
 </node>
@@ -771,32 +787,32 @@
   </head>
   <body>
     <p>
-      A&#160;new&#160;search&#160;and&#160;replace&#160;dialog&#160;enables&#160;to&#160;quickly&#160;search&#160;for&#160;text&#160;&#160; fragments&#160;and&#160;to&#160;replace&#160;them.
+      A&#xa0;new&#xa0;search&#xa0;and&#xa0;replace&#xa0;dialog&#xa0;enables&#xa0;to&#xa0;quickly&#xa0;search&#xa0;for&#xa0;text&#xa0;&#xa0; fragments&#xa0;and&#xa0;to&#xa0;replace&#xa0;them.
     </p>
     <p>
-      Its&#160;functionality&#160;includes
+      Its&#xa0;functionality&#xa0;includes
     </p>
     <ul>
       <li>
-        Find&#160;as&#160;you&#160;type:&#160;when&#160;you&#160;start&#160;to&#160;specify&#160;your&#160;search&#160;text,&#160;it&#160;&#160; starts&#160;to&#160;reduce&#160;the&#160;amount&#160;of&#160;displayed&#160;nodes.&#160;It&#160;searches&#160;for&#160;the&#160;&#160; text&#160;inside&#160;the&#160;nodes&#160;text&#160;only&#160;(attached&#160;notes&#160;are&#160;currently&#160;not&#160;&#160; searched).
+        Find&#xa0;as&#xa0;you&#xa0;type:&#xa0;when&#xa0;you&#xa0;start&#xa0;to&#xa0;specify&#xa0;your&#xa0;search&#xa0;text,&#xa0;it&#xa0;&#xa0; starts&#xa0;to&#xa0;reduce&#xa0;the&#xa0;amount&#xa0;of&#xa0;displayed&#xa0;nodes.&#xa0;It&#xa0;searches&#xa0;for&#xa0;the&#xa0;&#xa0; text&#xa0;inside&#xa0;the&#xa0;nodes&#xa0;text&#xa0;only&#xa0;(attached&#xa0;notes&#xa0;are&#xa0;currently&#xa0;not&#xa0;&#xa0; searched).
       </li>
       <li>
-        Sortable&#160;node&#160;list:&#160;the&#160;main&#160;table&#160;is&#160;sortable&#160;by&#160;each&#160;criterion.&#160;Even&#160; &#160;by&#160;Icon.&#160;Thus,&#160;it&#160;is&#160;easy&#160;to&#160;find&#160;all&#160;nodes&#160;with&#160;attached&#160;note&#160;for&#160;&#160; example.&#160;Or&#160;to&#160;sort&#160;them&#160;by&#160;creation&#160;date&#160;to&#160;get&#160;the&#160;latest&#160;changes&#160;to&#160; &#160;the&#160;map!
+        Sortable&#xa0;node&#xa0;list:&#xa0;the&#xa0;main&#xa0;table&#xa0;is&#xa0;sortable&#xa0;by&#xa0;each&#xa0;criterion.&#xa0;Even&#xa0; &#xa0;by&#xa0;Icon.&#xa0;Thus,&#xa0;it&#xa0;is&#xa0;easy&#xa0;to&#xa0;find&#xa0;all&#xa0;nodes&#xa0;with&#xa0;attached&#xa0;note&#xa0;for&#xa0;&#xa0; example.&#xa0;Or&#xa0;to&#xa0;sort&#xa0;them&#xa0;by&#xa0;creation&#xa0;date&#xa0;to&#xa0;get&#xa0;the&#xa0;latest&#xa0;changes&#xa0;to&#xa0; &#xa0;the&#xa0;map!
       </li>
       <li>
-        Cursor&#160;support:&#160;moving&#160;down&#160;moves&#160;from&#160;the&#160;search&#160;field&#160;to&#160;the&#160;replace&#160; &#160;field&#160;and&#160;then&#160;into&#160;the&#160;list.
+        Cursor&#xa0;support:&#xa0;moving&#xa0;down&#xa0;moves&#xa0;from&#xa0;the&#xa0;search&#xa0;field&#xa0;to&#xa0;the&#xa0;replace&#xa0; &#xa0;field&#xa0;and&#xa0;then&#xa0;into&#xa0;the&#xa0;list.
       </li>
       <li>
-        Node&#160;Path&#160;display:&#160;if&#160;you&#160;select&#160;a&#160;line,&#160;its&#160;path&#160;from&#160;the&#160;root&#160;of&#160;the&#160; &#160;map&#160;is&#160;displayed&#160;below.
+        Node&#xa0;Path&#xa0;display:&#xa0;if&#xa0;you&#xa0;select&#xa0;a&#xa0;line,&#xa0;its&#xa0;path&#xa0;from&#xa0;the&#xa0;root&#xa0;of&#xa0;the&#xa0; &#xa0;map&#xa0;is&#xa0;displayed&#xa0;below.
       </li>
       <li>
-        Direct&#160;access:&#160;if&#160;you&#160;press&#160;enter&#160;inside&#160;the&#160;table,&#160;the&#160;mind&#160;map&#160;&#160; displays&#160;the&#160;selected&#160;node&#160;(menu&#160;item&#160;&quot;select&quot;&#160;and&#160;&quot;select&#160;and&#160;close&quot;).
+        Direct&#xa0;access:&#xa0;if&#xa0;you&#xa0;press&#xa0;enter&#xa0;inside&#xa0;the&#xa0;table,&#xa0;the&#xa0;mind&#xa0;map&#xa0;&#xa0; displays&#xa0;the&#xa0;selected&#xa0;node&#xa0;(menu&#xa0;item&#xa0;"select"&#xa0;and&#xa0;"select&#xa0;and&#xa0;close").
       </li>
       <li>
-        Replace:&#160;it&#160;is&#160;possible&#160;to&#160;replace&#160;all&#160;occurences&#160;or&#160;only&#160;the&#160;nodes&#160;&#160; belonging&#160;to&#160;the&#160;selected&#160;lines.
+        Replace:&#xa0;it&#xa0;is&#xa0;possible&#xa0;to&#xa0;replace&#xa0;all&#xa0;occurences&#xa0;or&#xa0;only&#xa0;the&#xa0;nodes&#xa0;&#xa0; belonging&#xa0;to&#xa0;the&#xa0;selected&#xa0;lines.
       </li>
       <li>
-        Export:&#160;new&#160;striking&#160;possibility.&#160;Select&#160;some&#160;nodes&#160;and&#160;export&#160;them&#160;to&#160; &#160;a&#160;new&#160;mindmap.&#160;This&#160;makes&#160;it&#160;easy&#160;to&#160;generate&#160;a&#160;todo&#160;list&#160;from&#160;a&#160;&#160; hierachical&#160;mind&#160;map.&#160;For&#160;example,&#160;if&#160;you&#160;mark&#160;every&#160;todo&#160;item&#160;with&#160;&#160; the&#160;bell&#160;sign,&#160;then&#160;simply&#160;sort&#160;this&#160;list&#160;by&#160;icon&#160;and&#160;mark&#160;those&#160;&#160; containing&#160;the&#160;bell.&#160;Then&#160;press&#160;&quot;export&quot;&#160;and&#160;you&#160;get&#160;all&#160;these&#160;nodes&#160;&#160; as&#160;single&#160;nodes&#160;in&#160;a&#160;new&#160;map.
+        Export:&#xa0;new&#xa0;striking&#xa0;possibility.&#xa0;Select&#xa0;some&#xa0;nodes&#xa0;and&#xa0;export&#xa0;them&#xa0;to&#xa0; &#xa0;a&#xa0;new&#xa0;mindmap.&#xa0;This&#xa0;makes&#xa0;it&#xa0;easy&#xa0;to&#xa0;generate&#xa0;a&#xa0;todo&#xa0;list&#xa0;from&#xa0;a&#xa0;&#xa0; hierachical&#xa0;mind&#xa0;map.&#xa0;For&#xa0;example,&#xa0;if&#xa0;you&#xa0;mark&#xa0;every&#xa0;todo&#xa0;item&#xa0;with&#xa0;&#xa0; the&#xa0;bell&#xa0;sign,&#xa0;then&#xa0;simply&#xa0;sort&#xa0;this&#xa0;list&#xa0;by&#xa0;icon&#xa0;and&#xa0;mark&#xa0;those&#xa0;&#xa0; containing&#xa0;the&#xa0;bell.&#xa0;Then&#xa0;press&#xa0;"export"&#xa0;and&#xa0;you&#xa0;get&#xa0;all&#xa0;these&#xa0;nodes&#xa0;&#xa0; as&#xa0;single&#xa0;nodes&#xa0;in&#xa0;a&#xa0;new&#xa0;map.
       </li>
     </ul>
   </body>
@@ -1095,7 +1111,7 @@
       </tr>
     </table>
     <p class="msonormal">
-       We can have various <font color="#999900">foreground</font> <font color="#336600">colors</font>.
+      &#xa0;We can have various <font color="#999900">foreground</font> <font color="#336600">colors</font>.
     </p>
   </body>
 </html></richcontent>
@@ -1204,9 +1220,9 @@
 <node CREATED="1124560950732" ID="ID_1632174512" MODIFIED="1246861979254" TEXT="File locking makes sure that multiple users do not edit the same map at the same time, preventing them from accidentally overwriting the information from each other."/>
 <node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="To enable experimental file locking, in pull-down menu use Tools &gt; Preferences."/>
 </node>
-<node COLOR="#407000" CREATED="1229414588553" FOLDED="true" ID="ID_1077619682" MODIFIED="1229415160098" POSITION="right" STYLE="fork" TEXT="New features in version 0.9.0">
+<node COLOR="#407000" CREATED="1229414588553" FOLDED="true" ID="ID_1077619682" MODIFIED="1354049353488" POSITION="right" STYLE="fork" TEXT="New features in version 0.9.0">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
-<node COLOR="#407000" CREATED="1201283648829" FOLDED="true" ID="Freemind_Link_813308322" MODIFIED="1229414897563" STYLE="fork" TEXT="Main new features">
+<node COLOR="#407000" CREATED="1201283648829" FOLDED="true" ID="Freemind_Link_813308322" MODIFIED="1354041397526" STYLE="fork" TEXT="Main new features">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#407000" CREATED="1201283660674" ID="Freemind_Link_1390621915" MODIFIED="1229414651746" STYLE="fork" TEXT="New Editor">
@@ -1247,10 +1263,10 @@
   </head>
   <body>
     <p>
-      Using Filters the current mindmap can be reduced to nodes satisfying certain criteria. For example, if you only want to see every node containing &quot;TODO&quot;, then you have to press on the filter symbol (the funnel beside the zoom box), the filter toolbar appears, choose &quot;edit&quot; and add the condition that the node content contains &quot;TODO&quot;. Then select the filter in the filter toolbar. Now, only the filtered nodes and its ancestors are displayed unless you choose &quot;No filtering&quot; in the toolbar.
+      Using Filters the current mindmap can be reduced to nodes satisfying certain criteria. For example, if you only want to see every node containing "TODO", then you have to press on the filter symbol (the funnel beside the zoom box), the filter toolbar appears, choose "edit" and add the condition that the node content contains "TODO". Then select the filter in the filter toolbar. Now, only the filtered nodes and its ancestors are displayed unless you choose "No filtering" in the toolbar.
     </p>
     <p>
-      Using the settings &quot;Show ancestors&quot; and &quot;Show descendants&quot; you can influence the apperance of the parent and child nodes that are connected with the nodes being filtered.
+      Using the settings "Show ancestors" and "Show descendants" you can influence the apperance of the parent and child nodes that are connected with the nodes being filtered.
     </p>
     <p>
       There are many different criteria filters can be based on such as a set of selected nodes, a specific icon and some attributes.
@@ -1281,7 +1297,7 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1201282217311" FOLDED="true" ID="Freemind_Link_849247054" MODIFIED="1229414897563" STYLE="fork" TEXT="Visual Changes">
+<node COLOR="#407000" CREATED="1201282217311" FOLDED="true" ID="Freemind_Link_849247054" MODIFIED="1354041399158" STYLE="fork" TEXT="Visual Changes">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#407000" CREATED="1201282224869" ID="Freemind_Link_1307834035" MODIFIED="1229414651763" STYLE="fork" TEXT="Tabular MindMapping Support">
@@ -1303,7 +1319,7 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1201282319118" FOLDED="true" ID="Freemind_Link_1043646949" MODIFIED="1229414897564" STYLE="fork" TEXT="Usability Improvements">
+<node COLOR="#407000" CREATED="1201282319118" FOLDED="true" ID="Freemind_Link_1043646949" MODIFIED="1354041405739" STYLE="fork" TEXT="Usability Improvements">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#407000" CREATED="1201282325640" FOLDED="true" ID="Freemind_Link_556186325" MODIFIED="1229414897564" STYLE="fork" TEXT="Move in all directions">
@@ -1455,13 +1471,13 @@
         Node Path display: if you select a line, its path from the root of the map is displayed below.
       </li>
       <li>
-        Direct access: if you press enter inside the table, the mind map displays the selected node (menu item &quot;select&quot; and &quot;select and close&quot;).
+        Direct access: if you press enter inside the table, the mind map displays the selected node (menu item "select" and "select and close").
       </li>
       <li>
         Replace: it is possible to replace all occurences or only the nodes belonging to the selected lines.
       </li>
       <li>
-        Export: new striking possibility. Select some nodes and export them to a new mindmap. This makes it easy to generate a todo list from a hierachical mind map. For example, if you mark every todo item with the bell sign, then simply sort this list by icon and mark those containing the bell. Then press &quot;export&quot; and you get all these nodes as single nodes in a new map.
+        Export: new striking possibility. Select some nodes and export them to a new mindmap. This makes it easy to generate a todo list from a hierachical mind map. For example, if you mark every todo item with the bell sign, then simply sort this list by icon and mark those containing the bell. Then press "export" and you get all these nodes as single nodes in a new map.
       </li>
     </ul>
   </body>
@@ -1487,7 +1503,7 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1201282939150" FOLDED="true" ID="Freemind_Link_150258579" MODIFIED="1229414861402" STYLE="fork" TEXT="New Exports">
+<node COLOR="#407000" CREATED="1201282939150" FOLDED="true" ID="Freemind_Link_150258579" MODIFIED="1354041407412" STYLE="fork" TEXT="New Exports">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#407000" CREATED="1201282945124" ID="Freemind_Link_1356291624" MODIFIED="1229414651846" STYLE="fork" TEXT="As flash and as a Java applet">
@@ -1525,7 +1541,7 @@
     </p>
     <ol>
       <li>
-        Choose the script editor to easily add, change and test your scripts. Technically, scripts are attached to a node via an attribute starting with &quot;script&quot; (like &quot;script1&quot;) that contains the script. Every time you choose &quot;Evaluate&quot; from the tools menu, all scripts attached to nodes are executed.
+        Choose the script editor to easily add, change and test your scripts. Technically, scripts are attached to a node via an attribute starting with "script" (like "script1") that contains the script. Every time you choose "Evaluate" from the tools menu, all scripts attached to nodes are executed.
       </li>
       <li>
         Create or change a pattern and press the script button. The script editor appears and your script will be associated to a pattern. Every time you apply the pattern to some nodes, the script is executed for that nodes automatically. Thus, you can have the scripts with keyboard shortcuts as the patterns are accessible via shortcuts.
@@ -1539,7 +1555,7 @@
         node is the current node. It is a freemind.modes.MindMapNode. This node can be used to retrieve information about the contents, its children or its formatting. <i>Don't use the setter to change the node. Use the following instead:</i>
       </li>
       <li>
-        c is the current controller. It is a freemind.modes.mindmapmode.MindMapController. This controller <b>should</b>&#160; &#160;&#160;&#160;be used to change information. For example, if you want to change the nodes text or if you want to add children. The methods that can be used are sumarized in freemind.modes.mindmapmode.actions.MindMapActions.
+        c is the current controller. It is a freemind.modes.mindmapmode.MindMapController. This controller <b>should</b>&#xa0; &#xa0;&#xa0;&#xa0;be used to change information. For example, if you want to change the nodes text or if you want to add children. The methods that can be used are sumarized in freemind.modes.mindmapmode.actions.MindMapActions.
       </li>
     </ul>
     <p>
@@ -1547,10 +1563,10 @@
     </p>
     <ol>
       <li>
-        If a script starts with &quot;=&quot;, the result of the script is taken to be the new nodes text. Example script1: =17+4. If executed, the node the script is associated to will be changed to 21.
+        If a script starts with "=", the result of the script is taken to be the new nodes text. Example script1: =17+4. If executed, the node the script is associated to will be changed to 21.
       </li>
       <li>
-        If a script starts with letters (digits and '_') only and then a &quot;=&quot; sign, like &quot;sum=17+4&quot;, the result is taken to be a (possibly new) attribute named &quot;sum&quot; in this case with the content 21.
+        If a script starts with letters (digits and '_') only and then a "=" sign, like "sum=17+4", the result is taken to be a (possibly new) attribute named "sum" in this case with the content 21.
       </li>
     </ol>
     <p>
@@ -1573,13 +1589,13 @@
       If your scripts want to change some map data (which they commonly want to) they should rely on the methods provided by the MindMapController c.
     </p>
     <p>
-      These methods are summarized and partially documented in the class &quot;MindMapActions&quot;:
+      These methods are summarized and partially documented in the class "MindMapActions":
     </p>
     <p>
       <a href="http://freemind.cvs.sourceforge.net/freemind/freemind/freemind/modes/mindmapmode/actions/MindMapActions.java?view=log&amp;pathrev=fm_060405_integration">http://freemind.cvs.sourceforge.net/freemind/freemind/freemind/modes/mindmapmode/actions/MindMapActions.java?view=log&amp;pathrev=fm_060405_integration</a>
     </p>
     <p>
-      The listeners mentioned below (ie. NodeSelectionListener and NodeLifetimeListener) can be registered and found in the class &quot;ModeController&quot; (also c):
+      The listeners mentioned below (ie. NodeSelectionListener and NodeLifetimeListener) can be registered and found in the class "ModeController" (also c):
     </p>
     <p>
       <a href="http://freemind.cvs.sourceforge.net/freemind/freemind/freemind/modes/ModeController.java?view=log&amp;pathrev=fm_060405_integration">http://freemind.cvs.sourceforge.net/freemind/freemind/freemind/modes/ModeController.java?view=log&amp;pathrev=fm_060405_integration</a>
@@ -1589,70 +1605,70 @@
     </p>
     <ul>
       <li>
-        Change the node text:<br />=17+4<br />(Explanation: if a script starts with &quot;=&quot;, the result of the script is taken as the new nodes text.)
+        Change the node text:<br/>=17+4<br/>(Explanation: if a script starts with "=", the result of the script is taken as the new nodes text.)
       </li>
       <li>
-        Change an attributes value:<br />attribute_name=17+4<br />(Explanation: if a script starts with a name and then directly a &quot;=&quot; sign, its result is associated to this attribute which is created if not already present.)
+        Change an attributes value:<br/>attribute_name=17+4<br/>(Explanation: if a script starts with a name and then directly a "=" sign, its result is associated to this attribute which is created if not already present.)
       </li>
       <li>
-        Read and change the nodes text:<br />c.setNodeText(node, node.getText() + &quot;_CHANGED&quot;);
+        Read and change the nodes text:<br/>c.setNodeText(node, node.getText() + "_CHANGED");
       </li>
       <li>
-        Read an attribute<br />def value = node.getAttribute(&quot;key&quot;); // value is of type String.<br /><br />
+        Read an attribute<br/>def value = node.getAttribute("key"); // value is of type String.<br/><br/>
       </li>
       <li>
-        Create or change attributes: the following method checks whether or not an attribute with the same key exists and replaces it. Otherwise a new attribute is created and added.<br />c.editAttribute(node, &quot;key&quot;, &quot;new value&quot;);<br />
+        Create or change attributes: the following method checks whether or not an attribute with the same key exists and replaces it. Otherwise a new attribute is created and added.<br/>c.editAttribute(node, "key", "new value");<br/>
       </li>
       <li>
-        Remove an attribute by name:<br />c.editAttribute(node, &quot;key&quot;, null);<br />This method returns the former index of the attribute, or -1 if the key wasn't found.<br />
+        Remove an attribute by name:<br/>c.editAttribute(node, "key", null);<br/>This method returns the former index of the attribute, or -1 if the key wasn't found.<br/>
       </li>
       <li>
-        Traverse all children<br />def it = node.childrenUnfolded();<br />while(it.hasNext()) {<br />def child = it.next();<br />}
+        Traverse all children<br/>def it = node.childrenUnfolded();<br/>while(it.hasNext()) {<br/>def child = it.next();<br/>}
       </li>
       <li>
-        Traverse all children and its children recursively. The following examples prints the content of every node including its childs<br />
+        Traverse all children and its children recursively. The following examples prints the content of every node including its childs<br/>
 
-        <pre>def stack = new java.util.Stack();<br />stack.push(node);<br />while(stack.size()&gt;0) 
-        {<br />		def current =stack.pop();<br />		print current.getShortText(c) + &quot;, &quot;;<br />		stack.addAll(current.getChildren());<br />	}</pre>
-        <br />
-        <br />
+        <pre>def stack = new java.util.Stack();<br/>stack.push(node);<br/>while(stack.size()&gt;0) 
+        {<br/>&#x9;&#x9;def current =stack.pop();<br/>&#x9;&#x9;print current.getShortText(c) + ", ";<br/>&#x9;&#x9;stack.addAll(current.getChildren());<br/>&#x9;}</pre>
+        <br/>
+        <br/>
         
       </li>
       <li>
-        Real world example: nodes may have an attribute &quot;work&quot; that specifies the work needed for the specific work package (e.g. in days). This script computes the sum of all work packages such that each node gets an attribute &quot;sum&quot; containing the amount of work needed for all descendants. This script, if executed via Alt+F8, automatically applies to the root of the map. But, every time, you change the values, you have to reexecute this script.<br /><br />
+        Real world example: nodes may have an attribute "work" that specifies the work needed for the specific work package (e.g. in days). This script computes the sum of all work packages such that each node gets an attribute "sum" containing the amount of work needed for all descendants. This script, if executed via Alt+F8, automatically applies to the root of the map. But, every time, you change the values, you have to reexecute this script.<br/><br/>
 
         <pre>def calcWork(child) {
-	def sum = 0;
-	def it = child.childrenUnfolded(); 
-	while(it.hasNext()) { 
-		def child2 = it.next(); 
-		sum += calcWork(child2);
-		def w = child2.getAttribute(&quot;work&quot;);
-		if(w != null)
-			sum += Integer.parseInt( w);
-	}
-	if(sum&gt;0)
-		c.editAttribute(child, &quot;sum&quot;, (String) sum);
-	return sum;
+&#x9;def sum = 0;
+&#x9;def it = child.childrenUnfolded(); 
+&#x9;while(it.hasNext()) { 
+&#x9;&#x9;def child2 = it.next(); 
+&#x9;&#x9;sum += calcWork(child2);
+&#x9;&#x9;def w = child2.getAttribute("work");
+&#x9;&#x9;if(w != null)
+&#x9;&#x9;&#x9;sum += Integer.parseInt( w);
+&#x9;}
+&#x9;if(sum&gt;0)
+&#x9;&#x9;c.editAttribute(child, "sum", (String) sum);
+&#x9;return sum;
 }
 
 calcWork(c.getRootNode());</pre>
       </li>
       <li>
-        A very advanced example: the last script is integrated into a listener that detects node changes, so the sums are always recreated when a node is changed. This script introduces a new element in scripting: the &quot;cookies&quot;. It is a usual HashMap where scripts can store values that they need the next time, they are executed. For every map, there is a new cookie map, such that cookies are map local. Moreover, they are not stored persistently and are lost after termination of FreeMind or after closing a map. In this example, they serve as a static variable in which it is stored whether or not the script was already executed and which listener was used in order to deregister the old one first.<br />
+        A very advanced example: the last script is integrated into a listener that detects node changes, so the sums are always recreated when a node is changed. This script introduces a new element in scripting: the "cookies". It is a usual HashMap where scripts can store values that they need the next time, they are executed. For every map, there is a new cookie map, such that cookies are map local. Moreover, they are not stored persistently and are lost after termination of FreeMind or after closing a map. In this example, they serve as a static variable in which it is stored whether or not the script was already executed and which listener was used in order to deregister the old one first.<br/>
 
         <pre>class MyNodeListener implements freemind.modes.ModeController.NodeSelectionListener {
-	freemind.modes.mindmapmode.MindMapController c;
+&#x9;freemind.modes.mindmapmode.MindMapController c;
         MyNodeListener(freemind.modes.mindmapmode.MindMapController con) {
-		this.c = con;
-		}
+&#x9;&#x9;this.c = con;
+&#x9;&#x9;}
 
-		/** 
+&#x9;&#x9;/** 
          * Sent, if a node is changed
          * */
-        void onUpdateNodeHook(freemind.modes.MindMapNode node){		
-			calcWork(c.getRootNode());
-		};
+        void onUpdateNodeHook(freemind.modes.MindMapNode node){&#x9;&#x9;
+&#x9;&#x9;&#x9;calcWork(c.getRootNode());
+&#x9;&#x9;};
 
         /** Is sent when a node is selected.
          */
@@ -1662,31 +1678,31 @@ calcWork(c.getRootNode());</pre>
          */
         void onDeselectHook(freemind.view.mindmapview.NodeView node){};
 
-		/**
-		 * Is issued before a node is saved (eg. to save its notes, too, even if the notes is currently edited).
-		 */
-		void onSaveNode(freemind.modes.MindMapNode node){};
+&#x9;&#x9;/**
+&#x9;&#x9; * Is issued before a node is saved (eg. to save its notes, too, even if the notes is currently edited).
+&#x9;&#x9; */
+&#x9;&#x9;void onSaveNode(freemind.modes.MindMapNode node){};
 
 def calcWork(child) {
-	def sum = 0;
-	def it = child.childrenUnfolded(); 
-	while(it.hasNext()) { 
-		def child2 = it.next(); 
-		sum += calcWork(child2);
-		def w = child2.getAttribute(&quot;work&quot;);
-		if(w != null)
-			sum += Integer.parseInt( w);
-	}
-	if(sum&gt;0)
-		c.editAttribute(child, &quot;sum&quot;, (String) sum);
-	return sum;
+&#x9;def sum = 0;
+&#x9;def it = child.childrenUnfolded(); 
+&#x9;while(it.hasNext()) { 
+&#x9;&#x9;def child2 = it.next(); 
+&#x9;&#x9;sum += calcWork(child2);
+&#x9;&#x9;def w = child2.getAttribute("work");
+&#x9;&#x9;if(w != null)
+&#x9;&#x9;&#x9;sum += Integer.parseInt( w);
+&#x9;}
+&#x9;if(sum&gt;0)
+&#x9;&#x9;c.editAttribute(child, "sum", (String) sum);
+&#x9;return sum;
 }
 
 }
 
-def cookieKey = &quot;work_update_listener&quot;;
+def cookieKey = "work_update_listener";
 if(cookies.get(cookieKey) != null) {
-	c.deregisterNodeSelectionListener(cookies.get(cookieKey));
+&#x9;c.deregisterNodeSelectionListener(cookies.get(cookieKey));
 }
 def newListener = new MyNodeListener(c);
 cookies.put(cookieKey, newListener);
@@ -1694,7 +1710,7 @@ c.registerNodeSelectionListener(newListener);
       </pre>
       </li>
       <li>
-        A sorting example: Currently we provide a function that sorts all children by name, but if you want to sort them by their icons for example, you can use the following script (or change it, if you have different sorting criteria):<br />
+        A sorting example: Currently we provide a function that sorts all children by name, but if you want to sort them by their icons for example, you can use the following script (or change it, if you have different sorting criteria):<br/>
 
         <pre>import java.awt.datatransfer.Transferable;
 import java.util.Comparator;
@@ -1703,112 +1719,112 @@ import java.util.TreeSet;
 import java.util.Vector;
 import freemind.modes.MindMapNode;
 
-	class IconComparator implements java.util.Comparator {
-			int compare(java.lang.Object pArg0, java.lang.Object pArg1) {
-				if (pArg0 instanceof MindMapNode) {
-					MindMapNode node1 = (MindMapNode) pArg0;
-					if (pArg1 instanceof MindMapNode) {
-						MindMapNode node2 = (MindMapNode) pArg1;
-						String iconText1 = getIconText(node1);
-						String iconText2 = getIconText(node2);
-						//print &quot;comparing&quot; + iconText1 + &quot; with &quot; + iconText2 + &quot;\n&quot;;
-						return iconText1.compareToIgnoreCase(iconText2);
-					}
-				}
-				return 0;
-			}
-		def getIconText(MindMapNode n) {
-			if(n.getIcons() == null || n.getIcons().size()==0) 
-				return &quot;&quot;;
-			def retString = &quot;&quot;;
-			def it = n.getIcons().iterator();
-			while(it.hasNext()) {
-				retString +=it.next().getName()+&quot;, &quot;;
-			}
-			return retString;
-		}
-	}
+&#x9;class IconComparator implements java.util.Comparator {
+&#x9;&#x9;&#x9;int compare(java.lang.Object pArg0, java.lang.Object pArg1) {
+&#x9;&#x9;&#x9;&#x9;if (pArg0 instanceof MindMapNode) {
+&#x9;&#x9;&#x9;&#x9;&#x9;MindMapNode node1 = (MindMapNode) pArg0;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (pArg1 instanceof MindMapNode) {
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;MindMapNode node2 = (MindMapNode) pArg1;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;String iconText1 = getIconText(node1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;String iconText2 = getIconText(node2);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//print "comparing" + iconText1 + " with " + iconText2 + "\n";
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;return iconText1.compareToIgnoreCase(iconText2);
+&#x9;&#x9;&#x9;&#x9;&#x9;}
+&#x9;&#x9;&#x9;&#x9;}
+&#x9;&#x9;&#x9;&#x9;return 0;
+&#x9;&#x9;&#x9;}
+&#x9;&#x9;def getIconText(MindMapNode n) {
+&#x9;&#x9;&#x9;if(n.getIcons() == null || n.getIcons().size()==0) 
+&#x9;&#x9;&#x9;&#x9;return "";
+&#x9;&#x9;&#x9;def retString = "";
+&#x9;&#x9;&#x9;def it = n.getIcons().iterator();
+&#x9;&#x9;&#x9;while(it.hasNext()) {
+&#x9;&#x9;&#x9;&#x9;retString +=it.next().getName()+", ";
+&#x9;&#x9;&#x9;}
+&#x9;&#x9;&#x9;return retString;
+&#x9;&#x9;}
+&#x9;}
 
 
-		// we want to sort the children of the node:
-	 	Vector children = new Vector();
-		// put in all children of the node
-		children.addAll(node.getChildren());
-		// sort them
-		java.util.Collections.sort(children, new IconComparator());
-		//print &quot;The set has &quot; + children.size() + &quot; entries\n&quot;;
-		// now, as it is sorted. we cut the children
-		def it2 = children.iterator();
-		while (it2.hasNext()) {
-			MindMapNode child = (MindMapNode) it2.next();
-			Vector childList = new Vector();
-			childList.add(child);
-			Transferable cut = c.cut(childList);
-			// paste directly again causes that the node is added as the last one.
-			c.paste(cut, node);
-		}
-		c.select(c.getNodeView(node));</pre>
+&#x9;&#x9;// we want to sort the children of the node:
+&#x9; &#x9;Vector children = new Vector();
+&#x9;&#x9;// put in all children of the node
+&#x9;&#x9;children.addAll(node.getChildren());
+&#x9;&#x9;// sort them
+&#x9;&#x9;java.util.Collections.sort(children, new IconComparator());
+&#x9;&#x9;//print "The set has " + children.size() + " entries\n";
+&#x9;&#x9;// now, as it is sorted. we cut the children
+&#x9;&#x9;def it2 = children.iterator();
+&#x9;&#x9;while (it2.hasNext()) {
+&#x9;&#x9;&#x9;MindMapNode child = (MindMapNode) it2.next();
+&#x9;&#x9;&#x9;Vector childList = new Vector();
+&#x9;&#x9;&#x9;childList.add(child);
+&#x9;&#x9;&#x9;Transferable cut = c.cut(childList);
+&#x9;&#x9;&#x9;// paste directly again causes that the node is added as the last one.
+&#x9;&#x9;&#x9;c.paste(cut, node);
+&#x9;&#x9;}
+&#x9;&#x9;c.select(c.getNodeView(node));</pre>
       </li>
       <li>
-        A presentation script. Everytime you select a node, all other nodes are closed and this node is expanded by one. Just give it a try..<br />
+        A presentation script. Everytime you select a node, all other nodes are closed and this node is expanded by one. Just give it a try..<br/>
 
         <pre>class MyNodeListener implements freemind.modes.ModeController.NodeSelectionListener {
-	freemind.modes.mindmapmode.MindMapController c;
+&#x9;freemind.modes.mindmapmode.MindMapController c;
         MyNodeListener(freemind.modes.mindmapmode.MindMapController con) {
-		this.c = con;
-		}
+&#x9;&#x9;this.c = con;
+&#x9;&#x9;}
 
-		/** 
+&#x9;&#x9;/** 
          * Sent, if a node is changed
          * */
-        void onUpdateNodeHook(freemind.modes.MindMapNode node){		
-		};
+        void onUpdateNodeHook(freemind.modes.MindMapNode node){&#x9;&#x9;
+&#x9;&#x9;};
 
         /** Is sent when a node is selected.
          */
         void onSelectHook(freemind.view.mindmapview.NodeView node){
-			if(c.getSelecteds().size()&gt;1)
-				return;
-			// unfold node:
-			c.setFolded(node.getModel(), false);
-			// fold every child:
+&#x9;&#x9;&#x9;if(c.getSelecteds().size()&gt;1)
+&#x9;&#x9;&#x9;&#x9;return;
+&#x9;&#x9;&#x9;// unfold node:
+&#x9;&#x9;&#x9;c.setFolded(node.getModel(), false);
+&#x9;&#x9;&#x9;// fold every child:
                 def it2 = node.getModel().childrenUnfolded().iterator();
                 while (it2.hasNext()) {
                         def child = it2.next();
-				  c.setFolded(child, true);
-			}
-			// close everything else:
-			foldEverybody(node.getModel().getParent(),node.getModel());
-		};
+&#x9;&#x9;&#x9;&#x9;  c.setFolded(child, true);
+&#x9;&#x9;&#x9;}
+&#x9;&#x9;&#x9;// close everything else:
+&#x9;&#x9;&#x9;foldEverybody(node.getModel().getParent(),node.getModel());
+&#x9;&#x9;};
         /**
          * Is sent when a node is deselected.
          */
         void onDeselectHook(freemind.view.mindmapview.NodeView node){};
 
-		/**
-		 * Is issued before a node is saved (eg. to save its notes, too, even if the notes is currently edited).
-		 */
-		void onSaveNode(freemind.modes.MindMapNode node){};
+&#x9;&#x9;/**
+&#x9;&#x9; * Is issued before a node is saved (eg. to save its notes, too, even if the notes is currently edited).
+&#x9;&#x9; */
+&#x9;&#x9;void onSaveNode(freemind.modes.MindMapNode node){};
 def foldEverybody(child, exception) {
-		if(child == null || child.isRoot())
-			return;
+&#x9;&#x9;if(child == null || child.isRoot())
+&#x9;&#x9;&#x9;return;
         def it = child.childrenUnfolded();
         while(it.hasNext()) {
                 def child2 = it.next();
-			if(child2 != exception) {
-				c.setFolded(child2, true);
-			}
+&#x9;&#x9;&#x9;if(child2 != exception) {
+&#x9;&#x9;&#x9;&#x9;c.setFolded(child2, true);
+&#x9;&#x9;&#x9;}
         }
-	if(!child.getParent().isRoot())
-		foldEverybody(child.getParent(), exception.getParent());
+&#x9;if(!child.getParent().isRoot())
+&#x9;&#x9;foldEverybody(child.getParent(), exception.getParent());
 }
 
 
 }
 
-def cookieKey = &quot;presentation_listener&quot;;
+def cookieKey = "presentation_listener";
 if(cookies.get(cookieKey) != null) {
-	c.deregisterNodeSelectionListener(cookies.get(cookieKey));
+&#x9;c.deregisterNodeSelectionListener(cookies.get(cookieKey));
 }
 def newListener = new MyNodeListener(c);
 cookies.put(cookieKey, newListener);
@@ -1830,47 +1846,131 @@ c.registerNodeSelectionListener(newListener);</pre>
       Once, you've created or found some interesting scripts, you probably want to get a FreeMind menu item with an own shortcut to execute the script.
     </p>
     <p>
-      To do this, save the script to a file and edit &quot;ScriptingEngine.xml&quot; inside the FreeMind script directory inside your installation.
+      To do this, save the script to a file and edit "ScriptingEngine.xml" inside the FreeMind script directory inside your installation.
     </p>
     <p>
       You'll find a template for a script action that is commented out (ie. surrounded by &lt;!-- ... --&gt;). Uncomment the template and fill out the following bold places:
     </p>
     <pre>      &lt;plugin_action
-      name=&quot;<b>GroovyGroovy</b>&quot;
-      documentation=&quot;<b>this is my first installed groovy script.</b>&quot;
-      label=&quot;<b>plugins/GroovyScript1</b>&quot;
-      base=&quot;freemind.extensions.ModeControllerHookAdapter&quot;
-      class_name=&quot;plugins.script.ScriptingEngine&quot;&gt;
-      &lt;plugin_mode class_name=&quot;freemind.modes.mindmapmode&quot;/&gt;
-      &lt;plugin_menu location=&quot;<b>menu_bar/extras/first/scripting/groovy1</b>&quot;/&gt;
-      &lt;plugin_property name=&quot;ScriptLocation&quot; value=&quot;<b>/home/foltin/test.groovy</b>&quot;/&gt;
+      name="<b>GroovyGroovy</b>"
+      documentation="<b>this is my first installed groovy script.</b>"
+      label="<b>plugins/GroovyScript1</b>"
+      base="freemind.extensions.ModeControllerHookAdapter"
+      class_name="plugins.script.ScriptingEngine"&gt;
+      &lt;plugin_mode class_name="freemind.modes.mindmapmode"/&gt;
+      &lt;plugin_menu location="<b>menu_bar/extras/first/scripting/groovy1</b>"/&gt;
+      &lt;plugin_property name="ScriptLocation" value="<b>/home/foltin/test.groovy</b>"/&gt;
       &lt;/plugin_action&gt;
     </pre>
     <p>
       The most important change is the location of the script. Moreover, if you have several scripts you want to install, the labels and the menu_location must be unique.
     </p>
     <p>
-      If you now restart FreeMind you get a new menu item (in this example in the &quot;Extras&quot; menu) that carries out your script. Observe, that the &quot;node&quot; variable points to the root node.
+      If you now restart FreeMind you get a new menu item (in this example in the "Extras" menu) that carries out your script. Observe, that the "node" variable points to the root node.
     </p>
     <p>
       If you want to have a keyboard short cut for the new script, you have to add the bold line into the entry in ScriptingEngine.xml like:
     </p>
     <pre>      &lt;plugin_action
-      name=&quot;GroovyGroovy&quot;
-      documentation=&quot;this is my first installed groovy script.&quot;
-      label=&quot;plugins/GroovyScript1&quot;
-      <b>key_stroke=&quot;control shift M&quot; </b>
-      base=&quot;freemind.extensions.ModeControllerHookAdapter&quot;
-      class_name=&quot;plugins.script.ScriptingEngine&quot;&gt;
-      &lt;plugin_mode class_name=&quot;freemind.modes.mindmapmode&quot;/&gt;
-      &lt;plugin_menu location=&quot;menu_bar/extras/first/scripting/groovy1&quot;/&gt;
-      &lt;plugin_property name=&quot;ScriptLocation&quot; value=&quot;/home/foltin/test.groovy&quot;/&gt;
+      name="GroovyGroovy"
+      documentation="this is my first installed groovy script."
+      label="plugins/GroovyScript1"
+      <b>key_stroke="control shift M" </b>
+      base="freemind.extensions.ModeControllerHookAdapter"
+      class_name="plugins.script.ScriptingEngine"&gt;
+      &lt;plugin_mode class_name="freemind.modes.mindmapmode"/&gt;
+      &lt;plugin_menu location="menu_bar/extras/first/scripting/groovy1"/&gt;
+      &lt;plugin_property name="ScriptLocation" value="/home/foltin/test.groovy"/&gt;
       &lt;/plugin_action&gt;
     </pre>
   </body>
 </html></richcontent>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
+</node>
+</node>
+</node>
+<node COLOR="#407000" CREATED="1354041409110" FOLDED="true" ID="ID_1185769793" MODIFIED="1354049502175" POSITION="right" STYLE="fork" TEXT="New features in version 1.0.0">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<node COLOR="#407000" CREATED="1354041534617" ID="ID_485992024" MODIFIED="1354049372607" STYLE="fork" TEXT="Clones are supported">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354041542053" FOLDED="true" ID="ID_76396394" MODIFIED="1354049495474" STYLE="fork" TEXT="Collaboration via Network is supported">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<node COLOR="#407000" CREATED="1354049334525" ID="ID_1490791817" MODIFIED="1354049372604" STYLE="fork" TEXT="* Locking support (it is not possible to change at two sites at the same time).">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049334525" ID="ID_787700684" MODIFIED="1354049372602" STYLE="fork" TEXT="* Notifications about changes are sent to the master and then distributed to clients.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049334525" ID="ID_338941685" MODIFIED="1354049372598" STYLE="fork" TEXT="* Minimal security added: a password must be known to connect. But, each message (even the password) is sent open.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049334527" ID="ID_239293753" MODIFIED="1354049372585" STYLE="fork" TEXT="* Compression: each message over the network is compressed.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049334528" ID="ID_1574037231" MODIFIED="1354049372581" STYLE="fork" TEXT="* The connection parameters to the master are displayed in the title bar of each member. Thus, it is easy to invite others.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049334530" ID="ID_747999418" MODIFIED="1354049372569" STYLE="fork" TEXT="* The members are displayed in the title of each member as well (update interval: 5 seconds).">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+</node>
+<node COLOR="#407000" CREATED="1354041568484" ID="ID_1396819699" MODIFIED="1354049372560" STYLE="fork" TEXT="Nodes can be associated to geographical locations">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049151325" ID="ID_172673644" MODIFIED="1354049372558" STYLE="fork" TEXT="* Added spell checking. Thanks to the author Eicke.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354041626034" ID="ID_728564704" MODIFIED="1354049372556" STYLE="fork" TEXT="* New feature: restore of tabs and zoom implemented">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049017472" ID="ID_497763930" MODIFIED="1354049372550" STYLE="fork" TEXT="QuickView Support for Mac OSX">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049159148" FOLDED="true" ID="ID_1174384551" MODIFIED="1354049501116" STYLE="fork" TEXT="Little changes">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<node COLOR="#407000" CREATED="1354041615600" ID="ID_1369145907" MODIFIED="1354049372546" STYLE="fork" TEXT="* New plugin: jump to last edit location (like ctrl+q in eclipse)">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354048984649" ID="ID_1556364315" MODIFIED="1354049372544" STYLE="fork" TEXT="* Export of branches to PDF added.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049001883" ID="ID_86589059" MODIFIED="1354049372542" STYLE="fork" TEXT="* Export to pdf opens viewer afterwards.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049046101" ID="ID_1605954762" MODIFIED="1354049372540" STYLE="fork" TEXT="* New functionality: Paste images from clipboard. Thanks to Anantha!">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049051829" ID="ID_1932974359" MODIFIED="1354049372539" STYLE="fork" TEXT="* New functionality: &quot;File changed on disk: do you want to reload?&quot;">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049063363" ID="ID_455905559" MODIFIED="1354049372537" STYLE="fork" TEXT="* Opening documents from explorer will open it in a running instance.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049091543" ID="ID_1011967939" MODIFIED="1354049372535" STYLE="fork" TEXT="* Now, find treats notes, too.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049078229" ID="ID_482054062" LINK="https://sourceforge.net/projects/freemind/forums/forum/320014/topic/4777695" MODIFIED="1354049403386" STYLE="fork" TEXT="* Option added to avoid tooltips for notes.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049083460" ID="ID_1907102486" MODIFIED="1354049372521" STYLE="fork" TEXT="* Paste as plain text added: you get a single node with the copied text as the paste result.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049098227" ID="ID_858423743" MODIFIED="1354049372519" STYLE="fork" TEXT="* Change of root node added">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049134360" ID="ID_81088554" LINK="https://sourceforge.net/tracker/?func=detail&amp;atid=307118&amp;aid=3442896&amp;group_id=7118" MODIFIED="1354049395465" STYLE="fork" TEXT="* Patch: filter by &quot;not containing icon&quot;">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049256848" ID="ID_481234903" MODIFIED="1354049372505" STYLE="fork" TEXT="* Export of multiple nodes as PDF (for each node, there will be one separate PDF) possible.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049296898" ID="ID_283157460" MODIFIED="1354049372502" STYLE="fork" TEXT="* Free node movement is now switched off by default and can be enabled in the preferences.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049311677" ID="ID_1888591328" MODIFIED="1354049372496" STYLE="fork" TEXT="* Http-Proxies can be used, settings can be entered in the preferences dialog.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
 </node>
 </node>
