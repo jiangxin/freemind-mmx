@@ -30,7 +30,7 @@ public class SplashTests extends FreeMindTestBase {
 		splash.setVisible(true);
 		splash.getFeedBack().setMaximumValue(11);
 		for (int i = 0; i < 10; i++) {
-			splash.getFeedBack().increase("test: " + i);
+			splash.getFeedBack().increase("test: " + i, null);
 			Thread.sleep(1000l);
 		}
 	}

@@ -93,6 +93,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	private static final String FREE_MIND_PROGRESS_LOAD_MAPS = "FreeMind.progress.loadMaps";
 
+	private static final String FREE_MIND_PROGRESS_LOAD_MAPS_NAME = "FreeMind.progress.loadNamedMaps";
+	
 	private static final String SPLIT_PANE_POSITION = "split_pane_position";
 
 	private static final String SPLIT_PANE_LAST_POSITION = "split_pane_last_position";
@@ -278,10 +280,10 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		patternsFile = new File(getFreemindDirectory(),
 				getDefaultProperty("patternsfile"));
 
-		feedback.increase("FreeMind.progress.updateLookAndFeel");
+		feedback.increase("FreeMind.progress.updateLookAndFeel", null);
 
 		updateLookAndFeel();
-		feedback.increase("FreeMind.progress.createController");
+		feedback.increase("FreeMind.progress.createController", null);
 
 		setIconImage(mWindowIcon.getImage());
 		// Layout everything
@@ -289,7 +291,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 		controller = new Controller(this);
 		controller.init();
-		feedback.increase("FreeMind.progress.settingPreferences");
+		feedback.increase("FreeMind.progress.settingPreferences", null);
 		// add a listener for the controller, resource bundle:
 		Controller.addPropertyChangeListener(new FreemindPropertyListener() {
 
@@ -318,15 +320,15 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		controller.optionAntialiasAction
 				.changeAntialias(getProperty(FreeMindCommon.RESOURCE_ANTIALIAS));
 
-		feedback.increase("FreeMind.progress.propageteLookAndFeel");
+		feedback.increase("FreeMind.progress.propageteLookAndFeel", null);
 		SwingUtilities.updateComponentTreeUI(this); // Propagate LookAndFeel to
 
-		feedback.increase("FreeMind.progress.buildScreen");
+		feedback.increase("FreeMind.progress.buildScreen", null);
 		setScreenBounds();
 
 		// JComponents
 
-		feedback.increase("FreeMind.progress.createInitialMode");
+		feedback.increase("FreeMind.progress.createInitialMode", null);
 		controller.createNewMode(getProperty("initial_mode"));
 	}// Constructor
 
@@ -838,11 +840,11 @@ public class FreeMind extends JFrame implements FreeMindMain {
 					return value;
 				}
 
-				public void increase(String messageId) {
-					progress(getActualValue() + 1, messageId);
+				public void increase(String messageId, Object[] pMessageParameters) {
+					progress(getActualValue() + 1, messageId, pMessageParameters);
 				}
 
-				public void progress(int act, String messageId) {
+				public void progress(int act, String messageId, Object[] pMessageParameters) {
 					frame.logger.info("Beginnig task:" + messageId);
 				}
 
@@ -852,18 +854,18 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			frame.mWindowIcon = new ImageIcon(
 					frame.getResource("images/FreeMindWindowIcon.png"));
 		}
-		feedBack.setMaximumValue(9 + frame.getMaximumNumberOfMapsToLoad(args));
+		feedBack.setMaximumValue(10 + frame.getMaximumNumberOfMapsToLoad(args));
 		frame.init(feedBack);
 
-		feedBack.increase("FreeMind.progress.startCreateController");
+		feedBack.increase("FreeMind.progress.startCreateController", null);
 		final ModeController ctrl = frame.createModeController(args);
 
-		feedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS);
+		feedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS, null);
 		// This could be improved.
 		frame.loadMaps(args, ctrl, feedBack);
 
 		Tools.waitForEventQueue();
-		feedBack.increase("FreeMind.progress.endStartup");
+		feedBack.increase("FreeMind.progress.endStartup", null);
 		// focus fix after startup.
 		frame.addWindowFocusListener(new WindowFocusListener() {
 
@@ -1108,6 +1110,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		for (int i = 0; i < args.length; i++) {
 			// JOptionPane.showMessageDialog(null,i+":"+args[i]);
 			String fileArgument = args[i];
+			pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS_NAME, new Object[] {fileArgument.replaceAll(".*/", "")});
 			if (fileArgument.toLowerCase().endsWith(
 					freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION)) {
 
@@ -1128,7 +1131,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 					// System.exit(1);
 				}
 			}
-			pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS);
 		}
 		if (!fileLoaded) {
 			fileLoaded = processLoadEventFromStartupPhase();
@@ -1143,6 +1145,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				MindmapLastStateStorage store = (MindmapLastStateStorage) it
 						.next();
 				String restorable = store.getRestorableName();
+				pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS_NAME, new Object[] {restorable.replaceAll(".*/", "")});
 				try {
 					if (controller.getLastOpenedList().open(restorable)) {
 						if (index == management.getLastFocussedTab()) {
@@ -1154,7 +1157,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 					freemind.main.Resources.getInstance().logException(e);
 				}
 				index++;
-				pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS);
 			}
 			if (mapToFocus != null) {
 				controller.getMapModuleManager().changeToMapModule(
@@ -1166,11 +1168,11 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			if (Tools
 					.isPreferenceTrue(getProperty(FreeMindCommon.LOAD_LAST_MAP))
 					&& restoreable != null && restoreable.length() > 0) {
+				pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS_NAME, new Object[] {restoreable.replaceAll(".*/", "")});
 				try {
 					controller.getLastOpenedList().open(restoreable);
 					controller.getModeController().getView().moveToRoot();
 					fileLoaded = true;
-					pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS);
 				} catch (Exception e) {
 					freemind.main.Resources.getInstance().logException(e);
 					out("An error occured on opening the file: " + restoreable
@@ -1188,7 +1190,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			 * &aid=1752516&group_id=7118
 			 */
 			pModeController.newMap();
-			pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS);
+			pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS, null);
 		}
 	}
 

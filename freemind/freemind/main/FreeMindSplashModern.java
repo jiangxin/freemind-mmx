@@ -27,6 +27,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.text.MessageFormat;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -53,8 +54,10 @@ public class FreeMindSplashModern extends JFrame implements IFreeMindSplash {
 		private String lastTaskId = null;
 		private JLabel mImageJLabel = null;
 
-		public void progress(final int act, String messageId) {
-			final String progressString = frame.getResourceString(messageId);
+		public void progress(final int act, String messageId, Object[] pMessageParameters) {
+			MessageFormat formatter = new MessageFormat(
+					frame.getResourceString(messageId));
+			final String progressString = formatter.format(pMessageParameters);
 			logger.info(progressString);
 			this.mActualValue = act;
 			long timeDifference = System.currentTimeMillis() - mActualTimeStamp;
@@ -93,8 +96,8 @@ public class FreeMindSplashModern extends JFrame implements IFreeMindSplash {
 			mProgressBar.setIndeterminate(false);
 		}
 
-		public void increase(String messageId) {
-			progress(getActualValue() + 1, messageId);
+		public void increase(String messageId, Object[] pMessageParameters) {
+			progress(getActualValue() + 1, messageId, pMessageParameters);
 		}
 
 		public void setImageJLabel(JLabel imageJLabel) {
