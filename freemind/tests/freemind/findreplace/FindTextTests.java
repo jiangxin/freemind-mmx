@@ -73,7 +73,7 @@ public class FindTextTests extends FreeMindTestBase {
 				return new TimeList.NodeHolder(testMindMapNode);
 			}
 		};
-		FlatNodeTableFilterModel dut = new FlatNodeTableFilterModel(tm, 0, null);
+		FlatNodeTableFilterModel dut = new FlatNodeTableFilterModel(tm, 0, 0);
 		assertEquals("One row:", 1, dut.getRowCount());
 		dut.setFilter("strong");
 		assertEquals("No row:", 0, dut.getRowCount());
