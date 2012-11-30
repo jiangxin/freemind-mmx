@@ -281,7 +281,7 @@
 <node CREATED="1124560950701" ID="ID_1998652100" MODIFIED="1124560950701" TEXT="Information is stored in text boxes, called nodes. Nodes are connected together using curved lines called edges."/>
 <node CREATED="1124560950701" ID="ID_982860994" MODIFIED="1225908901973" TEXT="This is a documentation for FreeMind 0.9.0. Keyboard mappings and positions of functions in menus can change from version to version."/>
 </node>
-<node COLOR="#996600" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_706084071" MODIFIED="1246861500073" POSITION="right" TEXT="Demonstration of some features">
+<node COLOR="#996600" CREATED="1124560950701" FOLDED="true" ID="_Freemind_Link_706084071" MODIFIED="1354297085451" POSITION="right" TEXT="Demonstration of some features">
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#669900" CREATED="1124560950701" ID="_Freemind_Link_735193624" MODIFIED="1124560950701" TEXT="Appearance">
 <font NAME="SansSerif" SIZE="12"/>
@@ -1897,32 +1897,32 @@ c.registerNodeSelectionListener(newListener);</pre>
 </node>
 <node COLOR="#407000" CREATED="1354041542053" FOLDED="true" ID="ID_76396394" MODIFIED="1354049495474" STYLE="fork" TEXT="Collaboration via Network is supported">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
-<node COLOR="#407000" CREATED="1354049334525" ID="ID_1490791817" MODIFIED="1354049372604" STYLE="fork" TEXT="* Locking support (it is not possible to change at two sites at the same time).">
+<node COLOR="#407000" CREATED="1354049334525" ID="ID_1490791817" MODIFIED="1354297058790" STYLE="fork" TEXT="Locking support (it is not possible to change at two sites at the same time).">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354049334525" ID="ID_787700684" MODIFIED="1354049372602" STYLE="fork" TEXT="* Notifications about changes are sent to the master and then distributed to clients.">
+<node COLOR="#407000" CREATED="1354049334525" ID="ID_787700684" MODIFIED="1354297058791" STYLE="fork" TEXT="Notifications about changes are sent to the master and then distributed to clients.">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354049334525" ID="ID_338941685" MODIFIED="1354049372598" STYLE="fork" TEXT="* Minimal security added: a password must be known to connect. But, each message (even the password) is sent open.">
+<node COLOR="#407000" CREATED="1354049334525" ID="ID_338941685" MODIFIED="1354297058794" STYLE="fork" TEXT="Minimal security added: a password must be known to connect. But, each message (even the password) is sent open.">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354049334527" ID="ID_239293753" MODIFIED="1354049372585" STYLE="fork" TEXT="* Compression: each message over the network is compressed.">
+<node COLOR="#407000" CREATED="1354049334527" ID="ID_239293753" MODIFIED="1354297058795" STYLE="fork" TEXT="Compression: each message over the network is compressed.">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354049334528" ID="ID_1574037231" MODIFIED="1354049372581" STYLE="fork" TEXT="* The connection parameters to the master are displayed in the title bar of each member. Thus, it is easy to invite others.">
+<node COLOR="#407000" CREATED="1354049334528" ID="ID_1574037231" MODIFIED="1354297058796" STYLE="fork" TEXT="The connection parameters to the master are displayed in the title bar of each member. Thus, it is easy to invite others.">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354049334530" ID="ID_747999418" MODIFIED="1354049372569" STYLE="fork" TEXT="* The members are displayed in the title of each member as well (update interval: 5 seconds).">
+<node COLOR="#407000" CREATED="1354049334530" ID="ID_747999418" MODIFIED="1354297058797" STYLE="fork" TEXT="The members are displayed in the title of each member as well (update interval: 5 seconds).">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
 </node>
 <node COLOR="#407000" CREATED="1354041568484" ID="ID_1396819699" MODIFIED="1354049372560" STYLE="fork" TEXT="Nodes can be associated to geographical locations">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354049151325" ID="ID_172673644" MODIFIED="1354049372558" STYLE="fork" TEXT="* Added spell checking. Thanks to the author Eicke.">
+<node COLOR="#407000" CREATED="1354049151325" ID="ID_172673644" MODIFIED="1354297058798" STYLE="fork" TEXT="Added spell checking. Thanks to the author Eicke.">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354041626034" ID="ID_728564704" MODIFIED="1354049372556" STYLE="fork" TEXT="* New feature: restore of tabs and zoom implemented">
+<node COLOR="#407000" CREATED="1354041626034" ID="ID_728564704" MODIFIED="1354297058799" STYLE="fork" TEXT="New feature: restore of tabs and zoom implemented">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
 <node COLOR="#407000" CREATED="1354049017472" ID="ID_497763930" MODIFIED="1354049372550" STYLE="fork" TEXT="QuickView Support for Mac OSX">
@@ -1930,46 +1930,46 @@ c.registerNodeSelectionListener(newListener);</pre>
 </node>
 <node COLOR="#407000" CREATED="1354049159148" FOLDED="true" ID="ID_1174384551" MODIFIED="1354049501116" STYLE="fork" TEXT="Little changes">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
-<node COLOR="#407000" CREATED="1354041615600" ID="ID_1369145907" MODIFIED="1354049372546" STYLE="fork" TEXT="* New plugin: jump to last edit location (like ctrl+q in eclipse)">
+<node COLOR="#407000" CREATED="1354041615600" ID="ID_1369145907" MODIFIED="1354297058800" STYLE="fork" TEXT="New plugin: jump to last edit location (like ctrl+q in eclipse)">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354048984649" ID="ID_1556364315" MODIFIED="1354049372544" STYLE="fork" TEXT="* Export of branches to PDF added.">
+<node COLOR="#407000" CREATED="1354048984649" ID="ID_1556364315" MODIFIED="1354297058801" STYLE="fork" TEXT="Export of branches to PDF added.">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354049001883" ID="ID_86589059" MODIFIED="1354049372542" STYLE="fork" TEXT="* Export to pdf opens viewer afterwards.">
+<node COLOR="#407000" CREATED="1354049001883" ID="ID_86589059" MODIFIED="1354297058801" STYLE="fork" TEXT="Export to pdf opens viewer afterwards.">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354049046101" ID="ID_1605954762" MODIFIED="1354049372540" STYLE="fork" TEXT="* New functionality: Paste images from clipboard. Thanks to Anantha!">
+<node COLOR="#407000" CREATED="1354049046101" ID="ID_1605954762" MODIFIED="1354297058802" STYLE="fork" TEXT="New functionality: Paste images from clipboard. Thanks to Anantha!">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354049051829" ID="ID_1932974359" MODIFIED="1354049372539" STYLE="fork" TEXT="* New functionality: &quot;File changed on disk: do you want to reload?&quot;">
+<node COLOR="#407000" CREATED="1354049051829" ID="ID_1932974359" MODIFIED="1354297058803" STYLE="fork" TEXT="New functionality: &quot;File changed on disk: do you want to reload?&quot;">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354049063363" ID="ID_455905559" MODIFIED="1354049372537" STYLE="fork" TEXT="* Opening documents from explorer will open it in a running instance.">
+<node COLOR="#407000" CREATED="1354049063363" ID="ID_455905559" MODIFIED="1354297058804" STYLE="fork" TEXT="Opening documents from explorer will open it in a running instance.">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354049091543" ID="ID_1011967939" MODIFIED="1354049372535" STYLE="fork" TEXT="* Now, find treats notes, too.">
+<node COLOR="#407000" CREATED="1354049091543" ID="ID_1011967939" MODIFIED="1354297058805" STYLE="fork" TEXT="Now, find treats notes, too.">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354049078229" ID="ID_482054062" LINK="https://sourceforge.net/projects/freemind/forums/forum/320014/topic/4777695" MODIFIED="1354049403386" STYLE="fork" TEXT="* Option added to avoid tooltips for notes.">
+<node COLOR="#407000" CREATED="1354049078229" ID="ID_482054062" LINK="https://sourceforge.net/projects/freemind/forums/forum/320014/topic/4777695" MODIFIED="1354297058805" STYLE="fork" TEXT="Option added to avoid tooltips for notes.">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354049083460" ID="ID_1907102486" MODIFIED="1354049372521" STYLE="fork" TEXT="* Paste as plain text added: you get a single node with the copied text as the paste result.">
+<node COLOR="#407000" CREATED="1354049083460" ID="ID_1907102486" MODIFIED="1354297058806" STYLE="fork" TEXT="Paste as plain text added: you get a single node with the copied text as the paste result.">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354049098227" ID="ID_858423743" MODIFIED="1354049372519" STYLE="fork" TEXT="* Change of root node added">
+<node COLOR="#407000" CREATED="1354049098227" ID="ID_858423743" MODIFIED="1354297058807" STYLE="fork" TEXT="Change of root node added">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354049134360" ID="ID_81088554" LINK="https://sourceforge.net/tracker/?func=detail&amp;atid=307118&amp;aid=3442896&amp;group_id=7118" MODIFIED="1354049395465" STYLE="fork" TEXT="* Patch: filter by &quot;not containing icon&quot;">
+<node COLOR="#407000" CREATED="1354049134360" ID="ID_81088554" LINK="https://sourceforge.net/tracker/?func=detail&amp;atid=307118&amp;aid=3442896&amp;group_id=7118" MODIFIED="1354297058808" STYLE="fork" TEXT="Patch: filter by &quot;not containing icon&quot;">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354049256848" ID="ID_481234903" MODIFIED="1354049372505" STYLE="fork" TEXT="* Export of multiple nodes as PDF (for each node, there will be one separate PDF) possible.">
+<node COLOR="#407000" CREATED="1354049256848" ID="ID_481234903" MODIFIED="1354297058809" STYLE="fork" TEXT="Export of multiple nodes as PDF (for each node, there will be one separate PDF) possible.">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354049296898" ID="ID_283157460" MODIFIED="1354049372502" STYLE="fork" TEXT="* Free node movement is now switched off by default and can be enabled in the preferences.">
+<node COLOR="#407000" CREATED="1354049296898" ID="ID_283157460" MODIFIED="1354297058810" STYLE="fork" TEXT="Free node movement is now switched off by default and can be enabled in the preferences.">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354049311677" ID="ID_1888591328" MODIFIED="1354049372496" STYLE="fork" TEXT="* Http-Proxies can be used, settings can be entered in the preferences dialog.">
+<node COLOR="#407000" CREATED="1354049311677" ID="ID_1888591328" MODIFIED="1354297058811" STYLE="fork" TEXT="Http-Proxies can be used, settings can be entered in the preferences dialog.">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
 </node>

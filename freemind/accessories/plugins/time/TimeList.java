@@ -549,7 +549,7 @@ public class TimeList extends MindMapHookAdapter implements
 
 	public static void replace(IReplaceInputInformation info,
 			String searchString, String replaceString) {
-		String regExp = "(" + getPureRegularExpression(searchString) + ")";
+		String regExp = "(" + (searchString) + ")";
 		Pattern p = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE);
 		// String replacement = getPureRegularExpression(replaceString);
 		String replacement = (replaceString);
