@@ -3,6 +3,7 @@ Changes made in FreeMind 1.0.0 RC 1
 ===============================
 * (Existing) Option "Search in Notes" added to Preferences Dialog (under Behaviour).
 * Searching for notes is now possible in the new search/replace dialog, too.
+* Fix: clone actions with folded clones.
 
 ===============================
 Changes made in FreeMind 1.0.0 Beta9

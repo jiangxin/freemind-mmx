@@ -676,6 +676,7 @@ public abstract class ControllerAdapter implements ModeController, DirectoryResu
 				}
 			}
 		}
+		getController().obtainFocusForSelected();
 	}
 
 	public void selectBranch(NodeView selected, boolean extend) {

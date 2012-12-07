@@ -20,10 +20,10 @@
  * Created on 21.08.2004
  */
 
-
 package freemind.modes;
 
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 
@@ -38,7 +38,10 @@ public class NodeDownAction extends AbstractAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		modeController.moveNodes(modeController.getSelected(),
-				modeController.getSelecteds(), 1);
+		MindMapNode selected = modeController.getSelected();
+		List selecteds = modeController.getSelecteds();
+		modeController.moveNodes(selected, selecteds, 1);
+		modeController.select(selected, selecteds);
+
 	}
 }
