@@ -213,11 +213,11 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		private void removeFocusForHooks(NodeView node) {
 			if (node.getModel() == null)
 				return;
-			getModel().getModeController().onFocusNode(node);
+			getModel().getModeController().onLostFocusNode(node);
 		}
 
 		private void addFocusForHooks(NodeView node) {
-			getModel().getModeController().onLostFocusNode(node);
+			getModel().getModeController().onFocusNode(node);
 		}
 
 		public NodeView get(int i) {

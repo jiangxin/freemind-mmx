@@ -185,12 +185,12 @@ public interface ModeController extends TextTranslator {
 	void nodeChanged(MindMapNode n);
 
 	/**
-	 * Is called when a node is selected.
+	 * Is called when a node is deselected.
 	 */
 	void onLostFocusNode(NodeView node);
 
 	/**
-	 * Is called when a node is deselected.
+	 * Is called when a node is selected.
 	 */
 	void onFocusNode(NodeView node);
 

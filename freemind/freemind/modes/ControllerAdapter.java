@@ -17,7 +17,6 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-
 package freemind.modes;
 
 import java.awt.Color;
@@ -102,7 +101,8 @@ import freemind.view.mindmapview.attributeview.AttributeView;
  * default Actions you may want to use for easy editing of your model. Take
  * MindMapController as a sample.
  */
-public abstract class ControllerAdapter implements ModeController, DirectoryResultListener {
+public abstract class ControllerAdapter implements ModeController,
+		DirectoryResultListener {
 
 	// Logging:
 	private static java.util.logging.Logger logger;
@@ -228,21 +228,6 @@ public abstract class ControllerAdapter implements ModeController, DirectoryResu
 	}
 
 	public void onLostFocusNode(NodeView node) {
-		// select the new node:
-		for (Iterator iter = mNodeSelectionListeners.iterator(); iter.hasNext();) {
-			NodeSelectionListener listener = (NodeSelectionListener) iter
-					.next();
-			listener.onFocusNode(node);
-		}
-		for (Iterator i = node.getModel().getActivatedHooks().iterator(); i
-				.hasNext();) {
-			PermanentNodeHook hook = (PermanentNodeHook) i.next();
-			hook.onFocusNode(node);
-		}
-
-	}
-
-	public void onFocusNode(NodeView node) {
 		try {
 			// deselect the old node:
 			HashSet copy = new HashSet(mNodeSelectionListeners);
@@ -264,6 +249,28 @@ public abstract class ControllerAdapter implements ModeController, DirectoryResu
 
 	}
 
+	public void onFocusNode(NodeView node) {
+		try {
+			// select the new node:
+			HashSet copy = new HashSet(mNodeSelectionListeners);
+			// we copied the set to be able to remove listeners during a
+			// listener method.
+			for (Iterator iter = copy.iterator(); iter.hasNext();) {
+				NodeSelectionListener listener = (NodeSelectionListener) iter
+						.next();
+				listener.onFocusNode(node);
+			}
+			for (Iterator i = node.getModel().getActivatedHooks().iterator(); i
+					.hasNext();) {
+				PermanentNodeHook hook = (PermanentNodeHook) i.next();
+				hook.onFocusNode(node);
+			}
+		} catch (RuntimeException e) {
+			logger.log(Level.SEVERE, "Error in node selection listeners", e);
+		}
+
+	}
+
 	public void changeSelection(NodeView pNode, boolean pIsSelected) {
 		try {
 			HashSet copy = new HashSet(mNodeSelectionListeners);
@@ -275,7 +282,7 @@ public abstract class ControllerAdapter implements ModeController, DirectoryResu
 		} catch (RuntimeException e) {
 			logger.log(Level.SEVERE, "Error in node selection listeners", e);
 		}
-		
+
 	}
 
 	public void onViewCreatedHook(NodeView node) {
@@ -294,15 +301,17 @@ public abstract class ControllerAdapter implements ModeController, DirectoryResu
 		}
 	}
 
-	public void registerNodeSelectionListener(NodeSelectionListener listener, boolean pCallWithCurrentSelection) {
+	public void registerNodeSelectionListener(NodeSelectionListener listener,
+			boolean pCallWithCurrentSelection) {
 		mNodeSelectionListeners.add(listener);
-		if(pCallWithCurrentSelection) {
+		if (pCallWithCurrentSelection) {
 			try {
 				listener.onFocusNode(getSelectedView());
 			} catch (Exception e) {
 				freemind.main.Resources.getInstance().logException(e);
 			}
-			for (Iterator it = getView().getSelecteds().iterator(); it.hasNext();) {
+			for (Iterator it = getView().getSelecteds().iterator(); it
+					.hasNext();) {
 				NodeView view = (NodeView) it.next();
 				try {
 					listener.onSelectionChange(view, true);
@@ -627,7 +636,7 @@ public abstract class ControllerAdapter implements ModeController, DirectoryResu
 			hook.processUnfinishedLinks();
 		}
 	}
-	
+
 	/**
 	 * fc, 24.1.2004: having two methods getSelecteds with different return
 	 * values (linkedlists of models resp. views) is asking for trouble. @see
@@ -655,7 +664,7 @@ public abstract class ControllerAdapter implements ModeController, DirectoryResu
 		getView().scrollNodeToVisible(node);
 		getView().selectAsTheOnlyOneSelected(node);
 		// this level is default
-		getView().setSiblingMaxLevel(node.getModel().getNodeLevel()); 
+		getView().setSiblingMaxLevel(node.getModel().getNodeLevel());
 	}
 
 	public void select(MindMapNode primarySelected, List selecteds) {
@@ -821,13 +830,17 @@ public abstract class ControllerAdapter implements ModeController, DirectoryResu
 		getController().setTitle();
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.modes.FreeMindFileDialog.DirectoryResultListener#setChosenDirectory(java.io.File)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.modes.FreeMindFileDialog.DirectoryResultListener#setChosenDirectory
+	 * (java.io.File)
 	 */
 	public void setChosenDirectory(File pDir) {
 		lastCurrentDir = pDir;
 	}
-	
+
 	/**
 	 * Creates a file chooser with the last selected directory as default.
 	 */
@@ -1032,11 +1045,11 @@ public abstract class ControllerAdapter implements ModeController, DirectoryResu
 	public void setVisible(boolean visible) {
 		NodeView node = getSelectedView();
 		if (visible) {
-			onLostFocusNode(node);
+			onFocusNode(node);
 		} else {
 			// bug fix, fc 18.5.2004. This should not be here.
 			if (node != null) {
-				onFocusNode(node);
+				onLostFocusNode(node);
 			}
 		}
 		changeSelection(node, !visible);
@@ -1187,7 +1200,7 @@ public abstract class ControllerAdapter implements ModeController, DirectoryResu
 	}
 
 	/**
-	 * @throws  {@link IllegalArgumentException} when node isn't found.
+	 * @throws {@link IllegalArgumentException} when node isn't found.
 	 */
 	public NodeAdapter getNodeFromID(String nodeID) {
 		NodeAdapter node = (NodeAdapter) getMap().getLinkRegistry()
@@ -1605,6 +1618,5 @@ public abstract class ControllerAdapter implements ModeController, DirectoryResu
 		node.setToolTip(key, value);
 		nodeRefresh(node);
 	}
-
 
 }

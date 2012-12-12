@@ -144,8 +144,8 @@ public class NodeUpAction extends AbstractAction implements ActorXml {
 		MindMapNode destinationNode = (MindMapNode) sortedNodesIndices
 				.get(newPositionInVector);
 		newIndex = model.getIndexOfChild(parent, destinationNode);
-		model.removeNodeFromParent(newChild);
-		model.insertNodeInto(newChild, parent, newIndex);
+		modeController.removeNodeFromParent(newChild);
+		modeController.insertNodeInto(newChild, parent, newIndex);
 		modeController.nodeChanged(newChild);
 		return newIndex;
 	}

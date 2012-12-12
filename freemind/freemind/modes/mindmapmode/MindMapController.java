@@ -51,6 +51,7 @@ import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Properties;
@@ -2189,6 +2190,9 @@ public class MindMapController extends ControllerAdapter implements
 
 	public void removeNodeFromParent(MindMapNode selectedNode) {
 		getModel().setSaved(false);
+		// first deselect, and then remove. 
+		NodeView nodeView = getView().getNodeView(selectedNode);
+		getView().deselect(nodeView);
 		getModel().removeNodeFromParent(selectedNode);
 	}
 
