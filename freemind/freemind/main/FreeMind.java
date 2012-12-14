@@ -94,7 +94,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	private static final String FREE_MIND_PROGRESS_LOAD_MAPS = "FreeMind.progress.loadMaps";
 
 	private static final String FREE_MIND_PROGRESS_LOAD_MAPS_NAME = "FreeMind.progress.loadNamedMaps";
-	
+
 	private static final String SPLIT_PANE_POSITION = "split_pane_position";
 
 	private static final String SPLIT_PANE_LAST_POSITION = "split_pane_last_position";
@@ -840,11 +840,14 @@ public class FreeMind extends JFrame implements FreeMindMain {
 					return value;
 				}
 
-				public void increase(String messageId, Object[] pMessageParameters) {
-					progress(getActualValue() + 1, messageId, pMessageParameters);
+				public void increase(String messageId,
+						Object[] pMessageParameters) {
+					progress(getActualValue() + 1, messageId,
+							pMessageParameters);
 				}
 
-				public void progress(int act, String messageId, Object[] pMessageParameters) {
+				public void progress(int act, String messageId,
+						Object[] pMessageParameters) {
 					frame.logger.info("Beginnig task:" + messageId);
 				}
 
@@ -936,13 +939,11 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				// endlessly, so log it as NOTICE, not
 				// ERROR
 				logger.info("An error occurred"
-						+ " while connecting to the jEdit server instance.");
-				logger.info("This probably means that"
-						+ " jEdit crashed and/or exited abnormally");
-				logger.info("the last time it was run.");
-				logger.info("If you don't"
-						+ " know what this means, don't worry.");
-				logger.info("" + e);
+						+ " while connecting to the FreeMind server instance."
+						+ " This probably means that"
+						+ " FreeMind crashed and/or exited abnormally"
+						+ " the last time it was run." + " If you don't"
+						+ " know what this means, don't worry. Exception: "+e );
 			}
 		}
 
@@ -1110,7 +1111,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		for (int i = 0; i < args.length; i++) {
 			// JOptionPane.showMessageDialog(null,i+":"+args[i]);
 			String fileArgument = args[i];
-			pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS_NAME, new Object[] {fileArgument.replaceAll(".*/", "")});
+			pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS_NAME,
+					new Object[] { fileArgument.replaceAll(".*/", "") });
 			if (fileArgument.toLowerCase().endsWith(
 					freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION)) {
 
@@ -1145,7 +1147,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				MindmapLastStateStorage store = (MindmapLastStateStorage) it
 						.next();
 				String restorable = store.getRestorableName();
-				pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS_NAME, new Object[] {restorable.replaceAll(".*/", "")});
+				pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS_NAME,
+						new Object[] { restorable.replaceAll(".*/", "") });
 				try {
 					if (controller.getLastOpenedList().open(restorable)) {
 						if (index == management.getLastFocussedTab()) {
@@ -1168,7 +1171,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			if (Tools
 					.isPreferenceTrue(getProperty(FreeMindCommon.LOAD_LAST_MAP))
 					&& restoreable != null && restoreable.length() > 0) {
-				pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS_NAME, new Object[] {restoreable.replaceAll(".*/", "")});
+				pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS_NAME,
+						new Object[] { restoreable.replaceAll(".*/", "") });
 				try {
 					controller.getLastOpenedList().open(restoreable);
 					controller.getModeController().getView().moveToRoot();
