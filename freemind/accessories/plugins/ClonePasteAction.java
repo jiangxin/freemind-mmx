@@ -146,6 +146,7 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		private final MindMap mMap;
 
 		private final java.util.logging.Logger logger;
+		private Vector mLastMarkedNodeViews = new Vector();
 
 		public Registration(ModeController controller, MindMap map) {
 			this.controller = (MindMapController) controller;
@@ -525,23 +526,38 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 			markShadowNode(node, false);
 		}
 
-		public void markShadowNode(NodeView node, boolean pEnableShadow) {
+		public void markShadowNode(NodeView pNode, boolean pEnableShadow) {
 			// at startup, the node is null.
-			if (node == null) {
+			if (pNode == null || pNode.getModel() == null) {
 				return;
 			}
-			markShadowNode(node.getModel(), pEnableShadow);
+			if (!pEnableShadow && !mLastMarkedNodeViews.isEmpty()) {
+				for (Iterator it = mLastMarkedNodeViews.iterator(); it
+						.hasNext();) {
+					MindMapNode node = (MindMapNode) it.next();
+					if (mClonesMap.containsKey(node)) {
+						setIcon(node, sOriginalIcon);
+					} else {
+						setIcon(node, null);
+					}
+				}
+			}
+			markShadowNode(pNode.getModel(), pEnableShadow);
 		}
 
 		public void markShadowNode(MindMapNode model, boolean pEnableShadow) {
+			mLastMarkedNodeViews.clear();
 			try {
 				List/* pair of MindMapNodePair */shadowNodes = getCorrespondingNodes(
 						model, false);
 				for (Iterator it = shadowNodes.iterator(); it.hasNext();) {
 					Tools.MindMapNodePair shadowNode = (Tools.MindMapNodePair) it
 							.next();
-					selectShadowNode(shadowNode.getCorresponding(),
-							pEnableShadow, shadowNode.getCloneNode());
+					MindMapNode correspondingNode = shadowNode
+							.getCorresponding();
+					mLastMarkedNodeViews.add(correspondingNode);
+					selectShadowNode(correspondingNode, pEnableShadow,
+							shadowNode.getCloneNode());
 				}
 			} catch (IllegalArgumentException e) {
 				freemind.main.Resources.getInstance().logException(e);
@@ -558,8 +574,7 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 				if (node == pCloneNode) {
 					i = sOriginalIcon;
 				}
-				node.setStateIcon(PLUGIN_NAME, i);
-				controller.nodeRefresh(node);
+				setIcon(node, i);
 				if (node == pCloneNode)
 					break;
 				node = node.getParentNode();
@@ -568,14 +583,20 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 				// clones.
 				break;
 			}
-		} /*
+		}
+
+		public void setIcon(MindMapNode node, ImageIcon i) {
+			node.setStateIcon(PLUGIN_NAME, i);
+			controller.nodeRefresh(node);
+		}
+
+		/*
 		 * (non-Javadoc)
 		 * 
 		 * @see
 		 * freemind.modes.ModeController.NodeSelectionListener#onSelectionChange
 		 * (freemind.modes.MindMapNode, boolean)
 		 */
-
 		public void onSelectionChange(NodeView pNode, boolean pIsSelected) {
 		}
 
