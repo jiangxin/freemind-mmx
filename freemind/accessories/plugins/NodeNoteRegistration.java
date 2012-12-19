@@ -81,6 +81,9 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 			if (resourceString == null) {
 				resourceString = Resources.getInstance().getProperty(pKey);
 			}
+//			if(resourceString == null) {
+//				System.err.println("Can't find string " + pKey);
+//			}
 			return resourceString;
 		}
 	}
