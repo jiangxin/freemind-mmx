@@ -40,9 +40,10 @@ public class BrowseToolBar extends JToolBar {
 	public BrowseToolBar(ControllerAdapter controller) {
 
 		this.c = controller;
+		this.setRollover(true);
+		this.add(controller.getController().showFilterToolbarAction);
 		urlfield = new PersistentEditableComboBox(controller,
 				BROWSE_URL_STORAGE_KEY);
-		this.setRollover(true);
 
 		urlfield.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
