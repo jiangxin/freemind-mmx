@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Vector;
 
+import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
 
@@ -74,8 +75,7 @@ public class SortNodes extends MindMapNodeHookAdapter {
 		// now, as it is sorted. we cut the children
 		for (Iterator iter = sortVector.iterator(); iter.hasNext();) {
 			MindMapNode child = (MindMapNode) iter.next();
-			Vector childList = new Vector();
-			childList.add(child);
+			Vector childList = Tools.getVectorWithSingleElement(child);
 			Transferable cut = getMindMapController().cut(childList);
 			// paste directly again causes that the node is added as the last
 			// one.

@@ -44,6 +44,7 @@ import freemind.controller.actions.generated.instance.NewNodeAction;
 import freemind.controller.actions.generated.instance.NodeAction;
 import freemind.controller.actions.generated.instance.NodeListMember;
 import freemind.controller.actions.generated.instance.PasteNodeAction;
+import freemind.controller.actions.generated.instance.UndoPasteNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
 import freemind.main.FreeMind;
@@ -400,7 +401,7 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		}
 
 		/**
-		 * Method takes into account, that some actions are
+		 * Method takes into account, that some actions are different.
 		 * 
 		 * @param nodeAction
 		 * @param node
@@ -413,7 +414,28 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 					|| nodeAction instanceof MoveNodeXmlAction
 					|| nodeAction instanceof DeleteNodeAction
 					|| nodeAction instanceof CutNodeAction) {
-				if (mClonesMap.containsKey(node)) {
+			}
+			if (mClonesMap.containsKey(node)) {
+				/*
+				 * new node action belongs to the children, so clone it, even,
+				 * when node is the clone itself.
+				 */
+				if (nodeAction instanceof NewNodeAction) {
+					// here, the action changes the children, thus, they are
+					// subject to cloning.
+				} else if (nodeAction instanceof PasteNodeAction) {
+					PasteNodeAction pna = (PasteNodeAction) nodeAction;
+					if (pna.getAsSibling()) {
+						// sibling means, that the paste goes below the clone.
+						// skip.
+						startWithParent = true;
+					} else {
+						// here, the action changes the children, thus, they are
+						// subject to cloning.
+					}
+				} else if (nodeAction instanceof UndoPasteNodeAction) {
+					// FIXME: Look into this!
+				} else {
 					// ok, there is an action for a clone itself. be careful:
 					// clone only, if parents are clones:
 					startWithParent = true;
