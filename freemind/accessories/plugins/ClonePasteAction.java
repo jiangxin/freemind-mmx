@@ -434,7 +434,15 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 						// subject to cloning.
 					}
 				} else if (nodeAction instanceof UndoPasteNodeAction) {
-					// FIXME: Look into this!
+					UndoPasteNodeAction pna = (UndoPasteNodeAction) nodeAction;
+					if (pna.getAsSibling()) {
+						// sibling means, that the paste goes below the clone.
+						// skip.
+						startWithParent = true;
+					} else {
+						// here, the action changes the children, thus, they are
+						// subject to cloning.
+					}
 				} else {
 					// ok, there is an action for a clone itself. be careful:
 					// clone only, if parents are clones:
