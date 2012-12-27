@@ -527,16 +527,15 @@ public class MapDialog extends MindMapHookAdapter implements
 						setting.getColumnSorting());
 				column++;
 			}
-			mLastDividerPosition = storage.getLastDividerPosition();
 			// default is false, so if true, toggle it.
 			if(storage.getLimitSearchToVisibleArea()) {
 				toggleLimitSearchToRegion();
 			}
 			if (!storage.getSearchControlVisible()) {
 				toggleSearchBar();
-			} else {
-				mSearchSplitPane.setDividerLocation(mLastDividerPosition);
 			}
+			mLastDividerPosition = storage.getLastDividerPosition();
+			mSearchSplitPane.setDividerLocation(mLastDividerPosition);
 			// restore last map positions
 			final Vector positionHolderVector = getFreeMindMapController().getPositionHolderVector();
 			for (Iterator it = storage.getListMapLocationStorageList()
@@ -596,11 +595,11 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	public void toggleSearchBar(AWTEvent pEvent) {
 		if (mSearchBarVisible) {
+			mLastDividerPosition = mSearchSplitPane.getDividerLocation();
+			logger.info("Setting last divider to " + mLastDividerPosition);
 			// clear results
 			mResultTableModel.clear();
 			// hide search bar
-			mLastDividerPosition = mSearchSplitPane.getDividerLocation();
-			logger.info("Setting last divider to " + mLastDividerPosition);
 			mSearchSplitPane.setBottomComponent(null);
 			mMapDialog.remove(mSearchSplitPane);
 			mMapDialog.add(map, BorderLayout.CENTER);
