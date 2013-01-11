@@ -155,7 +155,7 @@ public class FreeMindMapController extends JMapController implements
 
 	private static final float PAGE_DOWN_FACTOR = 0.85f;
 
-	private static final int POSITION_HOLDER_LIMIT = 1000;
+	private static final int POSITION_HOLDER_LIMIT = 20;
 
 	private static final long WHEEL_ZOOM_MINIMAL_TIME_BETWEEN_CHANGES = 333;
 
@@ -1936,7 +1936,7 @@ public class FreeMindMapController extends JMapController implements
 		// assure that max size is below limit.
 		while (positionHolderVector.size() >= POSITION_HOLDER_LIMIT
 				&& getPositionHolderIndex() > 0) {
-			setPositionHolderIndex(getPositionHolderIndex() - 1);
+			setPositionHolderIndex(Math.max(getPositionHolderIndex() - 1, 0));
 			positionHolderVector.remove(0);
 		}
 		// update actions

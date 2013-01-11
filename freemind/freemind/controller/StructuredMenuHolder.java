@@ -529,8 +529,8 @@ public class StructuredMenuHolder {
 					} catch (Exception e) {
 						Resources.getInstance().logException(e);
 					}
-					// action.setEnabled(isEnabled);
-					menuItem.setEnabled(isEnabled);
+					action.setEnabled(isEnabled);
+//					menuItem.setEnabled(isEnabled);
 				}
 				isEnabled = menuItem.isEnabled();
 				if (isEnabled && holder.getSelectionListener() != null) {
