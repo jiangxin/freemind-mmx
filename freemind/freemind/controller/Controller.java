@@ -336,14 +336,13 @@ public class Controller implements MapModuleChangeObserver {
 
 	public void setProperty(String property, String value) {
 		String oldValue = getProperty(property);
+		getFrame().setProperty(property, value);
 		firePropertyChanged(property, value, oldValue);
-
 	}
 
 	private void firePropertyChanged(String property, String value,
 			String oldValue) {
 		if (oldValue == null || !oldValue.equals(value)) {
-			frame.setProperty(property, value);
 			for (Iterator i = Controller.getPropertyChangeListeners()
 					.iterator(); i.hasNext();) {
 				FreemindPropertyListener listener = (FreemindPropertyListener) i
