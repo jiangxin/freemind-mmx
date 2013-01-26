@@ -5,6 +5,7 @@ Changes made in FreeMind 1.0.0 RC 1
 * Searching for notes is now possible in the new search/replace dialog, too.
 * Fix: clone actions with folded clones.
 * Re-added the filter button to the browser's toolbar.
+* Fix: problem with additional newlines in HTML nodes.
 
 ===============================
 Changes made in FreeMind 1.0.0 Beta9

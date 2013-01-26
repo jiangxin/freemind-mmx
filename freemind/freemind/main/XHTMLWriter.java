@@ -28,13 +28,12 @@ import javax.swing.text.html.Option;
  * Create a new XHTMLWriter which is able to save a HTMLDocument as XHTML.
  * <p>
  * The result will be a valid XML file, but it is not granted that the file will
- * really be XHTML 1.0 transitional conformous. The basic purpose of this class
+ * really be XHTML 1.0 transitional conform. The basic purpose of this class
  * is to give an XSL processor access to plain HTML files.
  * 
  * @author Richard "Shred" K�rber
  */
 public class XHTMLWriter extends FixedHTMLWriter {
-	final private MutableAttributeSet convAttr = new SimpleAttributeSet();
 	private boolean writeLineSeparatorEnabled = true;
 
 	/**

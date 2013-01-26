@@ -75,8 +75,12 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 			if (Tools.safeEquals("show_splash_screen", pKey)) {
 				return "false";
 			}
+			if (Tools.safeEquals("default_paste_mode", pKey)) {
+				return "PASTE_HTML";
+			}
 			pKey = "simplyhtml." + pKey;
-			String resourceString = Resources.getInstance().getResourceString(
+			String resourceString;
+			resourceString = Resources.getInstance().getResourceString(
 					pKey, null);
 			if (resourceString == null) {
 				resourceString = Resources.getInstance().getProperty(pKey);

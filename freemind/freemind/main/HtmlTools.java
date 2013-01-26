@@ -83,21 +83,19 @@ public class HtmlTools {
 			XHTMLWriter.html2xhtml(reader, writer);
 			String resultXml = writer.toString();
 			// for safety:
-			if (!isWellformedXml(resultXml)) {
-				return toXMLEscapedText(htmlText);
+			if (isWellformedXml(resultXml)) {
+				logger.fine("Leave toXhtml with " + resultXml);
+				return resultXml;
 			}
-			logger.fine("Leave toXhtml with " + resultXml);
-			return resultXml;
 		} catch (IOException e) {
 			freemind.main.Resources.getInstance().logException(e);
 		} catch (BadLocationException e) {
 			freemind.main.Resources.getInstance().logException(e);
 		}
 		// fallback:
-		htmlText = htmlText.replaceAll("<", "&gt;");
-		htmlText = htmlText.replaceAll(">", "&lt;");
-		logger.fine("Leave toXhtml with fallback " + htmlText);
-		return htmlText;
+		String fallbackText = toXMLEscapedText(htmlText);
+		logger.fine("Leave toXhtml with fallback " + fallbackText);
+		return fallbackText;
 	}
 
 	public String toHtml(String xhtmlText) {
@@ -327,6 +325,9 @@ public class HtmlTools {
 			intValue = (int) text.charAt(i);
 			boolean outOfRange = intValue < 32  || intValue > 126;
 			if(pPreserveNewlines && myChar == '\n') {
+				outOfRange = false;
+			}
+			if(pPreserveNewlines && myChar == '\r') {
 				outOfRange = false;
 			}
 			if (outOfRange) {
