@@ -583,6 +583,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 								new Object[] {});
 						Method openMethod = desktopObject.getClass().getMethod(
 								"open", new Class[] { File.class });
+						logger.info("Opening file " + file);
 						openMethod.invoke(desktopObject, new Object[] { file });
 						return;
 					}
