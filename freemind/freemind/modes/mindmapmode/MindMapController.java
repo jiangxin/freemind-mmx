@@ -838,9 +838,12 @@ public class MindMapController extends ControllerAdapter implements
 		}
 	}
 
-	public void onLostFocusNode(NodeView n) {
-		super.onLostFocusNode(n);
-		updateToolbar(n.getModel());
+	/* (non-Javadoc)
+	 * @see freemind.modes.ControllerAdapter#onFocusNode(freemind.view.mindmapview.NodeView)
+	 */
+	public void onFocusNode(NodeView pNode) {
+		super.onFocusNode(pNode);
+		updateToolbar(pNode.getModel());
 	}
 
 	private void updateToolbar(MindMapNode n) {
