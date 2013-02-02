@@ -1,4 +1,9 @@
 ===============================
+Changes made in FreeMind 1.0.0 RC 2
+===============================
+* Fix: Font name is displayed to the current and not the last selected node.
+ 
+===============================
 Changes made in FreeMind 1.0.0 RC 1
 ===============================
 * (Existing) Option "Search in Notes" added to Preferences Dialog (under Behaviour).
