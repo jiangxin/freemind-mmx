@@ -127,17 +127,23 @@ public abstract class CommunicationBase extends TerminateableThread {
 						.unMarshall(decompressedText);
 				if (command != null) {
 					printCommand("Receive", command);
-					EventQueue.invokeLater(new Runnable() {
+					Runnable runnable = new Runnable() {
 						public void run() {
-							// inserted in event queue here, to avoid
-							// concurrency issues.
 							try {
 								processCommand(command);
 							} catch (Exception e) {
 								freemind.main.Resources.getInstance().logException(e);
 							}
 						}
-					});
+					};
+					if (command instanceof CollaborationTransaction) {
+						// inserted in event queue here, to avoid
+						// concurrency issues.
+						EventQueue.invokeLater(runnable);						
+					} else  {
+						// other commands than transactions are processed directly.
+						runnable.run();
+					}
 					didSomething = true;
 				}
 			}

@@ -2,6 +2,7 @@
 Changes made in FreeMind 1.0.0 RC 2
 ===============================
 * Fix: Font name is displayed to the current and not the last selected node.
+* Fix: Collaboration mode, see bug report https://sourceforge.net/tracker/index.php?func=detail&aid=3600130&group_id=7118&atid=107118 
  
 ===============================
 Changes made in FreeMind 1.0.0 RC 1

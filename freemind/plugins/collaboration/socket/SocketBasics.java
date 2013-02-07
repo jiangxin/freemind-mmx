@@ -134,7 +134,6 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	}
 
 	public void shutdownMapHook() {
-		Tools.printStackTrace();
 		Controller controller = getMindMapController().getController();
 		controller.deregisterMapTitleContributor(this);
 		controller.setTitle();
@@ -269,7 +268,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 		}
 
 		public void propertyChange(PropertyChangeEvent pEvt) {
-			logger.info("Property change " + pEvt);
+			logger.finest("Property change " + pEvt);
 			mOkButton.setEnabled(mFormDialogValidator.isValid());
 		}
 
