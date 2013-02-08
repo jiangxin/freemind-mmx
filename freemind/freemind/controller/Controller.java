@@ -1357,6 +1357,7 @@ public class Controller implements MapModuleChangeObserver {
 							.convertLocalLink(urlText);
 				}
 				if (urlText != null && urlText != "") {
+					logger.info("Opening key docs under " + urlText);
 					URL url = null;
 					url = new URL(urlText);
 					controller.getFrame().openDocument(url);
