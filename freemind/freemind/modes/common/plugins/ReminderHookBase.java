@@ -22,15 +22,14 @@
 
 package freemind.modes.common.plugins;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 import freemind.extensions.PermanentNodeHookAdapter;
 import freemind.main.XMLElement;
@@ -52,6 +51,8 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 	private static final int REMOVE_CLOCK = -1;
 
 	private static final String REMINDUSERAT = "REMINDUSERAT";
+
+	private static final int BLINK_INTERVAL_IN_MILLIES = 3000;
 
 	private long remindUserAt = 0;
 
@@ -92,7 +93,7 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 	public void shutdownMapHook() {
 		setToolTip(getNode(), getName(), null);
 		if (timer != null) {
-			timer.cancel();
+			timer.stop();
 		}
 		displayState(REMOVE_CLOCK, getNode(), true);
 		super.shutdownMapHook();
@@ -112,21 +113,17 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 	/**
 	 */
 	private void scheduleTimer(MindMapNode node) {
-		scheduleTimer(node, new TimerBlinkTask(false));
-		// scheduleTimer(node, new CheckReminder(false));
-	}
-
-	private void scheduleTimer(MindMapNode node, TimerTask task) {
-		timer = new Timer();
+		timer = new Timer(getRemindUserAtAsSecondsFromNow(),
+				new TimerBlinkTask(false));
+		timer.setDelay(BLINK_INTERVAL_IN_MILLIES);
 		Date date = new Date(remindUserAt);
-		timer.schedule(task, date);
 		Object[] messageArguments = { date };
 		MessageFormat formatter = new MessageFormat(
 				getResourceString("plugins/TimeManagement.xml_reminderNode_tooltip"));
 		String message = formatter.format(messageArguments);
-
 		setToolTip(node, getName(), message);
 		displayState(CLOCK_VISIBLE, getNode(), false);
+		timer.start();
 	}
 
 	private ImageIcon getClockIcon() {
@@ -153,42 +150,7 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 		return flagIcon;
 	}
 
-	protected class CheckReminder extends TimerTask {
-		CheckReminder() {
-
-		}
-
-		/** TimerTask method to enable the selection after a given time. */
-		public void run() {
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					// yes, the time is over:
-					// select the node.
-					getController().centerNode(getNode());
-					// format message:
-					Object[] messageArguments = { getNode().getShortText(
-							getController()) };
-					MessageFormat formatter = new MessageFormat(
-							getResourceString("plugins/TimeManagement.xml_reminderNode_showNode"));
-					String message = formatter.format(messageArguments);
-
-					int result = JOptionPane.showConfirmDialog(getController()
-							.getFrame().getJFrame(), message, "Freemind",
-							JOptionPane.YES_NO_OPTION);
-					if (result == JOptionPane.YES_OPTION) {
-						setRemindUserAt(System.currentTimeMillis() + 10 * 60 * 1000);
-						scheduleTimer(getNode());
-						return;
-					}
-					nodeChanged(getNode());
-					// remove the hook (suicide)
-					getNode().removeHook(ReminderHookBase.this);
-				}
-			});
-		}
-	}
-
-	public class TimerBlinkTask extends TimerTask {
+	public class TimerBlinkTask implements ActionListener {
 
 		/**
 		 */
@@ -199,22 +161,16 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 
 		private boolean stateAdded = false;
 
-		public void run() {
-			SwingUtilities.invokeLater(new Runnable() {
-				public void run() {
-					// time is over, we add the new icon until
-					// the user removes the reminder.
-					//
-					stateAdded = !stateAdded;
-					setRemindUserAt(System.currentTimeMillis() + 3000); // 3
-					// secs
-					scheduleTimer(getNode(), new TimerBlinkTask(stateAdded));
-					displayState(
-							(stateAdded) ? CLOCK_VISIBLE : CLOCK_INVISIBLE,
-							getNode(), true);
+		public void actionPerformed(ActionEvent pE) {
+			// time is over, we add the new icon until
+			// the user removes the reminder.
+			//
+			stateAdded = !stateAdded;
+			setRemindUserAt(System.currentTimeMillis()
+					+ BLINK_INTERVAL_IN_MILLIES); // 3
+			displayState((stateAdded) ? CLOCK_VISIBLE : CLOCK_INVISIBLE,
+					getNode(), true);
 
-				}
-			});
 		}
 
 	}
@@ -244,6 +200,10 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 
 	public long getRemindUserAt() {
 		return remindUserAt;
+	}
+
+	public int getRemindUserAtAsSecondsFromNow() {
+		return (int) (remindUserAt - System.currentTimeMillis());
 	}
 
 	public void setRemindUserAt(long remindUserAt) {
