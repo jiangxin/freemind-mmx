@@ -366,7 +366,7 @@ public class FreeMindCommon {
 							"FreeMind base dir (!) '" + file
 									+ "' is not a directory.");
 				}
-				// set the static variable
+				// set the member variable
 				baseDir = file.getCanonicalPath();
 				logger.info("Basedir is: " + baseDir);
 			} catch (Exception e) {
@@ -375,7 +375,7 @@ public class FreeMindCommon {
 						"FreeMind base dir can't be determined.");
 			}
 		}
-		// return the value of the static variable
+		// return the value of the cache variable
 		return baseDir;
 	}
 

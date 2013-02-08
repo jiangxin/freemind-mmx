@@ -201,8 +201,9 @@ public class Controller implements MapModuleChangeObserver {
 	public PropertyAction propertyAction;
 	public OpenURLAction freemindUrl;
 
-	private static final float[] zoomValues = { 25/100f, 50/100f, 75/100f, 100/100f,
-			150/100f, 200/100f, 300/100f, 400/100f };
+	private static final float[] zoomValues = { 25 / 100f, 50 / 100f,
+			75 / 100f, 100 / 100f, 150 / 100f, 200 / 100f, 300 / 100f,
+			400 / 100f };
 
 	private static Vector propertyChangeListeners = new Vector();
 
@@ -415,7 +416,7 @@ public class Controller implements MapModuleChangeObserver {
 		String[] zooms = new String[zoomValues.length];
 		for (int i = 0; i < zoomValues.length; i++) {
 			float val = zoomValues[i];
-			zooms[i] = (int)(val*100f) + "%";
+			zooms[i] = (int) (val * 100f) + "%";
 		}
 		return zooms;
 	}
@@ -833,7 +834,8 @@ public class Controller implements MapModuleChangeObserver {
 	public void obtainFocusForSelected() {
 		// logger.finest("obtainFocusForSelected");
 		if (getView() != null) { // is null if the last map was closed.
-			logger.fine("Requesting Focus for " + getView() + " in model " +getView().getModel());
+			logger.fine("Requesting Focus for " + getView() + " in model "
+					+ getView().getModel());
 			getView().requestFocusInWindow();
 		} else {
 			// fc, 6.1.2004: bug fix, that open and quit are not working if no
@@ -857,7 +859,7 @@ public class Controller implements MapModuleChangeObserver {
 	public void setZoom(float zoom) {
 		getView().setZoom(zoom);
 		changeZoomValueProperty(zoom);
-//		((MainToolBar) toolbar).setZoomComboBox(zoom);
+		// ((MainToolBar) toolbar).setZoomComboBox(zoom);
 		// show text in status bar:
 		Object[] messageArguments = { String.valueOf(zoom * 100f) };
 		String stringResult = Resources.getInstance().format(
@@ -1073,8 +1075,8 @@ public class Controller implements MapModuleChangeObserver {
 		}
 		if (Tools.safeEquals(getProperty("page_orientation"), "landscape")) {
 			pageFormat.setOrientation(PageFormat.LANDSCAPE);
-		} else if (Tools.safeEquals(getProperty("page_orientation"),
-				"portrait")) {
+		} else if (Tools
+				.safeEquals(getProperty("page_orientation"), "portrait")) {
 			pageFormat.setOrientation(PageFormat.PORTRAIT);
 		} else if (Tools.safeEquals(getProperty("page_orientation"),
 				"reverse_landscape")) {
@@ -1271,16 +1273,21 @@ public class Controller implements MapModuleChangeObserver {
 	}
 
 	public interface LocalLinkConverter {
-		String convertLocalLink(String link);
+		/**
+		 * @throws MalformedURLException
+		 *             if the conversion didn't work
+		 */
+		URL convertLocalLink(String link) throws MalformedURLException;
 	}
 
 	private class DefaultLocalLinkConverter implements LocalLinkConverter {
 
-		public String convertLocalLink(String map) {
+		public URL convertLocalLink(String map) throws MalformedURLException {
 			/* new handling for relative urls. fc, 29.10.2003. */
 			String applicationPath = frame.getFreemindBaseDir();
-			return "file:" + applicationPath + map.substring(1);// remove "."
-																// and make url
+			// remove "." and make url
+			return Tools
+					.fileToUrl(new File(applicationPath + map.substring(1)));
 			/* end: new handling for relative urls. fc, 29.10.2003. */
 		}
 	}
@@ -1298,29 +1305,21 @@ public class Controller implements MapModuleChangeObserver {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			String map = controller.getFrame().getResourceString(
-					"browsemode_initial_map");
-			// if the current language does not provide its own translation,
-			// POSTFIX_TRANSLATE_ME is appended:
-			map = Tools.removeTranslateComment(map);
-			if (map != null && map.startsWith(".")) {
-				try {
-					map = localDocumentationLinkConverter.convertLocalLink(map);
-				} catch (AccessControlException ex) {
-					webDocu.actionPerformed(e);
-					return;
-				}
-			}
-			if (map != null && map != "") {
+			try {
+				String map = controller.getFrame().getResourceString(
+						"browsemode_initial_map");
+				// if the current language does not provide its own translation,
+				// POSTFIX_TRANSLATE_ME is appended:
+				map = Tools.removeTranslateComment(map);
 				URL url = null;
-				try {
-					url = new URL(map);
-				} catch (MalformedURLException e2) {
-					freemind.main.Resources.getInstance().logException(e2);
-					return;
+				if (map != null && map.startsWith(".")) {
+					url = localDocumentationLinkConverter.convertLocalLink(map);
+				} else {
+					url = Tools.fileToUrl(new File(map));
 				}
 				final URL endUrl = url;
-				// invokeLater is necessary, as the mode changing removes all
+				// invokeLater is necessary, as the mode changing removes
+				// all
 				// menus (inclusive this action!).
 				SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
@@ -1333,6 +1332,9 @@ public class Controller implements MapModuleChangeObserver {
 						}
 					}
 				});
+			} catch (MalformedURLException e1) {
+				// TODO Auto-generated catch block
+				freemind.main.Resources.getInstance().logException(e1);
 			}
 		}
 	}
@@ -1352,16 +1354,15 @@ public class Controller implements MapModuleChangeObserver {
 			// POSTFIX_TRANSLATE_ME is appended:
 			urlText = Tools.removeTranslateComment(urlText);
 			try {
+				URL url = null;
 				if (urlText != null && urlText.startsWith(".")) {
-					urlText = localDocumentationLinkConverter
+					url = localDocumentationLinkConverter
 							.convertLocalLink(urlText);
+				} else {
+					url = Tools.fileToUrl(new File(urlText));
 				}
-				if (urlText != null && urlText != "") {
-					logger.info("Opening key docs under " + urlText);
-					URL url = null;
-					url = new URL(urlText);
-					controller.getFrame().openDocument(url);
-				}
+				logger.info("Opening key docs under " + url);
+				controller.getFrame().openDocument(url);
 			} catch (Exception e2) {
 				freemind.main.Resources.getInstance().logException(e2);
 				return;
@@ -1615,12 +1616,12 @@ public class Controller implements MapModuleChangeObserver {
 			float currentZoom = getView().getZoom();
 			for (int i = 0; i < zoomValues.length; i++) {
 				float val = zoomValues[i];
-				if(val > currentZoom) {
+				if (val > currentZoom) {
 					setZoom(val);
 					return;
 				}
 			}
-			setZoom(zoomValues[zoomValues.length-1]);
+			setZoom(zoomValues[zoomValues.length - 1]);
 		}
 	}
 
@@ -1634,7 +1635,7 @@ public class Controller implements MapModuleChangeObserver {
 			float lastZoom = zoomValues[0];
 			for (int i = 0; i < zoomValues.length; i++) {
 				float val = zoomValues[i];
-				if(val >= currentZoom) {
+				if (val >= currentZoom) {
 					setZoom(lastZoom);
 					return;
 				}
@@ -2110,7 +2111,8 @@ public class Controller implements MapModuleChangeObserver {
 		} else if (pageFormat.getOrientation() == PageFormat.REVERSE_LANDSCAPE) {
 			setProperty("page_orientation", "reverse_landscape");
 		}
-		setProperty(PAGE_FORMAT_PROPERTY, Tools.getPageFormatAsString(pageFormat.getPaper()));
+		setProperty(PAGE_FORMAT_PROPERTY,
+				Tools.getPageFormatAsString(pageFormat.getPaper()));
 	}
 
 }

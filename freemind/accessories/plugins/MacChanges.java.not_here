@@ -62,11 +62,11 @@ public class MacChanges extends ApplicationAdapter  {
 		pFrame.setProperty("load_new_map_when_no_other_is_specified", "false");
 		Controller.localDocumentationLinkConverter = new LocalLinkConverter(){
 
-			public String convertLocalLink(String link) {
-				return "file:" + System.getProperty("user.dir")
+			public URL convertLocalLink(String link) throws MalformedURLException {
 				//TODO: retrieve name of application and don't use the fixed FreeMind.app here.
+				return Tools.fileToUrl(System.getProperty("user.dir")
 						+ "/" +
-								FREE_MIND_JAVA + "/" + link;
+								FREE_MIND_JAVA + "/" + link);
 			}}; 
 		if(fmMacApplication==null){
 			// if a handleOpen comes here, directly, we know that FM is currently starting.
