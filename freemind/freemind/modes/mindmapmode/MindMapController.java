@@ -2314,7 +2314,7 @@ public class MindMapController extends ControllerAdapter implements
 	public boolean mapSourceChanged(MindMap pMap) throws Exception {
 		// ask the user, if he wants to reload the map.
 		MapSourceChangeDialog runnable = new MapSourceChangeDialog();
-		EventQueue.invokeAndWait(runnable);
+		Tools.invokeAndWait(runnable);
 		return runnable.getReturnValue();
 	}
 

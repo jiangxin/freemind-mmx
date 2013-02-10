@@ -38,6 +38,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.jibx.runtime.Utility;
+import org.jibx.runtime.impl.UTF8Escaper;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -204,8 +206,11 @@ public class CompileXsdStart extends DefaultHandler {
 		mBindingXml.setLength(0);
 		mBindingXml
 				.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><binding>\n");
+		// introduce correct marshaling for newlines in strings:
+		mBindingXml.append("<format type=\"java.lang.String\" serializer=\"de.foltin.StringEncoder.encode\" deserializer=\"de.foltin.StringEncoder.decode\"/>\n");
 		saxParser.parse(mInputStream, this);
 		mBindingXml.append("</binding>\n");
+//		System.out.println(mBindingXml.toString());
 	}
 
 	private class XsdHandler extends DefaultHandler {
@@ -578,7 +583,8 @@ public class CompileXsdStart extends DefaultHandler {
 				} else {
 					mBindingXml.append("      <value name=\"" + rawName
 							+ "\" field=\"" + memberName + "\" usage=\""
-							+ optReq + "\"/>\n");
+							+ optReq + "\"/>\n"); 
+					//  whitespace='preserve' doesn't work
 				}
 			} else {
 				// list ref:
@@ -695,6 +701,7 @@ public class CompileXsdStart extends DefaultHandler {
 					+ "' "
 					+ (("0".equals(minOccurs)) ? "" : "style='attribute'")
 					+ "/>\n");
+			//  whitespace='preserve' doesn't work
 		}
 
 		public String decapitalizeFirstLetter(String name) {

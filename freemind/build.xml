@@ -49,6 +49,7 @@
 	<property name="jibxlibs" value="${jibxhome}/bcel.jar:${jibxhome}/jibx-bind.jar:${jibxhome}/jibx-extras.jar:${jibxruntimelibs}"/>
 	<taskdef name="bind" classname="org.jibx.binding.ant.CompileTask">
 		<classpath path="${jibxlibs}"/>
+		<classpath location="binding/classes"/>
 	</taskdef>
 	<property name="formsLib" location="lib/forms-1.0.5.jar:lib/SimplyHTML/SimplyHTML.jar"/>
 	<property name="simplyHtml" location="lib/SimplyHTML/SimplyHTML.jar"/>
@@ -90,28 +91,20 @@
 		<mkdir dir="binding/src" />
 		<mkdir dir="binding/run" />
 		<mkdir dir="binding/classes" />
-<!-- 		<java fork="true" classname="org.jibx.xsd2jibx.Generate" classpath="${jibxlibs}:${jibxhome}/xsd2jibx.jar:${jibxhome}/commons-logging-1.0.4.jar:${jibxhome}/jaxme-js-0.3.jar:${jibxhome}/log4j-1.2.8.jar" failonerror="true">
-			<arg line="-n freemind.controller.actions.generated.instance" />
-			<arg line="-d binding/src" />
-			<arg file="freemind_actions.xsd" />
-		</java> -->
 		<javac includeantruntime="false"  destdir="binding/run" 
 			srcdir="${src}"
 			classpath="${classpath}"
 			debug="${debug}"
-    	   source="${java_source_version}"
-	       target="${java_target_version}"
-			>
+		    	source="${java_source_version}"
+	       		target="${java_target_version}">
 			<include name="de/foltin/**" />
 		</javac>
 		<java fork="true" classpath="binding/run" classname="de.foltin.CompileXsdStart"></java>
 		<delete dir="binding/run"  quiet="true"/>
-<!-- 		<java fork="true" jar="lib/compileXsd.jar"></java> -->
+		<!-- Special file for String encoding. -->
+		<mkdir dir="binding/src/de/foltin"/>
+		<copy  todir="binding/src/de/foltin" file="${src}/de/foltin/StringEncoder.java"/>
 		<javac includeantruntime="false"  srcdir="binding/src" destdir="binding/classes" source="${java_source_version}" target="${java_target_version}" debug="on" />
-<!--
- 		<xslt style="binding.xslt" in="binding/src/freemind/controller/actions/generated/instance/binding.xml" out="binding_new.xml" />
-		<move file="binding_new.xml" tofile="binding/src/freemind/controller/actions/generated/instance/binding.xml" overwrite="true" /> 
-		-->
 		<echo message="Running binding compiler..." />
 		<bind verbose="false" load="true">
 			<bindingfileset dir="binding/src">

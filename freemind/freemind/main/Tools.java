@@ -56,6 +56,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -1948,6 +1949,21 @@ public class Tools {
 			}
 		} while (hashMap.containsKey(returnValue));
 		return returnValue;
+	}
+
+	/**
+	 * Call this method, if you don't know, if you are in the event thread
+	 * or not. It checks this and calls the invokeandwait or the runnable directly.
+	 * @param pRunnable
+	 * @throws InterruptedException 
+	 * @throws InvocationTargetException 
+	 */
+	public static void invokeAndWait(Runnable pRunnable) throws InvocationTargetException, InterruptedException {
+		if(EventQueue.isDispatchThread()) {
+			pRunnable.run();
+		} else {
+			EventQueue.invokeAndWait(pRunnable);
+		}
 	}
 
 }

@@ -23,11 +23,17 @@
 
 package tests.freemind;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+
+import de.foltin.StringEncoder;
+
 import freemind.common.XmlBindingTools;
 import freemind.controller.actions.generated.instance.Pattern;
 import freemind.controller.actions.generated.instance.PatternChild;
 import freemind.controller.actions.generated.instance.Place;
 import freemind.controller.actions.generated.instance.Searchresults;
+import freemind.main.Tools;
 
 /**
  * @author foltin
@@ -35,18 +41,18 @@ import freemind.controller.actions.generated.instance.Searchresults;
  */
 public class MarshallerTests extends FreeMindTestBase {
 	/**
-	 * Newlines in attributes are handled correctly,
-	 * when they are omitted, AFAIK. Thus, this test is
-	 * commented out.
+	 * Newlines in Jibx attributes are handled correctly.
 	 */
-	public void _testNewLines() {
+	public void testNewLines() {
 		Pattern testPattern = new Pattern();
 		PatternChild patternChild = new PatternChild();
-		patternChild.setValue("test\ntest");
+		String value = "\\ntest\n\\test<>&";
+		patternChild.setValue(value);
+		assertEquals(value, patternChild.getValue());
 		testPattern.setPatternChild(patternChild);
 		testPattern.setName("test");
 		String marshall = XmlBindingTools.getInstance().marshall(testPattern);
-		// System.out.println(marshall);
+		System.out.println(marshall);
 		Pattern testPatternUnmarshalled = (Pattern) XmlBindingTools
 				.getInstance().unMarshall(marshall);
 		assertEquals("Newline is correctly marshalled?" + marshall,
@@ -54,6 +60,16 @@ public class MarshallerTests extends FreeMindTestBase {
 		assertEquals("Newline is correctly marshalled?" + marshall, testPattern
 				.getPatternChild().getValue(), testPatternUnmarshalled
 				.getPatternChild().getValue());
+	}
+	
+	public void testStringEncoder() throws Exception {
+		String input = "\\ntest\n\\test";
+		String encodedString = StringEncoder.encode(input);
+//		System.out.println(encodedString);
+		assertEquals("\\\\ntest\\u000a\\\\test", encodedString);
+		String output = StringEncoder.decode(encodedString);
+		assertEquals(input, output);
+		
 	}
 
 	public void testOsmNominatimConversion() throws Exception {
