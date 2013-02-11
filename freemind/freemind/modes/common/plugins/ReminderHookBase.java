@@ -50,7 +50,7 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 
 	private static final int REMOVE_CLOCK = -1;
 
-	private static final String REMINDUSERAT = "REMINDUSERAT";
+	public static final String REMINDUSERAT = "REMINDUSERAT";
 
 	private static final int BLINK_INTERVAL_IN_MILLIES = 3000;
 

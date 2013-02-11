@@ -37,6 +37,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -79,8 +80,9 @@ public class TimeManagement extends MindMapHookAdapter implements
 		private NodeFactory mFactory;
 
 		public AppendDateAbstractAction() {
-			
+
 		}
+
 		public void init(NodeFactory pFactory, String pText) {
 			putValue(Action.NAME, getMindMapController().getText(pText));
 			mFactory = pFactory;
@@ -101,7 +103,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 			}
 			getMindMapController().select(lastElement, sel);
 		}
-		
+
 	}
 
 	private class AppendDateAction extends AppendDateAbstractAction {
@@ -110,38 +112,40 @@ public class TimeManagement extends MindMapHookAdapter implements
 
 				public MindMapNode getNode(MindMapNode pNode) {
 					return pNode;
-				}}, "plugins/TimeManagement.xml_appendButton");
+				}
+			}, "plugins/TimeManagement.xml_appendButton");
 		}
-
 
 	}
 
 	private class AppendDateToChildAction extends AppendDateAbstractAction {
 		public AppendDateToChildAction() {
 			init(new NodeFactory() {
-				
+
 				public MindMapNode getNode(MindMapNode pNode) {
 					return getMindMapController().addNewNode(pNode,
 							pNode.getChildCount(), pNode.isLeft());
-				}}, "plugins/TimeManagement.xml_appendAsNewButton");
+				}
+			}, "plugins/TimeManagement.xml_appendAsNewButton");
 		}
 	}
 
 	private class AppendDateToSiblingAction extends AppendDateAbstractAction {
 		public AppendDateToSiblingAction() {
 			init(new NodeFactory() {
-				
+
 				public MindMapNode getNode(MindMapNode pNode) {
 					MindMapNode parent = pNode;
-					if(!pNode.isRoot()) {
+					if (!pNode.isRoot()) {
 						parent = pNode.getParentNode();
 					}
 					return getMindMapController().addNewNode(parent,
-							parent.getIndex(pNode)+1, parent.isLeft());
-				}}, "plugins/TimeManagement.xml_appendAsNewSiblingButton");
+							parent.getIndex(pNode) + 1, parent.isLeft());
+				}
+			}, "plugins/TimeManagement.xml_appendAsNewSiblingButton");
 		}
 	}
-	
+
 	private class RemindAction extends AbstractAction {
 		public RemindAction() {
 			super(getMindMapController().getText(
@@ -167,7 +171,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 				ReminderHookBase alreadyPresentHook = TimeManagementOrganizer
 						.getHook(node);
 				if (alreadyPresentHook != null) {
-					addHook(node); // means remove hook, as it is already
+					addHook(node, 0L); // means remove hook, as it is already
 					// present.
 				}
 			}
@@ -391,18 +395,16 @@ public class TimeManagement extends MindMapHookAdapter implements
 				if (result == JOptionPane.NO_OPTION)
 					return;
 				// here, the old has to be removed and the new one installed.
-				addHook(node); // means remove hook, as it is already present.
+				addHook(node, 0L); // means remove hook, as it is already
+									// present.
 
 			}
-			List selected;
-			addHook(node);
-			PermanentNodeHook element;
+			addHook(node, date.getTime());
 			ReminderHookBase rh = TimeManagementOrganizer.getHook(node);
 			if (rh == null) {
 				throw new IllegalArgumentException(
 						"hook not found although it is present!!");
 			}
-			rh.setRemindUserAt(date.getTime());
 			node.invokeHook(rh);
 			getMindMapController().nodeChanged(node);
 		}
@@ -410,11 +412,19 @@ public class TimeManagement extends MindMapHookAdapter implements
 	}
 
 	/**
+	 * @param pRemindAt
+	 *            TODO
 	 */
-	private void addHook(MindMapNode node) {
+	private void addHook(MindMapNode node, long pRemindAt) {
 		// add the hook:
+		Properties properties = new Properties();
+		if (pRemindAt != 0L) {
+			properties.put(ReminderHookBase.REMINDUSERAT,
+					new Long(pRemindAt).toString());
+		}
 		getMindMapController().addHook(node,
-				Tools.getVectorWithSingleElement(node), REMINDER_HOOK_NAME, null);
+				Tools.getVectorWithSingleElement(node), REMINDER_HOOK_NAME,
+				properties);
 	}
 
 	/**
