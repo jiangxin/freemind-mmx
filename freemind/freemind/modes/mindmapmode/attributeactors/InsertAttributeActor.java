@@ -25,6 +25,7 @@ package freemind.modes.mindmapmode.attributeactors;
 
 import freemind.controller.actions.generated.instance.InsertAttributeElementaryAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.modes.NodeAdapter;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.modes.mindmapmode.MindMapController;
@@ -59,7 +60,9 @@ public class InsertAttributeActor extends AbstractActorXml {
 	public void act(XmlAction action) {
 		if (action instanceof InsertAttributeElementaryAction) {
 			InsertAttributeElementaryAction insertAttributeAction = (InsertAttributeElementaryAction) action;
-			act(getNode(insertAttributeAction.getNode()).getAttributes(),
+			NodeAdapter node = getNode(insertAttributeAction.getNode());
+			node.createAttributeTableModel();
+			act(node.getAttributes(),
 					insertAttributeAction.getRow(),
 					insertAttributeAction.getName(),
 					insertAttributeAction.getValue());

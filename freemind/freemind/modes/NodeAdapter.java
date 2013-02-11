@@ -135,8 +135,19 @@ public abstract class NodeAdapter implements MindMapNode {
 	private FreeMindMain frame;
 	private static final boolean ALLOWSCHILDREN = true;
 	private static final boolean ISLEAF = false; // all nodes may have children
+	/** read only empty attribute class */
 	private static final NodeAttributeTableModel EMTPY_ATTRIBUTES = new NodeAttributeTableModel(
-			null);
+			null) {
+		public void insertRow(int index, String name, String value) {
+			throw new IllegalArgumentException("Can't set attributes in the EMTPY_ATTRIBUTES table.");
+		};
+		
+		public void addRowNoUndo(Attribute newAttribute) {
+			throw new IllegalArgumentException("Can't set attributes in the EMTPY_ATTRIBUTES table.");
+		};
+		
+		public Vector getAttributes() {return new Vector();};
+	};
 
 	private HistoryInformation historyInformation = null;
 	// Logging:
