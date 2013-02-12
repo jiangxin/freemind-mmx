@@ -326,12 +326,14 @@ public abstract class ControllerAdapter implements ModeController,
 		mNodeSelectionListeners.remove(listener);
 	}
 
-	public void registerNodeLifetimeListener(NodeLifetimeListener listener) {
+	public void registerNodeLifetimeListener(NodeLifetimeListener listener, boolean pFireCreateEvent) {
 		mNodeLifetimeListeners.add(listener);
-		// call create node for all:
-		// TODO: fc, 10.2.08: this event goes to all listeners. It should be for
-		// the new listener only?
-		fireRecursiveNodeCreateEvent(getRootNode());
+		if (pFireCreateEvent) {
+			// call create node for all:
+			// TODO: fc, 10.2.08: this event goes to all listeners. It should be for
+			// the new listener only?
+			fireRecursiveNodeCreateEvent(getRootNode());
+		}
 	}
 
 	public void deregisterNodeLifetimeListener(NodeLifetimeListener listener) {

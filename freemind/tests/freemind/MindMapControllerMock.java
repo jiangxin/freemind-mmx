@@ -522,7 +522,7 @@ public class MindMapControllerMock implements ModeController {
 	 * freemind.modes.ModeController#registerNodeLifetimeListener(freemind.modes
 	 * .ModeController.NodeLifetimeListener)
 	 */
-	public void registerNodeLifetimeListener(NodeLifetimeListener listener) {
+	public void registerNodeLifetimeListener(NodeLifetimeListener listener, boolean pFireCreateEvent) {
 		// TODO Auto-generated method stub
 
 	}

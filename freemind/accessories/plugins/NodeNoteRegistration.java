@@ -333,7 +333,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 		}
 		mNotesManager = new NotesManager();
 		controller.registerNodeSelectionListener(mNotesManager, false);
-		controller.registerNodeLifetimeListener(mNotesManager);
+		controller.registerNodeLifetimeListener(mNotesManager, true);
 		mNoteDocumentListener = new NoteDocumentListener();
 	}
 

@@ -272,8 +272,9 @@ public interface ModeController extends TextTranslator {
 	/**
 	 * The onCreateNodeHook is called for every node (depest nodes first) after
 	 * registration.
+	 * @param pFireCreateEvent TODO
 	 */
-	void registerNodeLifetimeListener(NodeLifetimeListener listener);
+	void registerNodeLifetimeListener(NodeLifetimeListener listener, boolean pFireCreateEvent);
 
 	void deregisterNodeLifetimeListener(NodeLifetimeListener listener);
 

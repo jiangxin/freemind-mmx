@@ -159,7 +159,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 				return;
 			}
 		}
-		getMindMapController().registerNodeLifetimeListener(this);
+		getMindMapController().registerNodeLifetimeListener(this, false);
 		Registration registration = getRegistration();
 		if (mCloneId == null) {
 			// hmm, it seems, that I am the first. Let's generate an id:
