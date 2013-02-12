@@ -504,8 +504,8 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 					}
 					target = (MindMapNode) target.getChildAt(index);
 				}
-				logger.fine("Found corresponding node " + printNodeId(target)
-						+ " on clone " + printNodeId(cloneNode));
+//				logger.fine("Found corresponding node " + printNodeId(target)
+//						+ " on clone " + printNodeId(cloneNode));
 				returnValue.add(new Tools.MindMapNodePair(target, cloneNode));
 			}
 			return returnValue;
@@ -561,18 +561,22 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 			if (pNode == null || pNode.getModel() == null) {
 				return;
 			}
-			if (!pEnableShadow && !mLastMarkedNodeViews.isEmpty()) {
-				for (Iterator it = mLastMarkedNodeViews.iterator(); it
-						.hasNext();) {
-					MindMapNode node = (MindMapNode) it.next();
-					if (mClonesMap.containsKey(node)) {
-						setIcon(node, sOriginalIcon);
-					} else {
-						setIcon(node, null);
+			if (!pEnableShadow) {
+				if (!mLastMarkedNodeViews.isEmpty()) {
+					for (Iterator it = mLastMarkedNodeViews.iterator(); it
+							.hasNext();) {
+						MindMapNode node = (MindMapNode) it.next();
+						if (mClonesMap.containsKey(node)) {
+							setIcon(node, sOriginalIcon);
+						} else {
+							setIcon(node, null);
+						}
 					}
+					mLastMarkedNodeViews.clear();
 				}
+			} else {
+				markShadowNode(pNode.getModel(), pEnableShadow);
 			}
-			markShadowNode(pNode.getModel(), pEnableShadow);
 		}
 
 		public void markShadowNode(MindMapNode model, boolean pEnableShadow) {
