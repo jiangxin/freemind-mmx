@@ -461,24 +461,43 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		 * @param pNode
 		 *            is checked to be son of one of the clones/original.
 		 * @param pStartWithParent
-		 *            TODO
+		 *            Sometimes, it is relevant, if only one of the parents is a clone, eg. for all actions, 
+		 *            that affect the clone itself, thus not need to be cloned, but perhaps the clone
+		 *            is itself a node inside of another clone!
 		 * @return a list of {@link MindMapNodePair}s where the first is the
 		 *         corresponding node and the second is the clone. If the return
 		 *         value is empty, the node isn't son of any.
 		 */
 		public List getCorrespondingNodes(MindMapNode pNode,
 				boolean pStartWithParent) {
+			MindMapNode clone;
+			{
+				MindMapNode child;
+				// code doubling to speed up. First check for a clone on the way to root.
+				if (pStartWithParent) {
+					child = pNode.getParentNode();
+				} else {
+					child = pNode;
+				}
+				while (!mClonesMap.containsKey(child)) {
+					if (child.isRoot()) {
+						// nothing found!
+						return Collections.EMPTY_LIST;
+					}
+					child = child.getParentNode();
+				}
+				clone = child;
+			}
+			MindMapNode child;
+			// now, there is a clone on the way. Collect the indices.
 			Vector indexVector = new Vector();
-			MindMapNode child = pNode;
 			if (pStartWithParent) {
 				addNodePosition(indexVector, pNode);
 				child = pNode.getParentNode();
+			} else {
+				child = pNode;
 			}
-			while (!mClonesMap.containsKey(child)) {
-				if (child.isRoot()) {
-					// nothing found!
-					return Collections.EMPTY_LIST;
-				}
+			while (clone != child) {
 				addNodePosition(indexVector, child);
 				child = child.getParentNode();
 			}
@@ -491,8 +510,8 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 				MindMapNode target = cloneNode;
 				if (cloneNode == originalNode)
 					continue;
-				for (Iterator it = indexVector.iterator(); it.hasNext();) {
-					int index = ((Integer) it.next()).intValue();
+				for (int i = indexVector.size()-1; i>= 0; --i) {
+					int index = ((Integer) indexVector.get(i)).intValue();
 					if (target.getChildCount() <= index) {
 						logger.warning("Index " + index
 								+ " in other tree not found from "
@@ -512,7 +531,7 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		}
 
 		private void addNodePosition(Vector indexVector, MindMapNode child) {
-			indexVector.add(0, new Integer(child.getParentNode()
+			indexVector.add(new Integer(child.getParentNode()
 					.getChildPosition(child)));
 		}
 
