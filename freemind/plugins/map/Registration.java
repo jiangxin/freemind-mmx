@@ -370,7 +370,7 @@ public class Registration implements HookRegistration, ActorXml,
 		}
 		VersionInformation freemindVersion = controller.getFrame()
 				.getFreemindVersion();
-		OsmTileLoader.USER_AGENT = "FreeMind " + freemindVersion;
+		loader.headers.put("User-agent", "FreeMind " + freemindVersion);
 		return loader;
 	}
 
