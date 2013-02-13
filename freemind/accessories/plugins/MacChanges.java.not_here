@@ -23,6 +23,8 @@
 package accessories.plugins;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.logging.Logger;
 
 import javax.swing.SwingUtilities;
@@ -64,9 +66,8 @@ public class MacChanges extends ApplicationAdapter  {
 
 			public URL convertLocalLink(String link) throws MalformedURLException {
 				//TODO: retrieve name of application and don't use the fixed FreeMind.app here.
-				return Tools.fileToUrl(System.getProperty("user.dir")
-						+ "/" +
-								FREE_MIND_JAVA + "/" + link);
+				return Tools.fileToUrl(new File(System.getProperty("user.dir") + "/" +
+								FREE_MIND_JAVA + "/" + link));
 			}}; 
 		if(fmMacApplication==null){
 			// if a handleOpen comes here, directly, we know that FM is currently starting.
