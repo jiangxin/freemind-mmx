@@ -96,8 +96,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 			+ ".host.description";
 
 	protected static final String PORT = SOCKET_BASICS_CLASS + ".port";
-	protected static final String PORT_DESCRIPTION = SOCKET_BASICS_CLASS
-			+ ".port.description";
+	protected static final String PORT_DESCRIPTION = PORT + ".description";
 
 	protected static final String TITLE = SOCKET_BASICS_CLASS + ".title";
 	protected static final String UNKNWON_HOST_EXCEPTION_MESSAGE = SOCKET_BASICS_CLASS
@@ -302,7 +301,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	}
 
 	/**
-	 * Deep search inside the {@link XmlAction} to find a hook (i.e. myself). 
+	 * Deep search inside the {@link XmlAction} to find a hook (i.e. myself).
 	 * They should not be send over the wire.
 	 * 
 	 * @param pAction
