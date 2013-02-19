@@ -80,6 +80,8 @@
 		<loadproperties srcfile="${freemind.buildnumber.file}"></loadproperties>
 		<property name="version" value="${ver}_${build.number}"/>
 		<echo>FreeMind Version = ${ver}, build ${build.number}.</echo>
+    		<echo>Checking for duplicate Resource strings</echo>
+    		<exec os="Linux" executable="${src}/check_for_duplicate_resources.sh"></exec>
     </target>
 
 	
