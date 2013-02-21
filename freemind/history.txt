@@ -2,6 +2,7 @@
 Changes made in FreeMind 1.0.0 RC 2
 ===============================
 * Update of JMapViewer to release 2013-02-10
+* Batik 1.7 update
 
 ===============================
 Changes made in FreeMind 1.0.0 RC 2
