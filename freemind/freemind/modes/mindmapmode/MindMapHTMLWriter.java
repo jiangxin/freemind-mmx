@@ -459,7 +459,7 @@ class MindMapHTMLWriter {
 			if (link.endsWith(".mm")) {
 				link += ".html";
 			}
-			fileout.write("<a href=\"" + link
+			fileout.write("<a href=\"" + HtmlTools.unicodeToHTMLUnicodeEntity(link, false)
 					+ "\" target=\"_blank\"><span class=l>~</span>&nbsp;");
 		}
 
