@@ -210,6 +210,9 @@ public interface MindMapActions {
 	public void paste(Transferable t, MindMapNode parent);
 
 	/**
+	 * @param t the content to be pasted
+	 * @param target destination node
+	 * @param asSibling true: the past will be a direct sibling of target, otherwise it will become a child
 	 * @param isLeft
 	 *            determines, whether or not the node is placed on the left or
 	 *            right.

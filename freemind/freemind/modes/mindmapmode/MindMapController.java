@@ -1603,12 +1603,9 @@ public class MindMapController extends ControllerAdapter implements
 				parent.isNewChildLeft());
 	}
 
-	/**
-	 * @param isLeft
-	 *            determines, whether or not the node is placed on the left or
-	 *            right.
-	 * @return true, if successfully.
-	 **/
+	/* (non-Javadoc)
+	 * @see freemind.modes.mindmapmode.actions.MindMapActions#paste(java.awt.datatransfer.Transferable, freemind.modes.MindMapNode, boolean, boolean)
+	 */
 	public boolean paste(Transferable t, MindMapNode target, boolean asSibling,
 			boolean isLeft) {
 		if (!asSibling
