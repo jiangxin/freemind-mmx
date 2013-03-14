@@ -6,6 +6,7 @@ Changes made in FreeMind 1.0.0 RC 2
 * Fixed link export to HTML
 * Map locations are not exported to plain HTML, too.
 * Map locations are not exported to java script HTML, too.
+* Map locations are not exported to image HTML, too.
 
 ===============================
 Changes made in FreeMind 1.0.0 RC 2

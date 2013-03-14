@@ -25,7 +25,7 @@
 		<plugin_property name="file_description" value="%accessories/plugins/ExportWithXSLT_Applet.properties_webpage"/>
 		<plugin_property name="xslt_file" value="accessories/freemind2html.xsl"/>
 		<plugin_property name="create_dir" value="true"/>
-		<plugin_property name="files_to_copy" value="freemind2html.css,hide.png,leaf.png,show.png,ilink.png"/>
+		<plugin_property name="files_to_copy" value="freemind2html.css,hide.png,leaf.png,show.png,ilink.png,map_location.png"/>
 		<plugin_property name="file_prefix" value="accessories/"/>
 		<plugin_property name="copy_icons" value="true"/>
 		<plugin_property name="load_file" value="true"/>

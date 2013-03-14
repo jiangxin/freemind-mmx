@@ -254,6 +254,34 @@
 			<xsl:call-template name="output-nodecontent" />
 		</xsl:otherwise>
 		</xsl:choose>
+		<!-- Taken from 'toxhtml.xsl'!! -->
+		<xsl:if test='hook/@NAME="plugins/map/MapNodePositionHolder.properties"'>
+			<xsl:element name="a">
+				<xsl:attribute name="href"><!--
+				-->http://www.openstreetmap.org/?lat=<!--
+				--><xsl:value-of select="hook/Parameters/@XML_STORAGE_MAP_LAT"></xsl:value-of><!-- 
+				-->&amp;lon=<!--
+				--><xsl:value-of select="hook/Parameters/@XML_STORAGE_MAP_LON"></xsl:value-of><!--
+				-->&amp;mlat=<!--
+				--><xsl:value-of select="hook/Parameters/@XML_STORAGE_POS_LAT"></xsl:value-of><!--
+				-->&amp;mlon=<!--
+				--><xsl:value-of select="hook/Parameters/@XML_STORAGE_POS_LON"></xsl:value-of><!--
+				-->&amp;zoom=<!--
+				--><xsl:value-of select="hook/Parameters/@XML_STORAGE_ZOOM"></xsl:value-of><!--
+				-->&amp;layers=<!--
+				--><xsl:choose><!--  
+				--><xsl:when test="hook/Parameters/@XML_STORAGE_TILE_SOURCE='org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource$Mapnik'">M</xsl:when><!-- 
+				--><xsl:when test="hook/Parameters/@XML_STORAGE_TILE_SOURCE='plugins.map.FreeMindMapController$TransportMap'">T</xsl:when><!-- 
+				--><xsl:when test="hook/Parameters/@XML_STORAGE_TILE_SOURCE='org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource$CycleMap'">C</xsl:when><!-- 
+				--><xsl:when test="hook/Parameters/@XML_STORAGE_TILE_SOURCE='plugins.map.FreeMindMapController$MapQuestOpenMap'">Q</xsl:when><!-- 
+				--><xsl:otherwise>M</xsl:otherwise></xsl:choose></xsl:attribute>
+				<xsl:element name="img">
+					<xsl:attribute name="src"><xsl:value-of select="$destination_dir"/>map_location.png</xsl:attribute>
+					<xsl:attribute name="alt">MAP</xsl:attribute>
+					<xsl:attribute name="style">border-width:0</xsl:attribute>
+				</xsl:element>
+			</xsl:element>
+		</xsl:if>
 	</xsl:element>
 </xsl:template> <!-- xsl:template name="output-node" -->
 
