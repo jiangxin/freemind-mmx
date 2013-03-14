@@ -2416,7 +2416,7 @@ public class FreeMindMapController extends JMapController implements
 		return getLink(tileSource, position, mapCenter, zoom);
 	}
 
-	protected static String getLink(String tileSource, Coordinate position,
+	public static String getLink(String tileSource, Coordinate position,
 			Coordinate mapCenter, int zoom) {
 		String layer = "M";
 		TileSourceStore tileSourceByName = FreeMindMapController

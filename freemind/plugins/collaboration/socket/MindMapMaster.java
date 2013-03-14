@@ -24,6 +24,7 @@
 package plugins.collaboration.socket;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
@@ -416,6 +417,12 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 		return userInfo;
 	}
 	public void processUnfinishedLinks() {
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.extensions.PermanentNodeHook#saveHtml(java.io.Writer)
+	 */
+	public void saveHtml(Writer pFileout) {
 	}
 
 }

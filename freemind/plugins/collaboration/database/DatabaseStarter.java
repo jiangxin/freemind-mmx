@@ -24,6 +24,7 @@
 package plugins.collaboration.database;
 
 import java.io.File;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -208,6 +209,12 @@ public class DatabaseStarter extends DatabaseBasics implements
 		return null;
 	}
 	public void processUnfinishedLinks() {
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.extensions.PermanentNodeHook#saveHtml(java.io.Writer)
+	 */
+	public void saveHtml(Writer pFileout) {
 	}
 
 }

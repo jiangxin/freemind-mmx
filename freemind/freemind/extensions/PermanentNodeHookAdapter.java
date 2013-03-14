@@ -25,6 +25,8 @@
  */
 package freemind.extensions;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -237,6 +239,12 @@ public class PermanentNodeHookAdapter extends NodeHookAdapter implements
 	}
 
 	public void processUnfinishedLinks() {
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.extensions.PermanentNodeHook#saveHtml(java.io.Writer)
+	 */
+	public void saveHtml(Writer pFileout) throws IOException {
 	}
 
 	

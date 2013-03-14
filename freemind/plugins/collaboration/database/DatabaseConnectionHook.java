@@ -23,6 +23,7 @@
 
 package plugins.collaboration.database;
 
+import java.io.Writer;
 import java.lang.reflect.InvocationTargetException;
 
 import freemind.extensions.DontSaveMarker;
@@ -137,6 +138,12 @@ public class DatabaseConnectionHook extends DatabaseBasics implements
 		return null;
 	}
 	public void processUnfinishedLinks() {
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.extensions.PermanentNodeHook#saveHtml(java.io.Writer)
+	 */
+	public void saveHtml(Writer pFileout) {
 	}
 
 }

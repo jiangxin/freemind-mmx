@@ -25,6 +25,9 @@
  */
 package freemind.extensions;
 
+import java.io.IOException;
+import java.io.Writer;
+
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
 import freemind.view.mindmapview.NodeView;
@@ -110,4 +113,11 @@ public interface PermanentNodeHook extends NodeHook {
 	 * Can be used to adjust some things after a paste action. (Currently it is used for clones).
 	 */
 	void processUnfinishedLinks();
+
+	/**
+	 * Can be used to contribute to the standard html export.
+	 * @param pFileout
+	 * @throws IOException 
+	 */
+	void saveHtml(Writer pFileout) throws IOException;
 }
