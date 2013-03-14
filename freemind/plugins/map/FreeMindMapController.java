@@ -274,7 +274,7 @@ public class FreeMindMapController extends JMapController implements
 		}
 	}
 
-	private static TileSourceStore[] mTileSources = new TileSourceStore[] {
+	private static TileSourceStore[] sTileSources = new TileSourceStore[] {
 			new TileSourceStore(new OsmTileSource.Mapnik(),
 					MapNodePositionHolderBase.SHORT_MAPNIK),
 			new TileSourceStore(new OsmTileSource.CycleMap(),
@@ -1230,8 +1230,8 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addAction(setDisplayToFitMapMarkers,
 				"main/view/setDisplayToFitMapMarkers");
 		menuHolder.addSeparator("main/view/");
-		for (int i = 0; i < mTileSources.length; i++) {
-			TileSource source = mTileSources[i].mTileSource;
+		for (int i = 0; i < sTileSources.length; i++) {
+			TileSource source = sTileSources[i].mTileSource;
 			addAccelerator(menuHolder.addAction(new ChangeTileSource(source),
 					"main/view/" + i),
 					"keystroke_plugins/map/MapDialog_tileSource_" + i);
@@ -1509,8 +1509,8 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public static TileSourceStore getTileSourceByName(String sourceName) {
-		for (int i = 0; i < mTileSources.length; i++) {
-			TileSourceStore source = mTileSources[i];
+		for (int i = 0; i < sTileSources.length; i++) {
+			TileSourceStore source = sTileSources[i];
 			if (Tools.safeEquals(getTileSourceName(source.mTileSource),
 					sourceName)) {
 				logger.fine("Found  tile source " + source);
@@ -2360,7 +2360,7 @@ public class FreeMindMapController extends JMapController implements
 	}
 
 	public static TileSourceStore[] getmTileSources() {
-		return mTileSources;
+		return sTileSources;
 	}
 
 	/*

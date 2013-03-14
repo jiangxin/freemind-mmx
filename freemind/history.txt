@@ -5,6 +5,7 @@ Changes made in FreeMind 1.0.0 RC 2
 * Batik 1.7 update
 * Fixed link export to HTML
 * Map locations are not exported to plain HTML, too.
+* Map locations are not exported to java script HTML, too.
 
 ===============================
 Changes made in FreeMind 1.0.0 RC 2

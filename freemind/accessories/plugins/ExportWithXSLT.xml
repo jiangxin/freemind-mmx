@@ -12,7 +12,7 @@
 		<plugin_property name="file_description" value="%accessories/plugins/ExportWithXSLT_Applet.properties_webpage"/>
 		<plugin_property name="xslt_file" value="accessories/toxhtml.xsl"/>
 		<plugin_property name="create_dir" value="true"/>
-		<plugin_property name="files_to_copy" value="marktree.js,minus.png,plus.png,ilink.png,treestyles.css"/>
+		<plugin_property name="files_to_copy" value="marktree.js,minus.png,plus.png,ilink.png,treestyles.css,map_location.png"/>
 		<plugin_property name="file_prefix" value="accessories/"/>
 		<plugin_property name="copy_icons" value="true"/>
 		<plugin_property name="load_file" value="true"/>
