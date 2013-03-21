@@ -21,7 +21,8 @@
  */
  
 import flash.display.BitmapData;
-import flash.geom.Matrix;import flash.filters.DropShadowFilter;
+import flash.geom.Matrix;
+import flash.filters.DropShadowFilter;
 import visorFreeMind.*;
 
 class visorFreeMind.PictureTaker{
