@@ -924,7 +924,7 @@ return nice;
 	}
 	
 	static public function get_Map(mc_padre,depth){
-		return get_full(mc_padre,depth," ",0x7086d0);
+		return get_full_with_size(mc_padre,depth,"M",0x7086d0, 8);
 	}
 	static public function get_full_1(mc_padre,depth){
 		return get_full(mc_padre,depth,"1",0x770077);
@@ -948,6 +948,9 @@ return nice;
 		return get_full(mc_padre,depth,"7",0x85982B);
 	}
 		static public  function get_full(mc_padre,depth,numero,color){ //Mail
+			get_full_with_size(mc_padre,depth,numero,color,14);
+		}
+		static public  function get_full_with_size(mc_padre,depth,numero,color,textSize){ 
 		var Priority=mc_padre.createEmptyMovieClip("Mail",6+depth);
 		Priority.lineStyle();
 		//Priority.beginFill(0xFFFFFF,100);
@@ -960,7 +963,7 @@ return nice;
 		Priority.texto.selectable=false;
 		var my_fmt:TextFormat = new TextFormat();
 		my_fmt.color=0xFFFFFF;
-		my_fmt.size=14;
+		my_fmt.size=textSize;
 		my_fmt.bold=true;
 		Priority.texto.setTextFormat(my_fmt);
 		
