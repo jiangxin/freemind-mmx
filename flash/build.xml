@@ -12,11 +12,16 @@
       </echo>
     </target>
 
-	<target name="dist">
+	<target name="compile">
   		<exec dir="source" executable="mtasc" resolveexecutable="true">
 			<arg line="visorFreeMind/Main.as -swf visorFreemind.swf -main -trace off -header  800:600:24 -version 8 -cp ../std -cp ../std8" />
 		</exec>
 	</target>
 
-
+	<target name="dist" depends="compile">
+		<copy todir="../freemind/accessories/plugins/flash/" overwrite="true">
+			<fileset dir="source" includes="visorFreemind.swf"></fileset>
+		</copy>
+	</target>
+	
 </project>

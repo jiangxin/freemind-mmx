@@ -56,7 +56,7 @@ class visorFreeMind.Main {
 				copy=new ContextMenuItem("gen shots for linked maps",visorFreeMind.Main.genShotsForLinkedMaps);
 				mycm.customItems.push(copy);
 			}
-			copy=new ContextMenuItem("FREEMIND BROWSER v1.0b",visorFreeMind.Main.nada);
+			copy=new ContextMenuItem("FREEMIND BROWSER v1.14",visorFreeMind.Main.nada);
 			mycm.customItems.push(copy);
 			mycm.hideBuiltInItems();
 			_root.menu = mycm;

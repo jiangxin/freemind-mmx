@@ -923,6 +923,9 @@ return nice;
 		return cancel;
 	}
 	
+	static public function get_Map(mc_padre,depth){
+		return get_full(mc_padre,depth," ",0x7086d0);
+	}
 	static public function get_full_1(mc_padre,depth){
 		return get_full(mc_padre,depth,"1",0x770077);
 	}

@@ -72,6 +72,7 @@ class visorFreeMind.Node {
 	
 	private var link:MovieClip;
 	private var noteIcon:MovieClip;
+	private var mapIcon:MovieClip;
 	private var atrsIcon:MovieClip;
 	private var withImage:Boolean=false;
 	private var listElements:Array=null;
@@ -81,6 +82,7 @@ class visorFreeMind.Node {
 	private var sombra=null;
 	private var eventControler;
 	private var note=null;
+	private var map=null;
 	private var atributes=null;
 	private var richText=false;
 
@@ -122,6 +124,7 @@ class visorFreeMind.Node {
 		//richtext not suported, quick fix for images.
 		text=getText(node_xml);
 		note=findNote(node_xml);
+		map=findMap(node_xml);
 		atributes=findAtributes(node_xml);
 		coment=coment;
 		listElements=[];
@@ -217,6 +220,16 @@ class visorFreeMind.Node {
 		return null;
 	}
 
+	function findMap(node_xml:XMLNode){
+		var lista=getNodesType("hook",node_xml);
+		for(var i=0;i<lista.length;i++){
+			var hook=lista[i];
+			if(hook.attributes.NAME.indexOf("plugins/map/MapNodePositionHolder.properties")!=-1)
+				return hook.firstChild;
+		}
+		return null;
+	}
+
 	function findAtributes(node_xml:XMLNode){
 		var lista=getNodesType("attribute",node_xml);
 		if(lista.length>0){
@@ -285,28 +298,54 @@ class visorFreeMind.Node {
 					return;
 				}
 				if(url.indexOf("http://") > -1 || url.indexOf(".mm")==-1){
-					//trace("versionss: "+Browser.flashVersion);
-					if(Browser.flashVersion>=9){
-						//sendToURL(new URLRequest(url),Node.openUrl);
-						//getURL(url,Node.openUrl);
-						try {
-//proposal from https://sourceforge.net/projects/freemind/forums/forum/22101/topic/1423817:
+					try {
+						//proposal from https://sourceforge.net/projects/freemind/forums/forum/22101/topic/1423817:
 						var link = this.inst.encodeUTF8(url);
 						trace("Url: " + link);
-                			getURL(link,Node.openUrl); 
-            			}
-            			catch (e:Error) {
-                				this.inst.browser.showTooltip("error:  "+e,14,20);
-            			}
-					}else{
-                				getURL(url,Node.openUrl);
-//proposal from https://sourceforge.net/projects/freemind/forums/forum/22101/topic/1423817:
-//						getURL(this.inst.encodeUTF8(url),Node.openUrl); 
-					}
+		        			getURL(link,Node.openUrl); 
+		    			}
+		    			catch (e:Error) {
+		        				this.inst.browser.showTooltip("error:  "+e,14,20);
+		    			}
 				}else{
 					//have in mind directory change, it works diferent in Freemind
 					this.inst.browser.historyManager.loadXML(url);
 				}
+				return;
+			}
+
+			if(this.inst.mapIcon && this.inst.mapIcon.hitTest(_root._xmouse,_root._ymouse,false)){
+				var url:String="http://www.openstreetmap.org/?" 
+				+ "lat="
+				+ this.inst.map.attributes.XML_STORAGE_MAP_LAT 
+				+ "&lon=" 
+				+ this.inst.map.attributes.XML_STORAGE_MAP_LON 
+				+ "&mlat="
+				+ this.inst.map.attributes.XML_STORAGE_POS_LAT 
+				+ "&mlon=" 
+				+ this.inst.map.attributes.XML_STORAGE_POS_LON 
+				+ "&zoom="
+				+ this.inst.map.attributes.XML_STORAGE_ZOOM
+				+ "&layers=";
+				var layer = this.inst.map.attributes.XML_STORAGE_TILE_SOURCE;
+				if(layer == "gui.jmapviewer.tilesources.OsmTileSource$Mapnik") {
+					url = url + "M";
+				} else if(layer == "plugins.map.FreeMindMapController$TransportMap") {
+					url = url + "T";
+				} else if(layer == "org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource$CycleMap") {
+					url = url + "C";
+				} else if(layer == "plugins.map.FreeMindMapController$MapQuestOpenMap") {
+					url = url + "Q";
+				} else {
+					url = url + "M";
+				}
+//				this.inst.map.attributes.XML_STORAGE_MAP_TOOLTIP_LOCATION;
+				this.inst.browser.hideTooltip();
+				try {
+                			getURL(url, "_blank"); 
+            			} catch (e:Error) {
+        				this.inst.browser.showTooltip("error:  "+e,14,20);
+            			}
 				return;
 			}
 
@@ -345,10 +384,18 @@ class visorFreeMind.Node {
 			this.inst.browser.floor.showNode(this.inst.ref_mc);
 			
 			if((this.inst.noteIcon!=null) || (this.inst.atrsIcon!=null) ||
+				(this.inst.mapIcon!=null) || 
 				(this.inst.node_xml.attributes.LINK != undefined) ) {
 				this.onMouseMove=function(){
 					if(this.inst.noteIcon.hitTest(_root._xmouse,_root._ymouse,false)){
 						this.inst.browser.showTooltip(this.inst.note,14,20);
+						this.useHandCursor = true;
+					}
+					if(this.inst.mapIcon.hitTest(_root._xmouse,_root._ymouse,false)){
+						var q:String = this.inst.map.attributes.XML_STORAGE_MAP_LAT 
+						+ " " 
+						+ this.inst.map.attributes.XML_STORAGE_MAP_LON; 
+						this.inst.browser.showTooltip(q,14,20);
 						this.useHandCursor = true;
 					}
 					else if(this.inst.link.hitTest(_root._xmouse,_root._ymouse,false)){
@@ -376,6 +423,7 @@ class visorFreeMind.Node {
 			//trace("onRollOut");
 			Node.currentOver=null;
 			if(this.inst.noteIcon!=null  || (this.inst.atrsIcon!=null) ||
+				(this.inst.mapIcon!=null) || 
 				(this.inst.node_xml.attributes.LINK != undefined)) {
 				this.onMouseMove=null;
 			}
@@ -402,6 +450,8 @@ class visorFreeMind.Node {
 					Node.lastOverTxt=node.note.replace("\n","\r\n");
 			}else if(node.link!=null and 	node.link.hitTest(_root._xmouse,_root._ymouse,false)){
 					Node.lastOverTxt=node.node_xml.attributes.LINK;
+			}else if(node.mapIcon!=null and 	node.mapIcon.hitTest(_root._xmouse,_root._ymouse,false)){
+					Node.lastOverTxt="TODO";
 			}else	if(node.atrsIcon!=null and 	node.atrsIcon.hitTest(_root._xmouse,_root._ymouse,false)){
 				    var result="";
 			   		for(var i=0;i<node.atributes.length;i++){
@@ -745,6 +795,11 @@ class visorFreeMind.Node {
 			noteIcon._y=initY;
 			initX+=noteIcon._width+2;
 		}
+		if(mapIcon){
+			mapIcon._x=initX;
+			mapIcon._y=initY;
+			initX+=mapIcon._width+2;
+		}
 		if(link){
 			link._x=initX;
 			link._y=initY;
@@ -822,6 +877,10 @@ class visorFreeMind.Node {
 		}		
 		if(note!=null){
 			noteIcon=Icons.get_Note(ref_mc.node_txt,numIcons++);
+		}
+		if(map!=null){
+			// TODO: Better Icon
+			mapIcon=Icons.get_Map(ref_mc.node_txt,numIcons++);
 		}
 		if(atributes!=null){
 			atrsIcon=Icons.get_Atrs(ref_mc.node_txt,numIcons++);
