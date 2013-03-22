@@ -80,7 +80,7 @@
 	</div>
 	
 	<script type="text/javascript">
-		var fo = new FlashObject("./<xsl:value-of select="$destination_dir"/>visorFreemind.swf", "visorFreeMind", "100%", "100%", 6, "#9999ff");
+		var fo = new FlashObject("./<xsl:value-of select="$destination_dir"/>visorFreemind.swf", "visorFreeMind", "100%", "100%", 8, "#9999ff");
 		fo.addParam("quality", "high");
 		fo.addParam("bgcolor", "#ffffff");
 		fo.addVariable("openUrl", "_blank");
@@ -91,6 +91,13 @@
    		</body>
     </html>
   </xsl:template>
+
+<!-- 
+	fc, 22.3.2013: tracing doesn't work. If you want to try, replace in the flash build.xml
+	-trace off by -trace Flashout.traceReplacer 
+		fo.addVariable("FLASHOUT_ENABLE", "TRUE");
+		fo.addVariable("FLASHOUT_PORT", "1024");
+ -->
 
 <!-- from toxhtml.xsl -->
 

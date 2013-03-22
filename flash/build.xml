@@ -14,7 +14,7 @@
 
 	<target name="dist">
   		<exec dir="source" executable="mtasc" resolveexecutable="true">
-			<arg line="visorFreeMind/Main.as -swf visorFreemind.swf -main -trace Flashout.traceReplacer -header  800:600:24 -version 8 -cp ../std -cp ../std8" />
+			<arg line="visorFreeMind/Main.as -swf visorFreemind.swf -main -trace off -header  800:600:24 -version 8 -cp ../std -cp ../std8" />
 		</exec>
 	</target>
 

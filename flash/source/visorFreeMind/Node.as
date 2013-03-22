@@ -290,9 +290,10 @@ class visorFreeMind.Node {
 						//sendToURL(new URLRequest(url),Node.openUrl);
 						//getURL(url,Node.openUrl);
 						try {
-                			getURL(url,Node.openUrl);
 //proposal from https://sourceforge.net/projects/freemind/forums/forum/22101/topic/1423817:
-//                			getURL(this.inst.encodeUTF8(url),Node.openUrl); 
+						var link = this.inst.encodeUTF8(url);
+						trace("Url: " + link);
+                			getURL(link,Node.openUrl); 
             			}
             			catch (e:Error) {
                 				this.inst.browser.showTooltip("error:  "+e,14,20);

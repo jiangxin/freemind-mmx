@@ -7,6 +7,7 @@ Changes made in FreeMind 1.0.0 RC 2
 * Map locations are not exported to plain HTML, too.
 * Map locations are not exported to java script HTML, too.
 * Map locations are not exported to image HTML, too.
+* Fixed flash player: links with special characters are opened successfully: http://sourceforge.net/tracker/?func=detail&aid=3608139&group_id=7118&atid=107118
 
 ===============================
 Changes made in FreeMind 1.0.0 RC 2
