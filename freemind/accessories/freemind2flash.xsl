@@ -83,6 +83,7 @@
 		var fo = new FlashObject("./<xsl:value-of select="$destination_dir"/>visorFreemind.swf", "visorFreeMind", "100%", "100%", 8, "#9999ff");
 		fo.addParam("quality", "high");
 		fo.addParam("bgcolor", "#ffffff");
+		fo.addParam("allowScriptAccess", "true");
 		fo.addVariable("openUrl", "_blank");
 		fo.addVariable("initLoadFile", "./<xsl:value-of select="$destination_dir"/>map.mm");
 		fo.addVariable("startCollapsedToLevel","5");
