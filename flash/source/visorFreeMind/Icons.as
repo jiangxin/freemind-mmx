@@ -926,26 +926,35 @@ return nice;
 	static public function get_Map(mc_padre,depth){
 		return get_full_with_size(mc_padre,depth,"M",0x7086d0, 8);
 	}
+	static public function get_full_0(mc_padre,depth){
+		return get_full(mc_padre,depth,"0",0x464246);
+	}
 	static public function get_full_1(mc_padre,depth){
-		return get_full(mc_padre,depth,"1",0x770077);
+		return get_full(mc_padre,depth,"1",0x925f83);
 	}
 	static public function get_full_2(mc_padre,depth){
-		return get_full(mc_padre,depth,"2",0x928633);
+		return get_full(mc_padre,depth,"2",0x8A844F);
 	}
 	static public function get_full_3(mc_padre,depth){
-		return get_full(mc_padre,depth,"3",0x339192);
+		return get_full(mc_padre,depth,"3",0x66a3a2);
 	}
 	static public function get_full_4(mc_padre,depth){
-		return get_full(mc_padre,depth,"4",0x007700);
+		return get_full(mc_padre,depth,"4",0x439243);
 	}
 	static public function get_full_5(mc_padre,depth){
-		return get_full(mc_padre,depth,"5",0x454C7F);
+		return get_full(mc_padre,depth,"5",0x6d6ea4);
 	}
 	static public function get_full_6(mc_padre,depth){
-		return get_full(mc_padre,depth,"6",0x992B2D);
+		return get_full(mc_padre,depth,"6",0x804040);
 	}
 	static public function get_full_7(mc_padre,depth){
-		return get_full(mc_padre,depth,"7",0x85982B);
+		return get_full(mc_padre,depth,"7",0x9ba852);
+	}
+	static public function get_full_8(mc_padre,depth){
+		return get_full(mc_padre,depth,"8",0xF19056);
+	}
+	static public function get_full_9(mc_padre,depth){
+		return get_full(mc_padre,depth,"9",0xC963C4);
 	}
 		static public  function get_full(mc_padre,depth,numero,color){ //Mail
 			get_full_with_size(mc_padre,depth,numero,color,14);
