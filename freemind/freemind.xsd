@@ -98,6 +98,20 @@
   </xs:complexType>
  </xs:element>
 
+ <xs:element name='attribute'>
+  <xs:complexType>
+   <xs:attribute name='NAME' type='xs:string' use='required'/>
+   <xs:attribute name='VALUE' type='xs:string' use='required'/>
+  </xs:complexType>
+ </xs:element>
+
+ <xs:element name='attribute_layout'>
+  <xs:complexType>
+   <xs:attribute name='NAME_WIDTH' type='xs:integer' use='required'/>
+   <xs:attribute name='VALUE_WIDTH' type='xs:integer' use='optional'/>
+  </xs:complexType>
+ </xs:element>
+
  <xs:element name='html'>
   <xs:complexType>
    <xs:sequence>
@@ -138,6 +152,8 @@
   <xs:complexType>
    <xs:choice minOccurs='0' maxOccurs='unbounded'>
     <xs:element ref='arrowlink'/>
+    <xs:element ref='attribute'/>
+    <xs:element ref='attribute_layout'/>
     <xs:element ref='linktarget'/>
     <xs:element ref='cloud'/>
     <xs:element ref='edge'/>
