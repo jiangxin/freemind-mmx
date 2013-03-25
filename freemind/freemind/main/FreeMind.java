@@ -87,6 +87,12 @@ import freemind.view.mindmapview.MapView;
 
 public class FreeMind extends JFrame implements FreeMindMain {
 
+	public static final String J_SPLIT_PANE_SPLIT_TYPE = "JSplitPane.SPLIT_TYPE";
+
+	public static final String VERTICAL_SPLIT_BELOW = "vertical_split_below";
+	
+	public static final String HORIZONTAL_SPLIT_RIGHT = "horizontal_split_right";
+	
 	public static final String LOG_FILE_NAME = "log";
 
 	private static final String PORT_FILE = "portFile";
@@ -175,6 +181,20 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public static final String RESOURCES_DON_T_OPEN_PORT = "resources_don_t_open_port";
 
+	public static final String KEYSTROKE_MOVE_MAP_LEFT = "keystroke_MoveMapLeft";
+
+	public static final String KEYSTROKE_MOVE_MAP_RIGHT = "keystroke_MoveMapRight";
+
+	public static final String KEYSTROKE_PREVIOUS_MAP = "keystroke_previousMap";
+
+	public static final String KEYSTROKE_NEXT_MAP = "keystroke_nextMap";
+
+	public static final String RESOURCES_SEARCH_IN_NOTES_TOO = "resources_search_in_notes_too";
+
+	public static final String RESOURCES_DON_T_SHOW_NOTE_TOOLTIPS = "resources_don_t_show_note_tooltips";
+
+	public static final String RESOURCES_SEARCH_FOR_NODE_TEXT_WITHOUT_QUESTION = "resources_search_for_node_text_without_question";
+
 	// public static final String defaultPropsURL = "freemind.properties";
 	// public static Properties defaultProps;
 	public static Properties props;
@@ -217,20 +237,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	private EditServer mEditServer = null;
 
 	private Vector mLoggerList = new Vector();
-
-	public static final String KEYSTROKE_MOVE_MAP_LEFT = "keystroke_MoveMapLeft";
-
-	public static final String KEYSTROKE_MOVE_MAP_RIGHT = "keystroke_MoveMapRight";
-
-	public static final String KEYSTROKE_PREVIOUS_MAP = "keystroke_previousMap";
-
-	public static final String KEYSTROKE_NEXT_MAP = "keystroke_nextMap";
-
-	public static final String RESOURCES_SEARCH_IN_NOTES_TOO = "resources_search_in_notes_too";
-
-	public static final String RESOURCES_DON_T_SHOW_NOTE_TOOLTIPS = "resources_don_t_show_note_tooltips";
-
-	public static final String RESOURCES_SEARCH_FOR_NODE_TEXT_WITHOUT_QUESTION = "resources_search_for_node_text_without_question";
 
 	private static LogFileLogHandler sLogFileHandler;
 
@@ -1281,8 +1287,16 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			return mSplitPane;
 		}
 		removeContentComponent();
-		mSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, mScrollPane,
-				pMindMapComponent);
+		int splitType = JSplitPane.VERTICAL_SPLIT;
+		String splitProperty = getProperty(J_SPLIT_PANE_SPLIT_TYPE);
+		if(Tools.safeEquals(splitProperty, HORIZONTAL_SPLIT_RIGHT)) {
+			splitType = JSplitPane.HORIZONTAL_SPLIT;
+		} else if(Tools.safeEquals(splitProperty, VERTICAL_SPLIT_BELOW)) {
+			// default
+		} else {
+			logger.warning("Split type not known: " + splitProperty);
+		}
+		mSplitPane = new JSplitPane(splitType, mScrollPane, pMindMapComponent);
 		mSplitPane.setContinuousLayout(true);
 		mSplitPane.setOneTouchExpandable(false);
 		/*
