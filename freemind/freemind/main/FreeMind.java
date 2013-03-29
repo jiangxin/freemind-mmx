@@ -20,9 +20,14 @@
 
 package freemind.main;
 
+import java.awt.AWTEvent;
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.FocusTraversalPolicy;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -336,6 +341,9 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 		feedback.increase("FreeMind.progress.createInitialMode", null);
 		controller.createNewMode(getProperty("initial_mode"));
+//		EventQueue eventQueue = Toolkit.getDefaultToolkit()
+//				.getSystemEventQueue();
+//		eventQueue.push(new MyEventQueue());
 	}// Constructor
 
 	/**
@@ -817,6 +825,18 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				// to avoid infinite recursion.
 				// freemind.main.Resources.getInstance().logExecption(e);
 			}
+	        if (false) {
+				// Obtain a reference to the logger
+				Logger focusLog = Logger.getLogger("java.awt.focus.Component");
+				// The logger should log all messages
+				focusLog.setLevel(Level.ALL);
+				// Create a new handler
+				ConsoleHandler handler = new ConsoleHandler();
+				// The handler must handle all messages
+				handler.setLevel(Level.ALL);
+				// Add the handler to the logger
+				focusLog.addHandler(handler);
+			}
 		}
 		if (sLogFileHandler != null) {
 			loggerForClass.addHandler(sLogFileHandler);
@@ -892,8 +912,14 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			splash.setVisible(false);
 		}
 		frame.fireStartupDone();
-	}
 
+	}
+	private class MyEventQueue extends EventQueue {
+        public void postEvent(AWTEvent theEvent) {
+            logger.info("Event Posted: " + theEvent);
+            super.postEvent(theEvent);
+        }
+    }
 	private void initServer() {
 		String portFile = getPortFile();
 		if (portFile == null) {

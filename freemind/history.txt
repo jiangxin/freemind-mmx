@@ -10,6 +10,8 @@ Changes made in FreeMind 1.0.0 RC 2
 * Fixed flash player: links with special characters are opened successfully: http://sourceforge.net/tracker/?func=detail&aid=3608139&group_id=7118&atid=107118
 * Map locations are not exported to flash, too.
 * New: Note window position on the right is possible. See Preferences.
+* Fix: Reminders are alerted too early: https://sourceforge.net/tracker/?func=detail&aid=3609262&group_id=7118&atid=107118
+
 
 ===============================
 Changes made in FreeMind 1.0.0 RC 2

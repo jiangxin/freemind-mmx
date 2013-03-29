@@ -105,24 +105,24 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 			return;
 		}
 		if (timer == null) {
-			scheduleTimer(node);
+			scheduleTimer();
+			Date date = new Date(remindUserAt);
+			Object[] messageArguments = { date };
+			MessageFormat formatter = new MessageFormat(
+					getResourceString("plugins/TimeManagement.xml_reminderNode_tooltip"));
+			String message = formatter.format(messageArguments);
+			setToolTip(node, getName(), message);
+			displayState(CLOCK_VISIBLE, getNode(), false);
 		}
 		logger.info("Invoke for node: " + node.getObjectId(getController()));
 	}
 
 	/**
 	 */
-	private void scheduleTimer(MindMapNode node) {
+	private void scheduleTimer() {
 		timer = new Timer(getRemindUserAtAsSecondsFromNow(),
 				new TimerBlinkTask(false));
 		timer.setDelay(BLINK_INTERVAL_IN_MILLIES);
-		Date date = new Date(remindUserAt);
-		Object[] messageArguments = { date };
-		MessageFormat formatter = new MessageFormat(
-				getResourceString("plugins/TimeManagement.xml_reminderNode_tooltip"));
-		String message = formatter.format(messageArguments);
-		setToolTip(node, getName(), message);
-		displayState(CLOCK_VISIBLE, getNode(), false);
 		timer.start();
 	}
 
@@ -162,6 +162,15 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 		private boolean stateAdded = false;
 
 		public void actionPerformed(ActionEvent pE) {
+			// check for time over:
+			int remindAt = getRemindUserAtAsSecondsFromNow();
+			if(remindAt > BLINK_INTERVAL_IN_MILLIES) {
+				// time not over (maybe due to integer-long conversion too big)
+				timer.stop();
+				scheduleTimer();
+				return;
+				
+			}
 			// time is over, we add the new icon until
 			// the user removes the reminder.
 			//
@@ -203,7 +212,14 @@ public abstract class ReminderHookBase extends PermanentNodeHookAdapter {
 	}
 
 	public int getRemindUserAtAsSecondsFromNow() {
-		return (int) (remindUserAt - System.currentTimeMillis());
+		long timeDiff = remindUserAt - System.currentTimeMillis();
+		if(timeDiff > Integer.MAX_VALUE) {
+			return Integer.MAX_VALUE;
+		}
+		if(timeDiff < Integer.MIN_VALUE) {
+			return Integer.MIN_VALUE;
+		}
+		return (int) timeDiff;
 	}
 
 	public void setRemindUserAt(long remindUserAt) {

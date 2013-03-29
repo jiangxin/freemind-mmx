@@ -22,8 +22,10 @@ package freemind.view.mindmapview;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FocusTraversalPolicy;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
@@ -369,6 +371,44 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 				Collections.EMPTY_SET);
 		// end change.
 
+		if (false) {
+			final FocusTraversalPolicy policy = getFocusTraversalPolicy();
+			setFocusTraversalPolicy(new FocusTraversalPolicy() {
+
+				public Component getLastComponent(Container pAContainer) {
+					// TODO Auto-generated method stub
+					return policy.getLastComponent(pAContainer);
+				}
+
+				public Component getFirstComponent(Container pAContainer) {
+					// TODO Auto-generated method stub
+					Component firstComponent = policy
+							.getFirstComponent(pAContainer);
+					logger.info("First: " + firstComponent);
+					return firstComponent;
+				}
+
+				public Component getDefaultComponent(Container pAContainer) {
+					// TODO Auto-generated method stub
+					Component defaultComponent = policy
+							.getDefaultComponent(pAContainer);
+					logger.info("Default: " + defaultComponent);
+					return defaultComponent;
+				}
+
+				public Component getComponentBefore(Container pAContainer,
+						Component pAComponent) {
+					// TODO Auto-generated method stub
+					return policy.getComponentBefore(pAContainer, pAComponent);
+				}
+
+				public Component getComponentAfter(Container pAContainer,
+						Component pAComponent) {
+					// TODO Auto-generated method stub
+					return policy.getComponentAfter(pAContainer, pAComponent);
+				}
+			});
+		}
 		// like in excel - write a letter means edit (PN)
 		// on the other hand it doesn't allow key navigation (sdfe)
 		disableMoveCursor = Resources.getInstance().getBoolProperty(
