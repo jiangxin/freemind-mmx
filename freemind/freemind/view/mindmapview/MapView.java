@@ -371,44 +371,35 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 				Collections.EMPTY_SET);
 		// end change.
 
-		if (false) {
-			final FocusTraversalPolicy policy = getFocusTraversalPolicy();
-			setFocusTraversalPolicy(new FocusTraversalPolicy() {
+		// fc, 31.3.2013: set policy to achive that after note window close, the
+		// current node is selected.
+		setFocusTraversalPolicy(new FocusTraversalPolicy() {
 
-				public Component getLastComponent(Container pAContainer) {
-					// TODO Auto-generated method stub
-					return policy.getLastComponent(pAContainer);
-				}
+			public Component getLastComponent(Container pAContainer) {
+				return getDefaultComponent(pAContainer);
+			}
 
-				public Component getFirstComponent(Container pAContainer) {
-					// TODO Auto-generated method stub
-					Component firstComponent = policy
-							.getFirstComponent(pAContainer);
-					logger.info("First: " + firstComponent);
-					return firstComponent;
-				}
+			public Component getFirstComponent(Container pAContainer) {
+				return getDefaultComponent(pAContainer);
+			}
 
-				public Component getDefaultComponent(Container pAContainer) {
-					// TODO Auto-generated method stub
-					Component defaultComponent = policy
-							.getDefaultComponent(pAContainer);
-					logger.info("Default: " + defaultComponent);
-					return defaultComponent;
-				}
+			public Component getDefaultComponent(Container pAContainer) {
+				Component defaultComponent = getSelected();
+				logger.info("Focus traversal to: " + defaultComponent);
+				return defaultComponent;
+			}
 
-				public Component getComponentBefore(Container pAContainer,
-						Component pAComponent) {
-					// TODO Auto-generated method stub
-					return policy.getComponentBefore(pAContainer, pAComponent);
-				}
+			public Component getComponentBefore(Container pAContainer,
+					Component pAComponent) {
+				return getDefaultComponent(pAContainer);
+			}
 
-				public Component getComponentAfter(Container pAContainer,
-						Component pAComponent) {
-					// TODO Auto-generated method stub
-					return policy.getComponentAfter(pAContainer, pAComponent);
-				}
-			});
-		}
+			public Component getComponentAfter(Container pAContainer,
+					Component pAComponent) {
+				return getDefaultComponent(pAContainer);
+			}
+		});
+		this.setFocusTraversalPolicyProvider(true);
 		// like in excel - write a letter means edit (PN)
 		// on the other hand it doesn't allow key navigation (sdfe)
 		disableMoveCursor = Resources.getInstance().getBoolProperty(
