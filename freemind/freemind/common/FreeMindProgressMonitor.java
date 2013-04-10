@@ -21,6 +21,7 @@
 package freemind.common;
 
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -103,20 +104,32 @@ public class FreeMindProgressMonitor extends JDialog {
 	 *            objects to be put in the resource string for pName
 	 * @return
 	 */
-	public boolean showProgress(int pCurrent, int pMax, String pName,
+	public boolean showProgress(int pCurrent, final int pMax, String pName,
 			Object[] pParameters) {
-		mProgressBar.setMaximum(pMax);
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				mProgressBar.setMaximum(pMax);
+			}
+		});
 		return showProgress(pCurrent, pName, pParameters);
 	}
 
 	public boolean showProgress(int pCurrent, String pName, Object[] pParameters) {
-		String format = Resources.getInstance().format(pName, pParameters);
-		mLabel.setText(format);
+		final String format = Resources.getInstance().format(pName, pParameters);
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				mLabel.setText(format);
+			}
+		});
 		return setProgress(pCurrent);
 	}
 
-	public boolean setProgress(int pCurrent) {
-		mProgressBar.setValue(pCurrent);
+	public boolean setProgress(final int pCurrent) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				mProgressBar.setValue(pCurrent);
+			}
+		});
 		return mCanceled;
 	}
 

@@ -21,6 +21,7 @@
 package freemind.common;
 
 import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.GridLayout;
 import java.awt.event.KeyAdapter;
 import java.awt.event.MouseAdapter;
@@ -127,7 +128,10 @@ public abstract class FreeMindTask extends Thread {
 			}
 			if (System.currentTimeMillis() - startTime > TIME_TO_DISPLAY_PROGRESS_BAR_IN_MILLIS) {
 				// mProgressMonitor.setModal(true);
-				mProgressMonitor.setVisible(true);
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						mProgressMonitor.setVisible(true);
+					}});
 			}
 			if (mProgressMonitor.isVisible()) {
 				ProgressDescription progressDescription = mProgressDescription;
@@ -146,9 +150,13 @@ public abstract class FreeMindTask extends Thread {
 			}
 		}
 		setFinished(true);
-		mGlass.setVisible(false);
-		mFrame.setGlassPane(mOldGlassPane);
-		mProgressMonitor.dismiss();
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				mGlass.setVisible(false);
+				mFrame.setGlassPane(mOldGlassPane);
+				mProgressMonitor.dismiss();
+			}
+		});
 	}
 
 	/**

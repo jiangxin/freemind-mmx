@@ -25,6 +25,7 @@ package plugins.map;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.EventQueue;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.datatransfer.StringSelection;
@@ -2550,11 +2551,15 @@ public class FreeMindMapController extends JMapController implements
 
 	private class AddSearchResultsToMapTask extends FreeMindTask {
 
-		private int[] mSelectedRows;
+		private Place[] mPlaces;
 
 		public AddSearchResultsToMapTask(int[] pSelectedRows) {
 			super(mMapDialog, pSelectedRows.length, MAP_DIALOG_PROGRESS_MESSAGE);
-			mSelectedRows = pSelectedRows;
+			// deep copy
+			mPlaces = new Place[pSelectedRows.length];
+			for (int i = 0; i < pSelectedRows.length; i++) {
+				mPlaces[i] = mMapHook.getPlace(pSelectedRows[i]);
+			}
 		}
 
 		/*
@@ -2563,13 +2568,17 @@ public class FreeMindMapController extends JMapController implements
 		 * @see freemind.common.FreeMindTask#processAction()
 		 */
 		protected boolean processAction() throws Exception {
-			int selIndex = mSelectedRows[getRounds()];
-			Place place = mMapHook.getPlace(selIndex);
+			int selIndex = getRounds();
+			final Place place = mPlaces[selIndex];
 			mProgressDescription = new ProgressDescription(
 					MAP_DIALOG_ADD_PLACES,
 					new Object[] { place.getDisplayName() });
-			MindMapNode selected = getMindMapController().getSelected();
-			addNode(selected, place);
+			final MindMapNode selected = getMindMapController().getSelected();
+			EventQueue.invokeAndWait(new Runnable() {
+				public void run() {
+					addNode(selected, place);
+				}
+			});
 			return true;
 		}
 
