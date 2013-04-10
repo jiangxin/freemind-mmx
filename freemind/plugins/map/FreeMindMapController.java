@@ -77,6 +77,8 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.AbstractOsmTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
+import freemind.common.FreeMindProgressMonitor;
+import freemind.common.FreeMindTask;
 import freemind.common.XmlBindingTools;
 import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.MenuItemSelectedListener;
@@ -133,6 +135,10 @@ public class FreeMindMapController extends JMapController implements
 			^ KeyEvent.SHIFT_MASK;
 
 	private static final String NODE_MAP_HOME_PROPERTY = "node_map_home";
+
+	private static final String MAP_DIALOG_PROGRESS_MESSAGE = "MapDialog.progressMessage";
+
+	private static final String MAP_DIALOG_ADD_PLACES = "MapDialog.addPlaces";
 
 	private static final String XML_VERSION_1_0_ENCODING_UTF_8 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
 
@@ -2162,11 +2168,11 @@ public class FreeMindMapController extends JMapController implements
 					b.append("&viewbox=");
 					b.append(topLeftCorner.getLon());
 					b.append(",");
-					b.append(bottomRightCorner.getLat());
+					b.append(topLeftCorner.getLat());
 					b.append(",");
 					b.append(bottomRightCorner.getLon());
 					b.append(",");
-					b.append(topLeftCorner.getLat());
+					b.append(bottomRightCorner.getLat());
 					b.append("&bounded=1");
 				}
 				logger.fine("Searching for " + b.toString());
@@ -2540,6 +2546,43 @@ public class FreeMindMapController extends JMapController implements
 		mMindMapController.setNodeText(newNode, pPlace.getDisplayName());
 		placeNodeAt(newNode, new Coordinate(pPlace.getLat(), pPlace.getLon()),
 				map.getPosition(), map.getZoom());
+	}
+
+	private class AddSearchResultsToMapTask extends FreeMindTask {
+
+		private int[] mSelectedRows;
+
+		public AddSearchResultsToMapTask(int[] pSelectedRows) {
+			super(mMapDialog, pSelectedRows.length, MAP_DIALOG_PROGRESS_MESSAGE);
+			mSelectedRows = pSelectedRows;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see freemind.common.FreeMindTask#processAction()
+		 */
+		protected boolean processAction() throws Exception {
+			int selIndex = mSelectedRows[getRounds()];
+			Place place = mMapHook.getPlace(selIndex);
+			mProgressDescription = new ProgressDescription(
+					MAP_DIALOG_ADD_PLACES,
+					new Object[] { place.getDisplayName() });
+			MindMapNode selected = getMindMapController().getSelected();
+			addNode(selected, place);
+			return true;
+		}
+
+	}
+
+	public void addSearchResultsToMap(int[] pSelectedRows) {
+		AddSearchResultsToMapTask task = new AddSearchResultsToMapTask(
+				pSelectedRows);
+		task.start();
+	}
+
+	private ModeController getMindMapController() {
+		return mMindMapController;
 	}
 
 }

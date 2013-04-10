@@ -89,13 +89,19 @@ public class XmlBindingTools {
 	public void storeDialogPositions(Controller controller, JDialog dialog,
 			WindowConfigurationStorage storage,
 			String window_preference_storage_property) {
+		String result = storeDialogPositions(storage, dialog);
+		controller.setProperty(window_preference_storage_property, result);
+	}
+
+	protected String storeDialogPositions(WindowConfigurationStorage storage,
+			JDialog dialog) {
 		storage.setX((dialog.getX()));
 		storage.setY((dialog.getY()));
 		storage.setWidth((dialog.getWidth()));
 		storage.setHeight((dialog.getHeight()));
 		String marshalled = marshall(storage);
 		String result = marshalled;
-		controller.setProperty(window_preference_storage_property, result);
+		return result;
 	}
 
 	public WindowConfigurationStorage decorateDialog(Controller controller,
