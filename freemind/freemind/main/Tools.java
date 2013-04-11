@@ -62,6 +62,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.UnknownHostException;
 import java.security.spec.AlgorithmParameterSpec;
 import java.security.spec.KeySpec;
@@ -122,6 +123,12 @@ public class Tools {
 	static {
 		logger = freemind.main.Resources.getInstance().getLogger("Tools");
 	}
+	
+	public static final String CONTENTS_JAVA_FREEMIND_JAR = "Contents/Java/freemind.jar";
+	
+	public static final String FREE_MIND_APP_CONTENTS_RESOURCES_JAVA = "Contents/Resources/Java/";
+
+
 	// public static final Set executableExtensions = new HashSet ({ "exe",
 	// "com", "vbs" });
 
@@ -1966,4 +1973,19 @@ public class Tools {
 		}
 	}
 
+	public static String getFreeMindBasePath() throws UnsupportedEncodingException {
+		String path = FreeMindStarter.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+		String decodedPath = URLDecoder.decode(path, "UTF-8");
+		logger.info("Path: " + decodedPath);
+		if(decodedPath.endsWith(CONTENTS_JAVA_FREEMIND_JAR)) {
+			decodedPath = decodedPath.substring(0, decodedPath.length()-CONTENTS_JAVA_FREEMIND_JAR.length());
+			decodedPath = decodedPath + FREE_MIND_APP_CONTENTS_RESOURCES_JAVA;
+			logger.info("macPath: " + decodedPath);
+		}
+		return decodedPath;
+	}
+	
+
+	
+	
 }

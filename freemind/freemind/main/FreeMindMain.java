@@ -44,8 +44,6 @@ public interface FreeMindMain {
 		void startupDone();
 	}
 
-	public static final String FREE_MIND_APP_CONTENTS_RESOURCES_JAVA = "FreeMind.app/Contents/Resources/Java/";
-
 	public JFrame getJFrame();
 
 	public boolean isApplet();

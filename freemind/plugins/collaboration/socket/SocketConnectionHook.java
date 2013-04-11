@@ -23,6 +23,9 @@
 
 package plugins.collaboration.socket;
 
+import java.io.IOException;
+import java.io.Writer;
+
 import freemind.controller.actions.generated.instance.CollaborationUserInformation;
 import freemind.extensions.DontSaveMarker;
 import freemind.extensions.PermanentNodeHook;
@@ -179,6 +182,11 @@ public class SocketConnectionHook extends SocketBasics implements
 	 * @see freemind.extensions.PermanentNodeHook#processUnfinishedLinks()
 	 */
 	public void processUnfinishedLinks() {
+	}
+
+	public void saveHtml(Writer pFileout) throws IOException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

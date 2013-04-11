@@ -72,7 +72,6 @@ import freemind.controller.actions.generated.instance.OptionPanelWindowConfigura
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindCommon;
-import freemind.main.FreeMindStarter;
 import freemind.main.Tools;
 import freemind.modes.IconInformation;
 import freemind.modes.MindIcon;
@@ -492,21 +491,21 @@ public class OptionPanel implements TextTranslator {
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("proxy"));
-		controls.add(new BooleanProperty(FreeMindStarter.PROXY_USE_SETTINGS
-				+ TOOLTIP_EXT, FreeMindStarter.PROXY_USE_SETTINGS));
+		controls.add(new BooleanProperty(FreeMind.PROXY_USE_SETTINGS
+				+ TOOLTIP_EXT, FreeMind.PROXY_USE_SETTINGS));
 		controls.add(new StringProperty(
-				FreeMindStarter.PROXY_HOST + TOOLTIP_EXT,
-				FreeMindStarter.PROXY_HOST));
+				FreeMind.PROXY_HOST + TOOLTIP_EXT,
+				FreeMind.PROXY_HOST));
 		controls.add(new NumberProperty(
-				FreeMindStarter.PROXY_PORT + TOOLTIP_EXT,
-				FreeMindStarter.PROXY_PORT, 1, 65535, 1));
-		controls.add(new BooleanProperty(FreeMindStarter.PROXY_IS_AUTHENTICATED
-				+ TOOLTIP_EXT, FreeMindStarter.PROXY_IS_AUTHENTICATED));
+				FreeMind.PROXY_PORT + TOOLTIP_EXT,
+				FreeMind.PROXY_PORT, 1, 65535, 1));
+		controls.add(new BooleanProperty(FreeMind.PROXY_IS_AUTHENTICATED
+				+ TOOLTIP_EXT, FreeMind.PROXY_IS_AUTHENTICATED));
 		controls.add(new StringProperty(
-				FreeMindStarter.PROXY_USER + TOOLTIP_EXT,
-				FreeMindStarter.PROXY_USER));
-		controls.add(new PasswordProperty(FreeMindStarter.PROXY_PASSWORD
-				+ TOOLTIP_EXT, FreeMindStarter.PROXY_PASSWORD));
+				FreeMind.PROXY_USER + TOOLTIP_EXT,
+				FreeMind.PROXY_USER));
+		controls.add(new PasswordProperty(FreeMind.PROXY_PASSWORD
+				+ TOOLTIP_EXT, FreeMind.PROXY_PASSWORD));
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("files"));

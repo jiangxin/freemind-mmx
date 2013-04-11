@@ -35,11 +35,12 @@
 	<property name="java_source_version" value="1.4" />
 	<property name="java_target_version" value="1.4" />
 	<property name="build.compiler" value="modern" />
-	<property name="jarbundler.jar" value = "jarbundler-2.0.0.jar"/>
+	<property name="appbundler.jar" value = "appbundler-1.0.jar"/>
 
-	<taskdef name="jarbundler"
-               classpath="${src}/lib/${jarbundler.jar}"
-               classname="net.sourceforge.jarbundler.JarBundler" />
+	<taskdef name="bundleapp"
+	             classname="com.oracle.appbundler.AppBundlerTask"   
+	             classpath="${src}/lib/${appbundler.jar}" />
+	
 
 
 	<!-- begin generator part -->
@@ -79,6 +80,7 @@
 		<buildnumber file="${freemind.buildnumber.file}"/>
 		<loadproperties srcfile="${freemind.buildnumber.file}"></loadproperties>
 		<property name="version" value="${ver}_${build.number}"/>
+    	<property environment="env" />
 		<echo>FreeMind Version = ${ver}, build ${build.number}.</echo>
     		<echo>Checking for duplicate Resource strings</echo>
     		<exec os="Linux" executable="${src}/check_for_duplicate_resources.sh"></exec>
@@ -279,6 +281,39 @@
 	<target name="dist_macos" if="isMacOs">
 		<delete dir="${dist_macos}" followsymlinks="false"/>
 		<mkdir dir="${dist_macos}"/>
+		<bundleapp outputdirectory="${dist_macos}"
+		            name="FreeMind"
+		            displayname="FreeMind"
+					shortversion="${ver} (build: ${build.number})"
+					copyright="FreeMind ${ver} (build: ${build.number}) application (c) ${freemind.installer_year}"
+                    icon="${src}/images/FreeMindWindowIcon${icns_extension}.icns"
+		            identifier="freemind.main.FreeMind"
+		            mainclassname="freemind.main.FreeMindStarter">
+			<runtime dir="${env.JAVA_HOME}"/>
+			<classpath dir="${dist}">
+				<include name="**/*.jar" />
+				<include name="." />
+				<exclude name="accessories/**" />
+				<exclude name="plugins/**" />
+				<exclude name="browser/**" />
+				<exclude name="**/freemindbrowser.jar" />
+			</classpath>
+			<option value="-Xms64m"/>
+			<option value="-Xmx512m"/>
+			<option value="-Xss8M"/>
+			<option value="-Dapple.laf.useScreenMenuBar=true"/>
+		</bundleapp>
+		<copy todir="${dist_macos_contents}/Resources">
+			<fileset dir="${src}/images">
+				<include name="FreeMindWindowIconModern-MM.icns"/>
+			</fileset>
+		</copy>
+		<copy todir="${dist_macos_contents}/Resources/Java">
+			<fileset dir="${dist}">
+				<include name="doc/*" />
+				<include name="dictionar*" />
+			</fileset>
+		</copy>
 		<!-- change freemind.properties -->
 		<copy todir="${dist_macos}" file="${src}/freemind.properties"/>
 		<replaceregexp byline="true" file="${dist_macos}/freemind.properties" match="^keystroke(.*)=(.*)\bcontrol\b" replace="keystroke\1=\2meta" flags="gim">
@@ -288,49 +323,26 @@
 		<replaceregexp byline="true" file="${dist_macos}/freemind.properties" match="^#freemind.base.dir.*$" replace="freemind.base.dir=${dist_macos_app_name}" flags="gim">
 		</replaceregexp>
 		<!-- update jar -->
-		<jar file="${FM.jar}" update="true" basedir="${dist_macos}">
+		<jar file="${dist_macos_contents}/Java/freemind.jar" update="true">
 			<fileset dir="${dist_macos}">
 				<include name="${dist_macos}/freemind.properties"/>
 			</fileset>
-		</jar>
-		<delete file="${dist_macos}/freemind.properties"/>
-		<jarbundler dir="${dist_macos}"
-		                    name="FreeMind"
-		                    mainclass="freemind.main.FreeMindStarter"
-		                    icon="${src}/images/FreeMindWindowIcon${icns_extension}.icns"
-		                    version="${ver}"
-		                    infostring="FreeMind ${ver} (build: ${build.number}) application (c) ${freemind.installer_year}"
-							shortname="FreeMind"
-		                    bundleid="freemind.main.FreeMind"
-		                    signature="FM"
-		                    jvmversion="1.4+"
-							vmoptions='-Xms64m -Xmx512m -Xss8M -Dapple.laf.useScreenMenuBar=true'
-		  				    >
-			<jarfileset dir="${dist}">
-				<include name="**/*.jar" />
-				<exclude name="accessories/**" />
-				<exclude name="plugins/**" />
-				<exclude name="browser/**" />
-				<exclude name="**/freemindbrowser.jar" />
-			</jarfileset>
-		</jarbundler>
-		<copy todir="${dist_macos_contents}/Resources">
-			<fileset dir="${src}/images">
-				<include name="FreeMindWindowIconModern-MM.icns"/>
-			</fileset>
-		</copy>
-		<copy todir="${dist_macos_contents}/Resources/Java">
 			<fileset dir="${dist}">
-				<include name="browser/**" />
 				<include name="accessories/*" />
 				<include name="accessories/**/*" />
+				<include name="browser/**" />
+			</fileset>
+		</jar>
+		<delete file="${dist_macos}/freemind.properties"/>
+		<copy todir="${dist_macos_contents}/Java">
+			<fileset dir="${dist}">
 				<include name="plugins/*" />
 				<include name="plugins/**/*" />
-				<include name="doc/*" />
-				<include name="dictionar*" />
 			</fileset>
 		</copy>
-		<!-- Associate Freemind with mm -->
+
+		<!-- Associate Freemind with mm 
+		-->
 		<xslt style="mac_file_association.xslt"
 			in ="${dist_macos_info}"
 			out="${dist_macos_info}2"/>
@@ -414,11 +426,11 @@
 		  <arg value="${dist_macos}"/>
 		</exec>
 
-		<delete file="${dist_macos_contents}/MacOS/JavaApplicationStub"/>
+<!--		<delete file="${dist_macos_contents}/MacOS/JavaApplicationStub"/>
 		<exec executable="ln">
 		  <arg line="-s /System/Library/Frameworks/JavaVM.framework/Resources/MacOS/JavaApplicationStub"/>
 		  <arg value="${dist_macos_contents}/MacOS/JavaApplicationStub"/>
-		</exec>
+		</exec> -->
 
 		<exec dir="." executable="zsh" os="Mac OS X">
 			<arg value="./mkdmg.sh"/>

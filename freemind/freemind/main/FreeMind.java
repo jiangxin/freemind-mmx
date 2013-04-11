@@ -41,16 +41,21 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
+import java.net.Authenticator;
 import java.net.InetAddress;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -76,10 +81,13 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
+import com.inet.jortho.SpellChecker;
+
 import freemind.controller.Controller;
 import freemind.controller.LastStateStorageManagement;
 import freemind.controller.MenuBar;
 import freemind.controller.actions.generated.instance.MindmapLastStateStorage;
+import freemind.main.FreeMindStarter.ProxyAuthenticator;
 import freemind.modes.ModeController;
 import freemind.preferences.FreemindPropertyListener;
 import freemind.view.MapModule;
@@ -194,6 +202,32 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	public static final String RESOURCES_DON_T_SHOW_NOTE_TOOLTIPS = "resources_don_t_show_note_tooltips";
 
 	public static final String RESOURCES_SEARCH_FOR_NODE_TEXT_WITHOUT_QUESTION = "resources_search_for_node_text_without_question";
+	
+	/**
+	 * 
+	 */
+	public static final String PROXY_PORT = "proxy.port";
+	/**
+	 * 
+	 */
+	public static final String PROXY_HOST = "proxy.host";
+	/**
+	 * 
+	 */
+	public static final String PROXY_PASSWORD = "proxy.password";
+	/**
+	 * 
+	 */
+	public static final String PROXY_USER = "proxy.user";
+	/**
+	 * 
+	 */
+	public static final String PROXY_IS_AUTHENTICATED = "proxy.is_authenticated";
+	/**
+	 * 
+	 */
+	public static final String PROXY_USE_SETTINGS = "proxy.use_settings";
+
 
 	// public static final String defaultPropsURL = "freemind.properties";
 	// public static Properties defaultProps;
@@ -322,10 +356,12 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		// }
 		// }
 		// });
-
+		
 		controller.optionAntialiasAction
 				.changeAntialias(getProperty(FreeMindCommon.RESOURCE_ANTIALIAS));
 
+		setupSpellChecking();
+		setupProxy();
 		feedback.increase("FreeMind.progress.propageteLookAndFeel", null);
 		SwingUtilities.updateComponentTreeUI(this); // Propagate LookAndFeel to
 
@@ -893,6 +929,46 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		}
 		frame.fireStartupDone();
 	}
+
+	private void setupSpellChecking() {
+		boolean checkSpelling =
+//			Resources.getInstance().getBoolProperty(FreeMindCommon.CHECK_SPELLING);
+			Tools.safeEquals("true", props.getProperty(FreeMindCommon.CHECK_SPELLING));
+		if (checkSpelling) {
+			try {
+				// TODO filter languages in dictionaries.properties like this:
+//				String[] languages = "en,de,es,fr,it,nl,pl,ru,ar".split(",");
+//				for (int i = 0; i < languages.length; i++) {
+//					System.out.println(new File("dictionary_" + languages[i] + ".ortho").exists());
+//				}
+				String decodedPath = Tools.getFreeMindBasePath();
+				URL url = null;
+				if (new File (decodedPath).exists()) {
+					url = new URL("file", null, decodedPath);
+				}
+				SpellChecker.registerDictionaries(url, Locale.getDefault().getLanguage());
+			} catch (MalformedURLException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			} catch (UnsupportedEncodingException e) {
+				freemind.main.Resources.getInstance().logException(e);
+				
+			}
+		}
+	}
+
+	private void setupProxy() {
+		// proxy settings
+		if("true".equals(props.getProperty(PROXY_USE_SETTINGS))) {
+			if ("true".equals(props.getProperty(PROXY_IS_AUTHENTICATED))) {
+				Authenticator.setDefault(new ProxyAuthenticator(props
+						.getProperty(PROXY_USER), Tools.decompress(props
+						.getProperty(PROXY_PASSWORD))));
+			}
+			System.setProperty("http.proxyHost", props.getProperty(PROXY_HOST));
+			System.setProperty("http.proxyPort", props.getProperty(PROXY_PORT));
+		}
+	}
+
 
 	private void initServer() {
 		String portFile = getPortFile();
