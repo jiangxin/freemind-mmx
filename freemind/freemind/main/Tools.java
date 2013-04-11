@@ -1531,9 +1531,12 @@ public class Tools {
 	public static void waitForEventQueue() {
 		try {
 			// wait until AWT thread starts
+//			final Exception e = new IllegalArgumentException("HERE");
 			if (!EventQueue.isDispatchThread()) {
 				EventQueue.invokeAndWait(new Runnable() {
 					public void run() {
+//						logger.info("Waited for event queue.");
+//						e.printStackTrace();
 					};
 				});
 			} else {

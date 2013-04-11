@@ -375,7 +375,7 @@ public class MapDialog extends MindMapHookAdapter implements
 		mResultTable = new JTable();
 		mTableOriginalBackgroundColor = mResultTable.getBackground();
 
-		mResultTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		mResultTable.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		mResultTable.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent pEvent) {
 				int index = mResultTable.getSelectedRow();
@@ -398,8 +398,11 @@ public class MapDialog extends MindMapHookAdapter implements
 						&& pEvent.isControlDown() && index >= 0) {
 					logger.info("Add result to map.");
 					pEvent.consume();
+					for (int i = 0; i < mResultTable.getSelectedRows().length; i++) {
+						int selIndex = mResultTable.getSelectedRows()[i];
+						getFreeMindMapController().addNode(getMindMapController().getSelected(), getPlace(selIndex));
+					}
 					displaySearchItem(index);
-					getFreeMindMapController().addNode(getMindMapController().getSelected(), getPlace(index));
 					return;
 				}
 

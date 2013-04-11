@@ -964,7 +964,7 @@ public class FreeMindMapController extends JMapController implements
 		public void actionPerformed(ActionEvent pE) {
 			Coordinate cursorPosition = getMap().getCursorPosition();
 			int zoom = getMaxZoom() - CURSOR_MAXIMAL_ZOOM_HANDBREAK;
-			if(getMap().getZoom() >= zoom) {
+			if (getMap().getZoom() >= zoom) {
 				zoom += CURSOR_MAXIMAL_ZOOM_HANDBREAK;
 			}
 			map.setDisplayPositionByLatLon(cursorPosition.getLat(),
@@ -1341,6 +1341,14 @@ public class FreeMindMapController extends JMapController implements
 	 * @return
 	 */
 	protected MapNodePositionHolderBase placeNode(MindMapNode pSelected) {
+		Coordinate cursorPosition = getMap().getCursorPosition();
+		Coordinate position = map.getPosition();
+		int zoom = map.getZoom();
+		return placeNodeAt(pSelected, cursorPosition, position, zoom);
+	}
+
+	protected MapNodePositionHolderBase placeNodeAt(MindMapNode pSelected,
+			Coordinate cursorPosition, Coordinate position, int zoom) {
 		MapNodePositionHolder hook = MapNodePositionHolder.getHook(pSelected);
 		if (hook == null) {
 			hook = addHookToNode(pSelected);
@@ -1348,8 +1356,7 @@ public class FreeMindMapController extends JMapController implements
 		if (hook != null) {
 			// set parameters:
 			String tileSource = getTileSourceAsString();
-			hook.changePosition(getMap().getCursorPosition(),
-					map.getPosition(), map.getZoom(), tileSource);
+			hook.changePosition(cursorPosition, position, zoom, tileSource);
 		} else {
 			logger.warning("Hook not found although it was recently added. Node was "
 					+ pSelected);
@@ -2307,10 +2314,10 @@ public class FreeMindMapController extends JMapController implements
 						+ "ery' icon='http://nominatim.openstreetma"
 						+ "p.org/images/mapicons/shopping_bakery.p."
 						+ "20.png'/></searchresults>";
-//				 result = XML_VERSION_1_0_ENCODING_UTF_8
-//				 +
-//				 "<searchresults timestamp=\"Tue, 08 Nov 11 22:49:54 -0500\" attribution=\"Data Copyright OpenStreetMap Contributors, Some Rights Reserved. CC-BY-SA 2.0.\" querystring=\"innsbruck\" polygon=\"false\" exclude_place_ids=\"228452,25664166,26135863,25440203\" more_url=\"http://open.mapquestapi.com/nominatim/v1/search?format=xml&amp;exclude_place_ids=228452,25664166,26135863,25440203&amp;accept-language=&amp;q=innsbruck\">\n"
-//				 + "</searchresults>";
+				// result = XML_VERSION_1_0_ENCODING_UTF_8
+				// +
+				// "<searchresults timestamp=\"Tue, 08 Nov 11 22:49:54 -0500\" attribution=\"Data Copyright OpenStreetMap Contributors, Some Rights Reserved. CC-BY-SA 2.0.\" querystring=\"innsbruck\" polygon=\"false\" exclude_place_ids=\"228452,25664166,26135863,25440203\" more_url=\"http://open.mapquestapi.com/nominatim/v1/search?format=xml&amp;exclude_place_ids=228452,25664166,26135863,25440203&amp;accept-language=&amp;q=innsbruck\">\n"
+				// + "</searchresults>";
 
 			}
 			results = (Searchresults) XmlBindingTools.getInstance().unMarshall(
@@ -2531,7 +2538,8 @@ public class FreeMindMapController extends JMapController implements
 		final MindMapNode targetNode = pSelected;
 		final MindMapNode newNode = insertNewNode(targetNode);
 		mMindMapController.setNodeText(newNode, pPlace.getDisplayName());
-		placeNode(newNode);
+		placeNodeAt(newNode, new Coordinate(pPlace.getLat(), pPlace.getLon()),
+				map.getPosition(), map.getZoom());
 	}
 
 }

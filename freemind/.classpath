@@ -7,14 +7,11 @@
 	<classpathentry kind="lib" path="plugins/svg/batik-dom.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/batik-ext.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/batik-extension.jar"/>
-	<classpathentry kind="lib" path="plugins/svg/batik-gui-util.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/batik-gvt.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/batik-parser.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/batik-script.jar"/>
-	<classpathentry kind="lib" path="plugins/svg/batik-squiggle.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/batik-svg-dom.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/batik-svggen.jar"/>
-	<classpathentry kind="lib" path="plugins/svg/batik-swing.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/batik-transcoder.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/batik-util.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/batik-xml.jar"/>

@@ -22,8 +22,10 @@ package freemind.view.mindmapview;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FocusTraversalPolicy;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
@@ -369,6 +371,35 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 				Collections.EMPTY_SET);
 		// end change.
 
+		// fc, 31.3.2013: set policy to achive that after note window close, the
+		// current node is selected.
+		setFocusTraversalPolicy(new FocusTraversalPolicy() {
+
+			public Component getLastComponent(Container pAContainer) {
+				return getDefaultComponent(pAContainer);
+			}
+
+			public Component getFirstComponent(Container pAContainer) {
+				return getDefaultComponent(pAContainer);
+			}
+
+			public Component getDefaultComponent(Container pAContainer) {
+				Component defaultComponent = getSelected();
+				logger.info("Focus traversal to: " + defaultComponent);
+				return defaultComponent;
+			}
+
+			public Component getComponentBefore(Container pAContainer,
+					Component pAComponent) {
+				return getDefaultComponent(pAContainer);
+			}
+
+			public Component getComponentAfter(Container pAContainer,
+					Component pAComponent) {
+				return getDefaultComponent(pAContainer);
+			}
+		});
+		this.setFocusTraversalPolicyProvider(true);
 		// like in excel - write a letter means edit (PN)
 		// on the other hand it doesn't allow key navigation (sdfe)
 		disableMoveCursor = Resources.getInstance().getBoolProperty(
