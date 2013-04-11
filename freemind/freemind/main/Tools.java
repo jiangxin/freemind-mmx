@@ -119,6 +119,11 @@ import freemind.view.mindmapview.NodeView;
  * 
  */
 public class Tools {
+	/**
+	 * 
+	 */
+	public static final String FREEMIND_LIB_FREEMIND_JAR = "lib/freemind.jar";
+
 	private static java.util.logging.Logger logger = null;
 	static {
 		logger = freemind.main.Resources.getInstance().getLogger("Tools");
@@ -1984,6 +1989,9 @@ public class Tools {
 			decodedPath = decodedPath.substring(0, decodedPath.length()-CONTENTS_JAVA_FREEMIND_JAR.length());
 			decodedPath = decodedPath + FREE_MIND_APP_CONTENTS_RESOURCES_JAVA;
 			logger.info("macPath: " + decodedPath);
+		} else if(decodedPath.endsWith(FREEMIND_LIB_FREEMIND_JAR)) {
+			decodedPath = decodedPath.substring(0, decodedPath.length()-FREEMIND_LIB_FREEMIND_JAR.length());
+			logger.info("reducded Path: " + decodedPath);
 		}
 		return decodedPath;
 	}

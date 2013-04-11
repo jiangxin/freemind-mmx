@@ -228,7 +228,7 @@ public class EditNodeTextField extends EditNodeBase {
 		redispatchKeyEvents(textfield, firstEvent);
 
 		if (checkSpelling) {
-			SpellChecker.register(textfield, false, true, true);
+			SpellChecker.register(textfield, false, true, true, true);
 		}
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {

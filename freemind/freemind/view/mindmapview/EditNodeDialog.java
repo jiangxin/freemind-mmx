@@ -259,7 +259,7 @@ public class EditNodeDialog extends EditNodeBase {
 			}
 
 			if (checkSpelling) {
-				SpellChecker.register(textArea, false, true, true);
+				SpellChecker.register(textArea, false, true, true, true);
 			}
 		}
 
