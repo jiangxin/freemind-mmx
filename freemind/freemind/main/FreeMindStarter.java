@@ -28,15 +28,12 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.Authenticator;
-import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
 import java.net.URL;
 import java.util.Locale;
 import java.util.Properties;
 
 import javax.swing.JOptionPane;
-
-import com.inet.jortho.SpellChecker;
 
 /**
  * This class should check the java version and start freemind. In order to be
@@ -50,30 +47,6 @@ import com.inet.jortho.SpellChecker;
  * 
  */
 public class FreeMindStarter {
-	/**
-	 * 
-	 */
-	public static final String PROXY_PORT = "proxy.port";
-	/**
-	 * 
-	 */
-	public static final String PROXY_HOST = "proxy.host";
-	/**
-	 * 
-	 */
-	public static final String PROXY_PASSWORD = "proxy.password";
-	/**
-	 * 
-	 */
-	public static final String PROXY_USER = "proxy.user";
-	/**
-	 * 
-	 */
-	public static final String PROXY_IS_AUTHENTICATED = "proxy.is_authenticated";
-	/**
-	 * 
-	 */
-	public static final String PROXY_USE_SETTINGS = "proxy.use_settings";
 	/** Doubled variable on purpose. See header of this class. */
 	static final String JAVA_VERSION = System.getProperty("java.version");
 
@@ -87,16 +60,6 @@ public class FreeMindStarter {
 				starter.readUsersPreferences(defaultPreferences);
 		starter.setDefaultLocale(userPreferences);
 
-		// proxy settings
-		if("true".equals(userPreferences.getProperty(PROXY_USE_SETTINGS))) {
-			if ("true".equals(userPreferences.getProperty(PROXY_IS_AUTHENTICATED))) {
-				Authenticator.setDefault(new ProxyAuthenticator(userPreferences
-						.getProperty(PROXY_USER), Tools.decompress(userPreferences
-						.getProperty(PROXY_PASSWORD))));
-			}
-			System.setProperty("http.proxyHost", userPreferences.getProperty(PROXY_HOST));
-			System.setProperty("http.proxyPort", userPreferences.getProperty(PROXY_PORT));
-		}
 		// Christopher Robin Elmersson: set
 		Toolkit xToolkit = Toolkit.getDefaultToolkit();
 
@@ -138,7 +101,6 @@ public class FreeMindStarter {
 					"Startup problem", JOptionPane.ERROR_MESSAGE);
 			System.exit(1);
 		}
-		starter.setupSpellChecking(userPreferences);
 	}
 
 	private void checkJavaVersion() {
@@ -192,28 +154,6 @@ public class FreeMindStarter {
 			return;
 		}
 		Locale.setDefault(localeDef);
-	}
-
-	private void setupSpellChecking(Properties userPreferences) {
-		boolean checkSpelling =
-//			Resources.getInstance().getBoolProperty(FreeMindCommon.CHECK_SPELLING);
-			Tools.safeEquals("true", userPreferences.getProperty(FreeMindCommon.CHECK_SPELLING));
-		if (checkSpelling) {
-			try {
-				// TODO filter languages in dictionaries.properties like this:
-//				String[] languages = "en,de,es,fr,it,nl,pl,ru,ar".split(",");
-//				for (int i = 0; i < languages.length; i++) {
-//					System.out.println(new File("dictionary_" + languages[i] + ".ortho").exists());
-//				}
-				URL url = null;
-				if (new File (FreeMindMain.FREE_MIND_APP_CONTENTS_RESOURCES_JAVA).exists()) {
-					url = new URL("file", null, FreeMindMain.FREE_MIND_APP_CONTENTS_RESOURCES_JAVA);
-				}
-				SpellChecker.registerDictionaries(url, Locale.getDefault().getLanguage());
-			} catch (MalformedURLException e) {
-				freemind.main.Resources.getInstance().logException(e);
-			}
-		}
 	}
 
 	private Properties readUsersPreferences(Properties defaultPreferences) {
