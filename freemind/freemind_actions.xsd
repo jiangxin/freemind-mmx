@@ -659,7 +659,72 @@
 	  </xs:complexType>
 	</xs:element>
 
+	<xs:element name="reversegeocode">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="xml_action">
+			    <xs:sequence>
+			      <xs:element ref="result"/>
+			    </xs:sequence>
+			    <xs:attribute name="attribution" use="required"/>
+			    <xs:attribute name="querystring" type="xs:string" use="required"/>
+			    <xs:attribute name="timestamp" use="required"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+	
+	  <xs:complexType name="result_base" mixed="true">
+		<xs:complexContent>
+		    <xs:attribute name="lat" use="required" type="xs:double"/>
+		    <xs:attribute name="lon" use="required" type="xs:double"/>
+		    <xs:attribute name="osm_id" use="required" type="xs:integer"/>
+		    <xs:attribute name="osm_type" use="required" type="xs:NCName"/>
+		    <xs:attribute name="place_id" use="required" type="xs:integer"/>
+		    <xs:attribute name="ref" use="optional"/>
+	    </xs:complexContent>
+	  </xs:complexType>
 
+	<xs:element name="result">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="result_base">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+<!-- 
+			      <xs:element ref="addressparts"/>
+	<xs:element name="addressparts">
+	  <xs:complexType>
+	    <xs:sequence>
+	      <xs:element ref="house"/>
+	      <xs:element ref="house_number"/>
+	      <xs:element ref="road"/>
+	      <xs:element ref="suburb"/>
+	      <xs:element ref="city_district"/>
+	      <xs:element ref="city"/>
+	      <xs:element ref="state"/>
+	      <xs:element ref="postcode"/>
+	      <xs:element ref="country"/>
+	      <xs:element ref="country_code"/>
+	      <xs:element ref="continent"/>
+	    </xs:sequence>
+	  </xs:complexType>
+	</xs:element>
+	<xs:element name="house" type="xs:string"/>
+	<xs:element name="house_number" type="xs:integer"/>
+	<xs:element name="road" type="xs:string"/>
+	<xs:element name="suburb" type="xs:NCName"/>
+	<xs:element name="city_district" type="xs:NCName"/>
+	<xs:element name="city" type="xs:NCName"/>
+	<xs:element name="state" type="xs:NCName"/>
+	<xs:element name="postcode" type="xs:integer"/>
+	<xs:element name="country" type="xs:NCName"/>
+	<xs:element name="country_code" type="xs:NCName"/>
+	<xs:element name="continent" type="xs:string"/>
+ -->
 
 	<!-- Add (and remove(?)) a permanent hook to a node -->
 	<xs:element name="hook_node_action">

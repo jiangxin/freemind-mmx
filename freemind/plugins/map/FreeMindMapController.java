@@ -44,11 +44,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -78,13 +79,14 @@ import org.openstreetmap.gui.jmapviewer.interfaces.TileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.AbstractOsmTileSource;
 import org.openstreetmap.gui.jmapviewer.tilesources.OsmTileSource;
 
-import freemind.common.FreeMindProgressMonitor;
 import freemind.common.FreeMindTask;
 import freemind.common.XmlBindingTools;
 import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.Place;
+import freemind.controller.actions.generated.instance.Result;
+import freemind.controller.actions.generated.instance.Reversegeocode;
 import freemind.controller.actions.generated.instance.Searchresults;
 import freemind.extensions.ExportHook;
 import freemind.main.Resources;
@@ -931,6 +933,29 @@ public class FreeMindMapController extends JMapController implements
 
 	}
 
+	private final class NewNodeReverseLookupAction extends AbstractAction {
+
+		public NewNodeReverseLookupAction() {
+			super(
+					getText("MapControllerPopupDialog.NewNodeReverseLookupAction"));
+		}
+
+		public void actionPerformed(ActionEvent pE) {
+			Coordinate pos = getMap().getCursorPosition();
+			Reversegeocode reverseLookup = getReverseLookup(pos, getMap()
+					.getZoom());
+			if (reverseLookup != null) {
+				for (Iterator it = reverseLookup.getListResultList().iterator(); it
+						.hasNext();) {
+					Result result = (Result) it.next();
+					addNode(mMindMapController.getSelected(),
+							result.getContent(), result.getLat(), result.getLon());
+				}
+			}
+		}
+
+	}
+
 	private final class EditNodeInContextMenu extends AbstractAction {
 
 		public EditNodeInContextMenu() {
@@ -1205,6 +1230,7 @@ public class FreeMindMapController extends JMapController implements
 		Action gotoSearch = new GotoSearch();
 		Action hideFoldedNodes = new HideFoldedNodes();
 		Action newNodeAction = new NewNodeAction();
+		Action newNodeReverseLookupAction = new NewNodeReverseLookupAction();
 		Action maxmimalZoomToCursorAction = new MaxmimalZoomToCursorAction();
 		Action copyLinkToClipboardAction = new CopyLinkToClipboardAction();
 		Action copyCoordinatesToClipboardAction = new CopyCoordinatesToClipboardAction();
@@ -1297,6 +1323,10 @@ public class FreeMindMapController extends JMapController implements
 		mMapDialog.setJMenuBar(mMenuBar);
 		/* Popup menu */
 		menuHolder.addAction(newNodeAction, "popup/newNode");
+		// currently disabled, as the reverse functionality from
+		// nominatim doesn't convince me.
+//		menuHolder.addAction(newNodeReverseLookupAction,
+//				"popup/newNodeReverseLookup");
 		menuHolder.addAction(placeAction, "popup/place");
 		menuHolder.addSeparator("popup/");
 		menuHolder.addAction(maxmimalZoomToCursorAction,
@@ -2148,6 +2178,27 @@ public class FreeMindMapController extends JMapController implements
 		return returnValue;
 	}
 
+	public Reversegeocode getReverseLookup(Coordinate pCoordinate, int pZoom) {
+		StringBuilder b = new StringBuilder();
+		b.append("http://nominatim.openstreetmap.org/reverse?format=xml&email=christianfoltin%40users.sourceforge.net&addressdetails=0"); //$NON-NLS-1$
+		b.append("&accept-language=").append(Locale.getDefault().getLanguage()); //$NON-NLS-1$
+		b.append("&lat=");
+		b.append(pCoordinate.getLat());
+		b.append("&lon=");
+		b.append(pCoordinate.getLon());
+		b.append("&zoom=");
+		b.append(pZoom);
+		try {
+			String result = wget(b);
+			Reversegeocode reversegeocode = (Reversegeocode) XmlBindingTools
+					.getInstance().unMarshall(result);
+			return reversegeocode;
+		} catch (Exception e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
+		return null;
+	}
+
 	/**
 	 * @param pText
 	 * @return
@@ -2176,24 +2227,7 @@ public class FreeMindMapController extends JMapController implements
 					b.append(bottomRightCorner.getLat());
 					b.append("&bounded=1");
 				}
-				logger.fine("Searching for " + b.toString());
-				URL url = new URL(b.toString());
-				URLConnection urlConnection = url.openConnection();
-				if (Tools.isAboveJava4()) {
-					urlConnection
-							.setConnectTimeout(Resources
-									.getInstance()
-									.getIntProperty(
-											OSM_NOMINATIM_CONNECT_TIMEOUT_IN_MS,
-											10000));
-					urlConnection.setReadTimeout(Resources.getInstance()
-							.getIntProperty(OSM_NOMINATIM_READ_TIMEOUT_IN_MS,
-									30000));
-				}
-				InputStream urlStream = urlConnection.getInputStream();
-				result = Tools.getFile(new InputStreamReader(urlStream));
-				result = new String(result.getBytes(), "UTF-8");
-				logger.fine(result + " was received for search " + pText);
+				result = wget(b);
 			} else {
 				// only for offline testing:
 				result = XML_VERSION_1_0_ENCODING_UTF_8
@@ -2353,6 +2387,32 @@ public class FreeMindMapController extends JMapController implements
 			results.addPlace(getErrorPlace(message, "WARNING"));
 		}
 		return results;
+	}
+
+	public String wget(StringBuilder b) throws MalformedURLException,
+			IOException, UnsupportedEncodingException {
+		String result;
+		mMindMapController.getFrame().setWaitingCursor(true);
+		try {
+			logger.fine("Searching for " + b.toString());
+			URL url = new URL(b.toString());
+			URLConnection urlConnection = url.openConnection();
+			if (Tools.isAboveJava4()) {
+				urlConnection.setConnectTimeout(Resources.getInstance()
+						.getIntProperty(OSM_NOMINATIM_CONNECT_TIMEOUT_IN_MS,
+								10000));
+				urlConnection
+						.setReadTimeout(Resources.getInstance().getIntProperty(
+								OSM_NOMINATIM_READ_TIMEOUT_IN_MS, 30000));
+			}
+			InputStream urlStream = urlConnection.getInputStream();
+			result = Tools.getFile(new InputStreamReader(urlStream));
+			result = new String(result.getBytes(), "UTF-8");
+			logger.info(result + " was received for search " + b);
+		} finally {
+			mMindMapController.getFrame().setWaitingCursor(false);
+		}
+		return result;
 	}
 
 	protected Place getErrorPlace(final String errorString, String errorLevel) {
@@ -2542,11 +2602,17 @@ public class FreeMindMapController extends JMapController implements
 	 * @param pPlace
 	 */
 	public void addNode(MindMapNode pSelected, Place pPlace) {
+		addNode(pSelected, pPlace.getDisplayName(), pPlace.getLat(),
+				pPlace.getLon());
+	}
+
+	public void addNode(MindMapNode pSelected, String pText, double lat,
+			double lon) {
 		final MindMapNode targetNode = pSelected;
 		final MindMapNode newNode = insertNewNode(targetNode);
-		mMindMapController.setNodeText(newNode, pPlace.getDisplayName());
-		placeNodeAt(newNode, new Coordinate(pPlace.getLat(), pPlace.getLon()),
-				map.getPosition(), map.getZoom());
+		mMindMapController.setNodeText(newNode, pText);
+		placeNodeAt(newNode, new Coordinate(lat, lon), map.getPosition(),
+				map.getZoom());
 	}
 
 	private class AddSearchResultsToMapTask extends FreeMindTask {

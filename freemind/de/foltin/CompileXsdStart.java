@@ -38,8 +38,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
-import org.jibx.runtime.Utility;
-import org.jibx.runtime.impl.UTF8Escaper;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -59,6 +57,7 @@ public class CompileXsdStart extends DefaultHandler {
 	private static final String KEY_CLASS_START = "030_CLASS_START";
 	private static final String KEY_CLASS_EXTENSION = "040_CLASS_EXTENSION";
 	private static final String KEY_CLASS_START2 = "050_CLASS_START2";
+	private static final String KEY_CLASS_MIXED = "055_CLASS_MIXED";
 	private static final String KEY_CLASS_PRIVATE_MEMBERS = "060_PRIVATE_MEMBERS";
 	private static final String KEY_CLASS_GETTERS = "070_Getters";
 	private static final String KEY_CLASS_SETTERS = "080_setters";
@@ -207,10 +206,11 @@ public class CompileXsdStart extends DefaultHandler {
 		mBindingXml
 				.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><binding>\n");
 		// introduce correct marshaling for newlines in strings:
-		mBindingXml.append("<format type=\"java.lang.String\" serializer=\"de.foltin.StringEncoder.encode\" deserializer=\"de.foltin.StringEncoder.decode\"/>\n");
+		mBindingXml
+				.append("<format type=\"java.lang.String\" serializer=\"de.foltin.StringEncoder.encode\" deserializer=\"de.foltin.StringEncoder.decode\"/>\n");
 		saxParser.parse(mInputStream, this);
 		mBindingXml.append("</binding>\n");
-//		System.out.println(mBindingXml.toString());
+		// System.out.println(mBindingXml.toString());
 	}
 
 	private class XsdHandler extends DefaultHandler {
@@ -329,28 +329,6 @@ public class CompileXsdStart extends DefaultHandler {
 				throws SAXException {
 			super.endElement(pUri, pLocalName, pName);
 			mCurrentHandler = mParent;
-		}
-
-		/**
-		 * @param arg1
-		 * @return the class name
-		 */
-		protected String startClass(Attributes arg1) {
-			mKeyOrder.add(FILE_START);
-			mKeyOrder.add(KEY_PACKAGE);
-			mKeyOrder.add(KEY_CLASS_START);
-			mKeyOrder.add(KEY_CLASS_END);
-			String rawName = arg1.getValue("name");
-			String name = getNameFromXml(rawName);
-			HashMap/* <String, String> */class1 = createClass(name);
-			mClassName = name;
-			class1.put(FILE_START, "/* " + name + "...*/\n");
-			class1.put(KEY_PACKAGE, "package " + FREEMIND_PACKAGE + ";\n");
-			class1.put(KEY_CLASS_START, "public class " + name);
-			mKeyOrder.add(KEY_CLASS_START2);
-			class1.put(KEY_CLASS_START2, " {\n");
-			class1.put(KEY_CLASS_END, "} /* " + name + "*/\n");
-			return rawName;
 		}
 
 	}
@@ -583,8 +561,8 @@ public class CompileXsdStart extends DefaultHandler {
 				} else {
 					mBindingXml.append("      <value name=\"" + rawName
 							+ "\" field=\"" + memberName + "\" usage=\""
-							+ optReq + "\"/>\n"); 
-					//  whitespace='preserve' doesn't work
+							+ optReq + "\"/>\n");
+					// whitespace='preserve' doesn't work
 				}
 			} else {
 				// list ref:
@@ -626,6 +604,7 @@ public class CompileXsdStart extends DefaultHandler {
 
 		private boolean mIsClassDefinedHere = false;
 		private String mRawName;
+		private boolean mMixed = false;
 
 		public ComplexTypeHandler(XsdHandler pParent) {
 			super(pParent);
@@ -633,6 +612,13 @@ public class CompileXsdStart extends DefaultHandler {
 
 		public void startElement(String arg0, Attributes arg1) {
 			super.startElement(arg0, arg1);
+
+			String mixed = arg1.getValue("mixed");
+			if ("true".equals(mixed)) {
+				// in case of mixed content (those with additional cdata
+				// content), we add a "content" field to the class
+				mMixed = true;
+			}
 			if (getClassName() == null) {
 				mRawName = startClass(arg1);
 				// make binding:
@@ -643,6 +629,34 @@ public class CompileXsdStart extends DefaultHandler {
 			}
 		}
 
+		/**
+		 * @param arg1
+		 * @return the class name
+		 */
+		protected String startClass(Attributes arg1) {
+			mKeyOrder.add(FILE_START);
+			mKeyOrder.add(KEY_PACKAGE);
+			mKeyOrder.add(KEY_CLASS_START);
+			mKeyOrder.add(KEY_CLASS_END);
+			String rawName = arg1.getValue("name");
+			String name = getNameFromXml(rawName);
+			HashMap/* <String, String> */class1 = createClass(name);
+			mClassName = name;
+			class1.put(FILE_START, "/* " + name + "...*/\n");
+			class1.put(KEY_PACKAGE, "package " + FREEMIND_PACKAGE + ";\n");
+			class1.put(KEY_CLASS_START, "public class " + name);
+			mKeyOrder.add(KEY_CLASS_START2);
+			class1.put(KEY_CLASS_START2, " {\n");
+			if (mMixed) {
+				mKeyOrder.add(KEY_CLASS_MIXED);
+				class1.put(
+						KEY_CLASS_MIXED,
+						" public String content; public String getContent(){return content;} public void setContent(String content){this.content = content;}\n");
+			}
+			class1.put(KEY_CLASS_END, "} /* " + name + "*/\n");
+			return rawName;
+		}
+
 		public void endElement(String arg0, String arg1, String arg2)
 				throws SAXException {
 			if (mIsClassDefinedHere) {
@@ -650,6 +664,10 @@ public class CompileXsdStart extends DefaultHandler {
 				if (getExtendsClassName() != null) {
 					extendString = " extends=\"" + FREEMIND_PACKAGE + "."
 							+ getExtendsClassName() + "\"";
+				}
+				if (mMixed) {
+					mBindingXml
+							.append("     <value field='content' style='text'/>\n");
 				}
 				mBindingXml.append("  </mapping>\n" + "  <mapping name=\""
 						+ mRawName + "\"" + extendString + " class=\""
@@ -683,7 +701,7 @@ public class CompileXsdStart extends DefaultHandler {
 			String usage = arg1.getValue("use");
 			String minOccurs = arg1.getValue("minOccurs");
 			String name = arg1.getValue("id");
-			if(name == null) {
+			if (name == null) {
 				name = getNameFromXml(rawName);
 			}
 			String memberName = decapitalizeFirstLetter(name);
@@ -701,12 +719,11 @@ public class CompileXsdStart extends DefaultHandler {
 					+ "' "
 					+ (("0".equals(minOccurs)) ? "" : "style='attribute'")
 					+ "/>\n");
-			//  whitespace='preserve' doesn't work
+			// whitespace='preserve' doesn't work
 		}
 
 		public String decapitalizeFirstLetter(String name) {
-			return name.substring(0, 1).toLowerCase()
-					+ name.substring(1);
+			return name.substring(0, 1).toLowerCase() + name.substring(1);
 		}
 
 	}
