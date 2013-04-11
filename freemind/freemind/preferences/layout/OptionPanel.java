@@ -768,6 +768,9 @@ public class OptionPanel implements TextTranslator {
 				FreeMind.RESOURCES_DON_T_SHOW_NOTE_ICONS));
 		controls.add(new BooleanProperty(null,
 				FreeMind.RESOURCES_DON_T_SHOW_NOTE_TOOLTIPS));
+		controls.add(new NumberProperty(FreeMind.TOOLTIP_DISPLAY_TIME
+				+ ".tooltip", FreeMind.TOOLTIP_DISPLAY_TIME, 0,
+				Integer.MAX_VALUE, 1)); // 4000
 		controls.add(new SeparatorProperty("icon_properties"));
 		controls.add(new StringProperty("icon_order_description",
 				MindIcon.PROPERTY_STRING_ICONS_LIST));

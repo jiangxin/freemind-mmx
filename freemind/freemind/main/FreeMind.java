@@ -277,6 +277,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	private Vector mLoggerList = new Vector();
 
+	public static final String TOOLTIP_DISPLAY_TIME = "tooltip_display_time";
+
 	private static LogFileLogHandler sLogFileHandler;
 
 	public FreeMind(Properties pDefaultPreferences,

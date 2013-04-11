@@ -44,11 +44,13 @@ import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.SwingConstants;
+import javax.swing.ToolTipManager;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeNode;
 
 import freemind.controller.Controller;
+import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.HtmlTools;
 import freemind.main.Resources;
@@ -57,6 +59,7 @@ import freemind.modes.MindIcon;
 import freemind.modes.MindMapCloud;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
+import freemind.preferences.FreemindPropertyListener;
 import freemind.view.mindmapview.attributeview.AttributeView;
 
 /**
@@ -95,7 +98,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 
 	final private static Point zeroPoint = new Point(0, 0);
 	private static Logger logger;
-
+	private static FreemindPropertyListener sListener;
 	//
 	// Constructors
 	//
@@ -114,6 +117,22 @@ public class NodeView extends JComponent implements TreeModelListener {
 			logger = map.getController().getFrame()
 					.getLogger(this.getClass().getName());
 		}
+		if(sListener == null){
+			sListener = new FreemindPropertyListener() {
+				
+				public void propertyChanged(String pPropertyName,
+						String pNewValue, String pOldValue) {
+					if (Tools.safeEquals(pPropertyName,
+							FreeMind.TOOLTIP_DISPLAY_TIME)) {
+						// control tooltip times:
+						ToolTipManager.sharedInstance().setDismissDelay(
+								Resources.getInstance().getIntProperty(
+										FreeMind.TOOLTIP_DISPLAY_TIME, 4000));
+					}
+				}
+			};
+			Controller.addPropertyChangeListenerAndPropagate(sListener);
+		}
 
 		setFocusCycleRoot(true);
 
@@ -130,6 +149,10 @@ public class NodeView extends JComponent implements TreeModelListener {
 			map.add(motionListenerView, map.getComponentCount() - 1);
 		}
 	}
+	public void propertyChanged(String pPropertyName, String pNewValue,
+			String pOldValue) {
+	}
+	
 
 	void setMainView(MainView newMainView) {
 		if (mainView != null) {
@@ -140,6 +163,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 				// left blank on purpose
 			}
 			c.remove(i);
+			ToolTipManager.sharedInstance().unregisterComponent(mainView);
 			mainView.removeMouseListener(this.map.getNodeMouseMotionListener());
 			mainView.removeMouseMotionListener(this.map
 					.getNodeMouseMotionListener());
@@ -148,6 +172,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 			add(newMainView);
 		}
 		this.mainView = newMainView;
+		ToolTipManager.sharedInstance().registerComponent(mainView);
 		mainView.addMouseListener(this.map.getNodeMouseMotionListener());
 		mainView.addMouseMotionListener(this.map.getNodeMouseMotionListener());
 		addDragListener(map.getNodeDragListener());
@@ -161,6 +186,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 		if (motionListenerView != null) {
 			map.remove(motionListenerView);
 		}
+		ToolTipManager.sharedInstance().unregisterComponent(mainView);
 	}
 
 	void addDragListener(DragGestureListener dgl) {
