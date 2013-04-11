@@ -184,12 +184,6 @@ public class SocketConnectionHook extends SocketBasics implements
 	public void processUnfinishedLinks() {
 	}
 
-<<<<<<< HEAD
-=======
-	/* (non-Javadoc)
-	 * @see freemind.extensions.PermanentNodeHook#saveHtml(java.io.Writer)
-	 */
->>>>>>> 5256caa1cb24ec777a143e0c4ec2116a2b7548ac
 	public void saveHtml(Writer pFileout) throws IOException {
 		// TODO Auto-generated method stub
 		

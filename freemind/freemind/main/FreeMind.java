@@ -948,8 +948,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 			splash.setVisible(false);
 		}
 		frame.fireStartupDone();
+	}
 
-<<<<<<< HEAD
 	private void setupSpellChecking() {
 		boolean checkSpelling =
 //			Resources.getInstance().getBoolProperty(FreeMindCommon.CHECK_SPELLING);
@@ -990,15 +990,13 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	}
 
 
-=======
-	}
 	private class MyEventQueue extends EventQueue {
         public void postEvent(AWTEvent theEvent) {
             logger.info("Event Posted: " + theEvent);
             super.postEvent(theEvent);
         }
     }
->>>>>>> 5256caa1cb24ec777a143e0c4ec2116a2b7548ac
+
 	private void initServer() {
 		String portFile = getPortFile();
 		if (portFile == null) {
