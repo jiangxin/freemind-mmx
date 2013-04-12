@@ -325,7 +325,7 @@
 		<!-- update jar -->
 		<jar file="${dist_macos_contents}/Java/freemind.jar" update="true">
 			<fileset dir="${dist_macos}">
-				<include name="${dist_macos}/freemind.properties"/>
+				<include name="freemind.properties"/>
 			</fileset>
 			<fileset dir="${dist}">
 				<include name="accessories/*" />
