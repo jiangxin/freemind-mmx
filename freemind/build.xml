@@ -712,7 +712,7 @@
           target: installers, for Chris' computers
          ================================= -->
     <target name="installers_chris" depends="" description="--> Creates all installers. This is a task that only works on Chris laptops. But it should be informative to others who want to build the installers">
-    	<property name="gitRoot" value="git://freemind.git.sourceforge.net/gitroot/freemind/freemind"/>
+    	<property name="gitRoot" value="git://git.code.sf.net/p/freemind/code"/>
 		<property name="macName" value="mahler.local"/>
 
         <property name="inst.dir" location="/tmp/fm_installer"/>
