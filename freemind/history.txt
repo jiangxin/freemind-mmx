@@ -16,6 +16,7 @@ Changes made in FreeMind 1.0.0 RC 3
 * Fixed packaging of mac mountain lion with java7. oracle java is now included in the bundle. See http://sourceforge.net/projects/freemind/forums/forum/320014/topic/7012032
 * Tooltip times are now changeable in preferences (https://sourceforge.net/tracker/?func=detail&atid=357118&aid=3608925&group_id=7118)
 * Jortho 1.0 integrated
+* Main toolbar: width adjusted
 
 ===============================
 Changes made in FreeMind 1.0.0 RC 2

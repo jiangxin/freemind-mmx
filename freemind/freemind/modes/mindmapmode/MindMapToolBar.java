@@ -23,6 +23,7 @@ package freemind.modes.mindmapmode;
 import java.awt.Component;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.Vector;
 
 import javax.swing.Action;
 import javax.swing.JComboBox;
@@ -36,6 +37,24 @@ import freemind.controller.ZoomListener;
 import freemind.main.Tools;
 
 public class MindMapToolBar extends FreeMindToolBar implements ZoomListener {
+
+	/**
+	 * A combo box that doesn't fill the complete screen.
+	 * See http://stackoverflow.com/questions/13345640/does-anyone-know-how-to-layout-a-jtoolbar-that-doest-move-or-re-size-any-compon
+	 */
+	private final class FreeMindComboBox extends JComboBox {
+		private FreeMindComboBox(Vector pItems) {
+			super(pItems);
+		}
+
+		public FreeMindComboBox(String[] pItems) {
+			super(pItems);
+		}
+
+		public java.awt.Dimension getMaximumSize() {
+			return getPreferredSize();
+		}
+	}
 
 	private static final String[] sizes = { "8", "10", "12", "14", "16", "18",
 			"20", "24", "28" };
@@ -60,9 +79,9 @@ public class MindMapToolBar extends FreeMindToolBar implements ZoomListener {
 					this.getClass().getName());
 		}
 		this.setRollover(true);
-		fonts = new JComboBox(Tools.getAvailableFontFamilyNamesAsVector());
+		fonts = new FreeMindComboBox(Tools.getAvailableFontFamilyNamesAsVector());
 		fonts.setFocusable(false);
-		size = new JComboBox(sizes);
+		size = new FreeMindComboBox(sizes);
 		size.setFocusable(false);
 		iconToolBar = new FreeMindToolBar();
 		iconToolBarScrollPane = new JAutoScrollBarPane(iconToolBar);
@@ -110,7 +129,7 @@ public class MindMapToolBar extends FreeMindToolBar implements ZoomListener {
 		size.addItemListener(sizeListener);
 		userDefinedZoom = controller.getText("user_defined_zoom");
 
-		zoom = new JComboBox(controller.getController().getZooms());
+		zoom = new FreeMindComboBox(controller.getController().getZooms());
 		zoom.setSelectedItem("100%");
 		zoom.addItem(userDefinedZoom);
 		// Focus fix.
@@ -148,11 +167,11 @@ public class MindMapToolBar extends FreeMindToolBar implements ZoomListener {
 
 		add(zoom);
 
-		fonts.setMaximumRowCount(9);
+		fonts.setMaximumRowCount(30);
 		add(fonts);
 
-		size.setEditor(new BasicComboBoxEditor());
-		size.setEditable(true);
+//		size.setEditor(new BasicComboBoxEditor());
+//		size.setEditable(true);
 		add(size);
 
 		// button tool bar.
