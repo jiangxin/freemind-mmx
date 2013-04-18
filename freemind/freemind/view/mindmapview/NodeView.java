@@ -23,6 +23,7 @@ package freemind.view.mindmapview;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -462,8 +463,8 @@ public class NodeView extends JComponent implements TreeModelListener {
 		return linkPoint;
 	}
 
-	protected void convertPointToMap(Point p) {
-		Tools.convertPointToAncestor(this, p, getMap());
+	protected Point convertPointToMap(Point p) {
+		return Tools.convertPointToAncestor(this, p, getMap());
 	}
 
 	/**
@@ -477,10 +478,23 @@ public class NodeView extends JComponent implements TreeModelListener {
 	//
 	// Navigation
 	//
+	/**
+	 * The algorithm should be here the following (see Eclipse editor):
+	 * Selected is the n-th node from above.
+	 * Look for the last node visible on the screen and make this node the first one.
+	 * Now select the n-th node from above.
+	 * 
+	 * Easier idea to implement:
+	 * Store node y position as y0.
+	 * Search for a node with the same parent with y position y0+height
+	 * Scroll the window by height.
+	 */
 	protected NodeView getNextPage() {
+		// from root we cannot jump
 		if (getModel().isRoot()) {
 			return this; // I'm root
 		}
+		int y0 = getInPointInMap().y + getMap().getViewportSize().height;
 		NodeView sibling = getNextVisibleSibling();
 		if (sibling == this) {
 			return this; // at the end
@@ -491,16 +505,27 @@ public class NodeView extends JComponent implements TreeModelListener {
 		NodeView nextSibling = sibling.getNextVisibleSibling();
 		while (nextSibling != sibling
 				&& sibling.getParentView() == nextSibling.getParentView()) {
+			// has the same position after one page?
+			if(nextSibling.getInPointInMap().y >= y0) {
+				break;
+			}
 			sibling = nextSibling;
 			nextSibling = nextSibling.getNextVisibleSibling();
 		}
 		return sibling; // last on the page
+	}
+	/**
+	 * @return the position of the in-point of this node in view coordinates
+	 */
+	protected Point getInPointInMap() {
+		return convertPointToMap(getMainViewInPoint());
 	}
 
 	protected NodeView getPreviousPage() {
 		if (getModel().isRoot()) {
 			return this; // I'm root
 		}
+		int y0 = getInPointInMap().y - getMap().getViewportSize().height;
 		NodeView sibling = getPreviousVisibleSibling();
 		if (sibling == this) {
 			return this; // at the end
@@ -511,6 +536,10 @@ public class NodeView extends JComponent implements TreeModelListener {
 		NodeView previousSibling = sibling.getPreviousVisibleSibling();
 		while (previousSibling != sibling
 				&& sibling.getParentView() == previousSibling.getParentView()) {
+			// has the same position after one page?
+			if(previousSibling.getInPointInMap().y <= y0) {
+				break;
+			}
 			sibling = previousSibling;
 			previousSibling = previousSibling.getPreviousVisibleSibling();
 		}

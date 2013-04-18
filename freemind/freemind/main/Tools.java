@@ -1245,7 +1245,7 @@ public class Tools {
 		}
 	}
 
-	public static void convertPointToAncestor(Component c, Point p,
+	public static Point convertPointToAncestor(Component c, Point p,
 			Component destination) {
 		int x, y;
 		while (c != destination) {
@@ -1257,7 +1257,7 @@ public class Tools {
 
 			c = c.getParent();
 		}
-		;
+		return p;
 
 	}
 

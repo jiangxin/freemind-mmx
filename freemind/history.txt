@@ -1,4 +1,9 @@
 ===============================
+Changes made in FreeMind 1.0.0 RC 4
+===============================
+* New: page up/down moves cursor only one page, if there are many nodes to the same parent
+
+===============================
 Changes made in FreeMind 1.0.0 RC 3
 ===============================
 * Update of JMapViewer to release 2013-02-10
