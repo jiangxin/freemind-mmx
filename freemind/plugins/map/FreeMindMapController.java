@@ -164,7 +164,7 @@ public class FreeMindMapController extends JMapController implements
 
 	private static final float PAGE_DOWN_FACTOR = 0.85f;
 
-	private static final int POSITION_HOLDER_LIMIT = 20;
+	private static final int POSITION_HOLDER_LIMIT = 50;
 
 	private static final long WHEEL_ZOOM_MINIMAL_TIME_BETWEEN_CHANGES = 333;
 
