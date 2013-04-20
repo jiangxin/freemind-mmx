@@ -23,7 +23,6 @@ package freemind.view.mindmapview;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -34,6 +33,8 @@ import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DragSource;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.MalformedURLException;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -42,6 +43,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.SwingConstants;
@@ -112,6 +114,8 @@ public class NodeView extends JComponent implements TreeModelListener {
 
 	static final int SPACE_AROUND = 50;
 
+	private NodeFoldingComponent mFoldingListener;
+
 	protected NodeView(MindMapNode model, int position, MapView map,
 			Container parent) {
 		if (logger == null) {
@@ -149,7 +153,19 @@ public class NodeView extends JComponent implements TreeModelListener {
 			motionListenerView = new NodeMotionListenerView(this);
 			map.add(motionListenerView, map.getComponentCount() - 1);
 		}
+		if(mFoldingListener == null || (model.hasChildren() && model.isFolded())) {
+			mFoldingListener = new NodeFoldingComponent(this);
+			map.add(mFoldingListener, map.getComponentCount()-1);
+			mFoldingListener.addActionListener(new ActionListener() {
+				
+				public void actionPerformed(ActionEvent pE) {
+					logger.info("Action pressed");
+					
+				}
+			});
+		}
 	}
+
 	public void propertyChanged(String pPropertyName, String pNewValue,
 			String pOldValue) {
 	}
@@ -1400,6 +1416,11 @@ public class NodeView extends JComponent implements TreeModelListener {
 			final Controller controller = getMap().getController();
 			Object renderingHint = controller.setEdgesRenderingHint(g);
 			mainView.paintFoldingMark(this, g, out);
+			if(mFoldingListener != null) {
+				g.translate(out.x, out.y);
+				mFoldingListener.paint(g);
+				g.translate(-out.x,-out.y);
+			}
 			Tools.restoreAntialiasing(g, renderingHint);
 		}
 

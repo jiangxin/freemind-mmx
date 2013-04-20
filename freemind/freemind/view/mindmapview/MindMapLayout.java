@@ -25,6 +25,8 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
 
+import javax.swing.JLabel;
+
 /**
  * This class will Layout the Nodes and Edges of an MapView.
  */
@@ -63,6 +65,10 @@ public class MindMapLayout implements LayoutManager {
 				final NodeViewLayout layout = (NodeViewLayout) nodeMotionListenerView
 						.getMovedView().getLayout();
 				layout.layoutNodeMotionListenerView(nodeMotionListenerView);
+			} else if (component instanceof NodeFoldingComponent) {
+				NodeFoldingComponent foldingComponent = (NodeFoldingComponent) component;
+				NodeViewLayout layout = (NodeViewLayout) foldingComponent.getNodeView().getLayout();
+				layout.layoutNodeFoldingComponent(foldingComponent);
 			}
 		}
 	}

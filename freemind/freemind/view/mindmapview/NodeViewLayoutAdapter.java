@@ -26,6 +26,7 @@ import java.awt.Point;
 
 import javax.swing.JComponent;
 
+import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 
 abstract public class NodeViewLayoutAdapter implements NodeViewLayout {
@@ -206,7 +207,7 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout {
 		final int baseX = getContent().getX() + getContent().getWidth();
 		int y = getContent().getY() + childVerticalShift;
 		int right = baseX + getSpaceAround();
-		;
+
 		NodeView child = null;
 		for (int i = 0; i < getChildCount(); i++) {
 			final NodeView component = (NodeView) getView().getComponent(i);
@@ -232,7 +233,7 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout {
 			right = Math.max(right, x + child.getWidth()
 					+ additionalCloudHeigth);
 		}
-		final int bottom = getContent().getY() + getContent().getHeight()
+		int bottom = getContent().getY() + getContent().getHeight()
 				+ getSpaceAround();
 
 		if (child != null) {
@@ -276,7 +277,7 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout {
 					+ additionalCloudHeigth;
 			right = Math.max(right, x + child.getWidth());
 		}
-		final int bottom = getContent().getY() + getContent().getHeight()
+		int bottom = getContent().getY() + getContent().getHeight()
 				+ getSpaceAround();
 
 		if (child != null) {
@@ -305,4 +306,19 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout {
 		return spaceAround;
 	}
 
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.NodeViewLayout#layoutNodeFoldingComponent(freemind.view.mindmapview.NodeFoldingListenerView)
+	 */
+	public void layoutNodeFoldingComponent(
+			NodeFoldingComponent pFoldingComponent) {
+		NodeView movedView = pFoldingComponent.getNodeView();
+		final JComponent content = movedView.getContent();
+		location.x = content.getWidth();
+		location.y = 0;
+		Tools.convertPointToAncestor(content, location, pFoldingComponent.getParent());
+		pFoldingComponent.setLocation(location);
+		Dimension preferredSize = pFoldingComponent.getPreferredSize();
+		pFoldingComponent.setSize(preferredSize.width, preferredSize.height);
+	}
+	
 }
