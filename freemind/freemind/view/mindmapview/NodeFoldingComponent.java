@@ -32,7 +32,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.geom.Ellipse2D;
 
 import javax.swing.AbstractButton;
@@ -41,6 +40,7 @@ import javax.swing.DefaultButtonModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.Timer;
 import javax.swing.WindowConstants;
 import javax.swing.plaf.basic.BasicButtonListener;
 import javax.swing.plaf.basic.BasicButtonUI;
@@ -50,12 +50,12 @@ import javax.swing.plaf.basic.BasicButtonUI;
  * 
  */
 public class NodeFoldingComponent extends JButton {
-	/**
-	 * 
-	 */
+	private static final int TIMER_DELAY = 25;
 	private static final int CIRCLE_DIAMETER = 10;
+	private static final int COLOR_COUNTER_MAX = 15;
 	protected static java.util.logging.Logger logger = null;
 	private boolean mIsEntered;
+	private int mColorCounter = 0;
 
 	public NodeFoldingComponent(NodeView view) {
 		super();
@@ -66,51 +66,58 @@ public class NodeFoldingComponent extends JButton {
 		this.nodeView = view;
 		setModel(new DefaultButtonModel());
 		init(null, null);
-//		setPressedIcon(getIcon("accessories/show.png"));
+		// setPressedIcon(getIcon("accessories/show.png"));
 		setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 		setBackground(Color.BLACK);
 		setContentAreaFilled(false);
 		setFocusPainted(false);
 		// setVerticalAlignment(SwingConstants.TOP);
 		setAlignmentY(Component.TOP_ALIGNMENT);
-//		initShape();
+		// initShape();
 		setUI(new RoundImageButtonUI());
 		addMouseListener(new MouseListener() {
-			
 
 			public void mouseReleased(MouseEvent pE) {
-				// TODO Auto-generated method stub
-				
 			}
-			
+
 			public void mousePressed(MouseEvent pE) {
-				// TODO Auto-generated method stub
-				
 			}
-			
+
 			public void mouseExited(MouseEvent pE) {
 				mIsEntered = false;
 				repaint();
 			}
-			
+
 			public void mouseEntered(MouseEvent pE) {
 				mIsEntered = true;
 				repaint();
 			}
-			
+
 			public void mouseClicked(MouseEvent pE) {
-				// TODO Auto-generated method stub
-				
 			}
 		});
+		int delay = TIMER_DELAY; 
+		ActionListener taskPerformer = new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				if(mIsEntered && mColorCounter < COLOR_COUNTER_MAX) {
+					mColorCounter ++;
+					repaint();
+				}
+				if(!mIsEntered && mColorCounter > 0) {
+					mColorCounter --;
+					repaint();
+				}
+				
+			}
+		};
+		new Timer(delay, taskPerformer).start();
 	}
 
 	public Dimension getPreferredSize() {
 		Insets i = getInsets();
 		int iw = CIRCLE_DIAMETER;
-		return new Dimension(iw  + i.right + i.left, iw + i.top + i.bottom);
+		return new Dimension(iw + i.right + i.left, iw + i.top + i.bottom);
 	}
-
 
 	private NodeView nodeView;
 
@@ -175,20 +182,45 @@ public class NodeFoldingComponent extends JButton {
 			g2.setColor(c.getBackground());
 			NodeFoldingComponent b = (NodeFoldingComponent) c;
 			Rectangle bounds = shape.getBounds();
+			Color col = getColorForCounter();
 			if (b.mIsEntered) {
 				// g2.setStroke(new BasicStroke(1.0f));
-				g2.draw(shape);
-				int middle = bounds.x + bounds.width/2;
-				g2.drawLine(middle, bounds.y, middle, bounds.y + bounds.height);
-				int ymiddle = bounds.y + bounds.height/2;
+				Color oldColor = g2.getColor();
+				g2.setColor(col);
+				int xmiddle = bounds.x + bounds.width / 2;
+				int ymiddle = bounds.y + bounds.height / 2;
+				g2.drawLine(xmiddle, bounds.y, xmiddle, bounds.y + bounds.height);
 				g2.drawLine(bounds.x, ymiddle, bounds.x + bounds.width, ymiddle);
+				g2.setColor(oldColor);
+				g2.draw(shape);
 			} else {
-				g2.translate(-bounds.width/4, -bounds.height/4);
-				g2.draw(foldingCircle);
-				g2.translate(bounds.width/4, bounds.height/4);
+				if (mColorCounter != 0) {
+//					bounds = foldingCircle.getBounds();
+					int xmiddle = bounds.x + bounds.width / 2;
+					int ymiddle = bounds.y + bounds.height / 2;
+					Color oldColor = g2.getColor();
+					g2.setColor(col);
+					g2.drawLine(xmiddle, bounds.y, xmiddle, bounds.y
+							+ bounds.height);
+					g2.drawLine(bounds.x, ymiddle, bounds.x + bounds.width,
+							ymiddle);
+					g2.setColor(oldColor);
+					g2.draw(shape);
+				} else {					
+					g2.translate(-bounds.width / 4, -bounds.height / 4);
+					g2.draw(foldingCircle);
+				}
 			}
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 					RenderingHints.VALUE_ANTIALIAS_OFF);
+		}
+
+		/**
+		 * @return
+		 */
+		private Color getColorForCounter() {
+			int col = 16*(16-mColorCounter-1);
+			return new Color(col, col, col);
 		}
 
 		public Dimension getPreferredSize(JComponent c) {
@@ -203,7 +235,8 @@ public class NodeFoldingComponent extends JButton {
 				Dimension s = c.getPreferredSize();
 				base = c.getBounds();
 				shape = new Ellipse2D.Float(0, 0, s.width - 1, s.height - 1);
-				foldingCircle = new Ellipse2D.Float(s.width/4, s.height/4, s.width*3/4 - 1, s.height*3/4 - 1);
+				foldingCircle = new Ellipse2D.Float(s.width / 4, s.height / 4,
+						s.width * 3 / 4 - 1, s.height * 3 / 4 - 1);
 			}
 		}
 	}
@@ -213,20 +246,20 @@ public class NodeFoldingComponent extends JButton {
 	}
 
 	public static void main(String[] args) {
-        JFrame frame = new JFrame("RoundImageButton");
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        NodeFoldingComponent comp = new NodeFoldingComponent(null);
-        comp.addActionListener(new ActionListener() {
-			
+		JFrame frame = new JFrame("RoundImageButton");
+		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		NodeFoldingComponent comp = new NodeFoldingComponent(null);
+		comp.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent pE) {
 				System.out.println("Pressed!");
 			}
 		});
 		frame.getContentPane().add(comp);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
-        frame.setSize(400, 800);
-        frame.setVisible(true);
+		frame.pack();
+		frame.setLocationRelativeTo(null);
+		frame.setSize(400, 800);
+		frame.setVisible(true);
 	}
-	
+
 }
