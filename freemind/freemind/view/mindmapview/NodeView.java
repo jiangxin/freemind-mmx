@@ -61,7 +61,9 @@ import freemind.main.Tools;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapCloud;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
+import freemind.modes.mindmapmode.MindMapController;
 import freemind.preferences.FreemindPropertyListener;
 import freemind.view.mindmapview.attributeview.AttributeView;
 
@@ -153,14 +155,15 @@ public class NodeView extends JComponent implements TreeModelListener {
 			motionListenerView = new NodeMotionListenerView(this);
 			map.add(motionListenerView, map.getComponentCount() - 1);
 		}
-		if(mFoldingListener == null || (model.hasChildren() && model.isFolded())) {
+		if(mFoldingListener == null && (model.hasChildren() && model.isFolded())) {
 			mFoldingListener = new NodeFoldingComponent(this);
 			map.add(mFoldingListener, map.getComponentCount()-1);
+//			mFoldingListener.setColor(getModel().getEdge().getColor());
+
 			mFoldingListener.addActionListener(new ActionListener() {
 				
 				public void actionPerformed(ActionEvent pE) {
-					logger.info("Action pressed");
-					
+					((MindMapController)getModeController()).setFolded(getModel(), false);
 				}
 			});
 		}
@@ -329,7 +332,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 
 	public void requestFocus() {
 		// delegate to mapview:
-		map.getController().obtainFocusForSelected();
+		getController().obtainFocusForSelected();
 	}
 
 
@@ -368,6 +371,18 @@ public class NodeView extends JComponent implements TreeModelListener {
 
 	public MapView getMap() {
 		return map;
+	}
+
+	protected Controller getController() {
+		return map.getController();
+	}
+
+	protected ModeController getModeController() {
+		return getMap().getModel().getModeController();
+	}
+
+	protected FreeMindMain getFrame() {
+		return getController().getFrame();
 	}
 
 	boolean isParentHidden() {
@@ -803,7 +818,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 		if (isSelected()) {
 			getMap().deselect(this);
 		}
-		getMap().getModel().getModeController().onViewRemovedHook(this);
+		getModeController().onViewRemovedHook(this);
 		removeFromMap();
 		if (attributeView != null) {
 			attributeView.viewRemoved();
@@ -883,7 +898,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 			// <body width="800">, or avoid the <body> tag altogether.
 
 			// Set user HTML head
-			String htmlLongNodeHead = map.getController().getFrame()
+			String htmlLongNodeHead = getFrame()
 					.getProperty("html_long_node_head");
 			if (htmlLongNodeHead != null && !htmlLongNodeHead.equals("")) {
 				if (nodeText.matches("(?ims).*<head>.*")) {
@@ -942,7 +957,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 
 	private void updateFont() {
 		Font font = getModel().getFont();
-		font = font == null ? map.getController().getDefaultFont() : font;
+		font = font == null ? getController().getDefaultFont() : font;
 		if (font != null) {
 			mainView.setFont(font);
 		} else {
@@ -957,7 +972,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 		boolean iconPresent = false;
 		/* fc, 06.10.2003: images? */
 
-		FreeMindMain frame = map.getController().getFrame();
+		FreeMindMain frame = getFrame();
 		Map stateIcons = (getModel()).getStateIcons();
 		for (Iterator i = stateIcons.keySet().iterator(); i.hasNext();) {
 			String key = (String) i.next();
@@ -1067,7 +1082,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 	public int getMaxToolTipWidth() {
 		if (maxToolTipWidth == 0) {
 			try {
-				maxToolTipWidth = map.getController().getIntProperty(
+				maxToolTipWidth = getController().getIntProperty(
 						"max_tooltip_width", 600);
 			} catch (NumberFormatException e) {
 				maxToolTipWidth = 600;
@@ -1409,21 +1424,10 @@ public class NodeView extends JComponent implements TreeModelListener {
 		return Math.min(preferredFoldingSymbolHalfWidth, getHeight() / 2);
 	}
 
-	public void paintFoldingMark(Graphics2D g) {
-		if (getModel().isFolded()) {
-			Point out = getMainViewOutPoint(null, null);
-			Tools.convertPointToAncestor(getMainView(), out, this);
-			final Controller controller = getMap().getController();
-			Object renderingHint = controller.setEdgesRenderingHint(g);
-			mainView.paintFoldingMark(this, g, out);
-			if(mFoldingListener != null) {
-				g.translate(out.x, out.y);
-				mFoldingListener.paint(g);
-				g.translate(-out.x,-out.y);
-			}
-			Tools.restoreAntialiasing(g, renderingHint);
-		}
-
+	public Point getFoldingMarkPosition() {
+		Point out = getMainViewOutPoint(null, null);
+		mainView.getFoldingMarkPosition(this, out);
+		return out;
 	}
 
 	public JComponent getContent() {
@@ -1460,7 +1464,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 	}
 
 	private void paintCloudsAndEdges(Graphics2D g) {
-		Object renderingHint = map.getController().setEdgesRenderingHint(g);
+		Object renderingHint = getController().setEdgesRenderingHint(g);
 		for (int i = 0; i < getComponentCount(); i++) {
 			final Component component = getComponent(i);
 			if (!(component instanceof NodeView)) {
@@ -1498,9 +1502,9 @@ public class NodeView extends JComponent implements TreeModelListener {
 			super.paint(g);
 			// return to std stroke
 			g2d.setStroke(BubbleMainView.DEF_STROKE);
-			if (!isRoot) {
-				paintFoldingMark(g2d);
-			}
+//			if (!isRoot) {
+//				paintFoldingMark(g2d);
+//			}
 		} else {
 			super.paint(g);
 		}

@@ -341,18 +341,11 @@ public abstract class MainView extends JLabel {
 		return getNodeView().getMap().getZoomed(icon.getIconWidth());
 	}
 
-	void paintFoldingMark(NodeView nodeView, Graphics2D g, Point p) {
+	Point getFoldingMarkPosition(NodeView nodeView, Point p) {
 		final int zoomedFoldingSymbolHalfWidth = getZoomedFoldingSymbolHalfWidth();
 		p.translate(-zoomedFoldingSymbolHalfWidth,
 				-zoomedFoldingSymbolHalfWidth);
-		final Color color = g.getColor();
-		g.setColor(Color.WHITE);
-		g.fillOval(p.x, p.y, zoomedFoldingSymbolHalfWidth * 2,
-				zoomedFoldingSymbolHalfWidth * 2);
-		g.setColor(getNodeView().getModel().getEdge().getColor());
-		g.drawOval(p.x, p.y, zoomedFoldingSymbolHalfWidth * 2,
-				zoomedFoldingSymbolHalfWidth * 2);
-		g.setColor(color);
+		return p;
 	}
 
 	public boolean isInFollowLinkRegion(double xCoord) {

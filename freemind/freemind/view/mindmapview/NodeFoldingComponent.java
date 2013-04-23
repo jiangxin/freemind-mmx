@@ -25,6 +25,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.Shape;
@@ -245,6 +246,10 @@ public class NodeFoldingComponent extends JButton {
 		return nodeView;
 	}
 
+	public void setCorrectedLocation(Point p){
+		setLocation(p.x-CIRCLE_DIAMETER/4, p.y - CIRCLE_DIAMETER/4);
+	}
+	
 	public static void main(String[] args) {
 		JFrame frame = new JFrame("RoundImageButton");
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

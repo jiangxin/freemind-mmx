@@ -312,11 +312,12 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout {
 	public void layoutNodeFoldingComponent(
 			NodeFoldingComponent pFoldingComponent) {
 		NodeView movedView = pFoldingComponent.getNodeView();
-		final JComponent content = movedView.getContent();
-		location.x = content.getWidth();
-		location.y = 0;
+
+		Point location = movedView.getFoldingMarkPosition();
+		JComponent content = movedView.getContent();
 		Tools.convertPointToAncestor(content, location, pFoldingComponent.getParent());
-		pFoldingComponent.setLocation(location);
+		pFoldingComponent.setCorrectedLocation(location);
+
 		Dimension preferredSize = pFoldingComponent.getPreferredSize();
 		pFoldingComponent.setSize(preferredSize.width, preferredSize.height);
 	}
