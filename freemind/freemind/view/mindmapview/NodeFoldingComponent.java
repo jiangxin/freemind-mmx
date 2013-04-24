@@ -57,6 +57,7 @@ public class NodeFoldingComponent extends JButton {
 	protected static java.util.logging.Logger logger = null;
 	private boolean mIsEntered;
 	private int mColorCounter = 0;
+	private NodeView nodeView;
 
 	public NodeFoldingComponent(NodeView view) {
 		super();
@@ -97,18 +98,18 @@ public class NodeFoldingComponent extends JButton {
 			public void mouseClicked(MouseEvent pE) {
 			}
 		});
-		int delay = TIMER_DELAY; 
+		int delay = TIMER_DELAY;
 		ActionListener taskPerformer = new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				if(mIsEntered && mColorCounter < COLOR_COUNTER_MAX) {
-					mColorCounter ++;
+				if (mIsEntered && mColorCounter < COLOR_COUNTER_MAX) {
+					mColorCounter++;
 					repaint();
 				}
-				if(!mIsEntered && mColorCounter > 0) {
-					mColorCounter --;
+				if (!mIsEntered && mColorCounter > 0) {
+					mColorCounter--;
 					repaint();
 				}
-				
+
 			}
 		};
 		new Timer(delay, taskPerformer).start();
@@ -120,7 +121,6 @@ public class NodeFoldingComponent extends JButton {
 		return new Dimension(iw + i.right + i.left, iw + i.top + i.bottom);
 	}
 
-	private NodeView nodeView;
 
 	class RoundImageButtonUI extends BasicButtonUI {
 		protected Shape shape, foldingCircle, base;
@@ -190,13 +190,14 @@ public class NodeFoldingComponent extends JButton {
 				g2.setColor(col);
 				int xmiddle = bounds.x + bounds.width / 2;
 				int ymiddle = bounds.y + bounds.height / 2;
-				g2.drawLine(xmiddle, bounds.y, xmiddle, bounds.y + bounds.height);
+				g2.drawLine(xmiddle, bounds.y, xmiddle, bounds.y
+						+ bounds.height);
 				g2.drawLine(bounds.x, ymiddle, bounds.x + bounds.width, ymiddle);
 				g2.setColor(oldColor);
 				g2.draw(shape);
 			} else {
 				if (mColorCounter != 0) {
-//					bounds = foldingCircle.getBounds();
+					// bounds = foldingCircle.getBounds();
 					int xmiddle = bounds.x + bounds.width / 2;
 					int ymiddle = bounds.y + bounds.height / 2;
 					Color oldColor = g2.getColor();
@@ -207,7 +208,7 @@ public class NodeFoldingComponent extends JButton {
 							ymiddle);
 					g2.setColor(oldColor);
 					g2.draw(shape);
-				} else {					
+				} else {
 					g2.translate(-bounds.width / 4, -bounds.height / 4);
 					g2.draw(foldingCircle);
 				}
@@ -220,8 +221,12 @@ public class NodeFoldingComponent extends JButton {
 		 * @return
 		 */
 		private Color getColorForCounter() {
-			int col = 16*(16-mColorCounter-1);
-			return new Color(col, col, col);
+			Color color = nodeView.getModel().getEdge().getColor();
+
+			double col = 16 * (16 - mColorCounter - 1) / 256.0;
+			return new Color((int) (color.getRed() * col),
+					(int) (color.getGreen() * col),
+					(int) (color.getBlue() * col));
 		}
 
 		public Dimension getPreferredSize(JComponent c) {
@@ -246,10 +251,10 @@ public class NodeFoldingComponent extends JButton {
 		return nodeView;
 	}
 
-	public void setCorrectedLocation(Point p){
-		setLocation(p.x-CIRCLE_DIAMETER/4, p.y - CIRCLE_DIAMETER/4);
+	public void setCorrectedLocation(Point p) {
+		setLocation(p.x - CIRCLE_DIAMETER / 4, p.y - CIRCLE_DIAMETER / 4);
 	}
-	
+
 	public static void main(String[] args) {
 		JFrame frame = new JFrame("RoundImageButton");
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

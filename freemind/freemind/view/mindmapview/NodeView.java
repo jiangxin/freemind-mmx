@@ -155,15 +155,14 @@ public class NodeView extends JComponent implements TreeModelListener {
 			motionListenerView = new NodeMotionListenerView(this);
 			map.add(motionListenerView, map.getComponentCount() - 1);
 		}
-		if(mFoldingListener == null && (model.hasChildren() && model.isFolded())) {
+		if(mFoldingListener == null && model.hasChildren()) {
 			mFoldingListener = new NodeFoldingComponent(this);
 			map.add(mFoldingListener, map.getComponentCount()-1);
-//			mFoldingListener.setColor(getModel().getEdge().getColor());
 
 			mFoldingListener.addActionListener(new ActionListener() {
 				
 				public void actionPerformed(ActionEvent pE) {
-					((MindMapController)getModeController()).setFolded(getModel(), false);
+					((MindMapController)getModeController()).setFolded(getModel(), !getModel().isFolded());
 				}
 			});
 		}
@@ -205,6 +204,9 @@ public class NodeView extends JComponent implements TreeModelListener {
 		getParent().remove(this);
 		if (motionListenerView != null) {
 			map.remove(motionListenerView);
+		}
+		if(mFoldingListener != null) {
+			map.remove(mFoldingListener);
 		}
 		ToolTipManager.sharedInstance().unregisterComponent(mainView);
 	}
@@ -1383,7 +1385,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 					}
 				}
 			}
-			(node).remove();
+			node.remove();
 		}
 		NodeView preferred = getPreferredVisibleChild(preferredChildIsLeft);
 		if (preferred != null) { // after delete focus on a brother (PN)
@@ -1425,7 +1427,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 	}
 
 	public Point getFoldingMarkPosition() {
-		Point out = getMainViewOutPoint(null, null);
+		Point out = getMainViewOutPoint(this, new Point());
 		mainView.getFoldingMarkPosition(this, out);
 		return out;
 	}
@@ -1454,12 +1456,18 @@ public class NodeView extends JComponent implements TreeModelListener {
 		if (motionListenerView != null) {
 			motionListenerView.invalidate();
 		}
+		if (mFoldingListener != null) {
+			mFoldingListener.invalidate();
+		}
 	}
 
 	public void setVisible(boolean isVisible) {
 		super.setVisible(isVisible);
 		if (motionListenerView != null) {
 			motionListenerView.setVisible(isVisible);
+		}
+		if (mFoldingListener != null) {
+			mFoldingListener.setVisible(isVisible);
 		}
 	}
 
