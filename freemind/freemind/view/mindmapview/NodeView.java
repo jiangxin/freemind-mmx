@@ -155,9 +155,13 @@ public class NodeView extends JComponent implements TreeModelListener {
 			motionListenerView = new NodeMotionListenerView(this);
 			map.add(motionListenerView, map.getComponentCount() - 1);
 		}
-		if(mFoldingListener == null && model.hasChildren()) {
+		addFoldingListener();
+	}
+
+	protected void addFoldingListener() {
+		if(mFoldingListener == null && getModel().hasChildren()) {
 			mFoldingListener = new NodeFoldingComponent(this);
-			map.add(mFoldingListener, map.getComponentCount()-1);
+			getMap().add(mFoldingListener, getMap().getComponentCount()-1);
 
 			mFoldingListener.addActionListener(new ActionListener() {
 				
@@ -168,6 +172,13 @@ public class NodeView extends JComponent implements TreeModelListener {
 		}
 	}
 
+	protected void removeFoldingListener() {
+		if(mFoldingListener != null) {
+			map.remove(mFoldingListener);
+			mFoldingListener = null;
+		}
+	}
+	
 	public void propertyChanged(String pPropertyName, String pNewValue,
 			String pOldValue) {
 	}
@@ -205,9 +216,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 		if (motionListenerView != null) {
 			map.remove(motionListenerView);
 		}
-		if(mFoldingListener != null) {
-			map.remove(mFoldingListener);
-		}
+		removeFoldingListener();
 		ToolTipManager.sharedInstance().unregisterComponent(mainView);
 	}
 
@@ -1323,6 +1332,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 	 * .TreeModelEvent)
 	 */
 	public void treeNodesInserted(TreeModelEvent e) {
+		addFoldingListener();
 		if (getModel().isFolded()) {
 			return;
 		}
@@ -1344,6 +1354,9 @@ public class NodeView extends JComponent implements TreeModelListener {
 	 * .TreeModelEvent)
 	 */
 	public void treeNodesRemoved(TreeModelEvent e) {
+		if(!getModel().hasChildren()) {
+			removeFoldingListener();
+		}
 		getMap().resetShiftSelectionOrigin();
 		if (getModel().isFolded()) {
 			return;

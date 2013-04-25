@@ -73,6 +73,7 @@ public class NodeFoldingComponent extends JButton {
 		setBackground(Color.BLACK);
 		setContentAreaFilled(false);
 		setFocusPainted(false);
+		setFocusable(false);
 		// setVerticalAlignment(SwingConstants.TOP);
 		setAlignmentY(Component.TOP_ALIGNMENT);
 		// initShape();
@@ -187,12 +188,16 @@ public class NodeFoldingComponent extends JButton {
 			if (b.mIsEntered) {
 				// g2.setStroke(new BasicStroke(1.0f));
 				Color oldColor = g2.getColor();
+				g2.setColor(nodeView.getMap().getBackground());
+				g2.fillOval(bounds.x, bounds.y, bounds.width, bounds.height);
 				g2.setColor(col);
 				int xmiddle = bounds.x + bounds.width / 2;
 				int ymiddle = bounds.y + bounds.height / 2;
-				g2.drawLine(xmiddle, bounds.y, xmiddle, bounds.y
-						+ bounds.height);
 				g2.drawLine(bounds.x, ymiddle, bounds.x + bounds.width, ymiddle);
+				if(nodeView.getModel().isFolded()) {
+					g2.drawLine(xmiddle, bounds.y, xmiddle, bounds.y
+							+ bounds.height);
+				}
 				g2.setColor(oldColor);
 				g2.draw(shape);
 			} else {
@@ -201,16 +206,22 @@ public class NodeFoldingComponent extends JButton {
 					int xmiddle = bounds.x + bounds.width / 2;
 					int ymiddle = bounds.y + bounds.height / 2;
 					Color oldColor = g2.getColor();
+					g2.setColor(nodeView.getMap().getBackground());
+					g2.fillOval(bounds.x, bounds.y, bounds.width, bounds.height);
 					g2.setColor(col);
-					g2.drawLine(xmiddle, bounds.y, xmiddle, bounds.y
-							+ bounds.height);
+					if(nodeView.getModel().isFolded()) {
+						g2.drawLine(xmiddle, bounds.y, xmiddle, bounds.y
+								+ bounds.height);
+					}
 					g2.drawLine(bounds.x, ymiddle, bounds.x + bounds.width,
 							ymiddle);
 					g2.setColor(oldColor);
 					g2.draw(shape);
 				} else {
-					g2.translate(-bounds.width / 4, -bounds.height / 4);
-					g2.draw(foldingCircle);
+					if(nodeView.getModel().isFolded()) {
+						g2.translate(-bounds.width / 4, -bounds.height / 4);
+						g2.draw(foldingCircle);
+					}
 				}
 			}
 			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
