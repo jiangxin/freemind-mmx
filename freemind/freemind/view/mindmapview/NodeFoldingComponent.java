@@ -51,8 +51,7 @@ import javax.swing.plaf.basic.BasicButtonUI;
  * 
  */
 public class NodeFoldingComponent extends JButton {
-	private static final int TIMER_DELAY = 25;
-	private static final int CIRCLE_DIAMETER = 10;
+	private static final int TIMER_DELAY = 50;
 	private static final int COLOR_COUNTER_MAX = 15;
 	protected static java.util.logging.Logger logger = null;
 	private boolean mIsEntered;
@@ -68,15 +67,12 @@ public class NodeFoldingComponent extends JButton {
 		this.nodeView = view;
 		setModel(new DefaultButtonModel());
 		init(null, null);
-		// setPressedIcon(getIcon("accessories/show.png"));
 		setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
 		setBackground(Color.BLACK);
 		setContentAreaFilled(false);
 		setFocusPainted(false);
 		setFocusable(false);
-		// setVerticalAlignment(SwingConstants.TOP);
 		setAlignmentY(Component.TOP_ALIGNMENT);
-		// initShape();
 		setUI(new RoundImageButtonUI());
 		addMouseListener(new MouseListener() {
 
@@ -118,8 +114,16 @@ public class NodeFoldingComponent extends JButton {
 
 	public Dimension getPreferredSize() {
 		Insets i = getInsets();
-		int iw = CIRCLE_DIAMETER;
+		int iw = getZoomedCircleRadius()*2;
 		return new Dimension(iw + i.right + i.left, iw + i.top + i.bottom);
+	}
+
+
+	/**
+	 * @return
+	 */
+	private int getZoomedCircleRadius() {
+		return nodeView.getZoomedFoldingSymbolHalfWidth();
 	}
 
 
@@ -135,7 +139,6 @@ public class NodeFoldingComponent extends JButton {
 			b.setFocusPainted(false);
 			b.setOpaque(false);
 			b.setBackground(Color.BLACK);
-			// b.setVerticalAlignment(SwingConstants.TOP);
 			b.setAlignmentY(Component.TOP_ALIGNMENT);
 			initShape(b);
 		}
@@ -186,7 +189,6 @@ public class NodeFoldingComponent extends JButton {
 			Rectangle bounds = shape.getBounds();
 			Color col = getColorForCounter();
 			if (b.mIsEntered) {
-				// g2.setStroke(new BasicStroke(1.0f));
 				Color oldColor = g2.getColor();
 				g2.setColor(nodeView.getMap().getBackground());
 				g2.fillOval(bounds.x, bounds.y, bounds.width, bounds.height);
@@ -219,8 +221,9 @@ public class NodeFoldingComponent extends JButton {
 					g2.draw(shape);
 				} else {
 					if(nodeView.getModel().isFolded()) {
-						g2.translate(-bounds.width / 4, -bounds.height / 4);
+//						g2.translate(-bounds.width / 4, -bounds.height / 4);
 						g2.draw(foldingCircle);
+//						g2.translate(+bounds.width / 4, +bounds.height / 4);
 					}
 				}
 			}
@@ -234,16 +237,16 @@ public class NodeFoldingComponent extends JButton {
 		private Color getColorForCounter() {
 			Color color = nodeView.getModel().getEdge().getColor();
 
-			double col = 16 * (16 - mColorCounter - 1) / 256.0;
-			return new Color((int) (color.getRed() * col),
-					(int) (color.getGreen() * col),
-					(int) (color.getBlue() * col));
+			int col = 16 * mColorCounter;
+			return new Color((int) (color.getRed()),
+					(int) (color.getGreen()),
+					(int) (color.getBlue()), col);
 		}
 
 		public Dimension getPreferredSize(JComponent c) {
 			JButton b = (JButton) c;
 			Insets i = b.getInsets();
-			int iw = CIRCLE_DIAMETER;
+			int iw = getZoomedCircleRadius()*2;
 			return new Dimension(iw + i.right + i.left, iw + i.top + i.bottom);
 		}
 
@@ -251,9 +254,9 @@ public class NodeFoldingComponent extends JButton {
 			if (!c.getBounds().equals(base)) {
 				Dimension s = c.getPreferredSize();
 				base = c.getBounds();
-				shape = new Ellipse2D.Float(0, 0, s.width - 1, s.height - 1);
-				foldingCircle = new Ellipse2D.Float(s.width / 4, s.height / 4,
-						s.width * 3 / 4 - 1, s.height * 3 / 4 - 1);
+				shape = new Ellipse2D.Float(0, 0, s.width-1 , s.height-1 );
+				foldingCircle = new Ellipse2D.Float(0f, s.height / 8f,
+						s.width * 3 / 4f , s.height * 3 / 4f );
 			}
 		}
 	}
@@ -263,7 +266,8 @@ public class NodeFoldingComponent extends JButton {
 	}
 
 	public void setCorrectedLocation(Point p) {
-		setLocation(p.x - CIRCLE_DIAMETER / 4, p.y - CIRCLE_DIAMETER / 4);
+		int halfRadius = getCircleDiameter()/4-1;
+		setLocation(p.x - halfRadius, p.y - halfRadius);
 	}
 
 	public static void main(String[] args) {
@@ -281,6 +285,10 @@ public class NodeFoldingComponent extends JButton {
 		frame.setLocationRelativeTo(null);
 		frame.setSize(400, 800);
 		frame.setVisible(true);
+	}
+
+	private static int getCircleDiameter() {
+		return NodeView.getFoldingSymbolWidth();
 	}
 
 }

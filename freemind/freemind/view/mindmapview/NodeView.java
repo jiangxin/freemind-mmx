@@ -1430,11 +1430,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 	}
 
 	public int getZoomedFoldingSymbolHalfWidth() {
-		if (FOLDING_SYMBOL_WIDTH == -1) {
-			FOLDING_SYMBOL_WIDTH = Resources.getInstance().getIntProperty(
-					"foldingsymbolwidth", 8);
-		}
-		int preferredFoldingSymbolHalfWidth = (int) ((FOLDING_SYMBOL_WIDTH * map
+		int preferredFoldingSymbolHalfWidth = (int) ((getFoldingSymbolWidth() * map
 				.getZoom()) / 2);
 		return Math.min(preferredFoldingSymbolHalfWidth, getHeight() / 2);
 	}
@@ -1579,6 +1575,14 @@ public class NodeView extends JComponent implements TreeModelListener {
 			return getMap().getBackground();
 		}
 		return getParentView().getBackgroundColor();
+	}
+
+	public static int getFoldingSymbolWidth() {
+		if (FOLDING_SYMBOL_WIDTH == -1) {
+			FOLDING_SYMBOL_WIDTH = Resources.getInstance().getIntProperty(
+					"foldingsymbolwidth", 8);
+		}
+		return FOLDING_SYMBOL_WIDTH;
 	}
 
 }
