@@ -341,13 +341,6 @@ public abstract class MainView extends JLabel {
 		return getNodeView().getMap().getZoomed(icon.getIconWidth());
 	}
 
-	Point getFoldingMarkPosition(NodeView nodeView, Point p) {
-		final int zoomedFoldingSymbolHalfWidth = getZoomedFoldingSymbolHalfWidth();
-		p.translate(-zoomedFoldingSymbolHalfWidth,
-				-zoomedFoldingSymbolHalfWidth);
-		return p;
-	}
-
 	public boolean isInFollowLinkRegion(double xCoord) {
 		final MindMapNode model = getNodeView().getModel();
 		return model.getLink() != null

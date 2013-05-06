@@ -1435,9 +1435,13 @@ public class NodeView extends JComponent implements TreeModelListener {
 		return Math.min(preferredFoldingSymbolHalfWidth, getHeight() / 2);
 	}
 
+	/**
+	 * @return the left/right point of the folding circle. To receive its
+	 * center, the amount has to be moved to left/right (depending on its side) 
+	 * by the folding circle width.
+	 */
 	public Point getFoldingMarkPosition() {
 		Point out = getMainViewOutPoint(this, new Point());
-		mainView.getFoldingMarkPosition(this, out);
 		return out;
 	}
 

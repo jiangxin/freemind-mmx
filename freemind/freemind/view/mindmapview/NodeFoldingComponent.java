@@ -34,6 +34,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Ellipse2D;
+import java.util.AbstractMap.SimpleImmutableEntry;
 
 import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
@@ -57,6 +58,10 @@ public class NodeFoldingComponent extends JButton {
 	private boolean mIsEntered;
 	private int mColorCounter = 0;
 	private NodeView nodeView;
+	/**
+	 * 
+	 */
+	private static final float SIZE_FACTOR_ON_MOUSE_OVER = 4f;
 
 	public NodeFoldingComponent(NodeView view) {
 		super();
@@ -113,11 +118,8 @@ public class NodeFoldingComponent extends JButton {
 	}
 
 	public Dimension getPreferredSize() {
-		Insets i = getInsets();
-		int iw = getZoomedCircleRadius()*2;
-		return new Dimension(iw + i.right + i.left, iw + i.top + i.bottom);
+		return getUI().getPreferredSize(this);
 	}
-
 
 	/**
 	 * @return
@@ -125,7 +127,6 @@ public class NodeFoldingComponent extends JButton {
 	private int getZoomedCircleRadius() {
 		return nodeView.getZoomedFoldingSymbolHalfWidth();
 	}
-
 
 	class RoundImageButtonUI extends BasicButtonUI {
 		protected Shape shape, foldingCircle, base;
@@ -196,7 +197,7 @@ public class NodeFoldingComponent extends JButton {
 				int xmiddle = bounds.x + bounds.width / 2;
 				int ymiddle = bounds.y + bounds.height / 2;
 				g2.drawLine(bounds.x, ymiddle, bounds.x + bounds.width, ymiddle);
-				if(nodeView.getModel().isFolded()) {
+				if (nodeView.getModel().isFolded()) {
 					g2.drawLine(xmiddle, bounds.y, xmiddle, bounds.y
 							+ bounds.height);
 				}
@@ -211,7 +212,7 @@ public class NodeFoldingComponent extends JButton {
 					g2.setColor(nodeView.getMap().getBackground());
 					g2.fillOval(bounds.x, bounds.y, bounds.width, bounds.height);
 					g2.setColor(col);
-					if(nodeView.getModel().isFolded()) {
+					if (nodeView.getModel().isFolded()) {
 						g2.drawLine(xmiddle, bounds.y, xmiddle, bounds.y
 								+ bounds.height);
 					}
@@ -220,10 +221,8 @@ public class NodeFoldingComponent extends JButton {
 					g2.setColor(oldColor);
 					g2.draw(shape);
 				} else {
-					if(nodeView.getModel().isFolded()) {
-//						g2.translate(-bounds.width / 4, -bounds.height / 4);
+					if (nodeView.getModel().isFolded()) {
 						g2.draw(foldingCircle);
-//						g2.translate(+bounds.width / 4, +bounds.height / 4);
 					}
 				}
 			}
@@ -238,15 +237,14 @@ public class NodeFoldingComponent extends JButton {
 			Color color = nodeView.getModel().getEdge().getColor();
 
 			int col = 16 * mColorCounter;
-			return new Color((int) (color.getRed()),
-					(int) (color.getGreen()),
+			return new Color((int) (color.getRed()), (int) (color.getGreen()),
 					(int) (color.getBlue()), col);
 		}
 
 		public Dimension getPreferredSize(JComponent c) {
 			JButton b = (JButton) c;
 			Insets i = b.getInsets();
-			int iw = getZoomedCircleRadius()*2;
+			int iw = (int) (getZoomedCircleRadius() * 2f * SIZE_FACTOR_ON_MOUSE_OVER);
 			return new Dimension(iw + i.right + i.left, iw + i.top + i.bottom);
 		}
 
@@ -254,9 +252,12 @@ public class NodeFoldingComponent extends JButton {
 			if (!c.getBounds().equals(base)) {
 				Dimension s = c.getPreferredSize();
 				base = c.getBounds();
-				shape = new Ellipse2D.Float(0, 0, s.width-1 , s.height-1 );
-				foldingCircle = new Ellipse2D.Float(0f, s.height / 8f,
-						s.width * 3 / 4f , s.height * 3 / 4f );
+				float factor = 1f / SIZE_FACTOR_ON_MOUSE_OVER;
+				shape = new Ellipse2D.Float(0, 0, s.width - 1, s.height - 1);
+				float height = s.height * factor;
+				float width = s.width * factor;
+				foldingCircle = new Ellipse2D.Float(s.width/2 - width/2f, s.height / 2f - height/2f,
+						width, height);
 			}
 		}
 	}
@@ -266,25 +267,10 @@ public class NodeFoldingComponent extends JButton {
 	}
 
 	public void setCorrectedLocation(Point p) {
-		int halfRadius = getCircleDiameter()/4-1;
-		setLocation(p.x - halfRadius, p.y - halfRadius);
-	}
-
-	public static void main(String[] args) {
-		JFrame frame = new JFrame("RoundImageButton");
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		NodeFoldingComponent comp = new NodeFoldingComponent(null);
-		comp.addActionListener(new ActionListener() {
-
-			public void actionPerformed(ActionEvent pE) {
-				System.out.println("Pressed!");
-			}
-		});
-		frame.getContentPane().add(comp);
-		frame.pack();
-		frame.setLocationRelativeTo(null);
-		frame.setSize(400, 800);
-		frame.setVisible(true);
+		int zoomedCircleRadius = getZoomedCircleRadius();
+		boolean left = nodeView.getModel().isLeft();
+		int xCorrection = (int) (zoomedCircleRadius*(SIZE_FACTOR_ON_MOUSE_OVER+((left)?+1f:-1f)));
+		setLocation(p.x - xCorrection, (int) (p.y - zoomedCircleRadius * SIZE_FACTOR_ON_MOUSE_OVER));
 	}
 
 	private static int getCircleDiameter() {
