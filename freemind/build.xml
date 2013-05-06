@@ -288,7 +288,8 @@
 					copyright="FreeMind ${ver} (build: ${build.number}) application (c) ${freemind.installer_year}"
                     icon="${src}/images/FreeMindWindowIcon${icns_extension}.icns"
 		            identifier="freemind.main.FreeMind"
-		            mainclassname="freemind.main.FreeMindStarter">
+		            mainclassname="freemind.main.FreeMindStarter"
+			>
 			<runtime dir="${env.JAVA_HOME}"/>
 			<classpath dir="${dist}">
 				<include name="**/*.jar" />

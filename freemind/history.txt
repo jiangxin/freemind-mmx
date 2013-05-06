@@ -2,6 +2,7 @@
 Changes made in FreeMind 1.0.0 RC 4
 ===============================
 * New: page up/down moves cursor only one page, if there are many nodes to the same parent
+* Fix for bug report 1140: Link to parent in Branch As New Map is incorrect. Thanks to Alexandre.
 
 ===============================
 Changes made in FreeMind 1.0.0 RC 3
