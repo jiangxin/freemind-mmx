@@ -47,6 +47,8 @@ import javax.swing.WindowConstants;
 import javax.swing.plaf.basic.BasicButtonListener;
 import javax.swing.plaf.basic.BasicButtonUI;
 
+import freemind.main.Tools;
+
 /**
  * @author Foltin
  * 
@@ -89,6 +91,7 @@ public class NodeFoldingComponent extends JButton {
 
 			public void mouseExited(MouseEvent pE) {
 				mIsEntered = false;
+				mColorCounter = COLOR_COUNTER_MAX;
 				repaint();
 			}
 
@@ -183,8 +186,8 @@ public class NodeFoldingComponent extends JButton {
 			Graphics2D g2 = (Graphics2D) g;
 			initShape(c);
 			// Border
-			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_ON);
+			Object oldRenderingHint = nodeView.getController()
+					.setEdgesRenderingHint(g2);
 			g2.setColor(c.getBackground());
 			NodeFoldingComponent b = (NodeFoldingComponent) c;
 			Rectangle bounds = shape.getBounds();
@@ -205,29 +208,35 @@ public class NodeFoldingComponent extends JButton {
 				g2.draw(shape);
 			} else {
 				if (mColorCounter != 0) {
-					// bounds = foldingCircle.getBounds();
 					int xmiddle = bounds.x + bounds.width / 2;
 					int ymiddle = bounds.y + bounds.height / 2;
+					int diamter = bounds.width * mColorCounter
+							/ COLOR_COUNTER_MAX;
+					if(nodeView.getModel().isFolded()) {
+						diamter = Math.max(diamter, foldingCircle.getBounds().width);
+					}
+					int radius = diamter / 2;
 					Color oldColor = g2.getColor();
 					g2.setColor(nodeView.getMap().getBackground());
-					g2.fillOval(bounds.x, bounds.y, bounds.width, bounds.height);
+					g2.fillOval(xmiddle - radius, ymiddle - radius, diamter,
+							diamter);
 					g2.setColor(col);
 					if (nodeView.getModel().isFolded()) {
-						g2.drawLine(xmiddle, bounds.y, xmiddle, bounds.y
-								+ bounds.height);
+						g2.drawLine(xmiddle, ymiddle - radius, xmiddle, ymiddle
+								+ radius);
 					}
-					g2.drawLine(bounds.x, ymiddle, bounds.x + bounds.width,
+					g2.drawLine(xmiddle - radius, ymiddle, xmiddle + radius,
 							ymiddle);
 					g2.setColor(oldColor);
-					g2.draw(shape);
+					g2.drawOval(xmiddle - radius, ymiddle - radius, diamter,
+							diamter);
 				} else {
 					if (nodeView.getModel().isFolded()) {
 						g2.draw(foldingCircle);
 					}
 				}
 			}
-			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-					RenderingHints.VALUE_ANTIALIAS_OFF);
+			Tools.restoreAntialiasing(g2, oldRenderingHint);
 		}
 
 		/**
@@ -256,8 +265,8 @@ public class NodeFoldingComponent extends JButton {
 				shape = new Ellipse2D.Float(0, 0, s.width - 1, s.height - 1);
 				float height = s.height * factor;
 				float width = s.width * factor;
-				foldingCircle = new Ellipse2D.Float(s.width/2 - width/2f, s.height / 2f - height/2f,
-						width, height);
+				foldingCircle = new Ellipse2D.Float(s.width / 2 - width / 2f,
+						s.height / 2f - height / 2f, width, height);
 			}
 		}
 	}
@@ -269,8 +278,10 @@ public class NodeFoldingComponent extends JButton {
 	public void setCorrectedLocation(Point p) {
 		int zoomedCircleRadius = getZoomedCircleRadius();
 		boolean left = nodeView.getModel().isLeft();
-		int xCorrection = (int) (zoomedCircleRadius*(SIZE_FACTOR_ON_MOUSE_OVER+((left)?+1f:-1f)));
-		setLocation(p.x - xCorrection, (int) (p.y - zoomedCircleRadius * SIZE_FACTOR_ON_MOUSE_OVER));
+		int xCorrection = (int) (zoomedCircleRadius * (SIZE_FACTOR_ON_MOUSE_OVER + ((left) ? +1f
+				: -1f)));
+		setLocation(p.x - xCorrection, (int) (p.y - zoomedCircleRadius
+				* SIZE_FACTOR_ON_MOUSE_OVER));
 	}
 
 	private static int getCircleDiameter() {
