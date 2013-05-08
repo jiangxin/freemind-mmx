@@ -33,6 +33,7 @@ import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.FoldAction;
 import freemind.controller.actions.generated.instance.HookNodeAction;
+import freemind.controller.actions.generated.instance.NewNodeAction;
 import freemind.controller.actions.generated.instance.NodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
@@ -59,14 +60,12 @@ public class JumpLastEditLocation extends MindMapNodeHookAdapter {
 
 	public void invoke(MindMapNode pNode) {
 		super.invoke(pNode);
-		JumpLastEditLocationRegistration base = (JumpLastEditLocationRegistration) getPluginBaseClass();
-		String lastEditLocation = base.getLastEditLocation(pNode);
-		if (lastEditLocation == null) {
-			return;
-		}
 		try {
-			MindMapNode node = getMindMapController().getNodeFromID(
-					lastEditLocation);
+			JumpLastEditLocationRegistration base = (JumpLastEditLocationRegistration) getPluginBaseClass();
+			MindMapNode node = base.getLastEditLocation(pNode);
+			if (node == null) {
+				return;
+			}
 			this.logger.fine("Selecting " + node + " as last edit location.");
 			getMindMapController().select(node,
 					Tools.getVectorWithSingleElement(node));
@@ -88,21 +87,33 @@ public class JumpLastEditLocation extends MindMapNodeHookAdapter {
 
 		private Vector mLastEditLocations = new Vector();
 
-		public String getLastEditLocation(MindMapNode pCurrentNode) {
+		public MindMapNode getLastEditLocation(MindMapNode pCurrentNode) {
 			int size = mLastEditLocations.size();
 			if (size == 0) {
 				return null;
 			}
 			// search for the current node inside the vector:
 			String id = controller.getNodeID(pCurrentNode);
-			int index = mLastEditLocations.indexOf(id);
-			int returnIndex = index - 1;
-			if (index < 0) {
-				returnIndex = size - 1;
-			} else if (index == 0) {
-				returnIndex = 0;
-			}
-			return (String) mLastEditLocations.elementAt(returnIndex);
+			int index = mLastEditLocations.lastIndexOf(id);
+			do {
+				if(index < 0) {
+					// current node not present, we start with the last position:
+					index = size -1;
+				} else {
+					index = index - 1;
+					if (index < 0) {
+						index = 0;
+					}
+				}
+				id = (String) mLastEditLocations.elementAt(index);
+				try {
+					pCurrentNode = controller.getNodeFromID(id);
+					return pCurrentNode;
+				} catch (Exception e) {
+					freemind.main.Resources.getInstance().logException(e);
+				}
+			} while(index > 0);
+			return null;
 		}
 
 		public JumpLastEditLocationRegistration(ModeController controller,
@@ -145,6 +156,10 @@ public class JumpLastEditLocation extends MindMapNodeHookAdapter {
 					}
 				}
 				String lastLocation = ((NodeAction) doAction).getNode();
+				if (doAction instanceof NewNodeAction) {
+					NewNodeAction newNodeAction = (NewNodeAction) doAction;
+					lastLocation = newNodeAction.getNewId();
+				}
 				// prevent double entries
 				if (mLastEditLocations.size() > 0
 						&& Tools.safeEquals(lastLocation,
@@ -160,7 +175,8 @@ public class JumpLastEditLocation extends MindMapNodeHookAdapter {
 							+ " from " + controller.marshall(doAction));
 				} catch (Exception e) {
 					freemind.main.Resources.getInstance().logException(e);
-					logger.warning("Not able to marshall the action " + doAction.getClass() + " as " + doAction);
+					logger.warning("Not able to marshall the action "
+							+ doAction.getClass() + " as " + doAction);
 				}
 			}
 
