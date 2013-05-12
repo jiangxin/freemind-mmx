@@ -196,7 +196,7 @@ public class NodeFoldingComponent extends JButton {
 				Color oldColor = g2.getColor();
 				g2.setColor(nodeView.getMap().getBackground());
 				g2.fillOval(bounds.x, bounds.y, bounds.width, bounds.height);
-				g2.setColor(col);
+				g2.setColor(oldColor);
 				int xmiddle = bounds.x + bounds.width / 2;
 				int ymiddle = bounds.y + bounds.height / 2;
 				g2.drawLine(bounds.x, ymiddle, bounds.x + bounds.width, ymiddle);
@@ -204,7 +204,6 @@ public class NodeFoldingComponent extends JButton {
 					g2.drawLine(xmiddle, bounds.y, xmiddle, bounds.y
 							+ bounds.height);
 				}
-				g2.setColor(oldColor);
 				g2.draw(shape);
 			} else {
 				if (mColorCounter != 0) {
