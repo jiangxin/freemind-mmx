@@ -5,6 +5,7 @@ Changes made in FreeMind 1.0.0 RC 4
 * Fix for bug report 1140: Link to parent in Branch As New Map is incorrect. Thanks to Alexandre.
 * Fix: update map as changed on disk question for hidden maps fixed.
 * Fix: cancel the edit of existing nodes inside geographical maps deleted the node
+* Standard styles can be translated 
 
 ===============================
 Changes made in FreeMind 1.0.0 RC 3

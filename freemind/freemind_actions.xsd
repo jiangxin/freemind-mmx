@@ -1260,6 +1260,8 @@
 						<xs:element minOccurs="0" maxOccurs="1" ref="pattern_script"/>
 					</xs:choice>
 				    <xs:attribute name="name" use="required" type="xs:string"/>
+				    <!-- Used to store the not-translated name at FreeMind runtime -->
+				    <xs:attribute name="original_name" use="optional" type="xs:string"/>
 				</xs:extension>
 			</xs:complexContent>
 		</xs:complexType>		

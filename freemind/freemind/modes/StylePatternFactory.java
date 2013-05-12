@@ -25,12 +25,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import freemind.common.TextTranslator;
 import freemind.common.XmlBindingTools;
 import freemind.controller.actions.generated.instance.Pattern;
+import freemind.controller.actions.generated.instance.PatternChild;
 import freemind.controller.actions.generated.instance.PatternEdgeColor;
 import freemind.controller.actions.generated.instance.PatternEdgeStyle;
 import freemind.controller.actions.generated.instance.PatternEdgeWidth;
@@ -44,6 +46,7 @@ import freemind.controller.actions.generated.instance.PatternNodeFontSize;
 import freemind.controller.actions.generated.instance.PatternNodeStyle;
 import freemind.controller.actions.generated.instance.PatternPropertyBase;
 import freemind.controller.actions.generated.instance.Patterns;
+import freemind.main.Resources;
 import freemind.main.Tools;
 
 /**
@@ -65,6 +68,37 @@ public class StylePatternFactory {
 	public static List loadPatterns(Reader reader) throws Exception {
 		Patterns patterns = (Patterns) XmlBindingTools.getInstance()
 				.unMarshall(reader);
+		// translate standard strings:
+		for (Iterator iterator = patterns.getListChoiceList().iterator(); iterator
+				.hasNext();) {
+			Pattern pattern = (Pattern) iterator.next();
+			String originalName = pattern.getName();
+			String name = originalName;
+			if (name == null) {
+				continue;
+			}
+			// make private:
+			name = "__pattern_string_" + name.replace(" ", "_");
+			String translatedName = Resources.getInstance().getResourceString(
+					name);
+			if (!Tools.safeEquals(translatedName, name)) {
+				// there is a translation:
+				pattern.setName(translatedName);
+				// store original name to be able to translate back
+				pattern.setOriginalName(originalName);
+				// look, whether or not the string occurs in other situations:
+				for (Iterator it = patterns.getListChoiceList().iterator(); it
+						.hasNext();) {
+					Pattern otherPattern = (Pattern) it.next();
+					PatternChild child = otherPattern.getPatternChild();
+					if (child != null) {
+						if (Tools.safeEquals(originalName, child.getValue())) {
+							child.setValue(translatedName);
+						}
+					}
+				}
+			}
+		}
 		return patterns.getListChoiceList();
 	}
 
@@ -77,9 +111,26 @@ public class StylePatternFactory {
 	public static void savePatterns(Writer writer, List listOfPatterns)
 			throws Exception {
 		Patterns patterns = new Patterns();
+		HashMap nameToPattern = new HashMap();
 		for (Iterator iter = listOfPatterns.iterator(); iter.hasNext();) {
 			Pattern pattern = (Pattern) iter.next();
 			patterns.addChoice(pattern);
+			if (pattern.getOriginalName() != null) {
+				nameToPattern.put(pattern.getName(), pattern);
+				pattern.setName(pattern.getOriginalName());
+				pattern.setOriginalName(null);
+			}
+		}
+		for (Iterator it = patterns.getListChoiceList().iterator(); it
+				.hasNext();) {
+			Pattern pattern = (Pattern) it.next();
+			PatternChild patternChild = pattern.getPatternChild();
+			if (patternChild != null
+					&& nameToPattern.containsKey(patternChild.getValue())) {
+				Pattern childPattern = (Pattern) nameToPattern.get(patternChild
+						.getValue());
+				patternChild.setValue(childPattern.getName());
+			}
 		}
 		String marshalledResult = XmlBindingTools.getInstance().marshall(
 				patterns);
