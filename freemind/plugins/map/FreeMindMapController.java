@@ -300,19 +300,25 @@ public class FreeMindMapController extends JMapController implements
 		private final NodeView mNodeView;
 		private final MindMapNode mNewNode;
 		private final MindMapNode mTargetNode;
+		private boolean mIsEditOfExistingNode;
 
 		private MapEditTextFieldControl(NodeView pNodeView,
-				MindMapNode pNewNode, MindMapNode pTargetNode) {
+				MindMapNode pNewNode, MindMapNode pTargetNode, boolean pIsEditOfExistingNode) {
 			mNodeView = pNodeView;
 			mNewNode = pNewNode;
 			mTargetNode = pTargetNode;
+			mIsEditOfExistingNode = pIsEditOfExistingNode;
 		}
 
 		public void cancel() {
-			mMindMapController.getView().selectAsTheOnlyOneSelected(mNodeView);
-			mMindMapController.cut(Tools.getVectorWithSingleElement(mNewNode));
-			mMindMapController.select(mMindMapController
-					.getNodeView(mTargetNode));
+			if (!mIsEditOfExistingNode) {
+				mMindMapController.getView().selectAsTheOnlyOneSelected(
+						mNodeView);
+				mMindMapController.cut(Tools
+						.getVectorWithSingleElement(mNewNode));
+				mMindMapController.select(mMindMapController
+						.getNodeView(mTargetNode));
+			}
 			endEdit();
 		}
 
@@ -1674,7 +1680,7 @@ public class FreeMindMapController extends JMapController implements
 		Tools.convertPointToAncestor((Component) pEvent.getSource(), point, map);
 		storeMapPosition(getMap().getCursorPosition());
 		MapEditTextFieldControl editControl = new MapEditTextFieldControl(
-				nodeView, newNode, targetNode);
+				nodeView, newNode, targetNode, false);
 		EditNodeTextField textfield = new MapEditNoteTextField(nodeView, "",
 				null, mMindMapController, editControl, map, point);
 		textfield.show();
@@ -1716,7 +1722,7 @@ public class FreeMindMapController extends JMapController implements
 		Point point = pEvent.getPoint();
 		Tools.convertPointToAncestor((Component) pEvent.getSource(), point, map);
 		MapEditTextFieldControl editControl = new MapEditTextFieldControl(
-				nodeView, editNode, editNode);
+				nodeView, editNode, editNode, true);
 		EditNodeTextField textfield = new MapEditNoteTextField(nodeView,
 				editNode.getText(), null, mMindMapController, editControl, map,
 				point);
