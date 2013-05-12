@@ -296,6 +296,7 @@ public class EditNodeTextField extends EditNodeBase {
 				} else {
 					getEditControl().cancel();
 				}
+				e.consume();
 				break;
 			case KeyEvent.VK_SPACE:
 				e.consume();
