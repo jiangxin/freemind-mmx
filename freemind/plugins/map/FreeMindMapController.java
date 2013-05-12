@@ -331,7 +331,7 @@ public class FreeMindMapController extends JMapController implements
 		private void endEdit() {
 			setMouseControl(true);
 			mMindMapController.setBlocked(false);
-			map.requestFocus();
+			mMapDialog.requestFocus();
 		}
 
 		public void split(String newText, int position) {
@@ -1236,7 +1236,7 @@ public class FreeMindMapController extends JMapController implements
 		Action gotoSearch = new GotoSearch();
 		Action hideFoldedNodes = new HideFoldedNodes();
 		Action newNodeAction = new NewNodeAction();
-		Action newNodeReverseLookupAction = new NewNodeReverseLookupAction();
+//		Action newNodeReverseLookupAction = new NewNodeReverseLookupAction();
 		Action maxmimalZoomToCursorAction = new MaxmimalZoomToCursorAction();
 		Action copyLinkToClipboardAction = new CopyLinkToClipboardAction();
 		Action copyCoordinatesToClipboardAction = new CopyCoordinatesToClipboardAction();
@@ -1370,6 +1370,7 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.updateMenus(getSearchPopupMenu(), "searchPopup/");
 
 		mMapDialog.addKeyListener(this);
+		Tools.addFocusPrintTimer();
 	}
 
 	public void addAccelerator(JMenuItem menuItem, String key) {
