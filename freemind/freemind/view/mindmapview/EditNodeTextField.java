@@ -274,23 +274,21 @@ public class EditNodeTextField extends EditNodeBase {
 		}
 
 		public void keyPressed(KeyEvent e) {
-		}
-
-		public void keyTyped(KeyEvent e) {
 			// add to check meta keydown by koh 2004.04.16
 			// logger.info("Key " + e);
 			if (e.isAltDown() || e.isControlDown() || e.isMetaDown()
 					|| mEventSource.getValue() == CANCEL) {
 				return;
 			}
-			
+
 			boolean commit = true;
-			
-			switch (e.getKeyChar()) {
-			case Event.ESCAPE:
+
+			switch (e.getKeyCode()) {
+			case KeyEvent.VK_ESCAPE:
 				commit = false;
-				// intentionally fall through.
-			case Event.ENTER:
+			case KeyEvent.VK_ENTER:
+				e.consume();
+
 				mEventSource.setValue(CANCEL);
 				hideMe();
 				// do not process loose of focus
@@ -301,10 +299,12 @@ public class EditNodeTextField extends EditNodeBase {
 				}
 				e.consume();
 				break;
-			case ' ':
+			case KeyEvent.VK_SPACE:
 				e.consume();
-				break;
 			}
+		}
+
+		public void keyTyped(KeyEvent e) {
 		}
 
 		public void keyReleased(KeyEvent e) {
