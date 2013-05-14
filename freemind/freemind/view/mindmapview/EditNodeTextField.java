@@ -24,6 +24,7 @@
 package freemind.view.mindmapview;
 
 import java.awt.Color;
+import java.awt.Event;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Point;
@@ -273,21 +274,23 @@ public class EditNodeTextField extends EditNodeBase {
 		}
 
 		public void keyPressed(KeyEvent e) {
+		}
+
+		public void keyTyped(KeyEvent e) {
 			// add to check meta keydown by koh 2004.04.16
 			// logger.info("Key " + e);
 			if (e.isAltDown() || e.isControlDown() || e.isMetaDown()
 					|| mEventSource.getValue() == CANCEL) {
 				return;
 			}
-
+			
 			boolean commit = true;
-
-			switch (e.getKeyCode()) {
-			case KeyEvent.VK_ESCAPE:
+			
+			switch (e.getKeyChar()) {
+			case Event.ESCAPE:
 				commit = false;
-			case KeyEvent.VK_ENTER:
-				e.consume();
-
+				// intentionally fall through.
+			case Event.ENTER:
 				mEventSource.setValue(CANCEL);
 				hideMe();
 				// do not process loose of focus
@@ -298,12 +301,10 @@ public class EditNodeTextField extends EditNodeBase {
 				}
 				e.consume();
 				break;
-			case KeyEvent.VK_SPACE:
+			case ' ':
 				e.consume();
+				break;
 			}
-		}
-
-		public void keyTyped(KeyEvent e) {
 		}
 
 		public void keyReleased(KeyEvent e) {

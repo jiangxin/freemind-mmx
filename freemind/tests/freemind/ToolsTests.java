@@ -108,6 +108,19 @@ public class ToolsTests extends FreeMindTestBase {
 
 	}
 
+	/**
+	 * To be tested under windows
+	 */
+	public void testRelativeUrlsWindows() throws Exception {
+		if (Tools.isWindows()) {
+			String pathname = "o:\\Users\\foltin\\downloads\\Ja\u0308nstra\u00dfe 270c.pdf";
+			File input = new File(pathname);
+			String expected = pathname;
+			File mapFile = new File("c:\\Users\\foltin\\tmp\\im.mm");
+			testCorrectRelativism(input, expected, mapFile);
+		}
+	}
+
 	public void testRelativeUrls() throws Exception {
 		File input = new File(
 				"/Users/foltin/downloads/Ja\u0308nstra\u00dfe 270c.pdf");

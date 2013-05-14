@@ -1498,10 +1498,6 @@ public class Tools {
 	public static URL fileToUrl(File pFile) throws MalformedURLException {
 		if (pFile == null)
 			return null;
-		// fix for java1.4 and java5 only.
-		if (isBelowJava6()) {
-			return pFile.toURI().toURL();
-		}
 		return pFile.toURI().toURL();
 	}
 
