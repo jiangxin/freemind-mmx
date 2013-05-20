@@ -6,6 +6,7 @@ Changes made in FreeMind 1.0.0 RC 4
 * Fix: update map as changed on disk question for hidden maps fixed.
 * Fix: cancel the edit of existing nodes inside geographical maps deleted the node
 * Standard styles can be translated 
+* New: Clone types can be chosen: complete synchronization or children-only-cloning
 
 ===============================
 Changes made in FreeMind 1.0.0 RC 3

@@ -493,19 +493,16 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new SeparatorProperty("proxy"));
 		controls.add(new BooleanProperty(FreeMind.PROXY_USE_SETTINGS
 				+ TOOLTIP_EXT, FreeMind.PROXY_USE_SETTINGS));
-		controls.add(new StringProperty(
-				FreeMind.PROXY_HOST + TOOLTIP_EXT,
+		controls.add(new StringProperty(FreeMind.PROXY_HOST + TOOLTIP_EXT,
 				FreeMind.PROXY_HOST));
-		controls.add(new NumberProperty(
-				FreeMind.PROXY_PORT + TOOLTIP_EXT,
+		controls.add(new NumberProperty(FreeMind.PROXY_PORT + TOOLTIP_EXT,
 				FreeMind.PROXY_PORT, 1, 65535, 1));
 		controls.add(new BooleanProperty(FreeMind.PROXY_IS_AUTHENTICATED
 				+ TOOLTIP_EXT, FreeMind.PROXY_IS_AUTHENTICATED));
-		controls.add(new StringProperty(
-				FreeMind.PROXY_USER + TOOLTIP_EXT,
+		controls.add(new StringProperty(FreeMind.PROXY_USER + TOOLTIP_EXT,
 				FreeMind.PROXY_USER));
-		controls.add(new PasswordProperty(FreeMind.PROXY_PASSWORD
-				+ TOOLTIP_EXT, FreeMind.PROXY_PASSWORD));
+		controls.add(new PasswordProperty(
+				FreeMind.PROXY_PASSWORD + TOOLTIP_EXT, FreeMind.PROXY_PASSWORD));
 
 		controls.add(new NextLineProperty());
 		controls.add(new SeparatorProperty("files"));
@@ -683,8 +680,9 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new BooleanProperty("use_tabbed_pane.tooltip",
 				FreeMind.RESOURCES_USE_TABBED_PANE)); // true
 		controls.add(new ComboProperty(FreeMind.J_SPLIT_PANE_SPLIT_TYPE
-				+ TOOLTIP_EXT, FreeMind.J_SPLIT_PANE_SPLIT_TYPE, new String[] {
-				FreeMind.VERTICAL_SPLIT_BELOW, FreeMind.HORIZONTAL_SPLIT_RIGHT }, this));
+				+ TOOLTIP_EXT, FreeMind.J_SPLIT_PANE_SPLIT_TYPE,
+				new String[] { FreeMind.VERTICAL_SPLIT_BELOW,
+						FreeMind.HORIZONTAL_SPLIT_RIGHT }, this));
 
 		controls.add(new NumberProperty(
 				StructuredMenuHolder.AMOUNT_OF_VISIBLE_MENU_ITEMS + TOOLTIP_EXT,
@@ -1213,6 +1211,9 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new DontShowNotificationProperty(
 				"remove_notes_without_question.tooltip",
 				FreeMind.RESOURCES_REMOVE_NOTES_WITHOUT_QUESTION));
+		controls.add(new RemindValueProperty(
+				FreeMind.RESOURCES_COMPLETE_CLONING + ".tooltip",
+				FreeMind.RESOURCES_COMPLETE_CLONING, modeController));
 		controls.add(new DontShowNotificationProperty(
 				"execute_scripts_without_asking.tooltip",
 				FreeMind.RESOURCES_EXECUTE_SCRIPTS_WITHOUT_ASKING));

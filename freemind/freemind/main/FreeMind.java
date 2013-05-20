@@ -206,29 +206,22 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public static final String RESOURCES_SEARCH_FOR_NODE_TEXT_WITHOUT_QUESTION = "resources_search_for_node_text_without_question";
 	
-	/**
-	 * 
-	 */
+	public static final String RESOURCES_COMPLETE_CLONING = "complete_cloning";
+
+	public static final String RESOURCES_CLONE_TYPE_COMPLETE_CLONE = "COMPLETE_CLONE";
+
+	public static final String TOOLTIP_DISPLAY_TIME = "tooltip_display_time";
+
 	public static final String PROXY_PORT = "proxy.port";
-	/**
-	 * 
-	 */
+
 	public static final String PROXY_HOST = "proxy.host";
-	/**
-	 * 
-	 */
+
 	public static final String PROXY_PASSWORD = "proxy.password";
-	/**
-	 * 
-	 */
+
 	public static final String PROXY_USER = "proxy.user";
-	/**
-	 * 
-	 */
+
 	public static final String PROXY_IS_AUTHENTICATED = "proxy.is_authenticated";
-	/**
-	 * 
-	 */
+
 	public static final String PROXY_USE_SETTINGS = "proxy.use_settings";
 
 
@@ -274,8 +267,6 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	private EditServer mEditServer = null;
 
 	private Vector mLoggerList = new Vector();
-
-	public static final String TOOLTIP_DISPLAY_TIME = "tooltip_display_time";
 
 	private static LogFileLogHandler sLogFileHandler;
 

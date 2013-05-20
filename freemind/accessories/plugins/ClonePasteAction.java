@@ -26,12 +26,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 import java.util.Vector;
 
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
+import freemind.common.OptionalDontShowMeAgainDialog;
 import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.MindMapNodesSelection;
 import freemind.controller.actions.generated.instance.CompoundAction;
@@ -48,6 +51,7 @@ import freemind.controller.actions.generated.instance.UndoPasteNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
 import freemind.main.FreeMind;
+import freemind.main.FreeMindCommon;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.Tools.MindMapNodePair;
@@ -89,9 +93,26 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 			ClonePlugin clonePlugin = ClonePlugin.getHook(copiedNode);
 			// first the clone master
 			if (clonePlugin == null) {
+				int showResult = new OptionalDontShowMeAgainDialog(
+						getMindMapController().getFrame().getJFrame(),
+						getMindMapController().getSelectedView(),
+						"choose_clone_type",
+						"clone_type_question",
+						getMindMapController(),
+						new OptionalDontShowMeAgainDialog.StandardPropertyHandler(
+								getMindMapController().getController(),
+								FreeMind.RESOURCES_COMPLETE_CLONING),
+						OptionalDontShowMeAgainDialog.BOTH_OK_AND_CANCEL_OPTIONS_ARE_STORED)
+						.show().getResult();
+				Properties properties = new Properties();
+				properties
+						.setProperty(
+								ClonePlugin.XML_STORAGE_CLONE_ITSELF,
+								showResult == JOptionPane.OK_OPTION ? ClonePlugin.CLONE_ITSELF_TRUE
+										: ClonePlugin.CLONE_ITSELF_FALSE);
 				Vector selecteds = Tools.getVectorWithSingleElement(copiedNode);
 				getMindMapController().addHook(copiedNode, selecteds,
-						ClonePlugin.PLUGIN_LABEL, null);
+						ClonePlugin.PLUGIN_LABEL, properties);
 			}
 			// finally, we construct a new one:
 			Transferable copy = getMindMapController().copy(copiedNode, true);
@@ -122,7 +143,52 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 	}
 
 	public Vector getMindMapNodes() {
-		return ((Registration) getPluginBaseClass()).getMindMapNodes();
+		return getRegistration().getMindMapNodes();
+	}
+
+	protected Registration getRegistration() {
+		return (Registration) getPluginBaseClass();
+	}
+
+	public interface ClonePropertiesObserver {
+		void propertiesChanged(CloneProperties pCloneProperties);
+	}
+
+	public static class CloneProperties {
+		boolean mCloneItself = false;
+		private HashSet mObserverSet = new HashSet();
+
+		public boolean isCloneItself() {
+			return mCloneItself;
+		}
+
+		public void setCloneItself(boolean pCloneItself) {
+			boolean fire = false;
+			if (pCloneItself != mCloneItself) {
+				fire = true;
+			}
+			mCloneItself = pCloneItself;
+			if (fire) {
+				firePropertiesChanged();
+			}
+		}
+
+		public void registerObserver(ClonePropertiesObserver pObserver) {
+			mObserverSet.add(pObserver);
+		}
+
+		public void deregisterObserver(ClonePropertiesObserver pObserver) {
+			mObserverSet.remove(pObserver);
+		}
+
+		private void firePropertiesChanged() {
+			for (Iterator it = mObserverSet.iterator(); it.hasNext();) {
+				ClonePropertiesObserver observer = (ClonePropertiesObserver) it
+						.next();
+				observer.propertiesChanged(this);
+			}
+		}
+
 	}
 
 	public static class Registration implements HookRegistration,
@@ -141,6 +207,11 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		 * This is the reverse of mCloneIdsMap: {@link MindMapNode} to cloneId.
 		 */
 		private HashMap mClonesMap = new HashMap();
+
+		/**
+		 * This is a storage cloneId to clone properties.
+		 */
+		private HashMap mClonePropertiesMap = new HashMap();
 
 		private final MindMapController controller;
 
@@ -243,6 +314,9 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 			v.add(node);
 			mClonesMap.put(node, pCloneId);
 			selectShadowNode(node, true, node);
+			if (!mClonePropertiesMap.containsKey(pCloneId)) {
+				mClonePropertiesMap.put(pCloneId, new CloneProperties());
+			}
 			return !vectorPresent;
 		}
 
@@ -267,7 +341,16 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 			if (cloneSet.isEmpty()) {
 				// remove entire clone
 				mCloneIdsMap.remove(cloneSet);
+				mClonePropertiesMap.remove(pCloneId);
 			}
+		}
+
+		public CloneProperties getCloneProperties(String pCloneId) {
+			if (mClonePropertiesMap.containsKey(pCloneId)) {
+				return (CloneProperties) mClonePropertiesMap.get(pCloneId);
+			}
+			throw new IllegalArgumentException(
+					"Clone properties not found for " + pCloneId);
 		}
 
 		protected HashSet getHashSetToCloneId(String pCloneId) {
@@ -410,38 +493,83 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		public List getCorrespondingNodes(NodeAction nodeAction,
 				MindMapNode node) {
 			boolean startWithParent = false;
+			// Behavior for complete cloning.
 			if (mClonesMap.containsKey(node)) {
-				/*
-				 * new node action belongs to the children, so clone it, even,
-				 * when node is the clone itself.
-				 */
-				if (nodeAction instanceof NewNodeAction) {
-					// here, the action changes the children, thus, they are
-					// subject to cloning.
-				} else if (nodeAction instanceof PasteNodeAction) {
-					PasteNodeAction pna = (PasteNodeAction) nodeAction;
-					if (pna.getAsSibling()) {
-						// sibling means, that the paste goes below the clone.
-						// skip.
+				String cloneId = (String) mClonesMap.get(node);
+				if (getCloneProperties(cloneId).isCloneItself()) {
+					// Behavior for complete cloning
+					if (nodeAction instanceof MoveNodesAction
+							|| nodeAction instanceof MoveNodeXmlAction
+							|| nodeAction instanceof DeleteNodeAction
+							|| nodeAction instanceof CutNodeAction) {
+						// ok, there is an action for a clone itself. be
+						// careful:
+						// clone only, if parents are clones:
 						startWithParent = true;
-					} else {
-						// here, the action changes the children, thus, they are
-						// subject to cloning.
-					}
-				} else if (nodeAction instanceof UndoPasteNodeAction) {
-					UndoPasteNodeAction pna = (UndoPasteNodeAction) nodeAction;
-					if (pna.getAsSibling()) {
-						// sibling means, that the paste goes below the clone.
-						// skip.
-						startWithParent = true;
-					} else {
-						// here, the action changes the children, thus, they are
-						// subject to cloning.
+					} else if (nodeAction instanceof PasteNodeAction) {
+						PasteNodeAction pna = (PasteNodeAction) nodeAction;
+						if (pna.getAsSibling()) {
+							// sibling means, that the paste goes below the
+							// clone.
+							// skip.
+							startWithParent = true;
+						} else {
+							// here, the action changes the children, thus, they
+							// are
+							// subject to cloning.
+						}
+					} else if (nodeAction instanceof UndoPasteNodeAction) {
+						UndoPasteNodeAction pna = (UndoPasteNodeAction) nodeAction;
+						if (pna.getAsSibling()) {
+							// sibling means, that the paste goes below the
+							// clone.
+							// skip.
+							startWithParent = true;
+						} else {
+							// here, the action changes the children, thus, they
+							// are
+							// subject to cloning.
+						}
 					}
 				} else {
-					// ok, there is an action for a clone itself. be careful:
-					// clone only, if parents are clones:
-					startWithParent = true;
+					// Behavior for children cloning only
+					/*
+					 * new node action belongs to the children, so clone it,
+					 * even, when node is the clone itself.
+					 */
+					if (nodeAction instanceof NewNodeAction) {
+						// here, the action changes the children, thus, they are
+						// subject to cloning.
+					} else if (nodeAction instanceof PasteNodeAction) {
+						PasteNodeAction pna = (PasteNodeAction) nodeAction;
+						if (pna.getAsSibling()) {
+							// sibling means, that the paste goes below the
+							// clone.
+							// skip.
+							startWithParent = true;
+						} else {
+							// here, the action changes the children, thus, they
+							// are
+							// subject to cloning.
+						}
+					} else if (nodeAction instanceof UndoPasteNodeAction) {
+						UndoPasteNodeAction pna = (UndoPasteNodeAction) nodeAction;
+						if (pna.getAsSibling()) {
+							// sibling means, that the paste goes below the
+							// clone.
+							// skip.
+							startWithParent = true;
+						} else {
+							// here, the action changes the children, thus, they
+							// are
+							// subject to cloning.
+						}
+					} else {
+						// ok, there is an action for a clone itself. be
+						// careful:
+						// clone only, if parents are clones:
+						startWithParent = true;
+					}
 				}
 			}
 			List/* MindMapNodePair */correspondingNodes = getCorrespondingNodes(

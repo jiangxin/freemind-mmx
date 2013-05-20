@@ -28,8 +28,12 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import java.util.Vector;
 
+import accessories.plugins.ClonePasteAction.CloneProperties;
+import accessories.plugins.ClonePasteAction.ClonePropertiesObserver;
 import accessories.plugins.ClonePasteAction.Registration;
+import freemind.common.OptionalDontShowMeAgainDialog;
 import freemind.extensions.PermanentNodeHook;
+import freemind.main.FreeMind;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.MindMapNode;
@@ -37,11 +41,14 @@ import freemind.modes.ModeController.NodeLifetimeListener;
 import freemind.modes.mindmapmode.hooks.PermanentMindMapNodeHookAdapter;
 
 public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
-		NodeLifetimeListener {
+		NodeLifetimeListener, ClonePropertiesObserver {
 
+	public static final String CLONE_ITSELF_FALSE = "false";
+	public static final String CLONE_ITSELF_TRUE = "true";
 	public static final String PLUGIN_LABEL = "accessories/plugins/ClonePlugin.properties";
 	public static final String XML_STORAGE_CLONES = "CLONE_IDS";
 	public static final String XML_STORAGE_CLONE_ID = "CLONE_ID";
+	public static final String XML_STORAGE_CLONE_ITSELF = "CLONE_ITSELF";
 
 	/**
 	 * This is the master list. {@link ClonePlugin#mCloneNodes mCloneNodes} is
@@ -56,6 +63,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 
 	private String mCloneId;
 	private boolean mDisabled = false;
+	private Boolean mCloneItself = null;
 
 	public ClonePlugin() {
 	}
@@ -102,6 +110,10 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		HashMap values = new HashMap();
 		values.put(XML_STORAGE_CLONES, getCloneIdsAsString());
 		values.put(XML_STORAGE_CLONE_ID, mCloneId);
+		boolean cloneItself = getRegistration().getCloneProperties(mCloneId)
+				.isCloneItself();
+		values.put(XML_STORAGE_CLONE_ITSELF, cloneItself ? CLONE_ITSELF_TRUE
+				: CLONE_ITSELF_FALSE);
 		saveNameValuePairs(values, xml);
 		logger.fine("Saved clone plugin");
 	}
@@ -130,6 +142,12 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 			}
 		}
 		mCloneId = (String) values.get(XML_STORAGE_CLONE_ID);
+		if (values.containsKey(XML_STORAGE_CLONE_ITSELF)) {
+			mCloneItself = Boolean.valueOf(Tools.safeEquals(CLONE_ITSELF_TRUE,
+					values.get(XML_STORAGE_CLONE_ITSELF)));
+		} else {
+			mCloneItself = Boolean.FALSE;
+		}
 	}
 
 	public void shutdownMapHook() {
@@ -168,6 +186,12 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		registration.registerClone(mCloneId, this);
 		// the clone list contains itself, too.
 		addClone(getNode());
+		CloneProperties cloneProperties = registration
+				.getCloneProperties(mCloneId);
+		if (mCloneItself != null) {
+			cloneProperties.setCloneItself(mCloneItself.booleanValue());
+		}
+		cloneProperties.registerObserver(this);
 	}
 
 	protected Registration getRegistration() {
@@ -175,6 +199,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	private void deregisterPlugin() {
+		getRegistration().getCloneProperties(mCloneId).deregisterObserver(this);
 		getRegistration().deregisterClone(mCloneId, this);
 		getMindMapController().deregisterNodeLifetimeListener(this);
 		// remove icon
@@ -322,6 +347,16 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 			}
 		}
 
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see accessories.plugins.ClonePasteAction.ClonePropertiesObserver#
+	 * propertiesChanged(accessories.plugins.ClonePasteAction.CloneProperties)
+	 */
+	public void propertiesChanged(CloneProperties pCloneProperties) {
+		mCloneItself = Boolean.valueOf(pCloneProperties.isCloneItself());
 	}
 
 }

@@ -14,6 +14,7 @@
    <xs:attribute name='XML_STORAGE_ZOOM' type='xs:string' use='optional'/>
    <xs:attribute name='CLONE_ID' type='xs:string' use='optional'/>
    <xs:attribute name='CLONE_IDS' type='xs:string' use='optional'/>
+   <xs:attribute name='CLONE_ITSELF' type='xs:string' use='optional'/>
   </xs:complexType>
  </xs:element>
  <!--Used for node notes.-->
