@@ -37,10 +37,6 @@
 	<property name="build.compiler" value="modern" />
 	<property name="appbundler.jar" value = "appbundler-1.0.jar"/>
 
-	<taskdef name="bundleapp"
-	             classname="com.oracle.appbundler.AppBundlerTask"   
-	             classpath="${src}/lib/${appbundler.jar}" />
-	
 
 
 	<!-- begin generator part -->
@@ -281,6 +277,10 @@
 	<target name="dist_macos" if="isMacOs">
 		<delete dir="${dist_macos}" followsymlinks="false"/>
 		<mkdir dir="${dist_macos}"/>
+		<taskdef name="bundleapp"
+		             classname="com.oracle.appbundler.AppBundlerTask"   
+		             classpath="${src}/lib/${appbundler.jar}" />
+		
 		<bundleapp outputdirectory="${dist_macos}"
 		            name="FreeMind"
 		            displayname="FreeMind"
