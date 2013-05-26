@@ -354,7 +354,7 @@
 	
 	<!-- installs the application directly on this mac. -->
 	<target name="install_macos" if="isMacOs" depends="dist">
-		<!-- Remove old application via move -->
+		<!-- Remove old application -->
 		<delete dir="/Applications/FreeMind.app" failonerror="off"/>
 		<exec dir="." executable="mv" os="Mac OS X">
 			<arg path="${dist_macos_app}"/>
