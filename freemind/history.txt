@@ -7,6 +7,8 @@ Changes made in FreeMind 1.0.0 RC 4
 * Fix: cancel the edit of existing nodes inside geographical maps deleted the node
 * Standard styles can be translated 
 * New: Clone types can be chosen: complete synchronization or children-only-cloning
+* Fix: #1145 freemind does not close files after export 
+* Fix: #1142 "ant dist" stoped working on linux after commit. Thanks to Alexandre
 
 ===============================
 Changes made in FreeMind 1.0.0 RC 3
