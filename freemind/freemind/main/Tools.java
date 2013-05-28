@@ -378,6 +378,20 @@ public class Tools {
 	public static boolean isFile(URL url) {
 		return url.getProtocol().equals("file");
 	}
+	
+	/**
+	 * @return "/" for absolute file names under Unix, "c:\\" or similar under windows, null otherwise
+	 */
+	public static File getPrefix(String pFileName) {
+		File[] listRoots = File.listRoots();
+		for (int i = 0; i < listRoots.length; i++) {
+			File fileRoot = listRoots[i];
+			if(pFileName.startsWith(fileRoot.getName())) {
+				return fileRoot;
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * This method converts an absolute url to an url relative to a given
