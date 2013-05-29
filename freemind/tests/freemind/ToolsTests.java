@@ -42,6 +42,19 @@ import freemind.modes.mindmapmode.MindMapMapModel;
  */
 public class ToolsTests extends FreeMindTestBase {
 
+	/**
+	 * 
+	 */
+	private static final String UNIX_PATH_WITH_SPEACIAL_CHAR = "/Users/foltin/downloads/Ja\u0308nstra\u00dfe 270c.pdf";
+	/**
+	 * 
+	 */
+	private static final String WINDOWS_PATH_WITH_SPECIAL_CHAR = "o:\\Users\\foltin\\downloads\\Ja\u0308nstra\u00dfe 270c.pdf";
+	/**
+	 * 
+	 */
+	private static final String WINDOWS_PATH_C_USERS_TMP_IM_MM = "c:\\Users\\foltin\\tmp\\im.mm";
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -93,7 +106,7 @@ public class ToolsTests extends FreeMindTestBase {
 
 	public void testUrlConversion() throws Exception {
 		File input = new File(
-				"/Users/foltin/downloads/Ja\u0308nstra\u00dfe 270c.pdf");
+				UNIX_PATH_WITH_SPEACIAL_CHAR);
 		System.out.println("input file " + input);
 		URL url = Tools.fileToUrl(input);
 		String externalForm = HtmlTools.unicodeToHTMLUnicodeEntity(
@@ -113,17 +126,28 @@ public class ToolsTests extends FreeMindTestBase {
 	 */
 	public void testRelativeUrlsWindows() throws Exception {
 		if (Tools.isWindows()) {
-			String pathname = "o:\\Users\\foltin\\downloads\\Ja\u0308nstra\u00dfe 270c.pdf";
+			String pathname = WINDOWS_PATH_WITH_SPECIAL_CHAR;
 			File input = new File(pathname);
 			String expected = pathname;
-			File mapFile = new File("c:\\Users\\foltin\\tmp\\im.mm");
+			File mapFile = new File(WINDOWS_PATH_C_USERS_TMP_IM_MM);
 			testCorrectRelativism(input, expected, mapFile);
 		}
 	}
 
+	public void testGetPrefix() throws Exception {
+		if (Tools.isWindows()) {
+			assertEquals("\\c:\\",
+					Tools.getPrefix(WINDOWS_PATH_C_USERS_TMP_IM_MM).toString());
+		} else {
+			assertEquals("/",
+					Tools.getPrefix(UNIX_PATH_WITH_SPEACIAL_CHAR).toString());
+			
+		}
+	}
+	
 	public void testRelativeUrls() throws Exception {
 		File input = new File(
-				"/Users/foltin/downloads/Ja\u0308nstra\u00dfe 270c.pdf");
+				UNIX_PATH_WITH_SPEACIAL_CHAR);
 		String expected = "../downloads/Ja\u0308nstra\u00dfe%20270c.pdf";
 		File mapFile = new File("/Users/foltin/tmp/im.mm");
 		testCorrectRelativism(input, expected, mapFile);
@@ -141,7 +165,7 @@ public class ToolsTests extends FreeMindTestBase {
 
 	public void testRelativeUrls3() throws Exception {
 		File input = new File(
-				"/Users/foltin/downloads/Ja\u0308nstra\u00dfe 270c.pdf");
+				UNIX_PATH_WITH_SPEACIAL_CHAR);
 		String expected = "../../../downloads/Ja\u0308nstra\u00dfe%20270c.pdf";
 		File mapFile = new File("/Users/foltin/tmp/subdir1/subdir2/im.mm");
 		testCorrectRelativism(input, expected, mapFile);
@@ -150,7 +174,7 @@ public class ToolsTests extends FreeMindTestBase {
 
 	public void testRelativeUrls4() throws Exception {
 		File input = new File(
-				"/Users/foltin/downloads/Ja\u0308nstra\u00dfe 270c.pdf");
+				UNIX_PATH_WITH_SPEACIAL_CHAR);
 		String expected = "Ja\u0308nstra\u00dfe%20270c.pdf";
 		File mapFile = new File("/Users/foltin/downloads/im.mm");
 		testCorrectRelativism(input, expected, mapFile);
