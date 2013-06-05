@@ -189,6 +189,7 @@ public class NodeFoldingComponent extends JButton {
 			Object oldRenderingHint = nodeView.getController()
 					.setEdgesRenderingHint(g2);
 			g2.setColor(c.getBackground());
+//			g2.setStroke(BubbleMainView.DEF_STROKE);
 			NodeFoldingComponent b = (NodeFoldingComponent) c;
 			Rectangle bounds = shape.getBounds();
 			Color col = getColorForCounter();
@@ -206,19 +207,19 @@ public class NodeFoldingComponent extends JButton {
 				}
 				g2.draw(shape);
 			} else {
+				int xmiddle = bounds.x + bounds.width / 2;
+				int ymiddle = bounds.y + bounds.height / 2;
+				Color oldColor = g2.getColor();
 				if (mColorCounter != 0) {
-					int xmiddle = bounds.x + bounds.width / 2;
-					int ymiddle = bounds.y + bounds.height / 2;
-					int diamter = bounds.width * mColorCounter
+					int diameter = bounds.width * mColorCounter
 							/ COLOR_COUNTER_MAX;
 					if(nodeView.getModel().isFolded()) {
-						diamter = Math.max(diamter, foldingCircle.getBounds().width);
+						diameter = Math.max(diameter, foldingCircle.getBounds().width);
 					}
-					int radius = diamter / 2;
-					Color oldColor = g2.getColor();
+					int radius = diameter / 2;
 					g2.setColor(nodeView.getMap().getBackground());
-					g2.fillOval(xmiddle - radius, ymiddle - radius, diamter,
-							diamter);
+					g2.fillOval(xmiddle - radius, ymiddle - radius, diameter,
+							diameter);
 					g2.setColor(col);
 					if (nodeView.getModel().isFolded()) {
 						g2.drawLine(xmiddle, ymiddle - radius, xmiddle, ymiddle
@@ -227,11 +228,19 @@ public class NodeFoldingComponent extends JButton {
 					g2.drawLine(xmiddle - radius, ymiddle, xmiddle + radius,
 							ymiddle);
 					g2.setColor(oldColor);
-					g2.drawOval(xmiddle - radius, ymiddle - radius, diamter,
-							diamter);
+					g2.drawOval(xmiddle - radius, ymiddle - radius, diameter,
+							diameter);
 				} else {
 					if (nodeView.getModel().isFolded()) {
-						g2.draw(foldingCircle);
+//						g2.draw(foldingCircle);
+						int diameter = foldingCircle.getBounds().width;
+						int radius = diameter / 2;
+						g2.setColor(nodeView.getMap().getBackground());
+						g2.fillOval(xmiddle - radius, ymiddle - radius, diameter,
+								diameter);
+						g2.setColor(oldColor);
+						g2.drawOval(xmiddle - radius, ymiddle - radius, diameter,
+								diameter);
 					}
 				}
 			}

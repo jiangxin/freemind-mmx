@@ -1,4 +1,8 @@
 ===============================
+Changes made in FreeMind 1.0.0 RC 5
+===============================
+
+===============================
 Changes made in FreeMind 1.0.0 RC 4
 ===============================
 * New: page up/down moves cursor only one page, if there are many nodes to the same parent
