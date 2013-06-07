@@ -224,6 +224,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public static final String PROXY_USE_SETTINGS = "proxy.use_settings";
 
+	public static final String RESOURCES_DISPLAY_FOLDING_BUTTONS = "resources_display_folding_buttons";
+
 
 	// public static final String defaultPropsURL = "freemind.properties";
 	// public static Properties defaultProps;

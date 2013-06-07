@@ -43,6 +43,8 @@ import javax.swing.Timer;
 import javax.swing.plaf.basic.BasicButtonListener;
 import javax.swing.plaf.basic.BasicButtonUI;
 
+import freemind.main.FreeMind;
+import freemind.main.Resources;
 import freemind.main.Tools;
 
 /**
@@ -79,7 +81,9 @@ public class NodeFoldingComponent extends JButton {
 		setFocusable(false);
 		setAlignmentY(Component.TOP_ALIGNMENT);
 		setUI(new RoundImageButtonUI());
-		if(!mIsEnabled) {
+		mIsEnabled = Resources.getInstance().getBoolProperty(
+				FreeMind.RESOURCES_DISPLAY_FOLDING_BUTTONS);
+		if (!mIsEnabled) {
 			return;
 		}
 		addMouseListener(new MouseListener() {
@@ -121,8 +125,6 @@ public class NodeFoldingComponent extends JButton {
 		mTimer = new Timer(delay, taskPerformer);
 		mTimer.start();
 	}
-	
-	
 
 	public Dimension getPreferredSize() {
 		return getUI().getPreferredSize(this);
@@ -213,12 +215,13 @@ public class NodeFoldingComponent extends JButton {
 			} else {
 				int xmiddle = bounds.x + bounds.width / 2;
 				int ymiddle = bounds.y + bounds.height / 2;
-				int foldingCircleDiameter = bounds.width/SIZE_FACTOR_ON_MOUSE_OVER;
+				int foldingCircleDiameter = bounds.width
+						/ SIZE_FACTOR_ON_MOUSE_OVER;
 				Color oldColor = g2.getColor();
 				if (mColorCounter != 0) {
 					int diameter = bounds.width * mColorCounter
 							/ COLOR_COUNTER_MAX;
-					if(nodeView.getModel().isFolded()) {
+					if (nodeView.getModel().isFolded()) {
 						diameter = Math.max(diameter, foldingCircleDiameter);
 					}
 					int radius = diameter / 2;
@@ -239,11 +242,11 @@ public class NodeFoldingComponent extends JButton {
 					if (nodeView.getModel().isFolded()) {
 						int radius = foldingCircleDiameter / 2;
 						g2.setColor(nodeView.getMap().getBackground());
-						g2.fillOval(xmiddle - radius, ymiddle - radius, foldingCircleDiameter,
-								foldingCircleDiameter);
+						g2.fillOval(xmiddle - radius, ymiddle - radius,
+								foldingCircleDiameter, foldingCircleDiameter);
 						g2.setColor(oldColor);
-						g2.drawOval(xmiddle - radius, ymiddle - radius, foldingCircleDiameter,
-								foldingCircleDiameter);
+						g2.drawOval(xmiddle - radius, ymiddle - radius,
+								foldingCircleDiameter, foldingCircleDiameter);
 					}
 				}
 			}
@@ -291,7 +294,7 @@ public class NodeFoldingComponent extends JButton {
 	}
 
 	public void dispose() {
-		if(mTimer != null) {
+		if (mTimer != null) {
 			mTimer.stop();
 			mTimer = null;
 		}

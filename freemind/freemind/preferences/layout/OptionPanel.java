@@ -689,6 +689,8 @@ public class OptionPanel implements TextTranslator {
 				StructuredMenuHolder.AMOUNT_OF_VISIBLE_MENU_ITEMS, 10,
 				Integer.MAX_VALUE, 1));
 
+		controls.add(new BooleanProperty(FreeMind.RESOURCES_DISPLAY_FOLDING_BUTTONS+TOOLTIP_EXT,
+				FreeMind.RESOURCES_DISPLAY_FOLDING_BUTTONS)); // true
 		// controls.add(new BooleanProperty(
 		//
 		// "use_split_pane.tooltip", FreeMind.RESOURCES_USE_SPLIT_PANE)); //

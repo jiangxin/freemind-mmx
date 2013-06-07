@@ -2,6 +2,7 @@
 Changes made in FreeMind 1.0.0 RC 5
 ===============================
 * Anti-alias for folding circles fixed
+* Folding buttons can be switched off.
  
 ===============================
 Changes made in FreeMind 1.0.0 RC 4
