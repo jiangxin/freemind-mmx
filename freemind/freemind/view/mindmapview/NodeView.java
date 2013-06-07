@@ -174,6 +174,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 
 	protected void removeFoldingListener() {
 		if(mFoldingListener != null) {
+			mFoldingListener.dispose();
 			map.remove(mFoldingListener);
 			mFoldingListener = null;
 		}

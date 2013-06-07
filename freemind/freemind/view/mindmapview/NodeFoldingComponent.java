@@ -56,10 +56,12 @@ public class NodeFoldingComponent extends JButton {
 	private boolean mIsEntered;
 	private int mColorCounter = 0;
 	private NodeView nodeView;
+	private boolean mIsEnabled = true;
 	/**
 	 * 
 	 */
 	private static final int SIZE_FACTOR_ON_MOUSE_OVER = 4;
+	private Timer mTimer = null;
 
 	public NodeFoldingComponent(NodeView view) {
 		super();
@@ -77,6 +79,9 @@ public class NodeFoldingComponent extends JButton {
 		setFocusable(false);
 		setAlignmentY(Component.TOP_ALIGNMENT);
 		setUI(new RoundImageButtonUI());
+		if(!mIsEnabled) {
+			return;
+		}
 		addMouseListener(new MouseListener() {
 
 			public void mouseReleased(MouseEvent pE) {
@@ -113,8 +118,11 @@ public class NodeFoldingComponent extends JButton {
 
 			}
 		};
-		new Timer(delay, taskPerformer).start();
+		mTimer = new Timer(delay, taskPerformer);
+		mTimer.start();
 	}
+	
+	
 
 	public Dimension getPreferredSize() {
 		return getUI().getPreferredSize(this);
@@ -282,8 +290,11 @@ public class NodeFoldingComponent extends JButton {
 				* SIZE_FACTOR_ON_MOUSE_OVER));
 	}
 
-	private static int getCircleDiameter() {
-		return NodeView.getFoldingSymbolWidth();
+	public void dispose() {
+		if(mTimer != null) {
+			mTimer.stop();
+			mTimer = null;
+		}
 	}
 
 }
