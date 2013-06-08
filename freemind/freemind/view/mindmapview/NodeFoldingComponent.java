@@ -43,9 +43,11 @@ import javax.swing.Timer;
 import javax.swing.plaf.basic.BasicButtonListener;
 import javax.swing.plaf.basic.BasicButtonUI;
 
+import freemind.controller.Controller;
 import freemind.main.FreeMind;
 import freemind.main.Resources;
 import freemind.main.Tools;
+import freemind.preferences.FreemindPropertyListener;
 
 /**
  * @author Foltin
@@ -54,22 +56,19 @@ import freemind.main.Tools;
 public class NodeFoldingComponent extends JButton {
 	private static final int TIMER_DELAY = 50;
 	private static final int COLOR_COUNTER_MAX = 15;
+	private static final int SIZE_FACTOR_ON_MOUSE_OVER = 4;
 	protected static java.util.logging.Logger logger = null;
 	private boolean mIsEntered;
 	private int mColorCounter = 0;
 	private NodeView nodeView;
 	private boolean mIsEnabled = true;
-	/**
-	 * 
-	 */
-	private static final int SIZE_FACTOR_ON_MOUSE_OVER = 4;
 	private Timer mTimer = null;
 
 	public NodeFoldingComponent(NodeView view) {
 		super();
 		if (logger == null) {
 			logger = freemind.main.Resources.getInstance().getLogger(
-					this.getClass().getName());
+					this.getClass().getName());			
 		}
 		this.nodeView = view;
 		setModel(new DefaultButtonModel());
