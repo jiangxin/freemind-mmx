@@ -159,7 +159,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 	}
 
 	protected void addFoldingListener() {
-		if(mFoldingListener == null && getModel().hasChildren()) {
+		if(mFoldingListener == null && getModel().hasVisibleChilds()) {
 			mFoldingListener = new NodeFoldingComponent(this);
 			getMap().add(mFoldingListener, getMap().getComponentCount()-1);
 
@@ -841,6 +841,8 @@ public class NodeView extends JComponent implements TreeModelListener {
 	void update() {
 		updateStyle();
 		if (!isContentVisible()) {
+			// not visible at all
+			removeFoldingListener();
 			mainView.setVisible(false);
 			return;
 		}
@@ -851,6 +853,12 @@ public class NodeView extends JComponent implements TreeModelListener {
 		createAttributeView();
 		if (attributeView != null) {
 			attributeView.update();
+		}
+		// visible. has it still visible children?
+		if(getModel().hasVisibleChilds()) {
+			addFoldingListener();
+		} else {
+			removeFoldingListener();
 		}
 		updateText();
 		updateToolTip();

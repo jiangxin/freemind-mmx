@@ -47,6 +47,7 @@ import freemind.controller.Controller;
 import freemind.main.FreeMind;
 import freemind.main.Resources;
 import freemind.main.Tools;
+import freemind.modes.MindMapNode;
 import freemind.preferences.FreemindPropertyListener;
 
 /**
@@ -206,7 +207,7 @@ public class NodeFoldingComponent extends JButton {
 				int xmiddle = bounds.x + bounds.width / 2;
 				int ymiddle = bounds.y + bounds.height / 2;
 				g2.drawLine(bounds.x, ymiddle, bounds.x + bounds.width, ymiddle);
-				if (nodeView.getModel().isFolded()) {
+				if (isFolded()) {
 					g2.drawLine(xmiddle, bounds.y, xmiddle, bounds.y
 							+ bounds.height);
 				}
@@ -220,7 +221,7 @@ public class NodeFoldingComponent extends JButton {
 				if (mColorCounter != 0) {
 					int diameter = bounds.width * mColorCounter
 							/ COLOR_COUNTER_MAX;
-					if (nodeView.getModel().isFolded()) {
+					if (isFolded()) {
 						diameter = Math.max(diameter, foldingCircleDiameter);
 					}
 					int radius = diameter / 2;
@@ -228,7 +229,7 @@ public class NodeFoldingComponent extends JButton {
 					g2.fillOval(xmiddle - radius, ymiddle - radius, diameter,
 							diameter);
 					g2.setColor(col);
-					if (nodeView.getModel().isFolded()) {
+					if (isFolded()) {
 						g2.drawLine(xmiddle, ymiddle - radius, xmiddle, ymiddle
 								+ radius);
 					}
@@ -238,7 +239,7 @@ public class NodeFoldingComponent extends JButton {
 					g2.drawOval(xmiddle - radius, ymiddle - radius, diameter,
 							diameter);
 				} else {
-					if (nodeView.getModel().isFolded()) {
+					if (isFolded()) {
 						int radius = foldingCircleDiameter / 2;
 						g2.setColor(nodeView.getMap().getBackground());
 						g2.fillOval(xmiddle - radius, ymiddle - radius,
@@ -297,6 +298,11 @@ public class NodeFoldingComponent extends JButton {
 			mTimer.stop();
 			mTimer = null;
 		}
+	}
+
+	protected boolean isFolded() {
+		MindMapNode model = nodeView.getModel();
+		return model.isFolded() && model.isVisible();
 	}
 
 }

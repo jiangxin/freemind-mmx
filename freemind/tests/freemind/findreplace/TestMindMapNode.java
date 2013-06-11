@@ -331,7 +331,7 @@ final class TestMindMapNode implements MindMapNode {
 		return false;
 	}
 
-	public boolean hasOneVisibleChild() {
+	public boolean hasExactlyOneVisibleChild() {
 		return false;
 	}
 
@@ -494,6 +494,13 @@ final class TestMindMapNode implements MindMapNode {
 	 */
 	public ListIterator sortedChildrenUnfolded() {
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#hasVisibleChilds()
+	 */
+	public boolean hasVisibleChilds() {
+		return false;
 	}
 
 }
