@@ -17,7 +17,6 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-
 package freemind.modes.mindmapmode;
 
 import java.awt.Color;
@@ -485,9 +484,9 @@ public class MindMapController extends ControllerAdapter implements
 		getActionFactory().registerUndoHandler(
 				new UndoActionHandler(this, undo, redo));
 		// debug:
-//		getActionFactory().registerHandler(
-//				new freemind.modes.mindmapmode.actions.xml.PrintActionHandler(
-//						this));
+		// getActionFactory().registerHandler(
+		// new freemind.modes.mindmapmode.actions.xml.PrintActionHandler(
+		// this));
 
 		cut = new CutAction(this);
 		paste = new PasteAction(this);
@@ -832,21 +831,43 @@ public class MindMapController extends ControllerAdapter implements
 		// only for the selected node (fc, 2.5.2004)
 		final MapModule mapModule = getController().getMapModule();
 		if (mapModule != null && n == mapModule.getView().getSelected()) {
-			updateToolbar(n);
+			updateNodeInformation(n);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.modes.ControllerAdapter#onFocusNode(freemind.view.mindmapview.NodeView)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.modes.ControllerAdapter#onFocusNode(freemind.view.mindmapview
+	 * .NodeView)
 	 */
 	public void onFocusNode(NodeView pNode) {
 		super.onFocusNode(pNode);
-		updateToolbar(pNode.getModel());
+		updateNodeInformation(pNode.getModel());
 	}
 
-	private void updateToolbar(MindMapNode n) {
+	/**
+	 * Updates the toolbar and the status line.
+	 * 
+	 * @param n
+	 */
+	private void updateNodeInformation(MindMapNode n) {
 		toolbar.selectFontSize(n.getFontSize());
 		toolbar.selectFontName(n.getFontFamilyName());
+		String nodeStatusLine;
+		int amountOfSelecteds = getSelecteds().size();
+		if(amountOfSelecteds > 1) {
+			nodeStatusLine = Resources.getInstance().format(
+					"node_status_line_several_selected_nodes",
+					new Object[] { new Integer(amountOfSelecteds) });			
+		} else {
+			nodeStatusLine = Resources.getInstance().format(
+					"node_status_line",
+					new Object[] { n.getShortText(this),
+							new Integer(n.getChildCount()) });
+		}
+		getFrame().out(nodeStatusLine);
 	}
 
 	// fc, 14.12.2004: changes, such that different models can be used:
@@ -1601,8 +1622,12 @@ public class MindMapController extends ControllerAdapter implements
 				parent.isNewChildLeft());
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.modes.mindmapmode.actions.MindMapActions#paste(java.awt.datatransfer.Transferable, freemind.modes.MindMapNode, boolean, boolean)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.modes.mindmapmode.actions.MindMapActions#paste(java.awt.datatransfer
+	 * .Transferable, freemind.modes.MindMapNode, boolean, boolean)
 	 */
 	public boolean paste(Transferable t, MindMapNode target, boolean asSibling,
 			boolean isLeft) {
@@ -1708,7 +1733,8 @@ public class MindMapController extends ControllerAdapter implements
 		super.loadURL(relative);
 	}
 
-	public void addHook(MindMapNode focussed, List selecteds, String hookName, Properties pHookProperties) {
+	public void addHook(MindMapNode focussed, List selecteds, String hookName,
+			Properties pHookProperties) {
 		nodeHookAction.addHook(focussed, selecteds, hookName, pHookProperties);
 	}
 
@@ -2188,7 +2214,7 @@ public class MindMapController extends ControllerAdapter implements
 
 	public void removeNodeFromParent(MindMapNode selectedNode) {
 		getModel().setSaved(false);
-		// first deselect, and then remove. 
+		// first deselect, and then remove.
 		NodeView nodeView = getView().getNodeView(selectedNode);
 		getView().deselect(nodeView);
 		getModel().removeNodeFromParent(selectedNode);

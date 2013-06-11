@@ -28,6 +28,7 @@ import java.awt.EventQueue;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -82,6 +83,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.UIManager;
 
 import com.inet.jortho.SpellChecker;
@@ -96,7 +98,7 @@ import freemind.preferences.FreemindPropertyListener;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 
-public class FreeMind extends JFrame implements FreeMindMain {
+public class FreeMind extends JFrame implements FreeMindMain, ActionListener {
 
 	public static final String J_SPLIT_PANE_SPLIT_TYPE = "JSplitPane.SPLIT_TYPE";
 
@@ -226,6 +228,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	public static final String RESOURCES_DISPLAY_FOLDING_BUTTONS = "resources_display_folding_buttons";
 
+	private static final int TIME_TO_DISPLAY_MESSAGES = 10000;
+
 
 	// public static final String defaultPropsURL = "freemind.properties";
 	// public static Properties defaultProps;
@@ -236,6 +240,8 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	private MenuBar menuBar;
 
 	private JLabel status;
+	
+	private Timer mStatusMessageDisplayTimer;
 
 	private Map filetypes; // Hopefully obsolete. Used to store applications
 
@@ -522,20 +528,26 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	}
 
 	public void out(String msg) {
-		// TODO: Automatically remove old messages after a certain time.
 		if (status != null) {
 			status.setText(msg);
+			// Automatically remove old messages after a certain time.
+			mStatusMessageDisplayTimer.restart();
 			// logger.info(msg);
 		}
 	}
 
 	public void err(String msg) {
-		if (status != null) {
-			status.setText(msg);
-		}
-		// logger.info(msg);
+		out(msg);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	public void actionPerformed(ActionEvent pE) {
+		out("");
+		mStatusMessageDisplayTimer.stop();
+	}
+	
 	/**
 	 * Open url in WWW browser. This method hides some differences between
 	 * operating systems.
@@ -1094,6 +1106,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		status = new JLabel("!");
 		status.setPreferredSize(status.getPreferredSize());
 		status.setText("");
+		mStatusMessageDisplayTimer = new Timer(TIME_TO_DISPLAY_MESSAGES, this);
 		mContentComponent = mScrollPane;
 
 		boolean shouldUseTabbedPane = Resources.getInstance().getBoolProperty(

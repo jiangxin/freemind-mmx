@@ -1,4 +1,9 @@
 ===============================
+Changes made in FreeMind 1.1.0 Alpha 1
+===============================
+* Added node statistics to the status bar.
+
+===============================
 Changes made in FreeMind 1.0.0 RC 5
 ===============================
 * Anti-alias for folding circles fixed
