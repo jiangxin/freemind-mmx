@@ -19,6 +19,7 @@
 
 package freemind.view.mindmapview;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -40,11 +41,9 @@ class ForkMainView extends MainView {
 		paintSelected(g);
 		paintDragOver(g);
 
-		int edgeWidth = model.getEdge().getWidth();
-		if (edgeWidth == 0) {
-			edgeWidth = 1;
-		}
+		int edgeWidth = getEdgeWidth();
 		Color oldColor = g.getColor();
+		g.setStroke(new BasicStroke(edgeWidth));
 		// Draw a standard node
 		g.setColor(model.getEdge().getColor());
 		g.drawLine(0, getHeight() - edgeWidth / 2 - 1, getWidth(), getHeight()
@@ -95,12 +94,17 @@ class ForkMainView extends MainView {
 	}
 
 	Point getLeftPoint() {
+		int edgeWidth = getEdgeWidth();
+		Point in = new Point(0, getHeight() - edgeWidth / 2 - 1);
+		return in;
+	}
+
+	protected int getEdgeWidth() {
 		int edgeWidth = getNodeView().getModel().getEdge().getWidth();
 		if (edgeWidth == 0) {
 			edgeWidth = 1;
 		}
-		Point in = new Point(0, getHeight() - edgeWidth / 2 - 1);
-		return in;
+		return edgeWidth;
 	}
 
 	Point getCenterPoint() {
@@ -109,10 +113,7 @@ class ForkMainView extends MainView {
 	}
 
 	Point getRightPoint() {
-		int edgeWidth = getNodeView().getModel().getEdge().getWidth();
-		if (edgeWidth == 0) {
-			edgeWidth = 1;
-		}
+		int edgeWidth = getEdgeWidth();
 		Point in = new Point(getWidth() - 1, getHeight() - edgeWidth / 2 - 1);
 		return in;
 	}
