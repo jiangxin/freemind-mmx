@@ -5,6 +5,7 @@ Changes made in FreeMind 1.0.0 RC 5
 * Folding buttons can be switched off.
 * Corrected folding buttons for filtered maps (https://sourceforge.net/p/freemind/discussion/320014/). 
 * Fixed edge width for fork nodes.
+* Fixed note icon to appear after paste.
 
 ===============================
 Changes made in FreeMind 1.0.0 RC 4

@@ -1577,12 +1577,7 @@ public abstract class ControllerAdapter implements ModeController,
 			int index) {
 		getModel().insertNodeInto(newNode, parent, index);
 		// call hooks
-		for (Iterator iterator = mNodeLifetimeListeners.iterator(); iterator
-				.hasNext();) {
-			NodeLifetimeListener listener = (NodeLifetimeListener) iterator
-					.next();
-			listener.onCreateNodeHook(newNode);
-		}
+		fireRecursiveNodeCreateEvent(newNode);
 	}
 
 	/*
