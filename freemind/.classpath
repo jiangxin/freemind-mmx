@@ -37,5 +37,8 @@
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="plugins/svg/batik-anim.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/batik-codec.jar"/>
+	<classpathentry kind="lib" path="plugins/svg/xml-apis-ext.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
