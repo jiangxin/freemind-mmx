@@ -171,11 +171,12 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 			if (size() > 0) {
 				removeFocusForHooks(get(0));
 			}
-			for (Iterator it = mySelected.iterator(); it.hasNext();) {
+			mySelected.clear();
+			Vector selectedCopy = new Vector(mySelected);
+			for (Iterator it = selectedCopy.iterator(); it.hasNext();) {
 				NodeView view = (NodeView) it.next();
 				changeSelection(view, false);
 			}
-			mySelected.clear();
 			logger.finest("Cleared selected.");
 		}
 
@@ -197,8 +198,8 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 			if (mySelected.indexOf(node) == 0) {
 				removeFocusForHooks(node);
 			}
-			changeSelection(node, false);
 			mySelected.remove(node);
+			changeSelection(node, false);
 			logger.finest("Removed focused " + node);
 		}
 

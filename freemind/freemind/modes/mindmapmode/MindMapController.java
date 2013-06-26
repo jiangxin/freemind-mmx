@@ -55,6 +55,7 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -221,6 +222,7 @@ import freemind.view.mindmapview.attributeview.AttributePopupMenu;
 public class MindMapController extends ControllerAdapter implements
 		MindMapActions, MapSourceChangedObserver {
 
+	public static final String REGEXP_FOR_NUMBERS_IN_STRINGS = "([+\\-]?[0-9]*[.,]?[0-9]+)\\b";
 	private static final String ACCESSORIES_PLUGINS_NODE_NOTE = "accessories.plugins.NodeNote";
 
 	/**
@@ -831,7 +833,8 @@ public class MindMapController extends ControllerAdapter implements
 		// only for the selected node (fc, 2.5.2004)
 		final MapModule mapModule = getController().getMapModule();
 		if (mapModule != null && n == mapModule.getView().getSelected()) {
-			updateNodeInformation(n);
+			updateToolbar(n);
+			updateNodeInformation();
 		}
 	}
 
@@ -844,30 +847,65 @@ public class MindMapController extends ControllerAdapter implements
 	 */
 	public void onFocusNode(NodeView pNode) {
 		super.onFocusNode(pNode);
-		updateNodeInformation(pNode.getModel());
+		MindMapNode model = pNode.getModel();
+		updateToolbar(model);
+		updateNodeInformation();
+	}
+	
+	/* (non-Javadoc)
+	 * @see freemind.modes.ControllerAdapter#onLostFocusNode(freemind.view.mindmapview.NodeView)
+	 */
+	public void onLostFocusNode(NodeView pNode) {
+		super.onLostFocusNode(pNode);
+		updateNodeInformation();
 	}
 
-	/**
-	 * Updates the toolbar and the status line.
-	 * 
-	 * @param n
+	/* (non-Javadoc)
+	 * @see freemind.modes.ControllerAdapter#changeSelection(freemind.view.mindmapview.NodeView, boolean)
 	 */
-	private void updateNodeInformation(MindMapNode n) {
-		toolbar.selectFontSize(n.getFontSize());
-		toolbar.selectFontName(n.getFontFamilyName());
+	public void changeSelection(NodeView pNode, boolean pIsSelected) {
+		super.changeSelection(pNode, pIsSelected);
+		updateNodeInformation();
+	}
+	
+	/**
+	 * Updates the status line.
+	 */
+	private void updateNodeInformation() {
 		String nodeStatusLine;
-		int amountOfSelecteds = getSelecteds().size();
+		List selecteds = getSelecteds();
+		int amountOfSelecteds = selecteds.size();
+		double sum = 0d;
+		java.util.regex.Pattern p = java.util.regex.Pattern.compile(REGEXP_FOR_NUMBERS_IN_STRINGS);
+		for (Iterator it = selecteds.iterator(); it.hasNext();) {
+			MindMapNode selectedNode = (MindMapNode) it.next();
+			Matcher m = p.matcher(selectedNode.getText());
+			while(m.find()) {
+				String number = m.group();
+				try {
+					sum += Double.parseDouble(number);
+				} catch(NumberFormatException e) {
+//					freemind.main.Resources.getInstance().logException(e);
+				}
+			}
+		}
 		if(amountOfSelecteds > 1) {
 			nodeStatusLine = Resources.getInstance().format(
 					"node_status_line_several_selected_nodes",
-					new Object[] { new Integer(amountOfSelecteds) });			
+					new Object[] { new Integer(amountOfSelecteds), new Double(sum) });			
 		} else {
+			MindMapNode sel = (MindMapNode) selecteds.get(0);
 			nodeStatusLine = Resources.getInstance().format(
 					"node_status_line",
-					new Object[] { n.getShortText(this),
-							new Integer(n.getChildCount()) });
+					new Object[] { sel.getShortText(this),
+							new Integer(sel.getChildCount()) });
 		}
 		getFrame().out(nodeStatusLine);
+	}
+
+	protected void updateToolbar(MindMapNode n) {
+		toolbar.selectFontSize(n.getFontSize());
+		toolbar.selectFontName(n.getFontFamilyName());
 	}
 
 	// fc, 14.12.2004: changes, such that different models can be used:
@@ -2104,8 +2142,9 @@ public class MindMapController extends ControllerAdapter implements
 
 			// Display link in status line
 			String link = newlySelectedNodeView.getModel().getLink();
-			link = (link != null ? link : " ");
-			getController().getFrame().out(link);
+			if (link != null) {
+				getController().getFrame().out(link);
+			}
 		}
 		logger.fine("MouseEvent: extend:" + extend + ", range:" + range
 				+ ", branch:" + branch + ", event:" + e + ", retValue:"

@@ -34,6 +34,7 @@ import java.util.Vector;
 import freemind.main.FreeMindSecurityManager;
 import freemind.main.HtmlTools;
 import freemind.main.Tools;
+import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapMapModel;
 
 /**
@@ -292,5 +293,16 @@ public class ToolsTests extends FreeMindTestBase {
 	public void testKeyDocumentationPathConversion() throws Exception {
 		String file = "c:\\home\\java\\freemind\\0_9_0\\bin\\dist\\doc/FM_Key_Mappings_Quick_Guide.pdf";
 		System.out.println(Tools.urlToFile(Tools.fileToUrl(new File(file))));
+	}
+	
+	public void testNumberRegexp() throws Exception {
+		assertTrue("1,2345".matches(MindMapController.REGEXP_FOR_NUMBERS_IN_STRINGS));
+		assertFalse("a1,2345".matches(MindMapController.REGEXP_FOR_NUMBERS_IN_STRINGS));
+		assertFalse("1-,2345".matches(MindMapController.REGEXP_FOR_NUMBERS_IN_STRINGS));
+		assertFalse("1,23+45".matches(MindMapController.REGEXP_FOR_NUMBERS_IN_STRINGS));
+		assertTrue("+1,2345".matches(MindMapController.REGEXP_FOR_NUMBERS_IN_STRINGS));
+		assertTrue("-1,2345".matches(MindMapController.REGEXP_FOR_NUMBERS_IN_STRINGS));
+		assertFalse("+".matches(MindMapController.REGEXP_FOR_NUMBERS_IN_STRINGS));
+		assertFalse("-".matches(MindMapController.REGEXP_FOR_NUMBERS_IN_STRINGS));
 	}
 }

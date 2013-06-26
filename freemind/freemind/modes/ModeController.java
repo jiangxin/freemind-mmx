@@ -225,7 +225,8 @@ public interface ModeController extends TextTranslator {
 
 		/**
 		 * Informs whether or not the node belongs to the group of selected
-		 * nodes (in contrast to the focused node above).
+		 * nodes (in contrast to the focused node above). The nodes selection is 
+		 * already changed, when this method is called.
 		 * @param pNode
 		 * @param pIsSelected true, if the node is selected now.
 		 */
