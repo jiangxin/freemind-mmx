@@ -24,6 +24,10 @@
 
 package freemind.modes.mindmapmode.actions;
 
+import javax.swing.Action;
+import javax.swing.JMenuItem;
+
+import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.actions.generated.instance.EdgeStyleFormatAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Tools;
@@ -34,7 +38,7 @@ import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
-public class EdgeStyleAction extends NodeGeneralAction implements NodeActorXml {
+public class EdgeStyleAction extends NodeGeneralAction implements NodeActorXml, MenuItemSelectedListener {
 	private String mStyle;
 
 	public EdgeStyleAction(MindMapController controller, String style) {
@@ -98,5 +102,13 @@ public class EdgeStyleAction extends NodeGeneralAction implements NodeActorXml {
 				modeController.nodeChanged(node);
 			}
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.controller.MenuItemSelectedListener#isSelected(javax.swing.JMenuItem, javax.swing.Action)
+	 */
+	public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
+		String style = getMindMapController().getSelected().getEdge().getStyle();
+		return Tools.safeEquals(style, mStyle);
 	}
 }

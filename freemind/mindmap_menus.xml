@@ -162,18 +162,18 @@
 			<menu_category name="edges">
 				<menu_action field="edgeColor" key_ref="keystroke_edge_color"/>
 				<menu_submenu name="styles" name_ref="format_menu_edge_styles">				
-						<menu_action field="EdgeStyle_linear"/>
-						<menu_action field="EdgeStyle_bezier"/>
-						<menu_action field="EdgeStyle_sharp_linear"/>
-						<menu_action field="EdgeStyle_sharp_bezier"/>
+						<menu_checked_action field="EdgeStyle_linear"/>
+						<menu_checked_action field="EdgeStyle_bezier"/>
+						<menu_checked_action field="EdgeStyle_sharp_linear"/>
+						<menu_checked_action field="EdgeStyle_sharp_bezier"/>
 				</menu_submenu>
 				<menu_submenu name="widths" name_ref="format_menu_edge_widths">				
-						<menu_action field="EdgeWidth_WIDTH_PARENT"/>
-						<menu_action field="EdgeWidth_WIDTH_THIN"/>
-						<menu_action field="EdgeWidth_1"/>
-						<menu_action field="EdgeWidth_2"/>
-						<menu_action field="EdgeWidth_4"/>
-						<menu_action field="EdgeWidth_8"/>
+						<menu_checked_action field="EdgeWidth_WIDTH_PARENT"/>
+						<menu_checked_action field="EdgeWidth_WIDTH_THIN"/>
+						<menu_checked_action field="EdgeWidth_1"/>
+						<menu_checked_action field="EdgeWidth_2"/>
+						<menu_checked_action field="EdgeWidth_4"/>
+						<menu_checked_action field="EdgeWidth_8"/>
 				</menu_submenu>
 			</menu_category>
 		</menu_category>	
@@ -294,18 +294,18 @@
 			<menu_category name="edges">
 				<menu_action field="edgeColor" key_ref="keystroke_edge_color"/>
 				<menu_submenu name="styles" name_ref="format_menu_edge_styles">				
-						<menu_action field="EdgeStyle_linear"/>
-						<menu_action field="EdgeStyle_bezier"/>
-						<menu_action field="EdgeStyle_sharp_linear"/>
-						<menu_action field="EdgeStyle_sharp_bezier"/>
+						<menu_checked_action field="EdgeStyle_linear"/>
+						<menu_checked_action field="EdgeStyle_bezier"/>
+						<menu_checked_action field="EdgeStyle_sharp_linear"/>
+						<menu_checked_action field="EdgeStyle_sharp_bezier"/>
 				</menu_submenu>
 				<menu_submenu name="widths" name_ref="format_menu_edge_widths">				
-						<menu_action field="EdgeWidth_WIDTH_PARENT"/>
-						<menu_action field="EdgeWidth_WIDTH_THIN"/>
-						<menu_action field="EdgeWidth_1"/>
-						<menu_action field="EdgeWidth_2"/>
-						<menu_action field="EdgeWidth_4"/>
-						<menu_action field="EdgeWidth_8"/>
+						<menu_checked_action field="EdgeWidth_WIDTH_PARENT"/>
+						<menu_checked_action field="EdgeWidth_WIDTH_THIN"/>
+						<menu_checked_action field="EdgeWidth_1"/>
+						<menu_checked_action field="EdgeWidth_2"/>
+						<menu_checked_action field="EdgeWidth_4"/>
+						<menu_checked_action field="EdgeWidth_8"/>
 				</menu_submenu>
 			</menu_category>
 		</menu_submenu>	
