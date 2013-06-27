@@ -60,16 +60,6 @@ public class MindMapLayout implements LayoutManager {
 			if (!component.isValid()) {
 				component.validate();
 			}
-			if (component instanceof NodeMotionListenerView) {
-				final NodeMotionListenerView nodeMotionListenerView = (NodeMotionListenerView) component;
-				final NodeViewLayout layout = (NodeViewLayout) nodeMotionListenerView
-						.getMovedView().getLayout();
-				layout.layoutNodeMotionListenerView(nodeMotionListenerView);
-			} else if (component instanceof NodeFoldingComponent) {
-				NodeFoldingComponent foldingComponent = (NodeFoldingComponent) component;
-				NodeViewLayout layout = (NodeViewLayout) foldingComponent.getNodeView().getLayout();
-				layout.layoutNodeFoldingComponent(foldingComponent);
-			}
 		}
 	}
 

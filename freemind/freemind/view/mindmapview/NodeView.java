@@ -153,7 +153,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 
 		if (!model.isRoot() && "true".equals(map.getController().getProperty(FreeMindMain.ENABLE_NODE_MOVEMENT))) {
 			motionListenerView = new NodeMotionListenerView(this);
-			map.add(motionListenerView, map.getComponentCount() - 1);
+			add(motionListenerView, getComponentCount() - 1);
 		}
 		addFoldingListener();
 	}
@@ -161,7 +161,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 	protected void addFoldingListener() {
 		if(mFoldingListener == null && getModel().hasVisibleChilds()) {
 			mFoldingListener = new NodeFoldingComponent(this);
-			getMap().add(mFoldingListener, getMap().getComponentCount()-1);
+			add(mFoldingListener, getComponentCount()-1);
 
 			mFoldingListener.addActionListener(new ActionListener() {
 				
