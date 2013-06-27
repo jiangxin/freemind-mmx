@@ -24,8 +24,11 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.util.Iterator;
 
 import freemind.main.Tools;
+import freemind.modes.EdgeAdapter;
+import freemind.modes.MindMapEdge;
 import freemind.modes.MindMapNode;
 
 class ForkMainView extends MainView {
@@ -100,9 +103,22 @@ class ForkMainView extends MainView {
 	}
 
 	protected int getEdgeWidth() {
-		int edgeWidth = getNodeView().getModel().getEdge().getWidth();
+		MindMapNode nodeModel = getNodeView().getModel();
+		MindMapEdge edge = nodeModel.getEdge();
+		int edgeWidth = edge.getWidth();
 		if (edgeWidth == 0) {
 			edgeWidth = 1;
+		}
+		switch(edge.getStyleAsInt()) {
+		case EdgeAdapter.INT_EDGESTYLE_SHARP_BEZIER:
+			// intentionally fall through
+		case EdgeAdapter.INT_EDGESTYLE_SHARP_LINEAR:
+			// here, we take the maximum of width of children:
+			edgeWidth = 1;
+			for (Iterator it = nodeModel.childrenUnfolded(); it.hasNext();) {
+				MindMapNode child = (MindMapNode) it.next();
+				edgeWidth = Math.max(edgeWidth, child.getEdge().getWidth());
+			}
 		}
 		return edgeWidth;
 	}
