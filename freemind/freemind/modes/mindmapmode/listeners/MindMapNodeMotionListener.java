@@ -95,16 +95,15 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
 				}
 				dragStartingPoint = point;
 			}
-			EventQueue.invokeLater(new Runnable() {
-				public void run() {
-					Rectangle r = motionListenerView.getBounds();
-					boolean isEventPointVisible = mapView.getVisibleRect()
-							.contains(r);
-					if (!isEventPointVisible) {
-						mapView.scrollRectToVisible(r);
-					}
-				}
-			});
+			Point pointInMap = e.getPoint();
+			Tools.convertPointToAncestor(motionListenerView, pointInMap,
+					mapView);
+			boolean isEventPointVisible = mapView.getVisibleRect()
+					.contains(pointInMap);
+			if (!isEventPointVisible) {
+				Rectangle r = new Rectangle(pointInMap);
+				mapView.scrollRectToVisible(r);
+			}
 		}
 	}
 

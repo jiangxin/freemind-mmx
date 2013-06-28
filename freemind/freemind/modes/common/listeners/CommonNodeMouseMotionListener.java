@@ -36,7 +36,8 @@ import freemind.view.mindmapview.MainView;
 import freemind.view.mindmapview.NodeView;
 
 /**
- * The MouseMotionListener which belongs to every NodeView
+ * The MouseMotionListener which belongs to every NodeView.
+ * Handles delayed selection.
  */
 public class CommonNodeMouseMotionListener implements NodeMouseMotionObserver {
 
