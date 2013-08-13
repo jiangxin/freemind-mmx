@@ -111,10 +111,13 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		values.put(XML_STORAGE_CLONES, getCloneIdsAsString());
 		values.put(XML_STORAGE_CLONE_ID, mCloneId);
 		try {
-			boolean cloneItself = getRegistration()
-					.getCloneProperties(mCloneId).isCloneItself();
-			values.put(XML_STORAGE_CLONE_ITSELF,
-					cloneItself ? CLONE_ITSELF_TRUE : CLONE_ITSELF_FALSE);
+			CloneProperties cloneProperties = getRegistration()
+					.getCloneProperties(mCloneId);
+			if (cloneProperties != null) {
+				boolean cloneItself = cloneProperties.isCloneItself();
+				values.put(XML_STORAGE_CLONE_ITSELF,
+						cloneItself ? CLONE_ITSELF_TRUE : CLONE_ITSELF_FALSE);
+			}
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
 		}
