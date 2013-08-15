@@ -150,6 +150,25 @@ public class LayoutTests extends FreeMindTestBase {
 		assertEquals(yCoordinate3+10, getYCoordinate(child3));
 	}
 	
+	public void testYShiftNegativeWith3ChildsYCalcToRoot() throws Exception {
+		MindMapNodeModel child3 = new MindMapNodeModel("CHILD3", mFreeMindMain,
+				mModel);
+		mModel.insertNodeInto(child3, mRoot, 2);
+		layout(mMapView);
+		int yCoordinateRoot = getYCoordinate(mRoot);
+		int yCoordinate = getYCoordinate(mChild2) - yCoordinateRoot;
+		int yCoordinateChild1 = getYCoordinate(mChild1) - yCoordinateRoot;
+		int yCoordinate3 = getYCoordinate(child3) - yCoordinateRoot;
+		int delta = -10;
+		mChild2.setShiftY(delta);
+//		mModel.save(new File("/tmp/testYShiftNegativeWith3Childs.mm"));
+		layout(mMapView);
+		int yCoordinateRoot2 = getYCoordinate(mRoot);
+		assertEquals(yCoordinateChild1 + delta, getYCoordinate(mChild1)-yCoordinateRoot2);
+		assertEquals(yCoordinate + delta, getYCoordinate(mChild2)-yCoordinateRoot2);
+		assertEquals(yCoordinate3, getYCoordinate(child3)-yCoordinateRoot2);
+	}
+	
 	protected void layout(MapView mapView) {
 		NodeView root = mapView.getRoot();
 		LayoutManager layout = root.getLayout();
@@ -163,7 +182,8 @@ public class LayoutTests extends FreeMindTestBase {
 			nodes.remove(view);
 			nodes.addAll(view.getChildrenViews());
 			int yCoordinate = getYCoordinate(view.getModel());
-			System.out.println("Y von " + view.getModel() + " ist " + yCoordinate);
+			int yCoordinateRoot = getYCoordinate(root.getModel());
+			System.out.println("Y coordinate of node " + view.getModel() + " is " + (yCoordinate-yCoordinateRoot));
 		}
 		System.out.println("------------------");
 	}
