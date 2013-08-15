@@ -36,8 +36,13 @@ public class MindMapLayout implements LayoutManager {
 	// minimal width for input field of leaf or folded node (PN)
 	// the MINIMAL_LEAF_WIDTH is reserved by calculation of the map width
 	public final static int MINIMAL_LEAF_WIDTH = 150;
+	protected static java.util.logging.Logger logger = null;
 
 	public MindMapLayout() {
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
 	}
 
 	public void addLayoutComponent(String name, Component comp) {
@@ -50,7 +55,9 @@ public class MindMapLayout implements LayoutManager {
 		final MapView mapView = (MapView) c;
 		final int calcXBorderSize = calcXBorderSize(mapView);
 		final int calcYBorderSize = calcYBorderSize(mapView);
+		logger.info("Starting layout of map " + mapView.getModel().getFile());
 		getRoot(mapView).validate();
+		logger.info("Finished layout of map" + mapView.getModel().getFile());
 		getRoot(mapView).setLocation(calcXBorderSize, calcYBorderSize);
 		mapView.setSize(calcXBorderSize * 2 + getRoot(mapView).getWidth(),
 				calcYBorderSize * 2 + getRoot(mapView).getHeight());

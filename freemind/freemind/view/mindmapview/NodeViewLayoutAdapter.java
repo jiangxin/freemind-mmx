@@ -29,8 +29,13 @@ import javax.swing.JComponent;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
 
+/**
+ * @author foltin
+ * @date 11.07.2013
+ */
 abstract public class NodeViewLayoutAdapter implements NodeViewLayout {
 	protected final int LISTENER_VIEW_WIDTH = 10;
+	protected static java.util.logging.Logger logger = null;
 	protected Point location = new Point();
 	private static Dimension minDimension;
 	private NodeView view;
@@ -40,6 +45,13 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout {
 	private int vGap;
 	private int spaceAround;
 
+	public NodeViewLayoutAdapter() {
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
+	}
+	
 	public void addLayoutComponent(String arg0, Component arg1) {
 	}
 
@@ -77,6 +89,9 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout {
 	public void layoutContainer(Container c) {
 		setUp(c);
 		layout();
+		Point location2 = view.getLocation();
+		Tools.convertPointToAncestor(view, location2, view.getMap());
+		logger.info("Layouting node '" + view.getModel() + "' to " + location2);
 		layoutOtherItems();
 		shutDown();
 	}
@@ -183,23 +198,33 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout {
 		return height + vGap * (count - 1);
 	}
 
+	/**
+	 * @param isLeft
+	 * @return a shift, which is less than or equal zero
+	 */
 	protected int getChildVerticalShift(boolean isLeft) {
-		if (getChildCount() == 0)
-			return 0;
 		int shift = 0;
+		boolean isFirstNodeView = false;
+		boolean foundNodeView = false;
 		for (int i = 0; i < getChildCount(); i++) {
 			Component component = getView().getComponent(i);
 			if (component instanceof NodeView) {
 				NodeView child = (NodeView) component;
 				if (child.isLeft() == isLeft) {
 					final int childShift = child.getShift();
-					if (childShift < 0 || i == 0)
+					if (childShift < 0 || isFirstNodeView) {
 						shift += childShift;
+						isFirstNodeView = false;
+					}
 					shift -= (child.getContent().getY() - getSpaceAround());
+					foundNodeView = true;
 				}
 			}
 		}
-		return shift - getSpaceAround();
+		if(foundNodeView) {
+			shift -= getSpaceAround();
+		}
+		return shift;
 	}
 
 	protected int getChildHorizontalShift() {
@@ -231,6 +256,10 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout {
 		return shift;
 	}
 
+	/**
+	 * Implemented in the base class, as the root layout needs it, too.
+	 * @param childVerticalShift
+	 */
 	protected void placeRightChildren(int childVerticalShift) {
 		final int baseX = getContent().getX() + getContent().getWidth();
 		int y = getContent().getY() + childVerticalShift;
@@ -258,6 +287,8 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout {
 					y += shiftY;
 					child.setLocation(x, y);
 				}
+				logger.info("Place of child " + component.getModel().getText() + ": " + child.getLocation());
+				
 				y += child.getHeight() - 2 * getSpaceAround() + getVGap()
 						+ additionalCloudHeigth;
 				right = Math.max(right, x + child.getWidth()
@@ -279,6 +310,10 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout {
 		}
 	}
 
+	/**
+ 	 * Implemented in the base class, as the root layout needs it, too.
+	 * @param childVerticalShift
+	 */
 	protected void placeLeftChildren(int childVerticalShift) {
 		final int baseX = getContent().getX();
 		int y = getContent().getY() + childVerticalShift;

@@ -151,15 +151,11 @@ public class NodeView extends JComponent implements TreeModelListener {
 
 		parent.add(this, index);
 
-		if (!model.isRoot() && "true".equals(map.getController().getProperty(FreeMindMain.ENABLE_NODE_MOVEMENT))) {
-			motionListenerView = new NodeMotionListenerView(this);
-			add(motionListenerView, getComponentCount() - 1);
-		}
 		addFoldingListener();
 	}
 
 	protected void addFoldingListener() {
-		if(mFoldingListener == null && getModel().hasVisibleChilds()) {
+		if(mFoldingListener == null && getModel().hasVisibleChilds() && !getModel().isRoot()) {
 			mFoldingListener = new NodeFoldingComponent(this);
 			add(mFoldingListener, getComponentCount()-1);
 
@@ -175,7 +171,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 	protected void removeFoldingListener() {
 		if(mFoldingListener != null) {
 			mFoldingListener.dispose();
-			map.remove(mFoldingListener);
+			remove(mFoldingListener);
 			mFoldingListener = null;
 		}
 	}
@@ -208,6 +204,10 @@ public class NodeView extends JComponent implements TreeModelListener {
 		mainView.addMouseMotionListener(this.map.getNodeMouseMotionListener());
 		addDragListener(map.getNodeDragListener());
 		addDropListener(map.getNodeDropListener());
+		if (!model.isRoot() && "true".equals(map.getController().getProperty(FreeMindMain.ENABLE_NODE_MOVEMENT))) {
+			motionListenerView = new NodeMotionListenerView(this);
+			add(motionListenerView);
+		}
 
 	}
 
@@ -215,7 +215,8 @@ public class NodeView extends JComponent implements TreeModelListener {
 		setFocusCycleRoot(false);
 		getParent().remove(this);
 		if (motionListenerView != null) {
-			map.remove(motionListenerView);
+			remove(motionListenerView);
+			motionListenerView = null;
 		}
 		removeFoldingListener();
 		ToolTipManager.sharedInstance().unregisterComponent(mainView);
@@ -1067,9 +1068,6 @@ public class NodeView extends JComponent implements TreeModelListener {
 	}
 
 	/**
-     *
-     */
-	/**
 	 * Updates the tool tip of the node.
 	 */
 	public void updateToolTip() {
@@ -1461,10 +1459,9 @@ public class NodeView extends JComponent implements TreeModelListener {
 	public Container getContentPane() {
 		if (contentPane == null) {
 			contentPane = NodeViewFactory.getInstance().newContentPane(this);
-			int index = getComponentCount() - 1;
-			remove(index);
+			remove(mainView);
 			contentPane.add(mainView);
-			add(contentPane, index);
+			add(contentPane);
 		}
 		return contentPane;
 	}
