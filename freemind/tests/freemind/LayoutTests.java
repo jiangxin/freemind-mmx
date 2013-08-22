@@ -39,6 +39,7 @@ import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapMode;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.view.mindmapview.MapView;
+import freemind.view.mindmapview.MapView.ScrollPane;
 import freemind.view.mindmapview.NodeView;
 
 /**
@@ -52,12 +53,15 @@ public class LayoutTests extends FreeMindTestBase {
 	private MindMapNodeModel mChild2;
 	private MapView mMapView;
 	private MindMapMapModel mModel;
+	private ScrollPane mScrollPane;
 
 	protected void setUp() throws Exception {
 		super.setUp();
 		JPanel parent = new JPanel();
 		Rectangle bounds = new Rectangle(0, 0, 400, 600);
 		parent.setBounds(bounds);
+		mScrollPane = new MapView.ScrollPane();
+		parent.add(mScrollPane, BorderLayout.CENTER);
 		Controller controller = new Controller(mFreeMindMain);
 		controller.initialization();
 		MindMapMode mode = new MindMapMode() {
@@ -95,7 +99,7 @@ public class LayoutTests extends FreeMindTestBase {
 			}
 
 		};
-		parent.add(mMapView, BorderLayout.CENTER);
+		mScrollPane.setViewportView(mMapView);
 		mc.setView(mMapView);
 		mMapView.setBounds(parent.getBounds());
 		parent.setOpaque(true);
@@ -147,7 +151,38 @@ public class LayoutTests extends FreeMindTestBase {
 		assertEquals(yCoordinateRoot - delta, getYCoordinate(mRoot));
 		assertEquals(yCoordinateChild1, getYCoordinate(mChild1));
 		assertEquals(yCoordinate, getYCoordinate(mChild2));
-		assertEquals(yCoordinate3+10, getYCoordinate(child3));
+		assertEquals(yCoordinate3 - delta, getYCoordinate(child3));
+	}
+	
+	public void testScrollMap() throws Exception {
+		layout(mMapView);
+		int yCoordinateRoot = getYCoordinateToViewport(mRoot);
+		int delta = 10;
+		Point viewPosition = mMapView.getViewPosition();
+		mMapView.scrollBy(0, delta);
+		layout(mMapView);
+		assertEquals(viewPosition.y + delta, mMapView.getViewPosition().y);
+		assertEquals(yCoordinateRoot - delta, getYCoordinateToViewport(mRoot));
+	}
+	
+	public void testYShiftNegativeWith3ChildsWithRootMovement() throws Exception {
+		MindMapNodeModel child3 = new MindMapNodeModel("CHILD3", mFreeMindMain,
+				mModel);
+		mModel.insertNodeInto(child3, mRoot, 2);
+		layout(mMapView);
+		int yCoordinate = getYCoordinateToViewport(mChild2);
+		int yCoordinateRoot = getYCoordinateToViewport(mRoot);
+		int yCoordinateChild1 = getYCoordinateToViewport(mChild1);
+		int yCoordinate3 = getYCoordinateToViewport(child3);
+		int delta = -10;
+		mChild2.setShiftY(delta);
+		mMapView.scrollBy(0, -delta);
+		layout(mMapView);
+		assertTrue(getYCoordinateToViewport(mChild1) != getYCoordinateToViewport(mChild2));
+		assertEquals(yCoordinateRoot, getYCoordinateToViewport(mRoot));
+		assertEquals(yCoordinateChild1 + delta, getYCoordinateToViewport(mChild1));
+		assertEquals(yCoordinate + delta, getYCoordinateToViewport(mChild2));
+		assertEquals(yCoordinate3, getYCoordinateToViewport(child3));
 	}
 	
 	public void testYShiftNegativeWith3ChildsYCalcToRoot() throws Exception {
@@ -161,7 +196,6 @@ public class LayoutTests extends FreeMindTestBase {
 		int yCoordinate3 = getYCoordinate(child3) - yCoordinateRoot;
 		int delta = -10;
 		mChild2.setShiftY(delta);
-//		mModel.save(new File("/tmp/testYShiftNegativeWith3Childs.mm"));
 		layout(mMapView);
 		int yCoordinateRoot2 = getYCoordinate(mRoot);
 		assertEquals(yCoordinateChild1 + delta, getYCoordinate(mChild1)-yCoordinateRoot2);
@@ -196,4 +230,12 @@ public class LayoutTests extends FreeMindTestBase {
 		return point.y;
 	}
 
+	protected int getYCoordinateToViewport(MindMapNode child2) {
+		assertTrue(child2.getViewers().size() > 0);
+		NodeView nodeView = (NodeView) child2.getViewers().iterator().next();
+		Point point = nodeView.getMainView().getLocation();
+		Tools.convertPointToAncestor(nodeView, point, mScrollPane);
+		return point.y;
+	}
+	
 }

@@ -70,19 +70,27 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
 			final MapView mapView = nodeView.getMap();
 			MindMapNode node = nodeView.getModel();
 			Point point = e.getPoint();
-			Tools.convertPointToAncestor(motionListenerView, point,
-					mapView);
+			Tools.convertPointToAncestor(motionListenerView, point, mapView);
 			if (!isActive()) {
 				setDragStartingPoint(point, node);
 			} else {
 				Point dragNextPoint = point;
 				if ((e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) == 0) {
-					node.setShiftY(getNodeShiftY(dragNextPoint, dragStartingPoint));
-					node.setHGap(getHGap(dragNextPoint, node, dragStartingPoint));
+					int nodeShiftY = getNodeShiftY(dragNextPoint,
+							dragStartingPoint);
+					int deltaShiftY = node.getShiftY() - nodeShiftY;
+					int hGap = getHGap(dragNextPoint, node, dragStartingPoint);
+					int deltaHGap = node.getHGap() - hGap;
+					if (nodeShiftY < 0 || hGap < 0) {
+						mapView.scrollBy(Math.min(0,-deltaHGap), Math.min(0,-deltaShiftY));
+					}
+					node.setShiftY(nodeShiftY);
+					node.setHGap(hGap);
 				} else {
 					MindMapNode parentNode = nodeView.getVisibleParentView()
 							.getModel();
-					parentNode.setVGap(getVGap(dragNextPoint, dragStartingPoint));
+					parentNode
+							.setVGap(getVGap(dragNextPoint, dragStartingPoint));
 					c.getModeController().nodeRefresh(parentNode);
 				}
 				c.getModeController().nodeRefresh(node);
