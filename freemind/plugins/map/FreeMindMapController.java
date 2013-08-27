@@ -1370,7 +1370,7 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.updateMenus(getSearchPopupMenu(), "searchPopup/");
 
 		mMapDialog.addKeyListener(this);
-		Tools.addFocusPrintTimer();
+//		Tools.addFocusPrintTimer();
 	}
 
 	public void addAccelerator(JMenuItem menuItem, String key) {
