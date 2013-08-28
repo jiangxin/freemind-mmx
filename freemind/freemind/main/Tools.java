@@ -74,6 +74,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -2004,6 +2005,18 @@ public class Tools {
 			logger.info("reducded Path: " + decodedPath);
 		}
 		return decodedPath;
+	}
+
+	public static Properties copyChangedProperties(Properties props2,
+			Properties defProps2) {
+		Properties toBeStored = new Properties();
+		for (Iterator it = props2.keySet().iterator(); it.hasNext();) {
+			String key = (String) it.next();
+			if(!safeEquals(props2.get(key), defProps2.get(key))){
+				toBeStored.put(key, props2.get(key));
+			}
+		}
+		return toBeStored;
 	}
 	
 

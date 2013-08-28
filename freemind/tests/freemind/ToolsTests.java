@@ -29,6 +29,7 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.Vector;
 
 import freemind.main.FreeMindSecurityManager;
@@ -292,5 +293,23 @@ public class ToolsTests extends FreeMindTestBase {
 	public void testKeyDocumentationPathConversion() throws Exception {
 		String file = "c:\\home\\java\\freemind\\0_9_0\\bin\\dist\\doc/FM_Key_Mappings_Quick_Guide.pdf";
 		System.out.println(Tools.urlToFile(Tools.fileToUrl(new File(file))));
+	}
+	
+	public void testChangedProperties() throws Exception {
+		Properties def = new Properties();
+		Properties changed = new Properties();
+		String key = "blabla";
+		String key2 = "notexistent";
+		String key3 = "notpresentindef";
+		String key4 = "equal";
+		def.put(key, "A");
+		changed.put(key, "B");
+		def.put(key4, "A");
+		changed.put(key4, "A");
+		def.put(key2, "default");
+		changed.put(key3, "new value");
+		Properties copy = Tools.copyChangedProperties(changed, def);
+		assertEquals(2, copy.keySet().size());
+		
 	}
 }
