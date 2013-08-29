@@ -44,6 +44,9 @@ public interface FreeMindFileDialog  {
 
 	public void addChoosableFileFilter(FileFilter pFilter);
 
+	/**
+	 * @param pMode JFileChooser.DIRECTORIES_ONLY, JFileChooser.FILES_ONLY, JFileChooser.FILES_AND_DIRECTORIES
+	 */
 	public void setFileSelectionMode(int pMode);
 
 	public void setMultiSelectionEnabled(boolean pB);
