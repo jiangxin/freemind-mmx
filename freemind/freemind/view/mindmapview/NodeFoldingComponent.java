@@ -43,12 +43,10 @@ import javax.swing.Timer;
 import javax.swing.plaf.basic.BasicButtonListener;
 import javax.swing.plaf.basic.BasicButtonUI;
 
-import freemind.controller.Controller;
 import freemind.main.FreeMind;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
-import freemind.preferences.FreemindPropertyListener;
 
 /**
  * @author Foltin
@@ -102,6 +100,7 @@ public class NodeFoldingComponent extends JButton {
 
 			public void mouseEntered(MouseEvent pE) {
 				mIsEntered = true;
+				startTimer();
 				repaint();
 			}
 
@@ -117,13 +116,15 @@ public class NodeFoldingComponent extends JButton {
 				}
 				if (!mIsEntered && mColorCounter > 0) {
 					mColorCounter--;
+					if(mColorCounter == 0) {
+						stopTimer();
+					}
 					repaint();
 				}
 
 			}
 		};
 		mTimer = new Timer(delay, taskPerformer);
-		mTimer.start();
 	}
 
 	public Dimension getPreferredSize() {
@@ -153,6 +154,7 @@ public class NodeFoldingComponent extends JButton {
 			initShape(b);
 		}
 
+		/* Is called by a button class automatically.*/
 		protected void installListeners(AbstractButton b) {
 			BasicButtonListener listener = new BasicButtonListener(b) {
 
@@ -165,12 +167,16 @@ public class NodeFoldingComponent extends JButton {
 				}
 
 				public void mouseEntered(MouseEvent e) {
+					AbstractButton b = (AbstractButton) e.getSource();
+					initShape(b);
 					if (shape.contains(e.getX(), e.getY())) {
 						super.mouseEntered(e);
 					}
 				}
 
 				public void mouseMoved(MouseEvent e) {
+					AbstractButton b = (AbstractButton) e.getSource();
+					initShape(b);
 					if (shape.contains(e.getX(), e.getY())) {
 						super.mouseEntered(e);
 					} else {
@@ -178,13 +184,11 @@ public class NodeFoldingComponent extends JButton {
 					}
 				}
 			};
-			if (listener != null) {
-				b.addMouseListener(listener);
-				b.addMouseMotionListener(listener);
-				b.addFocusListener(listener);
-				b.addPropertyChangeListener(listener);
-				b.addChangeListener(listener);
-			}
+			b.addMouseListener(listener);
+			b.addMouseMotionListener(listener);
+			b.addFocusListener(listener);
+			b.addPropertyChangeListener(listener);
+			b.addChangeListener(listener);
 		}
 
 		public void paint(Graphics g, JComponent c) {
@@ -295,7 +299,7 @@ public class NodeFoldingComponent extends JButton {
 
 	public void dispose() {
 		if (mTimer != null) {
-			mTimer.stop();
+			stopTimer();
 			mTimer = null;
 		}
 	}
@@ -303,6 +307,18 @@ public class NodeFoldingComponent extends JButton {
 	protected boolean isFolded() {
 		MindMapNode model = nodeView.getModel();
 		return model.isFolded() && model.isVisible();
+	}
+
+	protected synchronized void startTimer() {
+		if (!mTimer.isRunning()) {
+			mTimer.start();
+		}
+	}
+
+	protected synchronized void stopTimer() {
+		if (mTimer.isRunning()) {
+			mTimer.stop();
+		}
 	}
 
 }
