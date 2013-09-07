@@ -55,9 +55,7 @@ public class MindMapLayout implements LayoutManager {
 		final MapView mapView = (MapView) c;
 		final int calcXBorderSize = calcXBorderSize(mapView);
 		final int calcYBorderSize = calcYBorderSize(mapView);
-		logger.info("Starting layout of map " + mapView.getModel().getFile());
 		getRoot(mapView).validate();
-		logger.info("Finished layout of map" + mapView.getModel().getFile());
 		getRoot(mapView).setLocation(calcXBorderSize, calcYBorderSize);
 		mapView.setSize(calcXBorderSize * 2 + getRoot(mapView).getWidth(),
 				calcYBorderSize * 2 + getRoot(mapView).getHeight());

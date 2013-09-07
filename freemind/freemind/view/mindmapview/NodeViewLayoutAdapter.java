@@ -91,7 +91,7 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout {
 		layout();
 		Point location2 = view.getLocation();
 		Tools.convertPointToAncestor(view, location2, view.getMap());
-		logger.info("Layouting node '" + view.getModel() + "' to " + location2);
+//		logger.info("Layouting node '" + view.getModel() + "' to " + location2);
 		layoutOtherItems();
 		shutDown();
 	}
@@ -287,7 +287,7 @@ abstract public class NodeViewLayoutAdapter implements NodeViewLayout {
 					y += shiftY;
 					child.setLocation(x, y);
 				}
-				logger.info("Place of child " + component.getModel().getText() + ": " + child.getLocation());
+//				logger.info("Place of child " + component.getModel().getText() + ": " + child.getLocation());
 				
 				y += child.getHeight() - 2 * getSpaceAround() + getVGap()
 						+ additionalCloudHeigth;

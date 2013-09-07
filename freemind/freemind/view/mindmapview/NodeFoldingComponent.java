@@ -81,50 +81,49 @@ public class NodeFoldingComponent extends JButton {
 		setUI(new RoundImageButtonUI());
 		mIsEnabled = Resources.getInstance().getBoolProperty(
 				FreeMind.RESOURCES_DISPLAY_FOLDING_BUTTONS);
-		if (!mIsEnabled) {
-			return;
-		}
-		addMouseListener(new MouseListener() {
-
-			public void mouseReleased(MouseEvent pE) {
-			}
-
-			public void mousePressed(MouseEvent pE) {
-			}
-
-			public void mouseExited(MouseEvent pE) {
-				mIsEntered = false;
-				mColorCounter = COLOR_COUNTER_MAX;
-				repaint();
-			}
-
-			public void mouseEntered(MouseEvent pE) {
-				mIsEntered = true;
-				startTimer();
-				repaint();
-			}
-
-			public void mouseClicked(MouseEvent pE) {
-			}
-		});
-		int delay = TIMER_DELAY;
-		ActionListener taskPerformer = new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				if (mIsEntered && mColorCounter < COLOR_COUNTER_MAX) {
-					mColorCounter++;
+		if (mIsEnabled) {
+			addMouseListener(new MouseListener() {
+	
+				public void mouseReleased(MouseEvent pE) {
+				}
+	
+				public void mousePressed(MouseEvent pE) {
+				}
+	
+				public void mouseExited(MouseEvent pE) {
+					mIsEntered = false;
+					mColorCounter = COLOR_COUNTER_MAX;
 					repaint();
 				}
-				if (!mIsEntered && mColorCounter > 0) {
-					mColorCounter--;
-					if(mColorCounter == 0) {
-						stopTimer();
+	
+				public void mouseEntered(MouseEvent pE) {
+					mIsEntered = true;
+					startTimer();
+					repaint();
+				}
+	
+				public void mouseClicked(MouseEvent pE) {
+				}
+			});
+			int delay = TIMER_DELAY;
+			ActionListener taskPerformer = new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					if (mIsEntered && mColorCounter < COLOR_COUNTER_MAX) {
+						mColorCounter++;
+						repaint();
 					}
-					repaint();
+					if (!mIsEntered && mColorCounter > 0) {
+						mColorCounter--;
+						if(mColorCounter == 0) {
+							stopTimer();
+						}
+						repaint();
+					}
+	
 				}
-
-			}
-		};
-		mTimer = new Timer(delay, taskPerformer);
+			};
+			mTimer = new Timer(delay, taskPerformer);
+		}
 	}
 
 	public Dimension getPreferredSize() {

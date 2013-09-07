@@ -1361,7 +1361,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 	 * .TreeModelEvent)
 	 */
 	public void treeNodesRemoved(TreeModelEvent e) {
-		if(!getModel().hasChildren()) {
+		if(!getModel().hasVisibleChilds()) {
 			removeFoldingListener();
 		}
 		getMap().resetShiftSelectionOrigin();

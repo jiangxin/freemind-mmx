@@ -19,8 +19,10 @@
 
 package freemind.modes.mindmapmode.listeners;
 
+import java.awt.AWTException;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.awt.event.MouseEvent;
 
@@ -70,20 +72,15 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
 			final MapView mapView = nodeView.getMap();
 			MindMapNode node = nodeView.getModel();
 			Point point = e.getPoint();
-			Tools.convertPointToAncestor(motionListenerView, point, mapView);
+			Tools.convertPointToAncestor(motionListenerView, point, JScrollPane.class);
 			if (!isActive()) {
 				setDragStartingPoint(point, node);
 			} else {
 				Point dragNextPoint = point;
 				if ((e.getModifiersEx() & InputEvent.CTRL_DOWN_MASK) == 0) {
-					int nodeShiftY = getNodeShiftY(dragNextPoint,
+					int nodeShiftY = getNodeShiftY(dragNextPoint, node,
 							dragStartingPoint);
-					int deltaShiftY = node.getShiftY() - nodeShiftY;
 					int hGap = getHGap(dragNextPoint, node, dragStartingPoint);
-					int deltaHGap = node.getHGap() - hGap;
-					if (nodeShiftY < 0 || hGap < 0) {
-						mapView.scrollBy(Math.min(0,-deltaHGap), Math.min(0,-deltaShiftY));
-					}
 					node.setShiftY(nodeShiftY);
 					node.setHGap(hGap);
 				} else {
@@ -93,13 +90,27 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
 							.setVGap(getVGap(dragNextPoint, dragStartingPoint));
 					c.getModeController().nodeRefresh(parentNode);
 				}
+				dragStartingPoint = dragNextPoint;
 				c.getModeController().nodeRefresh(node);
 			}
+			Point mapPoint = e.getPoint();
+			Tools.convertPointToAncestor(motionListenerView, mapPoint, mapView);
 			boolean isEventPointVisible = mapView.getVisibleRect().contains(
-					point);
+					mapPoint);
 			if (!isEventPointVisible) {
-				Rectangle r = new Rectangle(point);
+				Rectangle r = new Rectangle(mapPoint);
+				Rectangle bounds = mapView.getBounds();
 				mapView.scrollRectToVisible(r);
+				Rectangle bounds2 = mapView.getBounds();
+				int diffx = bounds2.x - bounds.x;
+				int diffy = bounds2.y - bounds.y;
+				try {
+					(new Robot()).mouseMove(e.getXOnScreen()+ diffx, e.getYOnScreen()+ diffy);
+				} catch (AWTException e1) {
+					freemind.main.Resources.getInstance().logException(e1);
+				}
+				dragStartingPoint.x += ((node.getHGap()<0)?2:1)*diffx;
+				dragStartingPoint.y += ((node.getShiftY()<0)?2:1)*diffy;
 			}
 		}
 	}
@@ -114,7 +125,7 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
 
 	private int getHGap(Point dragNextPoint, MindMapNode node,
 			Point dragStartingPoint) {
-		int oldHGap = originalHGap;
+		int oldHGap = node.getHGap();
 		int hGapChange = (int) ((dragNextPoint.x - dragStartingPoint.x) / c
 				.getView().getZoom());
 		if (node.isLeft())
@@ -123,8 +134,8 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
 		return oldHGap;
 	}
 
-	private int getNodeShiftY(Point dragNextPoint, Point dragStartingPoint) {
-		int shiftY = originalShiftY;
+	private int getNodeShiftY(Point dragNextPoint, MindMapNode pNode, Point dragStartingPoint) {
+		int shiftY = pNode.getShiftY();
 		int shiftYChange = (int) ((dragNextPoint.y - dragStartingPoint.y) / c
 				.getView().getZoom());
 		shiftY += shiftYChange;
