@@ -72,7 +72,8 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
 			final MapView mapView = nodeView.getMap();
 			MindMapNode node = nodeView.getModel();
 			Point point = e.getPoint();
-			Tools.convertPointToAncestor(motionListenerView, point, JScrollPane.class);
+			Tools.convertPointToAncestor(motionListenerView, point,
+					JScrollPane.class);
 			if (!isActive()) {
 				setDragStartingPoint(point, node);
 			} else {
@@ -105,12 +106,18 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
 				int diffx = bounds2.x - bounds.x;
 				int diffy = bounds2.y - bounds.y;
 				try {
-					(new Robot()).mouseMove(e.getXOnScreen()+ diffx, e.getYOnScreen()+ diffy);
+					mapPoint.translate(diffx, diffy);
+					// here, there are strange cases, when the mouse moves away.
+					// Workaround.
+					if (mapView.getVisibleRect().contains(mapPoint)) {
+						(new Robot()).mouseMove(e.getXOnScreen() + diffx,
+								e.getYOnScreen() + diffy);
+					}
 				} catch (AWTException e1) {
 					freemind.main.Resources.getInstance().logException(e1);
 				}
-				dragStartingPoint.x += ((node.getHGap()<0)?2:1)*diffx;
-				dragStartingPoint.y += ((node.getShiftY()<0)?2:1)*diffy;
+				dragStartingPoint.x += ((node.getHGap() < 0) ? 2 : 1) * diffx;
+				dragStartingPoint.y += ((node.getShiftY() < 0) ? 2 : 1) * diffy;
 			}
 		}
 	}
@@ -134,7 +141,8 @@ public class MindMapNodeMotionListener extends NodeMotionAdapter {
 		return oldHGap;
 	}
 
-	private int getNodeShiftY(Point dragNextPoint, MindMapNode pNode, Point dragStartingPoint) {
+	private int getNodeShiftY(Point dragNextPoint, MindMapNode pNode,
+			Point dragStartingPoint) {
 		int shiftY = pNode.getShiftY();
 		int shiftYChange = (int) ((dragNextPoint.y - dragStartingPoint.y) / c
 				.getView().getZoom());
