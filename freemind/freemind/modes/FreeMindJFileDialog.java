@@ -27,6 +27,7 @@ import javax.swing.JFileChooser;
 
 
 /**
+ * File Chooser for OS windows and linux (without Mac)
  * @author foltin
  * @date 23.02.2012
  */

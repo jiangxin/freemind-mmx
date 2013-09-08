@@ -29,7 +29,7 @@ OSStatus GeneratePreviewForURL(void *thisInterface, QLPreviewRequestRef preview,
 	
 	frlog(@"freemind location is:%@",freemindLocation);
 	
-	NSString *freemindJar=[NSString stringWithFormat:@"%@/Contents/Resources/Java/lib/freemind.jar",freemindLocation];
+	NSString *freemindJar=[NSString stringWithFormat:@"%@/Contents/Java/freemind.jar",freemindLocation];
 
 	frlog(@"freemind jar is:%@",freemindJar);
 
