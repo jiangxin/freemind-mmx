@@ -8,6 +8,7 @@ Changes made in FreeMind 1.0.0 RC 5
 * Fixed note icon to appear after paste.
 * Fixed menu items: edge styles and widths are selected in the menu, now.
 * Only changed properties are save to the auto.properties file.
+* Fix: Quicklook for mac. Thanks for the patch!
 
 ===============================
 Changes made in FreeMind 1.0.0 RC 4
