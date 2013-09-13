@@ -460,7 +460,7 @@
 			<attribute name="Built-Number" value="${build.number}" />
 			<attribute name="Created-By" value="Joerg Mueller, Daniel Polansky, Christian Foltin, Dimitry Polivaev, and others." />
 			<attribute name="Main-Class" value="freemind.main.FreeMindStarter" />
-			<attribute name="Class-Path" value="freemind.jar .. commons-lang-2.0.jar forms-1.0.5.jar jibx/jibx-run.jar jibx/xpp3.jar bindings.jar jortho.jar xalan.jar serializer.jar xml-apis.jar xercesImpl.jar SimplyHTML/gnu-regexp-1.1.4.jar SimplyHTML/SimplyHTML.jar"/>
+			<attribute name="Class-Path" value="freemind.jar .. commons-lang-2.0.jar forms-1.0.5.jar jibx/jibx-run.jar jibx/xpp3.jar jibx-run.jar xpp3.jar bindings.jar jortho.jar xalan.jar serializer.jar xml-apis.jar xercesImpl.jar SimplyHTML/gnu-regexp-1.1.4.jar gnu-regexp-1.1.4.jar SimplyHTML/SimplyHTML.jar SimplyHTML.jar"/>
 		</manifest>
 		<jar jarfile="${FM.jar}"
 		     manifest="${temp.manifest.file}"
