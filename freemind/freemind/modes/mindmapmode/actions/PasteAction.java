@@ -814,8 +814,15 @@ public class PasteAction extends AbstractAction implements ActorXml {
 				if (pUndoAction != null && !amountAlreadySet) {
 					// on html paste, the string text is taken and "improved".
 					// Thus, we count its lines.
-					final int childCount = determineAmountOfNewNodes(t);
-					pUndoAction.setNodeAmount(childCount);
+					final int childCount;
+					try {
+						childCount = determineAmountOfNewNodes(t);
+						pUndoAction.setNodeAmount(childCount);
+					} catch (Exception e) {
+						freemind.main.Resources.getInstance().logException(e);
+						// ok, something went wrong, but this breaks undo, only.
+						pUndoAction.setNodeAmount(1);
+					}
 					amountAlreadySet = true;
 				}
 			}
