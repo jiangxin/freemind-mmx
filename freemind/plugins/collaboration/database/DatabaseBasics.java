@@ -43,7 +43,7 @@ import javax.swing.JDialog;
 import javax.swing.WindowConstants;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
-import com.jgoodies.forms.factories.ButtonBarFactory;
+import com.jgoodies.forms.builder.ButtonBarBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 
 import freemind.common.NumberProperty;
@@ -216,7 +216,7 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements
 			});
 			getRootPane().setDefaultButton(mOkButton);
 			getContentPane().add(
-					ButtonBarFactory.buildOKCancelBar(cancelButton, mOkButton),
+					new ButtonBarBuilder().addGlue().addButton(cancelButton).addButton(mOkButton).build(),
 					BorderLayout.SOUTH);
 			setTitle("Enter Password Dialog");
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
