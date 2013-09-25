@@ -49,7 +49,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import com.jgoodies.forms.builder.DefaultFormBuilder;
-import com.jgoodies.forms.factories.ButtonBarFactory;
+import com.jgoodies.forms.builder.ButtonBarBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.RowSpec;
 
@@ -238,7 +238,7 @@ public class OptionPanel implements TextTranslator {
 		});
 		frame.getRootPane().setDefaultButton(okButton);
 		frame.getContentPane().add(
-				ButtonBarFactory.buildOKCancelBar(cancelButton, okButton),
+				new ButtonBarBuilder().addGlue().addButton(cancelButton).addButton(okButton).build(),
 				BorderLayout.SOUTH);
 	}
 
@@ -406,7 +406,7 @@ public class OptionPanel implements TextTranslator {
 			JLabel label = new JLabel(labelText, icon, JLabel.RIGHT);
 			label.setToolTipText(pTranslator.getText(getDescription()));
 			if (rowSpec == null) {
-				rowSpec = new RowSpec("fill:20dlu");
+				rowSpec = RowSpec.decode("fill:20dlu");
 			}
 			if (3 < builder.getColumn()) {
 				builder.appendRelatedComponentsGapRow();

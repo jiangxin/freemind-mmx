@@ -200,7 +200,8 @@ ${freedir}/lib/jibx/jibx-run.jar:\
 ${freedir}/lib/jibx/xpp3.jar:\
 ${freedir}/lib/bindings.jar:\
 ${freedir}/lib/commons-lang-2.0.jar:\
-${freedir}/lib/forms-1.0.5.jar:\
+${freedir}/lib/jgoodies-forms.jar:\
+${freedir}/lib/jgoodies-common.jar:\
 ${freedir}/lib/jortho.jar:\
 ${freedir}/lib/xalan.jar:\
 ${freedir}/lib/serializer.jar:\

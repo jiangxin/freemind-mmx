@@ -58,7 +58,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import com.jgoodies.forms.factories.ButtonBarFactory;
+import com.jgoodies.forms.builder.ButtonBarBuilder;
 
 import freemind.common.TextTranslator;
 import freemind.common.XmlBindingTools;
@@ -463,8 +463,7 @@ public class ManagePatternsPopupDialog extends JDialog implements
 			jContentPane.add(mSplitPane, new GridBagConstraints(0, 0, 2, 1,
 					1.0, 8.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
 					new Insets(0, 0, 0, 0), 0, 0));
-			jContentPane.add(ButtonBarFactory.buildOKCancelBar(
-					getJCancelButton(), getJOKButton()),
+			jContentPane.add(new ButtonBarBuilder().addGlue().addButton(getJCancelButton()).addButton(getJOKButton()).build(),
 					new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
 							GridBagConstraints.EAST, GridBagConstraints.NONE,
 							new Insets(0, 0, 0, 0), 0, 0));

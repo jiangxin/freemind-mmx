@@ -23,7 +23,6 @@
 	<classpathentry kind="lib" path="lib/jibx/jibx-bind.jar"/>
 	<classpathentry kind="lib" path="lib/bindings.jar"/>
 	<classpathentry kind="lib" path="lib/jibx/jibx-run.jar"/>
-	<classpathentry kind="lib" path="lib/forms-1.0.5.jar" sourcepath="lib/forms-1.0.5-src.zip"/>
 	<classpathentry kind="lib" path="lib/junit.jar"/>
 	<classpathentry kind="lib" path="lib/SimplyHTML/gnu-regexp-1.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/SimplyHTML/SimplyHTML.jar" sourcepath="/home/foltin/java/simplyhtml/simplyhtml"/>
@@ -37,5 +36,7 @@
 	<classpathentry kind="lib" path="lib/xercesImpl.jar"/>
 	<classpathentry kind="lib" path="lib/xml-apis.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/jgoodies-forms.jar" sourcepath="lib/jgoodies-forms-sources.jar"/>
+	<classpathentry kind="lib" path="lib/jgoodies-common.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
