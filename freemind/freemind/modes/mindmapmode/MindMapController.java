@@ -829,9 +829,9 @@ public class MindMapController extends ControllerAdapter implements
 
 	public void nodeChanged(MindMapNode n) {
 		super.nodeChanged(n);
-		// only for the selected node (fc, 2.5.2004)
 		final MapModule mapModule = getController().getMapModule();
-		if (mapModule != null && n == mapModule.getView().getSelected()) {
+		// only for the selected node (fc, 2.5.2004)
+		if (mapModule != null && n == mapModule.getModeController().getSelected()) {
 			updateToolbar(n);
 		}
 	}
