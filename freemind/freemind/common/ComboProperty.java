@@ -40,9 +40,9 @@ public class ComboProperty extends PropertyBean implements PropertyControl {
 
 	String label;
 
-	JComboBox mComboBox = new JComboBox();
+	protected JComboBox mComboBox = new JComboBox();
 
-	private Vector possibleValues;
+	protected Vector possibleValues;
 
 	/**
 	 * @param pTranslator
