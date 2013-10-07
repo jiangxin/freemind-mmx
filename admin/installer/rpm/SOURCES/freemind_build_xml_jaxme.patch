@@ -14,7 +14,7 @@
 -	<property name="jaxb" value="${ant.dir}/jaxb-xjc.jar:${ant.dir}/jaxb-api.jar:${ant.dir}/jaxb-impl.jar:${ant.dir}/jaxb-libs.jar:${ant.dir}/namespace.jar:${java.dir}/relaxngDatatype.jar:${java.dir}/xsdlib.jar:${ant.dir}/jax-qname.jar"/>
 +	<property name="jaxb" value="${jaxme.dir}/jaxme2.jar:${jaxme.dir}/jaxme2-rt.jar:${jaxme.dir}/jaxmeapi.jar:${jaxme.dir}/jaxmejs.jar:${jaxme.dir}/jaxmepm.jar:${jaxme.dir}/jaxmexs.jar:${java.dir}/relaxngDatatype.jar:${java.dir}/xsdlib.jar"/>
  	<property name="xml" value="${java.dir}/xml-commons-apis.jar"/> 
- 	<property name="classpath" value="${jaxb}:${xml}:${java.dir}/commons-lang-2.1.jar:${java.dir}/jgoodies-forms.jar:${java.dir}/jgoodies-common.jar"/>
+ 	<property name="classpath" value="${jaxb}:${xml}:${java.dir}/commons-lang-2.1.jar:${java.dir}/forms-1.0.5.jar"/>
  	<property name="xsd.dir" value="." />
  	<property name="gen.dir" value="generated" />
 -	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask" 

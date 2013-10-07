@@ -119,11 +119,9 @@
  ${freedir}/lib/ant/lib/jax-qname.jar:\
 -${freedir}/lib/ant/lib/sax.jar:\
 -${freedir}/lib/ant/lib/dom.jar:\
--${freedir}/lib/jgoodies-forms.jar:\
--${freedir}/lib/jgoodies-common.jar:\
+-${freedir}/lib/forms-1.0.5.jar:\
 +/usr/share/java/xml-commons-apis.jar:\
 +/usr/share/java/forms.jar:\
-+/usr/share/java/jgoodies-common.jar:\
 +/usr/share/java/commons-lang.jar:\
  ${freedir}"
 -_debug "Calling: '${JAVACMD} -Dfreemind.base.dir=${freedir} -cp ${CLASSPATH} freemind.main.FreeMind  $@'."

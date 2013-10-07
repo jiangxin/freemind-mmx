@@ -17,10 +17,10 @@
  	<!-- begin generator part -->
 -	<property name="jaxb" value="${ant.dir}/jaxb-xjc.jar:${ant.dir}/jaxb-api.jar:${ant.dir}/jaxb-impl.jar:${ant.dir}/jaxb-libs.jar:${ant.dir}/namespace.jar:${ant.dir}/relaxngDatatype.jar:${ant.dir}/xsdlib.jar:${ant.dir}/jax-qname.jar"/>
 -	<property name="xml" value="${ant.dir}/sax.jar:${ant.dir}/dom.jar"/> 
--	<property name="classpath" value="${jaxb}:${xml}:lib/commons-lang-2.0.jar:lib/jgoodies-forms.jar:${java.dir}/jgoodies-common.jar"/>
+-	<property name="classpath" value="${jaxb}:${xml}:lib/commons-lang-2.0.jar:lib/forms-1.0.5.jar"/>
 +	<property name="jaxb" value="${ant.dir}/jaxb-xjc.jar:${ant.dir}/jaxb-api.jar:${ant.dir}/jaxb-impl.jar:${ant.dir}/jaxb-libs.jar:${ant.dir}/namespace.jar:${java.dir}/relaxngDatatype.jar:${java.dir}/xsdlib.jar:${ant.dir}/jax-qname.jar"/>
 +	<property name="xml" value="${java.dir}/xml-commons-apis.jar"/> 
-+	<property name="classpath" value="${jaxb}:${xml}:${java.dir}/commons-lang.jar:${java.dir}/forms.jar:${java.dir}/jgoodies-common.jar"/>
++	<property name="classpath" value="${jaxb}:${xml}:${java.dir}/commons-lang.jar:${java.dir}/forms.jar"/>
  	<property name="xsd.dir" value="." />
  	<property name="gen.dir" value="generated" />
  	<taskdef name="xjc" classname="com.sun.tools.xjc.XJCTask" 

@@ -35,8 +35,7 @@ then
 	rm -v freemind/lib/ant/lib/sax.jar
 	#rm -v freemind/lib/ant/lib/xsdlib.jar
 	rm -v freemind/lib/commons-lang-2.0.jar
-	#rm -v freemind/lib/jgoodies-forms.jar
-	#rm -v freemind/lib/jgoodies-common.jar
+	#rm -v freemind/lib/forms-1.0.5.jar
 	rm -v freemind/lib/jarbundler-1.4.jar
 	rm -v freemind/plugins/collaboration/jabber/commons-logging.jar
 	rm -v freemind/plugins/collaboration/jabber/crimson-1.1.3.jar
@@ -66,7 +65,7 @@ then
 	#rm -v freemind/lib/ant/lib/sax.jar
 	#rm -v freemind/lib/ant/lib/xsdlib.jar
 	rm -v freemind/lib/commons-lang-2.0.jar
-	#rm -v freemind/lib/jgoodies-forms.jar
+	#rm -v freemind/lib/forms-1.0.5.jar
 	rm -v freemind/lib/jarbundler-1.4.jar
 	#rm -v freemind/plugins/collaboration/jabber/commons-logging.jar
 	#rm -v freemind/plugins/collaboration/jabber/crimson-1.1.3.jar
