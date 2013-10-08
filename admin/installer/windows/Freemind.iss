@@ -93,7 +93,7 @@ begin
   Result := SearchForJavaVersion;
   if Result = False then	// Java not found/detected
   begin
-	if MsgBox( 'Java 1.4 or greater not detected. - You have to download and install Java from http://java.sun.com/ - Continue with installation?', mbError, MB_YESNO) = MRYES then
+	if MsgBox( 'Java 1.4 or greater not detected. - You have to download and install Java from http://www.java.com/ - Continue with installation?', mbError, MB_YESNO) = MRYES then
 		Result := True
 	else
 		Result := False;
