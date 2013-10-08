@@ -141,8 +141,7 @@ public class ExportToOoWriter extends ExportHook {
 	public boolean exportToOoWriter(File file, StringWriter writer, String xslts)
 			throws IOException {
 		boolean resultValue = true;
-		FileOutputStream fileOutStream = new FileOutputStream(file);
-		ZipOutputStream zipout = new ZipOutputStream(fileOutStream);
+		ZipOutputStream zipout = new ZipOutputStream(new FileOutputStream(file));
 
 		Result result = new StreamResult(zipout);
 		StringTokenizer tokenizer = new StringTokenizer(xslts, ",");
@@ -164,8 +163,7 @@ public class ExportToOoWriter extends ExportHook {
 				zipout.closeEntry();
 			}
 		}
-//		zipout.close();
-		fileOutStream.close();
+		zipout.close();
 		return resultValue;
 	}
 

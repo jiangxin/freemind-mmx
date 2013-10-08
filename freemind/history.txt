@@ -4,6 +4,7 @@ Changes made in FreeMind 1.0.0 RC 6
 * QuickLook fixed
 * Fixed paste of images.
 * Fixed display of fonts (esp. font sizes) in toolbar and format dialog.
+* Fixed export to LibreOffice.
 
 ===============================
 Changes made in FreeMind 1.0.0 RC 5
