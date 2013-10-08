@@ -93,7 +93,7 @@ begin
   Result := SearchForJavaVersion;
   if Result = False then	// Java not found/detected
   begin
-	if MsgBox( 'Java 1.4 or greater not detected. - You have to download and install Java from http://java.sun.com/ - \nContinue with installation?', mbError, MB_YESNO) = MRYES then
+	if MsgBox( 'Java 1.4 or greater not detected. - You have to download and install Java from http://java.sun.com/ - Continue with installation?', mbError, MB_YESNO) = MRYES then
 		Result := True
 	else
 		Result := False;
@@ -150,8 +150,8 @@ WindowVisible=true
 ShowLanguageDialog=true
 
 
-AppCopyright=Copyright © 2000-2008 Jörg Müller, Daniel Polansky, Petr Novak, Christian Foltin, Dimitry Polivaev and others
-;AppCopyright=Copyright © {code:InstallationDate}
+AppCopyright=Copyright ï¿½ 2000-2008 Jï¿½rg Mï¿½ller, Daniel Polansky, Petr Novak, Christian Foltin, Dimitry Polivaev and others
+;AppCopyright=Copyright ï¿½ {code:InstallationDate}
 AppVersion=0.9.0_Beta_17
 InfoAfterFile=after.txt
 InfoBeforeFile=before.txt
