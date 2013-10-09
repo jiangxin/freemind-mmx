@@ -3,7 +3,7 @@ FileName=FreeMind.dev
 Name=FreeMind
 UnitCount=2
 Type=0
-Ver=1
+Ver=2
 ObjFiles=
 Includes=
 Libs=
@@ -27,7 +27,9 @@ CustomMakefile=
 IncludeVersionInfo=1
 SupportXPThemes=0
 CompilerSet=0
-CompilerSettings=0000000000000000000000
+CompilerSettings=0000000000000000000000000
+LogOutput=
+LogOutputEnabled=0
 
 [Unit1]
 FileName=Freemind.c
@@ -56,7 +58,7 @@ Build=2
 LanguageID=1033
 CharsetID=1252
 CompanyName=FreeMind team
-FileVersion=
+FileVersion=0.9.0.2
 FileDescription=FreeMind — free mind mapping software
 InternalName=
 LegalCopyright=FreeMind is a free software, licensed under GPL (GNU General Public License)
@@ -65,4 +67,5 @@ OriginalFilename=
 ProductName=FreeMind
 ProductVersion=
 AutoIncBuildNr=0
+SyncProduct=0
 

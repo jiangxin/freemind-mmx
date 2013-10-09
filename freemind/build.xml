@@ -750,9 +750,6 @@
     	<antcall target="create_windows_installer">
     		<param name="inst.windows.variant" value="installer_java_installer_embedded"/>
     	</antcall>
-<!--    	<antcall target="create_windows_installer">
-    		<param name="inst.windows.variant" value="installer_java_embedded"/>
-    	</antcall>  -->
     	<copy todir="${inst.dest.dir}">
     		<fileset dir="${inst.windows.installer}/Output/">
 			    <include name="*.exe"/>
