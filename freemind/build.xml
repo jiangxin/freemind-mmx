@@ -222,6 +222,7 @@
 		<copy todir="${dist}">
 			<fileset dir="${src}/windows-launcher">
 			  <include name="FreeMind.exe"/>
+			  <include name="FreeMind64.exe"/>
 			</fileset>
 		</copy>
 		<mkdir dir="${dist}/doc" />
@@ -750,9 +751,6 @@
     	<antcall target="create_windows_installer">
     		<param name="inst.windows.variant" value="installer_java_installer_embedded"/>
     	</antcall>
-<!--    	<antcall target="create_windows_installer">
-    		<param name="inst.windows.variant" value="installer_java_embedded"/>
-    	</antcall>  -->
     	<copy todir="${inst.dest.dir}">
     		<fileset dir="${inst.windows.installer}/Output/">
 			    <include name="*.exe"/>

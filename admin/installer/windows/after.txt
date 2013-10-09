@@ -3,6 +3,8 @@
 
 The current project director is Christian Foltin.
 
+In version 1.0.0 the major changes were made by Christian Foltin and Eike (for spell checking).
+
 Version 0.9.0 is released with the help of many people, but the major changes were made by Christian Foltin and Dimitri Polivaev.
 
 Version 0.8.1 is a bug fix release that makes FreeMind Java6 compatible.
