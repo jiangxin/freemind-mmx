@@ -3,7 +3,8 @@ Changes made in FreeMind 1.1.0 Alpha 1
 ===============================
 * Added node statistics to the status bar (inclusive sums of node contents).
 * Update jgoodies
-
+* New Export as html page with a single clickable image containing only the links (URLs) or the map.
+  
 ===============================
 Changes made in FreeMind 1.0.0 RC 5
 ===============================

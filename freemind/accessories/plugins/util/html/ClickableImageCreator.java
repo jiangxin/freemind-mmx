@@ -17,17 +17,18 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-
 package accessories.plugins.util.html;
 
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.JComponent;
 
 import freemind.main.HtmlTools;
+import freemind.main.Resources;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.view.mindmapview.MapView;
@@ -52,6 +53,11 @@ public class ClickableImageCreator {
 
 		Rectangle coordinates = new Rectangle();
 
+		/**
+		 * Optionally holds the link (URL) of a node.
+		 */
+		public String link;
+
 	}
 
 	Vector area = new Vector();
@@ -62,20 +68,20 @@ public class ClickableImageCreator {
 
 	private Rectangle innerBounds;
 
-	private final String regExpLinkReplacement;
+	private final String linkFormatter;
 
 	private MapView mapView;
 
 	/**
-	 * @param regExpLinkReplacement
+	 * @param linkFormatter
 	 *            if for example the link abc must be replaced with FMabcFM,
 	 *            then this string has to be FM$1FM.
 	 */
 	public ClickableImageCreator(MindMapNode root,
-			ModeController modeController, String regExpLinkReplacement) {
+			ModeController modeController, String linkFormatter) {
 		super();
 		this.root = root;
-		this.regExpLinkReplacement = regExpLinkReplacement;
+		this.linkFormatter = linkFormatter;
 		mapView = modeController.getView();
 		if (mapView != null) {
 			innerBounds = mapView.getInnerBounds();
@@ -91,12 +97,16 @@ public class ClickableImageCreator {
 		StringBuffer htmlArea = new StringBuffer();
 		for (Iterator i = area.iterator(); i.hasNext();) {
 			AreaHolder holder = (AreaHolder) i.next();
-			htmlArea.append("<area shape=\"" + holder.shape + "\" href=\"#"
-					+ holder.href.replaceFirst("^(.*)$", regExpLinkReplacement)
-					+ "\" alt=\"" + HtmlTools.toXMLEscapedText(holder.alt)
-					+ "\" title=\"" + HtmlTools.toXMLEscapedText(holder.title)
-					+ "\" coords=\"" + holder.coordinates.x + ","
-					+ holder.coordinates.y + ","
+			MessageFormat formatter = new MessageFormat(linkFormatter);
+			String replacement = formatter.format(new Object[] { holder.href, holder.link });
+			if(replacement.isEmpty()) {
+				continue;
+			}
+			htmlArea.append("<area shape=\"" + holder.shape + "\" href=\""
+					+ replacement + "\" alt=\""
+					+ HtmlTools.toXMLEscapedText(holder.alt) + "\" title=\""
+					+ HtmlTools.toXMLEscapedText(holder.title) + "\" coords=\""
+					+ holder.coordinates.x + "," + holder.coordinates.y + ","
 					+ (holder.coordinates.width + holder.coordinates.x) + ","
 					+ +(holder.coordinates.height + holder.coordinates.y)
 					+ "\" />");
@@ -120,6 +130,7 @@ public class ClickableImageCreator {
 			holder.title = node.getShortText(modeController);
 			holder.alt = node.getShortText(modeController);
 			holder.href = node.getObjectId(modeController);
+			holder.link = node.getLink()!=null?node.getLink():"";
 			Point contentXY = mapView.getNodeContentLocation(nodeView);
 			final JComponent content = nodeView.getContent();
 			holder.coordinates.x = (int) (contentXY.x - innerBounds.getMinX());

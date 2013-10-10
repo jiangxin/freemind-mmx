@@ -325,7 +325,7 @@ public class ExportWithXSLT extends ExportHook {
 			MindMapNode root = getController().getMap().getRootNode();
 			ClickableImageCreator creator = new ClickableImageCreator(root,
 					getController(),
-					getResourceString("link_replacement_regexp"));
+					getResourceString("link_replacement_format_string"));
 			areaCode = creator.generateHtml();
 		}
 		return areaCode;
