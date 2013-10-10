@@ -8,6 +8,7 @@ Changes made in FreeMind 1.0.0 RC 6
 * Fixed windows installer for 64bit.
 * Fixed geographical search at the very first start of FreeMind
 * File filters (e.g. only show .mm-files) are activated by default
+* next try to avoid bug 1159: focus jumps to file-menu after closing html-editing-window
 
 ===============================
 Changes made in FreeMind 1.0.0 RC 5
