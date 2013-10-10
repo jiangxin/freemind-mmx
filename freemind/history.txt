@@ -6,7 +6,7 @@ Changes made in FreeMind 1.0.0 RC 6
 * Fixed display of fonts (esp. font sizes) in toolbar and format dialog.
 * Fixed export to LibreOffice. (1166: Export to libreoffice)
 * Fixed windows installer for 64bit.
-
+* Fixed geographical search at the very first start of FreeMind
 
 ===============================
 Changes made in FreeMind 1.0.0 RC 5
