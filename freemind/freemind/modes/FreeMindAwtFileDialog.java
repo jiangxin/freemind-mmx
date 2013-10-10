@@ -218,6 +218,8 @@ public class FreeMindAwtFileDialog extends FileDialog implements
 	public void addChoosableFileFilter(FileFilter pFilter) {
 		mFilter.setCustomFilter(pFilter);
 	}
+	
+
 
 	/* (non-Javadoc)
 	 * @see freemind.modes.FreeMindFileDialog#setFileSelectionMode(int)
@@ -312,6 +314,13 @@ public class FreeMindAwtFileDialog extends FileDialog implements
 		streamResult.getOutputStream().write("bla".getBytes());
 		streamResult.getOutputStream().close();
 		System.out.println("File exists: " + selectedFile.exists());
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.FreeMindFileDialog#addChoosableFileFilterAsDefault(javax.swing.filechooser.FileFilter)
+	 */
+	public void addChoosableFileFilterAsDefault(FileFilter pFilter) {
+		addChoosableFileFilter(pFilter);
 	}
 
 }

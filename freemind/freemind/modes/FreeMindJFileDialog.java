@@ -24,6 +24,7 @@ import java.awt.Component;
 import java.awt.HeadlessException;
 
 import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
 
 
 /**
@@ -72,5 +73,13 @@ public class FreeMindJFileDialog extends JFileChooser implements FreeMindFileDia
 		final int result = super.showSaveDialog(pParent);
 		callDirectoryListener(result);
 		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.FreeMindFileDialog#addChoosableFileFilterAsDefault(javax.swing.filechooser.FileFilter)
+	 */
+	public void addChoosableFileFilterAsDefault(FileFilter pFilter) {
+		addChoosableFileFilter(pFilter);
+		setFileFilter(pFilter);
 	}
 }

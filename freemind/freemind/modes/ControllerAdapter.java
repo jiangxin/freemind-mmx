@@ -864,7 +864,7 @@ public abstract class ControllerAdapter implements ModeController,
 			chooser.setCurrentDirectory(lastCurrentDir);
 		}
 		if (filter != null) {
-			chooser.addChoosableFileFilter(filter);
+			chooser.addChoosableFileFilterAsDefault(filter);
 		}
 		return chooser;
 	}

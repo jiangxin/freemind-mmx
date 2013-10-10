@@ -42,6 +42,15 @@ public interface FreeMindFileDialog  {
 
 	public void setDialogTitle(String pDialogTitle);
 
+	/**
+	 * Sets the default file filter (that one that is activated at showup). 
+	 * @see #addChoosableFileFilter(FileFilter)
+	 */
+	public void addChoosableFileFilterAsDefault(FileFilter pFilter);
+	/**
+	 * Adds a further file filter for optional use. It is not selected by default, but this is UI dependent.
+	 * @see #addChoosableFileFilterAsDefault(FileFilter)
+	 */
 	public void addChoosableFileFilter(FileFilter pFilter);
 
 	/**
