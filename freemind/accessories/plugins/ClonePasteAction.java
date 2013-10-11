@@ -84,7 +84,7 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 	public void invoke(MindMapNode pNode) {
 		super.invoke(pNode);
 		Vector mindMapNodes = getMindMapNodes();
-		logger.info("Clones for nodes: " + Tools.listToString(mindMapNodes));
+		logger.fine("Clones for nodes: " + Tools.listToString(mindMapNodes));
 		// now, construct the plugin for those nodes:
 		for (Iterator itPastedNodes = mindMapNodes.iterator(); itPastedNodes
 				.hasNext();) {
@@ -122,7 +122,7 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 	public void addNewClone(MindMapNode originalNode,
 			MindMapNode pDestinationNode, Transferable copy) {
 		String originalNodeId = getMindMapController().getNodeID(originalNode);
-		logger.info("Original node " + originalNode + ", id " + originalNodeId);
+		logger.fine("Original node " + originalNode + ", id " + originalNodeId);
 		if (originalNode.isRoot()) {
 			getMindMapController().getController().errorMessage(
 					getMindMapController().getText(
@@ -136,7 +136,7 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 			String nodeID = getMindMapController().getNodeID(
 					(MindMapNode) it.next());
 			listOfChildIds.add(nodeID);
-			logger.info("Old child id:" + nodeID);
+			logger.fine("Old child id:" + nodeID);
 		}
 		getMindMapController().paste(copy, pDestinationNode);
 	}
