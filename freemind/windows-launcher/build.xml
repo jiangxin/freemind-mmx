@@ -1,0 +1,14 @@
+<project name="windows-launcher" default="exe" basedir=".">
+	<!-- ================================= 
+          target: exe              
+         ================================= -->
+	<target name="exe" depends="" description="Creates the windows exe, needs gcc">
+		<taskdef name="launch4j" 
+			classname="net.sf.launch4j.ant.Launch4jTask" 
+			classpath="launch4j.jar:xstream.jar" />
+		<launch4j configFile="launch4j.xml" />
+	</target>
+
+
+</project>
+
