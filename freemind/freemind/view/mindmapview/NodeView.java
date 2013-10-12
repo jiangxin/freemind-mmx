@@ -43,7 +43,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.SwingConstants;
@@ -63,7 +62,6 @@ import freemind.modes.MindMapCloud;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
-import freemind.modes.mindmapmode.MindMapController;
 import freemind.preferences.FreemindPropertyListener;
 import freemind.view.mindmapview.attributeview.AttributeView;
 
@@ -162,7 +160,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 			mFoldingListener.addActionListener(new ActionListener() {
 				
 				public void actionPerformed(ActionEvent pE) {
-					((MindMapController)getModeController()).setFolded(getModel(), !getModel().isFolded());
+					getModeController().setFolded(getModel(), !getModel().isFolded());
 				}
 			});
 		}
