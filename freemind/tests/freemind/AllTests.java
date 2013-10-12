@@ -37,6 +37,8 @@ public class AllTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("AllTests");
 		// $JUnit-BEGIN$
+		suite.addTest(new TestSuite(ScriptEditorPanelTest.class));
+		suite.addTest(new TestSuite(SplashTests.class));
 		suite.addTest(new TestSuite(Base64Tests.class));
 		suite.addTest(new TestSuite(FindTextTests.class));
 		suite.addTest(new TestSuite(HtmlConversionTests.class));

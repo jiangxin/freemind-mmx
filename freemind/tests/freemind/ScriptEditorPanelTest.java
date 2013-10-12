@@ -111,7 +111,7 @@ public class ScriptEditorPanelTest extends FreeMindTestBase {
 		}
 	}
 
-	public void testPanel() {
+	public void _testPanel() {
 		ScriptEditorPanel scriptEditor = new ScriptEditorPanel(
 				new TestScriptModel(), new FreeMindMainMock(), true);
 		scriptEditor.setVisible(true);
