@@ -181,6 +181,7 @@
 		>
 			<classpath refid="jars.path"></classpath>
 			<exclude name="${gen.dir}/**" />
+			<exclude name="plugins/collaboration/jabber/**" />
 		</javac>
 		<copy todir="${testbuild}" file="${src}/freemind.properties"/>
 	</target>

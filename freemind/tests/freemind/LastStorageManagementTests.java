@@ -7,7 +7,7 @@ import freemind.controller.actions.generated.instance.MindmapLastStateStorage;
 
 public class LastStorageManagementTests extends FreeMindTestBase {
 
-	private static final String INITIAL_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><mindmap_last_state_map_storage></mindmap_last_state_map_storage>";
+	private static final String INITIAL_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><mindmap_last_state_map_storage/>";
 	private LastStateStorageManagement mMgm;
 
 	protected void setUp() throws Exception {
