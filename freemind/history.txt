@@ -1,5 +1,5 @@
 ===============================
-Changes made in FreeMind 1.0.0 RC 6
+Changes made in FreeMind 1.0.0 (final)
 ===============================
 * QuickLook fixed
 * Fixed paste of images.
