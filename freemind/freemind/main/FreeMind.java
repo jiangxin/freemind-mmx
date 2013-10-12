@@ -51,8 +51,8 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -74,7 +74,6 @@ import java.util.logging.SimpleFormatter;
 import javax.swing.ImageIcon;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -313,6 +312,27 @@ public class FreeMind extends JFrame implements FreeMindMain, ActionListener {
 			info.append("; os_version = ");
 			info.append(System.getProperty("os.version"));
 			logger.info(info.toString());
+		}
+		try {
+			StringBuffer b = new StringBuffer();
+			// print all java/sun properties
+			Properties properties = System.getProperties();
+			List list = new ArrayList();
+			for (Iterator it = properties.keySet().iterator(); it.hasNext();) {
+				Object key = (Object) it.next();
+				list.add(key);
+			}
+			Collections.sort(list);
+			for (Iterator it = list.iterator(); it.hasNext();) {
+				String key = (String) it.next();
+				if (key.startsWith("java") || key.startsWith("sun")) {
+					b.append("Environment key " + key + " = "
+							+ properties.getProperty(key) + "\n");
+				}
+			}
+			logger.info(b.toString());
+		} catch (Exception e) {
+			freemind.main.Resources.getInstance().logException(e);
 		}
 		mFreeMindCommon = new FreeMindCommon(this);
 		Resources.createInstance(this);
