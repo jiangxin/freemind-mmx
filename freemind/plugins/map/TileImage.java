@@ -173,7 +173,7 @@ public class TileImage implements ImageObserver {
 		mTiles = new Tile[pDimension][pDimension];
 		for (int i = 0; i < pDimension; ++i) {
 			for (int j = 0; j < pDimension; ++j) {
-				pLogger.info("Trying to load tile to x=" + (pX + i)
+				pLogger.fine("Trying to load tile to x=" + (pX + i)
 						+ ", y=" + (pY + j) + ", zoom=" + pZoom);
 				mTiles[i][j] = mTileController.getTile(pX + i, pY + j,
 						pZoom);

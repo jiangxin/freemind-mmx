@@ -1550,7 +1550,7 @@ public class FreeMindMapController extends JMapController implements
 	 */
 	public static TileSource changeTileSource(String pTileSource,
 			JMapViewer pMap) {
-		logger.info("Searching for tile source " + pTileSource);
+		logger.fine("Searching for tile source " + pTileSource);
 		TileSourceStore tileSource = getTileSourceByName(pTileSource);
 		if (tileSource != null && pMap != null) {
 			pMap.setTileSource(tileSource.mTileSource);
@@ -1749,7 +1749,7 @@ public class FreeMindMapController extends JMapController implements
 				// rectangular select:
 				mIsRectangularSelect = true;
 				mRectangularStart = getCoordinateFromMouseEvent(e);
-				logger.info("Starting rect on " + mRectangularStart);
+				logger.fine("Starting rect on " + mRectangularStart);
 				return;
 			}
 			// detect collision with map marker:
@@ -1979,7 +1979,7 @@ public class FreeMindMapController extends JMapController implements
 		while (getPositionHolderIndex() < positionHolderVector.size() - 1) {
 			positionHolderVector.remove(positionHolderVector.size() - 1);
 		}
-		logger.info("Storing position " + holder + " at index "
+		logger.fine("Storing position " + holder + " at index "
 				+ getPositionHolderIndex());
 		positionHolderVector.insertElementAt(holder,
 				getPositionHolderIndex() + 1);
@@ -2415,7 +2415,7 @@ public class FreeMindMapController extends JMapController implements
 			InputStream urlStream = urlConnection.getInputStream();
 			result = Tools.getFile(new InputStreamReader(urlStream));
 			result = new String(result.getBytes(), "UTF-8");
-			logger.info(result + " was received for search " + b);
+			logger.fine(result + " was received for search " + b);
 		} finally {
 			mMindMapController.getFrame().setWaitingCursor(false);
 		}

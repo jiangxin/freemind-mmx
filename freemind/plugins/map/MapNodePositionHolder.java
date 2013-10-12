@@ -318,7 +318,7 @@ public class MapNodePositionHolder extends MapNodePositionHolderBase {
 		tileImage = getRegistration().getImageForTooltip(mPosition, mZoom,
 				mTileSource);
 		if (!tileImage.hasErrors()) {
-			logger.info("Creating tooltip for " + getNode());
+			logger.fine("Creating tooltip for " + getNode());
 			// save image to disk:
 			try {
 				File tooltipFile = getTooltipFile(pForce);
