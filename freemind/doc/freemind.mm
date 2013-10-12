@@ -1272,8 +1272,7 @@
       There are many different criteria filters can be based on such as a set of selected nodes, a specific icon and some attributes.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
@@ -1482,8 +1481,7 @@
       </li>
     </ul>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
@@ -1530,8 +1528,7 @@
       <b>Due to increased security measures, both exports are only working, when the results are put into a webspace behind a web server.</b>
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
@@ -1899,7 +1896,7 @@ c.registerNodeSelectionListener(newListener);</pre>
 </node>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1354041409110" FOLDED="true" ID="ID_1185769793" MODIFIED="1381609020880" POSITION="right" STYLE="fork" TEXT="New features in version 1.0.0">
+<node COLOR="#407000" CREATED="1354041409110" FOLDED="true" ID="ID_1185769793" LINK="http://freemind.sourceforge.net/wiki/index.php/FreeMind_1.0.0:_The_New_Features" MODIFIED="1381609476303" POSITION="right" STYLE="fork" TEXT="New features in version 1.0.0">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <node COLOR="#407000" CREATED="1354041534617" ID="ID_485992024" MODIFIED="1354049372607" STYLE="fork" TEXT="Clones are supported">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>

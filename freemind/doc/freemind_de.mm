@@ -1076,8 +1076,7 @@
       Der Text wird direkt als HTML gespeichert und kann daher sehr effizient nach HTML exportiert werden.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
@@ -1091,8 +1090,7 @@
       Das Notizfenster geh&#246;rt nun zum Hauptfenster von FreeMind. Ein Tooltipp am Knoten zeigt zus&#228;tzlich die Notiz an.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
@@ -1112,8 +1110,7 @@
       Es gibt unterschiedliche Kriterien. So k&#246;nnen Sie auch auf Icons und Attribute filtern.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
@@ -1130,8 +1127,7 @@
       Ferner werden aktuell Groovyskripte in Attributen gespeichert.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
@@ -1149,8 +1145,7 @@
       Damit kann man auf einen Blick alle ge&#246;ffneten Maps sehen.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
@@ -1175,8 +1170,7 @@
       Dies war schon in den Vorg&#228;ngerversionen enthalten.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 <node COLOR="#111111" CREATED="1201282426565" FOLDED="true" ID="Freemind_Link_481786702" MODIFIED="1381609064324" TEXT="Links und Rechts">
@@ -1189,8 +1183,7 @@
       Es ist nun auch m&#246;glich, Knoten nach rechts und links zu verschieben. Damit entfernen oder n&#228;hern sie sich dem Hauptknoten. Die Knoten k&#246;nnen sogar die Seite des Hauptknotens wechseln. Standardm&#228;&#223;ig k&#246;nnen Sie die Knoten mit Steuerung Links und Rechts bewegen.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#111111" CREATED="1201282851749" ID="Freemind_Link_774463025" MODIFIED="1381606600211" TEXT="Ver&#xe4;nderung der Position in der Hierarchie"/>
 <node COLOR="#111111" CREATED="1201282843249" ID="Freemind_Link_1554785271" MODIFIED="1381606612119" TEXT="Wechseln der Seite zum Hauptknoten"/>
@@ -1254,8 +1247,7 @@
       Als eine wichtige Neuerung ist es nun m&#246;glich, einem Stil auch ein zus&#228;tzliches Skript zuzuweisen. Damit sind die denkbaren &#196;nderungen sehr viel reichhaltiger m&#246;glich. Damit lassen sich sehr einfach Makros und Erweiterungen von FreeMind realisieren!
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
@@ -1275,8 +1267,7 @@
       Fortgeschrittene Benutzer k&#246;nnen auch die Anzahl von Ebenen ver&#228;ndern.&#160; Dazu mu&#223; allerdings die Datei &quot;auto.properties&quot; per Hand ge&#228;ndert werden.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
@@ -1313,8 +1304,7 @@
       </li>
     </ul>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
@@ -1331,8 +1321,7 @@
       Bei gehaltener Steuerungstaste wird das ausgew&#228;hlte Icon vom Knoten entfernt (wenn es mehrfach vorkommt, dann wird jeweils das letzte entfernt). Dies geschieht unabh&#228;ngig von den anderen Icons, die vorhanden sein k&#246;nnen.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
@@ -1359,8 +1348,7 @@
       <b>Durch die gehobenen Sicherheitsstandards funktionieren diese Exporte zum Teil nur, wenn die Maps wirklich auf einem Webserver liegen.</b>
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
@@ -1728,7 +1716,7 @@ c.registerNodeSelectionListener(newListener);</pre>
 </node>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1354041409110" FOLDED="true" ID="ID_1185769793" MODIFIED="1381609056247" POSITION="right" STYLE="fork" TEXT="Neue Funktionen in 1.0.0">
+<node COLOR="#407000" CREATED="1354041409110" FOLDED="true" ID="ID_1185769793" LINK="http://freemind.sourceforge.net/wiki/index.php/FreeMind_1.0.0:_The_New_Features" MODIFIED="1381609485199" POSITION="right" STYLE="fork" TEXT="Neue Funktionen in 1.0.0">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <node COLOR="#407000" CREATED="1354041534617" ID="ID_485992024" MODIFIED="1381608262912" STYLE="fork" TEXT="Unterst&#xfc;tzung von Klons">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
@@ -1746,8 +1734,7 @@ c.registerNodeSelectionListener(newListener);</pre>
       gleichzeitig von mehreren Personen ver&#228;ndert werden
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <node COLOR="#407000" CREATED="1354049334525" ID="ID_1490791817" MODIFIED="1381608357295" STYLE="fork" TEXT="Die &#xc4;nderungen werden gegeneinander &quot;gelockt&quot;, d.h. es ist nicht m&#xf6;glich, dass Knoten vom einen gel&#xf6;scht, w&#xe4;hrend sie vom anderen bearbeitet werden">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
