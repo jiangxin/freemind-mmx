@@ -1220,9 +1220,9 @@
 <node CREATED="1124560950732" ID="ID_1632174512" MODIFIED="1246861979254" TEXT="File locking makes sure that multiple users do not edit the same map at the same time, preventing them from accidentally overwriting the information from each other."/>
 <node CREATED="1124560950732" MODIFIED="1124560950732" TEXT="To enable experimental file locking, in pull-down menu use Tools &gt; Preferences."/>
 </node>
-<node COLOR="#407000" CREATED="1229414588553" FOLDED="true" ID="ID_1077619682" MODIFIED="1354049353488" POSITION="right" STYLE="fork" TEXT="New features in version 0.9.0">
+<node COLOR="#407000" CREATED="1229414588553" FOLDED="true" ID="ID_1077619682" MODIFIED="1381609019208" POSITION="right" STYLE="fork" TEXT="New features in version 0.9.0">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
-<node COLOR="#407000" CREATED="1201283648829" FOLDED="true" ID="Freemind_Link_813308322" MODIFIED="1354041397526" STYLE="fork" TEXT="Main new features">
+<node COLOR="#407000" CREATED="1201283648829" FOLDED="true" ID="Freemind_Link_813308322" MODIFIED="1381609019199" STYLE="fork" TEXT="Main new features">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#407000" CREATED="1201283660674" ID="Freemind_Link_1390621915" MODIFIED="1229414651746" STYLE="fork" TEXT="New Editor">
@@ -1256,23 +1256,24 @@
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node COLOR="#407000" CREATED="1201506800600" ID="Freemind_Link_9416334" MODIFIED="1229414646128" STYLE="fork" TEXT="Filter">
+<node COLOR="#407000" CREATED="1201506800600" ID="Freemind_Link_9416334" MODIFIED="1381606084805" STYLE="fork" TEXT="Filter">
 <richcontent TYPE="NOTE"><html>
   <head>
     
   </head>
   <body>
     <p>
-      Using Filters the current mindmap can be reduced to nodes satisfying certain criteria. For example, if you only want to see every node containing "TODO", then you have to press on the filter symbol (the funnel beside the zoom box), the filter toolbar appears, choose "edit" and add the condition that the node content contains "TODO". Then select the filter in the filter toolbar. Now, only the filtered nodes and its ancestors are displayed unless you choose "No filtering" in the toolbar.
+      Using Filters the current mindmap can be reduced to nodes satisfying certain criteria. For example, if you only want to see every node containing &quot;TODO&quot;, then you have to press on the filter symbol (the funnel symbol), the filter toolbar appears, choose &quot;edit&quot; and add the condition that the node content contains &quot;TODO&quot;. Then select the filter in the filter toolbar. Now, only the filtered nodes and its ancestors are displayed unless you choose &quot;No filtering&quot; in the toolbar.
     </p>
     <p>
-      Using the settings "Show ancestors" and "Show descendants" you can influence the apperance of the parent and child nodes that are connected with the nodes being filtered.
+      Using the settings &quot;Show ancestors&quot; and &quot;Show descendants&quot; you can influence the apperance of the parent and child nodes that are connected with the nodes being filtered.
     </p>
     <p>
       There are many different criteria filters can be based on such as a set of selected nodes, a specific icon and some attributes.
     </p>
   </body>
-</html></richcontent>
+</html>
+</richcontent>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
@@ -1297,7 +1298,7 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1201282217311" FOLDED="true" ID="Freemind_Link_849247054" MODIFIED="1354041399158" STYLE="fork" TEXT="Visual Changes">
+<node COLOR="#407000" CREATED="1201282217311" FOLDED="true" ID="Freemind_Link_849247054" MODIFIED="1381609019200" STYLE="fork" TEXT="Visual Changes">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#407000" CREATED="1201282224869" ID="Freemind_Link_1307834035" MODIFIED="1229414651763" STYLE="fork" TEXT="Tabular MindMapping Support">
@@ -1319,10 +1320,10 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1201282319118" FOLDED="true" ID="Freemind_Link_1043646949" MODIFIED="1354041405739" STYLE="fork" TEXT="Usability Improvements">
+<node COLOR="#407000" CREATED="1201282319118" FOLDED="true" ID="Freemind_Link_1043646949" MODIFIED="1381609019204" STYLE="fork" TEXT="Usability Improvements">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
-<node COLOR="#407000" CREATED="1201282325640" FOLDED="true" ID="Freemind_Link_556186325" MODIFIED="1229414897564" STYLE="fork" TEXT="Move in all directions">
+<node COLOR="#407000" CREATED="1201282325640" FOLDED="true" ID="Freemind_Link_556186325" MODIFIED="1381609019203" STYLE="fork" TEXT="Move in all directions">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#111111" CREATED="1201282465994" ID="Freemind_Link_924709284" MODIFIED="1229414834535" TEXT="Up and Down">
@@ -1338,7 +1339,7 @@
 </html></richcontent>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node COLOR="#111111" CREATED="1201282426565" FOLDED="true" ID="Freemind_Link_481786702" MODIFIED="1229414897563" TEXT="Left and Right">
+<node COLOR="#111111" CREATED="1201282426565" FOLDED="true" ID="Freemind_Link_481786702" MODIFIED="1381609019201" TEXT="Left and Right">
 <richcontent TYPE="NOTE"><html>
   <head>
     
@@ -1445,7 +1446,7 @@
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node COLOR="#407000" CREATED="1202400209358" ID="Freemind_Link_60926823" MODIFIED="1229414651836" STYLE="fork" TEXT="Search &amp; Replace Dialog">
+<node COLOR="#407000" CREATED="1202400209358" ID="Freemind_Link_60926823" MODIFIED="1381609007066" STYLE="fork" TEXT="Search &amp; Replace Dialog">
 <richcontent TYPE="NOTE"><html>
   <head>
     
@@ -1459,7 +1460,7 @@
     </p>
     <ul>
       <li>
-        Find as you type: when you start to specify your search text, it starts to reduce the amount of displayed nodes. It searches for the text inside the nodes text only (attached notes are currently not searched).
+        Find as you type: when you start to specify your search text, it starts to reduce the amount of displayed nodes. It searches for the text inside the nodes text only (attached notes are searched, if you use version 1.0.0 or higher).
       </li>
       <li>
         Sortable node list: the main table is sortable by each criterion. Even by Icon. Thus, it is easy to find all nodes with attached note for example. Or to sort them by creation date to get the latest changes to the map!
@@ -1471,17 +1472,18 @@
         Node Path display: if you select a line, its path from the root of the map is displayed below.
       </li>
       <li>
-        Direct access: if you press enter inside the table, the mind map displays the selected node (menu item "select" and "select and close").
+        Direct access: if you press enter inside the table, the mind map displays the selected node (menu item &quot;select&quot; and &quot;select and close&quot;).
       </li>
       <li>
         Replace: it is possible to replace all occurences or only the nodes belonging to the selected lines.
       </li>
       <li>
-        Export: new striking possibility. Select some nodes and export them to a new mindmap. This makes it easy to generate a todo list from a hierachical mind map. For example, if you mark every todo item with the bell sign, then simply sort this list by icon and mark those containing the bell. Then press "export" and you get all these nodes as single nodes in a new map.
+        Export: new striking possibility. Select some nodes and export them to a new mindmap. This makes it easy to generate a todo list from a hierachical mind map. For example, if you mark every todo item with the bell sign, then simply sort this list by icon and mark those containing the bell. Then press &quot;export&quot; and you get all these nodes as single nodes in a new map.
       </li>
     </ul>
   </body>
-</html></richcontent>
+</html>
+</richcontent>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
@@ -1503,10 +1505,10 @@
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1201282939150" FOLDED="true" ID="Freemind_Link_150258579" MODIFIED="1354041407412" STYLE="fork" TEXT="New Exports">
+<node COLOR="#407000" CREATED="1201282939150" FOLDED="true" ID="Freemind_Link_150258579" MODIFIED="1381609019205" STYLE="fork" TEXT="New Exports">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
-<node COLOR="#407000" CREATED="1201282945124" ID="Freemind_Link_1356291624" MODIFIED="1229414651846" STYLE="fork" TEXT="As flash and as a Java applet">
+<node COLOR="#407000" CREATED="1201282945124" ID="Freemind_Link_1356291624" MODIFIED="1381608183474" STYLE="fork" TEXT="As flash and as a Java applet">
 <richcontent TYPE="NOTE"><html>
   <head>
     
@@ -1521,13 +1523,20 @@
     <p>
       The flash application is very fast and has some different features built in. But it has a different look and feel.
     </p>
+    <p>
+      
+    </p>
+    <p>
+      <b>Due to increased security measures, both exports are only working, when the results are put into a webspace behind a web server.</b>
+    </p>
   </body>
-</html></richcontent>
+</html>
+</richcontent>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1201506466515" FOLDED="true" ID="Freemind_Link_676471791" MODIFIED="1229414897565" STYLE="fork" TEXT="Scripting Support">
+<node COLOR="#407000" CREATED="1201506466515" FOLDED="true" ID="Freemind_Link_676471791" MODIFIED="1381609019206" STYLE="fork" TEXT="Scripting Support">
 <richcontent TYPE="NOTE"><html>
   <head>
     
@@ -1890,12 +1899,12 @@ c.registerNodeSelectionListener(newListener);</pre>
 </node>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1354041409110" FOLDED="true" ID="ID_1185769793" MODIFIED="1354049502175" POSITION="right" STYLE="fork" TEXT="New features in version 1.0.0">
+<node COLOR="#407000" CREATED="1354041409110" FOLDED="true" ID="ID_1185769793" MODIFIED="1381609020880" POSITION="right" STYLE="fork" TEXT="New features in version 1.0.0">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <node COLOR="#407000" CREATED="1354041534617" ID="ID_485992024" MODIFIED="1354049372607" STYLE="fork" TEXT="Clones are supported">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354041542053" FOLDED="true" ID="ID_76396394" MODIFIED="1354049495474" STYLE="fork" TEXT="Collaboration via Network is supported">
+<node COLOR="#407000" CREATED="1354041542053" FOLDED="true" ID="ID_76396394" MODIFIED="1381609020876" STYLE="fork" TEXT="Collaboration via Network is supported">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <node COLOR="#407000" CREATED="1354049334525" ID="ID_1490791817" MODIFIED="1354297058790" STYLE="fork" TEXT="Locking support (it is not possible to change at two sites at the same time).">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
@@ -1928,7 +1937,10 @@ c.registerNodeSelectionListener(newListener);</pre>
 <node COLOR="#407000" CREATED="1354049017472" ID="ID_497763930" MODIFIED="1354049372550" STYLE="fork" TEXT="QuickView Support for Mac OSX">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354049159148" FOLDED="true" ID="ID_1174384551" MODIFIED="1354049501116" STYLE="fork" TEXT="Little changes">
+<node COLOR="#407000" CREATED="1381608934842" ID="ID_1904579132" MODIFIED="1381608967326" STYLE="fork" TEXT="A new folding circle can be clicked to fold/unfold">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049159148" FOLDED="true" ID="ID_1174384551" MODIFIED="1381609020878" STYLE="fork" TEXT="Little changes">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <node COLOR="#407000" CREATED="1354041615600" ID="ID_1369145907" MODIFIED="1354297058800" STYLE="fork" TEXT="New plugin: jump to last edit location (like ctrl+q in eclipse)">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
@@ -1964,9 +1976,6 @@ c.registerNodeSelectionListener(newListener);</pre>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
 <node COLOR="#407000" CREATED="1354049256848" ID="ID_481234903" MODIFIED="1354297058809" STYLE="fork" TEXT="Export of multiple nodes as PDF (for each node, there will be one separate PDF) possible.">
-<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
-</node>
-<node COLOR="#407000" CREATED="1354049296898" ID="ID_283157460" MODIFIED="1354297058810" STYLE="fork" TEXT="Free node movement is now switched off by default and can be enabled in the preferences.">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
 <node COLOR="#407000" CREATED="1354049311677" ID="ID_1888591328" MODIFIED="1354297058811" STYLE="fork" TEXT="Http-Proxies can be used, settings can be entered in the preferences dialog.">
