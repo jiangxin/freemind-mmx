@@ -26,8 +26,6 @@ package freemind.view.mindmapview;
 import java.awt.Dimension;
 import java.awt.Point;
 
-import javax.swing.JComponent;
-
 import freemind.main.Resources;
 import freemind.main.Tools;
 

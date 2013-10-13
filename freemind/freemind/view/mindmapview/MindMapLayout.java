@@ -25,8 +25,6 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
 
-import javax.swing.JLabel;
-
 /**
  * This class will Layout the Nodes and Edges of an MapView.
  */

@@ -26,7 +26,6 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DropTargetListener;
-import java.io.File;
 import java.util.Vector;
 
 import javax.swing.JPanel;

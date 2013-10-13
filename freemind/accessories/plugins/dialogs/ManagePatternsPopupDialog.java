@@ -61,7 +61,6 @@ import javax.swing.event.ListSelectionListener;
 import com.jgoodies.forms.factories.ButtonBarFactory;
 
 import freemind.common.TextTranslator;
-import freemind.common.XmlBindingTools;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.ManageStyleEditorWindowConfigurationStorage;
 import freemind.controller.actions.generated.instance.Pattern;
