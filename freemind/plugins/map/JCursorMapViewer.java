@@ -55,7 +55,7 @@ final class JCursorMapViewer extends JMapViewer {
 			BasicStroke.JOIN_MITER, 10.0f, new float[] { 10.0f, 10.0f }, 0.0f);
 	private FreeMindMapController mFreeMindMapController;
 	private final MapDialog mMapHook;
-	private boolean mHideFoldedNodes;
+	private boolean mHideFoldedNodes = true;
 	private Coordinate mRectangularStart;
 	private Coordinate mRectangularEnd;
 	private boolean mDrawRectangular = false;
