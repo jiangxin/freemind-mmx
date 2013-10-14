@@ -875,6 +875,8 @@ public class MindMapController extends ControllerAdapter implements
 		String nodeStatusLine;
 		List selecteds = getSelecteds();
 		int amountOfSelecteds = selecteds.size();
+		if(amountOfSelecteds == 0)
+			return;
 		double sum = 0d;
 		java.util.regex.Pattern p = java.util.regex.Pattern.compile(REGEXP_FOR_NUMBERS_IN_STRINGS);
 		for (Iterator it = selecteds.iterator(); it.hasNext();) {

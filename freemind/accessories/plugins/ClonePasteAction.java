@@ -768,7 +768,7 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 		}
 
 		public void setIcon(MindMapNode node, ImageIcon i) {
-			node.setStateIcon(PLUGIN_NAME, i);
+			node.setStateIcon(ClonePlugin.PLUGIN_LABEL, i);
 			controller.nodeRefresh(node);
 		}
 

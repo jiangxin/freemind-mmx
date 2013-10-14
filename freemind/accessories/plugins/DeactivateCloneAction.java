@@ -44,8 +44,14 @@ public class DeactivateCloneAction extends MindMapNodeHookAdapter implements Men
 		super.invoke(pNode);
 		ClonePlugin hook = ClonePlugin.getHook(pNode);
 		if (hook != null) {
-			// double add to remove:
-			hook.toggleHook();
+			// first deactivate cloning for this node (otherwise, the deactivation will be cloned, too!)
+			getRegistration().deregisterClone(hook.getCloneId(), hook);
+			// has it been removed due to the deregister in the meantime?
+			hook = ClonePlugin.getHook(pNode);
+			if (hook != null) {
+				// double add to remove:
+				hook.toggleHook();
+			}
 		}
 
 	}

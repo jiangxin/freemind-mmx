@@ -359,4 +359,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		mCloneItself = Boolean.valueOf(pCloneProperties.isCloneItself());
 	}
 
+	public String getCloneId() {
+		return mCloneId;
+	}
+
 }
