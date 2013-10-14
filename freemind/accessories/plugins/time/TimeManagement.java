@@ -200,7 +200,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 
 	public final static String REMINDER_HOOK_NAME = "plugins/TimeManagementReminder.xml";
 
-	private static Date lastDate = null;
+	private static Calendar lastDate = null;
 
 	private JTripleCalendar calendar;
 
@@ -293,7 +293,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 		}
 		if (lastDate != null) {
 			logger.info("Setting date to " + lastDate);
-			calendar.setDate(lastDate);
+			calendar.setCalendar(lastDate);
 		}
 		dialog.pack();
 		// focus fix after startup.
@@ -328,7 +328,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 				gb2.gridy = 0;
 				gb2.fill = GridBagConstraints.HORIZONTAL;
 				hourField = new JTextField(2);
-				hourField.setText(new Integer(calendar.getCalendar().get(
+				hourField.setText(new Integer(getCalendar().get(
 						Calendar.HOUR_OF_DAY)).toString());
 				timePanel.add(hourField, gb2);
 			}
@@ -348,7 +348,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 				gb2.gridy = 0;
 				gb2.fill = GridBagConstraints.HORIZONTAL;
 				minuteField = new JTextField(2);
-				String minuteString = new Integer(calendar.getCalendar().get(
+				String minuteString = new Integer(getCalendar().get(
 						Calendar.MINUTE)).toString();
 				// padding with "0"
 				if (minuteString.length() < 2) {
@@ -431,14 +431,14 @@ public class TimeManagement extends MindMapHookAdapter implements
 	private void disposeDialog() {
 		dialog.setVisible(false);
 		dialog.dispose();
-		lastDate = getCalendarDate();
+		lastDate = getCalendar();
 		sCurrentlyOpenTimeManagement = null;
 	}
 
 	/**
 	 */
 	private Date getCalendarDate() {
-		Calendar cal = calendar.getCalendar();
+		Calendar cal = getCalendar();
 		try {
 			int value = 0;
 			value = Integer.parseInt(hourField.getText());
@@ -449,6 +449,10 @@ public class TimeManagement extends MindMapHookAdapter implements
 		} catch (Exception e) {
 		}
 		return cal.getTime();
+	}
+
+	protected Calendar getCalendar() {
+		return calendar.getCalendar();
 	}
 
 	public void afterMapClose(MapModule oldMapModule, Mode oldMode) {
