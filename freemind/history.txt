@@ -11,6 +11,7 @@ Changes made in FreeMind 1.0.0 (final)
 * next try to avoid bug 1159: focus jumps to file-menu after closing html-editing-window
 * Fixed folding circles in browse mode.
 * Fixed jumping in Calendar using mouse clicks
+* Fixed: move downwards into an encrypted and closed node isn't possible any more.
 
 ===============================
 Changes made in FreeMind 1.0.0 RC 5

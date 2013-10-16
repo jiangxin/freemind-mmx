@@ -160,7 +160,7 @@ public class ChangeNodeLevelAction extends MindMapNodeHookAdapter {
 					}
 				}
 			}
-			if (directSibling != null) {
+			if (directSibling != null && directSibling.isWriteable()) {
 				// sibling on the same side found:
 				Transferable copy = getMindMapController().cut(selectedNodes);
 				getMindMapController().paste(copy, directSibling, false,
