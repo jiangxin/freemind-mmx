@@ -245,7 +245,7 @@ public class MindMapLinkRegistry {
 					"Illegal link specification." + link);
 		MindMapNode source = link.getSource();
 		MindMapNode target = link.getTarget();
-		logger.info("Register link (" + link + ") from source node:" + source
+		logger.fine("Register link (" + link + ") from source node:" + source
 				+ " to target " + target);
 		String id = _registerLinkTarget(target);
 		Vector vec = getAssignedLinksVector(id);

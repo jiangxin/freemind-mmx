@@ -23,11 +23,7 @@
 
 package tests.freemind;
 
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-
 import de.foltin.StringEncoder;
-
 import freemind.common.XmlBindingTools;
 import freemind.controller.actions.generated.instance.Pattern;
 import freemind.controller.actions.generated.instance.PatternChild;
@@ -35,7 +31,6 @@ import freemind.controller.actions.generated.instance.Place;
 import freemind.controller.actions.generated.instance.Result;
 import freemind.controller.actions.generated.instance.Reversegeocode;
 import freemind.controller.actions.generated.instance.Searchresults;
-import freemind.main.Tools;
 
 /**
  * @author foltin

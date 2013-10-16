@@ -26,12 +26,11 @@ package freemind.view.mindmapview;
 import java.awt.Dimension;
 import java.awt.Point;
 
-import javax.swing.JComponent;
-
 import freemind.main.Resources;
 import freemind.main.Tools;
 
 /**
+ * Root layout.
  * @author dimitri 05.06.2005
  */
 public class VerticalRootNodeViewLayout extends NodeViewLayoutAdapter {
@@ -86,13 +85,7 @@ public class VerticalRootNodeViewLayout extends NodeViewLayoutAdapter {
 	}
 
 	public void layoutNodeMotionListenerView(NodeMotionListenerView view) {
-		NodeView movedView = view.getMovedView();
-		final JComponent content = movedView.getContent();
-		location.x = 0;
-		location.y = -LISTENER_VIEW_WIDTH;
-		Tools.convertPointToAncestor(content, location, view.getParent());
-		view.setLocation(location);
-		view.setSize(content.getWidth(), LISTENER_VIEW_WIDTH);
+		// there is no move handle at root.
 	}
 
 	public Point getMainViewOutPoint(NodeView view, NodeView targetView,

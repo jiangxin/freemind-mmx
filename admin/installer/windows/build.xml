@@ -8,82 +8,57 @@
      foltin                                                                
      ====================================================================== -->
 <project name="freemind_installer_windows" default="installer">
-    <description>
+	<description>
             Creates the installer Freemind.iss file for different purposes
     </description>
-	<property name="freemind.version" value="0.8.1"/>
-	<property name="freemind.installer_year" value="2008"/>
+	<property name="freemind.version" value="1.0.0" />
+	<property name="freemind.installer_year" value="2013"/>
 
-    <!-- ================================= 
+	<!-- ================================= 
           target: installer              
          ================================= -->
-    <target name="installer" depends="" description="--> Creates the installer Freemind.iss file.">
-    	<property name="freemind.installer.additional_sources" value="Source: ..\..\..\bin\dist\plugins\*.*; DestDir: {app}\plugins; Flags: promptifolder overwritereadonly  recursesubdirs"/>
-    	<property name="freemind.version.extension" value="-max"/>
-    	<antcall target="write_installer"></antcall>
+	<target name="installer" depends="" description="--> Creates the installer Freemind.iss file.">
+		<property name="freemind.installer.additional_sources" value="Source: ..\..\..\bin\dist\plugins\*.*; DestDir: {app}\plugins; Flags: promptifolder overwritereadonly  recursesubdirs" />
+		<property name="freemind.version.extension" value="-max" />
+		<antcall target="write_installer">
+		</antcall>
 	</target>
-    <!-- ================================= 
+	<!-- ================================= 
           target: installer_min              
          ================================= -->
-    <target name="installer_min" depends="" description="--> Creates the min installer Freemind.iss file.">
-    	<property name="freemind.installer.additional_sources" value=""/>
-    	<property name="freemind.version.extension" value="-min"/>
-    	<antcall target="write_installer"></antcall>
+	<target name="installer_min" depends="" description="--> Creates the min installer Freemind.iss file.">
+		<property name="freemind.installer.additional_sources" value="" />
+		<property name="freemind.version.extension" value="-min" />
+		<antcall target="write_installer">
+		</antcall>
 	</target>
-    <!-- ================================= 
-          target: installer_java_embedded              
-         ================================= -->
-    <target name="installer_java_embedded" depends="" description="--> Creates the java embedded max installer Freemind.iss file.">
-        <available property="unzipped_jre_present" file="jre/bin/java.exe"/>
-        <fail message="No unzipped java runtime found in directory admin/installer/windows/jre." unless="unzipped_jre_present"/>
-    	<property name="freemind.installer.additional_sources" value="Source: ..\..\..\bin\dist\plugins\*.*; DestDir: {app}\plugins; Flags: promptifolder overwritereadonly  recursesubdirs"/>
-    	<property name="freemind.installer.embedded_jre" value="Source: jre\*.*; DestDir: {app}\jre; Flags: promptifolder overwritereadonly  recursesubdirs"/>
-    	<!-- No java check necessary here... -->
-    	<property name="freemind.installer.jre_check" value="  Result := true;"/>
-    	<property name="freemind.version.extension" value="-max-java-embedded"/>
-    	<copy todir="." overwrite="true">
-    		<fileset dir="../../../bin/dist">
-			    <include name="freemind.bat"/>
-			</fileset>
-    		<fileset dir="../../../freemind/windows-launcher">
-			    <include name="FreeMind-butterfly-alternative-path.exe"/>
-			</fileset>
-    	</copy>
-    	<move tofile="FreeMind.exe" file="FreeMind-butterfly-alternative-path.exe"/>
-    	<replaceregexp byline="true" file="freemind.bat" match="^java" replace="jre\\\\bin\\\\java.exe"></replaceregexp>
-    	<property name="freemind.installer.freemind_bat" value="Source: Freemind.bat; DestDir: {app}; Flags: promptifolder overwritereadonly"/>
-    	<property name="freemind.installer.freemind_exe" value="Source: FreeMind.exe; DestDir: {app}; Flags: promptifolder overwritereadonly"/>
-    	<antcall target="write_installer_base"></antcall> 
-	</target>
-    <!-- ================================= 
+	<!-- ================================= 
           target: installer_java_installer_embedded              
          ================================= -->
-    <target name="installer_java_installer_embedded" depends="" description="--> Creates the jre installer embedded max installer Freemind.iss file.">
-        <available property="jre_installer_present" file="jre_installer.exe"/>
-        <fail message="No  java installer found in directory admin/installer/windows." unless="jre_installer_present"/>
-    	<property name="freemind.installer.additional_sources" value="Source: ..\..\..\bin\dist\plugins\*.*; DestDir: {app}\plugins; Flags: promptifolder overwritereadonly  recursesubdirs"/>
-    	<property name="freemind.installer.embedded_jre" value="Source: jre_installer.exe; Flags: dontcopy"/>
-    	<property name="freemind.version.extension" value="-max-java-installer-embedded"/>
-    	<property name="freemind.installer.jre_check" value="  Result := InstallJavaVersion;"/>
-    	<property name="freemind.installer.freemind_bat" value="Source: ..\..\..\bin\dist\Freemind.bat; DestDir: {app}; Flags: promptifolder overwritereadonly"/>
-    	<property name="freemind.installer.freemind_exe" value="Source: ..\..\..\bin\dist\Freemind.exe; DestDir: {app}; Flags: promptifolder overwritereadonly"/>
-    	<antcall target="write_installer_base"></antcall> 
+	<target name="installer_java_installer_embedded" depends="" description="--> Creates the jre installer embedded max installer Freemind.iss file.">
+		<available property="jre_installer_present" file="jre_installer.exe" />
+		<fail message="No  java installer found in directory admin/installer/windows." unless="jre_installer_present" />
+		<property name="freemind.installer.additional_sources" value="Source: ..\..\..\bin\dist\plugins\*.*; DestDir: {app}\plugins; Flags: promptifolder overwritereadonly  recursesubdirs" />
+		<property name="freemind.installer.embedded_jre" value="Source: jre_installer.exe; Flags: dontcopy" />
+		<property name="freemind.version.extension" value="-max-java-installer-embedded" />
+		<property name="freemind.installer.jre_check" value="  Result := InstallJavaVersion;" />
+		<antcall target="write_installer_base">
+		</antcall>
 	</target>
 	<!-- - - - - - - - - - - - - - - - - - 
           target: write_installer                      
          - - - - - - - - - - - - - - - - - -->
-    <target name="write_installer">
-    	<property name="freemind.installer.embedded_jre" value=""/>
-    	<property name="freemind.installer.jre_check" value="  Result := CheckJavaVersion;"/>
-    	<property name="freemind.installer.freemind_bat" value="Source: ..\..\..\bin\dist\Freemind.bat; DestDir: {app}; Flags: promptifolder overwritereadonly"/>
-    	<property name="freemind.installer.freemind_exe" value="Source: ..\..\..\bin\dist\Freemind.exe; DestDir: {app}; Flags: promptifolder overwritereadonly"/>
-		<antcall target="write_installer_base"></antcall>
-	</target>        	
+	<target name="write_installer">
+		<property name="freemind.installer.embedded_jre" value="" />
+		<property name="freemind.installer.jre_check" value="  Result := CheckJavaVersion;" />
+		<antcall target="write_installer_base">
+		</antcall>
+	</target>
 	<!-- - - - - - - - - - - - - - - - - - 
           target: write_installer base                 
          - - - - - - - - - - - - - - - - - -->
-    <target name="write_installer_base">
-        <echo file="Freemind.iss" append="false" encoding="ISO-8859-1">
+	<target name="write_installer_base">
+		<echo file="Freemind.iss" append="false" encoding="ISO-8859-1">
 ;****************************************************************************
 ;* Install Script for FreeMind
 ;****************************************************************************
@@ -110,11 +85,8 @@
 [Files]
 Source: isxbb.dll; DestDir: {tmp}; Flags: dontcopy
 
-;Source: ..\..\..\bin\dist\Freemind.exe; DestDir: {app}; Flags: promptifolder overwritereadonly
-;Source: ..\..\..\bin\dist\Freemind.bat; DestDir: {app}; Flags: promptifolder overwritereadonly
-${freemind.installer.freemind_exe}
-${freemind.installer.freemind_bat}
-
+Source: ..\..\..\bin\dist\Freemind.bat;   DestDir: {app}; Flags: promptifolder overwritereadonly
+Source: ..\..\..\bin\dist\FreeMind.exe;   DestDir: {app}; Flags: promptifolder overwritereadonly; 
 
 Source: ..\..\..\bin\dist\dictionaries.properties; DestDir: {app}; Flags: promptifolder overwritereadonly
 Source: ..\..\..\bin\dist\dictionary_*.ortho; DestDir: {app}; Flags: promptifolder overwritereadonly
@@ -169,7 +141,12 @@ begin
   Result := False;
   if RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\JavaSoft\Java Runtime Environment', 'CurrentVersion', AVersion) then
   begin
-	if (AVersion = '1.4') or (AVersion = '1.5') or (AVersion = '1.6') or (AVersion = '1.7') then
+	if (AVersion = '1.4') or (AVersion = '1.5') or (AVersion = '1.6') or (AVersion = '1.7')  or (AVersion = '1.8') then
+		Result := True;
+  end;
+  if IsWin64 and RegQueryStringValue(HKEY_LOCAL_MACHINE_64, 'SOFTWARE\JavaSoft\Java Runtime Environment', 'CurrentVersion', AVersion) then
+  begin
+	if (AVersion = '1.4') or (AVersion = '1.5') or (AVersion = '1.6') or (AVersion = '1.7')  or (AVersion = '1.8') then
 		Result := True;
   end;
 end;
@@ -179,7 +156,7 @@ begin
   Result := SearchForJavaVersion;
   if Result = False then	// Java not found/detected
   begin
-	if MsgBox( 'Java 1.4 or greater not detected. - You have to download and install Java from http://java.sun.com/ - \nContinue with installation?', mbError, MB_YESNO) = MRYES then
+	if MsgBox( 'Java 1.4 or greater not detected. - You have to download and install Java from http://www.java.com/ - Continue with installation?', mbError, MB_YESNO) = MRYES then
 		Result := True
 	else
 		Result := False;
@@ -230,7 +207,7 @@ AppPublisherURL=http://freemind.sourceforge.net
 AppSupportURL=http://freemind.sourceforge.net
 AppUpdatesURL=http://freemind.sourceforge.net
 ;the version is not a number. doesn't work: VersionInfoVersion=${freemind.version}
-VersionInfoVersion=0.9.0.0
+VersionInfoVersion=1.0.0.0
         	
 DefaultDirName={pf}\FreeMind
 DefaultGroupName=FreeMind
@@ -260,6 +237,7 @@ Compression=zip/9
 ShowTasksTreeLines=true
 
 ShowUndisplayableLanguages=true
+; no 64bit binary: ArchitecturesInstallIn64BitMode=x64
 
 [Languages]
 Name: english; MessagesFile: compiler:Default.isl
@@ -315,6 +293,6 @@ Root: HKCR; Subkey: Freemind\DefaultIcon; ValueType: string; ValueName: ; ValueD
 ;"DefaultIcon" is the registry key that specifies the filename containing the icon to associate with the file type. ",0" tells Explorer to use the first icon from MYPROG.EXE. (",1" would mean the second icon.)
 Root: HKCR; Subkey: Freemind\shell\open\command; ValueType: string; ValueName: ; ValueData: """{app}\freemind.exe"" ""%1"""; Flags: uninsdeletekey
 </echo>
-    </target>
+	</target>
 
 </project>

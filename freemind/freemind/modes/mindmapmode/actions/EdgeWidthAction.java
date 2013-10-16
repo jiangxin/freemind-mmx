@@ -24,6 +24,10 @@
 
 package freemind.modes.mindmapmode.actions;
 
+import javax.swing.Action;
+import javax.swing.JMenuItem;
+
+import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.actions.generated.instance.EdgeWidthFormatAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.EdgeAdapter;
@@ -32,7 +36,7 @@ import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
-public class EdgeWidthAction extends NodeGeneralAction implements NodeActorXml {
+public class EdgeWidthAction extends NodeGeneralAction implements NodeActorXml, MenuItemSelectedListener {
 	private int mWidth;
 
 	public EdgeWidthAction(MindMapController controller, int width) {
@@ -102,6 +106,18 @@ public class EdgeWidthAction extends NodeGeneralAction implements NodeActorXml {
 			returnValue = Integer.toString(width);
 		}
 		return /* controller.getText("edge_width") + */returnValue;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.controller.MenuItemSelectedListener#isSelected(javax.swing.JMenuItem, javax.swing.Action)
+	 */
+	public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
+		int width = getMindMapController().getSelected().getEdge().getRealWidth();
+		return width == mWidth;
+	}
+
+	public int getWidth() {
+		return mWidth;
 	}
 
 }

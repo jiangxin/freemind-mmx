@@ -69,11 +69,16 @@ public class FindTextTests extends FreeMindTestBase {
 
 			public Object getValueAt(int rowIndex, int columnIndex) {
 				TestMindMapNode testMindMapNode = new TestMindMapNode();
-				testMindMapNode.setText("<html><strong>test</strong></html>");
-				return new TimeList.NodeHolder(testMindMapNode);
+				testMindMapNode
+				.setText("<html><strong>test</strong></html>");
+				if (columnIndex == 0) {
+					return new TimeList.NodeHolder(testMindMapNode);
+				} else {
+					return new TimeList.NotesHolder(testMindMapNode);
+				}
 			}
 		};
-		FlatNodeTableFilterModel dut = new FlatNodeTableFilterModel(tm, 0, 0);
+		FlatNodeTableFilterModel dut = new FlatNodeTableFilterModel(tm, 0, 1);
 		assertEquals("One row:", 1, dut.getRowCount());
 		dut.setFilter("strong");
 		assertEquals("No row:", 0, dut.getRowCount());

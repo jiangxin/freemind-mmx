@@ -25,8 +25,6 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
 
-import javax.swing.JLabel;
-
 /**
  * This class will Layout the Nodes and Edges of an MapView.
  */
@@ -36,8 +34,13 @@ public class MindMapLayout implements LayoutManager {
 	// minimal width for input field of leaf or folded node (PN)
 	// the MINIMAL_LEAF_WIDTH is reserved by calculation of the map width
 	public final static int MINIMAL_LEAF_WIDTH = 150;
+	protected static java.util.logging.Logger logger = null;
 
 	public MindMapLayout() {
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
 	}
 
 	public void addLayoutComponent(String name, Component comp) {
@@ -59,16 +62,6 @@ public class MindMapLayout implements LayoutManager {
 			final Component component = mapView.getComponent(i);
 			if (!component.isValid()) {
 				component.validate();
-			}
-			if (component instanceof NodeMotionListenerView) {
-				final NodeMotionListenerView nodeMotionListenerView = (NodeMotionListenerView) component;
-				final NodeViewLayout layout = (NodeViewLayout) nodeMotionListenerView
-						.getMovedView().getLayout();
-				layout.layoutNodeMotionListenerView(nodeMotionListenerView);
-			} else if (component instanceof NodeFoldingComponent) {
-				NodeFoldingComponent foldingComponent = (NodeFoldingComponent) component;
-				NodeViewLayout layout = (NodeViewLayout) foldingComponent.getNodeView().getLayout();
-				layout.layoutNodeFoldingComponent(foldingComponent);
 			}
 		}
 	}

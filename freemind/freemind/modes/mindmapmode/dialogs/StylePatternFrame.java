@@ -370,7 +370,7 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 		for (int i = 0; i < sizes.length; i++) {
 			sizesVector.add(sizes[i]);
 		}
-		mNodeFontSize = new ComboProperty(NODE_FONT_SIZE + ".tooltip",
+		mNodeFontSize = new IntegerComboProperty(NODE_FONT_SIZE + ".tooltip",
 				NODE_FONT_SIZE, sizes, sizesVector);
 		controls.add(mNodeFontSize);
 		mSetNodeFontBold = new ThreeCheckBoxProperty(SET_NODE_FONT_BOLD

@@ -43,7 +43,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.SwingConstants;
@@ -63,7 +62,6 @@ import freemind.modes.MindMapCloud;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
-import freemind.modes.mindmapmode.MindMapController;
 import freemind.preferences.FreemindPropertyListener;
 import freemind.view.mindmapview.attributeview.AttributeView;
 
@@ -151,22 +149,18 @@ public class NodeView extends JComponent implements TreeModelListener {
 
 		parent.add(this, index);
 
-		if (!model.isRoot() && "true".equals(map.getController().getProperty(FreeMindMain.ENABLE_NODE_MOVEMENT))) {
-			motionListenerView = new NodeMotionListenerView(this);
-			map.add(motionListenerView, map.getComponentCount() - 1);
-		}
 		addFoldingListener();
 	}
 
 	protected void addFoldingListener() {
-		if(mFoldingListener == null && getModel().hasChildren()) {
+		if(mFoldingListener == null && getModel().hasVisibleChilds() && !getModel().isRoot()) {
 			mFoldingListener = new NodeFoldingComponent(this);
-			getMap().add(mFoldingListener, getMap().getComponentCount()-1);
+			add(mFoldingListener, getComponentCount()-1);
 
 			mFoldingListener.addActionListener(new ActionListener() {
 				
 				public void actionPerformed(ActionEvent pE) {
-					((MindMapController)getModeController()).setFolded(getModel(), !getModel().isFolded());
+					getModeController().setFolded(getModel(), !getModel().isFolded());
 				}
 			});
 		}
@@ -175,7 +169,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 	protected void removeFoldingListener() {
 		if(mFoldingListener != null) {
 			mFoldingListener.dispose();
-			map.remove(mFoldingListener);
+			remove(mFoldingListener);
 			mFoldingListener = null;
 		}
 	}
@@ -208,6 +202,10 @@ public class NodeView extends JComponent implements TreeModelListener {
 		mainView.addMouseMotionListener(this.map.getNodeMouseMotionListener());
 		addDragListener(map.getNodeDragListener());
 		addDropListener(map.getNodeDropListener());
+		if (!model.isRoot() && "true".equals(map.getController().getProperty(FreeMindMain.ENABLE_NODE_MOVEMENT))) {
+			motionListenerView = new NodeMotionListenerView(this);
+			add(motionListenerView);
+		}
 
 	}
 
@@ -215,7 +213,8 @@ public class NodeView extends JComponent implements TreeModelListener {
 		setFocusCycleRoot(false);
 		getParent().remove(this);
 		if (motionListenerView != null) {
-			map.remove(motionListenerView);
+			remove(motionListenerView);
+			motionListenerView = null;
 		}
 		removeFoldingListener();
 		ToolTipManager.sharedInstance().unregisterComponent(mainView);
@@ -841,6 +840,8 @@ public class NodeView extends JComponent implements TreeModelListener {
 	void update() {
 		updateStyle();
 		if (!isContentVisible()) {
+			// not visible at all
+			removeFoldingListener();
 			mainView.setVisible(false);
 			return;
 		}
@@ -851,6 +852,12 @@ public class NodeView extends JComponent implements TreeModelListener {
 		createAttributeView();
 		if (attributeView != null) {
 			attributeView.update();
+		}
+		// visible. has it still visible children?
+		if(getModel().hasVisibleChilds()) {
+			addFoldingListener();
+		} else {
+			removeFoldingListener();
 		}
 		updateText();
 		updateToolTip();
@@ -1058,9 +1065,6 @@ public class NodeView extends JComponent implements TreeModelListener {
 
 	}
 
-	/**
-     *
-     */
 	/**
 	 * Updates the tool tip of the node.
 	 */
@@ -1355,7 +1359,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 	 * .TreeModelEvent)
 	 */
 	public void treeNodesRemoved(TreeModelEvent e) {
-		if(!getModel().hasChildren()) {
+		if(!getModel().hasVisibleChilds()) {
 			removeFoldingListener();
 		}
 		getMap().resetShiftSelectionOrigin();
@@ -1453,10 +1457,9 @@ public class NodeView extends JComponent implements TreeModelListener {
 	public Container getContentPane() {
 		if (contentPane == null) {
 			contentPane = NodeViewFactory.getInstance().newContentPane(this);
-			int index = getComponentCount() - 1;
-			remove(index);
+			remove(mainView);
 			contentPane.add(mainView);
-			add(contentPane, index);
+			add(contentPane);
 		}
 		return contentPane;
 	}

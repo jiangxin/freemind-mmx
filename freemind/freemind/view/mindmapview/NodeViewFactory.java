@@ -110,17 +110,17 @@ class NodeViewFactory {
 	}
 
 	EdgeView getEdge(NodeView newView) {
-		final String edgeStyle = newView.getModel().getEdge().getStyle();
-		if (edgeStyle.equals(EdgeAdapter.EDGESTYLE_LINEAR)) {
+		final int edgeStyle = newView.getModel().getEdge().getStyleAsInt();
+		switch(edgeStyle) {
+		case EdgeAdapter.INT_EDGESTYLE_LINEAR:
 			return getLinearEdgeView();
-		} else if (edgeStyle.equals(EdgeAdapter.EDGESTYLE_BEZIER)) {
+		case EdgeAdapter.INT_EDGESTYLE_BEZIER:
 			return getBezierEdgeView();
-		} else if (edgeStyle.equals(EdgeAdapter.EDGESTYLE_SHARP_LINEAR)) {
-			return getSharpEdgeView();
-		} else if (edgeStyle.equals(EdgeAdapter.EDGESTYLE_SHARP_BEZIER)) {
+		case EdgeAdapter.INT_EDGESTYLE_SHARP_LINEAR:
+			return getSharpLinearEdgeView();
+		case EdgeAdapter.INT_EDGESTYLE_SHARP_BEZIER:
 			return getSharpBezierEdgeView();
-		} else {
-			System.err.println("Unknown Edge Type.");
+		default:
 			return getLinearEdgeView();
 		}
 	}
@@ -132,7 +132,7 @@ class NodeViewFactory {
 		return sharpBezierEdgeView;
 	}
 
-	private EdgeView getSharpEdgeView() {
+	private EdgeView getSharpLinearEdgeView() {
 		if (sharpLinearEdgeView == null) {
 			sharpLinearEdgeView = new SharpLinearEdgeView();
 		}

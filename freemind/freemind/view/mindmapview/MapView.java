@@ -386,7 +386,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 
 			public Component getDefaultComponent(Container pAContainer) {
 				Component defaultComponent = getSelected();
-				logger.info("Focus traversal to: " + defaultComponent);
+				logger.fine("Focus traversal to: " + defaultComponent);
 				return defaultComponent;
 			}
 

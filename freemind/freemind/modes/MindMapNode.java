@@ -359,8 +359,16 @@ public interface MindMapNode extends MutableTreeNode {
 
 	boolean isVisible();
 
-	boolean hasOneVisibleChild();
+	/**
+	 * @return true, if there is exactly one visible child.
+	 */
+	boolean hasExactlyOneVisibleChild();
 
+	/**
+	 * @return true, if there is at least one visible child.
+	 */
+	boolean hasVisibleChilds();
+	
 	MindMap getMap();
 
 	/**

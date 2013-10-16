@@ -93,10 +93,8 @@ public class MapDialog extends MindMapHookAdapter implements
 
 	private JCursorMapViewer map = null;
 
-	private JLabel zoomLabel = null;
 	private JLabel zoomValue = null;
 
-	private JLabel mperpLabelName = null;
 	private JLabel mperpLabelValue = null;
 
 	private MindMapController mMyMindMapController;
@@ -347,6 +345,8 @@ public class MapDialog extends MindMapHookAdapter implements
 		FreeMindMapController.changeTileSource(Mapnik.class.getName(), map);
 		OsmTileLoader loader = getRegistration().createTileLoader(map);
 		map.setTileLoader(loader);
+		map.setCursorPosition(new Coordinate(49.8, 8.8));
+		map.setUseCursor(true);
 
 		mMapDialog.setLayout(new BorderLayout());
 		mSearchPanel = new JPanel(new BorderLayout());
@@ -502,8 +502,6 @@ public class MapDialog extends MindMapHookAdapter implements
 		mStatusLabel = new JLabel(" ");
 		mMapDialog.add(mStatusLabel, BorderLayout.SOUTH);
 
-		map.setCursorPosition(new Coordinate(49.8, 8.8));
-		map.setUseCursor(true);
 		getRegistration().registerMapNodePositionListener(this);
 		getRegistration().registerNodeVisibilityListener(this);
 		getMindMapController().registerNodeSelectionListener(this, true);
@@ -600,7 +598,7 @@ public class MapDialog extends MindMapHookAdapter implements
 	public void toggleSearchBar(AWTEvent pEvent) {
 		if (mSearchBarVisible) {
 			mLastDividerPosition = mSearchSplitPane.getDividerLocation();
-			logger.info("Setting last divider to " + mLastDividerPosition);
+			logger.fine("Setting last divider to " + mLastDividerPosition);
 			// clear results
 			mResultTableModel.clear();
 			// hide search bar

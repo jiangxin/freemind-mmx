@@ -7,11 +7,31 @@ Changes made in FreeMind 1.1.0 Alpha 1
 * Clones can be deactivated by menu
   
 ===============================
+Changes made in FreeMind 1.0.0 (final)
+===============================
+* QuickLook fixed
+* Fixed paste of images.
+* Fixed display of fonts (esp. font sizes) in toolbar and format dialog.
+* Fixed export to LibreOffice. (1166: Export to libreoffice)
+* Fixed windows installer for 64bit.
+* Fixed geographical search at the very first start of FreeMind
+* File filters (e.g. only show .mm-files) are activated by default
+* next try to avoid bug 1159: focus jumps to file-menu after closing html-editing-window
+* Fixed folding circles in browse mode.
+* Fixed jumping in Calendar using mouse clicks
+
+===============================
 Changes made in FreeMind 1.0.0 RC 5
 ===============================
 * Anti-alias for folding circles fixed
 * Folding buttons can be switched off.
- 
+* Corrected folding buttons for filtered maps (https://sourceforge.net/p/freemind/discussion/320014/). 
+* Fixed edge width for fork nodes.
+* Fixed note icon to appear after paste.
+* Fixed menu items: edge styles and widths are selected in the menu, now.
+* Only changed properties are save to the auto.properties file.
+* Fix: Quicklook for mac. Thanks for the patch!
+
 ===============================
 Changes made in FreeMind 1.0.0 RC 4
 ===============================
@@ -468,7 +488,7 @@ Changes made in FreeMind 0.9.0 Beta19
 * New ukranian translation. Thanks to Serhij Dubyk - dubyk.
 * Updated portugese translation. Thanks to Luis Valente - alvalente.
 * New freemind documentation in french. Thanks to rickenbroc - rickenbroc.
-* Updated french translation. Thanks to Sébastien Rombauts - srombauts.
+* Updated french translation. Thanks to Sebastien Rombauts - srombauts.
 * Updated korean translation. Thanks to Yang gyu, Lee - lyg73.
 * Updated japonese translation. Thanks to Tomohiro Sembongi - tomophy.
 * New indonesian translation. Thanks to Perry Harahap - permataharahap.

@@ -19,10 +19,12 @@
 /*$Id: NodeMotionListenerView.java,v 1.1.4.4.4.9 2009/03/29 19:37:23 christianfoltin Exp $*/
 package freemind.view.mindmapview;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Stroke;
 
 import javax.swing.JComponent;
 
@@ -31,12 +33,20 @@ import freemind.main.Resources;
 import freemind.main.Tools;
 
 /**
+ * 
+ * The oval appearing to move nodes to other positions.
+ * 
  * @author Dimitri
  * 
  */
 public class NodeMotionListenerView extends JComponent {
+	protected static java.util.logging.Logger logger = null;
 	public NodeMotionListenerView(NodeView view) {
 		super();
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
 		this.movedView = view;
 		MapView map = view.getMap();
 		addMouseListener(map.getNodeMotionListener());
@@ -63,6 +73,8 @@ public class NodeMotionListenerView extends JComponent {
 			// set antialiasing.
 			Object renderingHint = controller.setEdgesRenderingHint(g2);
 			Color color = g2.getColor();
+			Stroke oldStroke = g2.getStroke();
+			g2.setStroke(new BasicStroke());
 			if (movedView.getModel().getHGap() <= 0) {
 				g2.setColor(Color.RED);
 				g.fillOval(0, 0, getWidth() - 1, getHeight() - 1);
@@ -70,6 +82,7 @@ public class NodeMotionListenerView extends JComponent {
 				g2.setColor(Color.BLACK);
 				g.drawOval(0, 0, getWidth() - 1, getHeight() - 1);
 			}
+			g2.setStroke(oldStroke);
 			g2.setColor(color);
 			Tools.restoreAntialiasing(g2, renderingHint);
 		}

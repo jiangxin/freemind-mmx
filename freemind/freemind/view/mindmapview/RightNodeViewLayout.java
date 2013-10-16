@@ -57,7 +57,7 @@ public class RightNodeViewLayout extends NodeViewLayoutAdapter {
 			final int y = Math.max(getSpaceAround(), -childVerticalShift);
 			getContent().setBounds(x, y, 0, contentHeight);
 		}
-
+		
 		placeRightChildren(childVerticalShift);
 	}
 
@@ -67,14 +67,14 @@ public class RightNodeViewLayout extends NodeViewLayoutAdapter {
 		return instance;
 	}
 
-	public void layoutNodeMotionListenerView(NodeMotionListenerView view) {
-		NodeView movedView = view.getMovedView();
-		final JComponent content = movedView.getContent();
+	public void layoutNodeMotionListenerView(NodeMotionListenerView nodeMotionView) {
+		NodeView nodeView = nodeMotionView.getMovedView();
+		final JComponent content = nodeView.getContent();
 		location.x = -LISTENER_VIEW_WIDTH;
 		location.y = 0;
-		Tools.convertPointToAncestor(content, location, view.getParent());
-		view.setLocation(location);
-		view.setSize(LISTENER_VIEW_WIDTH, content.getHeight());
+		Tools.convertPointToAncestor(content, location, nodeMotionView.getParent());
+		nodeMotionView.setLocation(location);
+		nodeMotionView.setSize(LISTENER_VIEW_WIDTH, content.getHeight());
 	}
 
 	public Point getMainViewOutPoint(NodeView view, NodeView targetView,

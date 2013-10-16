@@ -45,13 +45,13 @@ public class LastOpenedList {
 	/**
 	 * Contains Restore strings.
 	 */
-	private List lastOpenedList = new LinkedList();
+	private List mlastOpenedList = new LinkedList();
 	/**
 	 * Contains Restore string => map name (map.toString()).
 	 */
 	private Map mRestorableToMapName = new HashMap();
 
-	LastOpenedList(Controller c, String restored) {
+	public LastOpenedList(Controller c, String restored) {
 		this.mController = c;
 		try {
 			maxEntries = new Integer(c.getFrame().getProperty(
@@ -62,20 +62,28 @@ public class LastOpenedList {
 		load(restored);
 	}
 
-	void mapOpened(MapModule mapModule) {
+	public void mapOpened(MapModule mapModule) {
 		if (mapModule == null || mapModule.getModel() == null)
 			return;
 		String restoreString = mapModule.getModel().getRestorable();
+		String name = mapModule.toString();
+		add(restoreString, name);
+	}
+
+	/**
+	 * For testing purposes, this method is public
+	 */
+	public void add(String restoreString, String name) {
 		if (restoreString == null)
 			return;
-		if (lastOpenedList.contains(restoreString)) {
-			lastOpenedList.remove(restoreString);
+		if (mlastOpenedList.contains(restoreString)) {
+			mlastOpenedList.remove(restoreString);
 		}
-		lastOpenedList.add(0, restoreString);
-		mRestorableToMapName.put(restoreString, mapModule.toString());
+		mlastOpenedList.add(0, restoreString);
+		mRestorableToMapName.put(restoreString, name);
 
-		while (lastOpenedList.size() > maxEntries) {
-			lastOpenedList.remove(lastOpenedList.size() - 1); // remove last elt
+		while (mlastOpenedList.size() > maxEntries) {
+			mlastOpenedList.remove(mlastOpenedList.size() - 1); // remove last elt
 		}
 	}
 
@@ -85,7 +93,7 @@ public class LastOpenedList {
 	}
 
 	/** fc, 8.8.2004: This method returns a string representation of this class. */
-	String save() {
+	public String save() {
 		String str = new String();
 		for (ListIterator it = listIterator(); it.hasNext();) {
 			str = str.concat((String) it.next() + ";");
@@ -101,7 +109,7 @@ public class LastOpenedList {
 		if (data != null) {
 			StringTokenizer token = new StringTokenizer(data, ";");
 			while (token.hasMoreTokens())
-				lastOpenedList.add(token.nextToken());
+				mlastOpenedList.add(token.nextToken());
 		}
 	}
 
@@ -123,6 +131,6 @@ public class LastOpenedList {
 	}
 
 	ListIterator listIterator() {
-		return lastOpenedList.listIterator();
+		return mlastOpenedList.listIterator();
 	}
 }

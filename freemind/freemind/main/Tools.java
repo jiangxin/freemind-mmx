@@ -74,6 +74,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -107,8 +108,6 @@ import javax.xml.transform.stream.StreamSource;
 
 import freemind.common.XmlBindingTools;
 import freemind.controller.actions.generated.instance.CompoundAction;
-import freemind.controller.actions.generated.instance.FormatNodeAction;
-import freemind.controller.actions.generated.instance.NodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
@@ -128,11 +127,10 @@ public class Tools {
 	static {
 		logger = freemind.main.Resources.getInstance().getLogger("Tools");
 	}
-	
-	public static final String CONTENTS_JAVA_FREEMIND_JAR = "Contents/Java/freemind.jar";
-	
-	public static final String FREE_MIND_APP_CONTENTS_RESOURCES_JAVA = "Contents/Resources/Java/";
 
+	public static final String CONTENTS_JAVA_FREEMIND_JAR = "Contents/Java/freemind.jar";
+
+	public static final String FREE_MIND_APP_CONTENTS_RESOURCES_JAVA = "Contents/Resources/Java/";
 
 	// public static final Set executableExtensions = new HashSet ({ "exe",
 	// "com", "vbs" });
@@ -147,7 +145,6 @@ public class Tools {
 	private static Set availableFontFamilyNames = null; // Keep set of platform
 
 	private static String sEnvFonts[] = null;
-
 
 	// bug fix from Dimitri.
 	public static Random ran = new Random();
@@ -378,16 +375,19 @@ public class Tools {
 	public static boolean isFile(URL url) {
 		return url.getProtocol().equals("file");
 	}
-	
+
 	/**
-	 * @return "/" for absolute file names under Unix, "c:\\" or similar under windows, null otherwise
+	 * @return "/" for absolute file names under Unix, "c:\\" or similar under
+	 *         windows, null otherwise
 	 */
-	public static File getPrefix(String pFileName) {
-		File[] listRoots = File.listRoots();
-		for (int i = 0; i < listRoots.length; i++) {
-			File fileRoot = listRoots[i];
-			if(pFileName.startsWith(fileRoot.getName())) {
-				return fileRoot;
+	public static String getPrefix(String pFileName) {
+		if (isWindows()) {
+			if (pFileName.matches("^[a-zA-Z]:\\\\.*")) {
+				return pFileName.substring(0, 3);
+			}
+		} else {
+			if (pFileName.startsWith(File.separator)) {
+				return File.separator;
 			}
 		}
 		return null;
@@ -1546,12 +1546,12 @@ public class Tools {
 	public static void waitForEventQueue() {
 		try {
 			// wait until AWT thread starts
-//			final Exception e = new IllegalArgumentException("HERE");
+			// final Exception e = new IllegalArgumentException("HERE");
 			if (!EventQueue.isDispatchThread()) {
 				EventQueue.invokeAndWait(new Runnable() {
 					public void run() {
-//						logger.info("Waited for event queue.");
-//						e.printStackTrace();
+						// logger.info("Waited for event queue.");
+						// e.printStackTrace();
 					};
 				});
 			} else {
@@ -1955,7 +1955,8 @@ public class Tools {
 		return (XmlAction) unMarshall(marshall(action));
 	}
 
-	public static String generateID(String proposedID, HashMap hashMap, String prefix) {
+	public static String generateID(String proposedID, HashMap hashMap,
+			String prefix) {
 		String myProposedID = new String((proposedID != null) ? proposedID : "");
 		String returnValue;
 		do {
@@ -1977,36 +1978,51 @@ public class Tools {
 	}
 
 	/**
-	 * Call this method, if you don't know, if you are in the event thread
-	 * or not. It checks this and calls the invokeandwait or the runnable directly.
+	 * Call this method, if you don't know, if you are in the event thread or
+	 * not. It checks this and calls the invokeandwait or the runnable directly.
+	 * 
 	 * @param pRunnable
-	 * @throws InterruptedException 
-	 * @throws InvocationTargetException 
+	 * @throws InterruptedException
+	 * @throws InvocationTargetException
 	 */
-	public static void invokeAndWait(Runnable pRunnable) throws InvocationTargetException, InterruptedException {
-		if(EventQueue.isDispatchThread()) {
+	public static void invokeAndWait(Runnable pRunnable)
+			throws InvocationTargetException, InterruptedException {
+		if (EventQueue.isDispatchThread()) {
 			pRunnable.run();
 		} else {
 			EventQueue.invokeAndWait(pRunnable);
 		}
 	}
 
-	public static String getFreeMindBasePath() throws UnsupportedEncodingException {
-		String path = FreeMindStarter.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+	public static String getFreeMindBasePath()
+			throws UnsupportedEncodingException {
+		String path = FreeMindStarter.class.getProtectionDomain()
+				.getCodeSource().getLocation().getPath();
 		String decodedPath = URLDecoder.decode(path, "UTF-8");
 		logger.info("Path: " + decodedPath);
-		if(decodedPath.endsWith(CONTENTS_JAVA_FREEMIND_JAR)) {
-			decodedPath = decodedPath.substring(0, decodedPath.length()-CONTENTS_JAVA_FREEMIND_JAR.length());
+		if (decodedPath.endsWith(CONTENTS_JAVA_FREEMIND_JAR)) {
+			decodedPath = decodedPath.substring(0, decodedPath.length()
+					- CONTENTS_JAVA_FREEMIND_JAR.length());
 			decodedPath = decodedPath + FREE_MIND_APP_CONTENTS_RESOURCES_JAVA;
 			logger.info("macPath: " + decodedPath);
-		} else if(decodedPath.endsWith(FREEMIND_LIB_FREEMIND_JAR)) {
-			decodedPath = decodedPath.substring(0, decodedPath.length()-FREEMIND_LIB_FREEMIND_JAR.length());
+		} else if (decodedPath.endsWith(FREEMIND_LIB_FREEMIND_JAR)) {
+			decodedPath = decodedPath.substring(0, decodedPath.length()
+					- FREEMIND_LIB_FREEMIND_JAR.length());
 			logger.info("reducded Path: " + decodedPath);
 		}
 		return decodedPath;
 	}
-	
 
-	
-	
+	public static Properties copyChangedProperties(Properties props2,
+			Properties defProps2) {
+		Properties toBeStored = new Properties();
+		for (Iterator it = props2.keySet().iterator(); it.hasNext();) {
+			String key = (String) it.next();
+			if (!safeEquals(props2.get(key), defProps2.get(key))) {
+				toBeStored.put(key, props2.get(key));
+			}
+		}
+		return toBeStored;
+	}
+
 }

@@ -1,17 +1,16 @@
-<map version="0.9.0 Beta 5">
+<map version="1.0.1">
 <!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->
-<node COLOR="#993300" CREATED="1124560950701" ID="Freemind_Link_1694418332" MODIFIED="1132082593219">
-<richcontent><html>
+<node COLOR="#993300" CREATED="1124560950701" ID="Freemind_Link_1694418332" MODIFIED="1381605745737">
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body width="">
     <p align="center">
-      FreeMind<br /><small>- Freie Mind Mapping Software -</small>&#160;
+      FreeMind<br/><small>- Freie Mind Mapping Software -</small>&#xa0;
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <font BOLD="true" NAME="Dialog" SIZE="18"/>
 <node CREATED="1124560950701" ID="Freemind_Link_296874513" LINK="http://freemind.sourceforge.net" MODIFIED="1131994301515" POSITION="left" TEXT="Zur Homepage von FreeMind">
 <font NAME="SansSerif" SIZE="12"/>
@@ -370,7 +369,7 @@
 </node>
 <node COLOR="#006699" CREATED="1124560950701" FOLDED="true" ID="Freemind_Link_1119935059" MODIFIED="1132094896971" TEXT="lokalen Ordnern">
 <font NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950701" ID="Freemind_Link_1060370167" LINK="C:/Program Files/" MODIFIED="1132094855904" TEXT="C:/Programme/">
+<node CREATED="1124560950701" ID="Freemind_Link_1060370167" LINK="C:/Program%20Files/" MODIFIED="1132094855904" TEXT="C:/Programme/">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 <node CREATED="1124560950701" LINK="/home/" MODIFIED="1124560950701" TEXT="/home/">
@@ -451,15 +450,19 @@
 </node>
 <node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="_Freemind_Link_1750585847" MODIFIED="1132241548507" TEXT="Es gibt graphische Verweise">
 <node CREATED="1124560950717" ID="_Freemind_Link_1212380407" MODIFIED="1132097368688" TEXT="Verbindender Knoten">
-<arrowlink DESTINATION="_Freemind_Link_1249400461" ENDARROW="Default" ENDINCLINATION="44;0;" STARTARROW="None" STARTINCLINATION="46;2;"/>
+<arrowlink DESTINATION="_Freemind_Link_1249400461" ENDARROW="Default" ENDINCLINATION="44;0;" ID="Arrow_ID_139975992" STARTARROW="None" STARTINCLINATION="46;2;"/>
 </node>
 <node CREATED="1124560950717" ID="_Freemind_Link_1249400461" MODIFIED="1132097368693" TEXT="zu einem anderen">
 <arrowlink COLOR="#6600ff" DESTINATION="_Freemind_Link_880551392" ENDARROW="Default" ENDINCLINATION="47;0;" ID="Freemind_Arrow_Link_85185909" STARTARROW="None" STARTINCLINATION="47;0;"/>
+<linktarget COLOR="#b0b0b0" DESTINATION="_Freemind_Link_1249400461" ENDARROW="Default" ENDINCLINATION="44;0;" ID="Arrow_ID_139975992" SOURCE="_Freemind_Link_1212380407" STARTARROW="None" STARTINCLINATION="46;2;"/>
 </node>
 <node CREATED="1124560950717" ID="_Freemind_Link_880551392" MODIFIED="1132241563432" TEXT="in verschiedenen Farben">
 <arrowlink DESTINATION="_Freemind_Link_1789233193" ENDARROW="Default" ENDINCLINATION="82;44;" ID="Freemind_Arrow_Link_1672464612" STARTARROW="None" STARTINCLINATION="82;44;"/>
+<linktarget COLOR="#6600ff" DESTINATION="_Freemind_Link_880551392" ENDARROW="Default" ENDINCLINATION="47;0;" ID="Freemind_Arrow_Link_85185909" SOURCE="_Freemind_Link_1249400461" STARTARROW="None" STARTINCLINATION="47;0;"/>
 </node>
-<node CREATED="1124560950717" ID="_Freemind_Link_1789233193" MODIFIED="1132097490228" TEXT="und unterschiedlicher Anlenkung"/>
+<node CREATED="1124560950717" ID="_Freemind_Link_1789233193" MODIFIED="1132097490228" TEXT="und unterschiedlicher Anlenkung">
+<linktarget COLOR="#b0b0b0" DESTINATION="_Freemind_Link_1789233193" ENDARROW="Default" ENDINCLINATION="82;44;" ID="Freemind_Arrow_Link_1672464612" SOURCE="_Freemind_Link_880551392" STARTARROW="None" STARTINCLINATION="82;44;"/>
+</node>
 </node>
 <node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="_Freemind_Link_127668276" MODIFIED="1132097551326" TEXT="Knoten k&#xf6;nnen frei positioniert werden">
 <node CREATED="1124560950717" ID="_Freemind_Link_894936766" MODIFIED="1132097570818" TEXT="Einer"/>
@@ -478,6 +481,7 @@
 <node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_1700974092" MODIFIED="1132097619367" POSITION="right" TEXT="Knotentext bearbeiten">
 <node CREATED="1124560950717" ID="_Freemind_Link_519923426" MODIFIED="1132098029437" TEXT="Um einen Knoten zu bearbeiten, dr&#xfc;cken Sie die &apos;F2&apos;-, &apos;Pos1&apos;- oder &apos;Ende&apos;-Taste, oder Sie benutzen &apos;Knoten bearbeiten&apos; im Kontextmen&#xfc; des Knotens. Um das Bearbeiten eines Knotens abzuschlie&#xdf;en, dr&#xfc;cken Sie &apos;Enter&apos; bzw. die Eingabe-Taste.">
 <arrowlink DESTINATION="_Freemind_Link_519923426" ENDARROW="Default" ENDINCLINATION="0;0;" ID="Freemind_Arrow_Link_1179992477" STARTARROW="None" STARTINCLINATION="0;0;"/>
+<linktarget COLOR="#b0b0b0" DESTINATION="_Freemind_Link_519923426" ENDARROW="Default" ENDINCLINATION="0;0;" ID="Freemind_Arrow_Link_1179992477" SOURCE="_Freemind_Link_519923426" STARTARROW="None" STARTINCLINATION="0;0;"/>
 </node>
 <node CREATED="1124560950717" ID="Freemind_Link_1825283901" MODIFIED="1132097769227" TEXT="Um den Text in einem Knoten mit einem neuen zu ersetzen, fangen Sie an zu Tippen."/>
 <node CREATED="1124560950717" ID="Freemind_Link_363486573" MODIFIED="1132098536483" TEXT="Um das Fenster zum Bearbeiten von umfangreichen Knoten (Langtexteditor)) aufzurufen, wenn Sie einen kleinen Knoten bearbeiten, dr&#xfc;cken Sie &apos;Alt&apos; + &apos;Enter&apos; (bzw. &apos;Alt&apos; + Eingabetaste)."/>
@@ -487,7 +491,9 @@
 </node>
 <node CREATED="1124560950717" ID="Freemind_Link_1491144775" MODIFIED="1132099588177" TEXT="Um w&#xe4;hrend der Bearbeitung im Langtexteditor eine ausgew&#xe4;hlte Textpassage in die Zwischenablage zu kopieren, klicken Sie mit dem rechten Mausknopf und w&#xe4;hlen &apos;Kopieren&apos; im Kontextmen&#xfc;."/>
 <node CREATED="1124560950717" ID="Freemind_Link_269218148" MODIFIED="1132100346807" TEXT="Um ein Sonderzeichen wie &#xa9; einzuf&#xfc;gen, f&#xfc;gen Sie es zun&#xe4;chst (mit der dort daf&#xfc;r vorgesehenen Funktion) in Ihre Lieblingstextverarbeitung wie etwa Microsoft Word (oder OpenOffice.org Writer, Anm.d.&#xdc;.) ein und kopieren es dann &#xfc;ber die Zwischenablage in FreeMind."/>
-<node CREATED="1124560950717" ID="_Freemind_Link_1445647544" MODIFIED="1132101375694" TEXT="Nach Vorgabe beendet &apos;Enter&apos; (bzw. die Eingabetaste) die Bearbeitung im Langtexteditor und &apos;Strg&apos; + &apos;Enter&apos; (bzw. &apos;Strg&apos; + Eingabetaste) f&#xfc;gt einen Zeilenumbruch ein. Durch Umschalten des Schalters &apos;Eingabetaste schlie&#xdf;t das Fenster&apos; k&#xf6;nnen Sie die Funktion der betreffenden Tasten(kombinationen) umkehren, das hei&#xdf;t &apos;Enter&apos; (bzw. die Eingabetaste) f&#xfc;gt einen Zeilenumbruch ein und &apos;Strg&apos; + &apos;Enter&apos; (bzw. &apos;Strg&apos; + Eingabetaste) beendet die Bearbeitung. Sie k&#xf6;nnen den Vorgabewert dieses Schalters in den Programmeinstellungen setzen. Dar&#xfc;ber hinaus merkt sich FreeMind die Schalterstellung w&#xe4;hrend der aktuellen Sitzung. "/>
+<node CREATED="1124560950717" ID="_Freemind_Link_1445647544" MODIFIED="1132101375694" TEXT="Nach Vorgabe beendet &apos;Enter&apos; (bzw. die Eingabetaste) die Bearbeitung im Langtexteditor und &apos;Strg&apos; + &apos;Enter&apos; (bzw. &apos;Strg&apos; + Eingabetaste) f&#xfc;gt einen Zeilenumbruch ein. Durch Umschalten des Schalters &apos;Eingabetaste schlie&#xdf;t das Fenster&apos; k&#xf6;nnen Sie die Funktion der betreffenden Tasten(kombinationen) umkehren, das hei&#xdf;t &apos;Enter&apos; (bzw. die Eingabetaste) f&#xfc;gt einen Zeilenumbruch ein und &apos;Strg&apos; + &apos;Enter&apos; (bzw. &apos;Strg&apos; + Eingabetaste) beendet die Bearbeitung. Sie k&#xf6;nnen den Vorgabewert dieses Schalters in den Programmeinstellungen setzen. Dar&#xfc;ber hinaus merkt sich FreeMind die Schalterstellung w&#xe4;hrend der aktuellen Sitzung. ">
+<linktarget COLOR="#b0b0b0" DESTINATION="_Freemind_Link_1445647544" ENDARROW="Default" ENDINCLINATION="118;0;" ID="Freemind_Arrow_Link_1628309717" SOURCE="Freemind_Link_1578669295" STARTARROW="None" STARTINCLINATION="118;0;"/>
+</node>
 <node CREATED="1124560950717" ID="Freemind_Link_879243196" MODIFIED="1132101517602" TEXT="FreeMind unterst&#xfc;tzt Unicode vollst&#xe4;ndig. Dadurch k&#xf6;nnen Sie den Zeichensatz Ihrer Wahl benutzen."/>
 </node>
 <node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_1660149394" MODIFIED="1132241653772" POSITION="right" TEXT="Einen Knoten formatieren">
@@ -520,15 +526,14 @@
 <node CREATED="1124560950717" ID="Freemind_Link_1212727626" MODIFIED="1132244426690" TEXT="Um einen Stil auf einen Knoten anzuwenden, w&#xe4;hlen Sie ihn im Kontextmen&#xfc; &#xfc;ber den Eintrag &apos;Stile&apos; aus. Um die Anwendung von Stilen zu beschleunigen, verwenden Sie die im Knoten-Kontextmen&#xfc; gezeigten Tastaturk&#xfc;rzel."/>
 <node CREATED="1124560950717" ID="Freemind_Link_32969878" MODIFIED="1132244665223" TEXT="Als technisch versierter Anwender bearbeiten Sie die Datei &apos;patterns.xml&apos; im Ordner &apos;.freemind&apos; Ihres Heimatverzeichnisses, um Ihren eigenen Stil hinzuzuf&#xfc;gen."/>
 <node CREATED="1124560950717" ID="Freemind_Link_159180814" MODIFIED="1150324296013">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    [Diese Hilfe ist veraltet.] Eine Anmerkung zur Datei 'patterns.xml' folgt: Ein Stil ist auf einen Knoten anwendbar, wenn er eine &lt;node&gt;-Auszeichnung enth&#228;lt. Er ist auf einen Bogen (eine Kante) anwendbar, wenn er eine &lt;edge&gt;-Auszeichnung enth&#228;lt. &lt;node&gt;-Auszeichnungen k&#246;nnen <font>-Auszeichnungen enthalten. Studieren Sie die mit FreeMind gelieferte Datei 'patterns.xml'.</font>
+    [Diese Hilfe ist veraltet.] Eine Anmerkung zur Datei 'patterns.xml' folgt: Ein Stil ist auf einen Knoten anwendbar, wenn er eine &lt;node&gt;-Auszeichnung enth&#xe4;lt. Er ist auf einen Bogen (eine Kante) anwendbar, wenn er eine &lt;edge&gt;-Auszeichnung enth&#xe4;lt. &lt;node&gt;-Auszeichnungen k&#xf6;nnen <font>-Auszeichnungen enthalten. Studieren Sie die mit FreeMind gelieferte Datei 'patterns.xml'.</font>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 </node>
 <node COLOR="#407000" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_1697687428" MODIFIED="1132245544041" POSITION="right" TEXT="Knoten durch Wolken hervorheben">
@@ -546,28 +551,28 @@
 <node CREATED="1124560950717" ID="Freemind_Link_1867388527" MODIFIED="1134579566800" TEXT="Um zu einem Knoten einen Querverweis (Hyperlink) hinzu zu f&#xfc;gen, dr&#xfc;cken Sie &apos;Strg&apos; + &apos;K&apos; oder w&#xe4;hlen Sie &apos;Querverweis&apos; &#xfc;ber den Knoten-Kontextmen&#xfc;punkt &apos;Einf&#xfc;gen&apos;."/>
 <node CREATED="1124560950717" ID="Freemind_Link_743396731" MODIFIED="1134580044924" TEXT="Um einen Querverweis zu entfernen, l&#xf6;schen Sie ihn, nachdem Sie mit &apos;Strg&apos; + &apos;K&apos; seine Bearbeitung aufgerufen haben."/>
 <node CREATED="1124560950717" ID="Freemind_Link_1897919343" MODIFIED="1134585164239">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    Um auf eine eMail-Adresse zu verweisen, setzen Sie den Querverweis als <i>mailto:don.bonton@supermail.com</i>.<br />--------<br />Anm.d.&#220;.<br />Wobei Sie anstatt <i>don.bonton@supermail.com</i> nat&#252;rlich die von Ihnen gew&#252;nschte eMail-Adresse eintragen.
+    Um auf eine eMail-Adresse zu verweisen, setzen Sie den Querverweis als <i>mailto:don.bonton@supermail.com</i>.<br/>--------<br/>Anm.d.&#xdc;.<br/>Wobei Sie anstatt <i>don.bonton@supermail.com</i> nat&#xfc;rlich die von Ihnen gew&#xfc;nschte eMail-Adresse eintragen.
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <edge WIDTH="thin"/>
+<linktarget COLOR="#b0b0b0" DESTINATION="Freemind_Link_1897919343" ENDARROW="Default" ENDINCLINATION="740;0;" ID="Freemind_Arrow_Link_1804503188" SOURCE="Freemind_Link_851316277" STARTARROW="None" STARTINCLINATION="740;0;"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 <node CREATED="1124560950717" ID="Freemind_Link_1054419207" MODIFIED="1134585176517">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    Um auf eine eMail-Adresse zu verweisen und gleich einen Betreff f&#252;r die eMail mitzugeben,<br />setzen Sie den Querverweis in folgender Form: <i>mailto:don.bonton@supermail.com?subject=Last phone call</i>.<br />--------<br />Anm.d.&#220;.<br />Wobei Sie anstatt <i>don.bonton@supermail.com</i> ebenfalls die von Ihnen gew&#252;nschte eMail-Adresse und<br />anstatt <i>Last phone call</i> den von Ihnen gew&#252;nschten Betreff eintragen.
+    Um auf eine eMail-Adresse zu verweisen und gleich einen Betreff f&#xfc;r die eMail mitzugeben,<br/>setzen Sie den Querverweis in folgender Form: <i>mailto:don.bonton@supermail.com?subject=Last phone call</i>.<br/>--------<br/>Anm.d.&#xdc;.<br/>Wobei Sie anstatt <i>don.bonton@supermail.com</i> ebenfalls die von Ihnen gew&#xfc;nschte eMail-Adresse und<br/>anstatt <i>Last phone call</i> den von Ihnen gew&#xfc;nschten Betreff eintragen.
   </body>
-</html>
-</richcontent>
+</html></richcontent>
+<linktarget COLOR="#b0b0b0" DESTINATION="Freemind_Link_1054419207" ENDARROW="Default" ENDINCLINATION="722;0;" ID="Freemind_Arrow_Link_1534504502" SOURCE="Freemind_Link_13384265" STARTARROW="None" STARTINCLINATION="722;0;"/>
 </node>
 <node CREATED="1124560950717" ID="Freemind_Link_1753886221" MODIFIED="1132329635860" TEXT="Querverweise k&#xf6;nnen Knoten mit Seiten im Internet, lokalen (oder Netzwerk-) Dateien oder eMail-Adressen verbinden.&#xa;--------&#xa;Anm.d.&#xdc;.&#xa;Dar&#xfc;berhinaus k&#xf6;nnen Sie ausf&#xfc;hrbare Programme verkn&#xfc;pfen und dann durch klicken auf den Verweis starten."/>
 </node>
@@ -618,7 +623,10 @@
 <node CREATED="1124560950717" ID="_Freemind_Link_208378337" MODIFIED="1132426574713" TEXT="Um die Farbe des Verweises zu &#xe4;ndern, benutzen Sie das Kontextmen&#xfc; indem Sie mausrechts auf den graphischen Verweis klicken."/>
 <node CREATED="1124560950717" ID="_Freemind_Link_1484370636" MODIFIED="1134581184209" TEXT="Benutzen Sie ebenfalls das Kontextmen&#xfc;, um die Richtungspfeile des Verweises zu &#xe4;ndern"/>
 <node CREATED="1124560950717" ID="Freemind_Link_239549374" MODIFIED="1134581191729" TEXT="oder um den Verweis zu l&#xf6;schen."/>
-<node CREATED="1124560950717" ID="_Freemind_Link_266716332" MODIFIED="1132427011751" TEXT="Auch um zu einem der Endknoten des graphischen Verweises zu steuern, benutzen Sie das Kontextmen&#xfc;."/>
+<node CREATED="1124560950717" ID="_Freemind_Link_266716332" MODIFIED="1132427011751" TEXT="Auch um zu einem der Endknoten des graphischen Verweises zu steuern, benutzen Sie das Kontextmen&#xfc;.">
+<linktarget COLOR="#b0b0b0" DESTINATION="_Freemind_Link_266716332" ENDARROW="Default" ENDINCLINATION="255;0;" ID="Freemind_Arrow_Link_1428344028" SOURCE="Freemind_Link_1579462759" STARTARROW="None" STARTINCLINATION="255;0;"/>
+<linktarget COLOR="#b0b0b0" DESTINATION="_Freemind_Link_266716332" ENDARROW="Default" ENDINCLINATION="256;22;" ID="Freemind_Arrow_Link_1273596772" SOURCE="_Freemind_Link_1015289745" STARTARROW="None" STARTINCLINATION="244;32;"/>
+</node>
 <node CREATED="1124560950717" ID="_Freemind_Link_1015289745" MODIFIED="1132427405313" TEXT="Um Anlenkpunkt und Verlauf eines graphischen Verweises zu &#xe4;ndern, fassen Sie ihn mit der Maus (mauslinks gedr&#xfc;ckt halten) und bewegen ihn.">
 <arrowlink DESTINATION="_Freemind_Link_266716332" ENDARROW="Default" ENDINCLINATION="256;22;" ID="Freemind_Arrow_Link_1273596772" STARTARROW="None" STARTINCLINATION="244;32;"/>
 </node>
@@ -626,9 +634,12 @@
 <node COLOR="#996600" CREATED="1124560950717" ID="Freemind_Link_933788911" MODIFIED="1132427470711" TEXT="Beispiel">
 <node COLOR="#996600" CREATED="1124560950717" ID="_Freemind_Link_1170112929" MODIFIED="1132427509251" TEXT="Verweis zu einem anderen Teil">
 <arrowlink COLOR="#9999ff" DESTINATION="_Freemind_Link_1492563156" ENDARROW="Default" ENDINCLINATION="115;0;" ID="Freemind_Arrow_Link_33407992" STARTARROW="Default" STARTINCLINATION="30;0;"/>
+<linktarget COLOR="#b0b0b0" DESTINATION="_Freemind_Link_1170112929" ENDARROW="Default" ENDINCLINATION="61;0;" ID="Freemind_Arrow_Link_1872050149" SOURCE="_Freemind_Link_1370577235" STARTARROW="None" STARTINCLINATION="61;0;"/>
 </node>
 <node COLOR="#996600" CREATED="1124560950717" FOLDED="true" ID="Freemind_Link_313185549" MODIFIED="1132427537050" TEXT="Knoten mit eingefaltetem Unterknoten">
-<node CREATED="1124560950717" ID="_Freemind_Link_1492563156" MODIFIED="1132427551243" TEXT="Unterknoten"/>
+<node CREATED="1124560950717" ID="_Freemind_Link_1492563156" MODIFIED="1132427551243" TEXT="Unterknoten">
+<linktarget COLOR="#9999ff" DESTINATION="_Freemind_Link_1492563156" ENDARROW="Default" ENDINCLINATION="115;0;" ID="Freemind_Arrow_Link_33407992" SOURCE="_Freemind_Link_1170112929" STARTARROW="Default" STARTINCLINATION="30;0;"/>
+</node>
 </node>
 <node COLOR="#996600" CREATED="1124560950717" ID="_Freemind_Link_1370577235" MODIFIED="1132427580388" TEXT="Ein anderer Verweis">
 <arrowlink DESTINATION="_Freemind_Link_1170112929" ENDARROW="Default" ENDINCLINATION="61;0;" ID="Freemind_Arrow_Link_1872050149" STARTARROW="None" STARTINCLINATION="61;0;"/>
@@ -783,7 +794,9 @@
 </node>
 <node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_22510332" MODIFIED="1132513247596" POSITION="right" TEXT="Export nach HTML">
 <font NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950732" ID="Freemind_Link_1166599938" MODIFIED="1134585346868" TEXT="Um einen Zweig ins HTML-Format zu exportieren, benutzen Sie die Tastenkombination &apos;Strg&apos; + &apos;H&apos;. Exportierte HTML-Seiten k&#xf6;nnen abh&#xe4;ngig von den getroffenen Einstellungen in der &apos;Einstellungen...&apos;-Dialogbox Faltung unterst&#xfc;tzen. "/>
+<node CREATED="1124560950732" ID="Freemind_Link_1166599938" MODIFIED="1134585346868" TEXT="Um einen Zweig ins HTML-Format zu exportieren, benutzen Sie die Tastenkombination &apos;Strg&apos; + &apos;H&apos;. Exportierte HTML-Seiten k&#xf6;nnen abh&#xe4;ngig von den getroffenen Einstellungen in der &apos;Einstellungen...&apos;-Dialogbox Faltung unterst&#xfc;tzen. ">
+<linktarget COLOR="#b0b0b0" DESTINATION="Freemind_Link_1166599938" ENDARROW="Default" ENDINCLINATION="439;0;" ID="Freemind_Arrow_Link_29973473" SOURCE="Freemind_Link_1307576694" STARTARROW="None" STARTINCLINATION="439;0;"/>
+</node>
 <node CREATED="1124560950732" ID="Freemind_Link_515245049" MODIFIED="1132512917913" TEXT="Um eine andere Export-Funktion zu nutzen, w&#xe4;hlen Sie im Hauptmen&#xfc; &apos;Datei&apos; &#xfc;ber den Punkt &apos;Export&apos; die gew&#xfc;nschte Funktion, z. B. &apos;Als XHTML (JavaScript Version)...&apos;."/>
 <node CREATED="1124560950732" ID="Freemind_Link_319123418" MODIFIED="1132513214820" TEXT="Um eine MindMap mit einem klickbaren &#xdc;bersichtsbild nach HTML zu exportieren, w&#xe4;hlen Sie &#xfc;ber &apos;Export&apos; im Hauptmen&#xfc; &apos;Datei&apos; den Eintrag &apos;Als XHTML (mit verlinktem Bild der MindMap)...&apos;."/>
 </node>
@@ -803,32 +816,32 @@
 <font NAME="SansSerif" SIZE="12"/>
 <node COLOR="#996600" CREATED="1124560950732" ID="Freemind_Link_1374652558" MODIFIED="1132515147856" TEXT="Gew&#xe4;hlter Ordner">
 <font NAME="SansSerif" SIZE="12"/>
-<node CREATED="1124560950732" ID="Freemind_Link_1320387320" LINK="C:\Programme\Microsoft Office\Office\Bitmaps" MODIFIED="1134584600122" TEXT="C:\Programme\Microsoft Office\Office\Bitmaps">
+<node CREATED="1124560950732" ID="Freemind_Link_1320387320" LINK="C:\Programme\Microsoft%20Office\Office\Bitmaps" MODIFIED="1134584600122" TEXT="C:\Programme\Microsoft Office\Office\Bitmaps">
 <font NAME="SansSerif" SIZE="12"/>
 </node>
 </node>
-<node CREATED="1124560950732" ID="Freemind_Link_1242662698" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/" MODIFIED="1124560950732" TEXT="Dbwiz">
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/ASSETS.GIF" MODIFIED="1124560950732" TEXT="ASSETS.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/CONTACTS.GIF" MODIFIED="1124560950732" TEXT="CONTACTS.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/EVTMGMT.GIF" MODIFIED="1124560950732" TEXT="EVTMGMT.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/EXPENSES.GIF" MODIFIED="1124560950732" TEXT="EXPENSES.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/INVENTRY.GIF" MODIFIED="1124560950732" TEXT="INVENTRY.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/LEDGER.GIF" MODIFIED="1124560950732" TEXT="LEDGER.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/ORDPROC.GIF" MODIFIED="1124560950732" TEXT="ORDPROC.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/RESOURCE.GIF" MODIFIED="1124560950732" TEXT="RESOURCE.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/SERVICE.GIF" MODIFIED="1124560950732" TEXT="SERVICE.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Dbwiz/TIMEBILL.GIF" MODIFIED="1124560950732" TEXT="TIMEBILL.GIF"/>
+<node CREATED="1124560950732" ID="Freemind_Link_1242662698" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/" MODIFIED="1124560950732" TEXT="Dbwiz">
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/ASSETS.GIF" MODIFIED="1124560950732" TEXT="ASSETS.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/CONTACTS.GIF" MODIFIED="1124560950732" TEXT="CONTACTS.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/EVTMGMT.GIF" MODIFIED="1124560950732" TEXT="EVTMGMT.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/EXPENSES.GIF" MODIFIED="1124560950732" TEXT="EXPENSES.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/INVENTRY.GIF" MODIFIED="1124560950732" TEXT="INVENTRY.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/LEDGER.GIF" MODIFIED="1124560950732" TEXT="LEDGER.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/ORDPROC.GIF" MODIFIED="1124560950732" TEXT="ORDPROC.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/RESOURCE.GIF" MODIFIED="1124560950732" TEXT="RESOURCE.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/SERVICE.GIF" MODIFIED="1124560950732" TEXT="SERVICE.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Dbwiz/TIMEBILL.GIF" MODIFIED="1124560950732" TEXT="TIMEBILL.GIF"/>
 </node>
-<node CREATED="1124560950732" ID="Freemind_Link_1127993679" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/" MODIFIED="1124560950732" TEXT="Styles">
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLENDS.GIF" MODIFIED="1124560950732" TEXT="ACBLENDS.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLUPRT.GIF" MODIFIED="1124560950732" TEXT="ACBLUPRT.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACEXPDTN.GIF" MODIFIED="1124560950732" TEXT="ACEXPDTN.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACINDSTR.GIF" MODIFIED="1124560950732" TEXT="ACINDSTR.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACRICEPR.GIF" MODIFIED="1124560950732" TEXT="ACRICEPR.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSNDSTN.GIF" MODIFIED="1124560950732" TEXT="ACSNDSTN.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSUMIPT.GIF" MODIFIED="1124560950732" TEXT="ACSUMIPT.GIF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/GLOBE.WMF" MODIFIED="1124560950732" TEXT="GLOBE.WMF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/STONE.BMP" MODIFIED="1124560950732" TEXT="STONE.BMP"/>
+<node CREATED="1124560950732" ID="Freemind_Link_1127993679" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/" MODIFIED="1124560950732" TEXT="Styles">
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/ACBLENDS.GIF" MODIFIED="1124560950732" TEXT="ACBLENDS.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/ACBLUPRT.GIF" MODIFIED="1124560950732" TEXT="ACBLUPRT.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/ACEXPDTN.GIF" MODIFIED="1124560950732" TEXT="ACEXPDTN.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/ACINDSTR.GIF" MODIFIED="1124560950732" TEXT="ACINDSTR.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/ACRICEPR.GIF" MODIFIED="1124560950732" TEXT="ACRICEPR.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/ACSNDSTN.GIF" MODIFIED="1124560950732" TEXT="ACSNDSTN.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/ACSUMIPT.GIF" MODIFIED="1124560950732" TEXT="ACSUMIPT.GIF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/GLOBE.WMF" MODIFIED="1124560950732" TEXT="GLOBE.WMF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/STONE.BMP" MODIFIED="1124560950732" TEXT="STONE.BMP"/>
 </node>
 </node>
 </node>
@@ -836,15 +849,14 @@
 <edge WIDTH="thin"/>
 <font NAME="SansSerif" SIZE="12"/>
 <node CREATED="1124560950732" ID="Freemind_Link_1567658129" MODIFIED="1150324250313">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    Um Internet Explorer Favoriten (Lesezeichen) in FreeMind zu importieren, w&#228;hlen Sie vom Hauptmen&#252; ausgehend 'Datei' -&gt; 'Import' -&gt; 'Explorer-Favoriten...'. Sie werden nach dem Pfad zu dem Verzeichnis gefragt, in dem die Favoriten abgelegt sind. Der Name des Verzeichnisses ist &quot;Favoriten&quot; und Sie finden es auf Ihrer Festplatte. F&#252;r ein unmodifiziertes, deutsches Windows 2000 lautet der vollst&#228;ndige Pfadname &quot;C:\Dokumente und Einstellungen\&lt;Benutzername&gt;\Favoriten&quot;, wobei Sie '&lt;Benutzername&gt;' durch den tats&#228;chlich verwendeten Benutzernamen ersetzen.
+    Um Internet Explorer Favoriten (Lesezeichen) in FreeMind zu importieren, w&#xe4;hlen Sie vom Hauptmen&#xfc; ausgehend 'Datei' -&gt; 'Import' -&gt; 'Explorer-Favoriten...'. Sie werden nach dem Pfad zu dem Verzeichnis gefragt, in dem die Favoriten abgelegt sind. Der Name des Verzeichnisses ist "Favoriten" und Sie finden es auf Ihrer Festplatte. F&#xfc;r ein unmodifiziertes, deutsches Windows 2000 lautet der vollst&#xe4;ndige Pfadname "C:\Dokumente und Einstellungen\&lt;Benutzername&gt;\Favoriten", wobei Sie '&lt;Benutzername&gt;' durch den tats&#xe4;chlich verwendeten Benutzernamen ersetzen.
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 <node COLOR="#999999" CREATED="1124560950732" MODIFIED="1124560950732" TEXT="Key words: Microsoft Internet Explorer, MSIE, MS IE.">
 <font NAME="Dialog" SIZE="10"/>
@@ -862,7 +874,7 @@
 <arrowlink DESTINATION="Freemind_Link_1897919343" ENDARROW="Default" ENDINCLINATION="740;0;" ID="Freemind_Arrow_Link_1804503188" STARTARROW="None" STARTINCLINATION="740;0;"/>
 <font NAME="SansSerif" SIZE="12"/>
 </node>
-<node CREATED="1124560950732" ID="Freemind_Link_13384265" LINK="mailto:don.bonton@supermail.com?subject=Last phone call" MODIFIED="1134585213768" TEXT="Man kann beim Verweis auf eine eMail-Adresse gleich einen Betreff mit hinterlegen.">
+<node CREATED="1124560950732" ID="Freemind_Link_13384265" LINK="mailto:don.bonton@supermail.com?subject=Last%20phone%20call" MODIFIED="1134585213768" TEXT="Man kann beim Verweis auf eine eMail-Adresse gleich einen Betreff mit hinterlegen.">
 <arrowlink DESTINATION="Freemind_Link_1054419207" ENDARROW="Default" ENDINCLINATION="722;0;" ID="Freemind_Arrow_Link_1534504502" STARTARROW="None" STARTINCLINATION="722;0;"/>
 </node>
 <node CREATED="1124560950732" ID="Freemind_Link_1307576694" MODIFIED="1134585346897" TEXT="Eine andere M&#xf6;glichkeit um MindMaps in Microsoft Word einzuf&#xfc;gen ist, sie unterteilt nach &#xdc;berschriften nach HTML zu exportieren, das HTML zu kopieren und es dann in Word einzuf&#xfc;gen.">
@@ -891,7 +903,7 @@
 <node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_841140408" MODIFIED="1132519364643" POSITION="right" TEXT="Textattribute mittels HTML in Knoten verwenden">
 <node CREATED="1124560950732" ID="Freemind_Link_1661237735" MODIFIED="1132519625819" TEXT="Knoten, die mit &apos;&lt;html&gt;&apos; beginnen, werden mit Hilfe des darin enthaltenen HTML-Codes erzeugt. Diese F&#xe4;higkeit ist f&#xfc;r technisch versierte Leute n&#xfc;tzlich. Ein Beispiel folgt:"/>
 <node CREATED="1124560950732" ID="Freemind_Link_843632799" MODIFIED="1132520194964">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
@@ -911,7 +923,7 @@
       </li>
     </ul>
     <p class="msonormal">
-      Und wir haben <b>Fettschrift</b> oder <i>Kursives</i>. <u>Unterstrichen</u>, ein <strike>Durchgestrichen</strike> auch.<br /><br />Es gibt Tabellen:
+      Und wir haben <b>Fettschrift</b> oder <i>Kursives</i>. <u>Unterstrichen</u>, ein <strike>Durchgestrichen</strike> auch.<br/><br/>Es gibt Tabellen:
     </p>
     <table style="border: none" border="1" class="msonormaltable" cellspacing="0" cellpadding="0">
       <tr>
@@ -940,12 +952,11 @@
       </tr>
     </table>
     <p class="msonormal">
-      <br />
-      &#160;Es gibt vielerlei <font color="#999900">Schrift</font><font color="#336600">farben</font>.
+      <br/>
+      &#xa0;Es gibt vielerlei <font color="#999900">Schrift</font><font color="#336600">farben</font>.
     </p>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 <node CREATED="1124560950732" ID="Freemind_Link_233295626" MODIFIED="1132520708305" TEXT="Beim Export nach reinem Text oder RTF (f&#xfc;r Word, OpenOffice usw.) werden HTML-Knoten und Bilder nicht unterst&#xfc;tzt. Immerhin ist es praktisch, HTML zu benutzen, um mit Hilfe der FreeMind-Web-Anwendung im Internet zu publizieren.">
 <font NAME="SansSerif" SIZE="12"/>
@@ -969,90 +980,835 @@
 <node COLOR="#996600" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_489201373" MODIFIED="1132525208713" TEXT="Beispiele f&#xfc;r Bilder, die auf einigen Windows-Distributionen funktionieren">
 <font BOLD="true" NAME="SansSerif" SIZE="12"/>
 <node CREATED="1124560950732" MODIFIED="1124560950732">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLENDS.GIF" />
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLENDS.GIF"/>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 <node CREATED="1124560950732" MODIFIED="1124560950732">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLUPRT.GIF" />
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACBLUPRT.GIF"/>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 <node CREATED="1124560950732" ID="Freemind_Link_1024263145" MODIFIED="1124560950732">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACEXPDTN.GIF" />
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACEXPDTN.GIF"/>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <node CREATED="1124560950732" MODIFIED="1124560950732">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACINDSTR.GIF" />
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACINDSTR.GIF"/>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 </node>
 <node CREATED="1124560950732" ID="Freemind_Link_880988159" MODIFIED="1124560950732">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACRICEPR.GIF" />
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACRICEPR.GIF"/>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <node CREATED="1124560950732" ID="Freemind_Link_85163528" MODIFIED="1124560950732">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSNDSTN.GIF" />
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSNDSTN.GIF"/>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 <node CREATED="1124560950732" MODIFIED="1124560950732">
-<richcontent><html>
+<richcontent TYPE="NODE"><html>
   <head>
     
   </head>
   <body>
-    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSUMIPT.GIF" />
+    <img src="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/ACSUMIPT.GIF"/>
   </body>
-</html>
-</richcontent>
+</html></richcontent>
 </node>
 </node>
 </node>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/GLOBE.WMF" MODIFIED="1124560950732" TEXT="GLOBE.WMF"/>
-<node CREATED="1124560950732" LINK="file:/C:/Program Files/Microsoft Office/Office/Bitmaps/Styles/STONE.BMP" MODIFIED="1124560950732" TEXT="STONE.BMP"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/GLOBE.WMF" MODIFIED="1124560950732" TEXT="GLOBE.WMF"/>
+<node CREATED="1124560950732" LINK="file:/C:/Program%20Files/Microsoft%20Office/Office/Bitmaps/Styles/STONE.BMP" MODIFIED="1124560950732" TEXT="STONE.BMP"/>
 </node>
 </node>
 <node COLOR="#407000" CREATED="1124560950732" FOLDED="true" ID="Freemind_Link_1804947546" MODIFIED="1132525274736" POSITION="right" TEXT="Experimentelle Dateisperrung verwenden">
 <node CREATED="1124560950732" ID="Freemind_Link_1387969527" MODIFIED="1134586264056" TEXT="Die vorliegende Version von FreeMind verf&#xfc;gt &#xfc;ber einen experimentellen Mechanismus zum Sperren von Dateien, der in der Standardeinstellung ausgeschaltet ist. Die aktuelle Umsetzung beugt Verklemmungen nicht wirklich sicher vor, sollte aber f&#xfc;r die meisten praktischen Vorhaben ausreichen."/>
 <node CREATED="1124560950732" ID="Freemind_Link_1350042783" MODIFIED="1134586322700" TEXT="Dateisperrung stellt sicher, da&#xdf; mehrere Anwender nicht zur selben Zeit die selbe MindMap bearbeiten. Dadurch wird gew&#xe4;hrleistet, da&#xdf; nicht der eine zuf&#xe4;llig die Bearbeitungen des anderen &#xfc;berschreibt (und damit l&#xf6;scht)."/>
 <node CREATED="1124560950732" ID="Freemind_Link_151684674" MODIFIED="1134586368777" TEXT="Um die experimentelle Dateisperrung einzuschalten, gehen Sie in der vom Hauptmen&#xfc; aus &#xfc;ber &apos;Extras&apos; -&gt;  &apos;Einstellungen...&apos; erreichbaren Dialogbox in die Abteilung &apos;Umgebung&apos; und setzen dort den Schalter &apos;Experimentelles Sperren der ge&#xf6;ffneten Dateien&apos;."/>
+</node>
+<node COLOR="#407000" CREATED="1229414588553" FOLDED="true" ID="ID_1077619682" MODIFIED="1381609064330" POSITION="right" STYLE="fork" TEXT="Neue Funktionen in 0.9.0">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<node COLOR="#407000" CREATED="1201283648829" FOLDED="true" ID="Freemind_Link_813308322" MODIFIED="1381609064323" STYLE="fork" TEXT="Neue Hauptfunktionen">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#407000" CREATED="1201283660674" ID="Freemind_Link_1390621915" MODIFIED="1381605909751" STYLE="fork" TEXT="Neuer Editor">
+<richcontent TYPE="NOTE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Der neue Editor unterst&#252;tzt Textformatierung in Knoten und Notizen (es handelt sich um das kleine Fenster am Fu&#223; des Fensters).
+    </p>
+    <p>
+      Der Text wird direkt als HTML gespeichert und kann daher sehr effizient nach HTML exportiert werden.
+    </p>
+  </body>
+</html></richcontent>
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+<node COLOR="#407000" CREATED="1201283806888" ID="Freemind_Link_1546698647" MODIFIED="1381605979288" STYLE="fork" TEXT="Erweiterungen der Notizen">
+<richcontent TYPE="NOTE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Das Notizfenster geh&#246;rt nun zum Hauptfenster von FreeMind. Ein Tooltipp am Knoten zeigt zus&#228;tzlich die Notiz an.
+    </p>
+  </body>
+</html></richcontent>
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+<node COLOR="#407000" CREATED="1201506800600" ID="Freemind_Link_9416334" MODIFIED="1381606273912" STYLE="fork" TEXT="Filter">
+<richcontent TYPE="NOTE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Mit Filtern kann die aktuelle Mindmap nach vorgegebenen Kriterien reduziert werden. Wenn Sie z.B. nur die Knoten sehen wollen, die das Wort &quot;TODO&quot; enthalten, dann dr&#252;cken Sie bitte auf den Filterknopf (ein Trichtersymbol), die Filtertoolbar erscheint, w&#228;hlen Sie den Stift und f&#252;gen Sie das Kriterium hinzu. Danach w&#228;hlen Sie den Filter einfach in der Toolbar aus. Dementsprechend werden nur noch die gefilterten Knoten und alle ihre Vorg&#228;nger angezeigt bis Sie den Filter wieder ausschalten.
+    </p>
+    <p>
+      Mit den Einstellungen &quot;Zeige Vorg&#228;nger&quot; und &quot;Zeige Nachfolger&quot; k&#246;nnen Sie die Anzeige der Vorg&#228;nger und Nachfolger beeinflussen.
+    </p>
+    <p>
+      Es gibt unterschiedliche Kriterien. So k&#246;nnen Sie auch auf Icons und Attribute filtern.
+    </p>
+  </body>
+</html></richcontent>
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+<node COLOR="#407000" CREATED="1201506806036" ID="Freemind_Link_1096073845" MODIFIED="1381606385060" STYLE="fork" TEXT="Attribute">
+<richcontent TYPE="NOTE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Attribute sind zus&#228;tzliche Metainformationen in Form von Paaren von Schl&#252;sseln und Werten. Denkbar w&#228;re z.B. ein Attribut &quot;Kontext&quot;, dass die Werte &quot;Arbeit&quot; und &quot;Freizeit&quot; annimmt. Nach diesen Attributen kann gefiltert werden.
+    </p>
+    <p>
+      Ferner werden aktuell Groovyskripte in Attributen gespeichert.
+    </p>
+  </body>
+</html></richcontent>
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+</node>
+<node COLOR="#407000" CREATED="1201282217311" FOLDED="true" ID="Freemind_Link_849247054" MODIFIED="1381609064324" STYLE="fork" TEXT="Ver&#xe4;nderung der Ansicht">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#407000" CREATED="1201282224869" ID="Freemind_Link_1307834035" MODIFIED="1381606430262" STYLE="fork" TEXT="MindMaps k&#xf6;nnen in Tabs ge&#xf6;ffnet werden">
+<richcontent TYPE="NOTE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Damit kann man auf einen Blick alle ge&#246;ffneten Maps sehen.
+    </p>
+  </body>
+</html></richcontent>
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+<node COLOR="#407000" CREATED="1201282406968" ID="Freemind_Link_101409050" MODIFIED="1381606444590" STYLE="fork" TEXT="Die Toolbar mit den Icons kann gescrollt werden">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+</node>
+<node COLOR="#407000" CREATED="1201282319118" FOLDED="true" ID="Freemind_Link_1043646949" MODIFIED="1381609064327" STYLE="fork" TEXT="Verbesserung der Benutzbarkeit">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#407000" CREATED="1201282325640" FOLDED="true" ID="Freemind_Link_556186325" MODIFIED="1381609064326" STYLE="fork" TEXT="Knoten k&#xf6;nnen in alle Richtungen bewegt werden">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#111111" CREATED="1201282465994" ID="Freemind_Link_924709284" MODIFIED="1381606489732" TEXT="Auf- und Abw&#xe4;rts">
+<richcontent TYPE="NOTE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Dies war schon in den Vorg&#228;ngerversionen enthalten.
+    </p>
+  </body>
+</html></richcontent>
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+<node COLOR="#111111" CREATED="1201282426565" FOLDED="true" ID="Freemind_Link_481786702" MODIFIED="1381609064324" TEXT="Links und Rechts">
+<richcontent TYPE="NOTE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Es ist nun auch m&#246;glich, Knoten nach rechts und links zu verschieben. Damit entfernen oder n&#228;hern sie sich dem Hauptknoten. Die Knoten k&#246;nnen sogar die Seite des Hauptknotens wechseln. Standardm&#228;&#223;ig k&#246;nnen Sie die Knoten mit Steuerung Links und Rechts bewegen.
+    </p>
+  </body>
+</html></richcontent>
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#111111" CREATED="1201282851749" ID="Freemind_Link_774463025" MODIFIED="1381606600211" TEXT="Ver&#xe4;nderung der Position in der Hierarchie"/>
+<node COLOR="#111111" CREATED="1201282843249" ID="Freemind_Link_1554785271" MODIFIED="1381606612119" TEXT="Wechseln der Seite zum Hauptknoten"/>
+</node>
+</node>
+<node COLOR="#407000" CREATED="1201282332144" ID="Freemind_Link_536412761" MODIFIED="1381606630741" STYLE="fork" TEXT="Men&#xfc;punkte k&#xf6;nnen schnell mit Tastenkombinationen erreicht werden">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+<node COLOR="#407000" CREATED="1202399993070" ID="Freemind_Link_860723289" MODIFIED="1381606655116" STYLE="fork" TEXT="Alle Formatierungen k&#xf6;nnen in einem einzigen Fenster vorgenommen werden">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+<node COLOR="#407000" CREATED="1202400125364" ID="Freemind_Link_1848794893" MODIFIED="1381607178524" STYLE="fork" TEXT="Neuer Stil-Editor">
+<richcontent TYPE="NOTE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Stile sind sehr hilfreiche Helfer um ein konsistentes Layout zu erreichen. Mehrere Format&#228;nderungen k&#246;nnen so per Knopfdruck erfolgen. Der neue Stileditor kann mit F11 ge&#246;ffnet werden und zeigt alle vorhandenen Stile an.
+    </p>
+    <p>
+      Es gibt die folgenden grundlegenden Funktionen:
+    </p>
+    <ul>
+      <li>
+        Mittels Drag&amp;Drop k&#246;nnen Sie Stile nach oben bzw. unten bewegen.
+      </li>
+      <li>
+        Sie k&#246;nnen neue Stile mittels des &quot;Aktionen&quot; Men&#252;s hinzuf&#252;gen.
+      </li>
+      <li>
+        Sie k&#246;nnen neue Stil auch von dem Format der ausgew&#228;hlten Knoten ableiten lassen. Wenn nur ein Knoten selektiert ist, so wird dessen Formatierung in einen neuen Stil &#252;bernommen. Bei mehreren selektierten Knoten werden nur die Formatelemente &#252;bernommen, die bei allen gleich sind.
+      </li>
+      <li>
+        Sie k&#246;nnen Stile auf die selektierten Knoten anwenden und
+      </li>
+      <li>
+        Sie k&#246;nnen Stile entfernen.
+      </li>
+    </ul>
+    <p>
+      Die Stile werden in der Datei patterns.xml im &lt;Heimverzeichnis&gt;/.freemind/ gespeichert und bei jedem Start von FreeMind geladen. Die Stile geh&#246;ren damit nicht zu einzelnen Mindmaps.
+    </p>
+    <p>
+      Die Stile bestehen aus einer Reihe von Formatangaben mit einer Box, die die Symbole Plus, Minus und Leer enthalten kann. Dies bedeutet das folgende:
+    </p>
+    <ul>
+      <li>
+        Plus: die Format&#228;nderung wird ausgef&#252;hrt.
+      </li>
+      <li>
+        Minus: dies Format wird auf den Standardwert zur&#252;ckgesetzt, also entfernt.
+      </li>
+      <li>
+        Leer: die Formatierung wird nicht ver&#228;ndert.
+      </li>
+    </ul>
+    <p>
+      Als eine wichtige Neuerung ist es nun m&#246;glich, einem Stil auch ein zus&#228;tzliches Skript zuzuweisen. Damit sind die denkbaren &#196;nderungen sehr viel reichhaltiger m&#246;glich. Damit lassen sich sehr einfach Makros und Erweiterungen von FreeMind realisieren!
+    </p>
+  </body>
+</html></richcontent>
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+<node COLOR="#407000" CREATED="1203059325942" ID="Freemind_Link_1489168699" MODIFIED="1381607374918" STYLE="fork" TEXT="Anpassbares Automatisches Layout">
+<richcontent TYPE="NOTE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      In den Einstellungen gibt es die M&#246;glichkeit, das Layout f&#252;r das &quot;Automatische Layout&quot; zu &#228;ndern.
+    </p>
+    <p>
+      Diese &#196;nderungen wirken sich allerdings nicht direkt auf die Mindmap aus. Dazu m&#252;ssen Sie die Map erstmal schlie&#223;en und wieder &#246;ffnen. Die Einstellungen werden nicht in der Map gespeichert, sondern f&#252;r den Benutzer auf dem Rechner. Damit kann das &quot;Automatische Layout&quot; auf anderen Rechnern unterschiedlich aussehen. Dies wird in einer der n&#228;chsten Versionen von FreeMind ge&#228;ndert.
+    </p>
+    <p>
+      Fortgeschrittene Benutzer k&#246;nnen auch die Anzahl von Ebenen ver&#228;ndern.&#160; Dazu mu&#223; allerdings die Datei &quot;auto.properties&quot; per Hand ge&#228;ndert werden.
+    </p>
+  </body>
+</html></richcontent>
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+<node COLOR="#407000" CREATED="1202400209358" ID="Freemind_Link_60926823" MODIFIED="1381607872964" STYLE="fork" TEXT="Suchen&amp;Ersetzen">
+<richcontent TYPE="NOTE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Ein neuer &quot;Suchen und Ersetzen&quot; Dialog erm&#246;glicht ein sehr schnelles Suchen und erstmals auch ein automatisiertes Ersetzen.
+    </p>
+    <ul>
+      <li>
+        Bei Eingabe wird bereits losgesucht, auch die Notizen der mitdurchsucht.
+      </li>
+      <li>
+        Die Ergebnisliste kann sortiert werden, sogar nach den Icons. Mittels der Zeitangaben kann die Historie der Map nachvollzogen werden!
+      </li>
+      <li>
+        Mit dem Cursor kann man schnell zur Liste gelangen. Einfach zweimal nach &quot;Unten&quot; dr&#252;cken.
+      </li>
+      <li>
+        Bei ausgew&#228;hltem Knoten wird dessen Pfad zum Hauptknoten angezeigt.
+      </li>
+      <li>
+        Bei Ausw&#228;hlen eines Knotens mit der Eingabetaste wird direkt zu ihm gesprungen.
+      </li>
+      <li>
+        Ersetzen: Sie k&#246;nnen ausw&#228;hlen ob in allen oder nur den ausgew&#228;hlten Knoten ersetzt werden soll.
+      </li>
+      <li>
+        Export: dies ist eine sehr n&#252;tzliche Neuerung. Ein Satz von Knoten kann damit in eine neue Mindmap exportiert werden. Damit k&#246;nnen z.B. sehr einfach Todo-Listen erzeugt werden. Dazu sortieren Sie einfach nach den Icons, und w&#228;hlen die mit Ihrem Symbol f&#252;r &quot;Noch-Zu-Tun&quot; aus. Mit dem Export haben Sie davon sofort eine (flache) Liste.
+      </li>
+    </ul>
+  </body>
+</html></richcontent>
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+<node COLOR="#407000" CREATED="1208893265045" ID="ID_224953554" MODIFIED="1381608026674" STYLE="fork" TEXT="Icons">
+<richcontent TYPE="NOTE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Mittels Tastenkombinationen k&#246;nnen Sie nun noch einfacher die Icons verwalten. Bei gleichzeitig gehaltener Umschalttaste werden alle anderen Icons, die vorher zu einem Knoten geh&#246;rten, entfernt. Dies ist zum Beispiel bei den Zahlen n&#252;tzlich.
+    </p>
+    <p>
+      Bei gehaltener Steuerungstaste wird das ausgew&#228;hlte Icon vom Knoten entfernt (wenn es mehrfach vorkommt, dann wird jeweils das letzte entfernt). Dies geschieht unabh&#228;ngig von den anderen Icons, die vorhanden sein k&#246;nnen.
+    </p>
+  </body>
+</html></richcontent>
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+</node>
+<node COLOR="#407000" CREATED="1201282939150" FOLDED="true" ID="Freemind_Link_150258579" MODIFIED="1381609064328" STYLE="fork" TEXT="Neue Exports">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#407000" CREATED="1201282945124" ID="Freemind_Link_1356291624" MODIFIED="1381608136085" STYLE="fork" TEXT="Als Flash und als Applet">
+<richcontent TYPE="NOTE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Flash and Java bringen Mindmaps ins internet.
+    </p>
+    <p>
+      Dabei sieht das Applet genau wie in FreeMind aus, braucht allerdings l&#228;nger, um geladen zu werden. Der Flashexport sieht etwas anders aus, hat allerdings einige Zusatzfeatures.
+    </p>
+    <p>
+      
+    </p>
+    <p>
+      <b>Durch die gehobenen Sicherheitsstandards funktionieren diese Exporte zum Teil nur, wenn die Maps wirklich auf einem Webserver liegen.</b>
+    </p>
+  </body>
+</html></richcontent>
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+</node>
+<node COLOR="#407000" CREATED="1201506466515" FOLDED="true" ID="Freemind_Link_676471791" MODIFIED="1381609064329" STYLE="fork" TEXT="Skriptunterst&#xfc;tzung (engl.)">
+<richcontent TYPE="NOTE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      FreeMind can now be scripted by using Groovy scripts. Groovy is a very easy to use scripting language best integrating into FreeMind.
+    </p>
+    <p>
+      There are two possibilities to use scripts:
+    </p>
+    <ol>
+      <li>
+        Choose the script editor to easily add, change and test your scripts. Technically, scripts are attached to a node via an attribute starting with "script" (like "script1") that contains the script. Every time you choose "Evaluate" from the tools menu, all scripts attached to nodes are executed.
+      </li>
+      <li>
+        Create or change a pattern and press the script button. The script editor appears and your script will be associated to a pattern. Every time you apply the pattern to some nodes, the script is executed for that nodes automatically. Thus, you can have the scripts with keyboard shortcuts as the patterns are accessible via shortcuts.
+      </li>
+    </ol>
+    <p>
+      Every script is at evaluation time started with two predefined java objects coming from the map:
+    </p>
+    <ul>
+      <li>
+        node is the current node. It is a freemind.modes.MindMapNode. This node can be used to retrieve information about the contents, its children or its formatting. <i>Don't use the setter to change the node. Use the following instead:</i>
+      </li>
+      <li>
+        c is the current controller. It is a freemind.modes.mindmapmode.MindMapController. This controller <b>should</b>&#xa0; &#xa0;&#xa0;&#xa0;be used to change information. For example, if you want to change the nodes text or if you want to add children. The methods that can be used are sumarized in freemind.modes.mindmapmode.actions.MindMapActions.
+      </li>
+    </ul>
+    <p>
+      There are two automatisms regarding the effect of a script:
+    </p>
+    <ol>
+      <li>
+        If a script starts with "=", the result of the script is taken to be the new nodes text. Example script1: =17+4. If executed, the node the script is associated to will be changed to 21.
+      </li>
+      <li>
+        If a script starts with letters (digits and '_') only and then a "=" sign, like "sum=17+4", the result is taken to be a (possibly new) attribute named "sum" in this case with the content 21.
+      </li>
+    </ol>
+    <p>
+      For more examples consult our little scripting guide below or our web pages.
+    </p>
+    <p>
+      A last word on security: before scripts is evaluated for the first time in FreeMind, the user is asked whether or not he allows it. The answer can be stored for every script but observe that a malicious script is able to perform every action on your computer that your users rights allow up to delete all files or send them to pirates.ru. This said, be careful and don't allow scripts when you don't know that the author is trusted. Finally, scripts are never evaluated automatically in FreeMind for these reasons. Thus, you can open a map without problems and have a look at the scripts it contains.
+    </p>
+  </body>
+</html></richcontent>
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+<node COLOR="#407000" CREATED="1201506580407" ID="Freemind_Link_1055396713" MODIFIED="1381608219500" STYLE="fork" TEXT="Little FreeMind Scripting Guide (engl.)">
+<richcontent TYPE="NOTE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      If your scripts want to change some map data (which they commonly want to) they should rely on the methods provided by the MindMapController c.
+    </p>
+    <p>
+      These methods are summarized and partially documented in the class "MindMapActions":
+    </p>
+    <p>
+      <a href="http://freemind.cvs.sourceforge.net/freemind/freemind/freemind/modes/mindmapmode/actions/MindMapActions.java?view=log&amp;pathrev=fm_060405_integration">http://freemind.cvs.sourceforge.net/freemind/freemind/freemind/modes/mindmapmode/actions/MindMapActions.java?view=log&amp;pathrev=fm_060405_integration</a>
+    </p>
+    <p>
+      The listeners mentioned below (ie. NodeSelectionListener and NodeLifetimeListener) can be registered and found in the class "ModeController" (also c):
+    </p>
+    <p>
+      <a href="http://freemind.cvs.sourceforge.net/freemind/freemind/freemind/modes/ModeController.java?view=log&amp;pathrev=fm_060405_integration">http://freemind.cvs.sourceforge.net/freemind/freemind/freemind/modes/ModeController.java?view=log&amp;pathrev=fm_060405_integration</a>
+    </p>
+    <p>
+      Here we present some snippets of useful Groovy code that can be used as parts of your scripts. More scripts can be found on our web sites.
+    </p>
+    <ul>
+      <li>
+        Change the node text:<br/>=17+4<br/>(Explanation: if a script starts with "=", the result of the script is taken as the new nodes text.)
+      </li>
+      <li>
+        Change an attributes value:<br/>attribute_name=17+4<br/>(Explanation: if a script starts with a name and then directly a "=" sign, its result is associated to this attribute which is created if not already present.)
+      </li>
+      <li>
+        Read and change the nodes text:<br/>c.setNodeText(node, node.getText() + "_CHANGED");
+      </li>
+      <li>
+        Read an attribute<br/>def value = node.getAttribute("key"); // value is of type String.<br/><br/>
+      </li>
+      <li>
+        Create or change attributes: the following method checks whether or not an attribute with the same key exists and replaces it. Otherwise a new attribute is created and added.<br/>c.editAttribute(node, "key", "new value");<br/>
+      </li>
+      <li>
+        Remove an attribute by name:<br/>c.editAttribute(node, "key", null);<br/>This method returns the former index of the attribute, or -1 if the key wasn't found.<br/>
+      </li>
+      <li>
+        Traverse all children<br/>def it = node.childrenUnfolded();<br/>while(it.hasNext()) {<br/>def child = it.next();<br/>}
+      </li>
+      <li>
+        Traverse all children and its children recursively. The following examples prints the content of every node including its childs<br/>
+
+        <pre>def stack = new java.util.Stack();<br/>stack.push(node);<br/>while(stack.size()&gt;0) 
+        {<br/>&#x9;&#x9;def current =stack.pop();<br/>&#x9;&#x9;print current.getShortText(c) + ", ";<br/>&#x9;&#x9;stack.addAll(current.getChildren());<br/>&#x9;}</pre>
+        <br/>
+        <br/>
+        
+      </li>
+      <li>
+        Real world example: nodes may have an attribute "work" that specifies the work needed for the specific work package (e.g. in days). This script computes the sum of all work packages such that each node gets an attribute "sum" containing the amount of work needed for all descendants. This script, if executed via Alt+F8, automatically applies to the root of the map. But, every time, you change the values, you have to reexecute this script.<br/><br/>
+
+        <pre>def calcWork(child) {
+&#x9;def sum = 0;
+&#x9;def it = child.childrenUnfolded(); 
+&#x9;while(it.hasNext()) { 
+&#x9;&#x9;def child2 = it.next(); 
+&#x9;&#x9;sum += calcWork(child2);
+&#x9;&#x9;def w = child2.getAttribute("work");
+&#x9;&#x9;if(w != null)
+&#x9;&#x9;&#x9;sum += Integer.parseInt( w);
+&#x9;}
+&#x9;if(sum&gt;0)
+&#x9;&#x9;c.editAttribute(child, "sum", (String) sum);
+&#x9;return sum;
+}
+
+calcWork(c.getRootNode());</pre>
+      </li>
+      <li>
+        A very advanced example: the last script is integrated into a listener that detects node changes, so the sums are always recreated when a node is changed. This script introduces a new element in scripting: the "cookies". It is a usual HashMap where scripts can store values that they need the next time, they are executed. For every map, there is a new cookie map, such that cookies are map local. Moreover, they are not stored persistently and are lost after termination of FreeMind or after closing a map. In this example, they serve as a static variable in which it is stored whether or not the script was already executed and which listener was used in order to deregister the old one first.<br/>
+
+        <pre>class MyNodeListener implements freemind.modes.ModeController.NodeSelectionListener {
+&#x9;freemind.modes.mindmapmode.MindMapController c;
+        MyNodeListener(freemind.modes.mindmapmode.MindMapController con) {
+&#x9;&#x9;this.c = con;
+&#x9;&#x9;}
+
+&#x9;&#x9;/** 
+         * Sent, if a node is changed
+         * */
+        void onUpdateNodeHook(freemind.modes.MindMapNode node){&#x9;&#x9;
+&#x9;&#x9;&#x9;calcWork(c.getRootNode());
+&#x9;&#x9;};
+
+        /** Is sent when a node is selected.
+         */
+        void onSelectHook(freemind.view.mindmapview.NodeView node){};
+        /**
+         * Is sent when a node is deselected.
+         */
+        void onDeselectHook(freemind.view.mindmapview.NodeView node){};
+
+&#x9;&#x9;/**
+&#x9;&#x9; * Is issued before a node is saved (eg. to save its notes, too, even if the notes is currently edited).
+&#x9;&#x9; */
+&#x9;&#x9;void onSaveNode(freemind.modes.MindMapNode node){};
+
+def calcWork(child) {
+&#x9;def sum = 0;
+&#x9;def it = child.childrenUnfolded(); 
+&#x9;while(it.hasNext()) { 
+&#x9;&#x9;def child2 = it.next(); 
+&#x9;&#x9;sum += calcWork(child2);
+&#x9;&#x9;def w = child2.getAttribute("work");
+&#x9;&#x9;if(w != null)
+&#x9;&#x9;&#x9;sum += Integer.parseInt( w);
+&#x9;}
+&#x9;if(sum&gt;0)
+&#x9;&#x9;c.editAttribute(child, "sum", (String) sum);
+&#x9;return sum;
+}
+
+}
+
+def cookieKey = "work_update_listener";
+if(cookies.get(cookieKey) != null) {
+&#x9;c.deregisterNodeSelectionListener(cookies.get(cookieKey));
+}
+def newListener = new MyNodeListener(c);
+cookies.put(cookieKey, newListener);
+c.registerNodeSelectionListener(newListener);
+      </pre>
+      </li>
+      <li>
+        A sorting example: Currently we provide a function that sorts all children by name, but if you want to sort them by their icons for example, you can use the following script (or change it, if you have different sorting criteria):<br/>
+
+        <pre>import java.awt.datatransfer.Transferable;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.TreeSet;
+import java.util.Vector;
+import freemind.modes.MindMapNode;
+
+&#x9;class IconComparator implements java.util.Comparator {
+&#x9;&#x9;&#x9;int compare(java.lang.Object pArg0, java.lang.Object pArg1) {
+&#x9;&#x9;&#x9;&#x9;if (pArg0 instanceof MindMapNode) {
+&#x9;&#x9;&#x9;&#x9;&#x9;MindMapNode node1 = (MindMapNode) pArg0;
+&#x9;&#x9;&#x9;&#x9;&#x9;if (pArg1 instanceof MindMapNode) {
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;MindMapNode node2 = (MindMapNode) pArg1;
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;String iconText1 = getIconText(node1);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;String iconText2 = getIconText(node2);
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;//print "comparing" + iconText1 + " with " + iconText2 + "\n";
+&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;return iconText1.compareToIgnoreCase(iconText2);
+&#x9;&#x9;&#x9;&#x9;&#x9;}
+&#x9;&#x9;&#x9;&#x9;}
+&#x9;&#x9;&#x9;&#x9;return 0;
+&#x9;&#x9;&#x9;}
+&#x9;&#x9;def getIconText(MindMapNode n) {
+&#x9;&#x9;&#x9;if(n.getIcons() == null || n.getIcons().size()==0) 
+&#x9;&#x9;&#x9;&#x9;return "";
+&#x9;&#x9;&#x9;def retString = "";
+&#x9;&#x9;&#x9;def it = n.getIcons().iterator();
+&#x9;&#x9;&#x9;while(it.hasNext()) {
+&#x9;&#x9;&#x9;&#x9;retString +=it.next().getName()+", ";
+&#x9;&#x9;&#x9;}
+&#x9;&#x9;&#x9;return retString;
+&#x9;&#x9;}
+&#x9;}
+
+
+&#x9;&#x9;// we want to sort the children of the node:
+&#x9; &#x9;Vector children = new Vector();
+&#x9;&#x9;// put in all children of the node
+&#x9;&#x9;children.addAll(node.getChildren());
+&#x9;&#x9;// sort them
+&#x9;&#x9;java.util.Collections.sort(children, new IconComparator());
+&#x9;&#x9;//print "The set has " + children.size() + " entries\n";
+&#x9;&#x9;// now, as it is sorted. we cut the children
+&#x9;&#x9;def it2 = children.iterator();
+&#x9;&#x9;while (it2.hasNext()) {
+&#x9;&#x9;&#x9;MindMapNode child = (MindMapNode) it2.next();
+&#x9;&#x9;&#x9;Vector childList = new Vector();
+&#x9;&#x9;&#x9;childList.add(child);
+&#x9;&#x9;&#x9;Transferable cut = c.cut(childList);
+&#x9;&#x9;&#x9;// paste directly again causes that the node is added as the last one.
+&#x9;&#x9;&#x9;c.paste(cut, node);
+&#x9;&#x9;}
+&#x9;&#x9;c.select(c.getNodeView(node));</pre>
+      </li>
+      <li>
+        A presentation script. Everytime you select a node, all other nodes are closed and this node is expanded by one. Just give it a try..<br/>
+
+        <pre>class MyNodeListener implements freemind.modes.ModeController.NodeSelectionListener {
+&#x9;freemind.modes.mindmapmode.MindMapController c;
+        MyNodeListener(freemind.modes.mindmapmode.MindMapController con) {
+&#x9;&#x9;this.c = con;
+&#x9;&#x9;}
+
+&#x9;&#x9;/** 
+         * Sent, if a node is changed
+         * */
+        void onUpdateNodeHook(freemind.modes.MindMapNode node){&#x9;&#x9;
+&#x9;&#x9;};
+
+        /** Is sent when a node is selected.
+         */
+        void onSelectHook(freemind.view.mindmapview.NodeView node){
+&#x9;&#x9;&#x9;if(c.getSelecteds().size()&gt;1)
+&#x9;&#x9;&#x9;&#x9;return;
+&#x9;&#x9;&#x9;// unfold node:
+&#x9;&#x9;&#x9;c.setFolded(node.getModel(), false);
+&#x9;&#x9;&#x9;// fold every child:
+                def it2 = node.getModel().childrenUnfolded().iterator();
+                while (it2.hasNext()) {
+                        def child = it2.next();
+&#x9;&#x9;&#x9;&#x9;  c.setFolded(child, true);
+&#x9;&#x9;&#x9;}
+&#x9;&#x9;&#x9;// close everything else:
+&#x9;&#x9;&#x9;foldEverybody(node.getModel().getParent(),node.getModel());
+&#x9;&#x9;};
+        /**
+         * Is sent when a node is deselected.
+         */
+        void onDeselectHook(freemind.view.mindmapview.NodeView node){};
+
+&#x9;&#x9;/**
+&#x9;&#x9; * Is issued before a node is saved (eg. to save its notes, too, even if the notes is currently edited).
+&#x9;&#x9; */
+&#x9;&#x9;void onSaveNode(freemind.modes.MindMapNode node){};
+def foldEverybody(child, exception) {
+&#x9;&#x9;if(child == null || child.isRoot())
+&#x9;&#x9;&#x9;return;
+        def it = child.childrenUnfolded();
+        while(it.hasNext()) {
+                def child2 = it.next();
+&#x9;&#x9;&#x9;if(child2 != exception) {
+&#x9;&#x9;&#x9;&#x9;c.setFolded(child2, true);
+&#x9;&#x9;&#x9;}
+        }
+&#x9;if(!child.getParent().isRoot())
+&#x9;&#x9;foldEverybody(child.getParent(), exception.getParent());
+}
+
+
+}
+
+def cookieKey = "presentation_listener";
+if(cookies.get(cookieKey) != null) {
+&#x9;c.deregisterNodeSelectionListener(cookies.get(cookieKey));
+}
+def newListener = new MyNodeListener(c);
+cookies.put(cookieKey, newListener);
+c.registerNodeSelectionListener(newListener);</pre>
+      </li>
+    </ul>
+  </body>
+</html></richcontent>
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+<node COLOR="#407000" CREATED="1204696614656" ID="ID_491680673" MODIFIED="1381608223890" STYLE="fork" TEXT="How to install a script as a menu item (engl.)">
+<richcontent TYPE="NOTE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Once, you've created or found some interesting scripts, you probably want to get a FreeMind menu item with an own shortcut to execute the script.
+    </p>
+    <p>
+      To do this, save the script to a file and edit "ScriptingEngine.xml" inside the FreeMind script directory inside your installation.
+    </p>
+    <p>
+      You'll find a template for a script action that is commented out (ie. surrounded by &lt;!-- ... --&gt;). Uncomment the template and fill out the following bold places:
+    </p>
+    <pre>      &lt;plugin_action
+      name="<b>GroovyGroovy</b>"
+      documentation="<b>this is my first installed groovy script.</b>"
+      label="<b>plugins/GroovyScript1</b>"
+      base="freemind.extensions.ModeControllerHookAdapter"
+      class_name="plugins.script.ScriptingEngine"&gt;
+      &lt;plugin_mode class_name="freemind.modes.mindmapmode"/&gt;
+      &lt;plugin_menu location="<b>menu_bar/extras/first/scripting/groovy1</b>"/&gt;
+      &lt;plugin_property name="ScriptLocation" value="<b>/home/foltin/test.groovy</b>"/&gt;
+      &lt;/plugin_action&gt;
+    </pre>
+    <p>
+      The most important change is the location of the script. Moreover, if you have several scripts you want to install, the labels and the menu_location must be unique.
+    </p>
+    <p>
+      If you now restart FreeMind you get a new menu item (in this example in the "Extras" menu) that carries out your script. Observe, that the "node" variable points to the root node.
+    </p>
+    <p>
+      If you want to have a keyboard short cut for the new script, you have to add the bold line into the entry in ScriptingEngine.xml like:
+    </p>
+    <pre>      &lt;plugin_action
+      name="GroovyGroovy"
+      documentation="this is my first installed groovy script."
+      label="plugins/GroovyScript1"
+      <b>key_stroke="control shift M" </b>
+      base="freemind.extensions.ModeControllerHookAdapter"
+      class_name="plugins.script.ScriptingEngine"&gt;
+      &lt;plugin_mode class_name="freemind.modes.mindmapmode"/&gt;
+      &lt;plugin_menu location="menu_bar/extras/first/scripting/groovy1"/&gt;
+      &lt;plugin_property name="ScriptLocation" value="/home/foltin/test.groovy"/&gt;
+      &lt;/plugin_action&gt;
+    </pre>
+  </body>
+</html></richcontent>
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<font NAME="SansSerif" SIZE="12"/>
+</node>
+</node>
+</node>
+<node COLOR="#407000" CREATED="1354041409110" FOLDED="true" ID="ID_1185769793" LINK="http://freemind.sourceforge.net/wiki/index.php/FreeMind_1.0.0:_The_New_Features" MODIFIED="1381609485199" POSITION="right" STYLE="fork" TEXT="Neue Funktionen in 1.0.0">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<node COLOR="#407000" CREATED="1354041534617" ID="ID_485992024" MODIFIED="1381608262912" STYLE="fork" TEXT="Unterst&#xfc;tzung von Klons">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354041542053" FOLDED="true" ID="ID_76396394" MODIFIED="1381609056243" STYLE="fork">
+<richcontent TYPE="NODE"><html>
+  <head>
+    
+  </head>
+  <body>
+    <p>
+      Mindmaps k&#246;nnen freigegeben, und
+    </p>
+    <p>
+      gleichzeitig von mehreren Personen ver&#228;ndert werden
+    </p>
+  </body>
+</html></richcontent>
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<node COLOR="#407000" CREATED="1354049334525" ID="ID_1490791817" MODIFIED="1381608357295" STYLE="fork" TEXT="Die &#xc4;nderungen werden gegeneinander &quot;gelockt&quot;, d.h. es ist nicht m&#xf6;glich, dass Knoten vom einen gel&#xf6;scht, w&#xe4;hrend sie vom anderen bearbeitet werden">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049334525" ID="ID_787700684" MODIFIED="1381608393906" STYLE="fork" TEXT="Die &#xc4;nderungen werden &#xfc;ber den &quot;Master&quot; (der, der die Map freigibt) an die anderen Beteiligten weitergegeben">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049334525" ID="ID_338941685" MODIFIED="1381608433481" STYLE="fork" TEXT="Es gibt minimale Sicherheit: bevor man die Map sehen darf, mu&#xdf; man das richtige Passwort kennen. Allerdings gehen alle Nachrichten offen &#xfc;ber das Netzwerk!">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049334527" ID="ID_239293753" MODIFIED="1381608455694" STYLE="fork" TEXT="Kompression: zur Verbesserung der Effektivit&#xe4;t sind alle Nachrichten komprimiert">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049334528" ID="ID_1574037231" MODIFIED="1381608484862" STYLE="fork" TEXT="Die Verbindungseinstellungen werden in der Titelzeile angezeigt. Damit k&#xf6;nnen schnell neue Teilnehmer hinzugef&#xfc;gt werden.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049334530" ID="ID_747999418" MODIFIED="1381608527940" STYLE="fork" TEXT="Auch die Teilnehmer selbst werden (mit 5 Sekunden Verz&#xf6;gerung) in der Titelzeile angezeigt.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+</node>
+<node COLOR="#407000" CREATED="1354041568484" ID="ID_1396819699" MODIFIED="1381608544068" STYLE="fork" TEXT="Knoten k&#xf6;nnen einen geographischen Ort haben!">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049151325" ID="ID_172673644" MODIFIED="1381608554817" STYLE="fork" TEXT="Dank Eike gibt es eine Rechtschreibpr&#xfc;fung">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354041626034" ID="ID_728564704" MODIFIED="1381608570127" STYLE="fork" TEXT="Alle ge&#xf6;ffneten Mindmaps werden beim n&#xe4;chsten Start wiederhergestellt">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049017472" FOLDED="true" ID="ID_497763930" MODIFIED="1381609056244" STYLE="fork" TEXT="QuickView Support f&#xfc;r Mac OSX">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<node COLOR="#407000" CREATED="1381608578684" ID="ID_213337943" MODIFIED="1381609052649" STYLE="fork" TEXT="Bet&#xe4;tigen Sie auf einer Mindmap die Leertaste im Finder und Sie bekommen eine direkte Vorschau!">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+</node>
+<node COLOR="#407000" CREATED="1381609026034" ID="ID_1770254561" MODIFIED="1381609051655" STYLE="fork" TEXT="Ein neuer Kreis erm&#xf6;glicht das Falten und Ausfalten per Maus">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049159148" FOLDED="true" ID="ID_1174384551" MODIFIED="1381609056246" STYLE="fork" TEXT="Kleine &#xc4;nderungen">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<node COLOR="#407000" CREATED="1354041615600" ID="ID_1369145907" MODIFIED="1381608672737" STYLE="fork" TEXT="Steuerung + Q springt zu den letzten &#xc4;nderungen">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354048984649" ID="ID_1556364315" MODIFIED="1381608885698" STYLE="fork" TEXT="Es k&#xf6;nnen einzelne Zweige oder mehrere Knoten (in separate Dateien) nach PDF exportiert werden.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049001883" ID="ID_86589059" MODIFIED="1381608699546" STYLE="fork" TEXT="Nach dem PDF-Export wird ein PDF-Viewer gestartet, wenn vorhanden">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049046101" ID="ID_1605954762" MODIFIED="1381608720158" STYLE="fork" TEXT="Dank Anantha k&#xf6;nnen Bilder nun direkt eingef&#xfc;gt werden!">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049051829" ID="ID_1932974359" MODIFIED="1381608766517" STYLE="fork" TEXT="Mindmaps werden auf Ver&#xe4;nderungen im darunterliegenden Dateisystem &#xfc;berwacht. Wenn die Mindmap von jemandem ge&#xe4;ndert wurde, erscheint eine Frage, ob sie neu geladen werden soll.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049063363" ID="ID_455905559" MODIFIED="1381608793574" STYLE="fork" TEXT="Sofern gew&#xfc;nscht werden alle Mindmaps in einer einzigen Instanz von FreeMind ge&#xf6;ffnet (per Doppelklick auf die Datei).">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049078229" ID="ID_482054062" LINK="https://sourceforge.net/projects/freemind/forums/forum/320014/topic/4777695" MODIFIED="1381608810564" STYLE="fork" TEXT="Die Notiz-Tooltips k&#xf6;nnen abgeschaltet werden">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049083460" ID="ID_1907102486" MODIFIED="1381608829074" STYLE="fork" TEXT="Es gibt die M&#xf6;glichkeit, die Zwischenablage unformatiert einzuf&#xfc;gen.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049098227" ID="ID_858423743" MODIFIED="1381608845347" STYLE="fork" TEXT="Der Hauptknoten kann zu einem anderen Knoten gewechselt werden">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049134360" ID="ID_81088554" LINK="https://sourceforge.net/tracker/?func=detail&amp;atid=307118&amp;aid=3442896&amp;group_id=7118" MODIFIED="1381608862174" STYLE="fork" TEXT="Es gibt einen neuen Filter f&#xfc;r Knoten, die kein Icon enthalten">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1354049311677" ID="ID_1888591328" MODIFIED="1381608915509" STYLE="fork" TEXT="Http-Proxies k&#xf6;nnen in den Einstellungen eingegeben werden (f&#xfc;r die Landkarten)">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+</node>
 </node>
 </node>
 </map>

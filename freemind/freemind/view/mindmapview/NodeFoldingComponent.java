@@ -43,11 +43,10 @@ import javax.swing.Timer;
 import javax.swing.plaf.basic.BasicButtonListener;
 import javax.swing.plaf.basic.BasicButtonUI;
 
-import freemind.controller.Controller;
 import freemind.main.FreeMind;
 import freemind.main.Resources;
 import freemind.main.Tools;
-import freemind.preferences.FreemindPropertyListener;
+import freemind.modes.MindMapNode;
 
 /**
  * @author Foltin
@@ -82,47 +81,49 @@ public class NodeFoldingComponent extends JButton {
 		setUI(new RoundImageButtonUI());
 		mIsEnabled = Resources.getInstance().getBoolProperty(
 				FreeMind.RESOURCES_DISPLAY_FOLDING_BUTTONS);
-		if (!mIsEnabled) {
-			return;
+		if (mIsEnabled) {
+			addMouseListener(new MouseListener() {
+	
+				public void mouseReleased(MouseEvent pE) {
+				}
+	
+				public void mousePressed(MouseEvent pE) {
+				}
+	
+				public void mouseExited(MouseEvent pE) {
+					mIsEntered = false;
+					mColorCounter = COLOR_COUNTER_MAX;
+					repaint();
+				}
+	
+				public void mouseEntered(MouseEvent pE) {
+					mIsEntered = true;
+					startTimer();
+					repaint();
+				}
+	
+				public void mouseClicked(MouseEvent pE) {
+				}
+			});
+			int delay = TIMER_DELAY;
+			ActionListener taskPerformer = new ActionListener() {
+				public void actionPerformed(ActionEvent evt) {
+					if (mIsEntered && mColorCounter < COLOR_COUNTER_MAX) {
+						mColorCounter++;
+						repaint();
+					}
+					if (!mIsEntered && mColorCounter > 0) {
+						mColorCounter--;
+						if(mColorCounter == 0) {
+							stopTimer();
+						}
+						repaint();
+					}
+	
+				}
+			};
+			mTimer = new Timer(delay, taskPerformer);
 		}
-		addMouseListener(new MouseListener() {
-
-			public void mouseReleased(MouseEvent pE) {
-			}
-
-			public void mousePressed(MouseEvent pE) {
-			}
-
-			public void mouseExited(MouseEvent pE) {
-				mIsEntered = false;
-				mColorCounter = COLOR_COUNTER_MAX;
-				repaint();
-			}
-
-			public void mouseEntered(MouseEvent pE) {
-				mIsEntered = true;
-				repaint();
-			}
-
-			public void mouseClicked(MouseEvent pE) {
-			}
-		});
-		int delay = TIMER_DELAY;
-		ActionListener taskPerformer = new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				if (mIsEntered && mColorCounter < COLOR_COUNTER_MAX) {
-					mColorCounter++;
-					repaint();
-				}
-				if (!mIsEntered && mColorCounter > 0) {
-					mColorCounter--;
-					repaint();
-				}
-
-			}
-		};
-		mTimer = new Timer(delay, taskPerformer);
-		mTimer.start();
 	}
 
 	public Dimension getPreferredSize() {
@@ -152,6 +153,7 @@ public class NodeFoldingComponent extends JButton {
 			initShape(b);
 		}
 
+		/* Is called by a button class automatically.*/
 		protected void installListeners(AbstractButton b) {
 			BasicButtonListener listener = new BasicButtonListener(b) {
 
@@ -164,12 +166,16 @@ public class NodeFoldingComponent extends JButton {
 				}
 
 				public void mouseEntered(MouseEvent e) {
+					AbstractButton b = (AbstractButton) e.getSource();
+					initShape(b);
 					if (shape.contains(e.getX(), e.getY())) {
 						super.mouseEntered(e);
 					}
 				}
 
 				public void mouseMoved(MouseEvent e) {
+					AbstractButton b = (AbstractButton) e.getSource();
+					initShape(b);
 					if (shape.contains(e.getX(), e.getY())) {
 						super.mouseEntered(e);
 					} else {
@@ -177,13 +183,11 @@ public class NodeFoldingComponent extends JButton {
 					}
 				}
 			};
-			if (listener != null) {
-				b.addMouseListener(listener);
-				b.addMouseMotionListener(listener);
-				b.addFocusListener(listener);
-				b.addPropertyChangeListener(listener);
-				b.addChangeListener(listener);
-			}
+			b.addMouseListener(listener);
+			b.addMouseMotionListener(listener);
+			b.addFocusListener(listener);
+			b.addPropertyChangeListener(listener);
+			b.addChangeListener(listener);
 		}
 
 		public void paint(Graphics g, JComponent c) {
@@ -206,7 +210,7 @@ public class NodeFoldingComponent extends JButton {
 				int xmiddle = bounds.x + bounds.width / 2;
 				int ymiddle = bounds.y + bounds.height / 2;
 				g2.drawLine(bounds.x, ymiddle, bounds.x + bounds.width, ymiddle);
-				if (nodeView.getModel().isFolded()) {
+				if (isFolded()) {
 					g2.drawLine(xmiddle, bounds.y, xmiddle, bounds.y
 							+ bounds.height);
 				}
@@ -220,7 +224,7 @@ public class NodeFoldingComponent extends JButton {
 				if (mColorCounter != 0) {
 					int diameter = bounds.width * mColorCounter
 							/ COLOR_COUNTER_MAX;
-					if (nodeView.getModel().isFolded()) {
+					if (isFolded()) {
 						diameter = Math.max(diameter, foldingCircleDiameter);
 					}
 					int radius = diameter / 2;
@@ -228,7 +232,7 @@ public class NodeFoldingComponent extends JButton {
 					g2.fillOval(xmiddle - radius, ymiddle - radius, diameter,
 							diameter);
 					g2.setColor(col);
-					if (nodeView.getModel().isFolded()) {
+					if (isFolded()) {
 						g2.drawLine(xmiddle, ymiddle - radius, xmiddle, ymiddle
 								+ radius);
 					}
@@ -238,7 +242,7 @@ public class NodeFoldingComponent extends JButton {
 					g2.drawOval(xmiddle - radius, ymiddle - radius, diameter,
 							diameter);
 				} else {
-					if (nodeView.getModel().isFolded()) {
+					if (isFolded()) {
 						int radius = foldingCircleDiameter / 2;
 						g2.setColor(nodeView.getMap().getBackground());
 						g2.fillOval(xmiddle - radius, ymiddle - radius,
@@ -294,8 +298,25 @@ public class NodeFoldingComponent extends JButton {
 
 	public void dispose() {
 		if (mTimer != null) {
-			mTimer.stop();
+			stopTimer();
 			mTimer = null;
+		}
+	}
+
+	protected boolean isFolded() {
+		MindMapNode model = nodeView.getModel();
+		return model.isFolded() && model.isVisible();
+	}
+
+	protected synchronized void startTimer() {
+		if (!mTimer.isRunning()) {
+			mTimer.start();
+		}
+	}
+
+	protected synchronized void stopTimer() {
+		if (mTimer.isRunning()) {
+			mTimer.stop();
 		}
 	}
 

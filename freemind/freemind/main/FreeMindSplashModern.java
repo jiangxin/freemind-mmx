@@ -58,12 +58,12 @@ public class FreeMindSplashModern extends JFrame implements IFreeMindSplash {
 			MessageFormat formatter = new MessageFormat(
 					frame.getResourceString(messageId));
 			final String progressString = formatter.format(pMessageParameters);
-			logger.info(progressString);
+			logger.fine(progressString);
 			this.mActualValue = act;
 			long timeDifference = System.currentTimeMillis() - mActualTimeStamp;
 			mActualTimeStamp = System.currentTimeMillis();
 			mTotalTime += timeDifference;
-			logger.info("Task: " + lastTaskId + " (" + act + ") last "
+			logger.fine("Task: " + lastTaskId + " (" + act + ") last "
 					+ (timeDifference) / 1000.0 + " seconds.\nTotal: "
 					+ mTotalTime / 1000.0 + "\n");
 			SwingUtilities.invokeLater(new Runnable() {
@@ -80,7 +80,7 @@ public class FreeMindSplashModern extends JFrame implements IFreeMindSplash {
 					}
 				}
 			});
-			logger.info("Beginnig task:" + messageId);
+			logger.fine("Beginnig task:" + messageId);
 			lastTaskId = messageId;
 			// this is not nice, as other windows are probably more important!
 //			// make it the top most window.

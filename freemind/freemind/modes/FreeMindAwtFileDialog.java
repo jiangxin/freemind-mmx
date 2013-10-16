@@ -34,12 +34,14 @@ import javax.swing.filechooser.FileFilter;
 import javax.xml.transform.stream.StreamResult;
 
 /**
+ * File Chooser for Mac
  * @author foltin
  * @date 23.02.2012
  */
 public class FreeMindAwtFileDialog extends FileDialog implements
 		FreeMindFileDialog {
 
+	private static final String APPLE_AWT_FILE_DIALOG_FOR_DIRECTORIES = "apple.awt.fileDialogForDirectories";
 	protected static java.util.logging.Logger logger = null;
 
 	private final static class NullFilter extends FileFilter {
@@ -161,7 +163,7 @@ public class FreeMindAwtFileDialog extends FileDialog implements
 		}
 		mFilter = new FreeMindFilenameFilter();
 		super.setFilenameFilter(mFilter);
-		System.setProperty("apple.awt.fileDialogForDirectories", "false");
+		System.setProperty(APPLE_AWT_FILE_DIALOG_FOR_DIRECTORIES, "false");
 
 	}
 	
@@ -188,7 +190,7 @@ public class FreeMindAwtFileDialog extends FileDialog implements
 	 */
 	public int showOpenDialog(Component pParent) throws HeadlessException {
 		setMode(LOAD);
-		show();
+		setVisible(true);
 		callDirectoryListener();
 		return getReturnValue();
 	}
@@ -198,7 +200,7 @@ public class FreeMindAwtFileDialog extends FileDialog implements
 	 */
 	public int showSaveDialog(Component pParent) throws HeadlessException {
 		setMode(SAVE);
-		show();
+		setVisible(true);
 		callDirectoryListener();
 		return getReturnValue();
 	}
@@ -216,15 +218,18 @@ public class FreeMindAwtFileDialog extends FileDialog implements
 	public void addChoosableFileFilter(FileFilter pFilter) {
 		mFilter.setCustomFilter(pFilter);
 	}
+	
+
 
 	/* (non-Javadoc)
 	 * @see freemind.modes.FreeMindFileDialog#setFileSelectionMode(int)
 	 */
 	public void setFileSelectionMode(int pMode) {
+		System.setProperty(APPLE_AWT_FILE_DIALOG_FOR_DIRECTORIES, "false");
 		switch(pMode) {
 		case JFileChooser.DIRECTORIES_ONLY:
 			mFilter.setPrincipalFilter(new DirFilter());
-			System.setProperty("apple.awt.fileDialogForDirectories", "true");
+			System.setProperty(APPLE_AWT_FILE_DIALOG_FOR_DIRECTORIES, "true");
 			break;
 		case JFileChooser.FILES_ONLY:
 			mFilter.setPrincipalFilter(new FileOnlyFilter());
@@ -295,14 +300,27 @@ public class FreeMindAwtFileDialog extends FileDialog implements
 	}
 	
 	public static void main(String[] args) throws IOException {
+	
 		FreeMindAwtFileDialog dialog = new FreeMindAwtFileDialog();
-		dialog.showSaveDialog(null);
+		dialog.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		dialog.showOpenDialog(null);
 		File selectedFile = dialog.getSelectedFile();
+		System.out.println("Dir '" + dialog.getDirectory() + "', File: '" + dialog.getFile() + "', selected File: '" + selectedFile + "'" );
+		System.exit(0);
+		dialog.showSaveDialog(null);
+		selectedFile = dialog.getSelectedFile();
 		System.out.println("Dir '" + dialog.getDirectory() + "', File: '" + dialog.getFile() + "', selected File: '" + selectedFile + "'" );
 		StreamResult streamResult = new StreamResult(new FileOutputStream(selectedFile));
 		streamResult.getOutputStream().write("bla".getBytes());
 		streamResult.getOutputStream().close();
 		System.out.println("File exists: " + selectedFile.exists());
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.FreeMindFileDialog#addChoosableFileFilterAsDefault(javax.swing.filechooser.FileFilter)
+	 */
+	public void addChoosableFileFilterAsDefault(FileFilter pFilter) {
+		addChoosableFileFilter(pFilter);
 	}
 
 }

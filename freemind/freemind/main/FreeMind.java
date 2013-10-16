@@ -520,10 +520,12 @@ public class FreeMind extends JFrame implements FreeMindMain, ActionListener {
 			outputStreamWriter.write(VERSION.toString());
 			outputStreamWriter.write('\n');
 			outputStreamWriter.flush();
-			// auto.store(out,null);//to save as few props as possible.
-			props.store(out, null);
+			//to save as few props as possible.
+			Properties toBeStored = Tools.copyChangedProperties(props, defProps);
+			toBeStored.store(out, null);
 			out.close();
 		} catch (Exception ex) {
+			Resources.getInstance().logException(ex);
 		}
 		getController().getFilterController().saveConditions();
 		if (pIsShutdown && mEditServer != null) {

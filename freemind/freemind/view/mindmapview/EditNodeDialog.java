@@ -26,6 +26,7 @@ package freemind.view.mindmapview;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -133,7 +134,12 @@ public class EditNodeDialog extends EditNodeBase {
 
 			okButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					submit();
+					// next try to avoid bug 1159: focus jumps to file-menu after closing html-editing-window
+					EventQueue.invokeLater(new Runnable() {
+						public void run() {
+							submit();
+						}
+					});
 				}
 			});
 

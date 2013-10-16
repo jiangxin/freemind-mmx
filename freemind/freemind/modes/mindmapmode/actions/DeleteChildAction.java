@@ -26,7 +26,6 @@ package freemind.modes.mindmapmode.actions;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;

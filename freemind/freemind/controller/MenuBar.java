@@ -78,7 +78,6 @@ public class MenuBar extends JMenuBar {
 	private JMenu mapsmenu;
 	Controller c;
 	ActionListener mapsMenuActionListener = new MapsMenuActionListener();
-	ActionListener lastOpenedActionListener = new LastOpenedActionListener();
 	private JMenu formatmenu;
 
 	public MenuBar(Controller controller) {
@@ -319,7 +318,7 @@ public class MenuBar extends JMenuBar {
 						.getAdjustableProperty(
 								"keystroke_open_first_in_history")));
 			}
-			item.addActionListener(lastOpenedActionListener);
+			item.addActionListener(new LastOpenedActionListener(key));
 
 			menuHolder.addMenuItem(item,
 					FILE_MENU + "last/" + (key.replace('/', '_')));
@@ -468,9 +467,15 @@ public class MenuBar extends JMenuBar {
 	}
 
 	private class LastOpenedActionListener implements ActionListener {
+		private String mKey;
+
+		public LastOpenedActionListener(String pKey) {
+			mKey = pKey;
+		}
+
 		public void actionPerformed(ActionEvent e) {
 
-			String restoreable = e.getActionCommand();
+			String restoreable = mKey;
 			try {
 				c.getLastOpenedList().open(restoreable);
 			} catch (Exception ex) {

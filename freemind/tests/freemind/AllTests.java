@@ -37,6 +37,8 @@ public class AllTests {
 	public static Test suite() {
 		TestSuite suite = new TestSuite("AllTests");
 		// $JUnit-BEGIN$
+		suite.addTest(new TestSuite(ScriptEditorPanelTest.class));
+		suite.addTest(new TestSuite(SplashTests.class));
 		suite.addTest(new TestSuite(Base64Tests.class));
 		suite.addTest(new TestSuite(FindTextTests.class));
 		suite.addTest(new TestSuite(HtmlConversionTests.class));
@@ -46,6 +48,8 @@ public class AllTests {
 		suite.addTest(new TestSuite(LastStorageManagementTests.class));
 		suite.addTest(new TestSuite(ToolsTests.class));
 		suite.addTest(new TestSuite(ExportTests.class));
+		suite.addTest(new TestSuite(LayoutTests.class));
+		suite.addTest(new TestSuite(LastOpenedTests.class));
 		// $JUnit-END$
 		return suite;
 	}

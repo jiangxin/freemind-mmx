@@ -28,7 +28,6 @@ import java.util.Vector;
 import javax.swing.Action;
 import javax.swing.JComboBox;
 import javax.swing.JToolBar;
-import javax.swing.plaf.basic.BasicComboBoxEditor;
 
 import freemind.controller.Controller;
 import freemind.controller.FreeMindToolBar;

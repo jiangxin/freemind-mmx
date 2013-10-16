@@ -29,6 +29,7 @@ import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.Vector;
 
 import freemind.main.FreeMindSecurityManager;
@@ -137,7 +138,7 @@ public class ToolsTests extends FreeMindTestBase {
 
 	public void testGetPrefix() throws Exception {
 		if (Tools.isWindows()) {
-			assertEquals("\\c:\\",
+			  assertEquals("c:\\", 
 					Tools.getPrefix(WINDOWS_PATH_C_USERS_TMP_IM_MM).toString());
 		} else {
 			assertEquals("/",
@@ -295,6 +296,22 @@ public class ToolsTests extends FreeMindTestBase {
 		System.out.println(Tools.urlToFile(Tools.fileToUrl(new File(file))));
 	}
 	
+	public void testChangedProperties() throws Exception {
+		Properties def = new Properties();
+		Properties changed = new Properties();
+		String key = "blabla";
+		String key2 = "notexistent";
+		String key3 = "notpresentindef";
+		String key4 = "equal";
+		def.put(key, "A");
+		changed.put(key, "B");
+		def.put(key4, "A");
+		changed.put(key4, "A");
+		def.put(key2, "default");
+		changed.put(key3, "new value");
+		Properties copy = Tools.copyChangedProperties(changed, def);
+		assertEquals(2, copy.keySet().size());
+	}
 	public void testNumberRegexp() throws Exception {
 		assertTrue("1,2345".matches(MindMapController.REGEXP_FOR_NUMBERS_IN_STRINGS));
 		assertFalse("a1,2345".matches(MindMapController.REGEXP_FOR_NUMBERS_IN_STRINGS));
@@ -304,5 +321,6 @@ public class ToolsTests extends FreeMindTestBase {
 		assertTrue("-1,2345".matches(MindMapController.REGEXP_FOR_NUMBERS_IN_STRINGS));
 		assertFalse("+".matches(MindMapController.REGEXP_FOR_NUMBERS_IN_STRINGS));
 		assertFalse("-".matches(MindMapController.REGEXP_FOR_NUMBERS_IN_STRINGS));
+		
 	}
 }
