@@ -64,6 +64,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	private String mCloneId;
 	private boolean mDisabled = false;
 	private Boolean mCloneItself = null;
+	private CloneProperties mClonePropertiesHolder;
 
 	public ClonePlugin() {
 	}
@@ -89,7 +90,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				if (getHook(getNode()) != null) {
-					toggleHook();
+					removeHook();
 				}
 			}
 		});
@@ -99,7 +100,9 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	 * double add = remove.
 	 * 
 	 */
-	protected void toggleHook() {
+	protected void removeHook() {
+		// first deactivate cloning for this node (otherwise, the deactivation will be cloned, too!)
+		deregisterCloning();
 		Vector selecteds = Tools.getVectorWithSingleElement(getNode());
 		getMindMapController()
 				.addHook(getNode(), selecteds, PLUGIN_LABEL, null);
@@ -110,9 +113,8 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		HashMap values = new HashMap();
 		values.put(XML_STORAGE_CLONES, getCloneIdsAsString());
 		values.put(XML_STORAGE_CLONE_ID, mCloneId);
-		boolean cloneItself = getRegistration().getCloneProperties(mCloneId)
-				.isCloneItself();
-		values.put(XML_STORAGE_CLONE_ITSELF, cloneItself ? CLONE_ITSELF_TRUE
+		values.put(XML_STORAGE_CLONE_ITSELF, mClonePropertiesHolder
+				.isCloneItself() ? CLONE_ITSELF_TRUE
 				: CLONE_ITSELF_FALSE);
 		saveNameValuePairs(values, xml);
 		logger.fine("Saved clone plugin");
@@ -186,12 +188,12 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		registration.registerClone(mCloneId, this);
 		// the clone list contains itself, too.
 		addClone(getNode());
-		CloneProperties cloneProperties = registration
+		mClonePropertiesHolder = registration
 				.getCloneProperties(mCloneId);
 		if (mCloneItself != null) {
-			cloneProperties.setCloneItself(mCloneItself.booleanValue());
+			mClonePropertiesHolder.setCloneItself(mCloneItself.booleanValue());
 		}
-		cloneProperties.registerObserver(this);
+		mClonePropertiesHolder.registerObserver(this);
 	}
 
 	protected Registration getRegistration() {
@@ -199,12 +201,16 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	private void deregisterPlugin() {
-		getRegistration().getCloneProperties(mCloneId).deregisterObserver(this);
-		getRegistration().deregisterClone(mCloneId, this);
+		mClonePropertiesHolder.deregisterObserver(this);
+		deregisterCloning();
 		getMindMapController().deregisterNodeLifetimeListener(this);
 		// remove icon
 		getNode().setStateIcon(getName(), null);
 		getMindMapController().nodeRefresh(getNode());
+	}
+
+	protected void deregisterCloning() {
+		getRegistration().deregisterClone(mCloneId, this);
 	}
 
 	public void onCreateNodeHook(MindMapNode node) {
@@ -293,13 +299,15 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 	}
 
 	public void removeClone(MindMapNode pCloneNode) {
-		mCloneNodeIds.remove(getMindMapController().getNodeID(pCloneNode));
+		String nodeID = getMindMapController().getNodeID(pCloneNode);
+		mCloneNodeIds.remove(nodeID);
 		clearCloneCache();
 		if (mCloneNodeIds.isEmpty()
 				|| (mCloneNodeIds.size() == 1 && mCloneNodeIds
 						.contains(getNodeId()))) {
 			// remove myself
-			toggleHook();
+			logger.warning("I'm the last clone " + nodeID);
+			removeHook();
 		}
 	}
 
