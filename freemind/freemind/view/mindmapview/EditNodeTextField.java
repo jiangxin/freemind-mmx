@@ -24,7 +24,6 @@
 package freemind.view.mindmapview;
 
 import java.awt.Color;
-import java.awt.Event;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Point;

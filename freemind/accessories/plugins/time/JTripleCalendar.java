@@ -180,7 +180,7 @@ public class JTripleCalendar extends JPanel implements PropertyChangeListener {
 					.clone();
 			gregorianCalendar.set(Calendar.DAY_OF_MONTH,
 					((Integer) evt.getNewValue()).intValue());
-			calendarWidget.setDate(gregorianCalendar.getTime());
+			calendarWidget.setCalendar(gregorianCalendar);
 			propagateDate(gregorianCalendar);
 		}
 	}

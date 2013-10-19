@@ -49,7 +49,6 @@ import java.io.File;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.AccessControlException;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Collections;

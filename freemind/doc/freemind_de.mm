@@ -1716,12 +1716,12 @@ c.registerNodeSelectionListener(newListener);</pre>
 </node>
 </node>
 </node>
-<node COLOR="#407000" CREATED="1354041409110" FOLDED="true" ID="ID_1185769793" LINK="http://freemind.sourceforge.net/wiki/index.php/FreeMind_1.0.0:_The_New_Features" MODIFIED="1381609485199" POSITION="right" STYLE="fork" TEXT="Neue Funktionen in 1.0.0">
+<node COLOR="#407000" CREATED="1354041409110" FOLDED="true" ID="ID_1185769793" LINK="http://freemind.sourceforge.net/wiki/index.php/FreeMind_1.0.0:_The_New_Features" MODIFIED="1381952429948" POSITION="right" STYLE="fork" TEXT="Neue Funktionen in 1.0.0">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 <node COLOR="#407000" CREATED="1354041534617" ID="ID_485992024" MODIFIED="1381608262912" STYLE="fork" TEXT="Unterst&#xfc;tzung von Klons">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
 </node>
-<node COLOR="#407000" CREATED="1354041542053" FOLDED="true" ID="ID_76396394" MODIFIED="1381609056243" STYLE="fork">
+<node COLOR="#407000" CREATED="1354041542053" FOLDED="true" ID="ID_76396394" MODIFIED="1381952429017" STYLE="fork">
 <richcontent TYPE="NODE"><html>
   <head>
     
@@ -1736,8 +1736,15 @@ c.registerNodeSelectionListener(newListener);</pre>
   </body>
 </html></richcontent>
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
-<node COLOR="#407000" CREATED="1354049334525" ID="ID_1490791817" MODIFIED="1381608357295" STYLE="fork" TEXT="Die &#xc4;nderungen werden gegeneinander &quot;gelockt&quot;, d.h. es ist nicht m&#xf6;glich, dass Knoten vom einen gel&#xf6;scht, w&#xe4;hrend sie vom anderen bearbeitet werden">
+<node COLOR="#407000" CREATED="1354049334525" FOLDED="true" ID="ID_1490791817" MODIFIED="1381952428371" STYLE="fork" TEXT="Die &#xc4;nderungen werden gegeneinander &quot;gelockt&quot;">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<node COLOR="#407000" CREATED="1381952369034" ID="ID_88681727" MODIFIED="1381952426965" STYLE="fork" TEXT="L&#xe4;ngere Aktionen blockieren. Andere Clients k&#xf6;nnen derweil die Map nicht ver&#xe4;ndern.">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+</node>
+<node COLOR="#407000" CREATED="1381952402251" ID="ID_484592566" MODIFIED="1381952426551" STYLE="fork" TEXT="Allerdings wird das Ver&#xe4;ndern von Knoten nicht geblockt!">
+<edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
+<icon BUILTIN="messagebox_warning"/>
+</node>
 </node>
 <node COLOR="#407000" CREATED="1354049334525" ID="ID_787700684" MODIFIED="1381608393906" STYLE="fork" TEXT="Die &#xc4;nderungen werden &#xfc;ber den &quot;Master&quot; (der, der die Map freigibt) an die anderen Beteiligten weitergegeben">
 <edge COLOR="#808080" STYLE="bezier" WIDTH="thin"/>
