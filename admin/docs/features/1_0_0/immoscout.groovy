@@ -106,20 +106,12 @@ def getUrl(HashMap urlMap, String urlT, String IMMO) {
 							break;
 						}
 						list.add(0,currIcon)
-<<<<<<< HEAD
-						//println "Removing " + currIcon
-=======
 						println "Removing " + currIcon
->>>>>>> bca0535056d47c859b7b838ad6e494de842a9039
 					}
 					c.addIcon(cnode,freemind.modes.MindIcon.factory("full-" + (weeksOld as int)));
 					for(otherIcon in list){
 						c.addIcon(cnode, otherIcon);
-<<<<<<< HEAD
-						//println "Readding " + otherIcon
-=======
 						println "Readding " + otherIcon
->>>>>>> bca0535056d47c859b7b838ad6e494de842a9039
 					}
 					urlMap.remove(link);
 				} else {
