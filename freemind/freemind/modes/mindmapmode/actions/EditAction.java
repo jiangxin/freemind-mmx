@@ -56,17 +56,16 @@ import freemind.view.mindmapview.NodeView;
 //Node editing
 //
 
-public class EditAction extends AbstractAction implements ActorXml {
+public class EditAction extends MindmapAction implements ActorXml {
 	private static final Pattern HTML_HEAD = Pattern.compile(
 			"\\s*<head>.*</head>", Pattern.DOTALL);
 	private final MindMapController mMindMapController;
 	private EditNodeBase mCurrentEditDialog = null;
 
 	public EditAction(MindMapController modeController) {
-		super(modeController.getText("edit_node"));
+		super("edit_node", modeController);
 		this.mMindMapController = modeController;
-		this.mMindMapController.getActionFactory().registerActor(this,
-				getDoActionClass());
+		addActor(this);
 	}
 
 	public void actionPerformed(ActionEvent arg0) {
@@ -308,10 +307,6 @@ public class EditAction extends AbstractAction implements ActorXml {
 		mMindMapController.doTransaction(
 				mMindMapController.getText("edit_node"),
 				new ActionPair(EditAction, undoEditAction));
-	}
-
-	protected MindMapController getMindMapController() {
-		return mMindMapController;
 	}
 
 	private void setHtmlText(final NodeView node, String newText) {

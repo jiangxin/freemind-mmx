@@ -33,7 +33,7 @@ import freemind.modes.mindmapmode.MindMapController;
  * @author foltin
  * 
  */
-public class AddLocalLinkAction extends FreemindAction {
+public class AddLocalLinkAction extends MindmapAction {
 
 	private final MindMapController modeController;
 

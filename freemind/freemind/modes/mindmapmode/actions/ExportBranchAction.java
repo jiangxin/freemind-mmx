@@ -25,7 +25,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
@@ -38,11 +37,11 @@ import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 
 /** */
-public class ExportBranchAction extends AbstractAction {
+public class ExportBranchAction extends MindmapAction {
 	private final MindMapController mMindMapController;
 
 	public ExportBranchAction(MindMapController pMindMapController) {
-		super(pMindMapController.getText("export_branch_new"));
+		super("export_branch_new", pMindMapController);
 		mMindMapController = pMindMapController;
 	}
 

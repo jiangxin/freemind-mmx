@@ -27,8 +27,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.util.Iterator;
 
-import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import freemind.common.OptionalDontShowMeAgainDialog;
@@ -46,17 +44,15 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
-public class DeleteChildAction extends AbstractAction implements ActorXml {
+public class DeleteChildAction extends MindmapAction implements ActorXml {
 	private final MindMapController mMindMapController;
 	private String text;
 
 	public DeleteChildAction(MindMapController modeController) {
-		super(modeController.getText("remove_node"), new ImageIcon(
-				modeController.getResource("images/editdelete.png")));
+		super("remove_node", "images/editdelete.png", modeController);
 		text = modeController.getText("remove_node");
 		this.mMindMapController = modeController;
-		this.mMindMapController.getActionFactory().registerActor(this,
-				getDoActionClass());
+		addActor(this);
 	}
 
 	public void actionPerformed(ActionEvent e) {

@@ -25,9 +25,6 @@ package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
 import java.util.ListIterator;
-import java.util.logging.Logger;
-
-import javax.swing.AbstractAction;
 
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.FoldAction;
@@ -41,17 +38,19 @@ import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class ToggleFoldedAction extends AbstractAction implements ActorXml {
+public class ToggleFoldedAction extends MindmapAction implements ActorXml {
 	private final MindMapController modeController;
 
-	private Logger logger;
+	protected static java.util.logging.Logger logger = null;
 
 	public ToggleFoldedAction(MindMapController controller) {
-		super(controller.getText("toggle_folded"));
+		super("toggle_folded", controller);
 		this.modeController = controller;
-		modeController.getActionFactory().registerActor(this,
-				getDoActionClass());
-		logger = modeController.getFrame().getLogger(this.getClass().getName());
+		addActor(this);
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
 	}
 
 	public void actionPerformed(ActionEvent e) {

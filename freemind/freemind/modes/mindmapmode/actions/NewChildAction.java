@@ -28,9 +28,6 @@ import java.awt.event.KeyEvent;
 import java.util.Iterator;
 import java.util.logging.Logger;
 
-import javax.swing.AbstractAction;
-import javax.swing.ImageIcon;
-
 import freemind.controller.actions.generated.instance.DeleteNodeAction;
 import freemind.controller.actions.generated.instance.NewNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -42,15 +39,14 @@ import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 import freemind.view.mindmapview.NodeView;
 
-public class NewChildAction extends AbstractAction implements ActorXml {
+public class NewChildAction extends MindmapAction implements ActorXml {
 	private final MindMapController c;
 	private static Logger logger = null;
 
 	public NewChildAction(MindMapController modeController) {
-		super(modeController.getText("new_child"), new ImageIcon(
-				modeController.getResource("images/idea.png")));
+		super("new_child", "images/idea.png", modeController);
 		this.c = modeController;
-		this.c.getActionFactory().registerActor(this, getDoActionClass());
+		addActor(this);
 		if (logger == null) {
 			logger = c.getFrame().getLogger(NewChildAction.class.getName());
 		}

@@ -24,34 +24,32 @@
 package freemind.modes.mindmapmode.actions;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
 
+import freemind.controller.MenuItemEnabledListener;
+import freemind.modes.FreemindAction;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 /**
- * @author foltin
- *
- */
-/**
+ * Common class for mindmap actions.
  * @author foltin
  * 
  */
-public abstract class FreemindAction extends AbstractAction {
+public abstract class MindmapAction extends FreemindAction  {
 
-	private Icon actionIcon;
-	private static Icon selectedIcon;
 	private final MindMapController pMindMapController;
 
 	/**
 	 * @param title
 	 *            is a fixed title (no translation is done via resources)
 	 */
-	public FreemindAction(String title, Icon icon,
+	public MindmapAction(String title, Icon icon,
 			MindMapController mindMapController) {
-		super(title, icon);
-		this.actionIcon = icon;
+		super(title, icon, mindMapController);
 		this.pMindMapController = mindMapController;
 
 	}
@@ -59,10 +57,19 @@ public abstract class FreemindAction extends AbstractAction {
 	/**
 	 * @param title
 	 *            Title is a resource.
+	 */
+	public MindmapAction(String title, 
+			MindMapController mindMapController) {
+		this(title, (String) null, mindMapController);
+	}
+	
+	/**
+	 * @param title
+	 *            Title is a resource.
 	 * @param iconPath
 	 *            is a path to an icon.
 	 */
-	public FreemindAction(String title, String iconPath,
+	public MindmapAction(String title, String iconPath,
 			final MindMapController mindMapController) {
 		this(mindMapController.getText(title), (iconPath == null) ? null
 				: new ImageIcon(mindMapController.getResource(iconPath)),
@@ -78,4 +85,5 @@ public abstract class FreemindAction extends AbstractAction {
 	public MindMapController getMindMapController() {
 		return pMindMapController;
 	}
+	
 }

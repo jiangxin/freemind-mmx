@@ -41,7 +41,7 @@ import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class RemoveArrowLinkAction extends FreemindAction implements ActorXml {
+public class RemoveArrowLinkAction extends MindmapAction implements ActorXml {
 
 	private MindMapArrowLinkModel mArrowLink;
 

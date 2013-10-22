@@ -75,6 +75,7 @@ import javax.swing.filechooser.FileFilter;
 import freemind.controller.Controller;
 import freemind.controller.LastStateStorageManagement;
 import freemind.controller.MapModuleManager;
+import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.MindMapNodesSelection;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.MindmapLastStateStorage;
@@ -1246,17 +1247,15 @@ public abstract class ControllerAdapter implements ModeController,
 		}
 	}
 
-	public class SaveAction extends AbstractAction {
-		ControllerAdapter mc;
+	public class SaveAction extends FreemindAction {
 
-		public SaveAction(ControllerAdapter modeController) {
+		public SaveAction() {
 			super(Tools.removeMnemonic(getText("save")), new ImageIcon(
-					getResource("images/filesave.png")));
-			mc = modeController;
+					getResource("images/filesave.png")), ControllerAdapter.this);
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			boolean success = mc.save();
+			boolean success = save();
 			if (success) {
 				getFrame().out(getText("saved")); // perhaps... (PN)
 			} else {
@@ -1266,41 +1265,19 @@ public abstract class ControllerAdapter implements ModeController,
 			}
 			getController().setTitle(); // Possible update of read-only
 		}
+
 	}
 
-	public class SaveAsAction extends AbstractAction {
-		ControllerAdapter mc;
+	public class SaveAsAction extends FreemindAction {
 
-		public SaveAsAction(ControllerAdapter modeController) {
+		public SaveAsAction() {
 			super(getText("save_as"), new ImageIcon(
-					getResource("images/filesaveas.png")));
-			mc = modeController;
+					getResource("images/filesaveas.png")), ControllerAdapter.this);
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			mc.saveAs();
+			saveAs();
 			getController().setTitle(); // Possible update of read-only
-		}
-	}
-
-	protected class EditAttributesAction extends AbstractAction {
-		public EditAttributesAction() {
-			super(Resources.getInstance().getResourceString(
-					"attributes_edit_in_place"));
-		};
-
-		public void actionPerformed(ActionEvent e) {
-			final Component focusOwner = KeyboardFocusManager
-					.getCurrentKeyboardFocusManager().getFocusOwner();
-			final AttributeView attributeView = getView().getSelected()
-					.getAttributeView();
-			boolean attributesClosed = null == SwingUtilities
-					.getAncestorOfClass(AttributeTable.class, focusOwner);
-			if (attributesClosed) {
-				attributeView.startEditing();
-			} else {
-				attributeView.stopEditing();
-			}
 		}
 	}
 

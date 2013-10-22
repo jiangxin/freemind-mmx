@@ -54,7 +54,7 @@ import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class NodeHookAction extends FreemindAction implements HookAction,
+public class NodeHookAction extends MindmapAction implements HookAction,
 		ActorXml, MenuItemEnabledListener, MenuItemSelectedListener {
 	String _hookName;
 	MindMapController mMindMapController;
@@ -66,7 +66,7 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 	private static Logger logger;
 
 	public NodeHookAction(String hookName, MindMapController controller) {
-		super(hookName, (ImageIcon) null, null);
+		super(hookName, controller);
 		this._hookName = hookName;
 		this.mMindMapController = controller;
 		if (logger == null)
@@ -282,7 +282,7 @@ public class NodeHookAction extends FreemindAction implements HookAction,
 	 * , javax.swing.Action)
 	 */
 	public boolean isEnabled(JMenuItem item, Action action) {
-		if (mMindMapController.getView() == null) {
+		if (!super.isEnabled(item, action) || mMindMapController.getView() == null) {
 			return false;
 		}
 		HookFactory factory = getHookFactory();

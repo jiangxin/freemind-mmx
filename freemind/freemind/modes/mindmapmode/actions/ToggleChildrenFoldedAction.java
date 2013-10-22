@@ -25,17 +25,15 @@ package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
 
-import javax.swing.AbstractAction;
-
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.view.mindmapview.MapView;
 
-public class ToggleChildrenFoldedAction extends AbstractAction {
+public class ToggleChildrenFoldedAction extends MindmapAction {
 	private final MindMapController modeController;
 
 	public ToggleChildrenFoldedAction(MindMapController modeController) {
-		super(modeController.getText("toggle_children_folded"));
+		super("toggle_children_folded", modeController);
 		this.modeController = modeController;
 	}
 

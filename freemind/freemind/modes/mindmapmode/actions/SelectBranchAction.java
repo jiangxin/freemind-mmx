@@ -25,7 +25,7 @@ import java.awt.event.ActionEvent;
 import freemind.modes.mindmapmode.MindMapController;
 
 /** */
-public class SelectBranchAction extends FreemindAction {
+public class SelectBranchAction extends MindmapAction {
 
 	/**
      *

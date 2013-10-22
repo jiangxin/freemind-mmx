@@ -24,15 +24,13 @@ package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
 
-import javax.swing.AbstractAction;
-
 import freemind.modes.mindmapmode.MindMapController;
 
-public class NewPreviousSiblingAction extends AbstractAction {
+public class NewPreviousSiblingAction extends MindmapAction {
 	private final MindMapController controller;
 
 	public NewPreviousSiblingAction(MindMapController controller) {
-		super(controller.getText("new_sibling_before"));
+		super("new_sibling_before", controller);
 		this.controller = controller;
 	}
 

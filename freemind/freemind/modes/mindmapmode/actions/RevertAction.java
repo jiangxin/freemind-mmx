@@ -51,7 +51,7 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
  * @author foltin
  * 
  */
-public class RevertAction extends FreemindAction implements ActorXml {
+public class RevertAction extends MindmapAction implements ActorXml {
 
 	private final MindMapController mindMapController;
 

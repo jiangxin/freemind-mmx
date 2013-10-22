@@ -42,7 +42,7 @@ import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class IconAction extends FreemindAction implements ActorXml,
+public class IconAction extends MindmapAction implements ActorXml,
 		IconInformation {
 	public MindIcon icon;
 	private final MindMapController modeController;
