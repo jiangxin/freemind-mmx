@@ -43,7 +43,7 @@ import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class CloudColorAction extends FreemindAction implements ActorXml,
+public class CloudColorAction extends MindmapAction implements ActorXml,
 		MenuItemEnabledListener {
 	private final MindMapController controller;
 
@@ -118,7 +118,7 @@ public class CloudColorAction extends FreemindAction implements ActorXml,
      */
 
 	public boolean isEnabled(JMenuItem item, Action action) {
-		return (controller != null) && (controller.getSelected() != null)
+		return super.isEnabled(item, action) && (controller != null) && (controller.getSelected() != null)
 				&& (controller.getSelected().getCloud() != null);
 	}
 

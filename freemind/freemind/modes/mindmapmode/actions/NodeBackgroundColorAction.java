@@ -39,7 +39,7 @@ import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class NodeBackgroundColorAction extends FreemindAction implements
+public class NodeBackgroundColorAction extends MindmapAction implements
 		ActorXml {
 	private final MindMapController controller;
 

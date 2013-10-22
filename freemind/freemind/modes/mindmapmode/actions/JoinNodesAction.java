@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
 import freemind.main.HtmlTools;
@@ -33,11 +32,11 @@ import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.view.mindmapview.MapView;
 
-public class JoinNodesAction extends AbstractAction {
+public class JoinNodesAction extends MindmapAction {
 	private final MindMapController controller;
 
 	public JoinNodesAction(MindMapController controller) {
-		super(controller.getText("join_nodes"));
+		super("join_nodes", controller);
 		this.controller = controller;
 	}
 

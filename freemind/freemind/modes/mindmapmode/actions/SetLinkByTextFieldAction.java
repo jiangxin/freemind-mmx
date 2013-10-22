@@ -39,12 +39,12 @@ import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class SetLinkByTextFieldAction extends FreemindAction implements
+public class SetLinkByTextFieldAction extends MindmapAction implements
 		ActorXml {
 	private final MindMapController controller;
 
 	public SetLinkByTextFieldAction(MindMapController controller) {
-		super("set_link_by_textfield", (String) null, controller);
+		super("set_link_by_textfield", controller);
 		this.controller = controller;
 		addActor(this);
 	}

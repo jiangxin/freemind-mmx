@@ -47,9 +47,10 @@ import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.ControllerAdapter;
+import freemind.modes.FreemindAction;
 import freemind.modes.MindMapNode;
 
-public class FindAction extends AbstractAction {
+public class FindAction extends FreemindAction {
 	private final ControllerAdapter controller;
 
 	private ArrayList findNodesUnfoldedByLastFind;
@@ -94,8 +95,7 @@ public class FindAction extends AbstractAction {
 	private String mLastSearchString;
 
 	public FindAction(ControllerAdapter controller) {
-		super(controller.getText("find"), new ImageIcon(
-				controller.getResource("images/filefind.png")));
+		super("find", "images/filefind.png", controller);
 		this.controller = controller;
 	}
 
@@ -221,13 +221,13 @@ public class FindAction extends AbstractAction {
 		return searchTerm;
 	}
 
-	public static class FindNextAction extends AbstractAction {
+	public static class FindNextAction extends FreemindAction {
 		private final ControllerAdapter controller;
 
 		private final FindAction find;
 
 		public FindNextAction(ControllerAdapter controller, FindAction find) {
-			super(controller.getText("find_next"));
+			super("find_next", controller);
 			this.controller = controller;
 			this.find = find;
 		}

@@ -26,11 +26,14 @@ package freemind.modes.mindmapmode.actions;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JMenuItem;
 
+import freemind.controller.MenuItemEnabledListener;
 import freemind.modes.mindmapmode.MindMapController;
 
 public class MindMapControllerHookAction extends AbstractAction implements
-		HookAction {
+		HookAction, MenuItemEnabledListener {
 	String mHookName;
 	MindMapController mindMapController;
 
@@ -42,11 +45,21 @@ public class MindMapControllerHookAction extends AbstractAction implements
 	}
 
 	public void actionPerformed(ActionEvent arg0) {
+		if(null == mindMapController.getMap()) {
+			return;
+		}
 		mindMapController.createModeControllerHook(mHookName);
 	}
 
 	public String getHookName() {
 		return mHookName;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.controller.MenuItemEnabledListener#isEnabled(javax.swing.JMenuItem, javax.swing.Action)
+	 */
+	public boolean isEnabled(JMenuItem pItem, Action pAction) {
+		return mindMapController.getMap() != null;
 	}
 
 }

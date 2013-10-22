@@ -32,13 +32,13 @@ import freemind.modes.FreeMindFileDialog;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 
-public class ImportFolderStructureAction extends AbstractAction {
+public class ImportFolderStructureAction extends MindmapAction {
 	// Logging:
 	private static java.util.logging.Logger logger;
 	private final MindMapController controller;
 
 	public ImportFolderStructureAction(MindMapController controller) {
-		super(controller.getText("import_folder_structure"));
+		super("import_folder_structure", controller);
 		this.controller = controller;
 		if (logger == null)
 			logger = controller.getFrame().getLogger(this.getClass().getName());

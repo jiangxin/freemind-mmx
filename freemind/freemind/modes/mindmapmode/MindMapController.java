@@ -21,6 +21,7 @@ package freemind.modes.mindmapmode;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -69,6 +70,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
@@ -166,6 +168,7 @@ import freemind.modes.mindmapmode.actions.EditAction;
 import freemind.modes.mindmapmode.actions.ExportBranchAction;
 import freemind.modes.mindmapmode.actions.FontFamilyAction;
 import freemind.modes.mindmapmode.actions.FontSizeAction;
+import freemind.modes.mindmapmode.actions.MindmapAction;
 import freemind.modes.mindmapmode.actions.HookAction;
 import freemind.modes.mindmapmode.actions.IconAction;
 import freemind.modes.mindmapmode.actions.ImportExplorerFavoritesAction;
@@ -218,6 +221,8 @@ import freemind.view.mindmapview.MainView;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 import freemind.view.mindmapview.attributeview.AttributePopupMenu;
+import freemind.view.mindmapview.attributeview.AttributeTable;
+import freemind.view.mindmapview.attributeview.AttributeView;
 
 public class MindMapController extends ControllerAdapter implements
 		MindMapActions, MapSourceChangedObserver {
@@ -268,9 +273,9 @@ public class MindMapController extends ControllerAdapter implements
 		}
 	}
 
-	protected class AssignAttributesAction extends AbstractAction {
+	protected class AssignAttributesAction extends MindmapAction {
 		public AssignAttributesAction() {
-			super(getText("attributes_assign_dialog"));
+			super("attributes_assign_dialog", MindMapController.this);
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -278,6 +283,26 @@ public class MindMapController extends ControllerAdapter implements
 				assignAttributeDialog = new AssignAttributeDialog(getView());
 			}
 			assignAttributeDialog.show();
+		}
+	}
+
+	protected class EditAttributesAction extends MindmapAction {
+		public EditAttributesAction() {
+			super("attributes_edit_in_place", MindMapController.this);
+		};
+
+		public void actionPerformed(ActionEvent e) {
+			final Component focusOwner = KeyboardFocusManager
+					.getCurrentKeyboardFocusManager().getFocusOwner();
+			final AttributeView attributeView = getView().getSelected()
+					.getAttributeView();
+			boolean attributesClosed = null == SwingUtilities
+					.getAncestorOfClass(AttributeTable.class, focusOwner);
+			if (attributesClosed) {
+				attributeView.startEditing();
+			} else {
+				attributeView.stopEditing();
+			}
 		}
 	}
 
@@ -313,8 +338,8 @@ public class MindMapController extends ControllerAdapter implements
 																		// initialized
 	public Action newMap = new NewMapAction(this);
 	public Action open = new OpenAction(this);
-	public Action save = new SaveAction(this);
-	public Action saveAs = new SaveAsAction(this);
+	public Action save = new SaveAction();
+	public Action saveAs = new SaveAsAction();
 	public Action exportToHTML = new ExportToHTMLAction(this);
 	public Action exportBranchToHTML = new ExportBranchToHTMLAction(this);
 
@@ -1269,12 +1294,10 @@ public class MindMapController extends ControllerAdapter implements
 
 	// This may later be moved to ControllerAdapter. So far there is no reason
 	// for it.
-	protected class ExportToHTMLAction extends AbstractAction {
-		MindMapController c;
+	protected class ExportToHTMLAction extends MindmapAction {
 
 		public ExportToHTMLAction(MindMapController controller) {
-			super(getText("export_to_html"));
-			c = controller;
+			super("export_to_html", controller);
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -1287,8 +1310,8 @@ public class MindMapController extends ControllerAdapter implements
 				return;
 			}
 			try {
-				File file = new File(c.getMindMapMapModel().getFile() + ".html");
-				saveHTML((MindMapNodeModel) c.getMindMapMapModel().getRoot(),
+				File file = new File(getMindMapMapModel().getFile() + ".html");
+				saveHTML((MindMapNodeModel) getMindMapMapModel().getRoot(),
 						file);
 				loadURL(file.toString());
 			} catch (IOException ex) {
@@ -1297,12 +1320,10 @@ public class MindMapController extends ControllerAdapter implements
 		}
 	}
 
-	protected class ExportBranchToHTMLAction extends AbstractAction {
-		MindMapController c;
+	protected class ExportBranchToHTMLAction extends MindmapAction {
 
 		public ExportBranchToHTMLAction(MindMapController controller) {
-			super(getText("export_branch_to_html"));
-			c = controller;
+			super("export_branch_to_html", controller);
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -1325,9 +1346,9 @@ public class MindMapController extends ControllerAdapter implements
 		}
 	}
 
-	private class ImportBranchAction extends AbstractAction {
+	private class ImportBranchAction extends MindmapAction {
 		ImportBranchAction() {
-			super(getText("import_branch"));
+			super("import_branch", MindMapController.this);
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -1350,9 +1371,9 @@ public class MindMapController extends ControllerAdapter implements
 		}
 	}
 
-	private class ImportLinkedBranchAction extends AbstractAction {
+	private class ImportLinkedBranchAction extends MindmapAction {
 		ImportLinkedBranchAction() {
-			super(getText("import_linked_branch"));
+			super("import_linked_branch", MindMapController.this);
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -1387,9 +1408,9 @@ public class MindMapController extends ControllerAdapter implements
 	/**
 	 * This is exactly the opposite of exportBranch.
 	 */
-	private class ImportLinkedBranchWithoutRootAction extends AbstractAction {
+	private class ImportLinkedBranchWithoutRootAction extends MindmapAction {
 		ImportLinkedBranchWithoutRootAction() {
-			super(getText("import_linked_branch_without_root"));
+			super("import_linked_branch_without_root", MindMapController.this);
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -1782,9 +1803,9 @@ public class MindMapController extends ControllerAdapter implements
 		nodeHookAction.removeHook(focussed, selecteds, hookName);
 	}
 
-	protected class SetLinkByFileChooserAction extends AbstractAction {
+	protected class SetLinkByFileChooserAction extends MindmapAction {
 		public SetLinkByFileChooserAction() {
-			super(getText("set_link_by_filechooser"));
+			super("set_link_by_filechooser", MindMapController.this);
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -1792,9 +1813,9 @@ public class MindMapController extends ControllerAdapter implements
 		}
 	}
 
-	protected class SetImageByFileChooserAction extends AbstractAction {
+	protected class SetImageByFileChooserAction extends MindmapAction {
 		public SetImageByFileChooserAction() {
-			super(getText("set_image_by_filechooser"));
+			super("set_image_by_filechooser", MindMapController.this);
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -1803,13 +1824,15 @@ public class MindMapController extends ControllerAdapter implements
 		}
 	}
 
-	protected abstract class LinkActionBase extends AbstractAction implements
-			MenuItemEnabledListener {
+	protected abstract class LinkActionBase extends MindmapAction  {
 		public LinkActionBase(String pText) {
-			super(pText);
+			super(pText, MindMapController.this);
 		}
 
 		public boolean isEnabled(JMenuItem pItem, Action pAction) {
+			if(!super.isEnabled(pItem, pAction)) {
+				return false;
+			}
 			for (Iterator iterator = getSelecteds().iterator(); iterator
 					.hasNext();) {
 				MindMapNode selNode = (MindMapNode) iterator.next();
@@ -1823,7 +1846,7 @@ public class MindMapController extends ControllerAdapter implements
 
 	protected class FollowLinkAction extends LinkActionBase {
 		public FollowLinkAction() {
-			super(getText("follow_link"));
+			super("follow_link");
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -1839,7 +1862,7 @@ public class MindMapController extends ControllerAdapter implements
 
 	protected class OpenLinkDirectoryAction extends LinkActionBase {
 		public OpenLinkDirectoryAction() {
-			super(getText("open_link_directory"));
+			super("open_link_directory");
 		}
 
 		public void actionPerformed(ActionEvent event) {
@@ -1935,9 +1958,9 @@ public class MindMapController extends ControllerAdapter implements
 		return actionFactory;
 	}
 
-	protected class EditLongAction extends AbstractAction {
+	protected class EditLongAction extends MindmapAction {
 		public EditLongAction() {
-			super(getText("edit_long_node"));
+			super("edit_long_node", MindMapController.this);
 		}
 
 		public void actionPerformed(ActionEvent e) {

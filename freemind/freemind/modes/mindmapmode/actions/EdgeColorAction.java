@@ -27,8 +27,6 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.util.ListIterator;
 
-import javax.swing.AbstractAction;
-
 import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.EdgeColorFormatAction;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -41,13 +39,13 @@ import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class EdgeColorAction extends AbstractAction implements ActorXml {
+public class EdgeColorAction extends MindmapAction implements ActorXml {
 	private final MindMapController controller;
 
 	public EdgeColorAction(MindMapController controller) {
-		super(controller.getText("edge_color"));
+		super("edge_color", controller);
 		this.controller = controller;
-		controller.getActionFactory().registerActor(this, getDoActionClass());
+		addActor(this);
 	}
 
 	public void actionPerformed(ActionEvent e) {

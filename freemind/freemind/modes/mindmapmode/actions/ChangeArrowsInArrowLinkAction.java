@@ -39,7 +39,7 @@ import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class ChangeArrowsInArrowLinkAction extends FreemindAction implements
+public class ChangeArrowsInArrowLinkAction extends MindmapAction implements
 		ActorXml {
 	MindMapArrowLinkModel arrowLink;
 

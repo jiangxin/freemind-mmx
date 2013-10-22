@@ -38,7 +38,7 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
  * @author foltin
  * 
  */
-public class ChangeArrowLinkEndPoints extends FreemindAction implements
+public class ChangeArrowLinkEndPoints extends MindmapAction implements
 		ActorXml {
 	private MindMapController controller;
 

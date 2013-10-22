@@ -31,8 +31,6 @@ import java.util.TreeSet;
 import java.util.Vector;
 import java.util.logging.Logger;
 
-import javax.swing.AbstractAction;
-
 import freemind.controller.actions.generated.instance.MoveNodesAction;
 import freemind.controller.actions.generated.instance.NodeListMember;
 import freemind.controller.actions.generated.instance.XmlAction;
@@ -42,15 +40,14 @@ import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class NodeUpAction extends AbstractAction implements ActorXml {
+public class NodeUpAction extends MindmapAction implements ActorXml {
 	private final MindMapController modeController;
 	private static Logger logger;
 
 	public NodeUpAction(MindMapController modeController) {
-		super(modeController.getText("node_up"));
+		super("node_up", modeController);
 		this.modeController = modeController;
-		modeController.getActionFactory().registerActor(this,
-				getDoActionClass());
+		addActor(this);
 		if (logger == null) {
 			logger = modeController.getFrame().getLogger(
 					this.getClass().getName());

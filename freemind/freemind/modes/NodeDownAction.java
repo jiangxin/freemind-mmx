@@ -25,15 +25,14 @@ package freemind.modes;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-import javax.swing.AbstractAction;
-
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.MindmapAction;
 
-public class NodeDownAction extends AbstractAction {
+public class NodeDownAction extends MindmapAction {
 	private final MindMapController modeController;
 
 	public NodeDownAction(MindMapController adapter) {
-		super(adapter.getText("node_down"));
+		super("node_down", adapter);
 		this.modeController = adapter;
 	}
 

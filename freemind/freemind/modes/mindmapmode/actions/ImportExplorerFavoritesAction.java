@@ -32,11 +32,11 @@ import freemind.modes.FreeMindFileDialog;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 
-public class ImportExplorerFavoritesAction extends AbstractAction {
+public class ImportExplorerFavoritesAction extends MindmapAction {
 	private final MindMapController controller;
 
 	public ImportExplorerFavoritesAction(MindMapController controller) {
-		super(controller.getText("import_explorer_favorites"));
+		super("import_explorer_favorites", controller);
 		this.controller = controller;
 	}
 

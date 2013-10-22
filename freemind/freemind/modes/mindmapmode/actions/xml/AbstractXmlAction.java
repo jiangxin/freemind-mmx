@@ -29,13 +29,13 @@ import javax.swing.Action;
 import javax.swing.Icon;
 
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.FreemindAction;
+import freemind.modes.mindmapmode.actions.MindmapAction;
 
 /**
  * @author foltin
  * 
  */
-public abstract class AbstractXmlAction extends FreemindAction {
+public abstract class AbstractXmlAction extends MindmapAction {
 
 	private ActorXml actor;
 

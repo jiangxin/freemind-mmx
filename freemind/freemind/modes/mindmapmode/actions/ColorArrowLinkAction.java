@@ -44,7 +44,7 @@ import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class ColorArrowLinkAction extends FreemindAction implements ActorXml {
+public class ColorArrowLinkAction extends MindmapAction implements ActorXml {
 
 	MindMapArrowLinkModel arrowLink;
 

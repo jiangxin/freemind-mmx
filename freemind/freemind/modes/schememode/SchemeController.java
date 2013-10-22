@@ -46,8 +46,8 @@ public class SchemeController extends ViewControllerAdapter {
 
 	Action newMap = new NewMapAction(this);
 	Action open = new OpenAction(this);
-	Action save = new SaveAction(this);
-	Action saveAs = new SaveAsAction(this);
+	Action save = new SaveAction();
+	Action saveAs = new SaveAsAction();
 	Action evaluate = new EvaluateAction();
 	// Action edit = new EditAction(this);
 	private JPopupMenu popupmenu = new SchemePopupMenu(this);
