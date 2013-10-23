@@ -304,7 +304,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 				|| (mCloneNodeIds.size() == 1 && mCloneNodeIds
 						.contains(getNodeId()))) {
 			// remove myself
-			logger.warning("I'm the last clone " + nodeID);
+			logger.info("I'm the last clone " + nodeID);
 			removeHook();
 		}
 	}
