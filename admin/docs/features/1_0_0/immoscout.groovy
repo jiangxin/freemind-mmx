@@ -1,5 +1,5 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
- *Copyright (C) 2000-2012 Joerg Mueller, Daniel Polansky, Christian Foltin, Dimitri Polivaev and others.
+ *Copyright (C) 2000-2013 Joerg Mueller, Daniel Polansky, Christian Foltin, Dimitri Polivaev and others.
  *
  *See COPYING for Details
  *
@@ -68,15 +68,16 @@ def getUrl(HashMap urlMap, String urlT, String IMMO) {
 		URL url = new URL(urlT);
 		def inp = new BufferedReader(new InputStreamReader(url.openStream(), "ISO-8859-1"));
 		String str;
-		def pattern = ~/.*<a href="(\/expo[^?";]*);([^?"]*)".*/;
-		def noExposeLinkPattern = ~/.*title.*/;
-		def nextPagePattern = ~/.*<a href="(\/[^"]*)" class="is24-next".*/;
-		def additionalDataPattern = ~/.*(<dt .*)$/;
-		def additionalDataPattern2 = ~/^<li>(.*)<\/li>$/;
-		def additionalDataPattern3 = ~/.*<span class="address is24-hide">(.*)<\/span>.*/;
+		def pattern = ~/.*<a href="(\/expo[^?";]*)".*title="([^"]*)".*/;
+		def noExposeLinkPattern = ~/.*#is24-ex-floorplans.*/;
+		def nextPagePattern = ~/.*<a class="pull-left" data-is24-qa="paging_bottom_next" href="(\/[^"]*)".*/;
+		def additionalTitlePattern = ~/.*<dt class="title">(.*)<\/dt>.*$/;
+		def additionalValuePattern = ~/.*<dd class="value">(.*)<\/dd>.*$/;
+		def additionalPropertyPattern = ~/<li class="title">([^<]*)<\/li>/;
 		def currentNode = null;
 		def price = 0;
 		def qmeters = 1;
+		def additionalTitle = "";
 		while ((str = inp.readLine()) != null) {
 			// str is one line of text; readLine() strips the newline character(s)
 			def matcher = pattern.matcher(str);
@@ -85,7 +86,8 @@ def getUrl(HashMap urlMap, String urlT, String IMMO) {
 				price = 0;
 				qmeters = 1;
 				def link = IMMO + matcher[0][1];
-				def title = inp.readLine().trim();
+				println "Looking at " + str + " with link " + link;
+				def title = matcher[0][2];
 				if(urlMap.containsKey(link) ) {
 					// increase counter
 					def cnode = urlMap[ link ] ;
@@ -106,45 +108,50 @@ def getUrl(HashMap urlMap, String urlT, String IMMO) {
 							break;
 						}
 						list.add(0,currIcon)
-<<<<<<< HEAD
-						//println "Removing " + currIcon
-=======
 						println "Removing " + currIcon
->>>>>>> bca0535056d47c859b7b838ad6e494de842a9039
 					}
 					c.addIcon(cnode,freemind.modes.MindIcon.factory("full-" + (weeksOld as int)));
 					for(otherIcon in list){
 						c.addIcon(cnode, otherIcon);
-<<<<<<< HEAD
-						//println "Readding " + otherIcon
-=======
 						println "Readding " + otherIcon
->>>>>>> bca0535056d47c859b7b838ad6e494de842a9039
 					}
 					urlMap.remove(link);
 				} else {
 					// new node
 					println "New: L: " + link + ", T: " + title;
 					def nn = c.addNewNode(node, node.getChildCount(), false);
-					c.setNodeText(nn,title);
+					c.setNodeText(nn,mkBody(title));
 					c.setLink(nn, link);
 					c.addIcon(nn,freemind.modes.MindIcon.factory("full-0"));
 					currentNode = nn;
 				}
 			}
 			// some additional data like size and price are added as subnodes to the node
-			def data = addData(currentNode, additionalDataPattern.matcher(str));
-			addData(currentNode, additionalDataPattern2.matcher(str));
-			addData(currentNode, additionalDataPattern3.matcher(str));
+			def mTitle = additionalTitlePattern.matcher(str);
+			if(currentNode != null && mTitle.matches()) {
+				additionalTitle = mTitle[0][1];
+			}
+			def mValue = additionalValuePattern.matcher(str);
+			def data = "";
+			if(currentNode != null && !additionalTitle.isEmpty() && mValue.matches()) {
+				data = additionalTitle + ": " + mValue[0][1];
+				def nn = c.addNewNode(currentNode, currentNode.getChildCount(), false);
+				c.setNodeText(nn,mkBody(data));
+				c.setFolded(currentNode, true);
+			}
+			def mProp = additionalPropertyPattern.matcher(str);
+			while(mProp.find()) {
+				addData(currentNode, mProp);
+			}
 			
-			def matcherData = (~/.*Kaufpreis: ([0-9.]+) EUR.*/).matcher(data);
+			def matcherData = (~/.*(Kaufpreis|Kaltmiete): ([0-9.,]+).*/).matcher(data);
 			if(matcherData.matches()){
-				price = matcherData[0][1];
+				price = matcherData[0][2].replace(".","");
 				println "Price " + price;
 			}
-			def matcherData2 = (~/.*Wohnfl.che: ([0-9.]+) m.*/).matcher(data);
+			def matcherData2 = (~/.*Wohnfl.*che: ([0-9.,]+).*/).matcher(data);
 			if(matcherData2.matches()){
-				qmeters = matcherData2[0][1];
+				qmeters = matcherData2[0][1].replace(".","");
 				println "qm " + qmeters;
 				if(qmeters as double != 0.0) {
 					def nn = c.addNewNode(currentNode, currentNode.getChildCount(), false);
@@ -156,6 +163,7 @@ def getUrl(HashMap urlMap, String urlT, String IMMO) {
 			def matcherNextPage = nextPagePattern.matcher(str);
 			if(matcherNextPage.matches()) {
 				found = IMMO + matcherNextPage[0][1];
+				print "Next page: " + found;
 			}
 		}
 		inp.close();
@@ -168,12 +176,16 @@ def getUrl(HashMap urlMap, String urlT, String IMMO) {
 
 
 def addData(currentNode, matcherAdditionalData) {
-	if(currentNode != null && matcherAdditionalData.matches()) {
-		def data = matcherAdditionalData[0][1].replaceAll('<.*?>', '');
+	if(currentNode != null) {
+		def data = matcherAdditionalData.group(1).replaceAll('<.*?>', '');
 		def nn = c.addNewNode(currentNode, currentNode.getChildCount(), false);
-		c.setNodeText(nn,"<html><body>"+data+"</body></html>");
+		c.setNodeText(nn,mkBody(data));
 		c.setFolded(currentNode, true);
 		return data;
 	}
 	return "";
+}
+
+def mkBody(str) {
+	return "<html><body>"+str+"</body></html>";
 }
