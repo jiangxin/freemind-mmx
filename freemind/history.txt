@@ -6,6 +6,7 @@ Changes made in FreeMind 1.1.0 Alpha 1
 * New Export as html page with a single clickable image containing only the links (URLs) or the map.
 * Clones can be deactivated by menu
 * Menu items are disabled if no map is open
+* Fixed persistence of "complete cloning" across cut/paste.
   
 ===============================
 Changes made in FreeMind 1.0.0 (final)

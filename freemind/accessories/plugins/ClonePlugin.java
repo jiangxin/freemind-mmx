@@ -111,11 +111,17 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		HashMap values = new HashMap();
 		values.put(XML_STORAGE_CLONES, getCloneIdsAsString());
 		values.put(XML_STORAGE_CLONE_ID, mCloneId);
-		values.put(XML_STORAGE_CLONE_ITSELF, mClonePropertiesHolder
-				.isCloneItself() ? CLONE_ITSELF_TRUE
-				: CLONE_ITSELF_FALSE);
+		String cloneItselfValue = getCloneItselfValue();
+		values.put(XML_STORAGE_CLONE_ITSELF, cloneItselfValue);
+		logger.finest("Saved mCloneItself to " + cloneItselfValue);
 		saveNameValuePairs(values, xml);
 		logger.fine("Saved clone plugin");
+	}
+
+	protected String getCloneItselfValue() {
+		return mClonePropertiesHolder
+				.isCloneItself() ? CLONE_ITSELF_TRUE
+				: CLONE_ITSELF_FALSE;
 	}
 
 	public String getCloneIdsAsString() {
@@ -148,6 +154,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 		} else {
 			mCloneItself = Boolean.FALSE;
 		}
+		logger.finest("Loaded mCloneItself to " + mCloneItself);
 	}
 
 	public void shutdownMapHook() {
@@ -348,6 +355,7 @@ public class ClonePlugin extends PermanentMindMapNodeHookAdapter implements
 				hookProperties.setProperty(XML_STORAGE_CLONE_ID, mCloneId);
 				hookProperties.setProperty(XML_STORAGE_CLONES,
 						getCloneIdsAsString());
+				hookProperties.setProperty(XML_STORAGE_CLONE_ITSELF, getCloneItselfValue());
 				getMindMapController().addHook(cloneNode, selecteds,
 						PLUGIN_LABEL, hookProperties);
 			}

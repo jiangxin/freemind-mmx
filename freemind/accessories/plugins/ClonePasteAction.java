@@ -156,12 +156,24 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 	public static class CloneProperties {
 		boolean mCloneItself = false;
 		private HashSet mObserverSet = new HashSet();
+		protected static java.util.logging.Logger logger = null;
 
+		/**
+		 * 
+		 */
+		public CloneProperties() {
+			if (logger == null) {
+				logger = freemind.main.Resources.getInstance().getLogger(
+						this.getClass().getName());
+			}
+		}
+		
 		public boolean isCloneItself() {
 			return mCloneItself;
 		}
 
 		public void setCloneItself(boolean pCloneItself) {
+			logger.finest("Setting mCloneItself to " + pCloneItself);
 			boolean fire = false;
 			if (pCloneItself != mCloneItself) {
 				fire = true;

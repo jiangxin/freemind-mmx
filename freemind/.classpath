@@ -27,7 +27,7 @@
 	<classpathentry kind="lib" path="lib/SimplyHTML/gnu-regexp-1.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/SimplyHTML/SimplyHTML.jar" sourcepath="/home/foltin/java/simplyhtml/simplyhtml"/>
 	<classpathentry kind="lib" path="plugins/latex/HotEqn.jar"/>
-	<classpathentry kind="lib" path="plugins/script/groovy-all-1.5.6.jar"/>
+	<classpathentry kind="lib" path="plugins/script/groovy-all-1.5.6.jar" sourcepath="/home/foltin/downloads/api"/>
 	<classpathentry kind="lib" path="plugins/collaboration/database/hsqldb.jar" sourcepath="plugins/collaboration/database/hsqldb_1_8_1_3.zip"/>
 	<classpathentry kind="lib" path="plugins/map/JMapViewer.jar" sourcepath="plugins/map/JMapViewer_src.jar"/>
 	<classpathentry kind="lib" path="lib/jortho.jar"/>
