@@ -32,7 +32,7 @@ import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.swing.Action;
-import javax.swing.ImageIcon;
+import javax.swing.Icon;
 import javax.swing.JMenuItem;
 
 import freemind.controller.MenuItemEnabledListener;
@@ -66,7 +66,7 @@ public class NodeHookAction extends MindmapAction implements HookAction,
 	private static Logger logger;
 
 	public NodeHookAction(String hookName, MindMapController controller) {
-		super(hookName, controller);
+		super(hookName, (Icon) null, controller);
 		this._hookName = hookName;
 		this.mMindMapController = controller;
 		if (logger == null)
