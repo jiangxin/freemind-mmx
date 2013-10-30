@@ -24,6 +24,7 @@ package plugins.script;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
@@ -34,6 +35,7 @@ import java.io.PrintStream;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -56,6 +58,7 @@ import javax.swing.text.Element;
 
 import plugins.script.ScriptingEngine.ErrorHandler;
 import freemind.controller.BlindIcon;
+import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.ScriptEditorWindowConfigurationStorage;
 import freemind.main.FreeMindMain;
@@ -105,18 +108,27 @@ public class ScriptEditorPanel extends JDialog {
 	private AbstractAction mRunAction;
 
 	private SignAction mSignAction;
+	
+	private Thread mScriptThread;
+
+	private StopAction mStopAction;
 
 	private final class ResultFieldStream extends OutputStream {
 		public void write(int pByte) throws IOException {
-			mScriptResultField.append(new String(new byte[] { (byte) pByte }));
+			write(new byte[] { (byte) pByte });
 		}
 
-		public void write(byte[] pB) throws IOException {
-			mScriptResultField.append(new String(pB));
+		public void write(final byte[] pB) throws IOException {
+			EventQueue.invokeLater(
+				new Runnable() {
+					public void run() {
+						mScriptResultField.append(new String(pB));
+					}
+			});
 		}
 	}
 
-	private final class RunAction extends AbstractAction {
+	private final class RunAction extends AbstractAction implements MenuItemEnabledListener {
 		private RunAction(String pArg0) {
 			super(pArg0);
 		}
@@ -125,12 +137,52 @@ public class ScriptEditorPanel extends JDialog {
 			storeCurrent();
 			if (!mScriptList.isSelectionEmpty()) {
 				mScriptResultField.setText("");
-				mScriptModel.executeScript(mScriptList.getSelectedIndex(),
-						getPrintStream(), getErrorHandler());
+				mScriptThread = new Thread(new Runnable() {
+					public void run() {
+						mScriptModel.executeScript(
+								mScriptList.getSelectedIndex(),
+								getPrintStream(), getErrorHandler());
+					}
+				});
+				mScriptThread.start();
 			}
+		}
+
+		/* (non-Javadoc)
+		 * @see freemind.controller.MenuItemEnabledListener#isEnabled(javax.swing.JMenuItem, javax.swing.Action)
+		 */
+		@Override
+		public boolean isEnabled(JMenuItem pItem, Action pAction) {
+			return mScriptThread == null || mScriptThread.isAlive();
 		}
 	}
 
+	private final class StopAction extends AbstractAction implements MenuItemEnabledListener {
+		private StopAction(String pArg0) {
+			super(pArg0);
+		}
+		
+		public void actionPerformed(ActionEvent arg0) {
+			if(isEnabled(null, this)) {
+				mScriptThread.interrupt();
+				try {
+					mScriptThread.join();
+					mScriptThread = null;
+				} catch (InterruptedException e) {
+					freemind.main.Resources.getInstance().logException(e);
+				}
+			}
+		}
+		
+		/* (non-Javadoc)
+		 * @see freemind.controller.MenuItemEnabledListener#isEnabled(javax.swing.JMenuItem, javax.swing.Action)
+		 */
+		@Override
+		public boolean isEnabled(JMenuItem pItem, Action pAction) {
+			return mScriptThread != null && !mScriptThread.isInterrupted();
+		}
+	}
+	
 	private final class SignAction extends AbstractAction {
 		private SignAction(String pArg0) {
 			super(pArg0);
@@ -346,6 +398,10 @@ public class ScriptEditorPanel extends JDialog {
 				pFrame.getResourceString("plugins/ScriptEditor.run"));
 		mRunAction.setEnabled(false);
 		addAction(menu, mRunAction);
+		mStopAction = new StopAction(
+				pFrame.getResourceString("plugins/ScriptEditor.stop"));
+		mStopAction.setEnabled(false);
+		addAction(menu, mStopAction);
 		mSignAction = new SignAction(
 				pFrame.getResourceString("plugins/ScriptEditor.sign"));
 		mSignAction.setEnabled(false);
@@ -390,6 +446,7 @@ public class ScriptEditorPanel extends JDialog {
 	private void select(int pIndex) {
 		mScriptTextField.setEnabled(pIndex >= 0);
 		mRunAction.setEnabled(pIndex >= 0);
+		mStopAction.setEnabled(pIndex >= 0);
 		mSignAction.setEnabled(pIndex >= 0);
 		if (pIndex < 0) {
 			mScriptTextField.setText("");
@@ -452,19 +509,25 @@ public class ScriptEditorPanel extends JDialog {
 
 	ErrorHandler getErrorHandler() {
 		return new ErrorHandler() {
-			public void gotoLine(int pLineNumber) {
+			public void gotoLine(final int pLineNumber) {
 				logger.info("Line number: " + pLineNumber);
-				if (pLineNumber > 0
-						&& pLineNumber <= mScriptTextField.getLineCount()) {
-					Element element3 = mScriptTextField.getDocument()
-							.getDefaultRootElement();
-					Element element4 = element3.getElement(pLineNumber - 1);
-					if (element4 != null) {
-						mScriptTextField.select(
-								((int) element4.getStartOffset()),
-								element4.getEndOffset());
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						if (pLineNumber > 0
+								&& pLineNumber <= mScriptTextField
+										.getLineCount()) {
+							Element element3 = mScriptTextField.getDocument()
+									.getDefaultRootElement();
+							Element element4 = element3
+									.getElement(pLineNumber - 1);
+							if (element4 != null) {
+								mScriptTextField.select(
+										((int) element4.getStartOffset()),
+										element4.getEndOffset());
+							}
+						}
 					}
-				}
+				});
 			}
 		};
 	}

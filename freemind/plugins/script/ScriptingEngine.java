@@ -22,9 +22,10 @@
 
 package plugins.script;
 
+import java.awt.EventQueue;
 import java.io.File;
-import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.regex.Matcher;
@@ -34,6 +35,8 @@ import javax.swing.JOptionPane;
 import org.codehaus.groovy.ast.ASTNode;
 import org.codehaus.groovy.ast.ModuleNode;
 import org.codehaus.groovy.control.CompilationFailedException;
+import org.codehaus.groovy.control.CompilerConfiguration;
+import org.codehaus.groovy.control.customizers.ASTTransformationCustomizer;
 import org.codehaus.groovy.runtime.InvokerHelper;
 
 import freemind.common.OptionalDontShowMeAgainDialog;
@@ -50,6 +53,7 @@ import groovy.lang.Binding;
 import groovy.lang.GroovyRuntimeException;
 import groovy.lang.GroovyShell;
 import groovy.lang.Script;
+import groovy.transform.ThreadInterrupt;
 
 /**
  * @author foltin
@@ -150,8 +154,9 @@ public class ScriptingEngine extends MindMapHookAdapter {
 	 */
 	static boolean executeScript(MindMapNode node,
 			BooleanHolder pAlreadyAScriptExecuted, String script,
-			MindMapController pMindMapController, ErrorHandler pErrorHandler,
-			PrintStream pOutStream, HashMap pScriptCookies) {
+			final MindMapController pMindMapController,
+			ErrorHandler pErrorHandler, PrintStream pOutStream,
+			HashMap pScriptCookies) {
 		// ask user if first script:
 		FreeMindMain frame = pMindMapController.getFrame();
 		if (!pAlreadyAScriptExecuted.getValue()) {
@@ -230,11 +235,17 @@ public class ScriptingEngine extends MindMapHookAdapter {
 				filePerm, networkPerm, execPerm);
 		final FreeMindSecurityManager securityManager = (FreeMindSecurityManager) System
 				.getSecurityManager();
+
+		CompilerConfiguration compilerConfig = new CompilerConfiguration();
+		compilerConfig
+				.addCompilationCustomizers(new ASTTransformationCustomizer(
+						ThreadInterrupt.class));
 		try {
 			System.setOut(pOutStream);
 			// copied from freeplane from
 			// http://freeplane.bzr.sourceforge.net/bzr/freeplane/freeplane_program/release_branches/1_0_x/annotate/head%3A/freeplane_plugin_script/src/org/freeplane/plugin/script/ScriptingEngine.java
-			final GroovyShell shell = new GroovyShell(binding) {
+			final GroovyShell shell = new GroovyShell(null, binding,
+					compilerConfig) {
 				/**
 				 * Evaluates some script against the current Binding and returns
 				 * the result
@@ -245,12 +256,12 @@ public class ScriptingEngine extends MindMapHookAdapter {
 				 *            is the logical file name of the script (which is
 				 *            used to create the class name of the script)
 				 */
-				public Object evaluate(final InputStream in,
-						final String fileName)
+				public Object evaluate(Reader in, String fileName)
 						throws CompilationFailedException {
 					Script script = null;
 					try {
 						script = parse(in, fileName);
+						script.setBinding(getContext());
 						securityManager
 								.setFinalSecurityManager(scriptingSecurityManager);
 						return script.run();
@@ -317,14 +328,16 @@ public class ScriptingEngine extends MindMapHookAdapter {
 			String cause = ((e2.getCause() != null) ? e2.getCause()
 					.getMessage() : "");
 			String message = ((e2.getMessage() != null) ? e2.getMessage() : "");
-			pMindMapController
-					.getController()
-					.errorMessage(
-							e2.getClass().getName()
-									+ ": "
-									+ cause
-									+ ((cause.length() != 0 && message.length() != 0) ? ", "
-											: "") + message);
+			final String message2 = e2.getClass().getName()
+					+ ": "
+					+ cause
+					+ ((cause.length() != 0 && message.length() != 0) ? ", "
+							: "") + message;
+			EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					pMindMapController.getController().errorMessage(message2);
+				}
+			});
 			return false;
 		}
 		pOutStream.print(frame
