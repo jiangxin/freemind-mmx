@@ -328,16 +328,19 @@ public class ScriptingEngine extends MindMapHookAdapter {
 			String cause = ((e2.getCause() != null) ? e2.getCause()
 					.getMessage() : "");
 			String message = ((e2.getMessage() != null) ? e2.getMessage() : "");
-			final String message2 = e2.getClass().getName()
+			final String errorMessage = e2.getClass().getName()
 					+ ": "
 					+ cause
 					+ ((cause.length() != 0 && message.length() != 0) ? ", "
 							: "") + message;
-			EventQueue.invokeLater(new Runnable() {
-				public void run() {
-					pMindMapController.getController().errorMessage(message2);
-				}
-			});
+			pOutStream.println(errorMessage);
+			if(! (e2 instanceof InterruptedException)) {
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						pMindMapController.getController().errorMessage(errorMessage);
+					}
+				});
+			}
 			return false;
 		}
 		pOutStream.print(frame

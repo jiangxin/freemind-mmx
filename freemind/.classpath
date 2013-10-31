@@ -40,6 +40,6 @@
 	<classpathentry kind="lib" path="plugins/svg/batik-anim.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/batik-codec.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/xml-apis-ext.jar"/>
-	<classpathentry kind="lib" path="plugins/script/groovy-all.jar" sourcepath="plugins/script/groovy-sdk-2.1.8.zip"/>
+	<classpathentry kind="lib" path="plugins/script/groovy-all.jar" sourcepath="/home/foltin/java/groovy/groovy-sdk-2.1.8.zip"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

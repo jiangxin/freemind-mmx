@@ -32,6 +32,7 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Vector;
 import java.util.logging.Logger;
 
 import javax.swing.AbstractAction;
@@ -53,6 +54,8 @@ import javax.swing.event.CaretEvent;
 import javax.swing.event.CaretListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Element;
 
@@ -75,7 +78,7 @@ import freemind.main.Tools;
  *         <li>show line/column numbers in status bar</li>
  *         </ul>
  */
-public class ScriptEditorPanel extends JDialog {
+public class ScriptEditorPanel extends JDialog implements MenuListener {
 	/**
 	 * 
 	 */
@@ -108,10 +111,12 @@ public class ScriptEditorPanel extends JDialog {
 	private AbstractAction mRunAction;
 
 	private SignAction mSignAction;
-	
+
 	private Thread mScriptThread;
 
 	private StopAction mStopAction;
+
+	private Vector<AbstractAction> mMenuActions = new Vector<>();
 
 	private final class ResultFieldStream extends OutputStream {
 		public void write(int pByte) throws IOException {
@@ -119,23 +124,23 @@ public class ScriptEditorPanel extends JDialog {
 		}
 
 		public void write(final byte[] pB) throws IOException {
-			EventQueue.invokeLater(
-				new Runnable() {
-					public void run() {
-						mScriptResultField.append(new String(pB));
-					}
+			EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					mScriptResultField.append(new String(pB));
+				}
 			});
 		}
 	}
 
-	private final class RunAction extends AbstractAction implements MenuItemEnabledListener {
+	private final class RunAction extends AbstractAction implements
+			MenuItemEnabledListener {
 		private RunAction(String pArg0) {
 			super(pArg0);
 		}
 
 		public void actionPerformed(ActionEvent arg0) {
 			storeCurrent();
-			if (!mScriptList.isSelectionEmpty()) {
+			if (isSomethingSelected()) {
 				mScriptResultField.setText("");
 				mScriptThread = new Thread(new Runnable() {
 					public void run() {
@@ -148,41 +153,46 @@ public class ScriptEditorPanel extends JDialog {
 			}
 		}
 
-		/* (non-Javadoc)
-		 * @see freemind.controller.MenuItemEnabledListener#isEnabled(javax.swing.JMenuItem, javax.swing.Action)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * freemind.controller.MenuItemEnabledListener#isEnabled(javax.swing
+		 * .JMenuItem, javax.swing.Action)
 		 */
 		@Override
 		public boolean isEnabled(JMenuItem pItem, Action pAction) {
-			return mScriptThread == null || mScriptThread.isAlive();
+			return isSomethingSelected()
+					&& (mScriptThread == null || !mScriptThread.isAlive());
 		}
 	}
 
-	private final class StopAction extends AbstractAction implements MenuItemEnabledListener {
+	private final class StopAction extends AbstractAction implements
+			MenuItemEnabledListener {
 		private StopAction(String pArg0) {
 			super(pArg0);
 		}
-		
+
 		public void actionPerformed(ActionEvent arg0) {
-			if(isEnabled(null, this)) {
-				mScriptThread.interrupt();
-				try {
-					mScriptThread.join();
-					mScriptThread = null;
-				} catch (InterruptedException e) {
-					freemind.main.Resources.getInstance().logException(e);
-				}
+			if (isEnabled(null, this)) {
+				interruptScript();
 			}
 		}
-		
-		/* (non-Javadoc)
-		 * @see freemind.controller.MenuItemEnabledListener#isEnabled(javax.swing.JMenuItem, javax.swing.Action)
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * freemind.controller.MenuItemEnabledListener#isEnabled(javax.swing
+		 * .JMenuItem, javax.swing.Action)
 		 */
 		@Override
 		public boolean isEnabled(JMenuItem pItem, Action pAction) {
-			return mScriptThread != null && !mScriptThread.isInterrupted();
+			return isSomethingSelected() && mScriptThread != null
+					&& !mScriptThread.isInterrupted();
 		}
 	}
-	
+
 	private final class SignAction extends AbstractAction {
 		private SignAction(String pArg0) {
 			super(pArg0);
@@ -386,6 +396,7 @@ public class ScriptEditorPanel extends JDialog {
 		// menu:
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu();
+		menu.addMenuListener(this);
 		Tools.setLabelAndMnemonic(menu,
 				pFrame.getResourceString("plugins/ScriptEditor.menu_actions"));
 		if (pHasNewScriptFunctionality) {
@@ -429,6 +440,7 @@ public class ScriptEditorPanel extends JDialog {
 	}
 
 	private void addAction(JMenu menu, AbstractAction action) {
+		mMenuActions.add(action);
 		JMenuItem item = menu.add(action);
 		Tools.setLabelAndMnemonic(item,
 				(String) action.getValue(AbstractAction.NAME));
@@ -445,8 +457,6 @@ public class ScriptEditorPanel extends JDialog {
 
 	private void select(int pIndex) {
 		mScriptTextField.setEnabled(pIndex >= 0);
-		mRunAction.setEnabled(pIndex >= 0);
-		mStopAction.setEnabled(pIndex >= 0);
 		mSignAction.setEnabled(pIndex >= 0);
 		if (pIndex < 0) {
 			mScriptTextField.setText("");
@@ -477,18 +487,20 @@ public class ScriptEditorPanel extends JDialog {
 	 * 
 	 */
 	private void disposeDialog(boolean pIsCanceled) {
+		// the script should be stopped.
+		interruptScript();
 		// store current script:
 		if (!mScriptList.isSelectionEmpty()) {
 			select(mScriptList.getSelectedIndex());
 		}
 		if (pIsCanceled && mScriptModel.isDirty()) {
 			// ask if really cancel:
-			int action = JOptionPane.showConfirmDialog(this, mFrame
-					.getResourceString("ScriptEditorPanel.changed_save"),
+			int action = JOptionPane.showConfirmDialog(this,
+					mFrame.getResourceString("ScriptEditorPanel.changed_save"),
 					"FreeMind", JOptionPane.YES_NO_CANCEL_OPTION);
 			if (action == JOptionPane.CANCEL_OPTION)
 				return;
-			if(action == JOptionPane.YES_OPTION) {
+			if (action == JOptionPane.YES_OPTION) {
 				pIsCanceled = false;
 			}
 		}
@@ -530,6 +542,63 @@ public class ScriptEditorPanel extends JDialog {
 				});
 			}
 		};
+	}
+
+	protected void interruptScript() {
+		if (mScriptThread != null) {
+			mScriptThread.interrupt();
+			try {
+				mScriptThread.join();
+				mScriptThread = null;
+			} catch (InterruptedException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.swing.event.MenuListener#menuSelected(javax.swing.event.MenuEvent)
+	 */
+	@Override
+	public void menuSelected(MenuEvent pE) {
+		for (AbstractAction action : mMenuActions) {
+			if (action instanceof MenuItemEnabledListener) {
+				MenuItemEnabledListener listener = (MenuItemEnabledListener) action;
+				action.setEnabled(listener.isEnabled(null, action));
+			}
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.swing.event.MenuListener#menuDeselected(javax.swing.event.MenuEvent
+	 * )
+	 */
+	@Override
+	public void menuDeselected(MenuEvent pE) {
+		// TODO Auto-generated method stub
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.swing.event.MenuListener#menuCanceled(javax.swing.event.MenuEvent)
+	 */
+	@Override
+	public void menuCanceled(MenuEvent pE) {
+		// TODO Auto-generated method stub
+
+	}
+
+	protected boolean isSomethingSelected() {
+		return !mScriptList.isSelectionEmpty();
 	}
 
 }
