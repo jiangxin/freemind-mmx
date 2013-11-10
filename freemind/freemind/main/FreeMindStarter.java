@@ -115,6 +115,7 @@ public class FreeMindStarter {
 					JOptionPane.WARNING_MESSAGE);
 			System.exit(1);
 		}
+		System.out.println("Checking Java Version done.");
 	}
 
 	private void createUserDirectory(Properties pDefaultProperties) {
