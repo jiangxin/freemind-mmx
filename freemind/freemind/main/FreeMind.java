@@ -23,6 +23,7 @@ package freemind.main;
 import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Insets;
@@ -39,30 +40,24 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Method;
 import java.net.Authenticator;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
-import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
-import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
@@ -571,232 +566,24 @@ public class FreeMind extends JFrame implements FreeMindMain, ActionListener {
 	}
 	
 	/**
-	 * Open url in WWW browser. This method hides some differences between
-	 * operating systems.
+	 * Open URL in system browser
+	 * <p>
+	 * Opens the specified URL in the default browser for the operating system.
+	 * 
+	 * @param url a url pointing to where the browser should open
+	 * @see       URL
 	 */
 	public void openDocument(URL url) throws Exception {
-		// build string for default browser:
-		String correctedUrl = new String(url.toExternalForm());
-		if (url.getProtocol().equals("file")) {
-			correctedUrl = correctedUrl.replace('\\', '/').replaceAll(" ",
-					"%20");
-			// ^ This is more of a heuristic than a "logical" code
-			// and due to a java bug:
-			// http://forum.java.sun.com/thread.jsp?forum=31&thread=363990
-		}
-		// Originally, this method determined external application, with which
-		// the document
-		// should be opened. Which application should open which document type
-		// was
-		// configured in FreeMind properties file. As a result, FreeMind tried
-		// to solve the
-		// problem (of determining application for a file type), which should
-		// better be
-		// solved somewhere else. Indeed, on Windows, this problem is perfectly
-		// solved by
-		// Explorer. On KDE, this problem is solved by Konqueror default
-		// browser. In
-		// general, most WWW browsers have to solve this problem.
-
-		// As a result, the only thing we do here, is to open URL in WWW
-		// browser.
-
-		String osName = System.getProperty("os.name");
-		String urlString = url.toString();
-
-		if (osName.substring(0, 3).equals("Win")) {
-			String propertyString = new String(
-					"default_browser_command_windows");
-			if (osName.indexOf("9") != -1 || osName.indexOf("Me") != -1) {
-				propertyString += "_9x";
-			} else {
-				propertyString += "_nt";
-			}
-
-			String browser_command = new String();
-			String command = new String();
-			// Here we introduce " around the parameter of explorer
-			// command. This is not because of possible spaces in this
-			// parameter - it is because of "=" character, which causes
-			// problems. My understanding of MSDOS is not so good, but at
-			// least I can say, that "=" is used in general for the purpose
-			// of variable assignment.
-			// String[] call = { browser_command, "\""+url.toString()+"\"" };
+		Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+		if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
 			try {
-				// This is working fine on Windows 2000 and NT as well
-				// Below is a piece of code showing how to run executables
-				// directly
-				// without asking. However, we don't want to do that. Explorer
-				// will run
-				// executable, but ask before it actually runs it.
-				//
-				// Imagine you download a package of maps containing also nasty
-				// executable. Let's say there is a map "index.mm". This map
-				// contains a
-				// link to that nasty executable, but the name of the link
-				// appearing to the
-				// user does not indicate at all that clicking the link leads to
-				// execution
-				// of a programm. This executable is located on your local
-				// computer, so
-				// asking before executing remote executable does not solve the
-				// problem. You click the link and there you are running evil
-				// executable.
-
-				// build string for default browser:
-				// ask for property about browser: fc, 26.11.2003.
-				Object[] messageArguments = { urlString };
-				MessageFormat formatter = new MessageFormat(
-						getProperty(propertyString));
-				browser_command = formatter.format(messageArguments);
-
-				if (url.getProtocol().equals("file")) {
-					final File file = Tools.urlToFile(url);
-					if (!Tools.isBelowJava6()) {
-						Class desktopClass = Class.forName("java.awt.Desktop");
-						Method getDesktopMethod = desktopClass.getMethod(
-								"getDesktop", new Class[] {});
-						Object desktopObject = getDesktopMethod.invoke(null,
-								new Object[] {});
-						Method openMethod = desktopObject.getClass().getMethod(
-								"open", new Class[] { File.class });
-						logger.info("Opening file " + file);
-						openMethod.invoke(desktopObject, new Object[] { file });
-						return;
-					}
-					// command = "rundll32 url.dll,FileProtocolHandler "+
-					// Tools.urlGetFile(url);
-					// bug fix by Dan:
-					command = "cmd /C rundll32 url.dll,FileProtocolHandler "
-							+ urlString;
-					// see
-					// http://rsb.info.nih.gov/ij/developer/source/ij/plugin/BrowserLauncher.java.html
-					if (System.getProperty("os.name")
-							.startsWith("Windows 2000"))
-						command = "cmd /C rundll32 shell32.dll,ShellExec_RunDLL "
-								+ urlString;
-				} else if (urlString.startsWith("mailto:")) {
-					command = "cmd /C rundll32 url.dll,FileProtocolHandler "
-							+ urlString;
-				} else {
-					command = browser_command;
-				}
-				logger.info("Starting browser with " + command);
-				// Runtime.getRuntime().exec(command);
-				execWindows(command);
-			} catch (IOException x) {
-				controller
-						.errorMessage("Could not invoke browser.\n\nFreemind excecuted the following statement on a command line:\n\""
-								+ command
-								+ "\".\n\nYou may look at the user or default property called '"
-								+ propertyString + "'.");
-				System.err.println("Caught: " + x);
-			}
-		} else if (osName.startsWith("Mac OS")) {
-
-			// logger.info("Opening URL "+urlString);
-			String browser_command = new String();
-			try {
-				// ask for property about browser: fc, 26.11.2003.
-				Object[] messageArguments = { correctedUrl, urlString };
-				if ("file".equals(url.getProtocol())) {
-					// Bug in the apple's open function. For files, a pure
-					// filename must be given.
-					final File file = Tools.urlToFile(url);
-					String[] command = {
-							getProperty("default_browser_command_mac_open"),
-							"file:" + file.getAbsolutePath() };
-					logger.info("Starting command: "
-							+ Arrays.deepToString(command));
-					Runtime.getRuntime().exec(command, null, null);
-				} else {
-					MessageFormat formatter = new MessageFormat(
-							getProperty("default_browser_command_mac"));
-					browser_command = formatter.format(messageArguments);
-					logger.info("Starting command: " + browser_command);
-					Runtime.getRuntime().exec(browser_command);
-				}
-			} catch (IOException ex2) {
-				controller
-						.errorMessage("Could not invoke browser.\n\nFreemind excecuted the following statement on a command line:\n\""
-								+ browser_command
-								+ "\".\n\nYou may look at the user or default property called 'default_browser_command_mac'.");
-				System.err.println("Caught: " + ex2);
-			}
-		} else {
-			// There is no '"' character around url.toString (compare to Windows
-			// code
-			// above). Putting '"' around does not work on Linux - instead, the
-			// '"'
-			// becomes part of URL, which is malformed, as a result.
-
-			String browser_command = new String();
-			try {
-				// ask for property about browser: fc, 26.11.2003.
-				Object[] messageArguments = { correctedUrl, urlString };
-				MessageFormat formatter = new MessageFormat(
-						getProperty("default_browser_command_other_os"));
-				browser_command = formatter.format(messageArguments);
-				logger.info("Starting command: " + browser_command);
-				Runtime.getRuntime().exec(browser_command);
-			} catch (IOException ex2) {
-				controller
-						.errorMessage("Could not invoke browser.\n\nFreemind excecuted the following statement on a command line:\n\""
-								+ browser_command
-								+ "\".\n\nYou may look at the user or default property called 'default_browser_command_other_os'.");
-				System.err.println("Caught: " + ex2);
+				desktop.browse(url.toURI());
+			} catch (Exception e) {
+				logger.severe("Caught: " + e);
 			}
 		}
 	}
 
-	/**
-	 * @param cmd
-	 *            precondition: the command can be split by spaces and the last
-	 *            argument is the only one that contains unicode chars.
-	 *            Moreover, we are under Windows. THIS METHOD DOESN'T SEEM TO
-	 *            WORK for UNICODE ARGUMENTS.
-	 * @throws IOException
-	 */
-	private void execWindows(String pCommand) throws IOException {
-		// taken and adapted from
-		// http://stackoverflow.com/questions/1876507/java-runtime-exec-on-windows-fails-with-unicode-in-arguments
-		StringTokenizer st = new StringTokenizer(pCommand, " ");
-		String[] cmd = new String[st.countTokens()];
-		int i = 0;
-		while (st.hasMoreTokens()) {
-			cmd[i++] = st.nextToken();
-		}
-		Map newEnv = new HashMap();
-		newEnv.putAll(System.getenv());
-		// exchange last argument by environment
-		String envName = "JENV_1";
-		newEnv.put(envName, cmd[cmd.length - 1]);
-		cmd[cmd.length - 1] = "%" + envName + "%";
-
-		logger.info("Starting command array "
-				+ Arrays.toString(cmd)
-				+ ", and env for "
-				+ envName
-				+ " = "
-				+ HtmlTools.unicodeToHTMLUnicodeEntity(
-						(String) newEnv.get(envName), true));
-		ProcessBuilder pb = new ProcessBuilder(cmd);
-		Map env = pb.environment();
-		env.putAll(newEnv);
-		final Process p = pb.start();
-	}
-
-	private String transpose(String input, char findChar, String replaceString) {
-		String res = new String();
-		for (int i = 0; i < input.length(); ++i) {
-			char d = input.charAt(i);
-			if (d == findChar)
-				res += replaceString;
-			else
-				res += d;
-		}
-		return res;
-	}
 
 	public void setWaitingCursor(boolean waiting) {
 		if (waiting) {
@@ -808,25 +595,6 @@ public class FreeMind extends JFrame implements FreeMindMain, ActionListener {
 					Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
 			getRootPane().getGlassPane().setVisible(false);
 		}
-	}
-
-	private String getProgramForFile(String type) {
-		if (filetypes == null) {
-			filetypes = new HashMap();
-			String raw = getProperty("filetypes");
-			if (raw == null || raw.equals("")) {
-				return "";
-			}
-			StringTokenizer tokens = new StringTokenizer(raw, ",");
-			while (tokens.hasMoreTokens()) {
-				StringTokenizer pair = new StringTokenizer(tokens.nextToken(),
-						":");
-				String key = pair.nextToken().trim().toLowerCase();
-				String value = pair.nextToken().trim();
-				filetypes.put(key, value);
-			}
-		}
-		return (String) filetypes.get(type.trim().toLowerCase());
 	}
 
 	/** Returns the ResourceBundle with the current language */

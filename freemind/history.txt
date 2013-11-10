@@ -8,6 +8,7 @@ Changes made in FreeMind 1.1.0 Alpha 1
 * Menu items are disabled if no map is open
 * Fixed persistence of "complete cloning" across cut/paste.
 * Groovy update to version 2.1.8, Script stop added to script editor.
+* Changed openDocument. Thanks to the author, see https://sourceforge.net/p/freemind/patches/147/
   
 ===============================
 Changes made in FreeMind 1.0.0 (final)
