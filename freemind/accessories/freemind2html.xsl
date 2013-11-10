@@ -373,6 +373,9 @@
 <!-- replace ASCII line breaks through HTML line breaks (br) -->
 <xsl:template name="format_text">
 	<xsl:param name="nodetext" />
+	<xsl:if test="string-length($nodetext) = 0">
+		<xsl:text disable-output-escaping="yes"><![CDATA[&nbsp;]]></xsl:text>
+	</xsl:if>
 	<xsl:if test="string-length(substring-after($nodetext,'&#xa;')) = 0">
 		<xsl:value-of select="$nodetext" />
 	</xsl:if>
