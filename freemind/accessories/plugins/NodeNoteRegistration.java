@@ -160,7 +160,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 		public void onLostFocusNode(NodeView node) {
 			// logger.info("onDeselectHook for node " + node +
 			// " and noteViewerComponent=" + noteViewerComponent);
-			noteViewerComponent.getDocument().removeDocumentListener(
+			getDocument().removeDocumentListener(
 					mNoteDocumentListener);
 			// store its content:
 			onSaveNode(node.getModel());
@@ -172,7 +172,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 			// logger.info("onSelectHook for node " + node +
 			// " and noteViewerComponent=" + noteViewerComponent);
 			this.node = nodeView.getModel();
-			final HTMLDocument document = noteViewerComponent.getDocument();
+			final HTMLDocument document = getDocument();
 			// remove listener to avoid unnecessary dirty events.
 			document.removeDocumentListener(mNoteDocumentListener);
 			try {
@@ -238,9 +238,16 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 				mLastContentEmpty = editorContentEmpty;
 			}
 			controller.registerNodeSelectionListener(this, false);
-			editorPane.setCaretPosition(caretPosition);
-			editorPane.setSelectionEnd(selectionEnd);
-			editorPane.setSelectionStart(selectionStart);
+			try {
+				// on inserting tabs, the caret position changes, as they are deleted:
+				if (caretPosition < getDocument().getLength()) {
+					editorPane.setCaretPosition(caretPosition);
+				}
+				editorPane.setSelectionEnd(selectionEnd);
+				editorPane.setSelectionStart(selectionStart);
+			} catch (Exception e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
 		}
 
 		public void onCreateNodeHook(MindMapNode node) {
@@ -385,7 +392,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 				rule += "margin-top:0;";
 				rule += "}\n";
 			}
-			noteViewerComponent.getDocument().getStyleSheet().addRule(rule);
+			getDocument().getStyleSheet().addRule(rule);
 			// done setting default font.
 		}
 		noteViewerComponent.setOpenHyperlinkHandler(new ActionListener() {
@@ -509,5 +516,9 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 			input = NodeNote.EMPTY_EDITOR_STRING;
 		// return null;
 		return input.replaceAll("\\s+", " ").replaceAll("  +", " ").trim();
+	}
+
+	protected HTMLDocument getDocument() {
+		return noteViewerComponent.getDocument();
 	}
 }
