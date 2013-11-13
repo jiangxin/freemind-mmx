@@ -1,5 +1,6 @@
 ===============================
 * Fixed persistence of "complete cloning" across cut/paste.
+* Fixed save of notes, when containing tabs
 Changes made in FreeMind 1.0.0 (final)
 ===============================
 * QuickLook fixed
