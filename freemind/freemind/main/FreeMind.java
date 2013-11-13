@@ -920,7 +920,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 		final ModeController ctrl = frame.createModeController(args);
 
 		feedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS, null);
-		// This could be improved.
+
 		frame.loadMaps(args, ctrl, feedBack);
 
 		Tools.waitForEventQueue();
@@ -1200,48 +1200,13 @@ public class FreeMind extends JFrame implements FreeMindMain {
 
 	private int getMaximumNumberOfMapsToLoad(String[] args) {
 		LastStateStorageManagement management = getLastStateStorageManagement();
-		int[] values = { args.length, management.getLastOpenList().size(), 1 };
-		int ret = 0;
-		for (int i = 0; i < values.length; i++) {
-			ret = Math.max(ret, values[i]);
-		}
-		return ret;
+		return Math.max( args.length + management.getLastOpenList().size(), 1 );
 	}
 
 	private void loadMaps(final String[] args, ModeController pModeController,
 			FeedBack pFeedBack) {
 		boolean fileLoaded = false;
-		for (int i = 0; i < args.length; i++) {
-			// JOptionPane.showMessageDialog(null,i+":"+args[i]);
-			String fileArgument = args[i];
-			pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS_NAME,
-					new Object[] { fileArgument.replaceAll(".*/", "") });
-			if (fileArgument.toLowerCase().endsWith(
-					freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION)) {
-
-				if (!Tools.isAbsolutePath(fileArgument)) {
-					fileArgument = System.getProperty("user.dir")
-							+ System.getProperty("file.separator")
-							+ fileArgument;
-				}
-				// fin = ;
-				try {
-					pModeController.load(new File(fileArgument));
-					fileLoaded = true;
-					// logger.info("Attempting to load: " +
-					// args[i]);
-				} catch (Exception ex) {
-					System.err.println("File " + fileArgument
-							+ " not found error");
-					// System.exit(1);
-				}
-			}
-		}
-		if (!fileLoaded) {
-			fileLoaded = processLoadEventFromStartupPhase();
-		}
-		if (!fileLoaded
-				&& Tools.isPreferenceTrue(getProperty(FreeMindCommon.LOAD_LAST_MAPS_AND_LAYOUT))) {
+		if (Tools.isPreferenceTrue(getProperty(FreeMindCommon.LOAD_LAST_MAPS_AND_LAYOUT))) {
 			int index = 0;
 			MapModule mapToFocus = null;
 			LastStateStorageManagement management = getLastStateStorageManagement();
@@ -1268,6 +1233,32 @@ public class FreeMind extends JFrame implements FreeMindMain {
 				controller.getMapModuleManager().changeToMapModule(
 						mapToFocus.getDisplayName());
 			}
+		}
+		for (int i = 0; i < args.length; i++) {
+			String fileArgument = args[i];
+			pFeedBack.increase(FREE_MIND_PROGRESS_LOAD_MAPS_NAME,
+					new Object[] { fileArgument.replaceAll(".*/", "") });
+			if (fileArgument.toLowerCase().endsWith(
+					freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION)) {
+
+				if (!Tools.isAbsolutePath(fileArgument)) {
+					fileArgument = System.getProperty("user.dir")
+							+ System.getProperty("file.separator")
+							+ fileArgument;
+				}
+				try {
+					pModeController.load(new File(fileArgument));
+					fileLoaded = true;
+					// logger.info("Attempting to load: " +
+					// args[i]);
+				} catch (Exception ex) {
+					System.err.println("File " + fileArgument
+							+ " not found error");
+				}
+			}
+		}
+		if (!fileLoaded) {
+			fileLoaded = processLoadEventFromStartupPhase();
 		}
 		if (!fileLoaded) {
 			String restoreable = getProperty(FreeMindCommon.ON_START_IF_NOT_SPECIFIED);
