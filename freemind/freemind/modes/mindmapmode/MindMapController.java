@@ -27,6 +27,7 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.BufferedWriter;
@@ -71,6 +72,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.html.HTMLDocument;
@@ -229,6 +231,91 @@ public class MindMapController extends ControllerAdapter implements
 
 	public static final String REGEXP_FOR_NUMBERS_IN_STRINGS = "([+\\-]?[0-9]*[.,]?[0-9]+)\\b";
 	private static final String ACCESSORIES_PLUGINS_NODE_NOTE = "accessories.plugins.NodeNote";
+
+	/**
+	 * @author foltin
+	 * @date 19.11.2013
+	 */
+	private final class NodeInformationTimerAction implements ActionListener {
+		private boolean mIsInterrupted = false;
+		private boolean mIsDone = true;
+		
+		public boolean isRunning() {
+			return !mIsDone;
+		}
+		
+		/**
+		 * @return true, if successfully interrupted.
+		 */
+		public boolean interrupt() {
+			mIsInterrupted = true;
+			int i = 1000;
+			try {
+				while (i > 0 && !mIsDone) {
+					Thread.sleep(10);
+				}
+			} catch (InterruptedException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+			mIsInterrupted = false;
+			return i > 0;
+		}
+		
+		@Override
+		public void actionPerformed(ActionEvent pE) {
+			mIsDone = false;
+			actionPerformedInternally(pE);
+			mIsDone = true;
+		}
+		public void actionPerformedInternally(ActionEvent pE) {
+			String nodeStatusLine;
+			List selecteds = getSelecteds();
+			int amountOfSelecteds = selecteds.size();
+			if(amountOfSelecteds == 0)
+				return;
+			double sum = 0d;
+			java.util.regex.Pattern p = java.util.regex.Pattern.compile(REGEXP_FOR_NUMBERS_IN_STRINGS);
+			for (Iterator it = selecteds.iterator(); it.hasNext();) {
+				if(mIsInterrupted) {
+					return;
+				}
+				MindMapNode selectedNode = (MindMapNode) it.next();
+				Matcher m = p.matcher(selectedNode.getText());
+				while(m.find()) {
+					String number = m.group();
+					try {
+						sum += Double.parseDouble(number);
+					} catch(NumberFormatException e) {
+//					freemind.main.Resources.getInstance().logException(e);
+					}
+				}
+			}
+			if(amountOfSelecteds > 1) {
+				nodeStatusLine = Resources.getInstance().format(
+						"node_status_line_several_selected_nodes",
+						new Object[] { new Integer(amountOfSelecteds), new Double(sum) });			
+			} else {
+				MindMapNode sel = (MindMapNode) selecteds.get(0);
+				long amountOfChildren = 0;
+				Vector allDescendants = Tools.getVectorWithSingleElement(sel);
+				while(!allDescendants.isEmpty()) {
+					if(mIsInterrupted) {
+						return;
+					}
+					MindMapNode child = (MindMapNode) allDescendants.firstElement();
+					amountOfChildren += child.getChildCount();
+					allDescendants.addAll(child.getChildren());
+					allDescendants.remove(0);
+				}
+				nodeStatusLine = Resources.getInstance().format(
+						"node_status_line",
+						new Object[] { sel.getShortText(MindMapController.this),
+								new Integer(sel.getChildCount()), amountOfChildren });
+			}
+			getFrame().out(nodeStatusLine);
+		}
+
+	}
 
 	/**
 	 * @author foltin
@@ -459,6 +546,10 @@ public class MindMapController extends ControllerAdapter implements
 		actionFactory = new ActionFactory(getController());
 		// create compound handler, that evaluates the compound xml actions.
 		compound = new CompoundActionHandler(this);
+		// create node information timer and actions. They don't fire, until called to do so.
+		mNodeInformationTimerAction = new NodeInformationTimerAction();
+		mNodeInformationTimer = new Timer(100, mNodeInformationTimerAction);
+		mNodeInformationTimer.setRepeats(false);
 
 		init();
 	}
@@ -897,37 +988,11 @@ public class MindMapController extends ControllerAdapter implements
 	 * Updates the status line.
 	 */
 	private void updateNodeInformation() {
-		String nodeStatusLine;
-		List selecteds = getSelecteds();
-		int amountOfSelecteds = selecteds.size();
-		if(amountOfSelecteds == 0)
-			return;
-		double sum = 0d;
-		java.util.regex.Pattern p = java.util.regex.Pattern.compile(REGEXP_FOR_NUMBERS_IN_STRINGS);
-		for (Iterator it = selecteds.iterator(); it.hasNext();) {
-			MindMapNode selectedNode = (MindMapNode) it.next();
-			Matcher m = p.matcher(selectedNode.getText());
-			while(m.find()) {
-				String number = m.group();
-				try {
-					sum += Double.parseDouble(number);
-				} catch(NumberFormatException e) {
-//					freemind.main.Resources.getInstance().logException(e);
-				}
-			}
+		mNodeInformationTimer.stop();
+		if(mNodeInformationTimerAction.isRunning()) {
+			mNodeInformationTimerAction.interrupt();
 		}
-		if(amountOfSelecteds > 1) {
-			nodeStatusLine = Resources.getInstance().format(
-					"node_status_line_several_selected_nodes",
-					new Object[] { new Integer(amountOfSelecteds), new Double(sum) });			
-		} else {
-			MindMapNode sel = (MindMapNode) selecteds.get(0);
-			nodeStatusLine = Resources.getInstance().format(
-					"node_status_line",
-					new Object[] { sel.getShortText(this),
-							new Integer(sel.getChildCount()) });
-		}
-		getFrame().out(nodeStatusLine);
+		mNodeInformationTimer.start();
 	}
 
 	protected void updateToolbar(MindMapNode n) {
@@ -943,6 +1008,8 @@ public class MindMapController extends ControllerAdapter implements
 	 * for the right class and casted to be applied.
 	 */
 	private HashSet mPlugins = new HashSet();
+	private Timer mNodeInformationTimer;
+	private NodeInformationTimerAction mNodeInformationTimerAction;
 
 	public interface NewNodeCreator {
 		MindMapNode createNode(Object userObject, MindMap map);
