@@ -20,13 +20,17 @@
 
 package plugins.map;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Stroke;
 
 import javax.swing.JLabel;
 
 import org.openstreetmap.gui.jmapviewer.Coordinate;
+import org.openstreetmap.gui.jmapviewer.Layer;
+import org.openstreetmap.gui.jmapviewer.Style;
 import org.openstreetmap.gui.jmapviewer.interfaces.MapMarker;
 
 /**
@@ -54,6 +58,9 @@ public abstract class MapMarkerBase extends JLabel implements MapMarker {
 			0.3f, 0.4f, 0.5f, 0.75f, 0.8f, 0.9f, 0.95f, 0.97f };
 	protected float[] mTextHeightShorteningPerZoom = new float[] { 0f, 0f, 0.0f, 0.0f,
 			0.0f, 0.0f, 0.1f, 0.2f, 0.4f, 0.8f, 0.80f, 0.80f };
+	private static BasicStroke sBasicStroke = new BasicStroke();
+	private static Layer sLayer = new Layer("basis");
+	private static Style sStyle = new Style();
 
 	/**
 	 * 
@@ -67,7 +74,8 @@ public abstract class MapMarkerBase extends JLabel implements MapMarker {
 		}
 	}
 
-	public void paint(Graphics pGraphics, Point position) {
+	@Override
+	public void paint(Graphics pGraphics, Point position, int pRadio) {
 		Graphics g = pGraphics.create();
 		paintCenter(g, position);
 		if (isSelected()) {
@@ -143,6 +151,53 @@ public abstract class MapMarkerBase extends JLabel implements MapMarker {
 	
 	public Coordinate getCoordinate() {
 		return new Coordinate(getLat(), getLon());
+	}
+
+	@Override
+	public Layer getLayer() {
+		return sLayer;
+	}
+
+	@Override
+	public void setLayer(Layer pLayer) {
+		sLayer = pLayer;
+		
+	}
+
+	@Override
+	public Style getStyle() {
+		return sStyle;
+	}
+
+	@Override
+	public Style getStyleAssigned() {
+		return sStyle;
+	}
+
+	@Override
+	public Color getColor() {
+		return mBulletColor;
+	}
+
+	@Override
+	public Color getBackColor() {
+		return mBackgroundColor;
+	}
+
+	@Override
+	public Stroke getStroke() {
+		return sBasicStroke;
+	}
+
+
+	@Override
+	public double getRadius() {
+		return CIRCLE_RADIUS;
+	}
+
+	@Override
+	public STYLE getMarkerStyle() {
+		return MapMarker.STYLE.VARIABLE;
 	}
 
 }

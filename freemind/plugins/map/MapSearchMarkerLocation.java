@@ -46,7 +46,8 @@ public class MapSearchMarkerLocation extends MapMarkerBase {
 	}
 
 	/**
-	 * Either start or when something changes on the node, this method is called.
+	 * Either start or when something changes on the node, this method is
+	 * called.
 	 */
 	public void update() {
 		setText(mPlace.getDisplayName());
@@ -62,9 +63,11 @@ public class MapSearchMarkerLocation extends MapMarkerBase {
 		return mPlace.getLon();
 	}
 
-
-	/* (non-Javadoc)
-	 * @see plugins.map.MapMarkerBase#paintCenter(java.awt.Graphics, java.awt.Point)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see plugins.map.MapMarkerBase#paintCenter(java.awt.Graphics,
+	 * java.awt.Point)
 	 */
 	protected void paintCenter(Graphics pG, Point pPosition) {
 		if (isSelected()) {
@@ -82,6 +85,7 @@ public class MapSearchMarkerLocation extends MapMarkerBase {
 			super.paintCenter(pG, pPosition);
 		}
 	}
+
 	public String toString() {
 		return "MapSearchMarkerLocation for search text "
 				+ mPlace.getDisplayName() + " at " + getLat() + " " + getLon();
@@ -89,6 +93,16 @@ public class MapSearchMarkerLocation extends MapMarkerBase {
 
 	public Place getPlace() {
 		return mPlace;
+	}
+
+	@Override
+	public void setLat(double pLat) {
+		mPlace.setLat(pLat);
+	}
+
+	@Override
+	public void setLon(double pLon) {
+		mPlace.setLon(pLon);
 	}
 
 }

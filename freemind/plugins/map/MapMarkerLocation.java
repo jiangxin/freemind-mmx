@@ -64,5 +64,15 @@ public class MapMarkerLocation extends MapMarkerBase {
 		return mNodePositionHolder;
 	}
 
+	@Override
+	public void setLat(double pLat) {
+		mNodePositionHolder.getPosition().setLat(pLat);
+	}
+
+	@Override
+	public void setLon(double pLon) {
+		mNodePositionHolder.getPosition().setLon(pLon);
+	}
+
 
 }

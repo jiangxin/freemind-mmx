@@ -68,7 +68,7 @@ final class JCursorMapViewer extends JMapViewer {
 	 */
 	public JCursorMapViewer(MindMapController pMindMapController,
 			JDialog pMapDialog, TileCache pTileCache, MapDialog pMapHook) {
-		super(pTileCache, 4);
+		super(pTileCache, 1);
 		mMapHook = pMapHook;
 		mFreeMindMapController = new FreeMindMapController(this,
 				pMindMapController, pMapDialog, pMapHook);
