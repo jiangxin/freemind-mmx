@@ -12,6 +12,8 @@ Changes made in FreeMind 1.1.0 Alpha 1
 * Changed openDocument. Thanks to the author, see https://sourceforge.net/p/freemind/patches/147/
 * Fixed save of notes, when containing tabs
 * Fixed restore of session when opening files from command line
+* Update JMapViewer to version 1.02
+* Update jibx to 1.2.5 (java 7 compatibility)
   
 ===============================
 Changes made in FreeMind 1.0.0 (final)
