@@ -726,7 +726,7 @@
     <target name="installers_chris_mac">
     	<exec dir="." executable="ssh" os="Linux">
     		<arg value="foltin@${macName}"/>
-    		<arg value="export JAVA_HOME=`/usr/libexec/java_home` ; cd /tmp ; rm -rf fm_installers ; mkdir fm_installers ; cd fm_installers ; /opt/local/bin/git clone ${gitRoot} .; cd freemind ; ant post"/>
+    		<arg value="export JAVA_HOME=`/usr/libexec/java_home` ; cd /tmp ; rm -rf fm_installers ; mkdir fm_installers ; cd fm_installers ; /opt/local/bin/git clone -b ${branch} ${gitRoot} .; cd freemind ; /opt/local/bin/ant post"/>
     	</exec>
     	<exec dir="." executable="scp" os="Linux">
     		<arg value="foltin@${macName}:/tmp/fm_installers/post/*.dmg"/>
@@ -740,7 +740,8 @@
          ================================= -->
     <target name="installers_chris" depends="" description="--> Creates all installers. This is a task that only works on Chris laptops. But it should be informative to others who want to build the installers">
     	<property name="gitRoot" value="git://git.code.sf.net/p/freemind/code"/>
-		<property name="macName" value="mahler.local"/>
+	<property name="macName" value="mahler.local"/>
+	<property name="branch" value="1.1.0"/>
 
         <property name="inst.dir" location="/tmp/fm_installer"/>
         <property name="inst.dest.dir" location="../installers"/>
@@ -750,16 +751,18 @@
     	<mkdir dir="${inst.dir}"/>
     	<exec dir="." executable="git">
     		<arg value="clone"/>
+    		<arg value="-b"/>
+    		<arg value="${branch}"/>
     		<arg value="${gitRoot}"/>
     		<arg value="${inst.dir}/"/>
     	</exec>            
-		<copy todir="${inst.dir}/freemind" file="${freemind.buildnumber.file}"></copy>
+	<copy todir="${inst.dir}/freemind" file="${freemind.buildnumber.file}"></copy>
     	<ant dir="${inst.dir}/freemind" target="post" inheritall="false"></ant>
     	<copy todir="${inst.dest.dir}">
     		<fileset dir="${inst.dir}/post">
-			    <include name="*"/>
-			</fileset>
-		</copy>
+		    <include name="*"/>
+		</fileset>
+	</copy>
     	<copy todir="${inst.windows.installer}">
     		<fileset dir="../admin/installer/windows/">
 			    <include name="jre_installer.exe"/>
