@@ -170,6 +170,10 @@ public abstract class CommunicationBase extends TerminateableThread {
 			String out = pDirection + ": " + Tools.printXmlAction(doAction)
 					+ " (Id: " + trans.getId() + ")";
 			logger.info(out);
+		} else {
+			String out = pDirection + ": " + Tools.printXmlAction(pCommand);
+			logger.info(out);
+			
 		}
 	}
 

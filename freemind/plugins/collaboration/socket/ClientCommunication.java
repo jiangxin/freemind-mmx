@@ -37,6 +37,7 @@ import freemind.controller.actions.generated.instance.CollaborationHello;
 import freemind.controller.actions.generated.instance.CollaborationReceiveLock;
 import freemind.controller.actions.generated.instance.CollaborationRequireLock;
 import freemind.controller.actions.generated.instance.CollaborationTransaction;
+import freemind.controller.actions.generated.instance.CollaborationUnableToLock;
 import freemind.controller.actions.generated.instance.CollaborationUserInformation;
 import freemind.controller.actions.generated.instance.CollaborationWelcome;
 import freemind.controller.actions.generated.instance.CollaborationWhoAreYou;
@@ -55,6 +56,8 @@ import freemind.modes.mindmapmode.MindMapNodeModel;
  */
 public class ClientCommunication extends CommunicationBase {
 
+	private static final int MAX_LOCK_RETRIES = 5;
+	private static final long LOCK_RETRY_SLEEP_TIME = 1000;
 	private String mLockId;
 	private HashSet mLockIds = new HashSet();
 	private String mPassword;
@@ -164,6 +167,11 @@ public class ClientCommunication extends CommunicationBase {
 			setCurrentState(STATE_LOCK_RECEIVED);
 			commandHandled = true;
 		}
+		if (pCommand instanceof CollaborationUnableToLock) {
+			// no lock possible.
+			setCurrentState(STATE_IDLE);
+			commandHandled = true;
+		}
 		if (!commandHandled) {
 			logger.warning("Received unknown message of type "
 					+ pCommand.getClass());
@@ -201,20 +209,31 @@ public class ClientCommunication extends CommunicationBase {
 			UnableToGetLockException {
 		// TODO: Global lock needed?
 		mLockId = null;
-		CollaborationRequireLock lockRequest = new CollaborationRequireLock();
-		setCurrentState(STATE_WAIT_FOR_LOCK);
-		if (!send(lockRequest)) {
-			setCurrentState(STATE_IDLE);
-			throw new SocketBasics.UnableToGetLockException();
-		}
-		final int sleepTime = ROUNDTRIP_TIMEOUT / ROUNDTRIP_ROUNDS;
-		int timeout = ROUNDTRIP_ROUNDS;
-		while (getCurrentState() != STATE_LOCK_RECEIVED && timeout >= 0) {
-			sleep(sleepTime);
-			timeout--;
+		int lockTries = 0;
+		int timeout = 0;
+		while(lockTries < MAX_LOCK_RETRIES) {
+			CollaborationRequireLock lockRequest = new CollaborationRequireLock();
+			setCurrentState(STATE_WAIT_FOR_LOCK);
+			if (!send(lockRequest)) {
+				setCurrentState(STATE_IDLE);
+				throw new SocketBasics.UnableToGetLockException();
+			}
+			final int sleepTime = ROUNDTRIP_TIMEOUT / ROUNDTRIP_ROUNDS;
+			timeout = ROUNDTRIP_ROUNDS;
+			while (getCurrentState() == STATE_WAIT_FOR_LOCK && timeout >= 0) {
+				sleep(sleepTime);
+				timeout--;
+			}
+			if(getCurrentState() == STATE_LOCK_RECEIVED) {
+				break;
+			}
+			// error case, repeat lock question.
+			lockTries ++;
+			logger.info("Didn't receive a lock, current try: " + lockTries);
+			sleep(LOCK_RETRY_SLEEP_TIME);
 		}
 		setCurrentState(STATE_IDLE);
-		if (timeout < 0) {
+		if(lockTries == MAX_LOCK_RETRIES || timeout < 0) {
 			throw new SocketBasics.UnableToGetLockException();
 		}
 		return mLockId;

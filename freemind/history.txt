@@ -2,6 +2,7 @@
 * Fixed persistence of "complete cloning" across cut/paste.
 * Fixed save of notes, when containing tabs
 * Fixed restore of session when opening files from command line
+* Fixed #1178 [Shared map] Nodes are lost when moving them through drag & drop 
 Changes made in FreeMind 1.0.0 (final)
 ===============================
 * QuickLook fixed
