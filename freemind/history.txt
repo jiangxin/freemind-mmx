@@ -14,6 +14,7 @@ Changes made in FreeMind 1.1.0 Alpha 1
 * Fixed restore of session when opening files from command line
 * Update JMapViewer to version 1.02
 * Update jibx to 1.2.5 (java 7 compatibility)
+* Fixed #1178 [Shared map] Nodes are lost when moving them through drag & drop 
   
 ===============================
 Changes made in FreeMind 1.0.0 (final)

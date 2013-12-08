@@ -344,6 +344,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 		String doAction = getMindMapController().marshall(pPair.getDoAction());
 		String undoAction = getMindMapController().marshall(
 				pPair.getUndoAction());
+		logger.info("Require lock for command: " + doAction);
 		try {
 			String lockId = lock(getUserName());
 			/*

@@ -116,7 +116,7 @@ public class ScriptEditorPanel extends JDialog implements MenuListener {
 
 	private StopAction mStopAction;
 
-	private Vector<AbstractAction> mMenuActions = new Vector<>();
+	private Vector<AbstractAction> mMenuActions = new Vector<AbstractAction>();
 
 	private final class ResultFieldStream extends OutputStream {
 		public void write(int pByte) throws IOException {
