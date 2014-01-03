@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -45,9 +44,9 @@ public class FileNodeModel extends NodeAdapter {
 	// Constructors
 	//
 
-	public FileNodeModel(File file, FreeMindMain frame, MindMap map) {
-		super(frame, map);
-		setEdge(new FileEdgeModel(this, getFrame()));
+	public FileNodeModel(File file, MindMap map) {
+		super(null, map);
+		setEdge(new FileEdgeModel(this, getMapFeedback()));
 		this.file = file;
 		setFolded(!file.isFile());
 	}
@@ -141,7 +140,7 @@ public class FileNodeModel extends NodeAdapter {
 					File childFile = new File(path, files[i]);
 					if (!childFile.isHidden()) {
 						final FileNodeModel fileNodeModel = new FileNodeModel(
-								childFile, getFrame(), getMap());
+								childFile, getMap());
 						fileNodeModel.setLeft(isNewChildLeft());
 						insert(fileNodeModel, getChildCount());
 					}

@@ -55,12 +55,12 @@ import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindCommon;
-import freemind.main.FreeMindMain;
 import freemind.main.HtmlTools;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
+import freemind.modes.MindMap.MapFeedback;
 import freemind.modes.attributes.Attribute;
-import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.preferences.FreemindPropertyListener;
 import freemind.view.mindmapview.NodeView;
 import freemind.view.mindmapview.NodeViewVisitor;
@@ -131,56 +131,32 @@ public abstract class NodeAdapter implements MindMapNode {
 	 */
 	private MindMapEdge edge;
 	private Collection views = null;
-	private FreeMindMain frame;
+
 	private static final boolean ALLOWSCHILDREN = true;
 	private static final boolean ISLEAF = false; // all nodes may have children
-	/** read only empty attribute class */
-	private static final NodeAttributeTableModel EMTPY_ATTRIBUTES = new NodeAttributeTableModel(
-			null) {
-		public void insertRow(int index, String name, String value) {
-			throw new IllegalArgumentException(
-					"Can't set attributes in the EMTPY_ATTRIBUTES table.");
-		};
-
-		public void addRowNoUndo(Attribute newAttribute) {
-			throw new IllegalArgumentException(
-					"Can't set attributes in the EMTPY_ATTRIBUTES table.");
-		};
-
-		public Vector getAttributes() {
-			return new Vector();
-		};
-	};
-
 	private HistoryInformation historyInformation = null;
 	// Logging:
 	static protected java.util.logging.Logger logger;
 	private MindMap map = null;
-	private NodeAttributeTableModel attributes;
 	private String noteText;
 	private String xmlNoteText;
 	private static FreemindPropertyListener sSaveIdPropertyChangeListener;
 	private static boolean sSaveOnlyIntrinsicallyNeededIds = false;
-
+	private Vector<Attribute> mAttributeVector = null;
+	
 	//
 	// Constructors
 	//
 
-	protected NodeAdapter(FreeMindMain frame, MindMap map) {
-		this(null, frame, map);
-	}
-
-	protected NodeAdapter(Object userObject, FreeMindMain frame, MindMap map) {
-		this.frame = frame;
+	protected NodeAdapter(Object userObject, MindMap pMap) {
+		this.map = pMap;
 		setText((String) userObject);
 		hooks = null; // lazy, fc, 30.6.2005.
 		activatedHooks = null; // lazy, fc, 30.6.2005
 		if (logger == null)
-			logger = frame.getLogger(this.getClass().getName());
+			logger = Resources.getInstance().getLogger(this.getClass().getName());
 		// create creation time:
 		setHistoryInformation(new HistoryInformation());
-		this.map = map;
-		this.attributes = EMTPY_ATTRIBUTES;
 		if (sSaveIdPropertyChangeListener == null) {
 			sSaveIdPropertyChangeListener = new FreemindPropertyListener() {
 
@@ -201,9 +177,9 @@ public abstract class NodeAdapter implements MindMapNode {
 
 	/**
      */
-	public void setMap(MindMap map) {
-		this.map = map;
-		map.getRegistry().registrySubtree(this, true);
+	public void setMap(MindMap pMap) {
+		this.map = pMap;
+		pMap.getRegistry().registrySubtree(this, true);
 	}
 
 	public String getText() {
@@ -296,10 +272,6 @@ public abstract class NodeAdapter implements MindMapNode {
 		return filterInfo;
 	}
 
-	public FreeMindMain getFrame() {
-		return frame;
-	}
-
 	//
 	// Interface MindMapNode
 	//
@@ -375,10 +347,10 @@ public abstract class NodeAdapter implements MindMapNode {
 		String returnedString = style; /* Style string returned */
 		if (style == null) {
 			if (this.isRoot()) {
-				returnedString = getFrame().getProperty(
+				returnedString = getMapFeedback().getProperty(
 						FreeMind.RESOURCES_ROOT_NODE_STYLE);
 			} else {
-				String stdstyle = getFrame().getProperty(
+				String stdstyle = getMapFeedback().getProperty(
 						FreeMind.RESOURCES_NODE_STYLE);
 				if (stdstyle.equals(MindMapNode.STYLE_AS_PARENT)) {
 					returnedString = getParentNode().getStyle();
@@ -387,7 +359,7 @@ public abstract class NodeAdapter implements MindMapNode {
 				}
 			}
 		} else if (this.isRoot() && style.equals(MindMapNode.STYLE_AS_PARENT)) {
-			returnedString = getFrame().getProperty(
+			returnedString = getMapFeedback().getProperty(
 					FreeMind.RESOURCES_ROOT_NODE_STYLE);
 		} else if (style.equals(MindMapNode.STYLE_AS_PARENT)) {
 			returnedString = getParentNode().getStyle();
@@ -439,7 +411,7 @@ public abstract class NodeAdapter implements MindMapNode {
 	// font handling
 	//
 
-	// Remark to setBold and setItalic implemetation
+	// Remark to setBold and setItalic implementation
 	//
 	// Using deriveFont() is a bad idea, because it does not really choose
 	// the appropriate face. For example, instead of choosing face
@@ -448,8 +420,7 @@ public abstract class NodeAdapter implements MindMapNode {
 	// Node holds font only in the case that the font is not default.
 
 	public void establishOwnFont() {
-		font = (font != null) ? font : getFrame().getController()
-				.getDefaultFont();
+		font = (font != null) ? font : getMapFeedback().getDefaultFont();
 	}
 
 	public void setBold(boolean bold) {
@@ -460,7 +431,7 @@ public abstract class NodeAdapter implements MindMapNode {
 
 	public void toggleBold() {
 		establishOwnFont();
-		setFont(getFrame().getController().getFontThroughMap(
+		setFont(getMapFeedback().getFontThroughMap(
 				new Font(font.getFamily(), font.getStyle() ^ Font.BOLD, font
 						.getSize())));
 	}
@@ -473,7 +444,7 @@ public abstract class NodeAdapter implements MindMapNode {
 
 	public void toggleItalic() {
 		establishOwnFont();
-		setFont(getFrame().getController().getFontThroughMap(
+		setFont(getMapFeedback().getFontThroughMap(
 				new Font(font.getFamily(), font.getStyle() ^ Font.ITALIC, font
 						.getSize())));
 	}
@@ -492,7 +463,7 @@ public abstract class NodeAdapter implements MindMapNode {
 
 	public void setFontSize(int fontSize) {
 		establishOwnFont();
-		setFont(getFrame().getController().getFontThroughMap(
+		setFont(getMapFeedback().getFontThroughMap(
 				new Font(font.getFamily(), font.getStyle(), fontSize)));
 	}
 
@@ -504,7 +475,7 @@ public abstract class NodeAdapter implements MindMapNode {
 		if (getFont() != null) {
 			return new Integer(getFont().getSize()).toString();
 		} else {
-			return getFrame().getProperty("defaultfontsize");
+			return getMapFeedback().getProperty("defaultfontsize");
 		}
 	}
 
@@ -512,7 +483,7 @@ public abstract class NodeAdapter implements MindMapNode {
 		if (getFont() != null) {
 			return getFont().getFamily();
 		} else {
-			return getFrame().getProperty("defaultfont");
+			return getMapFeedback().getProperty("defaultfont");
 		}
 	}
 
@@ -629,7 +600,7 @@ public abstract class NodeAdapter implements MindMapNode {
 			this.save(writer, this.getMap().getLinkRegistry(), true, false);
 			String result = writer.toString();
 			HashMap IDToTarget = new HashMap();
-			MindMapNode copy = this.getModeController().createNodeTreeFromXml(
+			MindMapNode copy = this.getMapFeedback().createNodeTreeFromXml(
 					new StringReader(result), IDToTarget);
 			copy.setFolded(false);
 			return copy;
@@ -642,6 +613,13 @@ public abstract class NodeAdapter implements MindMapNode {
 	//
 	// other
 	//
+
+	/**
+	 * @return
+	 */
+	protected MapFeedback getMapFeedback() {
+		return getMap().getMapFeedback();
+	}
 
 	public String toString() {
 		return getText();
@@ -1101,7 +1079,7 @@ public abstract class NodeAdapter implements MindMapNode {
 	public XMLElement save(Writer writer, MindMapLinkRegistry registry,
 			boolean saveInvisible, boolean saveChildren) throws IOException {
 		// pre save event to save all contents of the node:
-		getModeController().firePreSaveEvent(this);
+		getMapFeedback().firePreSaveEvent(this);
 		XMLElement node = new XMLElement();
 
 		// if (!isNodeClassToBeSaved()) {
@@ -1274,8 +1252,17 @@ public abstract class NodeAdapter implements MindMapNode {
 			permHook.save(hookElement);
 			node.addChild(hookElement);
 		}
+		if (mAttributeVector != null) {
+			for (int i = 0; i < mAttributeVector.size(); i++) {
+				XMLElement attributeElement = new XMLElement();
+				attributeElement.setName(XMLElementAdapter.XML_NODE_ATTRIBUTE);
+				Attribute attr = (Attribute) mAttributeVector.get(i);
+				attributeElement.setAttribute("NAME", attr.getName());
+				attributeElement.setAttribute("VALUE", attr.getValue());
+				node.addChild(attributeElement);
+			}
+		}
 
-		attributes.save(node);
 		if (saveChildren && childrenUnfolded().hasNext()) {
 			node.writeWithoutClosingTag(writer);
 			// recursive
@@ -1290,10 +1277,6 @@ public abstract class NodeAdapter implements MindMapNode {
 	public static String convertToEncodedContent(String xmlText2) {
 		String replace = HtmlTools.makeValidXml(xmlText2);
 		return HtmlTools.unicodeToHTMLUnicodeEntity(replace, true);
-	}
-
-	public ModeController getModeController() {
-		return map.getModeController();
 	}
 
 	private void saveChildren(Writer writer, MindMapLinkRegistry registry,
@@ -1409,74 +1392,6 @@ public abstract class NodeAdapter implements MindMapNode {
 		return filter == null || filter.isVisible(this);
 	}
 
-	public NodeAttributeTableModel getAttributes() {
-		return attributes;
-	}
-
-	public void createAttributeTableModel() {
-		if (attributes == EMTPY_ATTRIBUTES) {
-			attributes = new NodeAttributeTableModel(this);
-			if (views == null) {
-				return;
-			}
-			final Iterator iterator = views.iterator();
-			while (iterator.hasNext()) {
-				NodeView view = (NodeView) iterator.next();
-				view.createAttributeView();
-			}
-		}
-
-	}
-
-	public int getAttributeTableLength() {
-		return attributes.getRowCount();
-	}
-
-	public Attribute getAttribute(int pPosition) {
-		return new Attribute(attributes.getAttribute(pPosition));
-	}
-
-	public List getAttributeKeyList() {
-		Vector returnValue = new Vector();
-		if (attributes != null) {
-			for (Iterator iter = attributes.getAttributes().iterator(); iter
-					.hasNext();) {
-				Attribute attr = (Attribute) iter.next();
-				returnValue.add(attr.getName());
-			}
-		}
-		return returnValue;
-	}
-
-	public int getAttributePosition(String pKey) {
-		if (pKey == null)
-			return -1;
-		int pos = 0;
-		for (Iterator iter = attributes.getAttributes().iterator(); iter
-				.hasNext();) {
-			Attribute attr = (Attribute) iter.next();
-			if (pKey.equals(attr.getName())) {
-				return pos;
-			}
-			pos++;
-		}
-		return -1;
-	}
-
-	public String getAttribute(String pKey) {
-		int attributePosition = getAttributePosition(pKey);
-		if (attributePosition < 0) {
-			return null;
-		}
-		return getAttribute(attributePosition).getValue();
-	}
-
-	public void setAttribute(int pPosition, Attribute pAttribute) {
-		createAttributeTableModel();
-		attributes.setName(pPosition, pAttribute.getName());
-		attributes.setValue(pPosition, pAttribute.getValue());
-	}
-
 	EventListenerList listenerList = new EventListenerList();
 
 	public void addTreeModelListener(TreeModelListener l) {
@@ -1506,6 +1421,93 @@ public abstract class NodeAdapter implements MindMapNode {
 
 	}
 	//
-	// Events
+	// Attributes
 	//
+
+	@Override
+	public List getAttributeKeyList() {
+		if(mAttributeVector==null) {
+			return Collections.EMPTY_LIST;
+		}
+		return getAttributeVector();
+	}
+
+	@Override
+	public int getAttributeTableLength() {
+		if(mAttributeVector==null) {
+			return 0;
+		}
+		return getAttributeVector().size();
+	}
+
+	@Override
+	public Attribute getAttribute(int pPosition) {
+		checkAttributePosition(pPosition);
+		return getAttributeVector().get(pPosition);
+	}
+
+	/**
+	 * @param pPosition
+	 */
+	private void checkAttributePosition(int pPosition) {
+		if(mAttributeVector == null || getAttributeTableLength()<= pPosition) {
+			throw new IllegalArgumentException("Attribute position out of range: " + pPosition);
+		}
+	}
+
+	@Override
+	public String getAttribute(String pKey) {
+		if(mAttributeVector==null) {
+			return null;
+		}
+		for (Attribute attr : mAttributeVector) {
+			if(Tools.safeEquals(attr.getName(), pKey)) {
+				return attr.getValue();
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public int getAttributePosition(String pKey) {
+		if(mAttributeVector==null) {
+			return -1;
+		}
+		int index = 0;
+		for (Attribute attr : mAttributeVector) {
+			if(Tools.safeEquals(attr.getName(), pKey)) {
+				return index;
+			}
+			index++;
+		}
+		return -1;
+	}
+
+	@Override
+	public void setAttribute(int pPosition, Attribute pAttribute) {
+		checkAttributePosition(pPosition);
+		mAttributeVector.set(pPosition, pAttribute);
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#addAttribute(freemind.modes.attributes.Attribute)
+	 */
+	@Override
+	public int addAttribute(Attribute pAttribute) {
+		getAttributeVector().add(pAttribute);
+		return getAttributeVector().indexOf(pAttribute);
+	}
+	
+	@Override
+	public void removeAttribute(int pPosition) {
+		checkAttributePosition(pPosition);
+		mAttributeVector.remove(pPosition);
+	}
+	
+	private Vector<Attribute> getAttributeVector() {
+		if(mAttributeVector==null) {
+			mAttributeVector = new Vector<Attribute>();
+		}
+		return mAttributeVector;
+	}
 }

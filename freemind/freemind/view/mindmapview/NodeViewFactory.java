@@ -195,7 +195,7 @@ class NodeViewFactory {
 	}
 
 	private void fireNodeViewCreated(NodeView newView) {
-		newView.getMap().getModel().getModeController()
+		newView.getMap().getViewFeedback()
 				.onViewCreatedHook(newView);
 	}
 

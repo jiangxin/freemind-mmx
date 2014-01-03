@@ -24,6 +24,7 @@ package tests.freemind;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.MouseEvent;
 import java.io.File;
@@ -51,7 +52,6 @@ import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
-import freemind.modes.attributes.AttributeController;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
@@ -182,16 +182,6 @@ public class MindMapControllerMock implements ModeController {
 	public void firePreSaveEvent(MindMapNode node) {
 		// TODO Auto-generated method stub
 
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see freemind.modes.ModeController#getAttributeController()
-	 */
-	public AttributeController getAttributeController() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/*
@@ -422,7 +412,7 @@ public class MindMapControllerMock implements ModeController {
 	 * 
 	 * @see freemind.modes.ModeController#newMap()
 	 */
-	public MindMap newMap() {
+	public ModeController newMap() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -757,5 +747,86 @@ public class MindMapControllerMock implements ModeController {
 	public void setToolTip(MindMapNode pNode, String pKey, String pValue) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.ModeController#setSaved(boolean)
+	 */
+	@Override
+	public void setSaved(boolean pIsClean) {
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#insertNodeInto(freemind.modes.MindMapNode, freemind.modes.MindMapNode, int)
+	 */
+	@Override
+	public void insertNodeInto(MindMapNode pNewNode, MindMapNode pParent,
+			int pIndex) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#paste(freemind.modes.MindMapNode, freemind.modes.MindMapNode)
+	 */
+	@Override
+	public void paste(MindMapNode pNode, MindMapNode pParent) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#getResourceString(java.lang.String)
+	 */
+	@Override
+	public String getResourceString(String pTextId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#getProperty(java.lang.String)
+	 */
+	@Override
+	public String getProperty(String pResourceId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#out(java.lang.String)
+	 */
+	@Override
+	public void out(String pFormat) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#getDefaultFont()
+	 */
+	@Override
+	public Font getDefaultFont() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#getFontThroughMap(java.awt.Font)
+	 */
+	@Override
+	public Font getFontThroughMap(Font pFont) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.ModeController#loadTree(freemind.modes.ModeController.ReaderCreator, boolean)
+	 */
+	@Override
+	public MindMapNode loadTree(ReaderCreator pReaderCreator,
+			boolean pAskUserBeforeUpdate) throws XMLParseException, IOException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

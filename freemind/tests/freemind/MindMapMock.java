@@ -56,10 +56,6 @@ public class MindMapMock implements MindMap {
 
 	}
 
-	public ModeController getModeController() {
-		return null;
-	}
-
 	public void nodeChanged(TreeNode node) {
 	}
 
@@ -174,7 +170,8 @@ public class MindMapMock implements MindMap {
 	public void nodeStructureChanged(TreeNode node) {
 	}
 
-	public void setSaved(boolean isSaved) {
+	public boolean setSaved(boolean isSaved) {
+		return true;
 	}
 
 	public boolean isSaved() {
@@ -213,6 +210,23 @@ public class MindMapMock implements MindMap {
 	public void changeRoot(MindMapNode pNewRoot) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap#setReadOnly(boolean)
+	 */
+	@Override
+	public void setReadOnly(boolean pIsReadOnly) {
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap#getMapFeedback()
+	 */
+	@Override
+	public MapFeedback getMapFeedback() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -24,13 +24,13 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Vector;
 
-import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
 import freemind.modes.ArrowLinkAdapter;
 import freemind.modes.ArrowLinkTarget;
 import freemind.modes.CloudAdapter;
 import freemind.modes.EdgeAdapter;
 import freemind.modes.MindMap;
+import freemind.modes.MindMap.MapFeedback;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.XMLElementAdapter;
@@ -67,9 +67,9 @@ public class MindMapXMLElement extends XMLElementAdapter {
 				mIdToTarget);
 	}
 
-	protected NodeAdapter createNodeAdapter(FreeMindMain frame, String nodeClass) {
+	protected NodeAdapter createNodeAdapter(MapFeedback pMapFeedback, String nodeClass) {
 		if (nodeClass == null) {
-			return new MindMapNodeModel(frame, getMap());
+			return new MindMapNodeModel(getMap());
 		}
 		// reflection:
 		try {
@@ -78,8 +78,8 @@ public class MindMapXMLElement extends XMLElementAdapter {
 			// constructed.
 			Class nodeJavaClass = Class.forName(nodeClass, true, loader);
 			Class[] constrArgs = new Class[] { Object.class,
-					FreeMindMain.class, MindMap.class };
-			Object[] constrObjs = new Object[] { null, frame, getMap() };
+					MindMap.class };
+			Object[] constrObjs = new Object[] { null, getMap() };
 			Constructor constructor = nodeJavaClass.getConstructor(constrArgs);
 			NodeAdapter nodeImplementor = (NodeAdapter) constructor
 					.newInstance(constrObjs);
@@ -88,32 +88,32 @@ public class MindMapXMLElement extends XMLElementAdapter {
 			freemind.main.Resources.getInstance().logException(e,
 					"Error occurred loading node implementor: " + nodeClass);
 			// the best we can do is to return the normal class:
-			NodeAdapter node = new MindMapNodeModel(frame, getMap());
+			NodeAdapter node = new MindMapNodeModel(getMap());
 			return node;
 		}
 	}
 
-	protected EdgeAdapter createEdgeAdapter(NodeAdapter node, FreeMindMain frame) {
-		return new MindMapEdgeModel(node, frame);
+	protected EdgeAdapter createEdgeAdapter(NodeAdapter node, MapFeedback pMapFeedback) {
+		return new MindMapEdgeModel(node, pMapFeedback);
 	}
 
 	protected CloudAdapter createCloudAdapter(NodeAdapter node,
-			FreeMindMain frame) {
-		return new MindMapCloudModel(node, frame);
+			MapFeedback pMapFeedback) {
+		return new MindMapCloudModel(node, pMapFeedback);
 	}
 
 	protected ArrowLinkAdapter createArrowLinkAdapter(NodeAdapter source,
-			NodeAdapter target, FreeMindMain frame) {
-		return new MindMapArrowLinkModel(source, target, frame);
+			NodeAdapter target, MapFeedback pMapFeedback) {
+		return new MindMapArrowLinkModel(source, target, pMapFeedback);
 	}
 
 	protected ArrowLinkTarget createArrowLinkTarget(NodeAdapter source,
-			NodeAdapter target, FreeMindMain frame) {
-		return new ArrowLinkTarget(source, target, frame);
+			NodeAdapter target, MapFeedback pMapFeedback) {
+		return new ArrowLinkTarget(source, target, pMapFeedback);
 	}
 	
 	protected NodeAdapter createEncryptedNode(String additionalInfo) {
-		NodeAdapter node = createNodeAdapter(frame,
+		NodeAdapter node = createNodeAdapter(mModeController,
 				EncryptedMindMapNode.class.getName());
 		setUserObject(node);
 		copyAttributesToNode(node);

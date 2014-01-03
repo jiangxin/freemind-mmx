@@ -25,6 +25,7 @@ import java.awt.Point;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
+import freemind.modes.MindMap.MapFeedback;
 
 public abstract class ArrowLinkAdapter extends LinkAdapter implements
 		MindMapArrowLink {
@@ -38,8 +39,8 @@ public abstract class ArrowLinkAdapter extends LinkAdapter implements
 	protected boolean showControlPointsFlag;
 
 	public ArrowLinkAdapter(MindMapNode source, MindMapNode target,
-			FreeMindMain frame) {
-		super(source, target, frame);
+			MapFeedback pMapFeedback) {
+		super(source, target, pMapFeedback);
 		startArrow = "None";
 		endArrow = "Default";
 	}
@@ -152,7 +153,7 @@ public abstract class ArrowLinkAdapter extends LinkAdapter implements
 	}
 	
 	public ArrowLinkTarget createArrowLinkTarget(MindMapLinkRegistry pRegistry) {
-		ArrowLinkTarget linkTarget = new ArrowLinkTarget(source, target, frame);
+		ArrowLinkTarget linkTarget = new ArrowLinkTarget(source, target, mMapFeedback);
 		linkTarget.setSourceLabel(pRegistry.getLabel(source));
 		copy(linkTarget);
 		return linkTarget;

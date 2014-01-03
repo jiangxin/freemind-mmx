@@ -26,8 +26,6 @@ package freemind.modes.mindmapmode.actions.xml;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
-import freemind.modes.attributes.AttributeController;
-import freemind.modes.attributes.AttributeRegistry;
 import freemind.modes.mindmapmode.MindMapController;
 
 public abstract class AbstractActorXml implements ActorXml {
@@ -45,14 +43,6 @@ public abstract class AbstractActorXml implements ActorXml {
 
 	protected String getNodeID(MindMapNode node) {
 		return mindMapModeController.getNodeID(node);
-	}
-
-	protected AttributeController getAttributeController() {
-		return mindMapModeController.getAttributeController();
-	}
-
-	protected AttributeRegistry getAttributeRegistry() {
-		return mindMapModeController.getMap().getRegistry().getAttributes();
 	}
 
 	protected CompoundAction createCompoundAction() {

@@ -23,6 +23,9 @@ package freemind.modes.filemode;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -33,6 +36,7 @@ import javax.swing.JToolBar;
 import freemind.controller.MenuBar;
 import freemind.controller.StructuredMenuHolder;
 import freemind.extensions.HookFactory;
+import freemind.main.XMLParseException;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
@@ -59,11 +63,13 @@ public class FileController extends ViewControllerAdapter {
 	}
 
 	public MapAdapter newModel(ModeController modeController) {
-		return new FileMapModel(getFrame(), modeController);
+		FileMapModel model = new FileMapModel(getFrame(), modeController);
+		modeController.setModel(model);
+		return model;
 	}
 
 	public MindMapNode newNode(Object userObject, MindMap map) {
-		return new FileNodeModel((File) userObject, getFrame(), map);
+		return new FileNodeModel((File) userObject, map);
 	}
 
 	public JPopupMenu getPopupMenu() {
@@ -89,7 +95,7 @@ public class FileController extends ViewControllerAdapter {
 						 * Constructor needs a new instance of a modecontroller.
 						 */
 						FileController.this);
-				newMap(map);
+				newMap(map, FileController.this);
 			}
 		}
 	}
@@ -111,7 +117,7 @@ public class FileController extends ViewControllerAdapter {
 					 * needs a new instance of a modecontroller.
 					 */
 					FileController.this);
-					newMap(map);
+					newMap(map, FileController.this);
 				}
 			}
 		}
@@ -151,6 +157,23 @@ public class FileController extends ViewControllerAdapter {
 		if (node.hasChildren() && !node.isRoot()) {
 			setFolded(node, !node.isFolded());
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.ControllerAdapter#loadInternally(java.net.URL, freemind.modes.MapAdapter)
+	 */
+	@Override
+	protected void loadInternally(URL pUrl, MapAdapter pModel)
+			throws URISyntaxException, XMLParseException, IOException {
+		// empty on purpose.
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#out(java.lang.String)
+	 */
+	@Override
+	public void out(String pFormat) {
+		getFrame().out(pFormat);
 	}
 
 }

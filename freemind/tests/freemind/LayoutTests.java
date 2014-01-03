@@ -73,18 +73,15 @@ public class LayoutTests extends FreeMindTestBase {
 		};
 		mode.init(controller);
 		MindMapController mc = (MindMapController) mode.createModeController();
-		mModel = new MindMapMapModel(mFreeMindMain, mc);
+		mModel = new MindMapMapModel(mc);
 		mc.setModel(mModel);
-		mRoot = new MindMapNodeModel("ROOT", mFreeMindMain,
-				mModel);
-		mChild1 = new MindMapNodeModel("CHILD1", mFreeMindMain,
-				mModel);
+		mRoot = new MindMapNodeModel("ROOT", mModel);
+		mChild1 = new MindMapNodeModel("CHILD1", mModel);
 		mRoot.insert(mChild1, 0);
-		mChild2 = new MindMapNodeModel("CHILD2", mFreeMindMain,
-				mModel);
+		mChild2 = new MindMapNodeModel("CHILD2", mModel);
 		mRoot.insert(mChild2, 1);
 		mModel.setRoot(mRoot);
-		mMapView = new MapView(mModel, controller) {
+		mMapView = new MapView(mModel, controller, mc) {
 			DragGestureListener getNodeDragListener() {
 				return null;
 			}
@@ -134,8 +131,7 @@ public class LayoutTests extends FreeMindTestBase {
 	}
 	
 	public void testYShiftNegativeWith3Childs() throws Exception {
-		MindMapNodeModel child3 = new MindMapNodeModel("CHILD3", mFreeMindMain,
-				mModel);
+		MindMapNodeModel child3 = new MindMapNodeModel("CHILD3", mModel);
 		mModel.insertNodeInto(child3, mRoot, 2);
 		layout(mMapView);
 		int yCoordinate = getYCoordinate(mChild2);
@@ -165,8 +161,7 @@ public class LayoutTests extends FreeMindTestBase {
 	}
 	
 	public void testYShiftNegativeWith3ChildsWithRootMovement() throws Exception {
-		MindMapNodeModel child3 = new MindMapNodeModel("CHILD3", mFreeMindMain,
-				mModel);
+		MindMapNodeModel child3 = new MindMapNodeModel("CHILD3", mModel);
 		mModel.insertNodeInto(child3, mRoot, 2);
 		layout(mMapView);
 		int yCoordinate = getYCoordinateToViewport(mChild2);
@@ -185,8 +180,7 @@ public class LayoutTests extends FreeMindTestBase {
 	}
 	
 	public void testYShiftNegativeWith3ChildsYCalcToRoot() throws Exception {
-		MindMapNodeModel child3 = new MindMapNodeModel("CHILD3", mFreeMindMain,
-				mModel);
+		MindMapNodeModel child3 = new MindMapNodeModel("CHILD3", mModel);
 		mModel.insertNodeInto(child3, mRoot, 2);
 		layout(mMapView);
 		int yCoordinateRoot = getYCoordinate(mRoot);

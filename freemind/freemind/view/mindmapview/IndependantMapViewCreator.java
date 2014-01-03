@@ -95,10 +95,8 @@ public class IndependantMapViewCreator {
 		};
 		mode.init(controller);
 		MindMapController mc = (MindMapController) mode.createModeController();
-		MindMapMapModel model = new MindMapMapModel(pFreeMindMain, mc);
-		mc.setModel(model);
-		model.load(new File(inputFileName));
-		MapView mapView = createMapView(controller, model);
+		mc = (MindMapController) mc.load(new File(inputFileName));
+		MapView mapView = createMapView(controller, mc.getMindMapMapModel(), mc);
 		parent.add(mapView, BorderLayout.CENTER);
 		mc.setView(mapView);
 		mapView.setBounds(parent.getBounds());
@@ -140,8 +138,8 @@ public class IndependantMapViewCreator {
 		out1.close();
 	}
 
-	protected MapView createMapView(Controller controller, MindMapMapModel model) {
-		MapView mapView = new MapView(model, controller) {
+	protected MapView createMapView(Controller controller, MindMapMapModel model, MindMapController pViewFeedback) {
+		MapView mapView = new MapView(model, controller, pViewFeedback) {
 			DragGestureListener getNodeDragListener() {
 				return null;
 			}

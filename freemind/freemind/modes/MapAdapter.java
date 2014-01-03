@@ -21,10 +21,7 @@
 package freemind.modes;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Date;
 import java.util.HashSet;
@@ -45,8 +42,8 @@ import freemind.controller.filter.DefaultFilter;
 import freemind.controller.filter.Filter;
 import freemind.controller.filter.condition.NoFilteringCondition;
 import freemind.main.FreeMindMain;
+import freemind.main.Resources;
 import freemind.main.Tools;
-import freemind.main.XMLParseException;
 
 public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 
@@ -59,23 +56,20 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 	protected boolean readOnly = true;
 	private File file;
 	private long mFileTime = 0;
-	private FreeMindMain frame;
 	static protected Logger logger;
 	private MapRegistry registry;
 	private Filter filter = null;
-	protected final ModeController mModeController;
 	private HashSet mMapSourceChangedObserverSet = new HashSet();
 	private Timer mTimerForFileChangeObservation;
+	private MapFeedback mMapFeedback;
 
-	public MapAdapter(FreeMindMain frame, ModeController modeController) {
+	public MapAdapter(MindMap.MapFeedback mapFeedback) {
 		super(null);
-		this.frame = frame;
-		this.mModeController = modeController;
-		mModeController.setModel(this);
+		this.mMapFeedback = mapFeedback;
 		if (logger == null) {
-			logger = frame.getLogger(this.getClass().getName());
+			logger = Resources.getInstance().getLogger(this.getClass().getName());
 		}
-		registry = new MapRegistry(this, modeController);
+		registry = new MapRegistry(this);
 		filter = new DefaultFilter(NoFilteringCondition.createCondition(),
 				true, false);
 		mTimerForFileChangeObservation = new Timer();
@@ -83,10 +77,6 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 				new FileChangeInspectorTimerTask(),
 				INTERVAL_BETWEEN_FILE_MODIFICATION_TIME_CHECKS,
 				INTERVAL_BETWEEN_FILE_MODIFICATION_TIME_CHECKS);
-	}
-
-	public ModeController getModeController() {
-		return mModeController;
 	}
 
 	protected class FileChangeInspectorTimerTask extends TimerTask {
@@ -130,7 +120,7 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 	 * Instantiations of this class must call this, when a map was loaded or
 	 * saved.
 	 */
-	protected void setFileTime() {
+	public void setFileTime() {
 		mFileTime = getFileTime();
 	}
 
@@ -144,16 +134,6 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 			lastModified = 0;
 		}
 		return lastModified;
-	}
-
-	public void load(File file) throws FileNotFoundException, IOException {
-		try {
-			load(Tools.fileToUrl(file));
-		} catch (XMLParseException e) {
-			freemind.main.Resources.getInstance().logException(e);
-		} catch (URISyntaxException e) {
-			freemind.main.Resources.getInstance().logException(e);
-		}
 	}
 
 	/**
@@ -187,16 +167,12 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 	 */
 	private void removeNodes(MindMapNode node) {
 		node.removeAllHooks();
-		mModeController.fireNodePreDeleteEvent(node);
+		mMapFeedback.fireNodePreDeleteEvent(node);
 		// and all children:
 		for (Iterator i = node.childrenUnfolded(); i.hasNext();) {
 			MindMapNode child = (MindMapNode) i.next();
 			removeNodes(child);
 		}
-	}
-
-	public FreeMindMain getFrame() {
-		return frame;
 	}
 
 	//
@@ -210,6 +186,10 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 	public boolean isReadOnly() {
 		return readOnly;
 	}
+	
+	public void setReadOnly(boolean pIsReadOnly) {
+		readOnly = pIsReadOnly;
+	}
 
 	/**
 	 * Counts the amount of actions performed.
@@ -217,7 +197,7 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 	 * @param saved
 	 *            true if the file was saved recently. False otherwise.
 	 */
-	public void setSaved(boolean saved) {
+	public boolean setSaved(boolean saved) {
 		boolean setTitle = false;
 		if (saved) {
 			changesPerformedSinceLastSave = 0;
@@ -228,9 +208,7 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 			}
 			++changesPerformedSinceLastSave;
 		}
-		if (setTitle) {
-			getModeController().getController().setTitle();
-		}
+		return setTitle;
 	}
 
 	protected int getNumberOfChangesSinceLastSave() {
@@ -299,12 +277,12 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 		return getFile() != null ? Tools.fileToUrl(getFile()) : null;
 	}
 
-	protected void setFile(File file) {
+	public void setFile(File file) {
 		this.file = file;
 	}
 
 	protected String getText(String textId) {
-		return getFrame().getResourceString(textId);
+		return getMapFeedback().getResourceString(textId);
 	}
 
 	//
@@ -335,11 +313,11 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 	 * This method should not be called directly!
 	 */
 	public void nodeChanged(TreeNode node) {
-		getModeController().nodeChanged((MindMapNode) node);
+		mMapFeedback.nodeChanged((MindMapNode) node);
 	}
 
 	public void nodeRefresh(TreeNode node) {
-		getModeController().nodeRefresh((MindMapNode) node);
+		mMapFeedback.nodeRefresh((MindMapNode) node);
 	}
 
 	/**
@@ -510,6 +488,10 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 			MapSourceChangedObserver pMapSourceChangedObserver) {
 		mMapSourceChangedObserverSet.remove(pMapSourceChangedObserver);
 		return mFileTime;
+	}
+
+	public MapFeedback getMapFeedback() {
+		return mMapFeedback;
 	}
 
 }

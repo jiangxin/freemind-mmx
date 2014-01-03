@@ -27,7 +27,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import freemind.main.FreeMindMain;
 import freemind.main.HtmlTools;
 import freemind.modes.MindMap;
 import freemind.modes.NodeAdapter;
@@ -42,14 +41,14 @@ public class MindMapNodeModel extends NodeAdapter {
 	// Constructors
 	//
 
-	public MindMapNodeModel(FreeMindMain frame, MindMap map) {
-		this(null, frame, map);
+	public MindMapNodeModel(MindMap pMap) {
+		this(null,pMap);
 	}
 
-	public MindMapNodeModel(Object userObject, FreeMindMain frame, MindMap map) {
-		super(userObject, frame, map);
+	public MindMapNodeModel(Object userObject, MindMap pMap) {
+		super(userObject, pMap);
 		children = new LinkedList();
-		setEdge(new MindMapEdgeModel(this, getFrame()));
+		setEdge(new MindMapEdgeModel(this, getMapFeedback()));
 	}
 
 	//

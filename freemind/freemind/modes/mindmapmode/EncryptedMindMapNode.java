@@ -29,7 +29,6 @@ import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.tree.MutableTreeNode;
 
-import freemind.main.FreeMindMain;
 import freemind.main.HtmlTools;
 import freemind.main.Tools.SingleDesEncrypter;
 import freemind.main.XMLElement;
@@ -73,9 +72,8 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 
 	/**
      */
-	public EncryptedMindMapNode(Object userObject, FreeMindMain frame,
-			MindMap map) {
-		super(userObject, frame, map);
+	public EncryptedMindMapNode(Object userObject, MindMap map) {
+		super(userObject, map);
 		if (encryptedIcon == null) {
 			encryptedIcon = MindIcon.factory("encrypted").getIcon();
 		}
@@ -105,7 +103,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 				MindMapNode node = null;
 				String childXml = decryptXml(encryptedContent, password);
 				// is it a map at all?
-				if (childXml.startsWith(MindMapMapModel.MAP_INITIAL_START)) {
+				if (childXml.startsWith(MindMapController.MAP_INITIAL_START)) {
 					node = getNodeFromXml(childXml);
 				} else {
 					// old handling up to version 0.9.0_rc8:
@@ -113,7 +111,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 							.split(ModeController.NODESEPARATOR);
 					// and now? paste it:
 					// make a 0.8.0 map out of it:
-					String mapContent = MindMapMapModel.MAP_INITIAL_START
+					String mapContent = MindMapController.MAP_INITIAL_START
 							+ "0.8.0\"><node TEXT=\"DUMMY\">";
 					for (int j = 0; j < childs.length; j++) {
 						String nodeContent = childs[j];
@@ -125,7 +123,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 				int index = 0;
 				for (ListIterator i = node.childrenUnfolded(); i.hasNext();) {
 					MindMapNodeModel importNode = (MindMapNodeModel) i.next();
-					((MindMapController) getModeController()).insertNodeInto(
+					getMapFeedback().insertNodeInto(
 							importNode, this, index++);
 				}
 				isDecrypted = true;
@@ -140,13 +138,13 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 	}
 
 	private void paste(MindMapNodeModel importNode) {
-		((MindMapController) getModeController()).paste(importNode, this);
+		getMapFeedback().paste(importNode, this);
 	}
 
-	private MindMapNodeModel getNodeFromXml(String childXml) throws IOException {
+	private MindMapNode getNodeFromXml(String childXml) throws IOException {
 		// the loadTree method performs an automatical version update.
-		MindMapNodeModel node = getMindMapMapModel().loadTree(
-				new MindMapMapModel.StringReaderCreator(childXml), false);
+		MindMapNode node = getMapFeedback().loadTree(
+				new MindMapController.StringReaderCreator(childXml), false);
 		return node;
 	}
 

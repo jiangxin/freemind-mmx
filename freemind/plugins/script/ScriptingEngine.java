@@ -46,7 +46,6 @@ import freemind.main.FreeMindSecurityManager;
 import freemind.main.Tools;
 import freemind.main.Tools.BooleanHolder;
 import freemind.modes.MindMapNode;
-import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.hooks.MindMapHookAdapter;
 import groovy.lang.Binding;
@@ -109,27 +108,28 @@ public class ScriptingEngine extends MindMapHookAdapter {
 			MindMapNode element = (MindMapNode) iter.next();
 			performScriptOperation(element, pAlreadyAScriptExecuted);
 		}
-		NodeAttributeTableModel attributes = node.getAttributes();
+		// FIXME: Scripts
+		Object attributes = null;
 		if (attributes == null)
 			return;
-		for (int row = 0; row < attributes.getRowCount(); ++row) {
-			String attrKey = (String) attributes.getName(row);
-			String script = (String) attributes.getValue(row);
-			logger.info("Found key = " + attrKey);
-			if (attrKey.startsWith(SCRIPT_PREFIX)) {
-				// get cookies from base plugin:
-				ScriptingRegistration reg = (ScriptingRegistration) getPluginBaseClass();
-
-				boolean result = executeScript(node, pAlreadyAScriptExecuted,
-						script, getMindMapController(), new ErrorHandler() {
-							public void gotoLine(int pLineNumber) {
-							}
-						}, System.out, reg.getScriptCookies());
-				if (!result) {
-					break;
-				}
-			}
-		}
+//		for (int row = 0; row < attributes.getRowCount(); ++row) {
+//			String attrKey = (String) attributes.getName(row);
+//			String script = (String) attributes.getValue(row);
+//			logger.info("Found key = " + attrKey);
+//			if (attrKey.startsWith(SCRIPT_PREFIX)) {
+//				// get cookies from base plugin:
+//				ScriptingRegistration reg = (ScriptingRegistration) getPluginBaseClass();
+//
+//				boolean result = executeScript(node, pAlreadyAScriptExecuted,
+//						script, getMindMapController(), new ErrorHandler() {
+//							public void gotoLine(int pLineNumber) {
+//							}
+//						}, System.out, reg.getScriptCookies());
+//				if (!result) {
+//					break;
+//				}
+//			}
+//		}
 	}
 
 	public static int findLineNumberInString(String resultString, int lineNumber) {
@@ -350,8 +350,8 @@ public class ScriptingEngine extends MindMapHookAdapter {
 			if (assignTo == null) {
 				pMindMapController.setNodeText(node, value.toString());
 			} else {
-				pMindMapController.editAttribute(node, assignTo,
-						value.toString());
+//FIXME:				pMindMapController.editAttribute(node, assignTo,
+//						value.toString());
 			}
 		}
 		return true;

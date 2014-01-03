@@ -31,10 +31,15 @@ import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.swing.filechooser.FileFilter;
+
 import tests.freemind.FreeMindMainMock;
 import freemind.common.NamedObject;
 import freemind.common.TextTranslator;
 import freemind.main.FreeMindMain.VersionInformation;
+import freemind.modes.FreeMindAwtFileDialog;
+import freemind.modes.FreeMindFileDialog;
+import freemind.modes.FreeMindJFileDialog;
 
 /**
  * @author Dimitri Polivaev 12.07.2005
@@ -165,4 +170,20 @@ public class Resources implements TextTranslator {
 	public String getText(String pKey) {
 		return getResourceString(pKey);
 	}
+	
+	public FreeMindFileDialog getStandardFileChooser(FileFilter filter) {
+		FreeMindFileDialog chooser;
+		if (!Tools.isMacOsX()) {
+			chooser = new FreeMindJFileDialog();
+		} else {
+			// only for mac
+			chooser = new FreeMindAwtFileDialog();
+		}
+		if (filter != null) {
+			chooser.addChoosableFileFilterAsDefault(filter);
+		}
+		return chooser;
+	}
+
+
 }

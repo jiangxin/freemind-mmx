@@ -23,12 +23,12 @@ package freemind.modes.browsemode;
 import java.util.HashMap;
 import java.util.Vector;
 
-import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
 import freemind.modes.ArrowLinkAdapter;
 import freemind.modes.ArrowLinkTarget;
 import freemind.modes.CloudAdapter;
 import freemind.modes.EdgeAdapter;
+import freemind.modes.MindMap.MapFeedback;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.XMLElementAdapter;
@@ -57,35 +57,35 @@ public class BrowseXMLElement extends XMLElementAdapter {
 				mIdToTarget);
 	}
 
-	protected NodeAdapter createNodeAdapter(FreeMindMain frame, String nodeClass) {
+	protected NodeAdapter createNodeAdapter(MapFeedback pMapFeedback, String nodeClass) {
 		if (nodeClass == ENCRYPTED_BROWSE_NODE) {
-			return new EncryptedBrowseNode(frame, mModeController);
+			return new EncryptedBrowseNode(pMapFeedback, mModeController);
 		}
-		return new BrowseNodeModel(frame, getMap());
+		return new BrowseNodeModel(pMapFeedback, getMap());
 	}
 
-	protected EdgeAdapter createEdgeAdapter(NodeAdapter node, FreeMindMain frame) {
-		return new BrowseEdgeModel(node, frame);
+	protected EdgeAdapter createEdgeAdapter(NodeAdapter node, MapFeedback pMapFeedback) {
+		return new BrowseEdgeModel(node, pMapFeedback);
 	}
 
 	protected CloudAdapter createCloudAdapter(NodeAdapter node,
-			FreeMindMain frame) {
-		return new BrowseCloudModel(node, frame);
+			MapFeedback pMapFeedback) {
+		return new BrowseCloudModel(node, pMapFeedback);
 	}
 
 	protected ArrowLinkAdapter createArrowLinkAdapter(NodeAdapter source,
-			NodeAdapter target, FreeMindMain frame) {
-		return new BrowseArrowLinkModel(source, target, frame);
+			NodeAdapter target, MapFeedback pMapFeedback) {
+		return new BrowseArrowLinkModel(source, target, pMapFeedback);
 	}
 
 	protected ArrowLinkTarget createArrowLinkTarget(NodeAdapter source,
-			NodeAdapter target, FreeMindMain frame) {
+			NodeAdapter target, MapFeedback pMapFeedback) {
 		// FIXME: Need an implementation here
 		return null;
 	}
 	
 	protected NodeAdapter createEncryptedNode(String additionalInfo) {
-		NodeAdapter node = createNodeAdapter(frame, ENCRYPTED_BROWSE_NODE);
+		NodeAdapter node = createNodeAdapter(mModeController, ENCRYPTED_BROWSE_NODE);
 		setUserObject(node);
 		copyAttributesToNode(node);
 		node.setAdditionalInfo(additionalInfo);

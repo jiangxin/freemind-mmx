@@ -25,12 +25,13 @@ import java.awt.Color;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
 import freemind.modes.EdgeAdapter;
+import freemind.modes.MindMap.MapFeedback;
 import freemind.modes.MindMapNode;
 
 public class BrowseEdgeModel extends EdgeAdapter {
 
-	public BrowseEdgeModel(MindMapNode node, FreeMindMain frame) {
-		super(node, frame);
+	public BrowseEdgeModel(MindMapNode node, MapFeedback pMapFeedback) {
+		super(node, pMapFeedback);
 	}
 
 	public XMLElement save() {

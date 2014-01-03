@@ -92,7 +92,7 @@ public class AddArrowLinkAction extends MindmapAction implements ActorXml {
 				getLinkRegistry().registerLinkTarget(target);
 			}
 			MindMapArrowLinkModel linkModel = new MindMapArrowLinkModel(source,
-					target, modeController.getFrame());
+					target, modeController);
 			linkModel.setDestinationLabel(getLinkRegistry().getLabel(target));
 			// give label:
 			linkModel.setUniqueId(getLinkRegistry().generateUniqueLinkId(

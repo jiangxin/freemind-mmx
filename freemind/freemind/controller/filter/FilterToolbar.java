@@ -53,7 +53,7 @@ import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 
 class FilterToolbar extends FreeMindToolBar {
-	private FilterController fc;
+	private FilterController mFilterController;
 	private FilterComposerDialog filterDialog = null;
 	private JComboBox activeFilterConditionComboBox;
 	private JCheckBox showAncestors;
@@ -100,7 +100,7 @@ class FilterToolbar extends FreeMindToolBar {
 		private void filterChanged() {
 			resetFilter();
 			setMapFilter();
-			final MindMap map = fc.getMap();
+			final MindMap map = mFilterController.getMap();
 			if (map != null) {
 				activeFilter.applyFilter(c);
 				refreshMap();
@@ -135,7 +135,7 @@ class FilterToolbar extends FreeMindToolBar {
 		private FilterComposerDialog getFilterDialog() {
 			if (filterDialog == null) {
 				filterDialog = new FilterComposerDialog(c, FilterToolbar.this);
-				getFilterDialog().setLocationRelativeTo(FilterToolbar.this);
+				filterDialog.setLocationRelativeTo(FilterToolbar.this);
 			}
 			return filterDialog;
 		}
@@ -185,7 +185,7 @@ class FilterToolbar extends FreeMindToolBar {
 
 	FilterToolbar(final Controller c) {
 		super();
-		this.fc = c.getFilterController();
+		this.mFilterController = c.getFilterController();
 		this.c = c;
 		setVisible(false);
 		setFocusable(false);
@@ -227,7 +227,7 @@ class FilterToolbar extends FreeMindToolBar {
 	}
 
 	void addStandardConditions() {
-		DefaultComboBoxModel filterConditionModel = fc
+		DefaultComboBoxModel filterConditionModel = mFilterController
 				.getFilterConditionModel();
 		final Condition noFiltering = NoFilteringCondition.createCondition();
 		filterConditionModel.insertElementAt(noFiltering, 0);
@@ -240,13 +240,13 @@ class FilterToolbar extends FreeMindToolBar {
 
 	void initConditions() {
 		try {
-			fc.loadConditions(fc.getFilterConditionModel(), pathToFilterFile);
+			mFilterController.loadConditions(mFilterController.getFilterConditionModel(), pathToFilterFile);
 
 		} catch (Exception e) {
 		}
 		addStandardConditions();
 		activeFilterConditionComboBox.setSelectedIndex(0);
-		activeFilterConditionComboBox.setRenderer(fc.getConditionRenderer());
+		activeFilterConditionComboBox.setRenderer(mFilterController.getConditionRenderer());
 
 		add(activeFilterConditionComboBox);
 		add(Box.createHorizontalGlue());
@@ -273,7 +273,7 @@ class FilterToolbar extends FreeMindToolBar {
 			activeFilter = new DefaultFilter(getSelectedCondition(),
 					showAncestors.getModel().isSelected(), showDescendants
 							.getModel().isSelected());
-		final MindMap map = fc.getMap();
+		final MindMap map = mFilterController.getMap();
 		if (map != null) {
 			map.setFilter(activeFilter);
 		}
@@ -307,12 +307,12 @@ class FilterToolbar extends FreeMindToolBar {
 	}
 
 	private void refreshMap() {
-		fc.refreshMap();
+		mFilterController.refreshMap();
 	}
 
 	void saveConditions() {
 		try {
-			fc.saveConditions(fc.getFilterConditionModel(), pathToFilterFile);
+			mFilterController.saveConditions(mFilterController.getFilterConditionModel(), pathToFilterFile);
 		} catch (Exception e) {
 		}
 	}

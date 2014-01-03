@@ -21,7 +21,7 @@ package freemind.modes;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.KeyboardFocusManager;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -67,7 +67,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileFilter;
@@ -75,7 +74,6 @@ import javax.swing.filechooser.FileFilter;
 import freemind.controller.Controller;
 import freemind.controller.LastStateStorageManagement;
 import freemind.controller.MapModuleManager;
-import freemind.controller.MenuItemEnabledListener;
 import freemind.controller.MindMapNodesSelection;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.MindmapLastStateStorage;
@@ -88,13 +86,10 @@ import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.main.XMLParseException;
 import freemind.modes.FreeMindFileDialog.DirectoryResultListener;
-import freemind.modes.attributes.AttributeController;
 import freemind.modes.common.listeners.MindMapMouseWheelEventHandler;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
-import freemind.view.mindmapview.attributeview.AttributeTable;
-import freemind.view.mindmapview.attributeview.AttributeView;
 
 /**
  * Derive from this class to implement the Controller for your mode. Overload
@@ -172,9 +167,17 @@ public abstract class ControllerAdapter implements ModeController,
 	 * to be changed.
 	 */
 	public void nodeChanged(MindMapNode node) {
-		getMap().setSaved(false);
+		setSaved(false);
 		nodeRefresh(node, true);
 	}
+
+	public void setSaved(boolean pIsClean) {
+		boolean stateChanged = getMap().setSaved(pIsClean);
+		if (stateChanged) {
+			getController().setTitle();
+		}
+	}
+
 
 	public void nodeRefresh(MindMapNode node) {
 		nodeRefresh(node, false);
@@ -391,18 +394,18 @@ public abstract class ControllerAdapter implements ModeController,
 		return getController().getResourceString(textId);
 	}
 
-	public MindMap newMap() {
+	public ModeController newMap() {
 		ModeController newModeController = getMode().createModeController();
 		MapAdapter newModel = newModel(newModeController);
-		newMap(newModel);
+		newMap(newModel, newModeController);
 		newModeController.getView().moveToRoot();
-		return newModel;
+		return newModeController;
 	}
 
-	public void newMap(final MindMap mapModel) {
+	public void newMap(final MindMap mapModel, ModeController pModeController) {
 		getController().getMapModuleManager().newMapModule(mapModel,
-				mapModel.getModeController());
-		mapModel.setSaved(false);
+				pModeController);
+		pModeController.setSaved(false);
 	}
 
 	/**
@@ -418,17 +421,24 @@ public abstract class ControllerAdapter implements ModeController,
 					mapDisplayName);
 			return getController().getModeController();
 		} else {
-			final ModeController newModeController = getMode()
-
-			.createModeController();
+			final ModeController newModeController = getMode().createModeController();
 			final MapAdapter model = newModel(newModeController);
-			model.load(file);
-			newMap(model);
-			model.setSaved(true);
+			((ControllerAdapter) newModeController).loadInternally(file, model);
+			newMap(model, newModeController);
+			newModeController.setSaved(true);
 			restoreMapsLastState(newModeController, model);
 			return newModeController;
 		}
 	}
+
+	/**
+	 * @param model 
+	 * @param pFile
+	 * @throws URISyntaxException 
+	 * @throws IOException 
+	 * @throws XMLParseException 
+	 */
+	abstract protected void loadInternally(URL url, MapAdapter model) throws URISyntaxException, XMLParseException, IOException;
 
 	/**
 	 * You may decide to overload this or take the default and implement the
@@ -613,16 +623,16 @@ public abstract class ControllerAdapter implements ModeController,
 	/**
      *
      */
-	public void invokeHooksRecursively(NodeAdapter node, MindMap map) {
-		for (Iterator i = node.childrenUnfolded(); i.hasNext();) {
+	public void invokeHooksRecursively(MindMapNode pNode, MindMap map) {
+		for (Iterator i = pNode.childrenUnfolded(); i.hasNext();) {
 			NodeAdapter child = (NodeAdapter) i.next();
 			invokeHooksRecursively(child, map);
 		}
-		for (Iterator i = node.getHooks().iterator(); i.hasNext();) {
+		for (Iterator i = pNode.getHooks().iterator(); i.hasNext();) {
 			PermanentNodeHook hook = (PermanentNodeHook) i.next();
 			hook.setController(this);
 			hook.setMap(map);
-			node.invokeHook(hook);
+			pNode.invokeHook(hook);
 		}
 	}
 
@@ -743,7 +753,21 @@ public abstract class ControllerAdapter implements ModeController,
 	 * saving as.
 	 */
 	public boolean save(File file) {
-		return getModel().save(file);
+		boolean result = false;
+		try {
+			result = getModel().save(file);
+		} catch (FileNotFoundException e) {
+			String message = Tools.expandPlaceholders(getText("save_failed"),
+					file.getName());
+			getController().errorMessage(message);
+		} catch (Exception e) {
+			logger.severe("Error in MindMapMapModel.save(): ");
+			freemind.main.Resources.getInstance().logException(e);
+		}
+		if(result) {
+			setSaved(true);
+		}
+		return result;
 	}
 
 	/** @return returns the new JMenuItem. */
@@ -848,13 +872,7 @@ public abstract class ControllerAdapter implements ModeController,
 	 * Creates a file chooser with the last selected directory as default.
 	 */
 	public FreeMindFileDialog getFileChooser(FileFilter filter) {
-		FreeMindFileDialog chooser;
-		if (!Tools.isMacOsX()) {
-			chooser = new FreeMindJFileDialog();
-		} else {
-			// only for mac
-			chooser = new FreeMindAwtFileDialog();
-		}
+		FreeMindFileDialog chooser = Resources.getInstance().getStandardFileChooser(filter);
 		chooser.registerDirectoryResultListener(this);
 		File parentFile = getMapsParentFile();
 		// choose new lastCurrentDir only, if not previously set.
@@ -863,9 +881,6 @@ public abstract class ControllerAdapter implements ModeController,
 		}
 		if (lastCurrentDir != null) {
 			chooser.setCurrentDirectory(lastCurrentDir);
-		}
-		if (filter != null) {
-			chooser.addChoosableFileFilterAsDefault(filter);
 		}
 		return chooser;
 	}
@@ -1165,6 +1180,14 @@ public abstract class ControllerAdapter implements ModeController,
 
 	public URL getResource(String name) {
 		return getFrame().getResource(name);
+	}
+	
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#getResourceString(java.lang.String)
+	 */
+	@Override
+	public String getResourceString(String pTextId) {
+		return getFrame().getResourceString(pTextId);
 	}
 
 	public Controller getController() {
@@ -1542,10 +1565,6 @@ public abstract class ControllerAdapter implements ModeController,
 		centerNode(view);
 	}
 
-	public AttributeController getAttributeController() {
-		return null;
-	}
-
 	public NodeView getNodeView(MindMapNode node) {
 		return getView().getNodeView(node);
 	}
@@ -1584,13 +1603,33 @@ public abstract class ControllerAdapter implements ModeController,
 				.getModuleGivenModeController(this);
 	}
 
-	/**
-    *
-    */
-
 	public void setToolTip(MindMapNode node, String key, String value) {
 		node.setToolTip(key, value);
 		nodeRefresh(node);
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#getProperty(java.lang.String)
+	 */
+	@Override
+	public String getProperty(String pResourceId) {
+		return getController().getProperty(pResourceId);
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#getDefaultFont()
+	 */
+	@Override
+	public Font getDefaultFont() {
+		return getController().getDefaultFont();
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#getFontThroughMap(java.awt.Font)
+	 */
+	@Override
+	public Font getFontThroughMap(Font pFont) {
+		return getController().getFontThroughMap(pFont);
 	}
 
 }

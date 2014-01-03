@@ -22,12 +22,13 @@ package freemind.modes.mindmapmode;
 
 import freemind.main.FreeMindMain;
 import freemind.modes.EdgeAdapter;
+import freemind.modes.MindMap.MapFeedback;
 import freemind.modes.MindMapNode;
 
 public class MindMapEdgeModel extends EdgeAdapter {
 
-	public MindMapEdgeModel(MindMapNode node, FreeMindMain frame) {
-		super(node, frame);
+	public MindMapEdgeModel(MindMapNode node, MapFeedback pMapFeedback) {
+		super(node, pMapFeedback);
 	}
 
 }

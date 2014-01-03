@@ -276,7 +276,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 
 	public String getMapTitle(String pOldTitle, MapModule pMapModule,
 			MindMap pModel) {
-		if (pModel.getModeController() != getMindMapController()) {
+		if (pMapModule.getModeController() != getMindMapController()) {
 			return pOldTitle;
 		}
 		CollaborationUserInformation userInfo = getMasterInformation();

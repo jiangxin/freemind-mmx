@@ -24,6 +24,7 @@ import java.awt.Point;
 
 import freemind.main.FreeMindMain;
 import freemind.modes.ArrowLinkAdapter;
+import freemind.modes.MindMap.MapFeedback;
 import freemind.modes.MindMapNode;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
@@ -31,8 +32,8 @@ import freemind.view.mindmapview.NodeView;
 public class MindMapArrowLinkModel extends ArrowLinkAdapter {
 
 	public MindMapArrowLinkModel(MindMapNode source, MindMapNode target,
-			FreeMindMain frame) {
-		super(source, target, frame);
+			MapFeedback pMapFeedback) {
+		super(source, target, pMapFeedback);
 	}
 
 	/* maybe this method is wrong here, but ... */

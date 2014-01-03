@@ -20,13 +20,14 @@
 
 package freemind.modes;
 
+import java.awt.Font;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.tree.TreeModel;
@@ -34,21 +35,81 @@ import javax.swing.tree.TreeNode;
 
 import freemind.controller.filter.Filter;
 import freemind.main.XMLParseException;
+import freemind.modes.ModeController.ReaderCreator;
+import freemind.modes.mindmapmode.MindMapController.StringReaderCreator;
 
 public interface MindMap extends TreeModel {
 
+	public interface MapFeedback {
+		/**
+		 * Is issued before a node is deleted. It is issued via
+		 * NodeLifetimeListener.
+		 */
+		void fireNodePreDeleteEvent(MindMapNode node);
+		/**
+		 * @param pNode
+		 */
+		void firePreSaveEvent(MindMapNode pNode);
+		/**
+		 * Invoke this method after you've changed how a node is to be represented
+		 * in the tree.
+		 */
+		void nodeChanged(MindMapNode node);
+
+		void nodeRefresh(MindMapNode node);
+
+		/** 
+		 * @see ModeController#createNodeTreeFromXml(Reader, HashMap)
+		 * */
+		MindMapNode createNodeTreeFromXml(Reader pReader,
+				HashMap pIDToTarget) throws XMLParseException, IOException;
+		/** @see ModeController#insertNodeInto(MindMapNode, MindMapNode, int)*/
+		void insertNodeInto(MindMapNode pNewNode,
+				MindMapNode pParent, int pIndex);
+		/**
+		 * @see ModeController#loadTree(StringReaderCreator, boolean)
+		 */
+		MindMapNode loadTree(ReaderCreator pStringReaderCreator,
+				boolean pB) throws XMLParseException, IOException;
+		/**
+		 * @see ModeController#paste(MindMapNode, MindMapNode)
+		 */
+		void paste(MindMapNode pNode,
+				MindMapNode pParent);
+		/**
+		 * @param pTextId
+		 * @return
+		 */
+		String getResourceString(String pTextId);
+		/**
+		 * @param pResourceId 
+		 * @return the string from Resources_<lang>.properties belonging to the pResourceId.
+		 */
+		String getProperty(String pResourceId);
+		/**
+		 * Show the message to the user.
+		 * @param pFormat
+		 */
+		void out(String pFormat);
+		/**
+		 * @return
+		 */
+		Font getDefaultFont();
+		/**
+		 * @param pFont
+		 * @return
+		 */
+		Font getFontThroughMap(Font pFont);
+	}
+	
 	MindMapNode getRootNode();
 
-	/**
-	 * @return The mode controller, the model belongs to.
-	 */
-	ModeController getModeController();
-
-	// void changeNode(MindMapNode node, String newText);
 	// nodeChanged has moved to the modeController. (fc, 2.5.2004)
 	void nodeChanged(TreeNode node);
 
 	void nodeRefresh(TreeNode node);
+	
+	MapFeedback getMapFeedback();
 
 	String getAsPlainText(List mindMapNodes);
 
@@ -65,10 +126,11 @@ public interface MindMap extends TreeModel {
 	// Abstract methods that _must_ be implemented.
 	//
 
-	public boolean save(File file);
+	public boolean save(File file) throws IOException;
 
-	public void load(URL file) throws FileNotFoundException, IOException,
-			XMLParseException, URISyntaxException;
+	// see ModeController.
+//	public void load(URL file) throws FileNotFoundException, IOException,
+//			XMLParseException, URISyntaxException;
 
 	/**
 	 * Return URL of the map (whether as local file or a web location)
@@ -111,6 +173,8 @@ public interface MindMap extends TreeModel {
 
 	boolean isReadOnly();
 
+	void setReadOnly(boolean pIsReadOnly);
+	
 	/**
 	 * @return true if map is clean (saved), false if it is dirty.
 	 */
@@ -132,8 +196,9 @@ public interface MindMap extends TreeModel {
 	 * Use this method to make the map dirty/clean.
 	 * 
 	 * @param isSaved
+	 * @return true, if the map state has changed (and thus the title must be changed).
 	 */
-	void setSaved(boolean isSaved);
+	boolean setSaved(boolean isSaved);
 
 	/**
 	 * When the map source is changed (eg. on disk, there is a newer version

@@ -45,8 +45,8 @@ public class FileMapModel extends MapAdapter {
 
 	public FileMapModel(File root, FreeMindMain frame,
 			ModeController modeController) {
-		super(frame, modeController);
-		setRoot(new FileNodeModel(root, getFrame(), this));
+		super(modeController);
+		setRoot(new FileNodeModel(root, this));
 		getRootNode().setFolded(false);
 		linkRegistry = new MindMapLinkRegistry();
 	}
@@ -76,9 +76,6 @@ public class FileMapModel extends MapAdapter {
 		 */
 		// super.destroy();
 		cancelFileChangeObservationTimer();
-	}
-
-	public void load(URL file) {
 	}
 
 	public boolean isSaved() {

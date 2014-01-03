@@ -449,9 +449,7 @@ public class TimeList extends MindMapHookAdapter implements
 			selectedNodes.add(getMindMapNode(row));
 		}
 		// create new map:
-		MindMap newMap = getMindMapController().newMap();
-		MindMapController newMindMapController = (MindMapController) newMap
-				.getModeController();
+		MindMapController newMindMapController = (MindMapController) getMindMapController().newMap();
 		// Tools.BooleanHolder booleanHolder = new Tools.BooleanHolder();
 		// booleanHolder.setValue(false);
 		for (Iterator iter = selectedNodes.iterator(); iter.hasNext();) {
@@ -466,7 +464,7 @@ public class TimeList extends MindMapHookAdapter implements
 			// newMindMapController.setNodeText(newNode, node.getText());
 			MindMapNode copy = node.shallowCopy();
 			if (copy != null) {
-				newMindMapController.insertNodeInto(copy, newMap.getRootNode());
+				newMindMapController.insertNodeInto(copy, newMindMapController.getRootNode());
 			}
 		}
 		disposeDialog();

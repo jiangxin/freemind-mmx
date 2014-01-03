@@ -28,7 +28,6 @@ import java.net.URL;
 import java.security.AccessControlException;
 import java.util.HashMap;
 
-import freemind.main.FreeMindMain;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.ModeController;
@@ -38,21 +37,13 @@ public class BrowseMapModel extends MapAdapter {
 	private URL url;
 	private MindMapLinkRegistry linkRegistry;
 
-	//
-	// Constructors
-	//
-	public BrowseMapModel(FreeMindMain frame, ModeController modeController) {
-		this(null, frame, modeController);
-	}
-
-	public BrowseMapModel(BrowseNodeModel root, FreeMindMain frame,
-			ModeController modeController) {
-		super(frame, modeController);
+	public BrowseMapModel(BrowseNodeModel root, ModeController modeController) {
+		super(modeController);
 		if (root != null)
 			setRoot(root);
 		else
-			setRoot(new BrowseNodeModel(getFrame().getResourceString(
-					"new_mindmap"), getFrame(), modeController.getMap()));
+			setRoot(new BrowseNodeModel(getMapFeedback().getResourceString(
+					"new_mindmap"), modeController.getMap()));
 		// register new LinkRegistryAdapter
 		linkRegistry = new MindMapLinkRegistry();
 	}
@@ -104,51 +95,6 @@ public class BrowseMapModel extends MapAdapter {
 
 	public boolean isSaved() {
 		return true;
-	}
-
-	public void load(URL url) throws IOException {
-		setURL(url);
-		BrowseNodeModel root = loadTree(url);
-		if (root != null) {
-			setRoot(root);
-		} else {
-			// System.err.println("Err:"+root.toString());
-			throw new IOException();
-		}
-	}
-
-	BrowseNodeModel loadTree(URL url) {
-		BrowseNodeModel root = null;
-
-		InputStreamReader urlStreamReader = null;
-
-		try {
-			urlStreamReader = new InputStreamReader(url.openStream());
-		} catch (AccessControlException ex) {
-			getFrame().getController()
-					.errorMessage(
-							"Could not open URL " + url.toString()
-									+ ". Access Denied.");
-			System.err.println(ex);
-			return null;
-		} catch (Exception ex) {
-			getFrame().getController().errorMessage(
-					"Could not open URL " + url.toString() + ".");
-			System.err.println(ex);
-			// freemind.main.Resources.getInstance().logExecption(ex);
-			return null;
-		}
-
-		try {
-			HashMap IDToTarget = new HashMap();
-			root = (BrowseNodeModel) getModeController().createNodeTreeFromXml(
-					urlStreamReader, IDToTarget);
-			urlStreamReader.close();
-			return root;
-		} catch (Exception ex) {
-			System.err.println(ex);
-			return null;
-		}
 	}
 
 	/*

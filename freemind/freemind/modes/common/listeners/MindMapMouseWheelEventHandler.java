@@ -49,12 +49,14 @@ public class MindMapMouseWheelEventHandler implements MouseWheelListener {
 	// |= oldX >=0 iff we are in the drag
 
 	private static java.util.logging.Logger logger = null;
+	private ControllerAdapter mController;
 
 	/**
 	 *
 	 */
 	public MindMapMouseWheelEventHandler(ControllerAdapter controller) {
 		super();
+		mController = controller;
 		if (logger == null) {
 			logger = freemind.main.Resources.getInstance().getLogger(
 					this.getClass().getName());
@@ -82,8 +84,6 @@ public class MindMapMouseWheelEventHandler implements MouseWheelListener {
 	 */
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		MapView mapView = (MapView) e.getSource();
-		ControllerAdapter mController = (ControllerAdapter) mapView.getModel()
-				.getModeController();
 		if (mController.isBlocked()) {
 			return; // block the scroll during edit (PN)
 		}

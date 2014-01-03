@@ -28,8 +28,8 @@ import java.util.HashMap;
 
 import javax.swing.ImageIcon;
 
-import freemind.main.FreeMindMain;
 import freemind.main.Tools.SingleDesEncrypter;
+import freemind.main.Resources;
 import freemind.main.XMLParseException;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MapAdapter;
@@ -59,18 +59,17 @@ public class EncryptedBrowseNode extends BrowseNodeModel {
 
 	/**
 	 */
-	public EncryptedBrowseNode(FreeMindMain frame, ModeController modeController) {
-		this(null, frame, modeController);
+	public EncryptedBrowseNode(ModeController modeController) {
+		this(null, modeController);
 	}
 
 	/**
 	 */
-	public EncryptedBrowseNode(Object userObject, FreeMindMain frame,
-			ModeController modeController) {
-		super(userObject, frame, modeController.getMap());
+	public EncryptedBrowseNode(Object userObject, ModeController modeController) {
+		super(userObject, modeController.getMap());
 		this.mModeController = modeController;
 		if (logger == null)
-			logger = frame.getLogger(this.getClass().getName());
+			logger = Resources.getInstance().getLogger(this.getClass().getName());
 		if (encryptedIcon == null) {
 			encryptedIcon = MindIcon.factory("encrypted").getIcon();
 		}

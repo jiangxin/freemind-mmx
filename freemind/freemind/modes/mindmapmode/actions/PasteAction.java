@@ -278,7 +278,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 					mMindMapController.getFrame().setWaitingCursor(true);
 				}
 				// and now? paste it:
-				String mapContent = MindMapMapModel.MAP_INITIAL_START
+				String mapContent = MindMapController.MAP_INITIAL_START
 						+ FreeMind.XML_VERSION + "\"><node TEXT=\"DUMMY\">";
 				for (int j = 0; j < textLines.length; j++) {
 					mapContent += textLines[j];
@@ -286,9 +286,8 @@ public class PasteAction extends AbstractAction implements ActorXml {
 				mapContent += "</node></map>";
 				// logger.info("Pasting " + mapContent);
 				try {
-					MindMapNode node = mMindMapController.getMindMapMapModel()
-							.loadTree(
-									new MindMapMapModel.StringReaderCreator(
+					MindMapNode node = mMindMapController.loadTree(
+									new MindMapController.StringReaderCreator(
 											mapContent), false);
 					for (ListIterator i = node.childrenUnfolded(); i.hasNext();) {
 						MindMapNodeModel importNode = (MindMapNodeModel) i
@@ -646,8 +645,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 			// node to
 			// the parent of real parent.
 			realParent = parent;
-			parent = new MindMapNodeModel(mMindMapController.getFrame(),
-					mMindMapController.getMap());
+			parent = new MindMapNodeModel(mMindMapController.getMap());
 		}
 
 		ArrayList parentNodes = new ArrayList();
@@ -917,7 +915,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 			throws UnsupportedFlavorException, IOException {
 		// create a new node for testing purposes.
 		MindMapNodeModel parent = new MindMapNodeModel(
-				mMindMapController.getFrame(), mMindMapController.getMap());
+				mMindMapController.getMap());
 		pasteStringWithoutRedisplay(t, parent, false, false);
 		final int childCount = parent.getChildCount();
 		return childCount;

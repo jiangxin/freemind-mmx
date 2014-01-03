@@ -29,9 +29,8 @@ import freemind.extensions.PermanentNodeHookSubstituteUnknown;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
+import freemind.modes.MindMap.MapFeedback;
 import freemind.modes.attributes.Attribute;
-import freemind.modes.attributes.AttributeRegistry;
-import freemind.modes.attributes.AttributeTableLayoutModel;
 
 public abstract class XMLElementAdapter extends XMLElement {
 
@@ -78,10 +77,6 @@ public abstract class XMLElementAdapter extends XMLElement {
 
 	private String attributeValue;
 
-	private int attributeNameWidth = AttributeTableLayoutModel.DEFAULT_COLUMN_WIDTH;
-
-	private int attributeValueWidth = AttributeTableLayoutModel.DEFAULT_COLUMN_WIDTH;
-
 	protected final ModeController mModeController;
 
 	// Overhead methods
@@ -104,20 +99,20 @@ public abstract class XMLElementAdapter extends XMLElement {
 	/** abstract method to create elements of my type (factory). */
 	abstract protected XMLElement createAnotherElement();
 
-	abstract protected NodeAdapter createNodeAdapter(FreeMindMain frame,
+	abstract protected NodeAdapter createNodeAdapter(MapFeedback pMapFeedback,
 			String nodeClass);
 
 	abstract protected EdgeAdapter createEdgeAdapter(NodeAdapter node,
-			FreeMindMain frame);
+			MapFeedback pMapFeedback);
 
 	abstract protected CloudAdapter createCloudAdapter(NodeAdapter node,
-			FreeMindMain frame);
+			MapFeedback pMapFeedback);
 
 	abstract protected ArrowLinkAdapter createArrowLinkAdapter(
-			NodeAdapter source, NodeAdapter target, FreeMindMain frame);
+			NodeAdapter source, NodeAdapter target, MapFeedback pMapFeedback);
 
 	abstract protected ArrowLinkTarget createArrowLinkTarget(
-			NodeAdapter source, NodeAdapter target, FreeMindMain frame);
+			NodeAdapter source, NodeAdapter target, MapFeedback pMapFeedback);
 
 	abstract protected NodeAdapter createEncryptedNode(String additionalInfo);
 
@@ -143,16 +138,16 @@ public abstract class XMLElementAdapter extends XMLElement {
 		super.setName(name);
 		// Create user object based on name
 		if (name.equals(XML_NODE)) {
-			userObject = createNodeAdapter(frame, null);
+			userObject = createNodeAdapter(mModeController, null);
 			nodeAttributes.clear();
 		} else if (name.equals("edge")) {
-			userObject = createEdgeAdapter(null, frame);
+			userObject = createEdgeAdapter(null, mModeController);
 		} else if (name.equals("cloud")) {
-			userObject = createCloudAdapter(null, frame);
+			userObject = createCloudAdapter(null, mModeController);
 		} else if (name.equals("arrowlink")) {
-			userObject = createArrowLinkAdapter(null, null, frame);
+			userObject = createArrowLinkAdapter(null, null, mModeController);
 		} else if (name.equals("linktarget")) {
-			userObject = createArrowLinkTarget(null, null, frame);
+			userObject = createArrowLinkTarget(null, null, mModeController);
 		} else if (name.equals("font")) {
 			userObject = null;
 		} else if (name.equals(XML_NODE_ATTRIBUTE)) {
@@ -219,17 +214,17 @@ public abstract class XMLElementAdapter extends XMLElement {
 			} else if (child.getName().equals("font")) {
 				node.setFont((Font) child.getUserObject());
 			} else if (child.getName().equals(XML_NODE_ATTRIBUTE)) {
-				node.createAttributeTableModel();
-				node.getAttributes().addRowNoUndo(
+				node.addAttribute(
 						(Attribute) child.getUserObject());
+
 			} else if (child.getName().equals(XML_NODE_ATTRIBUTE_LAYOUT)) {
-				node.createAttributeTableModel();
-				AttributeTableLayoutModel layout = node.getAttributes()
-						.getLayout();
-				layout.setColumnWidth(0,
-						((XMLElementAdapter) child).attributeNameWidth);
-				layout.setColumnWidth(1,
-						((XMLElementAdapter) child).attributeValueWidth);
+//				node.createAttributeTableModel();
+//				AttributeTableLayoutModel layout = node.getAttributes()
+//						.getLayout();
+//				layout.setColumnWidth(0,
+//						((XMLElementAdapter) child).attributeNameWidth);
+//				layout.setColumnWidth(1,
+//						((XMLElementAdapter) child).attributeValueWidth);
 			} else if (child.getName().equals("icon")) {
 				node.addIcon((MindIcon) child.getUserObject(), MindIcon.LAST);
 			} else if (child.getName().equals(XML_NODE_XHTML_CONTENT_TAG)) {
@@ -274,8 +269,6 @@ public abstract class XMLElementAdapter extends XMLElement {
 				&& child.getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_VALUE)) {
 			Attribute attribute = new Attribute(attributeName,
 					((XMLElementAdapter) child).attributeValue);
-			AttributeRegistry r = getMap().getRegistry().getAttributes();
-			r.registry(attribute);
 		}
 	}
 
@@ -390,30 +383,15 @@ public abstract class XMLElementAdapter extends XMLElement {
 				attributeValue = sValue;
 			}
 		} else if (getName().equals(XML_NODE_ATTRIBUTE_LAYOUT)) {
-			if (name.equals("NAME_WIDTH")) {
-				attributeNameWidth = Integer.parseInt(sValue);
-			} else if (name.equals("VALUE_WIDTH")) {
-				attributeValueWidth = Integer.parseInt(sValue);
-			}
+//			if (name.equals("NAME_WIDTH")) {
+//				attributeNameWidth = Integer.parseInt(sValue);
+//			} else if (name.equals("VALUE_WIDTH")) {
+//				attributeValueWidth = Integer.parseInt(sValue);
+//			}
 		} else if (getName().equals(XML_NODE_ATTRIBUTE_REGISTRY)) {
-			if (name.equals("RESTRICTED")) {
-				getMap().getRegistry().getAttributes().setRestricted(true);
-			}
-			if (name.equals("SHOW_ATTRIBUTES")) {
-				mModeController.getController().setAttributeViewType(getMap(),
-						sValue);
-			}
-			if (name.equals("FONT_SIZE")) {
-				try {
-					int size = Integer.parseInt(sValue);
-					getMap().getRegistry().getAttributes().setFontSize(size);
-				} catch (NumberFormatException ex) {
-				}
-			}
 		} else if (getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_NAME)) {
 			if (name.equals("NAME")) {
 				attributeName = sValue;
-				getMap().getRegistry().getAttributes().registry(attributeName);
 			} else {
 				super.setAttribute(name, sValue);
 			}
@@ -514,14 +492,6 @@ public abstract class XMLElementAdapter extends XMLElement {
 			return;
 		}
 		if (getName().equals(XML_NODE_REGISTERED_ATTRIBUTE_NAME)) {
-			if (null != getAttribute("VISIBLE")) {
-				getMap().getRegistry().getAttributes()
-						.getElement(attributeName).setVisibility(true);
-			}
-			if (null != getAttribute("RESTRICTED")) {
-				getMap().getRegistry().getAttributes()
-						.getElement(attributeName).setRestriction(true);
-			}
 			return;
 		}
 	}

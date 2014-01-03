@@ -98,10 +98,7 @@ import freemind.modes.MindMap;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.ModesCreator;
-import freemind.modes.attributes.AttributeRegistry;
-import freemind.modes.attributes.AttributeTableLayoutModel;
 import freemind.modes.browsemode.BrowseMode;
-import freemind.modes.mindmapmode.attributeactors.AttributeManagerDialog;
 import freemind.preferences.FreemindPropertyListener;
 import freemind.preferences.layout.OptionPanel;
 import freemind.preferences.layout.OptionPanel.OptionPanelFeedback;
@@ -167,10 +164,6 @@ public class Controller implements MapModuleChangeObserver {
 	public Action page;
 	public Action quit;
 
-	public Action showAllAttributes = new ShowAllAttributesAction();
-	public Action showSelectedAttributes = new ShowSelectedAttributesAction();
-	public Action hideAllAttributes = new HideAllAttributesAction();
-
 	public OptionAntialiasAction optionAntialiasAction;
 	public Action optionHTMLExportFoldingAction;
 	public Action optionSelectionMechanismAction;
@@ -182,7 +175,6 @@ public class Controller implements MapModuleChangeObserver {
 	public Action documentation;
 	public Action license;
 	public Action showFilterToolbarAction;
-	public Action showAttributeManagerAction;
 	public Action navigationPreviousMap;
 	public Action navigationNextMap;
 	public Action navigationMoveMapLeftAction;
@@ -206,7 +198,6 @@ public class Controller implements MapModuleChangeObserver {
 
 	private static Vector propertyChangeListeners = new Vector();
 
-	private AttributeManagerDialog attributeDialog = null;
 	private Vector mTabbedPaneMapModules;
 	private JTabbedPane mTabbedPane;
 	private boolean mTabbedPaneSelectionUpdate = true;
@@ -255,7 +246,6 @@ public class Controller implements MapModuleChangeObserver {
 		navigationMoveMapLeftAction = new NavigationMoveMapLeftAction(this);
 		navigationMoveMapRightAction = new NavigationMoveMapRightAction(this);
 		showFilterToolbarAction = new ShowFilterToolbarAction(this);
-		showAttributeManagerAction = new ShowAttributeDialogAction(this);
 		toggleMenubar = new ToggleMenubarAction(this);
 		toggleToolbar = new ToggleToolbarAction(this);
 		toggleLeftToolbar = new ToggleLeftToolbarAction(this);
@@ -966,10 +956,6 @@ public class Controller implements MapModuleChangeObserver {
 		page.setEnabled(enabled && isPrintingAllowed);
 		close.setEnabled(enabled);
 		moveToRoot.setEnabled(enabled);
-		showAllAttributes.setEnabled(enabled);
-		showSelectedAttributes.setEnabled(enabled);
-		hideAllAttributes.setEnabled(enabled);
-		showAttributeManagerAction.setEnabled(enabled);
 		((MainToolBar) getToolBar()).setAllActions(enabled);
 		showSelectionAsRectangle.setEnabled(enabled);
 	}
@@ -1418,31 +1404,6 @@ public class Controller implements MapModuleChangeObserver {
 		}
 	}
 
-	private class ShowAttributeDialogAction extends AbstractAction {
-		private Controller c;
-
-		ShowAttributeDialogAction(Controller c) {
-			super(c.getResourceString("attributes_dialog"), new ImageIcon(
-					getResource("images/showAttributes.gif")));
-			this.c = c;
-		}
-
-		private AttributeManagerDialog getAttributeDialog() {
-			if (attributeDialog == null) {
-				attributeDialog = new AttributeManagerDialog(c);
-			}
-			return attributeDialog;
-		}
-
-		public void actionPerformed(ActionEvent e) {
-			if (getAttributeDialog().isVisible() == false
-					&& getMapModule() != null) {
-				getAttributeDialog().pack();
-				getAttributeDialog().show();
-			}
-		}
-	}
-
 	private class ShowFilterToolbarAction extends AbstractAction {
 		ShowFilterToolbarAction(Controller controller) {
 			super(getResourceString("filter_toolbar"), new ImageIcon(
@@ -1657,69 +1618,6 @@ public class Controller implements MapModuleChangeObserver {
 
 		public boolean isSelected(JMenuItem pCheckItem, Action pAction) {
 			return isSelectionAsRectangle();
-		}
-	}
-
-	private class ShowAllAttributesAction extends AbstractAction {
-		public ShowAllAttributesAction() {
-			super(Resources.getInstance().getResourceString(
-					"attributes_show_all"));
-		};
-
-		public void actionPerformed(ActionEvent e) {
-			final MindMap map = getMap();
-			setAttributeViewType(map);
-		}
-
-		public void setAttributeViewType(final MindMap map) {
-			final AttributeRegistry attributes = map.getRegistry()
-					.getAttributes();
-			if (attributes.getAttributeViewType() != AttributeTableLayoutModel.SHOW_ALL) {
-				attributes
-						.setAttributeViewType(AttributeTableLayoutModel.SHOW_ALL);
-			}
-		}
-	}
-
-	private class HideAllAttributesAction extends AbstractAction {
-		public HideAllAttributesAction() {
-			super(Resources.getInstance().getResourceString(
-					"attributes_hide_all"));
-		};
-
-		public void actionPerformed(ActionEvent e) {
-			final MindMap map = getMap();
-			setAttributeViewType(map);
-		}
-
-		public void setAttributeViewType(final MindMap map) {
-			final AttributeRegistry attributes = map.getRegistry()
-					.getAttributes();
-			if (attributes.getAttributeViewType() != AttributeTableLayoutModel.HIDE_ALL) {
-				attributes
-						.setAttributeViewType(AttributeTableLayoutModel.HIDE_ALL);
-			}
-		}
-	}
-
-	private class ShowSelectedAttributesAction extends AbstractAction {
-		public ShowSelectedAttributesAction() {
-			super(Resources.getInstance().getResourceString(
-					"attributes_show_selected"));
-		};
-
-		public void actionPerformed(ActionEvent e) {
-			MindMap map = getMap();
-			setAttributeViewType(map);
-		}
-
-		void setAttributeViewType(MindMap map) {
-			final AttributeRegistry attributes = map.getRegistry()
-					.getAttributes();
-			if (attributes.getAttributeViewType() != AttributeTableLayoutModel.SHOW_SELECTED) {
-				attributes
-						.setAttributeViewType(AttributeTableLayoutModel.SHOW_SELECTED);
-			}
 		}
 	}
 
@@ -1967,19 +1865,6 @@ public class Controller implements MapModuleChangeObserver {
 
 	public PageFormat getPageFormat() {
 		return pageFormat;
-	}
-
-	public void setAttributeViewType(MindMap map, String value) {
-		if (value.equals(AttributeTableLayoutModel.SHOW_SELECTED)) {
-			((ShowSelectedAttributesAction) showSelectedAttributes)
-					.setAttributeViewType(map);
-		} else if (value.equals(AttributeTableLayoutModel.HIDE_ALL)) {
-			((HideAllAttributesAction) hideAllAttributes)
-					.setAttributeViewType(map);
-		} else if (value.equals(AttributeTableLayoutModel.SHOW_ALL)) {
-			((ShowAllAttributesAction) showAllAttributes)
-					.setAttributeViewType(map);
-		}
 	}
 
 	public Object setEdgesRenderingHint(Graphics2D g) {

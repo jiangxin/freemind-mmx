@@ -86,14 +86,12 @@ public class EncryptNode extends MindMapNodeHookAdapter {
 		 */
 		public boolean isEnabled(JMenuItem item, Action action) {
 			String hookName = ((NodeHookAction) action).getHookName();
-			// the following function does not work without a running valid
-			// controller, so we comment it out.
-			// if(hookName.equals("accessories/plugins/NewEncryptedMap.properties"))
-			// {
-			// return true;
-			// }
 			if (!enabled)
 				return false;
+			if (hookName
+					.equals("accessories/plugins/NewEncryptedMap.properties")) {
+				return true;
+			}
 			boolean isEncryptedNode = false;
 			boolean isOpened = false;
 			if (controller.getSelected() != null
@@ -153,16 +151,18 @@ public class EncryptNode extends MindMapNodeHookAdapter {
 		}
 		ModeController newModeController = getMindMapController().getMode()
 				.createModeController();
+		MapAdapter newModel = new MindMapMapModel(null,
+				newModeController);
+		newModeController.setModel(newModel);
 		EncryptedMindMapNode encryptedMindMapNode = new EncryptedMindMapNode(
 				getMindMapController().getText(
 						"accessories/plugins/EncryptNode.properties_select_me"),
-				getMindMapController().getFrame(), null);
+				newModel);
+		newModel.setRoot(encryptedMindMapNode);
 		encryptedMindMapNode.setPassword(password);
-		MapAdapter newModel = new MindMapMapModel(encryptedMindMapNode,
-				getMindMapController().getFrame(), newModeController);
 		MindMapController mindmapcontroller = getMindMapController();
 		encryptedMindMapNode.setMap(newModel);
-		mindmapcontroller.newMap(newModel);
+		mindmapcontroller.newMap(newModel, newModeController);
 	}
 
 	/**
@@ -178,7 +178,7 @@ public class EncryptNode extends MindMapNodeHookAdapter {
 
 			public MindMapNode createNode(Object userObject, MindMap map) {
 				EncryptedMindMapNode encryptedMindMapNode = new EncryptedMindMapNode(
-						userObject, getMindMapController().getFrame(), map);
+						userObject, map);
 				encryptedMindMapNode.setPassword(password);
 				return encryptedMindMapNode;
 			}

@@ -27,6 +27,7 @@ import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
+import freemind.modes.MindMap.MapFeedback;
 import freemind.preferences.FreemindPropertyListener;
 
 public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
@@ -51,8 +52,8 @@ public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
 
 	// private static Color standardEdgeColor = new Color(0);
 
-	public EdgeAdapter(MindMapNode target, FreeMindMain frame) {
-		super(target, frame);
+	public EdgeAdapter(MindMapNode target, MapFeedback pMapFeedback) {
+		super(target, pMapFeedback);
 		NORMAL_WIDTH = WIDTH_PARENT;
 		if (listener == null) {
 			listener = new EdgeAdapterListener();
@@ -99,7 +100,7 @@ public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
 	public String getStyle() {
 		if (style == null) {
 			if (getTarget().isRoot()) {
-				return getFrame().getProperty(getStandardStylePropertyString());
+				return getMapFeedback().getProperty(getStandardStylePropertyString());
 			}
 			return getSource().getEdge().getStyle();
 		}

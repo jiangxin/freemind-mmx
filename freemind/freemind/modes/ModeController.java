@@ -17,7 +17,6 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-
 package freemind.modes;
 
 import java.awt.Color;
@@ -44,12 +43,12 @@ import freemind.controller.StructuredMenuHolder;
 import freemind.extensions.HookFactory;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLParseException;
-import freemind.modes.attributes.AttributeController;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
-public interface ModeController extends TextTranslator {
+public interface ModeController extends TextTranslator, MindMap.MapFeedback,
+		MapView.ViewFeedback {
 
 	public static final String NODESEPARATOR = "<nodeseparator>";
 
@@ -77,9 +76,16 @@ public interface ModeController extends TextTranslator {
 	 */
 	void loadURL(String relative);
 
+	public interface ReaderCreator {
+		Reader createReader() throws FileNotFoundException;
+	}
+
+	public MindMapNode loadTree(ReaderCreator pReaderCreator,
+			boolean pAskUserBeforeUpdate) throws XMLParseException, IOException;
+
 	boolean save(File file);
 
-	MindMap newMap();
+	ModeController newMap();
 
 	/**
 	 * @return true, if successfully saved. False, if canceled or exception.
@@ -185,6 +191,13 @@ public interface ModeController extends TextTranslator {
 	void nodeChanged(MindMapNode n);
 
 	/**
+	 * @param pIsClean
+	 *            true: the map is saved, false: the map model has been changed,
+	 *            and the map must be saved.
+	 */
+	public void setSaved(boolean pIsClean);
+
+	/**
 	 * Is called when a node is deselected.
 	 */
 	void onLostFocusNode(NodeView node);
@@ -207,8 +220,8 @@ public interface ModeController extends TextTranslator {
 		void onUpdateNodeHook(MindMapNode node);
 
 		/**
-		 * Is sent when a node is focused (this means, that it is *the* selected node, 
-		 * there may only be one!).
+		 * Is sent when a node is focused (this means, that it is *the* selected
+		 * node, there may only be one!).
 		 */
 		void onFocusNode(NodeView node);
 
@@ -225,21 +238,26 @@ public interface ModeController extends TextTranslator {
 
 		/**
 		 * Informs whether or not the node belongs to the group of selected
-		 * nodes (in contrast to the focused node above). The nodes selection is 
+		 * nodes (in contrast to the focused node above). The nodes selection is
 		 * already changed, when this method is called.
+		 * 
 		 * @param pNode
-		 * @param pIsSelected true, if the node is selected now.
+		 * @param pIsSelected
+		 *            true, if the node is selected now.
 		 */
 		void onSelectionChange(NodeView pNode, boolean pIsSelected);
 	}
 
 	/**
 	 * @param listener
-	 * @param pCallWithCurrentSelection if true, the methods for focused and selected nodes
-	 * are called directly with the current selection. Otherwise, the first selection change
-	 * would provoke the first call to the given listener.
+	 * @param pCallWithCurrentSelection
+	 *            if true, the methods for focused and selected nodes are called
+	 *            directly with the current selection. Otherwise, the first
+	 *            selection change would provoke the first call to the given
+	 *            listener.
 	 */
-	void registerNodeSelectionListener(NodeSelectionListener listener, boolean pCallWithCurrentSelection);
+	void registerNodeSelectionListener(NodeSelectionListener listener,
+			boolean pCallWithCurrentSelection);
 
 	void deregisterNodeSelectionListener(NodeSelectionListener listener);
 
@@ -273,9 +291,12 @@ public interface ModeController extends TextTranslator {
 	/**
 	 * The onCreateNodeHook is called for every node (depest nodes first) after
 	 * registration.
-	 * @param pFireCreateEvent TODO
+	 * 
+	 * @param pFireCreateEvent
+	 *            TODO
 	 */
-	void registerNodeLifetimeListener(NodeLifetimeListener listener, boolean pFireCreateEvent);
+	void registerNodeLifetimeListener(NodeLifetimeListener listener,
+			boolean pFireCreateEvent);
 
 	void deregisterNodeLifetimeListener(NodeLifetimeListener listener);
 
@@ -352,8 +373,6 @@ public interface ModeController extends TextTranslator {
 	String getText(String textId);
 
 	URL getResource(String path);
-
-	AttributeController getAttributeController();
 
 	void nodeRefresh(MindMapNode node);
 

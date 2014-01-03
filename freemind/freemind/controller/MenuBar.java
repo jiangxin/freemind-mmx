@@ -392,32 +392,7 @@ public class MenuBar extends JMenuBar {
 
 		menuHolder.addSeparator(VIEW_MENU);
 		menuHolder.addCategory(VIEW_MENU + "note_window");
-		menuHolder.addSeparator(VIEW_MENU);
-		JMenu attributes = menuHolder.addMenu(
-				new JMenu(c.getResourceString("menu_attributes")), VIEW_MENU
-						+ "attributes/.");
-		ButtonGroup buttonGroup = new ButtonGroup();
-		JRadioButtonMenuItem itemShowAll = (JRadioButtonMenuItem) menuHolder
-				.addMenuItem(new JRadioButtonMenuItem(c.showAllAttributes),
-						VIEW_MENU + "attributes/showAllAttributes");
-		itemShowAll.setAccelerator(KeyStroke.getKeyStroke(c.getFrame()
-				.getAdjustableProperty("keystroke_show_all_attributes")));
-		buttonGroup.add(itemShowAll);
-
-		JRadioButtonMenuItem itemShowSelected = (JRadioButtonMenuItem) menuHolder
-				.addMenuItem(
-						new JRadioButtonMenuItem(c.showSelectedAttributes),
-						VIEW_MENU + "attributes/showSelectedAttributes");
-		itemShowSelected.setAccelerator(KeyStroke.getKeyStroke(c.getFrame()
-				.getAdjustableProperty("keystroke_show_selected_attributes")));
-		buttonGroup.add(itemShowSelected);
-
-		JRadioButtonMenuItem itemHideAll = (JRadioButtonMenuItem) menuHolder
-				.addMenuItem(new JRadioButtonMenuItem(c.hideAllAttributes),
-						VIEW_MENU + "attributes/hideAllAttributes");
-		itemHideAll.setAccelerator(KeyStroke.getKeyStroke(c.getFrame()
-				.getAdjustableProperty("keystroke_hide_all_attributes")));
-		buttonGroup.add(itemHideAll);
+//		menuHolder.addSeparator(VIEW_MENU);
 	}
 
 	private void addOptionSet(Action action, String[] textIDs, JMenu menu,

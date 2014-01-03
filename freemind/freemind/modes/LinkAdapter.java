@@ -26,6 +26,7 @@ import freemind.controller.Controller;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
+import freemind.modes.MindMap.MapFeedback;
 import freemind.preferences.FreemindPropertyListener;
 
 public abstract class LinkAdapter extends LineAdapter implements MindMapLink {
@@ -41,8 +42,8 @@ public abstract class LinkAdapter extends LineAdapter implements MindMapLink {
 	private String uniqueId;
 
 	public LinkAdapter(MindMapNode source, MindMapNode target,
-			FreeMindMain frame) {
-		super(target, frame);
+			MapFeedback pMapFeedback) {
+		super(target, pMapFeedback);
 		this.source = source;
 		destinationLabel = null;
 		referenceText = null;

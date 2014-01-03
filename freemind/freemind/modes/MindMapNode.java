@@ -41,7 +41,7 @@ import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.XMLElement;
 import freemind.modes.attributes.Attribute;
-import freemind.modes.attributes.NodeAttributeTableModel;
+import freemind.modes.mindmapmode.actions.MindMapActions;
 import freemind.view.mindmapview.NodeView;
 import freemind.view.mindmapview.NodeViewVisitor;
 
@@ -372,18 +372,6 @@ public interface MindMapNode extends MutableTreeNode {
 	MindMap getMap();
 
 	/**
-	 * use getAttributeKeyList, getAttribute, isAttributeExisting and
-	 * setAttribute instead, if you want to access the attributes like a
-	 * dictionary. If you want to put several Attribute elements with the samw
-	 * name, you have to use this method.
-	 */
-	NodeAttributeTableModel getAttributes();
-
-	void createAttributeTableModel();
-
-	// fc, 8.1.2007, Redundancy to faciliate the NodeAttributeTableModel.
-
-	/**
 	 * @return an unmodifiable list of all attribute keys as String. There can
 	 *         be double entries.
 	 */
@@ -398,6 +386,7 @@ public interface MindMapNode extends MutableTreeNode {
 	 * @param pPosition
 	 *            the null based position.
 	 * @return a copy of the node's attribute.
+	 * @throws IllegalArgumentException if position is out of range
 	 */
 	Attribute getAttribute(int pPosition);
 
@@ -422,8 +411,19 @@ public interface MindMapNode extends MutableTreeNode {
 
 	/**
 	 * Sets the attribute to the given value.
+	 * Don't set the attributes directly here. Use the {@link MindMapActions} methods instead.
 	 */
 	void setAttribute(int pPosition, Attribute pAttribute);
+	
+	/**
+	 * @param pAttribute
+	 * @return the index of the new attribute
+	 */
+	int addAttribute(Attribute pAttribute);
+	/**
+	 * @param pPosition
+	 */
+	void removeAttribute(int pPosition);
 
 	public void addTreeModelListener(TreeModelListener l);
 
@@ -445,4 +445,5 @@ public interface MindMapNode extends MutableTreeNode {
 	 * @return true, if one of its parents is folded. If itself is folded, doesn't matter.
 	 */
 	boolean hasFoldedParents();
+
 }

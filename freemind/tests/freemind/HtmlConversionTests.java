@@ -36,8 +36,7 @@ import freemind.modes.mindmapmode.MindMapNodeModel;
 public class HtmlConversionTests extends FreeMindTestBase {
 
 	public void testSetHtml() throws Exception {
-		MindMapNodeModel node = new MindMapNodeModel(getFrame(),
-				new MindMapMock("</map>"));
+		MindMapNodeModel node = new MindMapNodeModel(new MindMapMock("</map>"));
 		node.setText("test");
 		// wiped out: <?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE html
 		// PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"

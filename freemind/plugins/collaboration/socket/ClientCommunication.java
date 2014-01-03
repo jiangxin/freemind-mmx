@@ -246,8 +246,7 @@ public class ClientCommunication extends CommunicationBase {
 			logger.info("Restoring the map...");
 			MindMapController newModeController = (MindMapController) getMindMapController()
 					.getMode().createModeController();
-			MapAdapter newModel = new MindMapMapModel(getMindMapController()
-					.getFrame(), newModeController);
+			MapAdapter newModel = new MindMapMapModel(newModeController);
 			HashMap IDToTarget = new HashMap();
 			StringReader reader = new StringReader(map);
 			MindMapNodeModel rootNode = (MindMapNodeModel) newModeController
@@ -255,7 +254,7 @@ public class ClientCommunication extends CommunicationBase {
 			reader.close();
 			newModel.setRoot(rootNode);
 			rootNode.setMap(newModel);
-			getMindMapController().newMap(newModel);
+			getMindMapController().newMap(newModel, newModeController);
 			newModeController.invokeHooksRecursively((NodeAdapter) rootNode,
 					newModel);
 			setController(newModeController);

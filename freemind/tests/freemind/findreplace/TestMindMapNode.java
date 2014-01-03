@@ -51,7 +51,6 @@ import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.modes.attributes.Attribute;
-import freemind.modes.attributes.NodeAttributeTableModel;
 import freemind.view.mindmapview.NodeView;
 import freemind.view.mindmapview.NodeViewVisitor;
 
@@ -339,10 +338,6 @@ final class TestMindMapNode implements MindMapNode {
 		return null;
 	}
 
-	public NodeAttributeTableModel getAttributes() {
-		return null;
-	}
-
 	public void addTreeModelListener(TreeModelListener l) {
 	}
 
@@ -501,6 +496,24 @@ final class TestMindMapNode implements MindMapNode {
 	 */
 	public boolean hasVisibleChilds() {
 		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#addAttribute(freemind.modes.attributes.Attribute)
+	 */
+	@Override
+	public int addAttribute(Attribute pAttribute) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#removeAttribute(int)
+	 */
+	@Override
+	public void removeAttribute(int pPosition) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

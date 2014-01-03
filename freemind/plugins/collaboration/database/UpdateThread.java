@@ -201,8 +201,7 @@ public class UpdateThread extends Thread implements ResultHandler,
 			logger.info("Restoring the map...");
 			MindMapController newModeController = (MindMapController) mController
 					.getMode().createModeController();
-			MapAdapter newModel = new MindMapMapModel(mController.getFrame(),
-					newModeController);
+			MapAdapter newModel = new MindMapMapModel(newModeController);
 			HashMap IDToTarget = new HashMap();
 			StringReader reader = new StringReader(map);
 			MindMapNodeModel rootNode = (MindMapNodeModel) newModeController
@@ -210,7 +209,7 @@ public class UpdateThread extends Thread implements ResultHandler,
 			reader.close();
 			newModel.setRoot(rootNode);
 			rootNode.setMap(newModel);
-			mController.newMap(newModel);
+			mController.newMap(newModel, newModeController);
 			newModeController.invokeHooksRecursively((NodeAdapter) rootNode,
 					newModel);
 			mController = newModeController;

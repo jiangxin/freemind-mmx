@@ -24,10 +24,12 @@ import java.awt.Color;
 
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
+import freemind.modes.MindMap.MapFeedback;
+import freemind.modes.mindmapmode.MindMapController;
 
 public abstract class LineAdapter implements MindMapLine {
 
-	protected FreeMindMain frame;
+	protected MindMap.MapFeedback mMapFeedback;
 	protected MindMapNode target;
 
 	public static final int DEFAULT_WIDTH = -1;
@@ -41,8 +43,8 @@ public abstract class LineAdapter implements MindMapLine {
 	//
 	// Constructors
 	//
-	public LineAdapter(MindMapNode target, FreeMindMain frame) {
-		this.frame = frame;
+	public LineAdapter(MindMapNode target, MapFeedback pMapFeedback) {
+		this.mMapFeedback = pMapFeedback;
 		this.target = target;
 		width = DEFAULT_WIDTH;
 		updateStandards();
@@ -57,7 +59,7 @@ public abstract class LineAdapter implements MindMapLine {
      */
 	protected void updateStandards() {
 		if (getStandardColor() == null) {
-			String stdColor = getFrame().getProperty(
+			String stdColor = getMapFeedback().getProperty(
 					getStandardColorPropertyString());
 			if (stdColor != null && stdColor.length() == 7) {
 				setStandardColor(Tools.xmlToColor(stdColor));
@@ -66,7 +68,7 @@ public abstract class LineAdapter implements MindMapLine {
 			}
 		}
 		if (getStandardStyle() == null) {
-			String stdStyle = getFrame().getProperty(
+			String stdStyle = getMapFeedback().getProperty(
 					getStandardStylePropertyString());
 			if (stdStyle != null) {
 				setStandardStyle(stdStyle);
@@ -76,8 +78,8 @@ public abstract class LineAdapter implements MindMapLine {
 		}
 	}
 
-	public FreeMindMain getFrame() {
-		return frame;
+	public MapFeedback getMapFeedback() {
+		return mMapFeedback;
 	}
 
 	public Color getColor() {

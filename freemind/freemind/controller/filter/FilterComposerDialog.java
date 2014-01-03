@@ -69,7 +69,6 @@ import freemind.modes.MapRegistry;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
 import freemind.modes.ModeController;
-import freemind.modes.attributes.AttributeRegistry;
 
 /**
  * @author dimitri
@@ -97,7 +96,7 @@ public class FilterComposerDialog extends JDialog {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			Condition newCond;
+			Condition newCond = null;
 			String value;
 			try {
 				value = getAttributeValue();
@@ -111,12 +110,8 @@ public class FilterComposerDialog extends JDialog {
 			Object selectedItem = attributes.getSelectedItem();
 			if (selectedItem instanceof NamedObject) {
 				NamedObject attribute = (NamedObject) selectedItem;
-				newCond = fc.getConditionFactory().createCondition(attribute,
+				newCond = mFilterController.getConditionFactory().createCondition(attribute,
 						simpleCond, value, ignoreCase);
-			} else {
-				String attribute = selectedItem.toString();
-				newCond = fc.getConditionFactory().createAttributeCondition(
-						attribute, simpleCond, value, ignoreCase);
 			}
 			DefaultComboBoxModel model = (DefaultComboBoxModel) conditionList
 					.getModel();
@@ -354,9 +349,7 @@ public class FilterComposerDialog extends JDialog {
 	}
 
 	protected FreeMindFileDialog getFileChooser() {
-		final ModeController modeController = fc.getMap().getModeController();
-		FreeMindFileDialog chooser = modeController
-				.getFileChooser(MindMapFilterFileFilter.filter);
+		FreeMindFileDialog chooser = Resources.getInstance().getStandardFileChooser(MindMapFilterFileFilter.filter);
 		return chooser;
 	}
 
@@ -378,7 +371,7 @@ public class FilterComposerDialog extends JDialog {
 				if (!canonicalPath.endsWith(suffix)) {
 					canonicalPath = canonicalPath + suffix;
 				}
-				fc.saveConditions(internalConditionsModel, canonicalPath);
+				mFilterController.saveConditions(internalConditionsModel, canonicalPath);
 			} catch (Exception ex) {
 				handleSavingException(ex);
 			}
@@ -398,12 +391,10 @@ public class FilterComposerDialog extends JDialog {
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				try {
 					File theFile = chooser.getSelectedFile();
-					fc.loadConditions(internalConditionsModel,
+					mFilterController.loadConditions(internalConditionsModel,
 							theFile.getCanonicalPath());
 				} catch (Exception ex) {
 					handleLoadingException(ex);
-				}
-				{
 				}
 			}
 		}
@@ -463,43 +454,17 @@ public class FilterComposerDialog extends JDialog {
 					caseInsensitive.setEnabled(false);
 					return;
 				}
-				if (attributes.getSelectedIndex() > NODE_POSITION) {
-					final String attributeName = attributes.getSelectedItem()
-							.toString();
-					nodes.setExtensionList(registeredAttributes.getElement(
-							attributeName).getValues());
-					values.setModel(nodes);
-					if (values.getSelectedItem() != null) {
-						if (nodes.getSize() >= 1) {
-							values.setSelectedIndex(0);
-						} else {
-							values.setSelectedItem(null);
-						}
-					}
-					if (simpleCondition.getModel() != simpleAttributeConditionComboBoxModel) {
-						simpleCondition
-								.setModel(simpleAttributeConditionComboBoxModel);
-						simpleCondition.setSelectedIndex(0);
-					}
-					if (simpleCondition.getSelectedIndex() == 0) {
-						caseInsensitive.setEnabled(false);
-						values.setEnabled(false);
-					}
-					values.setEditable(true);
-					simpleCondition.setEnabled(true);
-					return;
-				}
 			}
 		}
 	}
 
-	private Controller c;
-	private FilterController fc;
+	private Controller controller;
+	private FilterController mFilterController;
 	private JList conditionList;
 	private JComboBox simpleCondition;
 	private JComboBox values;
 	private JComboBox attributes;
-	private FilterToolbar ft;
+	private FilterToolbar mFilterToolbar;
 	private JButton btnAdd;
 	private JButton btnNot;
 	private JButton btnAnd;
@@ -508,10 +473,8 @@ public class FilterComposerDialog extends JDialog {
 	private JCheckBox caseInsensitive;
 	private ExtendedComboBoxModel icons;
 	private ExtendedComboBoxModel nodes;
-	private AttributeRegistry registeredAttributes;
 	private DefaultComboBoxModel simpleNodeConditionComboBoxModel;
 	private DefaultComboBoxModel simpleIconConditionComboBoxModel;
-	private DefaultComboBoxModel simpleAttributeConditionComboBoxModel;
 	private ExtendedComboBoxModel filteredAttributeComboBoxModel;
 	private DefaultComboBoxModel internalConditionsModel;
 	private ComboBoxModel externalConditionsModel;
@@ -522,11 +485,11 @@ public class FilterComposerDialog extends JDialog {
 	private JButton btnLoad;
 	private ConditionListSelectionListener conditionListListener;
 
-	public FilterComposerDialog(Controller c, final FilterToolbar ft) {
-		super(c.getJFrame(), c.getResourceString("filter_dialog"));
-		this.c = c;
-		this.fc = c.getFilterController();
-		this.ft = ft;
+	public FilterComposerDialog(Controller controller, final FilterToolbar pFilterToolbar) {
+		super(controller.getJFrame(), controller.getResourceString("filter_dialog"));
+		this.controller = controller;
+		this.mFilterController = controller.getFilterController();
+		this.mFilterToolbar = pFilterToolbar;
 
 		final Box simpleConditionBox = Box.createHorizontalBox();
 		simpleConditionBox.setBorder(new EmptyBorder(5, 0, 5, 0));
@@ -539,19 +502,17 @@ public class FilterComposerDialog extends JDialog {
 								"filter_node"),
 						Resources.getInstance().createTranslatedString(
 								"filter_icon") });
-		MapRegistry registry = c.getModel().getRegistry();
-		registeredAttributes = registry.getAttributes();
-		filteredAttributeComboBoxModel.setExtensionList(registeredAttributes
-				.getListBoxModel());
+		MapRegistry registry = controller.getModel().getRegistry();
+		filteredAttributeComboBoxModel.setExtensionList(null);
 		attributes.setModel(filteredAttributeComboBoxModel);
 		attributes.addItemListener(new SelectedAttributeChangeListener());
 		simpleConditionBox.add(Box.createHorizontalGlue());
 		simpleConditionBox.add(attributes);
-		attributes.setRenderer(fc.getConditionRenderer());
+		attributes.setRenderer(mFilterController.getConditionRenderer());
 
-		simpleNodeConditionComboBoxModel = new DefaultComboBoxModel(fc
+		simpleNodeConditionComboBoxModel = new DefaultComboBoxModel(mFilterController
 				.getConditionFactory().getNodeConditionNames());
-		simpleIconConditionComboBoxModel = new DefaultComboBoxModel(fc
+		simpleIconConditionComboBoxModel = new DefaultComboBoxModel(mFilterController
 				.getConditionFactory().getIconConditionNames());
 
 		simpleCondition = new JComboBox();
@@ -559,16 +520,14 @@ public class FilterComposerDialog extends JDialog {
 		simpleCondition.addItemListener(new SimpleConditionChangeListener());
 		simpleConditionBox.add(Box.createHorizontalGlue());
 		simpleConditionBox.add(simpleCondition);
-		simpleCondition.setRenderer(fc.getConditionRenderer());
+		simpleCondition.setRenderer(mFilterController.getConditionRenderer());
 
-		simpleAttributeConditionComboBoxModel = new DefaultComboBoxModel(fc
-				.getConditionFactory().getAttributeConditionNames());
 		values = new JComboBox();
 		nodes = new ExtendedComboBoxModel();
 		values.setModel(nodes);
 		simpleConditionBox.add(Box.createHorizontalGlue());
 		simpleConditionBox.add(values);
-		values.setRenderer(fc.getConditionRenderer());
+		values.setRenderer(mFilterController.getConditionRenderer());
 		values.setEditable(true);
 
 		icons = new ExtendedComboBoxModel();
@@ -646,7 +605,7 @@ public class FilterComposerDialog extends JDialog {
 		controllerBox.add(btnCancel);
 		controllerBox.add(Box.createHorizontalGlue());
 
-		if (!c.getFrame().isApplet()) {
+		if (!controller.getFrame().isApplet()) {
 			ActionListener saveAction = new SaveAction();
 			btnSave = new JButton();
 			Tools.setLabelAndMnemonic(btnSave, Resources.getInstance()
@@ -669,7 +628,7 @@ public class FilterComposerDialog extends JDialog {
 		conditionList = new JList();
 		conditionList
 				.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		conditionList.setCellRenderer(fc.getConditionRenderer());
+		conditionList.setCellRenderer(mFilterController.getConditionRenderer());
 		conditionList.setLayoutOrientation(JList.VERTICAL);
 		conditionList.setAlignmentX(Component.LEFT_ALIGNMENT);
 		conditionListListener = new ConditionListSelectionListener();
@@ -713,9 +672,6 @@ public class FilterComposerDialog extends JDialog {
 			}
 			if (attributes.getSelectedIndex() > 1)
 				attributes.setSelectedIndex(0);
-			registeredAttributes = newMap.getRegistry().getAttributes();
-			filteredAttributeComboBoxModel
-					.setExtensionList(registeredAttributes.getListBoxModel());
 		} else {
 			icons.setExtensionList(null);
 			values.setSelectedIndex(-1);
@@ -749,7 +705,7 @@ public class FilterComposerDialog extends JDialog {
 	}
 
 	private void initInternalConditionModel() {
-		externalConditionsModel = fc.getFilterConditionModel();
+		externalConditionsModel = mFilterController.getFilterConditionModel();
 		if (internalConditionsModel == null) {
 			internalConditionsModel = new DefaultComboBoxModel();
 			internalConditionsModel.addListDataListener(conditionListListener);
@@ -776,7 +732,7 @@ public class FilterComposerDialog extends JDialog {
 		internalConditionsModel.setSelectedItem(conditionList
 				.getSelectedValue());
 		internalConditionsModel.removeListDataListener(conditionListListener);
-		fc.setFilterConditionModel(internalConditionsModel);
+		mFilterController.setFilterConditionModel(internalConditionsModel);
 		internalConditionsModel = null;
 	}
 }

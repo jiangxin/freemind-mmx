@@ -22,6 +22,7 @@ package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -120,8 +121,20 @@ public class ExportBranchAction extends MindmapAction {
 			ModeController newModeController = mMindMapController.getMode()
 					.createModeController();
 			MindMapMapModel map = new MindMapMapModel(node,
-					mMindMapController.getFrame(), newModeController);
-			map.save(chosenFile);
+					newModeController);
+			newModeController.setModel(map);
+			try {
+				map.save(chosenFile);
+			} catch (IOException e1) {
+				freemind.main.Resources.getInstance().logException(e1);
+				// roll back:
+				mMindMapController.insertNodeInto(node, parent);
+				
+				String message = Tools.expandPlaceholders(mMindMapController.getText("save_failed"),
+						chosenFile.getName());
+				mMindMapController.getController().errorMessage(message);
+				return;
+			}
 			// new node instead:
 			MindMapNode newNode = mMindMapController.addNewNode(parent,
 					nodePosition, node.isLeft());
@@ -130,8 +143,8 @@ public class ExportBranchAction extends MindmapAction {
 
 			String linkString = Tools.fileToRelativeUrlString(chosenFile, mMindMapController.getModel().getFile());
 			mMindMapController.setLink(newNode, linkString);
-			mMindMapController.newMap(map);
-			// old map should not be save automatically!!
+			mMindMapController.newMap(map, newModeController);
+			// old map should not be saved automatically!!
 		}
 	}
 

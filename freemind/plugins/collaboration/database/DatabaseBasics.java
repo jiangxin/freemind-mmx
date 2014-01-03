@@ -273,7 +273,7 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements
 	public String getMapTitle(String pOldTitle, MapModule pMapModule,
 			MindMap pModel) {
 		String title = pOldTitle;
-		if (pModel.getModeController() != getMindMapController()) {
+		if (pMapModule.getModeController() != getMindMapController()) {
 			return pOldTitle;
 		}
 		String userString = "";

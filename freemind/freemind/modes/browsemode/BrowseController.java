@@ -20,13 +20,16 @@
 
 package freemind.modes.browsemode;
 
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.AccessControlException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.ListIterator;
@@ -165,7 +168,9 @@ public class BrowseController extends ViewControllerAdapter {
 	}
 
 	public MapAdapter newModel(ModeController modeController) {
-		return new BrowseMapModel(getFrame(), modeController);
+		BrowseMapModel model = new BrowseMapModel(null, modeController);
+		modeController.setModel(model);
+		return model;
 	}
 
 	public void plainClick(MouseEvent e) {
@@ -222,7 +227,7 @@ public class BrowseController extends ViewControllerAdapter {
 	// }
 
 	public MindMapNode newNode(Object userObject, MindMap map) {
-		return new BrowseNodeModel(userObject, getFrame(), map);
+		return new BrowseNodeModel(userObject, map);
 	}
 
 	public JPopupMenu getPopupMenu() {
@@ -348,9 +353,9 @@ public class BrowseController extends ViewControllerAdapter {
 		return newModeController;
 	}
 
-	public void newMap(MindMap mapModel) {
+	public void newMap(MindMap mapModel, ModeController modeController) {
 		setNoteIcon(mapModel.getRootNode());
-		super.newMap(mapModel);
+		super.newMap(mapModel, modeController);
 	}
 
 	private void setNoteIcon(MindMapNode node) {
@@ -421,5 +426,66 @@ public class BrowseController extends ViewControllerAdapter {
 	public XMLElement createXMLElement() {
 		return new BrowseXMLElement(this);
 	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.ControllerAdapter#loadInternally(java.net.URL, freemind.modes.MapAdapter)
+	 */
+	@Override
+	protected void loadInternally(URL url, MapAdapter pModel)
+			throws URISyntaxException, XMLParseException, IOException {
+		((BrowseMapModel) pModel).setURL(url);
+		BrowseNodeModel root = loadTree(url);
+		if (root != null) {
+			pModel.setRoot(root);
+		} else {
+			// System.err.println("Err:"+root.toString());
+			throw new IOException();
+		}
+	}
+
+	BrowseNodeModel loadTree(URL url) {
+		BrowseNodeModel root = null;
+
+		InputStreamReader urlStreamReader = null;
+
+		try {
+			urlStreamReader = new InputStreamReader(url.openStream());
+		} catch (AccessControlException ex) {
+			getFrame().getController()
+					.errorMessage(
+							"Could not open URL " + url.toString()
+									+ ". Access Denied.");
+			System.err.println(ex);
+			return null;
+		} catch (Exception ex) {
+			getFrame().getController().errorMessage(
+					"Could not open URL " + url.toString() + ".");
+			System.err.println(ex);
+			// freemind.main.Resources.getInstance().logExecption(ex);
+			return null;
+		}
+
+		try {
+			HashMap IDToTarget = new HashMap();
+			root = (BrowseNodeModel) getModeController().createNodeTreeFromXml(
+					urlStreamReader, IDToTarget);
+			urlStreamReader.close();
+			return root;
+		} catch (Exception ex) {
+			System.err.println(ex);
+			return null;
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#out(java.lang.String)
+	 */
+	@Override
+	public void out(String pFormat) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+
 
 }

@@ -35,8 +35,6 @@ public interface AttributeTableModel extends TableModel {
 
 	int getColumnWidth(int col);
 
-	void setColumnWidth(int col, int width);
-
 	Object getValueAt(int row, int col);
 
 	void setValueAt(Object o, int row, int col);

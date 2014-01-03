@@ -76,13 +76,6 @@ public class ConditionFactory {
 			return IgnoreCaseNodeContainsCondition.load(element);
 		if (element.getName().equalsIgnoreCase(NodeCompareCondition.NAME))
 			return NodeCompareCondition.load(element);
-		if (element.getName().equalsIgnoreCase(AttributeCompareCondition.NAME))
-			return AttributeCompareCondition.load(element);
-		if (element.getName().equalsIgnoreCase(AttributeExistsCondition.NAME))
-			return AttributeExistsCondition.load(element);
-		if (element.getName()
-				.equalsIgnoreCase(AttributeNotExistsCondition.NAME))
-			return AttributeNotExistsCondition.load(element);
 		if (element.getName().equalsIgnoreCase(IconContainedCondition.NAME))
 			return IconContainedCondition.load(element);
        	if (element.getName().equalsIgnoreCase(IconNotContainedCondition.NAME))
@@ -96,54 +89,6 @@ public class ConditionFactory {
 		}
 		if (element.getName().equalsIgnoreCase(DisjunctConditions.NAME)) {
 			return DisjunctConditions.load(element);
-		}
-		return null;
-	}
-
-	public Condition createAttributeCondition(String attribute,
-			NamedObject simpleCondition, String value, boolean ignoreCase) {
-		if (simpleCondition.equals(FILTER_EXIST))
-			return new AttributeExistsCondition(attribute);
-		if (simpleCondition.equals(FILTER_DOES_NOT_EXIST))
-			return new AttributeNotExistsCondition(attribute);
-		if (ignoreCase) {
-			if (simpleCondition.equals(FILTER_IS_EQUAL_TO))
-				return new AttributeCompareCondition(attribute, value, true, 0,
-						true);
-			if (simpleCondition.equals(FILTER_IS_NOT_EQUAL_TO))
-				return new AttributeCompareCondition(attribute, value, true, 0,
-						false);
-			if (simpleCondition.equals(FILTER_GT))
-				return new AttributeCompareCondition(attribute, value, true, 1,
-						true);
-			if (simpleCondition.equals(FILTER_GE))
-				return new AttributeCompareCondition(attribute, value, true,
-						-1, false);
-			if (simpleCondition.equals(FILTER_LT))
-				return new AttributeCompareCondition(attribute, value, true,
-						-1, true);
-			if (simpleCondition.equals(FILTER_LE))
-				return new AttributeCompareCondition(attribute, value, true, 1,
-						false);
-		} else {
-			if (simpleCondition.equals(FILTER_IS_EQUAL_TO))
-				return new AttributeCompareCondition(attribute, value, false,
-						0, true);
-			if (simpleCondition.equals(FILTER_IS_NOT_EQUAL_TO))
-				return new AttributeCompareCondition(attribute, value, false,
-						0, false);
-			if (simpleCondition.equals(FILTER_GT))
-				return new AttributeCompareCondition(attribute, value, false,
-						1, true);
-			if (simpleCondition.equals(FILTER_GE))
-				return new AttributeCompareCondition(attribute, value, false,
-						-1, false);
-			if (simpleCondition.equals(FILTER_LT))
-				return new AttributeCompareCondition(attribute, value, false,
-						-1, true);
-			if (simpleCondition.equals(FILTER_LE))
-				return new AttributeCompareCondition(attribute, value, false,
-						1, false);
 		}
 		return null;
 	}

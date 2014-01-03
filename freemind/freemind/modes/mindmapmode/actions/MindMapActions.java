@@ -37,7 +37,6 @@ import freemind.modes.MindMap;
 import freemind.modes.MindMapArrowLink;
 import freemind.modes.MindMapLink;
 import freemind.modes.MindMapNode;
-import freemind.modes.NodeAdapter;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 import freemind.modes.mindmapmode.actions.xml.ActionFactory;
@@ -245,7 +244,7 @@ public interface MindMapActions {
 
 	void invokeHook(ModeControllerHook hook);
 
-	void invokeHooksRecursively(NodeAdapter node, MindMap map);
+	void invokeHooksRecursively(MindMapNode node, MindMap map);
 
 	// end hooks
 
@@ -309,23 +308,6 @@ public interface MindMapActions {
 	 *            the position to delete.
 	 * */
 	void removeAttribute(MindMapNode node, int pPosition);
-
-	/**
-	 * If an attribute with the same name exists, its value is changed. If the
-	 * new value is null, the attribute is deleted. Otherwise an attribute is
-	 * created. If several attributes with the same name exist, only the first
-	 * is changed.
-	 * 
-	 * @param pNode
-	 *            to which the attribute is associated
-	 * @param pName
-	 *            the name of the attribute
-	 * @param pNewValue
-	 *            its new value
-	 * @return the index of the attribute, or -1 if an attribute should be
-	 *         deleted, but wasn't found.
-	 */
-	int editAttribute(MindMapNode pNode, String pName, String pNewValue);
 
 	/**
 	 * Erases all content of the node as text, colors, fonts, etc.

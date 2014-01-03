@@ -81,6 +81,43 @@ import freemind.preferences.FreemindPropertyListener;
  * JTree).
  */
 public class MapView extends JPanel implements Printable, Autoscroll {
+	
+	public interface ViewFeedback {
+
+		/**
+		 * @param pNode
+		 * @param pIsSelected
+		 */
+		void changeSelection(NodeView pNode, boolean pIsSelected);
+
+		/**
+		 * @param pNode
+		 */
+		void onLostFocusNode(NodeView pNode);
+
+		/**
+		 * @param pNode
+		 */
+		void onFocusNode(NodeView pNode);
+
+		/**
+		 * @param pModel
+		 * @param pB
+		 */
+		void setFolded(MindMapNode pModel, boolean pB);
+
+		/**
+		 * @param pNewView
+		 */
+		void onViewCreatedHook(NodeView pNewView);
+
+		/**
+		 * @param pNodeView
+		 */
+		void onViewRemovedHook(NodeView pNodeView);
+
+
+	}
 	/**
 	 * Currently, this listener does nothing. But it should move the map
 	 * according to the resize event, such that the current map's center stays
@@ -186,7 +223,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		private void changeSelection(NodeView pNode, boolean pIsSelected) {
 			if (pNode.getModel() == null)
 				return;
-			getModel().getModeController().changeSelection(pNode, pIsSelected);
+			getViewFeedback().changeSelection(pNode, pIsSelected);
 			
 		}
 
@@ -216,11 +253,11 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		private void removeFocusForHooks(NodeView node) {
 			if (node.getModel() == null)
 				return;
-			getModel().getModeController().onLostFocusNode(node);
+			getViewFeedback().onLostFocusNode(node);
 		}
 
 		private void addFocusForHooks(NodeView node) {
-			getModel().getModeController().onFocusNode(node);
+			getViewFeedback().onFocusNode(node);
 		}
 
 		public NodeView get(int i) {
@@ -284,11 +321,13 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 	//
 	static boolean NEED_PREF_SIZE_BUG_FIX = Controller.JAVA_VERSION
 			.compareTo("1.5.0") < 0;
+	private ViewFeedback mFeedback;
 
-	public MapView(MindMap model, Controller controller) {
+	public MapView(MindMap model, Controller controller, ViewFeedback pFeedback) {
 		super();
 		this.model = model;
 		this.controller = controller;
+		mFeedback = pFeedback;
 		if (logger == null)
 			logger = controller.getFrame().getLogger(this.getClass().getName());
 		mCenterNodeTimer = new Timer();
@@ -409,6 +448,15 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		addComponentListener(new ResizeListener());
 	}
 
+	/**
+	 * @return the belonging instance of a ViewFeedback (in fact, a ModeController)
+	 */
+	public ViewFeedback getViewFeedback() {
+		return mFeedback;
+	}
+
+
+	
 	private void createPropertyChangeListener() {
 		propertyChangeListener = new FreemindPropertyListener() {
 
@@ -606,7 +654,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		} else {
 			// If folded in the direction, unfold
 			if (oldSelected.getModel().isFolded()) {
-				model.getModeController().setFolded(oldSelected.getModel(),
+				getViewFeedback().setFolded(oldSelected.getModel(),
 						false);
 				return oldSelected;
 			}
@@ -628,7 +676,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		} else {
 			// If folded in the direction, unfold
 			if (oldSelected.getModel().isFolded()) {
-				model.getModeController().setFolded(oldSelected.getModel(),
+				getViewFeedback().setFolded(oldSelected.getModel(),
 						false);
 				return oldSelected;
 			}

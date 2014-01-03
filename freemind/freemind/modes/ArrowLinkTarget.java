@@ -22,6 +22,7 @@ package freemind.modes;
 
 import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
+import freemind.modes.MindMap.MapFeedback;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 import freemind.view.mindmapview.MapView;
 
@@ -38,11 +39,11 @@ public class ArrowLinkTarget extends ArrowLinkAdapter {
 	/**
 	 * @param pSource
 	 * @param pTarget I am the target!
-	 * @param pFrame
+	 * @param pMapFeedback
 	 */
 	public ArrowLinkTarget(MindMapNode pSource, MindMapNode pTarget,
-			FreeMindMain pFrame) {
-		super(pSource, pTarget, pFrame);
+			MapFeedback pMapFeedback) {
+		super(pSource, pTarget, pMapFeedback);
 	}
 
 	public String getSourceLabel() {
@@ -70,7 +71,7 @@ public class ArrowLinkTarget extends ArrowLinkAdapter {
 	}
 
 	public ArrowLinkAdapter createArrowLinkAdapter(MindMapLinkRegistry pRegistry) {
-		ArrowLinkAdapter linkAdapter = new MindMapArrowLinkModel(source, target, frame);
+		ArrowLinkAdapter linkAdapter = new MindMapArrowLinkModel(source, target, mMapFeedback);
 		copy(linkAdapter);
 		return linkAdapter;
 	}

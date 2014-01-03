@@ -1,4 +1,10 @@
 ===============================
+Changes made in FreeMind 1.1.0 Alpha 2
+===============================
+* Removed lots of the attribute functionality. This has to be re-developed.
+* MVC-pattern more enforced.
+
+===============================
 Changes made in FreeMind 1.1.0 Alpha 1
 ===============================
 * Added node statistics to the status bar (inclusive sums of node contents).

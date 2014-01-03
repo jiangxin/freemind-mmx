@@ -22,13 +22,17 @@
 
 package freemind.modes.viewmodes;
 
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 import freemind.main.XMLElement;
+import freemind.main.XMLParseException;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
+import freemind.modes.ModeController.ReaderCreator;
 import freemind.modes.common.CommonNodeKeyListener;
 import freemind.modes.common.CommonNodeKeyListener.EditHandler;
 import freemind.modes.common.CommonToggleFoldedAction;
@@ -165,4 +169,23 @@ public abstract class ViewControllerAdapter extends ControllerAdapter {
 						+ this.getClass().getName());
 	}
 
+	/* (non-Javadoc)
+	 * @see freemind.modes.ModeController#loadTree(freemind.modes.ModeController.ReaderCreator, boolean)
+	 */
+	@Override
+	public MindMapNode loadTree(ReaderCreator pReaderCreator,
+			boolean pAskUserBeforeUpdate) throws XMLParseException, IOException {
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#paste(freemind.modes.MindMapNode, freemind.modes.MindMapNode)
+	 */
+	@Override
+	public void paste(MindMapNode pNode, MindMapNode pParent) {
+	}
+
+
+
+	
 }

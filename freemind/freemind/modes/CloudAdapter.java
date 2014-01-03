@@ -29,6 +29,7 @@ import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
+import freemind.modes.MindMap.MapFeedback;
 import freemind.preferences.FreemindPropertyListener;
 
 public abstract class CloudAdapter extends LineAdapter implements MindMapCloud {
@@ -42,8 +43,8 @@ public abstract class CloudAdapter extends LineAdapter implements MindMapCloud {
 	//
 	// Constructors
 	//
-	public CloudAdapter(MindMapNode target, FreeMindMain frame) {
-		super(target, frame);
+	public CloudAdapter(MindMapNode target, MapFeedback pMapFeedback) {
+		super(target, pMapFeedback);
 		NORMAL_WIDTH = 3;
 		iterativeLevel = -1;
 		if (listener == null) {
