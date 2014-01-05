@@ -416,6 +416,12 @@ public interface MindMapNode extends MutableTreeNode {
 	void setAttribute(int pPosition, Attribute pAttribute);
 	
 	/**
+	 * Insert the attribute to the given value.
+	 * Don't set the attributes directly here. Use the {@link MindMapActions} methods instead.
+	 */
+	void insertAttribute(int pPosition, Attribute pAttribute);
+	
+	/**
 	 * @param pAttribute
 	 * @return the index of the new attribute
 	 */

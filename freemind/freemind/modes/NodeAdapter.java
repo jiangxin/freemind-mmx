@@ -1429,7 +1429,13 @@ public abstract class NodeAdapter implements MindMapNode {
 		if(mAttributeVector==null) {
 			return Collections.EMPTY_LIST;
 		}
-		return getAttributeVector();
+		Vector returnValue = new Vector();
+		for (Iterator iter = mAttributeVector.iterator(); iter
+				.hasNext();) {
+			Attribute attr = (Attribute) iter.next();
+			returnValue.add(attr.getName());
+		}
+		return returnValue;
 	}
 
 	@Override
@@ -1437,20 +1443,20 @@ public abstract class NodeAdapter implements MindMapNode {
 		if(mAttributeVector==null) {
 			return 0;
 		}
-		return getAttributeVector().size();
+		return mAttributeVector.size();
 	}
 
 	@Override
 	public Attribute getAttribute(int pPosition) {
 		checkAttributePosition(pPosition);
-		return getAttributeVector().get(pPosition);
+		return new Attribute(getAttributeVector().get(pPosition));
 	}
 
 	/**
 	 * @param pPosition
 	 */
-	private void checkAttributePosition(int pPosition) {
-		if(mAttributeVector == null || getAttributeTableLength()<= pPosition) {
+	public void checkAttributePosition(int pPosition) {
+		if(mAttributeVector == null || getAttributeTableLength()<= pPosition || pPosition < 0) {
 			throw new IllegalArgumentException("Attribute position out of range: " + pPosition);
 		}
 	}
@@ -1496,6 +1502,15 @@ public abstract class NodeAdapter implements MindMapNode {
 	public int addAttribute(Attribute pAttribute) {
 		getAttributeVector().add(pAttribute);
 		return getAttributeVector().indexOf(pAttribute);
+	}
+	
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#insertAttribute(int, freemind.modes.attributes.Attribute)
+	 */
+	@Override
+	public void insertAttribute(int pPosition, Attribute pAttribute) {
+		checkAttributePosition(pPosition);
+		getAttributeVector().set(pPosition, pAttribute);
 	}
 	
 	@Override

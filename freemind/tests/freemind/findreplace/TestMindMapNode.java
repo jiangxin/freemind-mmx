@@ -516,4 +516,13 @@ final class TestMindMapNode implements MindMapNode {
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#insertAttribute(int, freemind.modes.attributes.Attribute)
+	 */
+	@Override
+	public void insertAttribute(int pPosition, Attribute pAttribute) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

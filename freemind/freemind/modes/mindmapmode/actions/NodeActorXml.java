@@ -33,11 +33,10 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 /**
  * @author foltin
  * 
- *         To change the template for this generated type comment go to
- *         Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 public interface NodeActorXml extends ActorXml {
 	/**
+	 * Returns the action pair to set the node @param selected to the current values.
 	 * @param model
 	 * @param selected
 	 */

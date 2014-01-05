@@ -28,6 +28,8 @@ import java.awt.event.MouseWheelEvent;
 import java.util.List;
 import java.util.Properties;
 
+import javax.jws.soap.SOAPBinding.Use;
+
 import freemind.controller.actions.generated.instance.Pattern;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.ModeControllerHook;
@@ -289,6 +291,12 @@ public interface MindMapActions {
 	void deRegisterMouseWheelEventHandler(MouseWheelEventHandler handler);
 
 	void setAttribute(MindMapNode node, int pPosition, Attribute pAttribute);
+	
+	/**
+	 * Inserts a new attribute at a given place of the attributes table.
+	 * To insert an attribute as the last item, {link {@link #addAttribute(MindMapNode, Attribute)} instead.
+	 */
+	void insertAttribute(MindMapNode node, int pPosition, Attribute pAttribute);
 
 	/**
 	 * Inserts a new attribute at the end of the attributes table.
