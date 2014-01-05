@@ -22,7 +22,6 @@
 
 package freemind.modes.viewmodes;
 
-import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -32,7 +31,6 @@ import freemind.main.XMLParseException;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
-import freemind.modes.ModeController.ReaderCreator;
 import freemind.modes.common.CommonNodeKeyListener;
 import freemind.modes.common.CommonNodeKeyListener.EditHandler;
 import freemind.modes.common.CommonToggleFoldedAction;
