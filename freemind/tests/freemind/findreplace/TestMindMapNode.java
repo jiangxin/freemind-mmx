@@ -51,8 +51,6 @@ import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.modes.attributes.Attribute;
-import freemind.view.mindmapview.NodeView;
-import freemind.view.mindmapview.NodeViewVisitor;
 
 final class TestMindMapNode implements MindMapNode {
 	private String text = "";
@@ -162,13 +160,6 @@ final class TestMindMapNode implements MindMapNode {
 
 	public String getFontFamilyName() {
 		return null;
-	}
-
-	public Collection getViewers() {
-		return null;
-	}
-
-	public void addViewer(NodeView viewer) {
 	}
 
 	public String getPlainTextContent() {
@@ -435,16 +426,6 @@ final class TestMindMapNode implements MindMapNode {
 
 	public int getAttributeTableLength() {
 		return 0;
-	}
-
-	public void removeViewer(NodeView viewer) {
-		// TODO Auto-generated method stub
-
-	}
-
-	public void acceptViewVisitor(NodeViewVisitor visitor) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public EventListenerList getListeners() {

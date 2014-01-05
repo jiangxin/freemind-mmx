@@ -77,7 +77,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 	static private int FOLDING_SYMBOL_WIDTH = -1;
 
 	protected MindMapNode model;
-	protected MapView map;
+	protected MapView mapView;
 	private MainView mainView;
 	protected final static Color dragColor = Color.lightGray; // the Color of
 																// appearing
@@ -140,7 +140,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 		setFocusCycleRoot(true);
 
 		this.model = model;
-		this.map = map;
+		this.mapView = map;
 		final TreeNode parentNode = model.getParent();
 		final int index = parentNode == null ? 0 : parentNode.getIndex(model);
 
@@ -186,8 +186,8 @@ public class NodeView extends JComponent implements TreeModelListener {
 			}
 			c.remove(i);
 			ToolTipManager.sharedInstance().unregisterComponent(mainView);
-			mainView.removeMouseListener(this.map.getNodeMouseMotionListener());
-			mainView.removeMouseMotionListener(this.map
+			mainView.removeMouseListener(this.mapView.getNodeMouseMotionListener());
+			mainView.removeMouseMotionListener(this.mapView
 					.getNodeMouseMotionListener());
 			c.add(newMainView, i);
 		} else {
@@ -195,11 +195,11 @@ public class NodeView extends JComponent implements TreeModelListener {
 		}
 		this.mainView = newMainView;
 		ToolTipManager.sharedInstance().registerComponent(mainView);
-		mainView.addMouseListener(this.map.getNodeMouseMotionListener());
-		mainView.addMouseMotionListener(this.map.getNodeMouseMotionListener());
-		addDragListener(map.getNodeDragListener());
-		addDropListener(map.getNodeDropListener());
-		if (!model.isRoot() && "true".equals(map.getController().getProperty(FreeMindMain.ENABLE_NODE_MOVEMENT))) {
+		mainView.addMouseListener(this.mapView.getNodeMouseMotionListener());
+		mainView.addMouseMotionListener(this.mapView.getNodeMouseMotionListener());
+		addDragListener(mapView.getNodeDragListener());
+		addDropListener(mapView.getNodeDropListener());
+		if (!model.isRoot() && "true".equals(mapView.getController().getProperty(FreeMindMain.ENABLE_NODE_MOVEMENT))) {
 			motionListenerView = new NodeMotionListenerView(this);
 			add(motionListenerView);
 		}
@@ -378,11 +378,11 @@ public class NodeView extends JComponent implements TreeModelListener {
 	}
 
 	public MapView getMap() {
-		return map;
+		return mapView;
 	}
 
 	protected Controller getController() {
-		return map.getController();
+		return mapView.getController();
 	}
 
 	public ViewFeedback getViewFeedback() {
@@ -828,7 +828,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 		}
 		getViewFeedback().onViewRemovedHook(this);
 		removeFromMap();
-		getModel().removeViewer(this); // Let the model know he is invisible
+		mapView.removeViewer(getModel(), this); // Let the model know he is invisible
 	}
 
 	void update() {
@@ -876,8 +876,8 @@ public class NodeView extends JComponent implements TreeModelListener {
 				// Compute the width the node would spontaneously take,
 				// by preliminarily setting the text.
 				setText(lines[line]);
-				widthMustBeRestricted = mainView.getPreferredSize().width > map
-						.getZoomed(map.getMaxNodeWidth())
+				widthMustBeRestricted = mainView.getPreferredSize().width > mapView
+						.getZoomed(mapView.getMaxNodeWidth())
 						+ mainView.getIconWidth();
 				if (widthMustBeRestricted) {
 					break;
@@ -891,7 +891,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 			// <base>.
 			if (nodeText.indexOf("<img") >= 0 && nodeText.indexOf("<base ") < 0) {
 				try {
-					nodeText = "<html><base href=\"" + map.getModel().getURL()
+					nodeText = "<html><base href=\"" + mapView.getModel().getURL()
 							+ "\">" + nodeText.substring(6);
 				} catch (MalformedURLException e) {
 				}
@@ -920,8 +920,8 @@ public class NodeView extends JComponent implements TreeModelListener {
 				// The purpose of that is to speed up rendering of very long
 				// nodes.
 				setText(nodeText);
-				widthMustBeRestricted = mainView.getPreferredSize().width > map
-						.getZoomed(map.getMaxNodeWidth())
+				widthMustBeRestricted = mainView.getPreferredSize().width > mapView
+						.getZoomed(mapView.getMaxNodeWidth())
 						+ mainView.getIconWidth();
 			} else {
 				widthMustBeRestricted = true;
@@ -929,7 +929,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 
 			if (widthMustBeRestricted) {
 				nodeText = nodeText.replaceFirst("(?i)<body>", "<body width=\""
-						+ map.getMaxNodeWidth() + "\">");
+						+ mapView.getMaxNodeWidth() + "\">");
 			}
 			setText(nodeText);
 		} else if (nodeText.startsWith("<table>")) {
@@ -950,7 +950,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 			String text = HtmlTools.plainToHTML(nodeText);
 			if (widthMustBeRestricted) {
 				text = text.replaceFirst("(?i)<p>",
-						"<p width=\"" + map.getMaxNodeWidth() + "\">");
+						"<p width=\"" + mapView.getMaxNodeWidth() + "\">");
 			}
 			setText(text);
 		} else {
@@ -1044,7 +1044,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 
 	boolean useSelectionColors() {
 		return isSelected() && !MapView.standardDrawRectangleForSelection
-				&& !map.isCurrentlyPrinting();
+				&& !mapView.isCurrentlyPrinting();
 	}
 
 	void updateStyle() {
@@ -1194,18 +1194,18 @@ public class NodeView extends JComponent implements TreeModelListener {
 	 */
 
 	public int getShift() {
-		return map.getZoomed(model.calcShiftY());
+		return mapView.getZoomed(model.calcShiftY());
 	}
 
 	/**
 	 * @return Returns the VGAP.
 	 */
 	public int getVGap() {
-		return map.getZoomed(model.getVGap());
+		return mapView.getZoomed(model.getVGap());
 	}
 
 	public int getHGap() {
-		return map.getZoomed(model.getHGap());
+		return mapView.getZoomed(model.getHGap());
 	}
 
 	public MainView getMainView() {
@@ -1404,15 +1404,15 @@ public class NodeView extends JComponent implements TreeModelListener {
 			((NodeView) i.next()).remove();
 		}
 		insert();
-		if (map.getSelected() == null) {
-			map.selectAsTheOnlyOneSelected(this);
+		if (mapView.getSelected() == null) {
+			mapView.selectAsTheOnlyOneSelected(this);
 		}
-		map.revalidateSelecteds();
+		mapView.revalidateSelecteds();
 		revalidate();
 	}
 
 	public int getZoomedFoldingSymbolHalfWidth() {
-		int preferredFoldingSymbolHalfWidth = (int) ((getFoldingSymbolWidth() * map
+		int preferredFoldingSymbolHalfWidth = (int) ((getFoldingSymbolWidth() * mapView
 				.getZoom()) / 2);
 		return Math.min(preferredFoldingSymbolHalfWidth, getHeight() / 2);
 	}

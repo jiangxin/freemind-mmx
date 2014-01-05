@@ -84,7 +84,7 @@ public class BlinkingNodeHook extends PermanentMindMapNodeHookAdapter {
 				public void run() {
 					if (getNode() == null || getController().isBlocked())
 						return;
-					getNode().acceptViewVisitor(new NodeViewVisitor() {
+					getController().getView().acceptViewVisitor(getNode(), new NodeViewVisitor() {
 						public void visit(NodeView view) {
 							if (!view.isVisible()) {
 								return;

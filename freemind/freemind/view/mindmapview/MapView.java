@@ -1620,10 +1620,10 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		if (node == null) {
 			return null;
 		}
-		Collection viewers = node.getViewers();
-		final Iterator iterator = viewers.iterator();
+		Collection<NodeView> viewers = getViewers(node);
+		final Iterator<NodeView> iterator = viewers.iterator();
 		while (iterator.hasNext()) {
-			NodeView candidateView = (NodeView) iterator.next();
+			NodeView candidateView = iterator.next();
 			if (candidateView.getMap() == this) {
 				return candidateView;
 			}
@@ -1728,4 +1728,46 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		return 0;
 	}
 
+	private HashMap<MindMapNode, Vector<NodeView> > views = null;
+
+	public Collection<NodeView> getViewers(MindMapNode pNode) {
+		if (views == null) {
+			views = new HashMap<MindMapNode, Vector<NodeView>>();
+		}
+		if(!views.containsKey(pNode)) {
+			views.put(pNode, new Vector<NodeView>());
+		}
+		return views.get(pNode);
+	}
+
+	public void addViewer(MindMapNode pNode, NodeView viewer) {
+		getViewers(pNode).add(viewer);
+		pNode.addTreeModelListener(viewer);
+	}
+
+	public void removeViewer(MindMapNode pNode, NodeView viewer) {
+		Collection<NodeView> viewers = getViewers(pNode);
+		viewers.remove(viewer);
+		if(viewers.isEmpty()) {
+			views.remove(pNode);
+		}
+		pNode.removeTreeModelListener(viewer);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.modes.MindMapNode#acceptViewVisitor(freemind.view.mindmapview
+	 * .NodeViewVisitor)
+	 */
+	public void acceptViewVisitor(MindMapNode pNode, NodeViewVisitor visitor) {
+		final Iterator iterator = getViewers(pNode).iterator();
+		while (iterator.hasNext()) {
+			visitor.visit((NodeView) iterator.next());
+		}
+
+	}
+
+	
 }

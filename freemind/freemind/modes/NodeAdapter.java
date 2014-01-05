@@ -62,8 +62,6 @@ import freemind.main.XMLElement;
 import freemind.modes.MindMap.MapFeedback;
 import freemind.modes.attributes.Attribute;
 import freemind.preferences.FreemindPropertyListener;
-import freemind.view.mindmapview.NodeView;
-import freemind.view.mindmapview.NodeViewVisitor;
 
 /**
  * This class represents a single Node of a Tree. It contains direct handles to
@@ -130,7 +128,6 @@ public abstract class NodeAdapter implements MindMapNode {
 	 * the MapView which contains the NodeViews
 	 */
 	private MindMapEdge edge;
-	private Collection views = null;
 
 	private static final boolean ALLOWSCHILDREN = true;
 	private static final boolean ISLEAF = false; // all nodes may have children
@@ -279,23 +276,6 @@ public abstract class NodeAdapter implements MindMapNode {
 	//
 	// get/set methods
 	//
-
-	public Collection getViewers() {
-		if (views == null) {
-			views = new LinkedList();
-		}
-		return views;
-	}
-
-	public void addViewer(NodeView viewer) {
-		getViewers().add(viewer);
-		addTreeModelListener(viewer);
-	}
-
-	public void removeViewer(NodeView viewer) {
-		getViewers().remove(viewer);
-		removeTreeModelListener(viewer);
-	}
 
 	/** Creates the TreePath recursively */
 	public TreePath getPath() {
@@ -1406,20 +1386,6 @@ public abstract class NodeAdapter implements MindMapNode {
 		return listenerList;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * freemind.modes.MindMapNode#acceptViewVisitor(freemind.view.mindmapview
-	 * .NodeViewVisitor)
-	 */
-	public void acceptViewVisitor(NodeViewVisitor visitor) {
-		final Iterator iterator = views.iterator();
-		while (iterator.hasNext()) {
-			visitor.visit((NodeView) iterator.next());
-		}
-
-	}
 	//
 	// Attributes
 	//

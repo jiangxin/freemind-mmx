@@ -42,8 +42,6 @@ import freemind.extensions.PermanentNodeHook;
 import freemind.main.XMLElement;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.mindmapmode.actions.MindMapActions;
-import freemind.view.mindmapview.NodeView;
-import freemind.view.mindmapview.NodeViewVisitor;
 
 public interface MindMapNode extends MutableTreeNode {
 
@@ -177,15 +175,6 @@ public interface MindMapNode extends MutableTreeNode {
 	String getFontSize();
 
 	String getFontFamilyName();
-
-	/**
-	 * @return a collection of NodeView objects.
-	 */
-	Collection getViewers();
-
-	void addViewer(NodeView viewer);
-
-	void removeViewer(NodeView viewer);
 
 	String toString();
 
@@ -434,8 +423,6 @@ public interface MindMapNode extends MutableTreeNode {
 	public void addTreeModelListener(TreeModelListener l);
 
 	public void removeTreeModelListener(TreeModelListener l);
-
-	public void acceptViewVisitor(NodeViewVisitor visitor);
 
 	EventListenerList getListeners();
 

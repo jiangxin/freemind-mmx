@@ -174,7 +174,7 @@ class NodeViewFactory {
 			}
 		}
 
-		model.addViewer(newView);
+		map.addViewer(model, newView);
 		newView.update();
 		fireNodeViewCreated(newView);
 		return newView;

@@ -77,7 +77,7 @@ public class LatexNodeHook extends PermanentMindMapNodeHookAdapter {
 	}
 
 	public void invoke(MindMapNode node) {
-		Iterator iterator = node.getViewers().iterator();
+		Iterator iterator = getMindMapController().getView().getViewers(node).iterator();
 		while (iterator.hasNext()) {
 			NodeView view = (NodeView) iterator.next();
 			createViewer(view);
