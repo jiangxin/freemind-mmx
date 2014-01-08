@@ -202,11 +202,12 @@ public class NodeFoldingComponent extends JButton {
 			NodeFoldingComponent b = (NodeFoldingComponent) c;
 			Rectangle bounds = shape.getBounds();
 			Color col = getColorForCounter();
+			Color lineColor = nodeView.getModel().getEdge().getColor();
 			if (b.mIsEntered) {
 				Color oldColor = g2.getColor();
 				g2.setColor(nodeView.getMap().getBackground());
 				g2.fillOval(bounds.x, bounds.y, bounds.width, bounds.height);
-				g2.setColor(oldColor);
+				g2.setColor(lineColor);
 				int xmiddle = bounds.x + bounds.width / 2;
 				int ymiddle = bounds.y + bounds.height / 2;
 				g2.drawLine(bounds.x, ymiddle, bounds.x + bounds.width, ymiddle);
@@ -215,6 +216,7 @@ public class NodeFoldingComponent extends JButton {
 							+ bounds.height);
 				}
 				g2.draw(shape);
+				g2.setColor(oldColor);
 			} else {
 				int xmiddle = bounds.x + bounds.width / 2;
 				int ymiddle = bounds.y + bounds.height / 2;
@@ -238,18 +240,20 @@ public class NodeFoldingComponent extends JButton {
 					}
 					g2.drawLine(xmiddle - radius, ymiddle, xmiddle + radius,
 							ymiddle);
-					g2.setColor(oldColor);
+					g2.setColor(lineColor);
 					g2.drawOval(xmiddle - radius, ymiddle - radius, diameter,
 							diameter);
+					g2.setColor(oldColor);
 				} else {
 					if (isFolded()) {
 						int radius = foldingCircleDiameter / 2;
 						g2.setColor(nodeView.getMap().getBackground());
 						g2.fillOval(xmiddle - radius, ymiddle - radius,
 								foldingCircleDiameter, foldingCircleDiameter);
-						g2.setColor(oldColor);
+						g2.setColor(lineColor);
 						g2.drawOval(xmiddle - radius, ymiddle - radius,
 								foldingCircleDiameter, foldingCircleDiameter);
+						g2.setColor(oldColor);
 					}
 				}
 			}

@@ -3,6 +3,7 @@ Changes made in FreeMind 1.1.0 Alpha 2
 ===============================
 * Removed lots of the attribute functionality. This has to be re-developed.
 * MVC-pattern more enforced.
+* Fixed: Bug 1181 	Folding symbol is invisible on black background
 
 ===============================
 Changes made in FreeMind 1.1.0 Alpha 1
