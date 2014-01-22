@@ -55,6 +55,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -167,6 +169,8 @@ public class FreeMindMapController extends JMapController implements
 	private static final int POSITION_HOLDER_LIMIT = 50;
 
 	private static final long WHEEL_ZOOM_MINIMAL_TIME_BETWEEN_CHANGES = 333;
+
+	private static final String DO_REVERSE_LOOKUP_ON_LAT_LON_SEARCH = "do_reverse_lookup_on_lat_lon_search";
 
 	protected static java.util.logging.Logger logger = freemind.main.Resources
 			.getInstance().getLogger("plugins.map.FreeMindMapController");
@@ -2213,6 +2217,46 @@ public class FreeMindMapController extends JMapController implements
 	public Searchresults getSearchResults(String pText) {
 		String result = "unknown";
 		Searchresults results = new Searchresults();
+		// special case: lat lon[;lat2 lon2;...]
+		if(pText.matches("[ 0-9eE.,;\\-]+")) {
+			String regex = " *([0-9eE.,\\-]+) +([0-9eE.,\\-]+) *";
+			Pattern pattern = Pattern.compile(regex);
+			boolean reverseLookupErrorOccured = !Resources.getInstance().getBoolProperty(
+					DO_REVERSE_LOOKUP_ON_LAT_LON_SEARCH);
+			String[] coords = pText.split(";");
+			for (int i = 0; i < coords.length; i++) {
+				String coord = coords[i];
+				Matcher matcher = pattern.matcher(coord);
+				if(matcher.matches()) {
+					double lat = Double.parseDouble(matcher.group(1));
+					double lon = Double.parseDouble(matcher.group(2));
+					Place place = new Place();
+					if (!reverseLookupErrorOccured) {
+						try {
+							// Try reverse lookup:
+							Reversegeocode reverseLookup = getReverseLookup(
+									new Coordinate(lat, lon), map.getZoom());
+							if (reverseLookup.getListResultList().size() > 0) {
+								place.setDisplayName(reverseLookup.getResult(0).content);
+							}
+						} catch (Exception e) {
+							freemind.main.Resources.getInstance().logException(
+									e);
+							reverseLookupErrorOccured = true;
+						}
+					}
+					if(place.getDisplayName() == null) {
+						place.setDisplayName(coord);
+					}
+					place.setOsmType("node");
+					place.setLat(lat);
+					place.setLon(lon);
+					
+					results.addPlace(place);
+				}
+			}
+			return results;
+		}
 		StringBuilder b = new StringBuilder();
 		boolean limitSearchToRegion = mMapHook.isLimitSearchToRegion();
 		try {
