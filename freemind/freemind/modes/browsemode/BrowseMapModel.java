@@ -22,18 +22,24 @@ package freemind.modes.browsemode;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Writer;
 import java.net.URL;
-import java.security.AccessControlException;
-import java.util.HashMap;
 
+import freemind.modes.ArrowLinkAdapter;
+import freemind.modes.ArrowLinkTarget;
+import freemind.modes.CloudAdapter;
+import freemind.modes.EdgeAdapter;
 import freemind.modes.MapAdapter;
+import freemind.modes.MapFeedback;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.ModeController;
+import freemind.modes.NodeAdapter;
 
 public class BrowseMapModel extends MapAdapter {
 
+	private static final String ENCRYPTED_BROWSE_NODE = EncryptedBrowseNode.class
+			.getName();
 	private URL url;
 	private MindMapLinkRegistry linkRegistry;
 
@@ -126,4 +132,46 @@ public class BrowseMapModel extends MapAdapter {
 		// FIXME: Implement me if you need me.
 		throw new RuntimeException("Unimplemented method called.");
 	}
+
+
+	protected NodeAdapter createNodeAdapter(MapFeedback pMapFeedback, String nodeClass) {
+		if (nodeClass == ENCRYPTED_BROWSE_NODE) {
+			return new EncryptedBrowseNode(null, pMapFeedback);
+		}
+		return new BrowseNodeModel(null, pMapFeedback.getMap());
+	}
+
+	public EdgeAdapter createEdgeAdapter(NodeAdapter node) {
+		return new BrowseEdgeModel(node, mMapFeedback);
+	}
+
+	public CloudAdapter createCloudAdapter(NodeAdapter node) {
+		return new BrowseCloudModel(node, mMapFeedback);
+	}
+
+	public ArrowLinkAdapter createArrowLinkAdapter(NodeAdapter source,
+			NodeAdapter target) {
+		return new BrowseArrowLinkModel(source, target, mMapFeedback);
+	}
+
+	public ArrowLinkTarget createArrowLinkTarget(NodeAdapter source,
+			NodeAdapter target) {
+		// FIXME: Need an implementation here
+		return null;
+	}
+	
+	public NodeAdapter createEncryptedNode(String additionalInfo) {
+		NodeAdapter node = createNodeAdapter(mMapFeedback, ENCRYPTED_BROWSE_NODE);
+		node.setAdditionalInfo(additionalInfo);
+		return node;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.XMLElementAdapter#createNodeAdapter(freemind.modes.MindMap, java.lang.String)
+	 */
+	@Override
+	public NodeAdapter createNodeAdapter(MindMap pMap, String pNodeClass) {
+		return createNodeAdapter(mMapFeedback, null);
+	}
+
 }

@@ -35,8 +35,9 @@ import java.util.Vector;
 import freemind.main.FreeMindSecurityManager;
 import freemind.main.HtmlTools;
 import freemind.main.Tools;
+import freemind.modes.MapAdapter;
+import freemind.modes.XMLElementAdapter;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.MindMapMapModel;
 
 /**
  * @author foltin
@@ -98,7 +99,7 @@ public class ToolsTests extends FreeMindTestBase {
 				+ "</richcontent>"
 				+ "</node>" + "</node>" + "</map>";
 		Reader updateReader = Tools.getUpdateReader(new StringReader(input),
-				MindMapController.FREEMIND_VERSION_UPDATER_XSLT, mFreeMindMain);
+				MapAdapter.FREEMIND_VERSION_UPDATER_XSLT);
 		String result = Tools.getFile(updateReader);
 		result = HtmlTools.unicodeToHTMLUnicodeEntity(result, true);
 		System.out.println(result);
@@ -230,7 +231,7 @@ public class ToolsTests extends FreeMindTestBase {
 				+ "<node CREATED=\"1337970913625\" ID=\"ID_1753131052\" MODIFIED=\"1337970913625\" TEXT=\"Neue Mindmap\"/>"
 				+ "</map>";
 		Reader updateReader = Tools.getUpdateReader(new StringReader(input),
-				MindMapController.FREEMIND_VERSION_UPDATER_XSLT, getFrame());
+				MapAdapter.FREEMIND_VERSION_UPDATER_XSLT);
 		String output = Tools.getFile(updateReader);
 		assertEquals("Correct output",
 				"<?xml version=\"1.0\" encoding=\"UTF-8\"?>" + input,

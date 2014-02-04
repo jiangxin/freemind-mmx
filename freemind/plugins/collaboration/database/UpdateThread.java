@@ -204,7 +204,7 @@ public class UpdateThread extends Thread implements ResultHandler,
 			MapAdapter newModel = new MindMapMapModel(newModeController);
 			HashMap IDToTarget = new HashMap();
 			StringReader reader = new StringReader(map);
-			MindMapNodeModel rootNode = (MindMapNodeModel) newModeController
+			MindMapNodeModel rootNode = (MindMapNodeModel) newModel
 					.createNodeTreeFromXml(reader, IDToTarget);
 			reader.close();
 			newModel.setRoot(rootNode);

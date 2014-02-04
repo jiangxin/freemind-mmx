@@ -29,7 +29,6 @@ import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
-import freemind.modes.MindMap.MapFeedback;
 import freemind.preferences.FreemindPropertyListener;
 
 public abstract class CloudAdapter extends LineAdapter implements MindMapCloud {

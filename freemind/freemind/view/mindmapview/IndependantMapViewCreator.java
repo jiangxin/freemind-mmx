@@ -21,6 +21,7 @@
 package freemind.view.mindmapview;
 
 import java.awt.BorderLayout;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.dnd.DragGestureListener;
@@ -37,17 +38,26 @@ import javax.swing.JPanel;
 
 import tests.freemind.FreeMindMainMock;
 import freemind.controller.Controller;
+import freemind.extensions.NodeHook;
+import freemind.extensions.PermanentNodeHookSubstituteUnknown;
 import freemind.main.FreeMindMain;
+import freemind.main.Resources;
 import freemind.main.Tools;
+import freemind.modes.MapAdapter;
+import freemind.modes.MapFeedback;
+import freemind.modes.MindMap;
+import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapMapModel;
-import freemind.modes.mindmapmode.MindMapMode;
+import freemind.view.mindmapview.MapView.ViewFeedback;
 
 /**
  * @author foltin
  * @date 28.09.2011
  */
-public class IndependantMapViewCreator {
+public class IndependantMapViewCreator implements ViewFeedback, MapFeedback {
+
+	private MindMapMapModel mMap;
 
 	public static void main(String[] args) {
 		System.setProperty("java.awt.headless", "true");
@@ -85,20 +95,12 @@ public class IndependantMapViewCreator {
 			IOException, URISyntaxException {
 		Controller controller = new Controller(pFreeMindMain);
 		controller.initialization();
-		MindMapMode mode = new MindMapMode() {
-			public freemind.modes.ModeController createModeController() {
-				return new MindMapController(this) {
-					protected void init() {
-					}
-				};
-			};
-		};
-		mode.init(controller);
-		MindMapController mc = (MindMapController) mode.createModeController();
-		mc = (MindMapController) mc.load(new File(inputFileName));
-		MapView mapView = createMapView(controller, mc.getMindMapMapModel(), mc);
+		mMap = new MindMapMapModel(this);
+		Tools.FileReaderCreator readerCreator = new Tools.FileReaderCreator(new File(inputFileName));
+		MindMapNode node = mMap.loadTree(readerCreator, MapAdapter.sDontAskInstance);
+		mMap.setRoot(node);
+		MapView mapView = new MapView(mMap, controller, this); 
 		parent.add(mapView, BorderLayout.CENTER);
-		mc.setView(mapView);
 		mapView.setBounds(parent.getBounds());
 		Tools.waitForEventQueue();
 		mapView.addNotify();
@@ -140,20 +142,178 @@ public class IndependantMapViewCreator {
 
 	protected MapView createMapView(Controller controller, MindMapMapModel model, MindMapController pViewFeedback) {
 		MapView mapView = new MapView(model, controller, pViewFeedback) {
+			@Override
 			DragGestureListener getNodeDragListener() {
 				return null;
 			}
 
+			@Override
 			DropTargetListener getNodeDropListener() {
 				return null;
 			}
 
-			public void selectAsTheOnlyOneSelected(NodeView pNewSelected,
-					boolean pRequestFocus) {
+			@Override
+			public void selectAsTheOnlyOneSelected(NodeView newSelected) {
 			}
 
 		};
 		return mapView;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#fireNodePreDeleteEvent(freemind.modes.MindMapNode)
+	 */
+	@Override
+	public void fireNodePreDeleteEvent(MindMapNode pNode) {
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#firePreSaveEvent(freemind.modes.MindMapNode)
+	 */
+	@Override
+	public void firePreSaveEvent(MindMapNode pNode) {
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#nodeChanged(freemind.modes.MindMapNode)
+	 */
+	@Override
+	public void nodeChanged(MindMapNode pNode) {
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#nodeRefresh(freemind.modes.MindMapNode)
+	 */
+	@Override
+	public void nodeRefresh(MindMapNode pNode) {
+	}
+
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#insertNodeInto(freemind.modes.MindMapNode, freemind.modes.MindMapNode, int)
+	 */
+	@Override
+	public void insertNodeInto(MindMapNode pNewNode, MindMapNode pParent,
+			int pIndex) {
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#paste(freemind.modes.MindMapNode, freemind.modes.MindMapNode)
+	 */
+	@Override
+	public void paste(MindMapNode pNode, MindMapNode pParent) {
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#getResourceString(java.lang.String)
+	 */
+	@Override
+	public String getResourceString(String pTextId) {
+		return Resources.getInstance().getResourceString(pTextId);
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#getProperty(java.lang.String)
+	 */
+	@Override
+	public String getProperty(String pResourceId) {
+		return Resources.getInstance().getProperty(pResourceId);
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#out(java.lang.String)
+	 */
+	@Override
+	public void out(String pFormat) {
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#getDefaultFont()
+	 */
+	@Override
+	public Font getDefaultFont() {
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap.MapFeedback#getFontThroughMap(java.awt.Font)
+	 */
+	@Override
+	public Font getFontThroughMap(Font pFont) {
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#changeSelection(freemind.view.mindmapview.NodeView, boolean)
+	 */
+	@Override
+	public void changeSelection(NodeView pNode, boolean pIsSelected) {
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#onLostFocusNode(freemind.view.mindmapview.NodeView)
+	 */
+	@Override
+	public void onLostFocusNode(NodeView pNode) {
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#onFocusNode(freemind.view.mindmapview.NodeView)
+	 */
+	@Override
+	public void onFocusNode(NodeView pNode) {
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#setFolded(freemind.modes.MindMapNode, boolean)
+	 */
+	@Override
+	public void setFolded(MindMapNode pModel, boolean pB) {
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#onViewCreatedHook(freemind.view.mindmapview.NodeView)
+	 */
+	@Override
+	public void onViewCreatedHook(NodeView pNewView) {
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#onViewRemovedHook(freemind.view.mindmapview.NodeView)
+	 */
+	@Override
+	public void onViewRemovedHook(NodeView pNodeView) {
+		
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MapFeedback#getMap()
+	 */
+	@Override
+	public MindMap getMap() {
+		return mMap;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MapFeedback#createNodeHook(java.lang.String, freemind.modes.MindMapNode)
+	 */
+	@Override
+	public NodeHook createNodeHook(String pLoadName, MindMapNode pNode) {
+		return new PermanentNodeHookSubstituteUnknown(pLoadName);
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MapFeedback#invokeHooksRecursively(freemind.modes.MindMapNode, freemind.modes.MindMap)
+	 */
+	@Override
+	public void invokeHooksRecursively(MindMapNode pNode, MindMap pModel) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

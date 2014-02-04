@@ -47,7 +47,7 @@ import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
-public interface ModeController extends TextTranslator, MindMap.MapFeedback,
+public interface ModeController extends TextTranslator, MapFeedback,
 		MapView.ViewFeedback {
 
 	public static final String NODESEPARATOR = "<nodeseparator>";
@@ -80,9 +80,6 @@ public interface ModeController extends TextTranslator, MindMap.MapFeedback,
 		Reader createReader() throws FileNotFoundException;
 	}
 
-	public MindMapNode loadTree(ReaderCreator pReaderCreator,
-			boolean pAskUserBeforeUpdate) throws XMLParseException, IOException;
-
 	boolean save(File file);
 
 	ModeController newMap();
@@ -97,13 +94,6 @@ public interface ModeController extends TextTranslator, MindMap.MapFeedback,
 	void open();
 
 	boolean close(boolean force, MapModuleManager mapModuleManager);
-
-	/**
-	 * Given a valid Xml parameterization of a node (tree), this method returns
-	 * freshly created nodes.
-	 */
-	MindMapNode createNodeTreeFromXml(Reader pReader, HashMap pIDToTarget)
-			throws XMLParseException, IOException;
 
 	// activation methods:
 	void startupController();

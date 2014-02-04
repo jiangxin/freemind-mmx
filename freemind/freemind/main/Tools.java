@@ -45,6 +45,7 @@ import java.awt.print.Paper;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -106,10 +107,12 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import freemind.common.UnicodeReader;
 import freemind.common.XmlBindingTools;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.MindMapNode;
+import freemind.modes.ModeController.ReaderCreator;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.view.mindmapview.NodeView;
 
@@ -1013,11 +1016,10 @@ public class Tools {
 	 * 
 	 * @throws IOException
 	 */
-	public static Reader getUpdateReader(Reader pReader, String xsltScript,
-			FreeMindMain frame) throws IOException {
+	public static Reader getUpdateReader(Reader pReader, String xsltScript) throws IOException {
 		StringWriter writer = null;
 		InputStream inputStream = null;
-		final java.util.logging.Logger logger = frame.getLogger(Tools.class
+		final java.util.logging.Logger logger = Resources.getInstance().getLogger(Tools.class
 				.getName());
 		logger.info("Updating the reader " + pReader
 				+ " to the current version.");
@@ -1026,7 +1028,7 @@ public class Tools {
 		try {
 			// try to convert map with xslt:
 			URL updaterUrl = null;
-			updaterUrl = frame.getResource(xsltScript);
+			updaterUrl = Resources.getInstance().getResource(xsltScript);
 			if (updaterUrl == null) {
 				throw new IllegalArgumentException(xsltScript + " not found.");
 			}
@@ -1430,6 +1432,22 @@ public class Tools {
 
 		public MindMapNode getCloneNode() {
 			return second;
+		}
+	}
+
+	public static class FileReaderCreator implements ReaderCreator {
+		private final File mFile;
+	
+		public FileReaderCreator(File pFile) {
+			mFile = pFile;
+		}
+	
+		public Reader createReader() throws FileNotFoundException {
+			return new UnicodeReader(new FileInputStream(mFile), "UTF-8");
+		}
+	
+		public String toString() {
+			return mFile.getName();
 		}
 	}
 
@@ -2025,4 +2043,31 @@ public class Tools {
 		return toBeStored;
 	}
 
+	/**
+	 * Returns pMinimumLength bytes of the files content.
+	 * 
+	 * @return an empty string buffer, if something fails.
+	 */
+	public static StringBuffer readFileStart(Reader pReader, int pMinimumLength) {
+		BufferedReader in = null;
+		StringBuffer buffer = new StringBuffer();
+		try {
+			// get the file start into the memory:
+			in = new BufferedReader(pReader);
+			String str;
+			while ((str = in.readLine()) != null) {
+				buffer.append(str);
+				if (buffer.length() >= pMinimumLength)
+					break;
+			}
+			in.close();
+		} catch (Exception e) {
+			freemind.main.Resources.getInstance().logException(e);
+			return new StringBuffer();
+		}
+		return buffer;
+	}
+
+
+	
 }

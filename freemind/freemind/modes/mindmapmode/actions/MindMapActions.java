@@ -235,11 +235,8 @@ public interface MindMapActions {
 	 * Furthermore, the hook is added to the node, if it is an instance of the
 	 * PermanentNodeHook. If the hook policy specifies, that only one instance
 	 * may exist per node, it returns this instance if it already exists.
-	 * 
-	 * @param map
-	 *            may be null if not known. But it has to be set afterwards!
 	 * */
-	NodeHook createNodeHook(String hookName, MindMapNode node, MindMap map);
+	NodeHook createNodeHook(String hookName, MindMapNode node);
 	
 	/** Creates and invokes a ModeControllerHook.*/
 	void createModeControllerHook(String hookName);

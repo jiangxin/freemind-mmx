@@ -17,10 +17,8 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-
 package freemind.modes;
 
-import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
@@ -34,81 +32,19 @@ import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 
 import freemind.controller.filter.Filter;
+import freemind.controller.filter.util.SortedListModel;
 import freemind.main.XMLParseException;
 import freemind.modes.ModeController.ReaderCreator;
-import freemind.modes.mindmapmode.MindMapController.StringReaderCreator;
 
 public interface MindMap extends TreeModel {
 
-	public interface MapFeedback {
-		/**
-		 * Is issued before a node is deleted. It is issued via
-		 * NodeLifetimeListener.
-		 */
-		void fireNodePreDeleteEvent(MindMapNode node);
-		/**
-		 * @param pNode
-		 */
-		void firePreSaveEvent(MindMapNode pNode);
-		/**
-		 * Invoke this method after you've changed how a node is to be represented
-		 * in the tree.
-		 */
-		void nodeChanged(MindMapNode node);
-
-		void nodeRefresh(MindMapNode node);
-
-		/** 
-		 * @see ModeController#createNodeTreeFromXml(Reader, HashMap)
-		 * */
-		MindMapNode createNodeTreeFromXml(Reader pReader,
-				HashMap pIDToTarget) throws XMLParseException, IOException;
-		/** @see ModeController#insertNodeInto(MindMapNode, MindMapNode, int)*/
-		void insertNodeInto(MindMapNode pNewNode,
-				MindMapNode pParent, int pIndex);
-		/**
-		 * @see ModeController#loadTree(StringReaderCreator, boolean)
-		 */
-		MindMapNode loadTree(ReaderCreator pStringReaderCreator,
-				boolean pB) throws XMLParseException, IOException;
-		/**
-		 * @see ModeController#paste(MindMapNode, MindMapNode)
-		 */
-		void paste(MindMapNode pNode,
-				MindMapNode pParent);
-		/**
-		 * @param pTextId
-		 * @return
-		 */
-		String getResourceString(String pTextId);
-		/**
-		 * @param pResourceId 
-		 * @return the string from Resources_<lang>.properties belonging to the pResourceId.
-		 */
-		String getProperty(String pResourceId);
-		/**
-		 * Show the message to the user.
-		 * @param pFormat
-		 */
-		void out(String pFormat);
-		/**
-		 * @return
-		 */
-		Font getDefaultFont();
-		/**
-		 * @param pFont
-		 * @return
-		 */
-		Font getFontThroughMap(Font pFont);
-	}
-	
 	MindMapNode getRootNode();
 
 	// nodeChanged has moved to the modeController. (fc, 2.5.2004)
 	void nodeChanged(TreeNode node);
 
 	void nodeRefresh(TreeNode node);
-	
+
 	MapFeedback getMapFeedback();
 
 	String getAsPlainText(List mindMapNodes);
@@ -129,8 +65,8 @@ public interface MindMap extends TreeModel {
 	public boolean save(File file) throws IOException;
 
 	// see ModeController.
-//	public void load(URL file) throws FileNotFoundException, IOException,
-//			XMLParseException, URISyntaxException;
+	// public void load(URL file) throws FileNotFoundException, IOException,
+	// XMLParseException, URISyntaxException;
 
 	/**
 	 * Return URL of the map (whether as local file or a web location)
@@ -174,15 +110,11 @@ public interface MindMap extends TreeModel {
 	boolean isReadOnly();
 
 	void setReadOnly(boolean pIsReadOnly);
-	
+
 	/**
 	 * @return true if map is clean (saved), false if it is dirty.
 	 */
 	boolean isSaved();
-
-	/**
-     */
-	MapRegistry getRegistry();
 
 	Filter getFilter();
 
@@ -196,7 +128,8 @@ public interface MindMap extends TreeModel {
 	 * Use this method to make the map dirty/clean.
 	 * 
 	 * @param isSaved
-	 * @return true, if the map state has changed (and thus the title must be changed).
+	 * @return true, if the map state has changed (and thus the title must be
+	 *         changed).
 	 */
 	boolean setSaved(boolean isSaved);
 
@@ -210,12 +143,20 @@ public interface MindMap extends TreeModel {
 	public interface MapSourceChangedObserver {
 		/**
 		 * @param pMap
-		 * @return true, if the map was reloaded, false otherwise. This means, that if the method returns
-		 * true, then the next change on disk is reported as well. If it returns false, the 
-		 * next changes will be ignored until the map is saved.
+		 * @return true, if the map was reloaded, false otherwise. This means,
+		 *         that if the method returns true, then the next change on disk
+		 *         is reported as well. If it returns false, the next changes
+		 *         will be ignored until the map is saved.
 		 * @throws Exception
 		 */
 		boolean mapSourceChanged(MindMap pMap) throws Exception;
+	}
+
+	public static interface AskUserBeforeUpdateCallback {
+		/**
+		 * @return true, if the map should be updated.
+		 */
+		boolean askUserForUpdate();
 	}
 
 	/**
@@ -245,4 +186,30 @@ public interface MindMap extends TreeModel {
 	 *            around.
 	 */
 	void changeRoot(MindMapNode newRoot);
+
+	/**
+	 * @return a list of all icons present in the mindmap. Convenience method
+	 *         for filters.
+	 */
+	SortedListModel getIcons();
+
+	NodeAdapter createNodeAdapter(MindMap pMap, String nodeClass);
+
+	EdgeAdapter createEdgeAdapter(NodeAdapter node);
+
+	CloudAdapter createCloudAdapter(NodeAdapter node);
+
+	ArrowLinkAdapter createArrowLinkAdapter(NodeAdapter source,
+			NodeAdapter target);
+
+	ArrowLinkTarget createArrowLinkTarget(NodeAdapter source, NodeAdapter target);
+
+	public abstract MindMapNode loadTree(ReaderCreator pReaderCreator, AskUserBeforeUpdateCallback pAskUserBeforeUpdateCallback)
+			throws XMLParseException, IOException;
+
+	public abstract MindMapNode createNodeTreeFromXml(Reader pReader, HashMap pIDToTarget)
+			throws XMLParseException, IOException;
+
+	NodeAdapter createEncryptedNode(String additionalInfo);
+
 }

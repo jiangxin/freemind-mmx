@@ -28,12 +28,13 @@ import java.util.HashMap;
 
 import javax.swing.ImageIcon;
 
-import freemind.main.Tools.SingleDesEncrypter;
+import freemind.common.TextTranslator;
 import freemind.main.Resources;
+import freemind.main.Tools.SingleDesEncrypter;
 import freemind.main.XMLParseException;
-import freemind.modes.ControllerAdapter;
-import freemind.modes.MapAdapter;
+import freemind.modes.MapFeedback;
 import freemind.modes.MindIcon;
+import freemind.modes.MindMap;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
 import freemind.modes.common.dialogs.EnterPasswordDialog;
@@ -55,21 +56,22 @@ public class EncryptedBrowseNode extends BrowseNodeModel {
 	// Logging:
 	static protected java.util.logging.Logger logger;
 
-	private final ModeController mModeController;
+	private final MapFeedback mMapFeedback;
 
 	/**
 	 */
-	public EncryptedBrowseNode(ModeController modeController) {
-		this(null, modeController);
+	public EncryptedBrowseNode(MapFeedback pMapFeedback) {
+		this(null, pMapFeedback);
 	}
 
 	/**
 	 */
-	public EncryptedBrowseNode(Object userObject, ModeController modeController) {
-		super(userObject, modeController.getMap());
-		this.mModeController = modeController;
+	public EncryptedBrowseNode(Object userObject, MapFeedback pMapFeedback) {
+		super(userObject, pMapFeedback.getMap());
+		this.mMapFeedback = pMapFeedback;
 		if (logger == null)
-			logger = Resources.getInstance().getLogger(this.getClass().getName());
+			logger = Resources.getInstance().getLogger(
+					this.getClass().getName());
 		if (encryptedIcon == null) {
 			encryptedIcon = MindIcon.factory("encrypted").getIcon();
 		}
@@ -89,10 +91,13 @@ public class EncryptedBrowseNode extends BrowseNodeModel {
 			super.setFolded(folded);
 			return;
 		}
-		ControllerAdapter browseController = (ControllerAdapter) mModeController;
 		// get password:
 		final EnterPasswordDialog pwdDialog = new EnterPasswordDialog(null,
-				browseController, false);
+				new TextTranslator() {
+					@Override
+					public String getText(String pKey) {
+						return mMapFeedback.getResourceString(pKey);
+					}}, false);
 		pwdDialog.setModal(true);
 		pwdDialog.show();
 		if (pwdDialog.getResult() == EnterPasswordDialog.CANCEL) {
@@ -114,17 +119,17 @@ public class EncryptedBrowseNode extends BrowseNodeModel {
 			if (string.length() == 0)
 				continue;
 			try {
-				NodeAdapter node = (NodeAdapter) browseController
+				NodeAdapter node = (NodeAdapter) getMap()
 						.createNodeTreeFromXml(new StringReader(string),
 								IDToTarget);
 				// now, the import is finished. We can inform others about
 				// the new nodes:
-				browseController.insertNodeInto(node, this);
-				MapAdapter model = browseController.getModel();
-				browseController.invokeHooksRecursively(node, model);
+				mMapFeedback.insertNodeInto(node, this, this.getChildCount());
+				MindMap model = mMapFeedback.getMap();
+				mMapFeedback.invokeHooksRecursively(node, model);
 				super.setFolded(folded);
-				browseController.nodeChanged(this);
-				browseController.nodeStructureChanged(this);
+				mMapFeedback.nodeChanged(this);
+				//mMapFeedback.nodeStructureChanged(this);
 				isDecrypted = true;
 				updateIcon();
 			} catch (XMLParseException e) {

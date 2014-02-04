@@ -358,6 +358,8 @@ public interface MindMapNode extends MutableTreeNode {
 	 */
 	boolean hasVisibleChilds();
 	
+	MapFeedback getMapFeedback();
+
 	MindMap getMap();
 
 	/**

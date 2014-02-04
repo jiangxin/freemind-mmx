@@ -32,9 +32,8 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.channels.FileLock;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -49,10 +48,16 @@ import freemind.main.FreeMind;
 import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
-import freemind.main.XMLParseException;
+import freemind.modes.ArrowLinkAdapter;
+import freemind.modes.ArrowLinkTarget;
+import freemind.modes.CloudAdapter;
+import freemind.modes.EdgeAdapter;
 import freemind.modes.MapAdapter;
+import freemind.modes.MapFeedback;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.MindMapNode;
+import freemind.modes.NodeAdapter;
 
 public class MindMapMapModel extends MapAdapter {
 
@@ -299,7 +304,6 @@ public class MindMapMapModel extends MapAdapter {
 		fileout.write("version=\"" + FreeMind.XML_VERSION + "\"");
 		fileout.write(">\n");
 		fileout.write("<!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->\n");
-		getRegistry().save(fileout);
 		pRootNode.save(fileout, this.getLinkRegistry(), saveInvisible, true);
 		fileout.write("</map>\n");
 		fileout.close();
@@ -610,4 +614,57 @@ public class MindMapMapModel extends MapAdapter {
 			}
 		}
 	}
+
+	public NodeAdapter createNodeAdapter(MindMap pMap, String nodeClass) {
+		if (nodeClass == null) {
+			return new MindMapNodeModel(pMap);
+		}
+		// reflection:
+		try {
+			// construct class loader:
+			ClassLoader loader = this.getClass().getClassLoader();
+			// constructed.
+			Class nodeJavaClass = Class.forName(nodeClass, true, loader);
+			Class[] constrArgs = new Class[] { Object.class,
+					MindMap.class };
+			Object[] constrObjs = new Object[] { null, pMap };
+			Constructor constructor = nodeJavaClass.getConstructor(constrArgs);
+			NodeAdapter nodeImplementor = (NodeAdapter) constructor
+					.newInstance(constrObjs);
+			return nodeImplementor;
+		} catch (Exception e) {
+			freemind.main.Resources.getInstance().logException(e,
+					"Error occurred loading node implementor: " + nodeClass);
+			// the best we can do is to return the normal class:
+			NodeAdapter node = new MindMapNodeModel(pMap);
+			return node;
+		}
+	}
+
+	public EdgeAdapter createEdgeAdapter(NodeAdapter node) {
+		return new MindMapEdgeModel(node, mMapFeedback);
+	}
+
+	public CloudAdapter createCloudAdapter(NodeAdapter node) {
+		return new MindMapCloudModel(node, mMapFeedback);
+	}
+
+	public ArrowLinkAdapter createArrowLinkAdapter(NodeAdapter source,
+			NodeAdapter target) {
+		return new MindMapArrowLinkModel(source, target, mMapFeedback);
+	}
+
+	public ArrowLinkTarget createArrowLinkTarget(NodeAdapter source,
+			NodeAdapter target) {
+		return new ArrowLinkTarget(source, target, mMapFeedback);
+	}
+	
+	public NodeAdapter createEncryptedNode(String additionalInfo) {
+		NodeAdapter node = createNodeAdapter(mMapFeedback.getMap(),
+				EncryptedMindMapNode.class.getName());
+		node.setAdditionalInfo(additionalInfo);
+		return node;
+	}
+
+
 }

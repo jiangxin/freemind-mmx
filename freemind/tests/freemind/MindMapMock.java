@@ -21,13 +21,16 @@
 package tests.freemind;
 
 import java.awt.Color;
+import java.awt.Font;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Reader;
 import java.io.Writer;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.event.TreeModelListener;
@@ -35,12 +38,20 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import freemind.controller.filter.Filter;
+import freemind.controller.filter.util.SortedListModel;
+import freemind.controller.filter.util.SortedMapListModel;
+import freemind.extensions.NodeHook;
 import freemind.main.XMLParseException;
-import freemind.modes.MapRegistry;
+import freemind.modes.ArrowLinkAdapter;
+import freemind.modes.ArrowLinkTarget;
+import freemind.modes.CloudAdapter;
+import freemind.modes.EdgeAdapter;
+import freemind.modes.MapFeedback;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.MindMapNode;
-import freemind.modes.ModeController;
+import freemind.modes.ModeController.ReaderCreator;
+import freemind.modes.NodeAdapter;
 
 /** */
 public class MindMapMock implements MindMap {
@@ -118,10 +129,6 @@ public class MindMapMock implements MindMap {
 
 	public boolean isReadOnly() {
 		return false;
-	}
-
-	public MapRegistry getRegistry() {
-		return null;
 	}
 
 	public Filter getFilter() {
@@ -225,6 +232,156 @@ public class MindMapMock implements MindMap {
 	 */
 	@Override
 	public MapFeedback getMapFeedback() {
+		return new MapFeedback() {
+
+			@Override
+			public void fireNodePreDeleteEvent(MindMapNode pNode) {
+				
+			}
+
+			@Override
+			public void firePreSaveEvent(MindMapNode pNode) {
+				
+			}
+
+			@Override
+			public void nodeChanged(MindMapNode pNode) {
+				
+			}
+
+			@Override
+			public void nodeRefresh(MindMapNode pNode) {
+				
+			}
+
+			@Override
+			public void insertNodeInto(MindMapNode pNewNode,
+					MindMapNode pParent, int pIndex) {
+			}
+
+			@Override
+			public void paste(MindMapNode pNode, MindMapNode pParent) {
+				
+			}
+
+			@Override
+			public String getResourceString(String pTextId) {
+				return "";
+			}
+
+			@Override
+			public String getProperty(String pResourceId) {
+				return "";
+			}
+
+			@Override
+			public void out(String pFormat) {
+				
+			}
+
+			@Override
+			public Font getDefaultFont() {
+				return null;
+			}
+
+			@Override
+			public Font getFontThroughMap(Font pFont) {
+				return null;
+			}
+
+			@Override
+			public MindMap getMap() {
+				return MindMapMock.this;
+			}
+
+			@Override
+			public NodeHook createNodeHook(String pLoadName, MindMapNode pNode) {
+				return null;
+			}
+
+			@Override
+			public void invokeHooksRecursively(MindMapNode pNode, MindMap pModel) {
+				// TODO Auto-generated method stub
+				
+			}};
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap#getIcons()
+	 */
+	@Override
+	public SortedListModel getIcons() {
+		return new SortedMapListModel();
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap#loadTree(freemind.modes.ModeController.ReaderCreator, freemind.modes.MapAdapter.AskUserBeforeUpdateCallback)
+	 */
+	public MindMapNode loadTree(ReaderCreator pReaderCreator, AskUserBeforeUpdateCallback pAskUserBeforeUpdateCallback) throws XMLParseException,
+			IOException {
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap#createNodeTreeFromXml(java.io.Reader, java.util.HashMap)
+	 */
+	public MindMapNode createNodeTreeFromXml(Reader pReader, HashMap pIDToTarget)
+			throws XMLParseException, IOException {
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap#createNodeAdapter(freemind.modes.MindMap, java.lang.String)
+	 */
+	@Override
+	public NodeAdapter createNodeAdapter(MindMap pMap, String pNodeClass) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap#createEdgeAdapter(freemind.modes.NodeAdapter)
+	 */
+	@Override
+	public EdgeAdapter createEdgeAdapter(NodeAdapter pNode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap#createCloudAdapter(freemind.modes.NodeAdapter)
+	 */
+	@Override
+	public CloudAdapter createCloudAdapter(NodeAdapter pNode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap#createArrowLinkAdapter(freemind.modes.NodeAdapter, freemind.modes.NodeAdapter)
+	 */
+	@Override
+	public ArrowLinkAdapter createArrowLinkAdapter(NodeAdapter pSource,
+			NodeAdapter pTarget) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap#createArrowLinkTarget(freemind.modes.NodeAdapter, freemind.modes.NodeAdapter)
+	 */
+	@Override
+	public ArrowLinkTarget createArrowLinkTarget(NodeAdapter pSource,
+			NodeAdapter pTarget) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap#createEncryptedNode(java.lang.String)
+	 */
+	@Override
+	public NodeAdapter createEncryptedNode(String pAdditionalInfo) {
 		// TODO Auto-generated method stub
 		return null;
 	}

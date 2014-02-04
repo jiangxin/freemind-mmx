@@ -26,6 +26,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 
+import freemind.extensions.NodeHook;
+import freemind.extensions.PermanentNodeHookSubstituteUnknown;
 import freemind.main.XMLElement;
 import freemind.main.XMLParseException;
 import freemind.modes.ControllerAdapter;
@@ -161,21 +163,6 @@ public abstract class ViewControllerAdapter extends ControllerAdapter {
 		toggleChildrenFolded.setEnabled(enabled);
 	}
 
-	public XMLElement createXMLElement() {
-		throw new IllegalArgumentException(
-				"createXMLElement is not defined for "
-						+ this.getClass().getName());
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.ModeController#loadTree(freemind.modes.ModeController.ReaderCreator, boolean)
-	 */
-	@Override
-	public MindMapNode loadTree(ReaderCreator pReaderCreator,
-			boolean pAskUserBeforeUpdate) throws XMLParseException, IOException {
-		return null;
-	}
-
 	/* (non-Javadoc)
 	 * @see freemind.modes.MindMap.MapFeedback#paste(freemind.modes.MindMapNode, freemind.modes.MindMapNode)
 	 */
@@ -183,7 +170,13 @@ public abstract class ViewControllerAdapter extends ControllerAdapter {
 	public void paste(MindMapNode pNode, MindMapNode pParent) {
 	}
 
-
+	/* (non-Javadoc)
+	 * @see freemind.modes.MapFeedback#createNodeHook(java.lang.String, freemind.modes.MindMapNode)
+	 */
+	@Override
+	public NodeHook createNodeHook(String pLoadName, MindMapNode pNode) {
+		return new PermanentNodeHookSubstituteUnknown(pLoadName);
+	}
 
 	
 }

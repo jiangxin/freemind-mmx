@@ -49,7 +49,7 @@ public class PermanentMindMapNodeHookAdapter extends PermanentNodeHookAdapter {
 	 */
 	protected PermanentNodeHook propagate(MindMapNode child) {
 		PermanentNodeHook hook = (PermanentNodeHook) getMindMapController()
-				.createNodeHook(getName(), child, getMap());
+				.createNodeHook(getName(), child);
 		// invocation:
 		child.invokeHook(hook);
 		return hook;

@@ -20,25 +20,28 @@
 package freemind.modes;
 
 import java.awt.Font;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
 import freemind.extensions.PermanentNodeHook;
 import freemind.extensions.PermanentNodeHookSubstituteUnknown;
-import freemind.main.FreeMindMain;
+import freemind.main.FreeMind;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
-import freemind.modes.MindMap.MapFeedback;
+import freemind.main.XMLParseException;
+import freemind.modes.ModeController.ReaderCreator;
 import freemind.modes.attributes.Attribute;
 
-public abstract class XMLElementAdapter extends XMLElement {
+public class XMLElementAdapter extends XMLElement {
+
 
 	// Logging:
 	protected static java.util.logging.Logger logger;
 
 	private Object userObject = null;
-	protected FreeMindMain frame;
 	private NodeAdapter mapChild = null;
 	private HashMap nodeAttributes = new HashMap();
 
@@ -77,48 +80,33 @@ public abstract class XMLElementAdapter extends XMLElement {
 
 	private String attributeValue;
 
-	protected final ModeController mModeController;
+	protected final MapFeedback mMapFeedback;
 
 	// Overhead methods
 
-	public XMLElementAdapter(ModeController modeController) {
-		this(modeController, new Vector(), new HashMap());
+	public XMLElementAdapter(MapFeedback pMapFeedback) {
+		this(pMapFeedback, new Vector(), new HashMap());
 	}
 
-	protected XMLElementAdapter(ModeController modeController,
+	protected XMLElementAdapter(MapFeedback pMapFeedback,
 			Vector arrowLinkAdapters, HashMap IDToTarget) {
-		this.mModeController = modeController;
-		this.frame = modeController.getFrame();
+		this.mMapFeedback = pMapFeedback;
 		this.mArrowLinkAdapters = arrowLinkAdapters;
 		this.mIdToTarget = IDToTarget;
 		if (logger == null) {
-			logger = frame.getLogger(this.getClass().getName());
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
 		}
 	}
 
 	/** abstract method to create elements of my type (factory). */
-	abstract protected XMLElement createAnotherElement();
-
-	abstract protected NodeAdapter createNodeAdapter(MapFeedback pMapFeedback,
-			String nodeClass);
-
-	abstract protected EdgeAdapter createEdgeAdapter(NodeAdapter node,
-			MapFeedback pMapFeedback);
-
-	abstract protected CloudAdapter createCloudAdapter(NodeAdapter node,
-			MapFeedback pMapFeedback);
-
-	abstract protected ArrowLinkAdapter createArrowLinkAdapter(
-			NodeAdapter source, NodeAdapter target, MapFeedback pMapFeedback);
-
-	abstract protected ArrowLinkTarget createArrowLinkTarget(
-			NodeAdapter source, NodeAdapter target, MapFeedback pMapFeedback);
-
-	abstract protected NodeAdapter createEncryptedNode(String additionalInfo);
-
-	protected FreeMindMain getFrame() {
-		return frame;
+	protected XMLElement createAnotherElement() {
+		// We do not need to initialize the things of XMLElement.
+		return new XMLElementAdapter(mMapFeedback, mArrowLinkAdapters,
+				mIdToTarget);
 	}
+
+
 
 	public Object getUserObject() {
 		return userObject;
@@ -138,16 +126,16 @@ public abstract class XMLElementAdapter extends XMLElement {
 		super.setName(name);
 		// Create user object based on name
 		if (name.equals(XML_NODE)) {
-			userObject = createNodeAdapter(mModeController, null);
+			userObject = getMap().createNodeAdapter(getMap(), null);
 			nodeAttributes.clear();
 		} else if (name.equals("edge")) {
-			userObject = createEdgeAdapter(null, mModeController);
+			userObject = getMap().createEdgeAdapter(null);
 		} else if (name.equals("cloud")) {
-			userObject = createCloudAdapter(null, mModeController);
+			userObject = getMap().createCloudAdapter(null);
 		} else if (name.equals("arrowlink")) {
-			userObject = createArrowLinkAdapter(null, null, mModeController);
+			userObject = getMap().createArrowLinkAdapter(null, null);
 		} else if (name.equals("linktarget")) {
-			userObject = createArrowLinkTarget(null, null, mModeController);
+			userObject = getMap().createArrowLinkTarget(null, null);
 		} else if (name.equals("font")) {
 			userObject = null;
 		} else if (name.equals(XML_NODE_ATTRIBUTE)) {
@@ -171,6 +159,10 @@ public abstract class XMLElementAdapter extends XMLElement {
 		} else {
 			userObject = new XMLElement(); // for childs of hooks
 		}
+	}
+
+	protected MindMap getMap() {
+		return mMapFeedback.getMap();
 	}
 
 	public void addChild(XMLElement child) {
@@ -250,8 +242,7 @@ public abstract class XMLElementAdapter extends XMLElement {
 					 * The next code snippet is an exception. Normally, hooks
 					 * have to be created via the ModeController. DO NOT COPY.
 					 */
-					hook = (PermanentNodeHook) mModeController.getHookFactory()
-							.createNodeHook(loadName);
+					hook = (PermanentNodeHook) mMapFeedback.createNodeHook(loadName, node);
 					// this is a bad hack. Don't make use of this data unless
 					// you know exactly what you are doing.
 					hook.setNode(node);
@@ -409,7 +400,9 @@ public abstract class XMLElementAdapter extends XMLElement {
 			node.setUserObject(sValue);
 		} else if (name.equals(XML_NODE_ENCRYPTED_CONTENT)) {
 			// we change the node implementation to EncryptedMindMapNode.
-			node = createEncryptedNode(sValue);
+			node = getMap().createEncryptedNode(sValue);
+			setUserObject(node);
+			copyAttributesToNode(node);
 		} else if (name.equals(XML_NODE_HISTORY_CREATED_AT)) {
 			if (node.getHistoryInformation() == null) {
 				node.setHistoryInformation(new HistoryInformation());
@@ -477,7 +470,7 @@ public abstract class XMLElementAdapter extends XMLElement {
 			return;
 		}
 		if (getName().equals("font")) {
-			userObject = mModeController.getController().getFontThroughMap(
+			userObject = mMapFeedback.getFontThroughMap(
 					new Font(fontName, fontStyle, fontSize));
 			return;
 		}
@@ -606,10 +599,6 @@ public abstract class XMLElementAdapter extends XMLElement {
 		}
 	}
 
-	protected MindMap getMap() {
-		return mModeController.getMap();
-	}
-
 	public HashMap getIDToTarget() {
 		return mIdToTarget;
 	}
@@ -617,4 +606,6 @@ public abstract class XMLElementAdapter extends XMLElement {
 	public void setIDToTarget(HashMap pToTarget) {
 		mIdToTarget = pToTarget;
 	}
+
+
 }

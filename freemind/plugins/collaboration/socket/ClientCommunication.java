@@ -211,7 +211,7 @@ public class ClientCommunication extends CommunicationBase {
 		mLockId = null;
 		int lockTries = 0;
 		int timeout = 0;
-		while(lockTries < MAX_LOCK_RETRIES) {
+		while (lockTries < MAX_LOCK_RETRIES) {
 			CollaborationRequireLock lockRequest = new CollaborationRequireLock();
 			setCurrentState(STATE_WAIT_FOR_LOCK);
 			if (!send(lockRequest)) {
@@ -224,16 +224,16 @@ public class ClientCommunication extends CommunicationBase {
 				sleep(sleepTime);
 				timeout--;
 			}
-			if(getCurrentState() == STATE_LOCK_RECEIVED) {
+			if (getCurrentState() == STATE_LOCK_RECEIVED) {
 				break;
 			}
 			// error case, repeat lock question.
-			lockTries ++;
+			lockTries++;
 			logger.info("Didn't receive a lock, current try: " + lockTries);
 			sleep(LOCK_RETRY_SLEEP_TIME);
 		}
 		setCurrentState(STATE_IDLE);
-		if(lockTries == MAX_LOCK_RETRIES || timeout < 0) {
+		if (lockTries == MAX_LOCK_RETRIES || timeout < 0) {
 			throw new SocketBasics.UnableToGetLockException();
 		}
 		return mLockId;
@@ -249,7 +249,7 @@ public class ClientCommunication extends CommunicationBase {
 			MapAdapter newModel = new MindMapMapModel(newModeController);
 			HashMap IDToTarget = new HashMap();
 			StringReader reader = new StringReader(map);
-			MindMapNodeModel rootNode = (MindMapNodeModel) newModeController
+			MindMapNodeModel rootNode = (MindMapNodeModel) newModel
 					.createNodeTreeFromXml(reader, IDToTarget);
 			reader.close();
 			newModel.setRoot(rootNode);

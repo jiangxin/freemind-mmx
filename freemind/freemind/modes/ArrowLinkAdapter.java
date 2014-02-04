@@ -25,7 +25,6 @@ import java.awt.Point;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
-import freemind.modes.MindMap.MapFeedback;
 
 public abstract class ArrowLinkAdapter extends LinkAdapter implements
 		MindMapArrowLink {

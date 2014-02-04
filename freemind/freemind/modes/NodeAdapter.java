@@ -59,7 +59,6 @@ import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
-import freemind.modes.MindMap.MapFeedback;
 import freemind.modes.attributes.Attribute;
 import freemind.preferences.FreemindPropertyListener;
 
@@ -176,7 +175,6 @@ public abstract class NodeAdapter implements MindMapNode {
      */
 	public void setMap(MindMap pMap) {
 		this.map = pMap;
-		pMap.getRegistry().registrySubtree(this, true);
 	}
 
 	public String getText() {
@@ -501,7 +499,6 @@ public abstract class NodeAdapter implements MindMapNode {
 		} else {
 			icons.add(position, _icon);
 		}
-		getMap().getRegistry().addIcon(_icon);
 	}
 
 	/** @return returns the number of remaining icons. */
@@ -519,25 +516,6 @@ public abstract class NodeAdapter implements MindMapNode {
 	};
 
 	// end, fc, 24.9.2003
-
-	// public String getLabel() { return mLabel; }
-
-	// public void setLabel(String newLabel) { mLabel = newLabel; /* bad hack:
-	// registry fragen.*/ };
-
-	// public Vector/* of NodeLinkStruct*/ getReferences() { return
-	// mNodeLinkVector; };
-
-	// public void removeReferenceAt(int i) {
-	// if(mNodeLinkVector.size() > i) {
-	// mNodeLinkVector.removeElementAt(i);
-	// } else {
-	// /* exception. */
-	// }
-	// }
-
-	// public void addReference(MindMapLink mindMapLink) {
-	// mNodeLinkVector.add(mindMapLink); };
 
 	/**
 	 * True iff one of node's <i>strict</i> descendants is folded. A node N is
@@ -580,7 +558,7 @@ public abstract class NodeAdapter implements MindMapNode {
 			this.save(writer, this.getMap().getLinkRegistry(), true, false);
 			String result = writer.toString();
 			HashMap IDToTarget = new HashMap();
-			MindMapNode copy = this.getMapFeedback().createNodeTreeFromXml(
+			MindMapNode copy = getMap().createNodeTreeFromXml(
 					new StringReader(result), IDToTarget);
 			copy.setFolded(false);
 			return copy;
@@ -597,7 +575,7 @@ public abstract class NodeAdapter implements MindMapNode {
 	/**
 	 * @return
 	 */
-	protected MapFeedback getMapFeedback() {
+	public MapFeedback getMapFeedback() {
 		return getMap().getMapFeedback();
 	}
 
@@ -1328,7 +1306,6 @@ public abstract class NodeAdapter implements MindMapNode {
 		createStateIcons();
 		if (icon != null) {
 			stateIcons.put(key, icon);
-			getMap().getRegistry().addIcon(MindIcon.factory(key, icon));
 		} else if (stateIcons.containsKey(key)) {
 			stateIcons.remove(key);
 		}

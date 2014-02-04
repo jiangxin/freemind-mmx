@@ -32,11 +32,13 @@ import javax.swing.tree.MutableTreeNode;
 import freemind.main.HtmlTools;
 import freemind.main.Tools.SingleDesEncrypter;
 import freemind.main.XMLElement;
+import freemind.modes.MapAdapter;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
+import freemind.modes.XMLElementAdapter;
 
 public class EncryptedMindMapNode extends MindMapNodeModel {
 
@@ -103,7 +105,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 				MindMapNode node = null;
 				String childXml = decryptXml(encryptedContent, password);
 				// is it a map at all?
-				if (childXml.startsWith(MindMapController.MAP_INITIAL_START)) {
+				if (childXml.startsWith(MapAdapter.MAP_INITIAL_START)) {
 					node = getNodeFromXml(childXml);
 				} else {
 					// old handling up to version 0.9.0_rc8:
@@ -111,7 +113,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 							.split(ModeController.NODESEPARATOR);
 					// and now? paste it:
 					// make a 0.8.0 map out of it:
-					String mapContent = MindMapController.MAP_INITIAL_START
+					String mapContent = MapAdapter.MAP_INITIAL_START
 							+ "0.8.0\"><node TEXT=\"DUMMY\">";
 					for (int j = 0; j < childs.length; j++) {
 						String nodeContent = childs[j];
@@ -133,7 +135,6 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 			}
 		}
 		setFolded(false);
-		getMap().getRegistry().registrySubtree(this, false);
 		return true;
 	}
 
@@ -143,13 +144,13 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 
 	private MindMapNode getNodeFromXml(String childXml) throws IOException {
 		// the loadTree method performs an automatical version update.
-		MindMapNode node = getMapFeedback().loadTree(
-				new MindMapController.StringReaderCreator(childXml), false);
+		MindMapNode node = getMap().loadTree(
+				new MindMapController.StringReaderCreator(childXml), MapAdapter.sDontAskInstance);
 		return node;
 	}
 
 	private MindMapMapModel getMindMapMapModel() {
-		return ((MindMapMapModel) getMap());
+		return ((MindMapMapModel) getMapFeedback());
 	}
 
 	/**

@@ -43,6 +43,8 @@ import freemind.controller.Controller;
 import freemind.controller.MapModuleManager;
 import freemind.controller.StructuredMenuHolder;
 import freemind.extensions.HookFactory;
+import freemind.extensions.NodeHook;
+import freemind.extensions.PermanentNodeHookSubstituteUnknown;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLParseException;
 import freemind.modes.FreeMindFileDialog;
@@ -91,17 +93,6 @@ public class MindMapControllerMock implements ModeController {
 	public boolean close(boolean force, MapModuleManager mapModuleManager) {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see freemind.modes.ModeController#createNodeTreeFromXml(java.io.Reader)
-	 */
-	public MindMapNode createNodeTreeFromXml(Reader pReader, HashMap pIDToTarget)
-			throws XMLParseException, IOException {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/*
@@ -821,12 +812,19 @@ public class MindMapControllerMock implements ModeController {
 	}
 
 	/* (non-Javadoc)
-	 * @see freemind.modes.ModeController#loadTree(freemind.modes.ModeController.ReaderCreator, boolean)
+	 * @see freemind.modes.MapFeedback#createNodeHook(java.lang.String, freemind.modes.MindMapNode)
 	 */
 	@Override
-	public MindMapNode loadTree(ReaderCreator pReaderCreator,
-			boolean pAskUserBeforeUpdate) throws XMLParseException, IOException {
+	public NodeHook createNodeHook(String pLoadName, MindMapNode pNode) {
+		return new PermanentNodeHookSubstituteUnknown(pLoadName);
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MapFeedback#invokeHooksRecursively(freemind.modes.MindMapNode, freemind.modes.MindMap)
+	 */
+	@Override
+	public void invokeHooksRecursively(MindMapNode pNode, MindMap pModel) {
 		// TODO Auto-generated method stub
-		return null;
+		
 	}
 }

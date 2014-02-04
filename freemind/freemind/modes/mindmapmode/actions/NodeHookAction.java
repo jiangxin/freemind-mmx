@@ -210,7 +210,7 @@ public class NodeHookAction extends MindmapAction implements HookAction,
 			for (Iterator it = destinationNodes.iterator(); it.hasNext();) {
 				MindMapNode currentDestinationNode = (MindMapNode) it.next();
 				NodeHook hook = mMindMapController.createNodeHook(hookName,
-						currentDestinationNode, mMindMapController.getMap());
+						currentDestinationNode);
 				logger.finest("created hook " + hookName);
 				// set parameters, if present
 				if (pXmlParent != null && hook instanceof PermanentNodeHook) {

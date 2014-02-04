@@ -26,6 +26,7 @@ package freemind.controller.filter.util;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -59,6 +60,11 @@ public class SortedMapListModel extends AbstractListModel implements
 		fireContentsChanged(this, 0, getSize());
 	}
 
+	public void addAll(List pObjects) {
+		model.addAll(pObjects);
+		fireContentsChanged(this, 0, getSize());
+	}
+	
 	public void clear() {
 		int oldSize = getSize();
 		if (oldSize > 0) {

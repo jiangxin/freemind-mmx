@@ -29,10 +29,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -51,7 +49,6 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -84,7 +81,6 @@ import org.jibx.runtime.IUnmarshallingContext;
 import org.jibx.runtime.JiBXException;
 
 import freemind.common.OptionalDontShowMeAgainDialog;
-import freemind.common.UnicodeReader;
 import freemind.common.XmlBindingTools;
 import freemind.controller.MenuBar;
 import freemind.controller.MindMapNodesSelection;
@@ -126,7 +122,6 @@ import freemind.main.FreeMindCommon;
 import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
-import freemind.main.XMLElement;
 import freemind.main.XMLParseException;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.EdgeAdapter;
@@ -134,6 +129,7 @@ import freemind.modes.FreeMindFileDialog;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
+import freemind.modes.MindMap.AskUserBeforeUpdateCallback;
 import freemind.modes.MindMap.MapSourceChangedObserver;
 import freemind.modes.MindMapArrowLink;
 import freemind.modes.MindMapLink;
@@ -231,16 +227,6 @@ public class MindMapController extends ControllerAdapter implements
 
 	public static final String REGEXP_FOR_NUMBERS_IN_STRINGS = "([+\\-]?[0-9]*[.,]?[0-9]+)\\b";
 	private static final String ACCESSORIES_PLUGINS_NODE_NOTE = "accessories.plugins.NodeNote";
-	public static final String MAP_INITIAL_START = "<map version=\"";
-	public static final String FREEMIND_VERSION_UPDATER_XSLT = "freemind/modes/mindmapmode/freemind_version_updater.xslt";
-	/**
-	 * The current version and all other version that don't need XML update for
-	 * sure.
-	 */
-	public static final String EXPECTED_START_STRINGS[] = {
-			MAP_INITIAL_START + FreeMind.XML_VERSION + "\"",
-			MAP_INITIAL_START + "0.7.1\"" };
-
 	/**
 	 * @author foltin
 	 * @date 19.11.2013
@@ -709,7 +695,7 @@ public class MindMapController extends ControllerAdapter implements
 				try {
 					loadPatterns(Tools.getUpdateReader(
 							Tools.getReaderFromFile(patternsFile),
-							"patterns_updater.xslt", getFrame()));
+							"patterns_updater.xslt"));
 					// save patterns directly:
 					StylePatternFactory.savePatterns(new FileWriter(
 							patternsFile), mPatternsList);
@@ -811,34 +797,10 @@ public class MindMapController extends ControllerAdapter implements
 		return false;
 	}
 
-	/**
-	 * Returns pMinimumLength bytes of the files content.
-	 * 
-	 * @return an empty string buffer, if something fails.
-	 */
-	private StringBuffer readFileStart(Reader pReader, int pMinimumLength) {
-		BufferedReader in = null;
-		StringBuffer buffer = new StringBuffer();
-		try {
-			// get the file start into the memory:
-			in = new BufferedReader(pReader);
-			String str;
-			while ((str = in.readLine()) != null) {
-				buffer.append(str);
-				if (buffer.length() >= pMinimumLength)
-					break;
-			}
-			in.close();
-		} catch (Exception e) {
-			freemind.main.Resources.getInstance().logException(e);
-			return new StringBuffer();
-		}
-		return buffer;
-	}
 	
 	MindMapNode loadTree(final File pFile) throws XMLParseException,
 			IOException {
-		return loadTree(new FileReaderCreator(pFile));
+		return loadTree(new Tools.FileReaderCreator(pFile));
 	}
 
 	public static class StringReaderCreator implements ReaderCreator {
@@ -858,103 +820,26 @@ public class MindMapController extends ControllerAdapter implements
 		}
 	}
 
-	private static class FileReaderCreator implements ReaderCreator {
-		private final File mFile;
-
-		public FileReaderCreator(File pFile) {
-			mFile = pFile;
-		}
-
-		public Reader createReader() throws FileNotFoundException {
-			return new UnicodeReader(new FileInputStream(mFile), "UTF-8");
-		}
-
-		public String toString() {
-			return mFile.getName();
-		}
-	}
-
 	public MindMapNode loadTree(ReaderCreator pReaderCreator)
 			throws XMLParseException, IOException {
-		return loadTree(pReaderCreator, true);
-	}
-
-	public MindMapNode loadTree(ReaderCreator pReaderCreator,
-			boolean pAskUserBeforeUpdate) throws XMLParseException, IOException {
-		int versionInfoLength;
-		versionInfoLength = EXPECTED_START_STRINGS[0].length();
-		// reading the start of the file:
-		StringBuffer buffer = readFileStart(pReaderCreator.createReader(),
-				versionInfoLength);
-		// the resulting file is accessed by the reader:
-		Reader reader = null;
-		for (int i = 0; i < EXPECTED_START_STRINGS.length; i++) {
-			versionInfoLength = EXPECTED_START_STRINGS[i].length();
-			String mapStart = "";
-			if (buffer.length() >= versionInfoLength) {
-				mapStart = buffer.substring(0, versionInfoLength);
-			}
-			if (mapStart.startsWith(EXPECTED_START_STRINGS[i])) {
-				// actual version:
-				reader = Tools.getActualReader(pReaderCreator.createReader());
-				break;
-			}
-		}
-		if (reader == null) {
-			if (pAskUserBeforeUpdate && !Tools.isHeadless()) {
+		return getMap().loadTree(pReaderCreator, new AskUserBeforeUpdateCallback() {
+			
+			@Override
+			public boolean askUserForUpdate() {
 				int showResult = new OptionalDontShowMeAgainDialog(
 						getFrame().getJFrame(),
 						getSelectedView(),
 						"really_convert_to_current_version2",
 						"confirmation",
-						this,
+						MindMapController.this,
 						new OptionalDontShowMeAgainDialog.StandardPropertyHandler(
 								getController(),
 								FreeMind.RESOURCES_CONVERT_TO_CURRENT_VERSION),
 						OptionalDontShowMeAgainDialog.ONLY_OK_SELECTION_IS_STORED)
 						.show().getResult();
-				if (showResult != JOptionPane.OK_OPTION) {
-					throw new IllegalArgumentException(
-							"We should not open the reader " + pReaderCreator);
-				}
+				return (showResult == JOptionPane.OK_OPTION);
 			}
-			reader = Tools.getUpdateReader(pReaderCreator.createReader(),
-					FREEMIND_VERSION_UPDATER_XSLT, getFrame());
-			if (reader == null) {
-				// something went wrong on update:
-				// FIXME: Translate me.
-				this.getModeController()
-						.getFrame()
-						.out("Error on conversion. Continue without conversion. Some elements may be lost!");
-				reader = Tools.getActualReader(pReaderCreator.createReader());
-			}
-		}
-		try {
-			HashMap IDToTarget = new HashMap();
-			return (MindMapNodeModel) createNodeTreeFromXml(
-					reader, IDToTarget);
-			// MindMapXMLElement mapElement = new
-			// MindMapXMLElement(mModeController);
-			// mapElement.parseFromReader(reader);
-			// // complete the arrow links:
-			// mapElement.processUnfinishedLinks(getLinkRegistry());
-			// // we wait with "invokeHooksRecursively" until the map is fully
-			// // registered.
-			// return (MindMapNodeModel) mapElement.getMapChild();
-		} catch (Exception ex) {
-			String errorMessage = "Error while parsing file:" + ex;
-			System.err.println(errorMessage);
-			freemind.main.Resources.getInstance().logException(ex);
-			MindMapXMLElement mapElement = new MindMapXMLElement(
-					this);
-			NodeAdapter result = mapElement.createNodeAdapter(this, null);
-			result.setText(errorMessage);
-			return (MindMapNodeModel) result;
-		} finally {
-			if (reader != null) {
-				reader.close();
-			}
-		}
+		});
 	}
 
 	/**
@@ -2176,12 +2061,11 @@ public class MindMapController extends ControllerAdapter implements
 		return nodeHookFactory;
 	}
 
-	public NodeHook createNodeHook(String hookName, MindMapNode node,
-			MindMap map) {
+	public NodeHook createNodeHook(String hookName, MindMapNode node) {
 		HookFactory hookFactory = getHookFactory();
 		NodeHook hook = (NodeHook) hookFactory.createNodeHook(hookName);
 		hook.setController(this);
-		hook.setMap(map);
+		hook.setMap(getMap());
 		if (hook instanceof PermanentNodeHook) {
 			PermanentNodeHook permHook = (PermanentNodeHook) hook;
 			if (hookFactory.getInstanciationMethod(hookName).isSingleton()) {
@@ -2468,10 +2352,6 @@ public class MindMapController extends ControllerAdapter implements
 			String window_preference_storage_property) {
 		return XmlBindingTools.getInstance().decorateDialog(getController(),
 				dialog, window_preference_storage_property);
-	}
-
-	public XMLElement createXMLElement() {
-		return new MindMapXMLElement(this);
 	}
 
 	public void insertNodeInto(MindMapNode newNode, MindMapNode parent,

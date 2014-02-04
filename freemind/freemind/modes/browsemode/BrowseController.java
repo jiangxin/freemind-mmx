@@ -56,6 +56,7 @@ import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
+import freemind.modes.XMLElementAdapter;
 import freemind.modes.common.GotoLinkNodeAction;
 import freemind.modes.common.plugins.MapNodePositionHolderBase;
 import freemind.modes.common.plugins.NodeNoteBase;
@@ -423,10 +424,6 @@ public class BrowseController extends ViewControllerAdapter {
 		return mBrowseHookFactory;
 	}
 
-	public XMLElement createXMLElement() {
-		return new BrowseXMLElement(this);
-	}
-
 	/* (non-Javadoc)
 	 * @see freemind.modes.ControllerAdapter#loadInternally(java.net.URL, freemind.modes.MapAdapter)
 	 */
@@ -467,7 +464,7 @@ public class BrowseController extends ViewControllerAdapter {
 
 		try {
 			HashMap IDToTarget = new HashMap();
-			root = (BrowseNodeModel) getModeController().createNodeTreeFromXml(
+			root = (BrowseNodeModel) getMap().createNodeTreeFromXml(
 					urlStreamReader, IDToTarget);
 			urlStreamReader.close();
 			return root;

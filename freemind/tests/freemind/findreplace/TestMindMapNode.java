@@ -43,6 +43,7 @@ import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.XMLElement;
 import freemind.modes.HistoryInformation;
+import freemind.modes.MapFeedback;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapCloud;
@@ -325,7 +326,7 @@ final class TestMindMapNode implements MindMapNode {
 		return false;
 	}
 
-	public MindMap getMap() {
+	public MapFeedback getMapFeedback() {
 		return null;
 	}
 
@@ -504,6 +505,15 @@ final class TestMindMapNode implements MindMapNode {
 	public void insertAttribute(int pPosition, Attribute pAttribute) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMapNode#getMap()
+	 */
+	@Override
+	public MindMap getMap() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

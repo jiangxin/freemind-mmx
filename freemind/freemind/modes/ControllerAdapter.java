@@ -37,7 +37,6 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -45,7 +44,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -83,7 +81,6 @@ import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain;
 import freemind.main.Resources;
 import freemind.main.Tools;
-import freemind.main.XMLElement;
 import freemind.main.XMLParseException;
 import freemind.modes.FreeMindFileDialog.DirectoryResultListener;
 import freemind.modes.common.listeners.MindMapMouseWheelEventHandler;
@@ -140,8 +137,6 @@ public abstract class ControllerAdapter implements ModeController,
 	//
 
 	public abstract MindMapNode newNode(Object userObject, MindMap map);
-
-	public abstract XMLElement createXMLElement();
 
 	/**
 	 * You _must_ implement this if you use one of the following actions:
@@ -610,15 +605,7 @@ public abstract class ControllerAdapter implements ModeController,
 		}
 	}
 
-	public MindMapNode createNodeTreeFromXml(Reader pReader, HashMap pIDToTarget)
-			throws XMLParseException, IOException {
-		XMLElementAdapter element = (XMLElementAdapter) createXMLElement();
-		element.setIDToTarget(pIDToTarget);
-		element.parseFromReader(pReader);
-		element.processUnfinishedLinks(getModel().getLinkRegistry());
-		MindMapNode node = element.getMapChild();
-		return node;
-	}
+	
 
 	/**
      *
@@ -1632,4 +1619,6 @@ public abstract class ControllerAdapter implements ModeController,
 		return getController().getFontThroughMap(pFont);
 	}
 
+
+	
 }

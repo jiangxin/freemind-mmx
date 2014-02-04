@@ -23,7 +23,7 @@ package freemind.modes.browsemode;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
 import freemind.modes.CloudAdapter;
-import freemind.modes.MindMap.MapFeedback;
+import freemind.modes.MapFeedback;
 import freemind.modes.MindMapNode;
 
 public class BrowseCloudModel extends CloudAdapter {

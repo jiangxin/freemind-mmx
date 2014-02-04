@@ -26,7 +26,6 @@ import freemind.controller.Controller;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindMain;
 import freemind.main.Tools;
-import freemind.modes.MindMap.MapFeedback;
 import freemind.preferences.FreemindPropertyListener;
 
 public abstract class LinkAdapter extends LineAdapter implements MindMapLink {

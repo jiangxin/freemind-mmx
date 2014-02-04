@@ -65,10 +65,8 @@ import freemind.controller.filter.util.ExtendedComboBoxModel;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.FreeMindFileDialog;
-import freemind.modes.MapRegistry;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
-import freemind.modes.ModeController;
 
 /**
  * @author dimitri
@@ -502,7 +500,6 @@ public class FilterComposerDialog extends JDialog {
 								"filter_node"),
 						Resources.getInstance().createTranslatedString(
 								"filter_icon") });
-		MapRegistry registry = controller.getModel().getRegistry();
 		filteredAttributeComboBoxModel.setExtensionList(null);
 		attributes.setModel(filteredAttributeComboBoxModel);
 		attributes.addItemListener(new SelectedAttributeChangeListener());
@@ -531,7 +528,7 @@ public class FilterComposerDialog extends JDialog {
 		values.setEditable(true);
 
 		icons = new ExtendedComboBoxModel();
-		icons.setExtensionList(registry.getIcons());
+		icons.setExtensionList(controller.getMap().getIcons());
 
 		caseInsensitive = new JCheckBox();
 		simpleConditionBox.add(Box.createHorizontalGlue());
@@ -661,7 +658,7 @@ public class FilterComposerDialog extends JDialog {
      */
 	void mapChanged(MindMap newMap) {
 		if (newMap != null) {
-			icons.setExtensionList(newMap.getRegistry().getIcons());
+			icons.setExtensionList(newMap.getIcons());
 			if (icons.getSize() >= 1 && values.getModel() == icons) {
 				values.setSelectedIndex(0);
 			} else {

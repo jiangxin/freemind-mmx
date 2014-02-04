@@ -23,7 +23,7 @@ package freemind.modes.browsemode;
 import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
 import freemind.modes.ArrowLinkAdapter;
-import freemind.modes.MindMap.MapFeedback;
+import freemind.modes.MapFeedback;
 import freemind.modes.MindMapNode;
 import freemind.view.mindmapview.MapView;
 

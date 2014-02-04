@@ -21,12 +21,16 @@
 package freemind.modes;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -41,11 +45,23 @@ import javax.swing.tree.TreeNode;
 import freemind.controller.filter.DefaultFilter;
 import freemind.controller.filter.Filter;
 import freemind.controller.filter.condition.NoFilteringCondition;
-import freemind.main.FreeMindMain;
+import freemind.controller.filter.util.SortedMapListModel;
+import freemind.main.FreeMind;
 import freemind.main.Resources;
 import freemind.main.Tools;
+import freemind.main.XMLParseException;
+import freemind.modes.ModeController.ReaderCreator;
 
 public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
+	public static final String MAP_INITIAL_START = "<map version=\"";
+	public static final String FREEMIND_VERSION_UPDATER_XSLT = "freemind/modes/mindmapmode/freemind_version_updater.xslt";
+	/**
+	 * The current version and all other version that don't need XML update for
+	 * sure.
+	 */
+	public static final String EXPECTED_START_STRINGS[] = {
+			MAP_INITIAL_START + FreeMind.XML_VERSION + "\"",
+			MAP_INITIAL_START + "0.7.1\"" };
 
 	private static final int INTERVAL_BETWEEN_FILE_MODIFICATION_TIME_CHECKS = 5000;
 	/**
@@ -57,19 +73,17 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 	private File file;
 	private long mFileTime = 0;
 	static protected Logger logger;
-	private MapRegistry registry;
 	private Filter filter = null;
 	private HashSet mMapSourceChangedObserverSet = new HashSet();
 	private Timer mTimerForFileChangeObservation;
-	private MapFeedback mMapFeedback;
+	protected MapFeedback mMapFeedback;
 
-	public MapAdapter(MindMap.MapFeedback mapFeedback) {
+	public MapAdapter(MapFeedback mapFeedback) {
 		super(null);
 		this.mMapFeedback = mapFeedback;
 		if (logger == null) {
 			logger = Resources.getInstance().getLogger(this.getClass().getName());
 		}
-		registry = new MapRegistry(this);
 		filter = new DefaultFilter(NoFilteringCondition.createCondition(),
 				true, false);
 		mTimerForFileChangeObservation = new Timer();
@@ -457,10 +471,6 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 		return e;
 	}
 
-	public MapRegistry getRegistry() {
-		return registry;
-	}
-
 	public Filter getFilter() {
 		return filter;
 	}
@@ -494,4 +504,113 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 		return mMapFeedback;
 	}
 
+	/**
+     */
+	public SortedMapListModel getIcons() {
+		SortedMapListModel mapIcons;
+		mapIcons = new SortedMapListModel();
+		addIcons(mapIcons, getRootNode());
+		return mapIcons;
+	}
+
+	/**
+	 * @param pMapIcons
+	 * @param pRootNode
+	 */
+	private void addIcons(SortedMapListModel pMapIcons, MindMapNode pNode) {
+		pMapIcons.addAll(pNode.getIcons());
+		ListIterator iterator = pNode.childrenUnfolded();
+		while (iterator.hasNext()) {
+			MindMapNode node = (MindMapNode) iterator.next();
+			addIcons(pMapIcons, node);
+		}
+	}
+
+	/**
+	 * Given a valid Xml parameterization of a node (tree), this method returns
+	 * freshly created nodes.
+	 */
+	@Override
+	public MindMapNode createNodeTreeFromXml(Reader pReader, HashMap pIDToTarget)
+			throws XMLParseException, IOException {
+		XMLElementAdapter xmlAdapter = new XMLElementAdapter(mMapFeedback, new Vector(), pIDToTarget);
+		xmlAdapter.parseFromReader(pReader);
+		xmlAdapter.processUnfinishedLinks(getLinkRegistry());
+		MindMapNode node = xmlAdapter.getMapChild();
+		return node;
+	}
+	
+	public static DontAskUserBeforeUpdateAdapter sDontAskInstance = new DontAskUserBeforeUpdateAdapter();
+	
+	public static class DontAskUserBeforeUpdateAdapter implements AskUserBeforeUpdateCallback {
+
+		/* (non-Javadoc)
+		 * @see freemind.modes.XMLElementAdapter.AskUserBeforeUpdateCallback#askUserForUpdate()
+		 */
+		@Override
+		public boolean askUserForUpdate() {
+			return true;
+		}
+		
+	}
+	
+	@Override
+	public MindMapNode loadTree(ReaderCreator pReaderCreator,
+			AskUserBeforeUpdateCallback pAskUserBeforeUpdateCallback) throws XMLParseException, IOException {
+		int versionInfoLength;
+		versionInfoLength = EXPECTED_START_STRINGS[0].length();
+		// reading the start of the file:
+		StringBuffer buffer = Tools.readFileStart(pReaderCreator.createReader(),
+				versionInfoLength);
+		// the resulting file is accessed by the reader:
+		Reader reader = null;
+		for (int i = 0; i < EXPECTED_START_STRINGS.length; i++) {
+			versionInfoLength = EXPECTED_START_STRINGS[i].length();
+			String mapStart = "";
+			if (buffer.length() >= versionInfoLength) {
+				mapStart = buffer.substring(0, versionInfoLength);
+			}
+			if (mapStart.startsWith(EXPECTED_START_STRINGS[i])) {
+				// actual version:
+				reader = Tools.getActualReader(pReaderCreator.createReader());
+				break;
+			}
+		}
+		if (reader == null) {
+			if (!Tools.isHeadless()) {
+				boolean showResult = pAskUserBeforeUpdateCallback.askUserForUpdate();
+				if (!showResult) {
+					throw new IllegalArgumentException(
+							"We should not open the reader " + pReaderCreator);
+				}
+			}
+			reader = Tools.getUpdateReader(pReaderCreator.createReader(),
+					FREEMIND_VERSION_UPDATER_XSLT);
+			if (reader == null) {
+				// something went wrong on update:
+				// FIXME: Translate me.
+				mMapFeedback.out("Error on conversion. Continue without conversion. Some elements may be lost!");
+				reader = Tools.getActualReader(pReaderCreator.createReader());
+			}
+		}
+		try {
+			HashMap IDToTarget = new HashMap();
+			return (MindMapNode) createNodeTreeFromXml(
+					reader, IDToTarget);
+		} catch (Exception ex) {
+			String errorMessage = "Error while parsing file:" + ex;
+			System.err.println(errorMessage);
+			freemind.main.Resources.getInstance().logException(ex);
+			NodeAdapter result = createNodeAdapter(this, null);
+			result.setText(errorMessage);
+			return (MindMapNode) result;
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
+		}
+	}
+
+	
+	
 }

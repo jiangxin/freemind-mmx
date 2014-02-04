@@ -60,11 +60,12 @@ import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.ControllerAdapter;
+import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
+import freemind.modes.XMLElementAdapter;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
@@ -278,7 +279,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 					mMindMapController.getFrame().setWaitingCursor(true);
 				}
 				// and now? paste it:
-				String mapContent = MindMapController.MAP_INITIAL_START
+				String mapContent = MapAdapter.MAP_INITIAL_START
 						+ FreeMind.XML_VERSION + "\"><node TEXT=\"DUMMY\">";
 				for (int j = 0; j < textLines.length; j++) {
 					mapContent += textLines[j];
@@ -286,9 +287,9 @@ public class PasteAction extends AbstractAction implements ActorXml {
 				mapContent += "</node></map>";
 				// logger.info("Pasting " + mapContent);
 				try {
-					MindMapNode node = mMindMapController.loadTree(
+					MindMapNode node = mMindMapController.getMap().loadTree(
 									new MindMapController.StringReaderCreator(
-											mapContent), false);
+											mapContent), MapAdapter.sDontAskInstance);
 					for (ListIterator i = node.childrenUnfolded(); i.hasNext();) {
 						MindMapNodeModel importNode = (MindMapNodeModel) i
 								.next();
@@ -573,7 +574,7 @@ public class PasteAction extends AbstractAction implements ActorXml {
 		// Call nodeStructureChanged(target) after this function.
 		logger.fine("Pasting " + pasted + " to " + target);
 		try {
-			MindMapNodeModel node = (MindMapNodeModel) mMindMapController
+			MindMapNodeModel node = (MindMapNodeModel) mMindMapController.getMap()
 					.createNodeTreeFromXml(new StringReader(pasted),
 							pIDToTarget);
 			insertNodeInto(node, target, asSibling, isLeft, changeSide);

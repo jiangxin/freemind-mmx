@@ -454,14 +454,6 @@ public class TimeList extends MindMapHookAdapter implements
 		// booleanHolder.setValue(false);
 		for (Iterator iter = selectedNodes.iterator(); iter.hasNext();) {
 			MindMapNode node = (MindMapNode) iter.next();
-			// MindMapNode newNode = newMindMapController.addNewNode(
-			// newMap.getRootNode(), 0, booleanHolder);
-			// // copy style:
-			// freemind.controller.actions.generated.instance.Pattern pattern =
-			// StylePatternFactory.createPatternFromNode(node);
-			// newMindMapController.applyPattern(newNode, pattern);
-			// // copy text:
-			// newMindMapController.setNodeText(newNode, node.getText());
 			MindMapNode copy = node.shallowCopy();
 			if (copy != null) {
 				newMindMapController.insertNodeInto(copy, newMindMapController.getRootNode());
