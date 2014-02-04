@@ -140,26 +140,6 @@ public class IndependantMapViewCreator implements ViewFeedback, MapFeedback {
 		out1.close();
 	}
 
-	protected MapView createMapView(Controller controller, MindMapMapModel model, MindMapController pViewFeedback) {
-		MapView mapView = new MapView(model, controller, pViewFeedback) {
-			@Override
-			DragGestureListener getNodeDragListener() {
-				return null;
-			}
-
-			@Override
-			DropTargetListener getNodeDropListener() {
-				return null;
-			}
-
-			@Override
-			public void selectAsTheOnlyOneSelected(NodeView newSelected) {
-			}
-
-		};
-		return mapView;
-	}
-
 	/* (non-Javadoc)
 	 * @see freemind.modes.MindMap.MapFeedback#fireNodePreDeleteEvent(freemind.modes.MindMapNode)
 	 */
