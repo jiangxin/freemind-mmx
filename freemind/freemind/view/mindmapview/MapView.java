@@ -41,7 +41,6 @@ import java.awt.dnd.DropTargetListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseWheelListener;
 import java.awt.geom.CubicCurve2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
@@ -66,6 +65,9 @@ import javax.swing.KeyStroke;
 
 import freemind.controller.Controller;
 import freemind.controller.MapMouseMotionListener;
+import freemind.controller.MapMouseWheelListener;
+import freemind.controller.NodeDragListener;
+import freemind.controller.NodeDropListener;
 import freemind.controller.NodeKeyListener;
 import freemind.controller.NodeMotionListener;
 import freemind.controller.NodeMouseMotionListener;
@@ -149,12 +151,12 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		/**
 		 * @return
 		 */
-		DragGestureListener getNodeDragListener();
+		NodeDragListener getNodeDragListener();
 
 		/**
 		 * @return
 		 */
-		DropTargetListener getNodeDropListener();
+		NodeDropListener getNodeDropListener();
 
 		/**
 		 * @return
@@ -164,7 +166,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		/**
 		 * @return
 		 */
-		MouseWheelListener getMapMouseWheelListener();
+		MapMouseWheelListener getMapMouseWheelListener();
 
 
 	}

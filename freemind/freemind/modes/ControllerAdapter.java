@@ -27,7 +27,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
@@ -75,7 +74,10 @@ import freemind.controller.Controller;
 import freemind.controller.LastStateStorageManagement;
 import freemind.controller.MapModuleManager;
 import freemind.controller.MapMouseMotionListener;
+import freemind.controller.MapMouseWheelListener;
 import freemind.controller.MindMapNodesSelection;
+import freemind.controller.NodeDragListener;
+import freemind.controller.NodeDropListener;
 import freemind.controller.NodeKeyListener;
 import freemind.controller.NodeMotionListener;
 import freemind.controller.NodeMouseMotionListener;
@@ -1463,7 +1465,7 @@ public abstract class ControllerAdapter implements ModeController,
 
 	public void shutdownController() {
 		setAllActions(false);
-		getController().getMapMouseWheelListener().deregister();
+		getMapMouseWheelListener().deregister();
 	}
 
 	/**
@@ -1478,7 +1480,7 @@ public abstract class ControllerAdapter implements ModeController,
 			DropTarget dropTarget = new DropTarget(getFrame().getView(),
 					fileOpener);
 		}
-		getController().getMapMouseWheelListener().register(
+		getMapMouseWheelListener().register(
 				new MindMapMouseWheelEventHandler(this));
 	}
 
@@ -1641,12 +1643,12 @@ public abstract class ControllerAdapter implements ModeController,
 	}
 
 	@Override
-	public DragGestureListener getNodeDragListener() {
+	public NodeDragListener getNodeDragListener() {
 		return getController().getNodeDragListener();
 	}
 
 	@Override
-	public DropTargetListener getNodeDropListener() {
+	public NodeDropListener getNodeDropListener() {
 		return getController().getNodeDropListener();
 	}
 
@@ -1656,7 +1658,7 @@ public abstract class ControllerAdapter implements ModeController,
 	}
 
 	@Override
-	public MouseWheelListener getMapMouseWheelListener() {
+	public MapMouseWheelListener getMapMouseWheelListener() {
 		return getController().getMapMouseWheelListener();
 	}
 

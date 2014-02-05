@@ -45,6 +45,9 @@ import javax.swing.filechooser.FileFilter;
 import freemind.controller.Controller;
 import freemind.controller.MapModuleManager;
 import freemind.controller.MapMouseMotionListener;
+import freemind.controller.MapMouseWheelListener;
+import freemind.controller.NodeDragListener;
+import freemind.controller.NodeDropListener;
 import freemind.controller.NodeKeyListener;
 import freemind.controller.NodeMotionListener;
 import freemind.controller.NodeMouseMotionListener;
@@ -866,7 +869,7 @@ public class MindMapControllerMock implements ModeController {
 	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getNodeDragListener()
 	 */
 	@Override
-	public DragGestureListener getNodeDragListener() {
+	public NodeDragListener getNodeDragListener() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -875,7 +878,7 @@ public class MindMapControllerMock implements ModeController {
 	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getNodeDropListener()
 	 */
 	@Override
-	public DropTargetListener getNodeDropListener() {
+	public NodeDropListener getNodeDropListener() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -893,7 +896,7 @@ public class MindMapControllerMock implements ModeController {
 	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getMapMouseWheelListener()
 	 */
 	@Override
-	public MouseWheelListener getMapMouseWheelListener() {
+	public MapMouseWheelListener getMapMouseWheelListener() {
 		// TODO Auto-generated method stub
 		return null;
 	}

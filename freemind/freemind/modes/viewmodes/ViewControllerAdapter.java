@@ -133,11 +133,11 @@ public abstract class ViewControllerAdapter extends ControllerAdapter {
 
 	public void startupController() {
 		super.startupController();
-		getController().getNodeMouseMotionListener().register(
+		getNodeMouseMotionListener().register(
 				new CommonNodeMouseMotionListener(this));
-		getController().getMapMouseMotionListener().register(
+		getMapMouseMotionListener().register(
 				new CommonMouseMotionManager(this));
-		getController().getNodeKeyListener().register(
+		getNodeKeyListener().register(
 				new CommonNodeKeyListener(this, new EditHandler() {
 
 					public void edit(KeyEvent e, boolean addNew,
@@ -150,9 +150,9 @@ public abstract class ViewControllerAdapter extends ControllerAdapter {
 
 	public void shutdownController() {
 		super.shutdownController();
-		getController().getNodeMouseMotionListener().deregister();
-		getController().getMapMouseMotionListener().deregister();
-		getController().getNodeKeyListener().deregister();
+		getNodeMouseMotionListener().deregister();
+		getMapMouseMotionListener().deregister();
+		getNodeKeyListener().deregister();
 	}
 
 	protected void setAllActions(boolean enabled) {

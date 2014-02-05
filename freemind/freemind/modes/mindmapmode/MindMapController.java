@@ -903,11 +903,11 @@ public class MindMapController extends ControllerAdapter implements
 		invokeHooksRecursively((NodeAdapter) getRootNode(), getMap());
 
 		// register mouse motion handler:
-		getController().getMapMouseMotionListener().register(
+		getMapMouseMotionListener().register(
 				new MindMapMouseMotionManager(this));
-		getController().getNodeDropListener().register(
+		getNodeDropListener().register(
 				new MindMapNodeDropListener(this));
-		getController().getNodeKeyListener().register(
+		getNodeKeyListener().register(
 				new CommonNodeKeyListener(this, new EditHandler() {
 
 					public void edit(KeyEvent e, boolean addNew,
@@ -916,9 +916,9 @@ public class MindMapController extends ControllerAdapter implements
 
 					}
 				}));
-		getController().getNodeMotionListener().register(
+		getNodeMotionListener().register(
 				new MindMapNodeMotionListener(this));
-		getController().getNodeMouseMotionListener().register(
+		getNodeMouseMotionListener().register(
 				new CommonNodeMouseMotionListener(this));
 		getMap().registerMapSourceChangedObserver(this,
 				mGetEventIfChangedAfterThisTimeInMillies);
@@ -933,11 +933,11 @@ public class MindMapController extends ControllerAdapter implements
 		getHookFactory().deregisterAllRegistrationContainer();
 		mRegistrations.clear();
 		// deregister motion handler
-		getController().getMapMouseMotionListener().deregister();
-		getController().getNodeDropListener().deregister();
-		getController().getNodeKeyListener().deregister();
-		getController().getNodeMotionListener().deregister();
-		getController().getNodeMouseMotionListener().deregister();
+		getMapMouseMotionListener().deregister();
+		getNodeDropListener().deregister();
+		getNodeKeyListener().deregister();
+		getNodeMotionListener().deregister();
+		getNodeMouseMotionListener().deregister();
 		mGetEventIfChangedAfterThisTimeInMillies = getMap()
 				.deregisterMapSourceChangedObserver(this);
 		getToolBar().shutdown();
