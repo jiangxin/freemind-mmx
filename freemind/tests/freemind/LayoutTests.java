@@ -81,7 +81,7 @@ public class LayoutTests extends FreeMindTestBase {
 		mChild2 = new MindMapNodeModel("CHILD2", mModel);
 		mRoot.insert(mChild2, 1);
 		mModel.setRoot(mRoot);
-		mMapView = new MapView(mModel, controller, mc) {
+		mMapView = new MapView(mModel, mc) {
 			DragGestureListener getNodeDragListener() {
 				return null;
 			}

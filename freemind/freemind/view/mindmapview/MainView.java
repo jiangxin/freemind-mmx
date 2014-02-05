@@ -137,10 +137,6 @@ public abstract class MainView extends JLabel {
 		}
 	}
 
-	Controller getController() {
-		return getNodeView().getMap().getController();
-	}
-
 	protected boolean isCurrentlyPrinting() {
 		return getNodeView().getMap().isCurrentlyPrinting();
 	}
@@ -223,24 +219,6 @@ public abstract class MainView extends JLabel {
 			}
 		}
 		return super.getWidth();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see javax.swing.JComponent#processKeyBinding(javax.swing.KeyStroke,
-	 * java.awt.event.KeyEvent, int, boolean)
-	 */
-	protected boolean processKeyBinding(KeyStroke ks, KeyEvent e,
-			int condition, boolean pressed) {
-		if (super.processKeyBinding(ks, e, condition, pressed))
-			return true;
-		// try key bindings of the menu bar even if the menu bar is not visible
-		final MenuBar freeMindMenuBar = getController().getFrame()
-				.getFreeMindMenuBar();
-		return !freeMindMenuBar.isVisible()
-				&& freeMindMenuBar.processKeyBinding(ks, e,
-						JComponent.WHEN_IN_FOCUSED_WINDOW, pressed);
 	}
 
 	abstract Point getCenterPoint();

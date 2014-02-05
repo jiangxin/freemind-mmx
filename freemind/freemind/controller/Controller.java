@@ -146,8 +146,6 @@ public class Controller implements MapModuleChangeObserver {
 	private PageFormat pageFormat = null;
 	private PrinterJob printerJob = null;
 	private Icon bswatch = new BackgroundSwatch();// needed for BackgroundAction
-	private boolean antialiasEdges = false;
-	private boolean antialiasAll = false;
 	private Map fontMap = new HashMap();
 
 	private FilterController mFilterController;
@@ -249,7 +247,7 @@ public class Controller implements MapModuleChangeObserver {
 		toggleMenubar = new ToggleMenubarAction(this);
 		toggleToolbar = new ToggleToolbarAction(this);
 		toggleLeftToolbar = new ToggleLeftToolbarAction(this);
-		optionAntialiasAction = new OptionAntialiasAction(this);
+		optionAntialiasAction = new OptionAntialiasAction();
 		optionHTMLExportFoldingAction = new OptionHTMLExportFoldingAction(this);
 		optionSelectionMechanismAction = new OptionSelectionMechanismAction(
 				this);
@@ -438,22 +436,6 @@ public class Controller implements MapModuleChangeObserver {
 	}
 
 	//
-
-	public void setAntialiasEdges(boolean antialiasEdges) {
-		this.antialiasEdges = antialiasEdges;
-	}
-
-	public void setAntialiasAll(boolean antialiasAll) {
-		this.antialiasAll = antialiasAll;
-	}
-
-	private boolean getAntialiasEdges() {
-		return antialiasEdges;
-	}
-
-	private boolean getAntialiasAll() {
-		return antialiasAll;
-	}
 
 	public Font getDefaultFont() {
 		// Maybe implement handling for cases when the font is not
@@ -743,11 +725,6 @@ public class Controller implements MapModuleChangeObserver {
 		this.frame = frame;
 	}
 
-	/**
-	 * I don't understand how this works now (it's called twice etc.) but it
-	 * _works_ now. So let it alone or fix it to be understandable, if you have
-	 * the time ;-)
-	 */
 	void moveToRoot() {
 		if (getMapModule() != null) {
 			getView().moveToRoot();
@@ -1026,8 +1003,6 @@ public class Controller implements MapModuleChangeObserver {
 		// shortcuts
 		setProperty("toolbarVisible", toolbarVisible ? "true" : "false");
 		setProperty("leftToolbarVisible", leftToolbarVisible ? "true" : "false");
-		setProperty("antialiasEdges", antialiasEdges ? "true" : "false");
-		setProperty("antialiasAll", antialiasAll ? "true" : "false");
 		if (!getFrame().isApplet()) {
 			final int winState = getFrame().getWinState();
 			if (JFrame.MAXIMIZED_BOTH != (winState & JFrame.MAXIMIZED_BOTH)) {
@@ -1163,7 +1138,8 @@ public class Controller implements MapModuleChangeObserver {
 			}
 			PreviewDialog previewDialog = new PreviewDialog(
 					controller.getResourceString("print_preview_title"),
-					getView());
+					getView(),
+					getPageFormat());
 			previewDialog.pack();
 			previewDialog.setLocationRelativeTo(JOptionPane
 					.getFrameForComponent(getView()));
@@ -1752,12 +1728,7 @@ public class Controller implements MapModuleChangeObserver {
 		}
 	}
 
-	public class OptionAntialiasAction extends AbstractAction implements
-			FreemindPropertyListener {
-		OptionAntialiasAction(Controller controller) {
-			Controller.addPropertyChangeListener(this);
-		}
-
+	public class OptionAntialiasAction extends AbstractAction {
 		public void actionPerformed(ActionEvent e) {
 			String command = e.getActionCommand();
 			changeAntialias(command);
@@ -1769,28 +1740,11 @@ public class Controller implements MapModuleChangeObserver {
 			if (command == null) {
 				return;
 			}
-			if (command.equals("antialias_none")) {
-				setAntialiasEdges(false);
-				setAntialiasAll(false);
-			}
-			if (command.equals("antialias_edges")) {
-				setAntialiasEdges(true);
-				setAntialiasAll(false);
-			}
-			if (command.equals("antialias_all")) {
-				setAntialiasEdges(true);
-				setAntialiasAll(true);
-			}
+			setProperty(FreeMindCommon.RESOURCE_ANTIALIAS, command);
 			if (getView() != null)
 				getView().repaint();
 		}
 
-		public void propertyChanged(String propertyName, String newValue,
-				String oldValue) {
-			if (propertyName.equals(FreeMindCommon.RESOURCE_ANTIALIAS)) {
-				changeAntialias(newValue);
-			}
-		}
 	}
 
 	private class OptionHTMLExportFoldingAction extends AbstractAction {
@@ -1865,24 +1819,6 @@ public class Controller implements MapModuleChangeObserver {
 
 	public PageFormat getPageFormat() {
 		return pageFormat;
-	}
-
-	public Object setEdgesRenderingHint(Graphics2D g) {
-		Object renderingHint = g
-				.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				(getAntialiasEdges()) ? RenderingHints.VALUE_ANTIALIAS_ON
-						: RenderingHints.VALUE_ANTIALIAS_OFF);
-		return renderingHint;
-	}
-
-	public void setTextRenderingHint(Graphics2D g) {
-		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-				(getAntialiasAll()) ? RenderingHints.VALUE_TEXT_ANTIALIAS_ON
-						: RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				(getAntialiasAll()) ? RenderingHints.VALUE_ANTIALIAS_ON
-						: RenderingHints.VALUE_ANTIALIAS_OFF);
 	}
 
 	public void addTabbedPane(JTabbedPane pTabbedPane) {

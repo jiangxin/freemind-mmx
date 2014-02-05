@@ -26,7 +26,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DragGestureListener;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -41,6 +44,10 @@ import javax.swing.filechooser.FileFilter;
 
 import freemind.controller.Controller;
 import freemind.controller.MapModuleManager;
+import freemind.controller.MapMouseMotionListener;
+import freemind.controller.NodeKeyListener;
+import freemind.controller.NodeMotionListener;
+import freemind.controller.NodeMouseMotionListener;
 import freemind.controller.StructuredMenuHolder;
 import freemind.extensions.HookFactory;
 import freemind.extensions.NodeHook;
@@ -826,5 +833,68 @@ public class MindMapControllerMock implements ModeController {
 	public void invokeHooksRecursively(MindMapNode pNode, MindMap pModel) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getNodeMouseMotionListener()
+	 */
+	@Override
+	public NodeMouseMotionListener getNodeMouseMotionListener() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getNodeMotionListener()
+	 */
+	@Override
+	public NodeMotionListener getNodeMotionListener() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getNodeKeyListener()
+	 */
+	@Override
+	public NodeKeyListener getNodeKeyListener() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getNodeDragListener()
+	 */
+	@Override
+	public DragGestureListener getNodeDragListener() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getNodeDropListener()
+	 */
+	@Override
+	public DropTargetListener getNodeDropListener() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getMapMouseMotionListener()
+	 */
+	@Override
+	public MapMouseMotionListener getMapMouseMotionListener() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getMapMouseWheelListener()
+	 */
+	@Override
+	public MouseWheelListener getMapMouseWheelListener() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

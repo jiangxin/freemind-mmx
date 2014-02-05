@@ -195,7 +195,7 @@ public class NodeFoldingComponent extends JButton {
 			Graphics2D g2 = (Graphics2D) g;
 			initShape(c);
 			// Border
-			Object oldRenderingHint = nodeView.getController()
+			Object oldRenderingHint = nodeView.getMap()
 					.setEdgesRenderingHint(g2);
 			g2.setColor(c.getBackground());
 			g2.setStroke(BubbleMainView.DEF_STROKE);

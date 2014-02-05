@@ -37,9 +37,11 @@ class Preview extends JComponent {
 	private final static double MINIMUM_ZOOM_FACTOR = 0.1;
 	private BufferedImage previewPageImage = null;
 	private Graphics2D imageGraphics;
+	private PageFormat mPageFormat;
 
-	public Preview(MapView view, double zoom) {
+	public Preview(MapView view, double zoom, PageFormat pPageFormat) {
 		this.view = view;
+		mPageFormat = pPageFormat;
 		PageFormat format = getPageFormat();
 		if (zoom == 0.0) {
 			if (format.getOrientation() == PageFormat.PORTRAIT)
@@ -105,7 +107,7 @@ class Preview extends JComponent {
 	}
 
 	private PageFormat getPageFormat() {
-		return view.getController().getPageFormat();
+		return mPageFormat;
 	}
 
 	public Dimension getMinimumSize() {

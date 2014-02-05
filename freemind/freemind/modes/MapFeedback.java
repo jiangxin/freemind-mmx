@@ -21,14 +21,8 @@
 package freemind.modes;
 
 import java.awt.Font;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.HashMap;
 
 import freemind.extensions.NodeHook;
-import freemind.main.XMLParseException;
-import freemind.modes.ModeController.ReaderCreator;
-import freemind.modes.mindmapmode.MindMapController.StringReaderCreator;
 
 /**
  * This interface describes the services, the {@link ModeController} provides to 
@@ -66,12 +60,12 @@ public interface MapFeedback {
 			MindMapNode pParent);
 	/**
 	 * @param pTextId
-	 * @return
+	 * @return the string from Resources_<lang>.properties belonging to the pResourceId.
 	 */
 	String getResourceString(String pTextId);
 	/**
 	 * @param pResourceId 
-	 * @return the string from Resources_<lang>.properties belonging to the pResourceId.
+	 * @return the setting of freemind.properties resp. auto.properties.
 	 */
 	String getProperty(String pResourceId);
 	/**

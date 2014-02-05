@@ -54,7 +54,7 @@ class BubbleMainView extends MainView {
 		if (model == null)
 			return;
 
-		Object renderingHint = getController().setEdgesRenderingHint(g);
+		Object renderingHint = getNodeView().getMap().setEdgesRenderingHint(g);
 		paintSelected(g);
 		paintDragOver(g);
 

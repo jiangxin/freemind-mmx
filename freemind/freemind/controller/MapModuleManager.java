@@ -240,7 +240,7 @@ public class MapModuleManager {
 	}
 
 	public void newMapModule(MindMap map, ModeController modeController) {
-		MapModule mapModule = new MapModule(map, new MapView(map, mController, modeController),
+		MapModule mapModule = new MapModule(map, new MapView(map, modeController),
 				modeController.getMode(), modeController);
 		addToOrChangeInMapModules(mapModule.toString(), mapModule);
 		setMapModule(mapModule, modeController.getMode());

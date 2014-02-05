@@ -51,7 +51,7 @@ class RootMainView extends MainView {
 		if (getNodeView().getModel() == null)
 			return;
 
-		Object renderingHint = getController().setEdgesRenderingHint(g);
+		Object renderingHint = getNodeView().getMap().setEdgesRenderingHint(g);
 		paintSelected(g);
 		paintDragOver(g);
 

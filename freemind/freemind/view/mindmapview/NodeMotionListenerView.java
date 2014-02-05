@@ -69,9 +69,8 @@ public class NodeMotionListenerView extends JComponent {
 		super.paintComponent(g);
 		if (isMouseEntered()) {
 			Graphics2D g2 = (Graphics2D) g;
-			Controller controller = movedView.getMap().getController();
 			// set antialiasing.
-			Object renderingHint = controller.setEdgesRenderingHint(g2);
+			Object renderingHint = movedView.getMap().setEdgesRenderingHint(g2);
 			Color color = g2.getColor();
 			Stroke oldStroke = g2.getStroke();
 			g2.setStroke(new BasicStroke());

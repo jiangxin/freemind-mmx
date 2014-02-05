@@ -24,6 +24,7 @@ package freemind.controller.printpreview;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.print.PageFormat;
 import java.net.URL;
 
 import javax.swing.AbstractAction;
@@ -44,10 +45,10 @@ public class PreviewDialog extends JDialog implements ActionListener {
 	private final static double DEFAULT_ZOOM_FACTOR_STEP = 0.1;
 	private JLabel pageNumber;
 
-	public PreviewDialog(String title, MapView view) {
+	public PreviewDialog(String title, MapView view, PageFormat pPageFormat) {
 		super(JOptionPane.getFrameForComponent(view), title, true);
 		this.view = view;
-		Preview preview = new Preview(view, 1);
+		Preview preview = new Preview(view, 1, pPageFormat);
 		JScrollPane scrollPane = new JScrollPane(preview);
 		getContentPane().add(scrollPane, "Center");
 		JToolBar toolbar = new JToolBar();

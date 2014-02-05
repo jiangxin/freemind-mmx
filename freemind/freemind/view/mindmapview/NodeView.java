@@ -104,7 +104,6 @@ public class NodeView extends JComponent implements TreeModelListener {
             .getBoolProperty("el__show_icon_for_attributes");
 	private static ImageIcon sAttributeIcon;
 
-	private Object viewDeletionEvent;
 	private int maxToolTipWidth;
 	private NodeView preferredChild;
 	private JComponent contentPane;
@@ -117,7 +116,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 	protected NodeView(MindMapNode model, int position, MapView map,
 			Container parent) {
 		if (logger == null) {
-			logger = map.getController().getFrame()
+			logger = Resources.getInstance()
 					.getLogger(this.getClass().getName());
 		}
 		if(sListener == null){
@@ -199,7 +198,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 		mainView.addMouseMotionListener(this.mapView.getNodeMouseMotionListener());
 		addDragListener(mapView.getNodeDragListener());
 		addDropListener(mapView.getNodeDropListener());
-		if (!model.isRoot() && "true".equals(mapView.getController().getProperty(FreeMindMain.ENABLE_NODE_MOVEMENT))) {
+		if (!model.isRoot() && "true".equals(mapView.getViewFeedback().getProperty(FreeMindMain.ENABLE_NODE_MOVEMENT))) {
 			motionListenerView = new NodeMotionListenerView(this);
 			add(motionListenerView);
 		}
@@ -338,12 +337,6 @@ public class NodeView extends JComponent implements TreeModelListener {
 		return mainView.getDeltaY();
 	}
 
-	public void requestFocus() {
-		// delegate to mapview:
-		getController().obtainFocusForSelected();
-	}
-
-
 	//
 	// get/set methods
 	//
@@ -381,16 +374,8 @@ public class NodeView extends JComponent implements TreeModelListener {
 		return mapView;
 	}
 
-	protected Controller getController() {
-		return mapView.getController();
-	}
-
 	public ViewFeedback getViewFeedback() {
 		return getMap().getViewFeedback();
-	}
-
-	protected FreeMindMain getFrame() {
-		return getController().getFrame();
 	}
 
 	boolean isParentHidden() {
@@ -901,7 +886,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 			// <body width="800">, or avoid the <body> tag altogether.
 
 			// Set user HTML head
-			String htmlLongNodeHead = getFrame()
+			String htmlLongNodeHead = getViewFeedback()
 					.getProperty("html_long_node_head");
 			if (htmlLongNodeHead != null && !htmlLongNodeHead.equals("")) {
 				if (nodeText.matches("(?ims).*<head>.*")) {
@@ -960,7 +945,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 
 	private void updateFont() {
 		Font font = getModel().getFont();
-		font = font == null ? getController().getDefaultFont() : font;
+		font = font == null ? getViewFeedback().getDefaultFont() : font;
 		if (font != null) {
 			mainView.setFont(font);
 		} else {
@@ -975,7 +960,6 @@ public class NodeView extends JComponent implements TreeModelListener {
 		boolean iconPresent = false;
 		/* fc, 06.10.2003: images? */
 
-		FreeMindMain frame = getFrame();
 		Map stateIcons = (getModel()).getStateIcons();
 		for (Iterator i = stateIcons.keySet().iterator(); i.hasNext();) {
 			String key = (String) i.next();
@@ -1013,7 +997,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 			} else if (Tools.executableByExtension(link)) {
 				iconPath = "images/Executable.png";
 			}
-			ImageIcon icon = new ImageIcon(frame.getResource(iconPath));
+			ImageIcon icon = new ImageIcon(Resources.getInstance().getResource(iconPath));
 			iconImages.addImage(icon);
 		}
 		// /* Folded icon by Matthias Schade (mascha2), fc, 20.12.2003*/
@@ -1092,8 +1076,8 @@ public class NodeView extends JComponent implements TreeModelListener {
 	public int getMaxToolTipWidth() {
 		if (maxToolTipWidth == 0) {
 			try {
-				maxToolTipWidth = getController().getIntProperty(
-						"max_tooltip_width", 600);
+				maxToolTipWidth = Integer.parseInt(getViewFeedback().getProperty(
+						"max_tooltip_width"));
 			} catch (NumberFormatException e) {
 				maxToolTipWidth = 600;
 			}
@@ -1466,7 +1450,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 	}
 
 	private void paintCloudsAndEdges(Graphics2D g) {
-		Object renderingHint = getController().setEdgesRenderingHint(g);
+		Object renderingHint = getMap().setEdgesRenderingHint(g);
 		for (int i = 0; i < getComponentCount(); i++) {
 			final Component component = getComponent(i);
 			if (!(component instanceof NodeView)) {

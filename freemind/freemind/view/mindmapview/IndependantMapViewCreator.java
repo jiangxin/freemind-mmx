@@ -26,6 +26,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DropTargetListener;
+import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -37,7 +38,10 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import tests.freemind.FreeMindMainMock;
-import freemind.controller.Controller;
+import freemind.controller.MapMouseMotionListener;
+import freemind.controller.NodeKeyListener;
+import freemind.controller.NodeMotionListener;
+import freemind.controller.NodeMouseMotionListener;
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHookSubstituteUnknown;
 import freemind.main.FreeMindMain;
@@ -47,7 +51,6 @@ import freemind.modes.MapAdapter;
 import freemind.modes.MapFeedback;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
-import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.view.mindmapview.MapView.ViewFeedback;
 
@@ -93,13 +96,11 @@ public class IndependantMapViewCreator implements ViewFeedback, MapFeedback {
 	public MapView createMapViewForFile(String inputFileName, JPanel parent,
 			FreeMindMain pFreeMindMain) throws FileNotFoundException,
 			IOException, URISyntaxException {
-		Controller controller = new Controller(pFreeMindMain);
-		controller.initialization();
 		mMap = new MindMapMapModel(this);
 		Tools.FileReaderCreator readerCreator = new Tools.FileReaderCreator(new File(inputFileName));
 		MindMapNode node = mMap.loadTree(readerCreator, MapAdapter.sDontAskInstance);
 		mMap.setRoot(node);
-		MapView mapView = new MapView(mMap, controller, this); 
+		MapView mapView = new MapView(mMap, this); 
 		parent.add(mapView, BorderLayout.CENTER);
 		mapView.setBounds(parent.getBounds());
 		Tools.waitForEventQueue();
@@ -294,6 +295,69 @@ public class IndependantMapViewCreator implements ViewFeedback, MapFeedback {
 	public void invokeHooksRecursively(MindMapNode pNode, MindMap pModel) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getNodeMouseMotionListener()
+	 */
+	@Override
+	public NodeMouseMotionListener getNodeMouseMotionListener() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getNodeMotionListener()
+	 */
+	@Override
+	public NodeMotionListener getNodeMotionListener() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getNodeKeyListener()
+	 */
+	@Override
+	public NodeKeyListener getNodeKeyListener() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getNodeDragListener()
+	 */
+	@Override
+	public DragGestureListener getNodeDragListener() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getNodeDropListener()
+	 */
+	@Override
+	public DropTargetListener getNodeDropListener() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getMapMouseMotionListener()
+	 */
+	@Override
+	public MapMouseMotionListener getMapMouseMotionListener() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getMapMouseWheelListener()
+	 */
+	@Override
+	public MouseWheelListener getMapMouseWheelListener() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

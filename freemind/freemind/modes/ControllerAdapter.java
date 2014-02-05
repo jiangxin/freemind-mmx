@@ -27,6 +27,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DragGestureListener;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDragEvent;
 import java.awt.dnd.DropTargetDropEvent;
@@ -34,6 +35,7 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -72,7 +74,11 @@ import javax.swing.filechooser.FileFilter;
 import freemind.controller.Controller;
 import freemind.controller.LastStateStorageManagement;
 import freemind.controller.MapModuleManager;
+import freemind.controller.MapMouseMotionListener;
 import freemind.controller.MindMapNodesSelection;
+import freemind.controller.NodeKeyListener;
+import freemind.controller.NodeMotionListener;
+import freemind.controller.NodeMouseMotionListener;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.actions.generated.instance.MindmapLastStateStorage;
 import freemind.controller.actions.generated.instance.NodeListMember;
@@ -1617,6 +1623,41 @@ public abstract class ControllerAdapter implements ModeController,
 	@Override
 	public Font getFontThroughMap(Font pFont) {
 		return getController().getFontThroughMap(pFont);
+	}
+
+	@Override
+	public NodeMouseMotionListener getNodeMouseMotionListener() {
+		return getController().getNodeMouseMotionListener();
+	}
+
+	@Override
+	public NodeMotionListener getNodeMotionListener() {
+		return getController().getNodeMotionListener();
+	}
+
+	@Override
+	public NodeKeyListener getNodeKeyListener() {
+		return getController().getNodeKeyListener();
+	}
+
+	@Override
+	public DragGestureListener getNodeDragListener() {
+		return getController().getNodeDragListener();
+	}
+
+	@Override
+	public DropTargetListener getNodeDropListener() {
+		return getController().getNodeDropListener();
+	}
+
+	@Override
+	public MapMouseMotionListener getMapMouseMotionListener() {
+		return getController().getMapMouseMotionListener();
+	}
+
+	@Override
+	public MouseWheelListener getMapMouseWheelListener() {
+		return getController().getMapMouseWheelListener();
 	}
 
 

@@ -26,6 +26,7 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FocusTraversalPolicy;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
@@ -40,6 +41,7 @@ import java.awt.dnd.DropTargetListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.geom.CubicCurve2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
@@ -63,10 +65,12 @@ import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 
 import freemind.controller.Controller;
+import freemind.controller.MapMouseMotionListener;
 import freemind.controller.NodeKeyListener;
 import freemind.controller.NodeMotionListener;
 import freemind.controller.NodeMouseMotionListener;
 import freemind.main.FreeMind;
+import freemind.main.FreeMindCommon;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.Tools.Pair;
@@ -115,6 +119,52 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		 * @param pNodeView
 		 */
 		void onViewRemovedHook(NodeView pNodeView);
+
+		/**
+		 * @param pResourceId 
+		 * @return the setting of freemind.properties resp. auto.properties.
+		 */
+		String getProperty(String pResourceId);
+
+		/**
+		 * @return
+		 */
+		Font getDefaultFont();
+
+		/**
+		 * @return
+		 */
+		NodeMouseMotionListener getNodeMouseMotionListener();
+
+		/**
+		 * @return
+		 */
+		NodeMotionListener getNodeMotionListener();
+
+		/**
+		 * @return
+		 */
+		NodeKeyListener getNodeKeyListener();
+
+		/**
+		 * @return
+		 */
+		DragGestureListener getNodeDragListener();
+
+		/**
+		 * @return
+		 */
+		DropTargetListener getNodeDropListener();
+
+		/**
+		 * @return
+		 */
+		MapMouseMotionListener getMapMouseMotionListener();
+
+		/**
+		 * @return
+		 */
+		MouseWheelListener getMapMouseWheelListener();
 
 
 	}
@@ -186,17 +236,6 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		}
 
 	}
-
-	int mPaintingTime;
-	int mPaintingAmount;
-	static boolean printOnWhiteBackground;
-	static Color standardMapBackgroundColor;
-	static Color standardSelectColor;
-	static Color standardSelectRectangleColor;
-	public static Color standardNodeTextColor;
-	static boolean standardDrawRectangleForSelection;
-	private static Stroke standardSelectionStroke;
-	static private FreemindPropertyListener propertyChangeListener;
 
 	private class Selected {
 		private Vector mySelected = new Vector();
@@ -295,7 +334,6 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 	private MindMap model;
 	private NodeView rootView = null;
 	private Selected selected = new Selected();
-	private Controller controller = null;
 	private float zoom = 1F;
 	private boolean disableMoveCursor = true;
 	private int siblingMaxLevel;
@@ -305,6 +343,17 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 	private Color background = null;
 	private Rectangle boundingRectangle = null;
 	private boolean fitToPage = true;
+
+	int mPaintingTime;
+	int mPaintingAmount;
+	static boolean printOnWhiteBackground;
+	static Color standardMapBackgroundColor;
+	static Color standardSelectColor;
+	static Color standardSelectRectangleColor;
+	public static Color standardNodeTextColor;
+	static boolean standardDrawRectangleForSelection;
+	private static Stroke standardSelectionStroke;
+	private static FreemindPropertyListener propertyChangeListener;
 
 	/** Used to identify a right click onto a link curve. */
 	private Vector/* of ArrowLinkViews */mArrowLinkViews = new Vector();
@@ -322,19 +371,20 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 	static boolean NEED_PREF_SIZE_BUG_FIX = Controller.JAVA_VERSION
 			.compareTo("1.5.0") < 0;
 	private ViewFeedback mFeedback;
+	private static boolean antialiasEdges = false;
+	private static boolean antialiasAll = false;
 
-	public MapView(MindMap model, Controller controller, ViewFeedback pFeedback) {
+	public MapView(MindMap model, ViewFeedback pFeedback) {
 		super();
 		this.model = model;
-		this.controller = controller;
 		mFeedback = pFeedback;
 		if (logger == null)
-			logger = controller.getFrame().getLogger(this.getClass().getName());
+			logger = Resources.getInstance().getLogger(this.getClass().getName());
 		mCenterNodeTimer = new Timer();
 		// initialize the standard colors.
 		if (standardNodeTextColor == null) {
 			try {
-				String stdcolor = getController().getFrame().getProperty(
+				String stdcolor = mFeedback.getProperty(
 						FreeMind.RESOURCES_BACKGROUND_COLOR);
 				standardMapBackgroundColor = Tools.xmlToColor(stdcolor);
 			} catch (Exception ex) {
@@ -342,7 +392,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 				standardMapBackgroundColor = Color.WHITE;
 			}
 			try {
-				String stdcolor = getController().getFrame().getProperty(
+				String stdcolor = mFeedback.getProperty(
 						FreeMind.RESOURCES_NODE_TEXT_COLOR);
 				standardNodeTextColor = Tools.xmlToColor(stdcolor);
 			} catch (Exception ex) {
@@ -351,7 +401,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 			}
 			// initialize the selectedColor:
 			try {
-				String stdcolor = getController().getFrame().getProperty(
+				String stdcolor = mFeedback.getProperty(
 						FreeMind.RESOURCES_SELECTED_NODE_COLOR);
 				standardSelectColor = Tools.xmlToColor(stdcolor);
 			} catch (Exception ex) {
@@ -361,7 +411,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 
 			// initialize the selectedTextColor:
 			try {
-				String stdtextcolor = getController().getFrame().getProperty(
+				String stdtextcolor = mFeedback.getProperty(
 						FreeMind.RESOURCES_SELECTED_NODE_RECTANGLE_COLOR);
 				standardSelectRectangleColor = Tools.xmlToColor(stdtextcolor);
 			} catch (Exception ex) {
@@ -369,7 +419,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 				standardSelectRectangleColor = Color.WHITE;
 			}
 			try {
-				String drawCircle = getController().getFrame().getProperty(
+				String drawCircle = mFeedback.getProperty(
 						FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION);
 				standardDrawRectangleForSelection = Tools
 						.xmlToBoolean(drawCircle);
@@ -379,16 +429,17 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 			}
 
 			try {
-				String printOnWhite = getController().getFrame().getProperty(
+				String printOnWhite = mFeedback.getProperty(
 						FreeMind.RESOURCE_PRINT_ON_WHITE_BACKGROUND);
 				printOnWhiteBackground = Tools.xmlToBoolean(printOnWhite);
 			} catch (Exception ex) {
 				freemind.main.Resources.getInstance().logException(ex);
 				printOnWhiteBackground = true;
 			}
-
+			// only created once:
 			createPropertyChangeListener();
-
+			// initialize antializing:
+			propertyChangeListener.propertyChanged(FreeMindCommon.RESOURCE_ANTIALIAS, mFeedback.getProperty(FreeMindCommon.RESOURCE_ANTIALIAS), null);
 		}
 		this.setAutoscrolls(true);
 
@@ -397,9 +448,9 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		initRoot();
 
 		setBackground(standardMapBackgroundColor);
-		addMouseListener(controller.getMapMouseMotionListener());
-		addMouseMotionListener(controller.getMapMouseMotionListener());
-		addMouseWheelListener(controller.getMapMouseWheelListener());
+		addMouseListener(pFeedback.getMapMouseMotionListener());
+		addMouseMotionListener(pFeedback.getMapMouseMotionListener());
+		addMouseWheelListener(pFeedback.getMapMouseWheelListener());
 		addKeyListener(getNodeKeyListener());
 
 		// fc, 20.6.2004: to enable tab for insert.
@@ -464,33 +515,84 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 					String oldValue) {
 				if (propertyName.equals(FreeMind.RESOURCES_NODE_TEXT_COLOR)) {
 					standardNodeTextColor = Tools.xmlToColor(newValue);
-					controller.getMapModule().getView().getRoot().updateAll();
+					MapView.this.getRoot().updateAll();
 				} else if (propertyName
 						.equals(FreeMind.RESOURCES_BACKGROUND_COLOR)) {
 					standardMapBackgroundColor = Tools.xmlToColor(newValue);
-					controller.getMapModule().getView()
+					MapView.this
 							.setBackground(standardMapBackgroundColor);
 				} else if (propertyName
 						.equals(FreeMind.RESOURCES_SELECTED_NODE_COLOR)) {
 					standardSelectColor = Tools.xmlToColor(newValue);
-					controller.getMapModule().getView().repaintSelecteds();
+					MapView.this.repaintSelecteds();
 				} else if (propertyName
 						.equals(FreeMind.RESOURCES_SELECTED_NODE_RECTANGLE_COLOR)) {
 					standardSelectRectangleColor = Tools.xmlToColor(newValue);
-					controller.getMapModule().getView().repaintSelecteds();
+					MapView.this.repaintSelecteds();
 				} else if (propertyName
 						.equals(FreeMind.RESOURCE_DRAW_RECTANGLE_FOR_SELECTION)) {
 					standardDrawRectangleForSelection = Tools
 							.xmlToBoolean(newValue);
-					controller.getMapModule().getView().repaintSelecteds();
+					MapView.this.repaintSelecteds();
 				} else if (propertyName
 						.equals(FreeMind.RESOURCE_PRINT_ON_WHITE_BACKGROUND)) {
 					printOnWhiteBackground = Tools.xmlToBoolean(newValue);
+				} else if (propertyName.equals(FreeMindCommon.RESOURCE_ANTIALIAS)) {
+					if ("antialias_none".equals(newValue)) {
+						setAntialiasEdges(false);
+						setAntialiasAll(false);
+					}
+					if ("antialias_edges".equals(newValue)) {
+						setAntialiasEdges(true);
+						setAntialiasAll(false);
+					}
+					if ("antialias_all".equals(newValue)) {
+						setAntialiasEdges(true);
+						setAntialiasAll(true);
+					}
 				}
+
 			}
 		};
 		Controller.addPropertyChangeListener(propertyChangeListener);
 	}
+	
+	private static void setAntialiasEdges(boolean pAntialiasEdges) {
+		antialiasEdges = pAntialiasEdges;
+	}
+
+	private static void setAntialiasAll(boolean pAntialiasAll) {
+		antialiasAll = pAntialiasAll;
+	}
+
+	private static boolean getAntialiasEdges() {
+		return antialiasEdges;
+	}
+
+	private static boolean getAntialiasAll() {
+		return antialiasAll;
+	}
+
+	public Object setEdgesRenderingHint(Graphics2D g) {
+		Object renderingHint = g
+				.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				(getAntialiasEdges()) ? RenderingHints.VALUE_ANTIALIAS_ON
+						: RenderingHints.VALUE_ANTIALIAS_OFF);
+		return renderingHint;
+	}
+
+	public void setTextRenderingHint(Graphics2D g) {
+		g.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+				(getAntialiasAll()) ? RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+						: RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+				(getAntialiasAll()) ? RenderingHints.VALUE_ANTIALIAS_ON
+						: RenderingHints.VALUE_ANTIALIAS_OFF);
+	}
+
+
+
 
 	public void initRoot() {
 		rootContentLocation = new Point();
@@ -503,11 +605,11 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 	public int getMaxNodeWidth() {
 		if (maxNodeWidth == 0) {
 			try {
-				maxNodeWidth = Integer.parseInt(controller
+				maxNodeWidth = Integer.parseInt(mFeedback
 						.getProperty("max_node_width"));
 			} catch (NumberFormatException e) {
 				freemind.main.Resources.getInstance().logException(e);
-				maxNodeWidth = Integer.parseInt(controller
+				maxNodeWidth = Integer.parseInt(mFeedback
 						.getProperty("el__max_default_window_width"));
 			}
 		}
@@ -838,7 +940,6 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		this.selected.clear();
 		this.selected.add(newSelected);
 
-		// getController().getMode().getDefaultModeController().onSelectHook(newSelected.getModel());
 		// set last focused as preferred (PN)
 		if (newSelected.getModel().getParentNode() != null) {
 			((NodeView) newSelected.getParent()).setPreferredChild(newSelected);
@@ -1029,23 +1130,23 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 	}
 
 	NodeMouseMotionListener getNodeMouseMotionListener() {
-		return getController().getNodeMouseMotionListener();
+		return getViewFeedback().getNodeMouseMotionListener();
 	}
 
 	NodeMotionListener getNodeMotionListener() {
-		return getController().getNodeMotionListener();
+		return getViewFeedback().getNodeMotionListener();
 	}
 
 	NodeKeyListener getNodeKeyListener() {
-		return getController().getNodeKeyListener();
+		return getViewFeedback().getNodeKeyListener();
 	}
 
 	DragGestureListener getNodeDragListener() {
-		return getController().getNodeDragListener();
+		return getViewFeedback().getNodeDragListener();
 	}
 
 	DropTargetListener getNodeDropListener() {
-		return getController().getNodeDropListener();
+		return getViewFeedback().getNodeDropListener();
 	}
 
 	public NodeView getSelected() {
@@ -1224,7 +1325,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 				.getRenderingHint(RenderingHints.KEY_ANTIALIASING);
 		final Object renderingTextHint = g2
 				.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING);
-		getController().setTextRenderingHint(g2);
+		setTextRenderingHint(g2);
 		final Object oldRenderingHintFM = g2
 				.getRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS);
 		final Object newRenderingHintFM = getZoom() != 1F ? RenderingHints.VALUE_FRACTIONALMETRICS_ON
@@ -1260,19 +1361,12 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 	}
 
 	public void paintChildren(Graphics graphics) {
-		// first tries for background images.
-		// if(image == null) {
-		// image =
-		// MindIcon.factory("ksmiletris").getIcon(controller.getFrame()).getImage();
-		// }
-		// graphics.drawImage(image, 0, 0, getHeight(), getWidth(), null);
 		HashMap labels = new HashMap();
 		mArrowLinkViews = new Vector();
 		collectLabels(rootView, labels);
 		super.paintChildren(graphics);
 		Graphics2D graphics2d = (Graphics2D) graphics;
-		Object renderingHint = getController()
-				.setEdgesRenderingHint(graphics2d);
+		Object renderingHint = setEdgesRenderingHint(graphics2d);
 		paintLinks(rootView, graphics2d, labels, null);
 		Tools.restoreAntialiasing(graphics2d, renderingHint);
 		paintSelecteds(graphics2d);
@@ -1289,7 +1383,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 			standardSelectionStroke = new BasicStroke(2.0f);
 		}
 		g.setStroke(standardSelectionStroke);
-		Object renderingHint = getController().setEdgesRenderingHint(g);
+		Object renderingHint = setEdgesRenderingHint(g);
 		final Iterator i = getSelecteds().iterator();
 		while (i.hasNext()) {
 			NodeView selected = (NodeView) i.next();
@@ -1450,7 +1544,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 
 		double userZoomFactor = 1;
 		try {
-			userZoomFactor = Double.parseDouble(controller
+			userZoomFactor = Double.parseDouble(mFeedback
 					.getProperty("user_zoom"));
 		} catch (Exception e) {
 			// freemind.main.Resources.getInstance().logException(e);
@@ -1561,18 +1655,6 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 
 	private MindMapLayout getMindMapLayout() {
 		return (MindMapLayout) getLayout();
-	}
-
-	/**
-	 * This method is a workaround to allow the inner class access to "this".
-	 * Change it as soon the correct syntax is known.
-	 */
-	private MapView getMap() {
-		return this;
-	}
-
-	public Controller getController() {
-		return controller;
 	}
 
 	// this property is used when the user navigates up/down using cursor keys
