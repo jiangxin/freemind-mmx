@@ -94,6 +94,7 @@ public interface MapFeedback {
 	 * @return
 	 */
 	NodeHook createNodeHook(String pLoadName, MindMapNode pNode);
+
 	/**
 	 * @param pNode
 	 * @param pModel

@@ -46,9 +46,10 @@ import freemind.main.XMLParseException;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
+import freemind.view.mindmapview.ViewFeedback;
 
 public interface ModeController extends TextTranslator, MapFeedback,
-		MapView.ViewFeedback {
+		ViewFeedback {
 
 	public static final String NODESEPARATOR = "<nodeseparator>";
 

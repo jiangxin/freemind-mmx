@@ -21,12 +21,8 @@
 package freemind.view.mindmapview;
 
 import java.awt.BorderLayout;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.awt.dnd.DragGestureListener;
-import java.awt.dnd.DropTargetListener;
-import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -38,30 +34,21 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import tests.freemind.FreeMindMainMock;
-import freemind.controller.MapMouseMotionListener;
-import freemind.controller.MapMouseWheelListener;
-import freemind.controller.NodeDragListener;
-import freemind.controller.NodeDropListener;
-import freemind.controller.NodeKeyListener;
-import freemind.controller.NodeMotionListener;
-import freemind.controller.NodeMouseMotionListener;
 import freemind.extensions.NodeHook;
 import freemind.extensions.PermanentNodeHookSubstituteUnknown;
 import freemind.main.FreeMindMain;
-import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MapAdapter;
-import freemind.modes.MapFeedback;
+import freemind.modes.MapFeedbackAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapMapModel;
-import freemind.view.mindmapview.MapView.ViewFeedback;
 
 /**
  * @author foltin
  * @date 28.09.2011
  */
-public class IndependantMapViewCreator implements ViewFeedback, MapFeedback {
+public class IndependantMapViewCreator extends MapFeedbackAdapter {
 
 	private MindMapMapModel mMap;
 
@@ -144,136 +131,6 @@ public class IndependantMapViewCreator implements ViewFeedback, MapFeedback {
 		out1.close();
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.modes.MindMap.MapFeedback#fireNodePreDeleteEvent(freemind.modes.MindMapNode)
-	 */
-	@Override
-	public void fireNodePreDeleteEvent(MindMapNode pNode) {
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.MindMap.MapFeedback#firePreSaveEvent(freemind.modes.MindMapNode)
-	 */
-	@Override
-	public void firePreSaveEvent(MindMapNode pNode) {
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.MindMap.MapFeedback#nodeChanged(freemind.modes.MindMapNode)
-	 */
-	@Override
-	public void nodeChanged(MindMapNode pNode) {
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.MindMap.MapFeedback#nodeRefresh(freemind.modes.MindMapNode)
-	 */
-	@Override
-	public void nodeRefresh(MindMapNode pNode) {
-	}
-
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.MindMap.MapFeedback#insertNodeInto(freemind.modes.MindMapNode, freemind.modes.MindMapNode, int)
-	 */
-	@Override
-	public void insertNodeInto(MindMapNode pNewNode, MindMapNode pParent,
-			int pIndex) {
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.MindMap.MapFeedback#paste(freemind.modes.MindMapNode, freemind.modes.MindMapNode)
-	 */
-	@Override
-	public void paste(MindMapNode pNode, MindMapNode pParent) {
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.MindMap.MapFeedback#getResourceString(java.lang.String)
-	 */
-	@Override
-	public String getResourceString(String pTextId) {
-		return Resources.getInstance().getResourceString(pTextId);
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.MindMap.MapFeedback#getProperty(java.lang.String)
-	 */
-	@Override
-	public String getProperty(String pResourceId) {
-		return Resources.getInstance().getProperty(pResourceId);
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.MindMap.MapFeedback#out(java.lang.String)
-	 */
-	@Override
-	public void out(String pFormat) {
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.MindMap.MapFeedback#getDefaultFont()
-	 */
-	@Override
-	public Font getDefaultFont() {
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.MindMap.MapFeedback#getFontThroughMap(java.awt.Font)
-	 */
-	@Override
-	public Font getFontThroughMap(Font pFont) {
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.view.mindmapview.MapView.ViewFeedback#changeSelection(freemind.view.mindmapview.NodeView, boolean)
-	 */
-	@Override
-	public void changeSelection(NodeView pNode, boolean pIsSelected) {
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.view.mindmapview.MapView.ViewFeedback#onLostFocusNode(freemind.view.mindmapview.NodeView)
-	 */
-	@Override
-	public void onLostFocusNode(NodeView pNode) {
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.view.mindmapview.MapView.ViewFeedback#onFocusNode(freemind.view.mindmapview.NodeView)
-	 */
-	@Override
-	public void onFocusNode(NodeView pNode) {
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.view.mindmapview.MapView.ViewFeedback#setFolded(freemind.modes.MindMapNode, boolean)
-	 */
-	@Override
-	public void setFolded(MindMapNode pModel, boolean pB) {
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.view.mindmapview.MapView.ViewFeedback#onViewCreatedHook(freemind.view.mindmapview.NodeView)
-	 */
-	@Override
-	public void onViewCreatedHook(NodeView pNewView) {
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.view.mindmapview.MapView.ViewFeedback#onViewRemovedHook(freemind.view.mindmapview.NodeView)
-	 */
-	@Override
-	public void onViewRemovedHook(NodeView pNodeView) {
-		
-	}
 
 	/* (non-Javadoc)
 	 * @see freemind.modes.MapFeedback#getMap()
@@ -291,76 +148,5 @@ public class IndependantMapViewCreator implements ViewFeedback, MapFeedback {
 		return new PermanentNodeHookSubstituteUnknown(pLoadName);
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.modes.MapFeedback#invokeHooksRecursively(freemind.modes.MindMapNode, freemind.modes.MindMap)
-	 */
-	@Override
-	public void invokeHooksRecursively(MindMapNode pNode, MindMap pModel) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getNodeMouseMotionListener()
-	 */
-	@Override
-	public NodeMouseMotionListener getNodeMouseMotionListener() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getNodeMotionListener()
-	 */
-	@Override
-	public NodeMotionListener getNodeMotionListener() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getNodeKeyListener()
-	 */
-	@Override
-	public NodeKeyListener getNodeKeyListener() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getNodeDragListener()
-	 */
-	@Override
-	public NodeDragListener getNodeDragListener() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getNodeDropListener()
-	 */
-	@Override
-	public NodeDropListener getNodeDropListener() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getMapMouseMotionListener()
-	 */
-	@Override
-	public MapMouseMotionListener getMapMouseMotionListener() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.view.mindmapview.MapView.ViewFeedback#getMapMouseWheelListener()
-	 */
-	@Override
-	public MapMouseWheelListener getMapMouseWheelListener() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

@@ -26,7 +26,6 @@ import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FocusTraversalPolicy;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
@@ -64,10 +63,6 @@ import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 
 import freemind.controller.Controller;
-import freemind.controller.MapMouseMotionListener;
-import freemind.controller.MapMouseWheelListener;
-import freemind.controller.NodeDragListener;
-import freemind.controller.NodeDropListener;
 import freemind.controller.NodeKeyListener;
 import freemind.controller.NodeMotionListener;
 import freemind.controller.NodeMouseMotionListener;
@@ -88,88 +83,6 @@ import freemind.preferences.FreemindPropertyListener;
  */
 public class MapView extends JPanel implements Printable, Autoscroll {
 	
-	public interface ViewFeedback {
-
-		/**
-		 * @param pNode
-		 * @param pIsSelected
-		 */
-		void changeSelection(NodeView pNode, boolean pIsSelected);
-
-		/**
-		 * @param pNode
-		 */
-		void onLostFocusNode(NodeView pNode);
-
-		/**
-		 * @param pNode
-		 */
-		void onFocusNode(NodeView pNode);
-
-		/**
-		 * @param pModel
-		 * @param pB
-		 */
-		void setFolded(MindMapNode pModel, boolean pB);
-
-		/**
-		 * @param pNewView
-		 */
-		void onViewCreatedHook(NodeView pNewView);
-
-		/**
-		 * @param pNodeView
-		 */
-		void onViewRemovedHook(NodeView pNodeView);
-
-		/**
-		 * @param pResourceId 
-		 * @return the setting of freemind.properties resp. auto.properties.
-		 */
-		String getProperty(String pResourceId);
-
-		/**
-		 * @return
-		 */
-		Font getDefaultFont();
-
-		/**
-		 * @return
-		 */
-		NodeMouseMotionListener getNodeMouseMotionListener();
-
-		/**
-		 * @return
-		 */
-		NodeMotionListener getNodeMotionListener();
-
-		/**
-		 * @return
-		 */
-		NodeKeyListener getNodeKeyListener();
-
-		/**
-		 * @return
-		 */
-		NodeDragListener getNodeDragListener();
-
-		/**
-		 * @return
-		 */
-		NodeDropListener getNodeDropListener();
-
-		/**
-		 * @return
-		 */
-		MapMouseMotionListener getMapMouseMotionListener();
-
-		/**
-		 * @return
-		 */
-		MapMouseWheelListener getMapMouseWheelListener();
-
-
-	}
 	/**
 	 * Currently, this listener does nothing. But it should move the map
 	 * according to the resize event, such that the current map's center stays

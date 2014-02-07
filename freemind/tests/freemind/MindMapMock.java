@@ -47,6 +47,7 @@ import freemind.modes.ArrowLinkTarget;
 import freemind.modes.CloudAdapter;
 import freemind.modes.EdgeAdapter;
 import freemind.modes.MapFeedback;
+import freemind.modes.MapFeedbackAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.MindMapNode;
@@ -67,135 +68,145 @@ public class MindMapMock implements MindMap {
 
 	}
 
+	@Override
 	public void nodeChanged(TreeNode node) {
 	}
 
+	@Override
 	public void nodeRefresh(TreeNode node) {
 	}
 
+	@Override
 	public String getAsPlainText(List mindMapNodes) {
 		return null;
 	}
 
+	@Override
 	public String getAsRTF(List mindMapNodes) {
 		return null;
 	}
 
+	@Override
 	public String getAsHTML(List mindMapNodes) {
 		return null;
 	}
 
-	public void insertNodeInto(MindMapNode newChild, MindMapNode parent,
-			int index) {
-	}
-
+	@Override
 	public File getFile() {
 		return null;
 	}
 
+	@Override
 	public URL getURL() throws MalformedURLException {
 		return null;
 	}
 
+	@Override
 	public void getXml(Writer fileout) throws IOException {
 	}
 
+	@Override
 	public void getFilteredXml(Writer fileout) throws IOException {
 		fileout.write(mapXmlString);
 		fileout.close();
 	}
 
+	@Override
 	public String getRestorable() {
 		return null;
 	}
 
+	@Override
 	public TreeNode[] getPathToRoot(TreeNode node) {
 		return null;
 	}
 
-	public Color getBackgroundColor() {
-		return null;
-	}
-
-	public void setBackgroundColor(Color color) {
-	}
-
+	@Override
 	public MindMapLinkRegistry getLinkRegistry() {
 		return null;
 	}
 
+	@Override
 	public void destroy() {
 	}
 
+	@Override
 	public boolean isReadOnly() {
 		return false;
 	}
 
+	@Override
 	public Filter getFilter() {
 		return null;
 	}
 
+	@Override
 	public void setFilter(Filter inactiveFilter) {
 	}
 
+	@Override
 	public Object getRoot() {
 		return null;
 	}
 
+	@Override
 	public Object getChild(Object parent, int index) {
 		return null;
 	}
 
+	@Override
 	public int getChildCount(Object parent) {
 		return 0;
 	}
 
+	@Override
 	public boolean isLeaf(Object node) {
 		return false;
 	}
 
+	@Override
 	public void valueForPathChanged(TreePath path, Object newValue) {
 	}
 
+	@Override
 	public int getIndexOfChild(Object parent, Object child) {
 		return 0;
 	}
 
+	@Override
 	public void addTreeModelListener(TreeModelListener l) {
 	}
 
+	@Override
 	public void removeTreeModelListener(TreeModelListener l) {
 	}
 
+	@Override
 	public MindMapNode getRootNode() {
 		return null;
 	}
 
-	public void insertNodeInto(MindMapNode copy, MindMapNode rootNode) {
-	}
-
+	@Override
 	public void nodeStructureChanged(TreeNode node) {
 	}
 
+	@Override
 	public boolean setSaved(boolean isSaved) {
 		return true;
 	}
 
+	@Override
 	public boolean isSaved() {
 		return false;
 	}
 
+	@Override
 	public boolean save(File pFile) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
-	public void load(URL pFile) throws FileNotFoundException, IOException,
-			XMLParseException, URISyntaxException {
-		// TODO Auto-generated method stub
-
-	}
-
+	@Override
 	public void registerMapSourceChangedObserver(
 			MapSourceChangedObserver pMapSourceChangedObserver,
 			long pGetEventIfChangedAfterThisTimeInMillies) {
@@ -203,6 +214,7 @@ public class MindMapMock implements MindMap {
 
 	}
 
+	@Override
 	public long deregisterMapSourceChangedObserver(
 			MapSourceChangedObserver pMapSourceChangedObserver) {
 		// TODO Auto-generated method stub
@@ -214,6 +226,7 @@ public class MindMapMock implements MindMap {
 	 * 
 	 * @see freemind.modes.MindMap#changeRoot(freemind.modes.MindMapNode)
 	 */
+	@Override
 	public void changeRoot(MindMapNode pNewRoot) {
 		// TODO Auto-generated method stub
 
@@ -232,78 +245,14 @@ public class MindMapMock implements MindMap {
 	 */
 	@Override
 	public MapFeedback getMapFeedback() {
-		return new MapFeedback() {
-
-			@Override
-			public void fireNodePreDeleteEvent(MindMapNode pNode) {
-				
-			}
-
-			@Override
-			public void firePreSaveEvent(MindMapNode pNode) {
-				
-			}
-
-			@Override
-			public void nodeChanged(MindMapNode pNode) {
-				
-			}
-
-			@Override
-			public void nodeRefresh(MindMapNode pNode) {
-				
-			}
-
-			@Override
-			public void insertNodeInto(MindMapNode pNewNode,
-					MindMapNode pParent, int pIndex) {
-			}
-
-			@Override
-			public void paste(MindMapNode pNode, MindMapNode pParent) {
-				
-			}
-
-			@Override
-			public String getResourceString(String pTextId) {
-				return "";
-			}
-
-			@Override
-			public String getProperty(String pResourceId) {
-				return "";
-			}
-
-			@Override
-			public void out(String pFormat) {
-				
-			}
-
-			@Override
-			public Font getDefaultFont() {
-				return null;
-			}
-
-			@Override
-			public Font getFontThroughMap(Font pFont) {
-				return null;
-			}
+		return new MapFeedbackAdapter() {
 
 			@Override
 			public MindMap getMap() {
 				return MindMapMock.this;
 			}
 
-			@Override
-			public NodeHook createNodeHook(String pLoadName, MindMapNode pNode) {
-				return null;
-			}
-
-			@Override
-			public void invokeHooksRecursively(MindMapNode pNode, MindMap pModel) {
-				// TODO Auto-generated method stub
-				
-			}};
+		};
 	}
 
 	/* (non-Javadoc)
@@ -317,6 +266,7 @@ public class MindMapMock implements MindMap {
 	/* (non-Javadoc)
 	 * @see freemind.modes.MindMap#loadTree(freemind.modes.ModeController.ReaderCreator, freemind.modes.MapAdapter.AskUserBeforeUpdateCallback)
 	 */
+	@Override
 	public MindMapNode loadTree(ReaderCreator pReaderCreator, AskUserBeforeUpdateCallback pAskUserBeforeUpdateCallback) throws XMLParseException,
 			IOException {
 		return null;
@@ -325,6 +275,7 @@ public class MindMapMock implements MindMap {
 	/* (non-Javadoc)
 	 * @see freemind.modes.MindMap#createNodeTreeFromXml(java.io.Reader, java.util.HashMap)
 	 */
+	@Override
 	public MindMapNode createNodeTreeFromXml(Reader pReader, HashMap pIDToTarget)
 			throws XMLParseException, IOException {
 		return null;

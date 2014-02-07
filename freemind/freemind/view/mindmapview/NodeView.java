@@ -62,7 +62,6 @@ import freemind.modes.MindMapCloud;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import freemind.preferences.FreemindPropertyListener;
-import freemind.view.mindmapview.MapView.ViewFeedback;
 
 /**
  * This class represents a single Node of a MindMap (in analogy to
