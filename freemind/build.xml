@@ -557,6 +557,7 @@
 		<!-- Eclipse target: -->
 		<delete dir="bin/classes"  quiet="true"/>
 		<delete dir="${build}"  quiet="true"/>
+		<delete dir="${testbuild}"  quiet="true"/>
 		<delete dir="${dist}"  quiet="true"/>
 		<delete dir="${dist_macos_base}"  quiet="true"/>
 		<delete dir="${gen.dir}"  quiet="true"/>
