@@ -193,13 +193,12 @@
     <target name="test" depends="build_tests" description="Carries out all unit tests">
 	<delete dir="${test.reports}" />
      	<mkdir dir="${test.reports}" />
-     	<junit printsummary="withOutAndErr"  fork="yes" haltonfailure="yes">        
+     	<junit printsummary="withOutAndErr"  fork="yes" haltonfailure="yes" showoutput="true">        
 		<classpath refid="jars.path"></classpath>
 		<classpath path="${testbuild}"></classpath>
 		<classpath path="${src}"></classpath>
  		<formatter type="xml" />
- 
-		<batchtest todir="${test.reports}">
+		<batchtest todir="${test.reports}" >
 			<fileset dir="${src}"> 
 				<include name="tests/**/AllTests.java" />
      			</fileset>

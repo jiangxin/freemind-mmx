@@ -45,12 +45,12 @@ public class FreeMindTestBase extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 		mFreeMindMain = new FreeMindMainMock();
+		System.out.println("Starting " + getName());
 	}
 
 	public FreeMindMainMock getFrame() {
 		return mFreeMindMain;
 	}
-
 }
 
 // private static java.util.logging.Logger logger =
