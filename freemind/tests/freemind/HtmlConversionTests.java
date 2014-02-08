@@ -142,6 +142,9 @@ public class HtmlConversionTests extends FreeMindTestBase {
 	 * Then, setting and getting this text to the panel must give the same.
 	 */
 	public void testSpaceHandlingInShtmlIdempotency() throws Exception {
+		if(Tools.isHeadless()) {
+			return;
+		}
 		String input = getInputStringWithManySpaces(" ");
 		SHTMLPanel panel = SHTMLPanel.createSHTMLPanel();
 		panel.setCurrentDocumentContent(input);
@@ -155,6 +158,9 @@ public class HtmlConversionTests extends FreeMindTestBase {
 	}
 
 	public void testSpaceRemovalInShtml() throws Exception {
+		if(Tools.isHeadless()) {
+			return;
+		}
 		String input = getInputStringWithManySpaces(HtmlTools.SP);
 		SHTMLPanel panel = SHTMLPanel.createSHTMLPanel();
 		panel.setCurrentDocumentContent(input);
