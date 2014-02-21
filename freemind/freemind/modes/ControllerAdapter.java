@@ -1567,8 +1567,6 @@ public abstract class ControllerAdapter implements ModeController,
 	public void insertNodeInto(MindMapNode newNode, MindMapNode parent,
 			int index) {
 		getModel().insertNodeInto(newNode, parent, index);
-		// call hooks
-		fireRecursiveNodeCreateEvent(newNode);
 	}
 
 	/*

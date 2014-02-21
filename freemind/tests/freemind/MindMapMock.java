@@ -337,4 +337,13 @@ public class MindMapMock implements MindMap {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap#insertNodeInto(freemind.modes.MindMapNode, freemind.modes.MindMapNode, int)
+	 */
+	@Override
+	public void insertNodeInto(MindMapNode pNode, MindMapNode pParentNode,
+			int pIndex) {
+		
+	}
+
 }

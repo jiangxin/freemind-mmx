@@ -212,4 +212,7 @@ public interface MindMap extends TreeModel {
 
 	NodeAdapter createEncryptedNode(String additionalInfo);
 
+	void insertNodeInto(MindMapNode pNode,
+			MindMapNode pParentNode, int pIndex);
+
 }

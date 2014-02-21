@@ -40,6 +40,7 @@ import javax.swing.event.EventListenerList;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 
 import freemind.controller.filter.DefaultFilter;
@@ -321,6 +322,18 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 
 	public MindMapLinkRegistry getLinkRegistry() {
 		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see javax.swing.tree.DefaultTreeModel#insertNodeInto(javax.swing.tree.MutableTreeNode, javax.swing.tree.MutableTreeNode, int)
+	 */
+	@Override
+	public void insertNodeInto(MindMapNode pNewChild,
+			MindMapNode pParent, int pIndex) {
+		super.insertNodeInto(pNewChild, pParent, pIndex);
+		// call hooks
+		mMapFeedback.fireRecursiveNodeCreateEvent((MindMapNode) pNewChild);
+
 	}
 
 	/**

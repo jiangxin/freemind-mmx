@@ -125,7 +125,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 				int index = 0;
 				for (ListIterator i = node.childrenUnfolded(); i.hasNext();) {
 					MindMapNodeModel importNode = (MindMapNodeModel) i.next();
-					getMapFeedback().insertNodeInto(
+					getMap().insertNodeInto(
 							importNode, this, index++);
 				}
 				isDecrypted = true;

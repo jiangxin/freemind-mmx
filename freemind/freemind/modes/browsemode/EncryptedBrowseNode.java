@@ -124,8 +124,8 @@ public class EncryptedBrowseNode extends BrowseNodeModel {
 								IDToTarget);
 				// now, the import is finished. We can inform others about
 				// the new nodes:
-				mMapFeedback.insertNodeInto(node, this, this.getChildCount());
 				MindMap model = mMapFeedback.getMap();
+				model.insertNodeInto(node, this, this.getChildCount());
 				mMapFeedback.invokeHooksRecursively(node, model);
 				super.setFolded(folded);
 				mMapFeedback.nodeChanged(this);

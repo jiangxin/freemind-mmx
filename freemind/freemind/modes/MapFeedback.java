@@ -49,9 +49,7 @@ public interface MapFeedback {
 
 	void nodeRefresh(MindMapNode node);
 
-	/** @see ModeController#insertNodeInto(MindMapNode, MindMapNode, int)*/
-	void insertNodeInto(MindMapNode pNewNode,
-			MindMapNode pParent, int pIndex);
+	void fireRecursiveNodeCreateEvent(MindMapNode node);
 	
 	/**
 	 * @see ModeController#paste(MindMapNode, MindMapNode)

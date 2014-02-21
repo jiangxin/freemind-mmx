@@ -59,6 +59,13 @@ public abstract class MapFeedbackAdapter implements MapFeedback, ViewFeedback {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see freemind.modes.MapFeedback#fireRecursiveNodeCreateEvent(freemind.modes.MindMapNode)
+	 */
+	@Override
+	public void fireRecursiveNodeCreateEvent(MindMapNode pNode) {
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -87,19 +94,6 @@ public abstract class MapFeedbackAdapter implements MapFeedback, ViewFeedback {
 	 */
 	@Override
 	public void nodeRefresh(MindMapNode pNode) {
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * freemind.modes.MapFeedback#insertNodeInto(freemind.modes.MindMapNode,
-	 * freemind.modes.MindMapNode, int)
-	 */
-	@Override
-	public void insertNodeInto(MindMapNode pNewNode, MindMapNode pParent,
-			int pIndex) {
 
 	}
 

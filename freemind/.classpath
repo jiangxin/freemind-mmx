@@ -23,7 +23,7 @@
 	<classpathentry kind="lib" path="lib/jibx/jibx-bind.jar"/>
 	<classpathentry kind="lib" path="lib/bindings.jar"/>
 	<classpathentry kind="lib" path="lib/jibx/jibx-run.jar"/>
-	<classpathentry kind="lib" path="lib/junit.jar"/>
+	<classpathentry kind="lib" path="lib/junit.jar" sourcepath="/home/foltin/programming/java/junit-4.10-src.jar"/>
 	<classpathentry kind="lib" path="lib/SimplyHTML/gnu-regexp-1.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/SimplyHTML/SimplyHTML.jar" sourcepath="/home/foltin/java/simplyhtml/simplyhtml"/>
 	<classpathentry kind="lib" path="plugins/latex/HotEqn.jar"/>
