@@ -60,6 +60,10 @@ public class ComboProperty extends PropertyBean implements PropertyControl {
 			possibleTranslations.add(pTranslator.getText(key));
 		}
 		mComboBox.setModel(new DefaultComboBoxModel(possibleTranslations));
+		addActionListener();
+	}
+
+	protected void addActionListener() {
 		mComboBox.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent pE) {
@@ -75,6 +79,7 @@ public class ComboProperty extends PropertyBean implements PropertyControl {
 		fillPossibleValues(possibles);
 		mComboBox.setModel(new DefaultComboBoxModel(new Vector(
 				possibleTranslations)));
+		addActionListener();
 	}
 
 	public ComboProperty(String description, String label, List possibles,

@@ -1090,7 +1090,7 @@ public class NodeView extends JComponent implements TreeModelListener {
 		mainView.setIcon(image);
 	}
 
-	void updateAll() {
+	public void updateAll() {
 		update();
 		invalidate();
 		for (ListIterator e = getChildrenViews().listIterator(); e.hasNext();) {

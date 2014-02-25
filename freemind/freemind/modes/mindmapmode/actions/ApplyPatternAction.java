@@ -156,7 +156,7 @@ public class ApplyPatternAction extends NodeGeneralAction implements
 		if (patternEdgeWidth != null) {
 			if (patternEdgeWidth.getValue() != null) {
 				getMindMapController().setEdgeWidth(node,
-						edgeWidthStringToInt(patternEdgeWidth.getValue()));
+						Tools.edgeWidthStringToInt(patternEdgeWidth.getValue()));
 			} else {
 				getMindMapController().setEdgeWidth(node,
 						EdgeAdapter.DEFAULT_WIDTH);
@@ -189,20 +189,6 @@ public class ApplyPatternAction extends NodeGeneralAction implements
 		}
 	}
 
-	/**
-     */
-	public static int edgeWidthStringToInt(String value) {
-		if (value == null) {
-			return EdgeAdapter.DEFAULT_WIDTH;
-		}
-		if (value.equals(EdgeAdapter.EDGE_WIDTH_THIN_STRING)) {
-			return EdgeAdapter.WIDTH_THIN;
-		}
-		return Integer.valueOf(value).intValue();
-	}
-
-	/**
-     */
 	public static String edgeWidthIntToString(int value) {
 		if (value == EdgeAdapter.DEFAULT_WIDTH) {
 			return null;

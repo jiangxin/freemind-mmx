@@ -111,6 +111,7 @@ import freemind.common.UnicodeReader;
 import freemind.common.XmlBindingTools;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.modes.EdgeAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController.ReaderCreator;
 import freemind.modes.mindmapmode.MindMapController;
@@ -2066,6 +2067,18 @@ public class Tools {
 			return new StringBuffer();
 		}
 		return buffer;
+	}
+
+	/**
+	 */
+	public static int edgeWidthStringToInt(String value) {
+		if (value == null) {
+			return EdgeAdapter.DEFAULT_WIDTH;
+		}
+		if (value.equals(EdgeAdapter.EDGE_WIDTH_THIN_STRING)) {
+			return EdgeAdapter.WIDTH_THIN;
+		}
+		return Integer.valueOf(value).intValue();
 	}
 
 

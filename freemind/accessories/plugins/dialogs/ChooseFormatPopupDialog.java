@@ -17,10 +17,10 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-
 package accessories.plugins.dialogs;
 
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -29,6 +29,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -40,15 +45,59 @@ import javax.swing.JScrollPane;
 
 import freemind.common.TextTranslator;
 import freemind.controller.actions.generated.instance.Pattern;
+import freemind.controller.actions.generated.instance.PatternEdgeWidth;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.main.Tools;
+import freemind.main.XMLParseException;
+import freemind.modes.EdgeAdapter;
+import freemind.modes.MapAdapter;
+import freemind.modes.MapFeedbackAdapter;
+import freemind.modes.MindIcon;
+import freemind.modes.MindMap;
+import freemind.modes.MindMapNode;
+import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.MindMapController.MindMapControllerPlugin;
+import freemind.modes.mindmapmode.MindMapController.StringReaderCreator;
+import freemind.modes.mindmapmode.MindMapMapModel;
+import freemind.modes.mindmapmode.actions.ApplyPatternAction;
+import freemind.modes.mindmapmode.actions.ApplyPatternAction.ExternalPatternAction;
 import freemind.modes.mindmapmode.dialogs.StylePatternFrame;
 import freemind.modes.mindmapmode.dialogs.StylePatternFrame.StylePatternFrameType;
+import freemind.view.mindmapview.MapView;
 
 /** */
 public class ChooseFormatPopupDialog extends JDialog implements TextTranslator,
 		KeyListener {
+
+	/**
+	 * @author foltin
+	 * @date 21.02.2014
+	 */
+	private final class DemoMapFeedback extends MapFeedbackAdapter {
+		MindMap mMap;
+
+		@Override
+		public MindMap getMap() {
+			return mMap;
+		}
+		
+		/* (non-Javadoc)
+		 * @see freemind.modes.MapFeedbackAdapter#getDefaultFont()
+		 */
+		@Override
+		public Font getDefaultFont() {
+			return mController.getController().getDefaultFont();
+		}
+		
+		/* (non-Javadoc)
+		 * @see freemind.modes.MapFeedbackAdapter#getFontThroughMap(java.awt.Font)
+		 */
+		@Override
+		public Font getFontThroughMap(Font pFont) {
+			return mController.getController().getFontThroughMap(pFont);
+		}
+	}
 
 	public static final int CANCEL = -1;
 
@@ -68,6 +117,12 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator,
 
 	private StylePatternFrame mStylePatternFrame;
 
+	private MapView mDemoFrame;
+
+	private MindMapNode mDemoNode;
+
+	protected static java.util.logging.Logger logger = null;
+
 	/**
 	 * This constructor is used, if you need the user to enter a pattern
 	 * generally.
@@ -77,6 +132,10 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator,
 			String dialogTitle, Pattern pattern) {
 		super(caller);
 		this.mController = controller;
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
 		initialize(dialogTitle);
 		mStylePatternFrame.setPattern(pattern);
 		mStylePatternFrame.addListeners();
@@ -147,10 +206,14 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator,
 					new GridBagConstraints(0, 0, 2, 1, 2.0, 8.0,
 							GridBagConstraints.WEST, GridBagConstraints.BOTH,
 							new Insets(0, 0, 0, 0), 0, 0));
-			jContentPane.add(getJOKButton(), new GridBagConstraints(0, 1, 1, 1,
+			jContentPane.add(new JScrollPane(getDemoFrame()),
+					new GridBagConstraints(0, 1, 2, 1, 1.0, 1.0,
+							GridBagConstraints.WEST, GridBagConstraints.BOTH,
+							new Insets(0, 0, 0, 0), 0, 0));
+			jContentPane.add(getJOKButton(), new GridBagConstraints(0, 2, 1, 1,
 					1.0, 0.0, GridBagConstraints.EAST, GridBagConstraints.NONE,
 					new Insets(0, 0, 0, 0), 0, 0));
-			jContentPane.add(getJCancelButton(), new GridBagConstraints(1, 1,
+			jContentPane.add(getJCancelButton(), new GridBagConstraints(1, 2,
 					1, 1, 1.0, 0.0, GridBagConstraints.EAST,
 					GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
 			getRootPane().setDefaultButton(getJOKButton());
@@ -158,10 +221,150 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator,
 		return jContentPane;
 	}
 
+	/**
+	 * @return
+	 */
+	private Component getDemoFrame() {
+		if (mDemoFrame == null) {
+			DemoMapFeedback mapFeedback = new DemoMapFeedback();
+			final MindMapMapModel mMap = new MindMapMapModel(mapFeedback);
+			mapFeedback.mMap = mMap;
+			StringReaderCreator readerCreator = new StringReaderCreator(
+					"<map><node TEXT='ROOT'><node TEXT='FormatMe'><node TEXT='Child1'/><node TEXT='Child2'/></node></node></map>");
+			try {
+				MindMapNode root = mMap.loadTree(readerCreator,
+						MapAdapter.sDontAskInstance);
+				mMap.setRoot(root);
+				mDemoNode = (MindMapNode) root.getChildAt(0);
+			} catch (XMLParseException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			} catch (IOException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+			mDemoFrame = new MapView(mMap, mapFeedback);
+			mDemoFrame.centerNode(mDemoFrame.getNodeView(mDemoNode));
+		}
+		return mDemoFrame;
+	}
+
 	private Component getStylePatternFrame() {
 		if (mStylePatternFrame == null) {
 			mStylePatternFrame = new StylePatternFrame(this, mController,
-					StylePatternFrameType.WITHOUT_NAME_AND_CHILDS);
+					StylePatternFrameType.WITHOUT_NAME_AND_CHILDS) {
+				/*
+				 * (non-Javadoc)
+				 * 
+				 * @see freemind.modes.mindmapmode.dialogs.StylePatternFrame#
+				 * propertyChange(java.beans.PropertyChangeEvent)
+				 */
+				@Override
+				public void propertyChange(PropertyChangeEvent pEvt) {
+					super.propertyChange(pEvt);
+					Pattern pattern = mStylePatternFrame.getResultPattern();
+					logger.info("Pattern " + Tools.marshall(pattern)
+							+ " and event  " + pEvt);
+					if (pattern.getPatternNodeColor() != null) {
+						mDemoNode.setColor(Tools.xmlToColor(pattern
+								.getPatternNodeColor().getValue()));
+					}
+					if (pattern.getPatternNodeBackgroundColor() != null) {
+						mDemoNode.setBackgroundColor(Tools
+								.xmlToColor(pattern
+										.getPatternNodeBackgroundColor()
+										.getValue()));
+					}
+					if (pattern.getPatternNodeStyle() != null) {
+						mDemoNode.setStyle(pattern.getPatternNodeStyle()
+								.getValue());
+					}
+					if (pattern.getPatternEdgeColor() != null) {
+						((EdgeAdapter) mDemoNode.getEdge()).setColor(
+								Tools.xmlToColor(pattern.getPatternEdgeColor()
+										.getValue()));
+					}
+					if (pattern.getPatternNodeText() != null) {
+						if (pattern.getPatternNodeText().getValue() != null) {
+							mDemoNode.setText(pattern.getPatternNodeText().getValue());
+						} else {
+							// clear text:
+							mDemoNode.setText("");
+						}
+					}
+					if (pattern.getPatternIcon() != null) {
+						String iconName = pattern.getPatternIcon().getValue();
+						if (iconName == null) {
+							while (mDemoNode.removeIcon(0) > 0) {
+							}
+						} else {
+							// check if icon is already present:
+							List icons = mDemoNode.getIcons();
+							boolean found = false;
+							for (Iterator iterator = icons.iterator(); iterator.hasNext();) {
+								MindIcon icon = (MindIcon) iterator.next();
+								if (icon.getName() != null
+										&& icon.getName().equals(iconName)) {
+									found = true;
+									break;
+								}
+							}
+							if (!found) {
+								mDemoNode.addIcon(MindIcon.factory(iconName), mDemoNode.getIcons().size());
+							}
+						}
+					} 
+					if (pattern.getPatternNodeFontName() != null) {
+						String nodeFontFamily = pattern.getPatternNodeFontName().getValue();
+						if (nodeFontFamily == null) {
+							mDemoNode.setFont(mController.getController()
+									.getDefaultFont());
+						} else {
+							((NodeAdapter) mDemoNode).establishOwnFont();
+							mDemoNode.setFont(mController.getController().getFontThroughMap(
+									new Font(nodeFontFamily, mDemoNode.getFont().getStyle(), mDemoNode
+											.getFont().getSize())));
+						}
+					}
+					if (pattern.getPatternNodeFontSize() != null) {
+						String nodeFontSize = pattern.getPatternNodeFontSize().getValue();
+						if (nodeFontSize == null) {
+							mDemoNode.setFontSize(mController.getController()
+									.getDefaultFontSize());
+						} else {
+							try {
+								mDemoNode.setFontSize(Integer
+										.parseInt(nodeFontSize));
+							} catch (Exception e) {
+								freemind.main.Resources.getInstance()
+										.logException(e);
+							}
+						}
+					}
+					if (pattern.getPatternNodeFontItalic() != null) {
+						((NodeAdapter) mDemoNode)
+								.setItalic(
+										"true".equals(pattern.getPatternNodeFontItalic()
+												.getValue()));
+					}
+					if (pattern.getPatternNodeFontBold() != null) {
+						((NodeAdapter) mDemoNode).setBold("true".equals(pattern.getPatternNodeFontBold().getValue()));
+					}
+
+					if (pattern.getPatternEdgeStyle() != null) {
+						((EdgeAdapter) mDemoNode.getEdge()).setStyle(pattern.getPatternEdgeStyle().getValue());
+					}
+					PatternEdgeWidth patternEdgeWidth = pattern.getPatternEdgeWidth();
+					if (patternEdgeWidth != null) {
+						if (patternEdgeWidth.getValue() != null) {
+							((EdgeAdapter) mDemoNode.getEdge()).setWidth(Tools.edgeWidthStringToInt(patternEdgeWidth.getValue()));
+						} else {
+							((EdgeAdapter) mDemoNode.getEdge()).setWidth(EdgeAdapter.DEFAULT_WIDTH);
+						}
+					}
+
+					mDemoFrame.getNodeView(mDemoNode).updateAll();
+					mDemoFrame.doLayout();
+				}
+			};
 			mStylePatternFrame.init();
 
 		}

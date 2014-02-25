@@ -68,6 +68,7 @@ import freemind.controller.actions.generated.instance.PatternNodeText;
 import freemind.controller.actions.generated.instance.PatternPropertyBase;
 import freemind.controller.actions.generated.instance.PatternScript;
 import freemind.main.FreeMind;
+import freemind.main.Tools;
 import freemind.modes.EdgeAdapter;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
@@ -562,7 +563,7 @@ public class StylePatternFrame extends JPanel implements TextTranslator,
 	private String transformEdgeWidth(String pEdgeWidth) {
 		if (pEdgeWidth == null)
 			return null;
-		int edgeWidth = ApplyPatternAction.edgeWidthStringToInt(pEdgeWidth);
+		int edgeWidth = Tools.edgeWidthStringToInt(pEdgeWidth);
 		HashMap transformator = getEdgeWidthTransformation();
 		for (Iterator iter = transformator.keySet().iterator(); iter.hasNext();) {
 			String widthString = (String) iter.next();
