@@ -200,7 +200,7 @@ public class AutomaticLayout extends PermanentMindMapNodeHookAdapter {
 					mindMapController.getFrame().getJFrame(),
 					mindMapController,
 					"accessories/plugins/AutomaticLayout.properties_StyleDialogTitle",
-					pat);
+					pat, null);
 			formatDialog.setModal(true);
 			formatDialog.setVisible(true);
 			// process result:
@@ -317,7 +317,7 @@ public class AutomaticLayout extends PermanentMindMapNodeHookAdapter {
 					mindMapController.getFrame().getJFrame(),
 					mindMapController,
 					"accessories/plugins/AutomaticLayout.properties_StyleDialogTitle",
-					choice);
+					choice, null);
 			// FIXME: What's that? (fc, 8,4,2008).
 			EventQueue.invokeLater(new Runnable() {
 				public void run() {

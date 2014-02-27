@@ -20,6 +20,7 @@
 
 package freemind.modes;
 
+import java.awt.Font;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -354,4 +355,120 @@ public class StylePatternFactory {
 		return nodePattern;
 	}
 
+	/**
+	 * @return a pattern, that removes all properties of a node to its defaults.
+	 */
+	public static Pattern getRemoveAllPattern() {
+		Pattern result = new Pattern();
+		result.setPatternEdgeColor(new PatternEdgeColor());
+		result.setPatternEdgeStyle(new PatternEdgeStyle());
+		result.setPatternEdgeWidth(new PatternEdgeWidth());
+		result.setPatternIcon(new PatternIcon());
+		result.setPatternNodeBackgroundColor(new PatternNodeBackgroundColor());
+		result.setPatternNodeColor(new PatternNodeColor());
+		result.setPatternNodeFontBold(new PatternNodeFontBold());
+		result.setPatternNodeFontItalic(new PatternNodeFontItalic());
+		result.setPatternNodeFontName(new PatternNodeFontName());
+		result.setPatternNodeFontSize(new PatternNodeFontSize());
+		result.setPatternNodeStyle(new PatternNodeStyle());
+		return result;
+	}
+	
+	public static void applyPattern(Pattern pattern, MindMapNode pNode, MapFeedback pFeedback) {
+		if (pattern.getPatternNodeColor() != null) {
+			pNode.setColor(Tools.xmlToColor(pattern
+					.getPatternNodeColor().getValue()));
+		}
+		if (pattern.getPatternNodeBackgroundColor() != null) {
+			pNode.setBackgroundColor(Tools
+					.xmlToColor(pattern
+							.getPatternNodeBackgroundColor()
+							.getValue()));
+		}
+		if (pattern.getPatternNodeStyle() != null) {
+			pNode.setStyle(pattern.getPatternNodeStyle()
+					.getValue());
+		}
+		if (pattern.getPatternEdgeColor() != null) {
+			((EdgeAdapter) pNode.getEdge()).setColor(
+					Tools.xmlToColor(pattern.getPatternEdgeColor()
+							.getValue()));
+		}
+		if (pattern.getPatternNodeText() != null) {
+			if (pattern.getPatternNodeText().getValue() != null) {
+				pNode.setText(pattern.getPatternNodeText().getValue());
+			} else {
+				// clear text:
+				pNode.setText("");
+			}
+		}
+		if (pattern.getPatternIcon() != null) {
+			String iconName = pattern.getPatternIcon().getValue();
+			if (iconName == null) {
+				while (pNode.getIcons().size() > 0 && pNode.removeIcon(0) > 0) {
+				}
+			} else {
+				// check if icon is already present:
+				List icons = pNode.getIcons();
+				boolean found = false;
+				for (Iterator iterator = icons.iterator(); iterator.hasNext();) {
+					MindIcon icon = (MindIcon) iterator.next();
+					if (icon.getName() != null
+							&& icon.getName().equals(iconName)) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					pNode.addIcon(MindIcon.factory(iconName), pNode.getIcons().size());
+				}
+			}
+		} 
+		if (pattern.getPatternNodeFontName() != null) {
+			String nodeFontFamily = pattern.getPatternNodeFontName().getValue();
+			if (nodeFontFamily == null) {
+				pNode.setFont(pFeedback.getDefaultFont());
+			} else {
+				((NodeAdapter) pNode).establishOwnFont();
+				pNode.setFont(pFeedback.getFontThroughMap(
+						new Font(nodeFontFamily, pNode.getFont().getStyle(), pNode
+								.getFont().getSize())));
+			}
+		}
+		if (pattern.getPatternNodeFontSize() != null) {
+			String nodeFontSize = pattern.getPatternNodeFontSize().getValue();
+			if (nodeFontSize == null) {
+				pNode.setFontSize(pFeedback.getDefaultFont().getSize());
+			} else {
+				try {
+					pNode.setFontSize(Integer
+							.parseInt(nodeFontSize));
+				} catch (Exception e) {
+					freemind.main.Resources.getInstance()
+							.logException(e);
+				}
+			}
+		}
+		if (pattern.getPatternNodeFontItalic() != null) {
+			((NodeAdapter) pNode)
+					.setItalic(
+							"true".equals(pattern.getPatternNodeFontItalic()
+									.getValue()));
+		}
+		if (pattern.getPatternNodeFontBold() != null) {
+			((NodeAdapter) pNode).setBold("true".equals(pattern.getPatternNodeFontBold().getValue()));
+		}
+
+		if (pattern.getPatternEdgeStyle() != null) {
+			((EdgeAdapter) pNode.getEdge()).setStyle(pattern.getPatternEdgeStyle().getValue());
+		}
+		PatternEdgeWidth patternEdgeWidth = pattern.getPatternEdgeWidth();
+		if (patternEdgeWidth != null) {
+			if (patternEdgeWidth.getValue() != null) {
+				((EdgeAdapter) pNode.getEdge()).setWidth(Tools.edgeWidthStringToInt(patternEdgeWidth.getValue()));
+			} else {
+				((EdgeAdapter) pNode.getEdge()).setWidth(EdgeAdapter.DEFAULT_WIDTH);
+			}
+		}
+	}
 }

@@ -31,9 +31,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -45,23 +42,17 @@ import javax.swing.JScrollPane;
 
 import freemind.common.TextTranslator;
 import freemind.controller.actions.generated.instance.Pattern;
-import freemind.controller.actions.generated.instance.PatternEdgeWidth;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
-import freemind.modes.EdgeAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MapFeedbackAdapter;
-import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
-import freemind.modes.NodeAdapter;
+import freemind.modes.StylePatternFactory;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.MindMapController.MindMapControllerPlugin;
 import freemind.modes.mindmapmode.MindMapController.StringReaderCreator;
 import freemind.modes.mindmapmode.MindMapMapModel;
-import freemind.modes.mindmapmode.actions.ApplyPatternAction;
-import freemind.modes.mindmapmode.actions.ApplyPatternAction.ExternalPatternAction;
 import freemind.modes.mindmapmode.dialogs.StylePatternFrame;
 import freemind.modes.mindmapmode.dialogs.StylePatternFrame.StylePatternFrameType;
 import freemind.view.mindmapview.MapView;
@@ -123,15 +114,19 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator,
 
 	protected static java.util.logging.Logger logger = null;
 
+	private MindMapNode mNode;
+
 	/**
 	 * This constructor is used, if you need the user to enter a pattern
 	 * generally.
+	 * @param pNode if this not null, the text resp. children are taken for format demonstration.
 	 * 
 	 */
 	public ChooseFormatPopupDialog(JFrame caller, MindMapController controller,
-			String dialogTitle, Pattern pattern) {
+			String dialogTitle, Pattern pattern, MindMapNode pNode) {
 		super(caller);
 		this.mController = controller;
+		mNode = pNode;
 		if (logger == null) {
 			logger = freemind.main.Resources.getInstance().getLogger(
 					this.getClass().getName());
@@ -230,7 +225,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator,
 			final MindMapMapModel mMap = new MindMapMapModel(mapFeedback);
 			mapFeedback.mMap = mMap;
 			StringReaderCreator readerCreator = new StringReaderCreator(
-					"<map><node TEXT='ROOT'><node TEXT='FormatMe'><node TEXT='Child1'/><node TEXT='Child2'/></node></node></map>");
+					mController.getText("accessories/plugins/dialogs/ChooseFormatPopupDialog.DemoNode"));
 			try {
 				MindMapNode root = mMap.loadTree(readerCreator,
 						MapAdapter.sDontAskInstance);
@@ -251,116 +246,17 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator,
 		if (mStylePatternFrame == null) {
 			mStylePatternFrame = new StylePatternFrame(this, mController,
 					StylePatternFrameType.WITHOUT_NAME_AND_CHILDS) {
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see freemind.modes.mindmapmode.dialogs.StylePatternFrame#
-				 * propertyChange(java.beans.PropertyChangeEvent)
-				 */
+				Pattern mResetPattern = StylePatternFactory.getRemoveAllPattern();
+
 				@Override
 				public void propertyChange(PropertyChangeEvent pEvt) {
 					super.propertyChange(pEvt);
+					if(mNode != null) {
+						mDemoNode.setText(mNode.getText());
+					}
+					StylePatternFactory.applyPattern(mResetPattern, mDemoNode, mController);
 					Pattern pattern = mStylePatternFrame.getResultPattern();
-					logger.info("Pattern " + Tools.marshall(pattern)
-							+ " and event  " + pEvt);
-					if (pattern.getPatternNodeColor() != null) {
-						mDemoNode.setColor(Tools.xmlToColor(pattern
-								.getPatternNodeColor().getValue()));
-					}
-					if (pattern.getPatternNodeBackgroundColor() != null) {
-						mDemoNode.setBackgroundColor(Tools
-								.xmlToColor(pattern
-										.getPatternNodeBackgroundColor()
-										.getValue()));
-					}
-					if (pattern.getPatternNodeStyle() != null) {
-						mDemoNode.setStyle(pattern.getPatternNodeStyle()
-								.getValue());
-					}
-					if (pattern.getPatternEdgeColor() != null) {
-						((EdgeAdapter) mDemoNode.getEdge()).setColor(
-								Tools.xmlToColor(pattern.getPatternEdgeColor()
-										.getValue()));
-					}
-					if (pattern.getPatternNodeText() != null) {
-						if (pattern.getPatternNodeText().getValue() != null) {
-							mDemoNode.setText(pattern.getPatternNodeText().getValue());
-						} else {
-							// clear text:
-							mDemoNode.setText("");
-						}
-					}
-					if (pattern.getPatternIcon() != null) {
-						String iconName = pattern.getPatternIcon().getValue();
-						if (iconName == null) {
-							while (mDemoNode.removeIcon(0) > 0) {
-							}
-						} else {
-							// check if icon is already present:
-							List icons = mDemoNode.getIcons();
-							boolean found = false;
-							for (Iterator iterator = icons.iterator(); iterator.hasNext();) {
-								MindIcon icon = (MindIcon) iterator.next();
-								if (icon.getName() != null
-										&& icon.getName().equals(iconName)) {
-									found = true;
-									break;
-								}
-							}
-							if (!found) {
-								mDemoNode.addIcon(MindIcon.factory(iconName), mDemoNode.getIcons().size());
-							}
-						}
-					} 
-					if (pattern.getPatternNodeFontName() != null) {
-						String nodeFontFamily = pattern.getPatternNodeFontName().getValue();
-						if (nodeFontFamily == null) {
-							mDemoNode.setFont(mController.getController()
-									.getDefaultFont());
-						} else {
-							((NodeAdapter) mDemoNode).establishOwnFont();
-							mDemoNode.setFont(mController.getController().getFontThroughMap(
-									new Font(nodeFontFamily, mDemoNode.getFont().getStyle(), mDemoNode
-											.getFont().getSize())));
-						}
-					}
-					if (pattern.getPatternNodeFontSize() != null) {
-						String nodeFontSize = pattern.getPatternNodeFontSize().getValue();
-						if (nodeFontSize == null) {
-							mDemoNode.setFontSize(mController.getController()
-									.getDefaultFontSize());
-						} else {
-							try {
-								mDemoNode.setFontSize(Integer
-										.parseInt(nodeFontSize));
-							} catch (Exception e) {
-								freemind.main.Resources.getInstance()
-										.logException(e);
-							}
-						}
-					}
-					if (pattern.getPatternNodeFontItalic() != null) {
-						((NodeAdapter) mDemoNode)
-								.setItalic(
-										"true".equals(pattern.getPatternNodeFontItalic()
-												.getValue()));
-					}
-					if (pattern.getPatternNodeFontBold() != null) {
-						((NodeAdapter) mDemoNode).setBold("true".equals(pattern.getPatternNodeFontBold().getValue()));
-					}
-
-					if (pattern.getPatternEdgeStyle() != null) {
-						((EdgeAdapter) mDemoNode.getEdge()).setStyle(pattern.getPatternEdgeStyle().getValue());
-					}
-					PatternEdgeWidth patternEdgeWidth = pattern.getPatternEdgeWidth();
-					if (patternEdgeWidth != null) {
-						if (patternEdgeWidth.getValue() != null) {
-							((EdgeAdapter) mDemoNode.getEdge()).setWidth(Tools.edgeWidthStringToInt(patternEdgeWidth.getValue()));
-						} else {
-							((EdgeAdapter) mDemoNode.getEdge()).setWidth(EdgeAdapter.DEFAULT_WIDTH);
-						}
-					}
-
+					StylePatternFactory.applyPattern(pattern, mDemoNode, mController);
 					mDemoFrame.getNodeView(mDemoNode).updateAll();
 					mDemoFrame.doLayout();
 				}
