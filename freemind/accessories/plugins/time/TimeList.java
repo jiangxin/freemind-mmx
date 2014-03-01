@@ -79,7 +79,6 @@ import freemind.controller.actions.generated.instance.WindowConfigurationStorage
 import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.modes.MindIcon;
-import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.Mode;
 import freemind.modes.ModeController;
@@ -123,23 +122,23 @@ public class TimeList extends MindMapHookAdapter implements
 
 	protected static final int NODE_NOTES_COLUMN = 5;
 
-	private JDialog dialog;
+	private JDialog mDialog;
 
-	private JPanel timePanel;
+	private JPanel mTimePanel;
 
-	private JTable timeTable;
+	private JTable mTimeTable;
 
-	private DefaultTableModel timeTableModel;
+	private DefaultTableModel mTimeTableModel;
 
-	private accessories.plugins.time.TableSorter sorter;
+	private accessories.plugins.time.TableSorter mSorter;
 
-	private DateRenderer dateRenderer;
+	private DateRenderer mDateRenderer;
 
-	private NodeRenderer nodeRenderer;
+	private NodeRenderer mNodeRenderer;
 
-	private IconsRenderer iconsRenderer;
+	private IconsRenderer mIconsRenderer;
 
-	private boolean showAllNodes = false;
+	private boolean mShowAllNodes = false;
 
 	private static final String WINDOW_PREFERENCE_STORAGE_PROPERTY = TimeList.class
 			.getName() + "_properties";
@@ -150,7 +149,7 @@ public class TimeList extends MindMapHookAdapter implements
 
 	private JTextField mFilterTextReplaceField;
 
-	private NotesRenderer notesRenderer;
+	private NotesRenderer mNotesRenderer;
 
 	private JLabel mTreeLabel;
 
@@ -173,27 +172,27 @@ public class TimeList extends MindMapHookAdapter implements
 		COLUMN_DATE = getResourceString("plugins/TimeList.xml_Date");
 		COLUMN_NOTES = getResourceString("plugins/TimeList.xml_Notes");
 
-		showAllNodes = Tools.xmlToBoolean(getResourceString("show_all_nodes"));
-		dialog = new JDialog(getController().getFrame().getJFrame(), false /* unmodal */);
+		mShowAllNodes = Tools.xmlToBoolean(getResourceString("show_all_nodes"));
+		mDialog = new JDialog(getController().getFrame().getJFrame(), false /* unmodal */);
 		String windowTitle;
-		if (showAllNodes) {
+		if (mShowAllNodes) {
 			windowTitle = "plugins/TimeManagement.xml_WindowTitle_All_Nodes";
 		} else {
 			windowTitle = "plugins/TimeManagement.xml_WindowTitle";
 		}
-		dialog.setTitle(getResourceString(windowTitle));
-		dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-		dialog.addWindowListener(new WindowAdapter() {
+		mDialog.setTitle(getResourceString(windowTitle));
+		mDialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+		mDialog.addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent event) {
 				disposeDialog();
 			}
 		});
-		Tools.addEscapeActionToDialog(dialog, new AbstractAction() {
+		Tools.addEscapeActionToDialog(mDialog, new AbstractAction() {
 			public void actionPerformed(ActionEvent arg0) {
 				disposeDialog();
 			}
 		});
-		Container contentPane = dialog.getContentPane();
+		Container contentPane = mDialog.getContentPane();
 		GridBagLayout gbl = new GridBagLayout();
 		gbl.columnWeights = new double[] { 1.0f };
 		gbl.rowWeights = new double[] { 1.0f };
@@ -233,44 +232,44 @@ public class TimeList extends MindMapHookAdapter implements
 			public void keyPressed(KeyEvent pEvent) {
 				if (pEvent.getKeyCode() == KeyEvent.VK_DOWN) {
 					logger.info("Set Focus to table");
-					timeTable.requestFocusInWindow();
+					mTimeTable.requestFocusInWindow();
 				} else if (pEvent.getKeyCode() == KeyEvent.VK_UP) {
 					logger.info("Set Focus to table");
 					mFilterTextSearchField.requestFocusInWindow();
 				}
 			}
 		});
-		dateRenderer = new DateRenderer();
-		nodeRenderer = new NodeRenderer();
-		notesRenderer = new NotesRenderer();
-		iconsRenderer = new IconsRenderer(getController());
-		timeTable = new FlatNodeTable();
-		timeTable.addKeyListener(new FlatNodeTableKeyListener());
+		mDateRenderer = new DateRenderer();
+		mNodeRenderer = new NodeRenderer();
+		mNotesRenderer = new NotesRenderer();
+		mIconsRenderer = new IconsRenderer(getController());
+		mTimeTable = new FlatNodeTable();
+		mTimeTable.addKeyListener(new FlatNodeTableKeyListener());
 		// double click = goto.
-		timeTable.addMouseListener(new FlatNodeTableMouseAdapter());
+		mTimeTable.addMouseListener(new FlatNodeTableMouseAdapter());
 		// disable moving:
-		timeTable.getTableHeader().setReorderingAllowed(false);
+		mTimeTable.getTableHeader().setReorderingAllowed(false);
 		updateModel();
 
-		sorter.setTableHeader(timeTable.getTableHeader());
-		sorter.setColumnComparator(Date.class,
+		mSorter.setTableHeader(mTimeTable.getTableHeader());
+		mSorter.setColumnComparator(Date.class,
 				TableSorter.COMPARABLE_COMAPRATOR);
-		sorter.setColumnComparator(NodeHolder.class,
+		mSorter.setColumnComparator(NodeHolder.class,
 				TableSorter.LEXICAL_COMPARATOR);
-		sorter.setColumnComparator(NotesHolder.class,
+		mSorter.setColumnComparator(NotesHolder.class,
 				TableSorter.LEXICAL_COMPARATOR);
-		sorter.setColumnComparator(IconsHolder.class,
+		mSorter.setColumnComparator(IconsHolder.class,
 				TableSorter.COMPARABLE_COMAPRATOR);
 		// Sort by default by date.
-		sorter.setSortingStatus(DATE_COLUMN, TableSorter.ASCENDING);
-		JScrollPane pane = new JScrollPane(timeTable);
+		mSorter.setSortingStatus(DATE_COLUMN, TableSorter.ASCENDING);
+		JScrollPane pane = new JScrollPane(mTimeTable);
 		contentPane.add(pane, new GridBagConstraints(0, 4, 1, 1, 1.0, 10.0,
 				GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,
 						0, 0, 0), 0, 0));
 
 		mTreeLabel = new JLabel();
 		contentPane.add(new JScrollPane(mTreeLabel), new GridBagConstraints(0,
-				5, 1, 1, 1.0, 1.0, GridBagConstraints.WEST,
+				5, 1, 2, 1.0, 4.0, GridBagConstraints.WEST,
 				GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
 		// button bar
 		AbstractAction selectAction = new AbstractAction(
@@ -348,7 +347,7 @@ public class TimeList extends MindMapHookAdapter implements
 				"main/view/showFoldedNodes"),
 				"keystroke_plugins/TimeList_showFoldedNodes");
 		menuHolder.updateMenus(menuBar, "main/");
-		dialog.setJMenuBar(menuBar);
+		mDialog.setJMenuBar(menuBar);
 
 		/* Initial State */
 		selectMenuItem.setEnabled(false);
@@ -357,7 +356,7 @@ public class TimeList extends MindMapHookAdapter implements
 		replaceSelectedMenuItem.setEnabled(false);
 
 		// table selection listeners to enable/disable menu actions:
-		ListSelectionModel rowSM = timeTable.getSelectionModel();
+		ListSelectionModel rowSM = mTimeTable.getSelectionModel();
 		rowSM.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				// Ignore extra messages.
@@ -397,16 +396,16 @@ public class TimeList extends MindMapHookAdapter implements
 		// restore preferences:
 		// Retrieve window size and column positions.
 		WindowConfigurationStorage storage = getMindMapController()
-				.decorateDialog(dialog, WINDOW_PREFERENCE_STORAGE_PROPERTY);
+				.decorateDialog(mDialog, WINDOW_PREFERENCE_STORAGE_PROPERTY);
 		if (storage != null) {
 			setTableConfiguration(storage);
 		}
-		dialog.setVisible(true);
+		mDialog.setVisible(true);
 	}
 
 	protected void setTableConfiguration(WindowConfigurationStorage storage) {
 		// Disable auto resizing
-		timeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		mTimeTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		final TimeWindowConfigurationStorage timeStorage = (TimeWindowConfigurationStorage) storage;
 		if(mViewFoldedNodes != timeStorage.getViewFoldedNodes()) {
 			toggleViewFoldedNodes();
@@ -417,9 +416,9 @@ public class TimeList extends MindMapHookAdapter implements
 				.hasNext();) {
 			TimeWindowColumnSetting setting = (TimeWindowColumnSetting) i
 					.next();
-			timeTable.getColumnModel().getColumn(column)
+			mTimeTable.getColumnModel().getColumn(column)
 					.setPreferredWidth(setting.getColumnWidth());
-			sorter.setSortingStatus(column, setting.getColumnSorting());
+			mSorter.setSortingStatus(column, setting.getColumnSorting());
 			column++;
 		}
 	}
@@ -442,7 +441,7 @@ public class TimeList extends MindMapHookAdapter implements
 	}
 
 	protected void exportSelectedRowsAndClose() {
-		int[] selectedRows = timeTable.getSelectedRows();
+		int[] selectedRows = mTimeTable.getSelectedRows();
 		Vector selectedNodes = new Vector();
 		for (int i = 0; i < selectedRows.length; i++) {
 			int row = selectedRows[i];
@@ -528,7 +527,7 @@ public class TimeList extends MindMapHookAdapter implements
 			String replaceString = getText(mFilterTextReplaceField
 					.getDocument());
 			replace(info, searchString, replaceString);
-			timeTableModel.fireTableDataChanged();
+			mTimeTableModel.fireTableDataChanged();
 			mFlatNodeTableFilterModel.resetFilter();
 			mFilterTextSearchField.setText("");
 		} catch (BadLocationException e) {
@@ -573,12 +572,12 @@ public class TimeList extends MindMapHookAdapter implements
 
 	private class ReplaceSelectedInfo implements IReplaceInputInformation {
 		public int getLength() {
-			return timeTable.getSelectedRowCount();
+			return mTimeTable.getSelectedRowCount();
 		}
 
 		public NodeHolder getNodeHolderAt(int i) {
-			return (NodeHolder) sorter.getValueAt(
-					timeTable.getSelectedRows()[i], NODE_TEXT_COLUMN);
+			return (NodeHolder) mSorter.getValueAt(
+					mTimeTable.getSelectedRows()[i], NODE_TEXT_COLUMN);
 		}
 
 		public void changeString(NodeHolder nodeHolder, String newText) {
@@ -587,7 +586,7 @@ public class TimeList extends MindMapHookAdapter implements
 	}
 
 	private void selectSelectedRows() {
-		selectNodes(timeTable.getSelectedRow(), timeTable.getSelectedRows());
+		selectNodes(mTimeTable.getSelectedRow(), mTimeTable.getSelectedRows());
 	}
 
 	private void gotoNodesAndClose(int focussedRow, int[] selectedRows) {
@@ -611,7 +610,7 @@ public class TimeList extends MindMapHookAdapter implements
 	/**
      */
 	private MindMapNode getMindMapNode(int focussedRow) {
-		MindMapNode selectedNode = ((NodeHolder) timeTable.getModel()
+		MindMapNode selectedNode = ((NodeHolder) mTimeTable.getModel()
 				.getValueAt(focussedRow, NODE_TEXT_COLUMN)).node;
 		return selectedNode;
 	}
@@ -622,7 +621,7 @@ public class TimeList extends MindMapHookAdapter implements
 	private DefaultTableModel updateModel() {
 		TimeWindowConfigurationStorage storage = null;
 		// if not first call, get configuration
-		if(sorter != null) {
+		if(mSorter != null) {
 			storage = getTableConfiguration();
 		}
 		DefaultTableModel model = new MindmapTableModel();
@@ -634,14 +633,14 @@ public class TimeList extends MindMapHookAdapter implements
 		model.addColumn(COLUMN_NOTES);
 		MindMapNode node = getMindMapController().getMap().getRootNode();
 		updateModel(model, node);
-		timeTableModel = model;
+		mTimeTableModel = model;
 		mFlatNodeTableFilterModel = new FlatNodeTableFilterModel(
-				timeTableModel, NODE_TEXT_COLUMN, NODE_NOTES_COLUMN);
-		if(sorter == null) {
-			sorter = new TableSorter(mFlatNodeTableFilterModel);
-			timeTable.setModel(sorter);
+				mTimeTableModel, NODE_TEXT_COLUMN, NODE_NOTES_COLUMN);
+		if(mSorter == null) {
+			mSorter = new TableSorter(mFlatNodeTableFilterModel);
+			mTimeTable.setModel(mSorter);
 		} else {
-			sorter.setTableModel(mFlatNodeTableFilterModel);
+			mSorter.setTableModel(mFlatNodeTableFilterModel);
 		}
 		if(storage != null) {
 			setTableConfiguration(storage);
@@ -659,7 +658,7 @@ public class TimeList extends MindMapHookAdapter implements
 	private void updateModel(DefaultTableModel model, MindMapNode node) {
 		ReminderHookBase hook = TimeManagementOrganizer.getHook(node);
 		// show all nodes or only those with reminder:
-		if (showAllNodes || hook != null) {
+		if (mShowAllNodes || hook != null) {
 			Date date = null;
 			if (hook != null) {
 				date = new Date(hook.getRemindUserAt());
@@ -683,9 +682,9 @@ public class TimeList extends MindMapHookAdapter implements
 	/**
 	 */
 	private JPanel getTimePanel() {
-		if (timePanel == null) {
-			timePanel = new JPanel();
-			timePanel.setLayout(new GridBagLayout());
+		if (mTimePanel == null) {
+			mTimePanel = new JPanel();
+			mTimePanel.setLayout(new GridBagLayout());
 			// {
 			// GridBagConstraints gb2 = new GridBagConstraints();
 			// gb2.gridx = 0;
@@ -696,7 +695,7 @@ public class TimeList extends MindMapHookAdapter implements
 			// gb2);
 			// }
 		}
-		return timePanel;
+		return mTimePanel;
 	}
 
 	/**
@@ -706,23 +705,23 @@ public class TimeList extends MindMapHookAdapter implements
 		// store window positions:
 
 		TimeWindowConfigurationStorage storage = getTableConfiguration();
-		getMindMapController().storeDialogPositions(dialog, storage,
+		getMindMapController().storeDialogPositions(mDialog, storage,
 				WINDOW_PREFERENCE_STORAGE_PROPERTY);
 
 		getMindMapController().getController().getMapModuleManager()
 				.removeListener(this);
-		dialog.setVisible(false);
-		dialog.dispose();
+		mDialog.setVisible(false);
+		mDialog.dispose();
 	}
 
 	protected TimeWindowConfigurationStorage getTableConfiguration() {
 		TimeWindowConfigurationStorage storage = new TimeWindowConfigurationStorage();
 		storage.setViewFoldedNodes(mViewFoldedNodes);
-		for (int i = 0; i < timeTable.getColumnCount(); i++) {
+		for (int i = 0; i < mTimeTable.getColumnCount(); i++) {
 			TimeWindowColumnSetting setting = new TimeWindowColumnSetting();
-			setting.setColumnWidth(timeTable.getColumnModel().getColumn(i)
+			setting.setColumnWidth(mTimeTable.getColumnModel().getColumn(i)
 					.getWidth());
-			setting.setColumnSorting(sorter.getSortingStatus(i));
+			setting.setColumnSorting(mSorter.getSortingStatus(i));
 			storage.addTimeWindowColumnSetting(setting);
 		}
 		return storage;
@@ -812,10 +811,11 @@ public class TimeList extends MindMapHookAdapter implements
 		public void mouseClicked(MouseEvent e) {
 			if (e.getClickCount() == 2) {
 				Point p = e.getPoint();
-				int row = timeTable.rowAtPoint(p);
+				int row = mTimeTable.rowAtPoint(p);
 				gotoNodesAndClose(row, new int[] { row });
 			}
 		}
+		
 	}
 
 	private final class FlatNodeTableKeyListener implements KeyListener {
@@ -840,13 +840,13 @@ public class TimeList extends MindMapHookAdapter implements
 		public TableCellRenderer getCellRenderer(int row, int column) {
 			Object object = getModel().getValueAt(row, column);
 			if (object instanceof Date)
-				return dateRenderer;
+				return mDateRenderer;
 			if (object instanceof NodeHolder)
-				return nodeRenderer;
+				return mNodeRenderer;
 			if (object instanceof NotesHolder)
-				return notesRenderer;
+				return mNotesRenderer;
 			if (object instanceof IconsHolder)
-				return iconsRenderer;
+				return mIconsRenderer;
 			return super.getCellRenderer(row, column);
 		}
 
@@ -866,6 +866,27 @@ public class TimeList extends MindMapHookAdapter implements
 				return;
 			}
 			super.processKeyEvent(e);
+		}
+		
+		/* (non-Javadoc)
+		 * @see javax.swing.JTable#getToolTipText(java.awt.event.MouseEvent)
+		 */
+		@Override
+		public String getToolTipText(MouseEvent pEvent) {
+			Point point = pEvent.getPoint();
+			int row = mTimeTable.rowAtPoint(point);
+            int colIndex = columnAtPoint(point);
+			if(row>= 0 && colIndex >= 0) {
+				if (colIndex == NODE_TEXT_COLUMN) {
+					MindMapNode mindMapNode = getMindMapNode(row);
+					return mindMapNode.getText();
+				}
+				if (colIndex == NODE_NOTES_COLUMN) {
+					MindMapNode mindMapNode = getMindMapNode(row);
+					return mindMapNode.getNoteText();
+				}
+			}
+			return null;
 		}
 	}
 
@@ -890,9 +911,10 @@ public class TimeList extends MindMapHookAdapter implements
 		}
 
 		public void setValue(Object value) {
-			setText((value == null) ? "" : ((NodeHolder) value)
+			NodeHolder holder = (NodeHolder) value;
+			setText((value == null) ? "" : holder
 					.getUntaggedNodeText());
-		}
+		}		
 	}
 
 	static class NotesRenderer extends DefaultTableCellRenderer {
@@ -943,6 +965,10 @@ public class TimeList extends MindMapHookAdapter implements
 						.replaceAll("\\s+", " ");
 			}
 			return untaggedNodeText;
+		}
+
+		public MindMapNode getNode() {
+			return node;
 		}
 
 	}

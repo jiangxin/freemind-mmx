@@ -7,6 +7,7 @@ Changes made in FreeMind 1.1.0 Alpha 2
 * Search dialog on geographical maps accepts coordinates in the form "lat lon" or "lat lon;lat2 lon2;..."
 * A reverse lookup is then performed unless you set do_reverse_lookup_on_lat_lon_search to false.
 * Format dialog has example nodes that demonstrate the changes.
+* New search&replace dialog shows tooltips of the node and note text.
 
 ===============================
 Changes made in FreeMind 1.1.0 Alpha 1
