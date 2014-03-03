@@ -1,0 +1,11 @@
+<project name="freemind_plugins" default="dist" basedir=".">
+	<property name="plugin.xml" location="${src}/plugins/Search.xml" />
+	<property name="plugin.dir" value="plugins/search"/>
+	<property name="local.plugin.dir" location="${src}/plugins/search"/>
+	<property name="plugin.jar" value="search_plugin.jar" />
+	<property name="plugin.zip" value="search_plugin-${ver}.zip" />
+	<property name="additional.lib" value="${local.plugin.dir}/search_plugin.jar:${local.plugin.dir}/lucene-analyzers-common-4.6.0.jar:${local.plugin.dir}/lucene-core-4.6.0.jar:${local.plugin.dir}/lucene-queryparser-4.6.0.jar"/>
+	<property name="additional.lib.pattern" value="${plugin.dir}/*.jar"/>
+
+	<import file="build_import.xml" />
+</project>

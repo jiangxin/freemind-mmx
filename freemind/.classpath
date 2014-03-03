@@ -41,5 +41,8 @@
 	<classpathentry kind="lib" path="plugins/svg/batik-codec.jar"/>
 	<classpathentry kind="lib" path="plugins/svg/xml-apis-ext.jar"/>
 	<classpathentry kind="lib" path="plugins/script/groovy-all.jar" sourcepath="/home/foltin/java/groovy/groovy-sdk-2.1.8.zip"/>
+	<classpathentry kind="lib" path="plugins/search/lucene-analyzers-common-4.6.0.jar"/>
+	<classpathentry kind="lib" path="plugins/search/lucene-core-4.6.0.jar"/>
+	<classpathentry kind="lib" path="plugins/search/lucene-queryparser-4.6.0.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

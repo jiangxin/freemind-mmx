@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<plugin label="plugins/search/SearchControllerHook">
+	<plugin_classpath jar="search/search_plugin.jar" />
+	<plugin_classpath jar="search/lucene-core-4.6.0.jar" />
+	<plugin_classpath jar="search/lucene-analyzers-common-4.6.0.jar" />
+	<plugin_classpath jar="search/lucene-queryparser-4.6.0.jar" />
+	<plugin_action
+		documentation="%plugins/search/SearchControllerHook.properties_documentation"
+		name="Search multiple maps" base="freemind.extensions.ModeControllerHookAdapter"
+		label="plugins/search/SearchControllerHook.properties" 
+		class_name="plugins.search.SearchControllerHook"
+		instanciation="OnceForRoot">
+		<plugin_mode class_name="freemind.modes.mindmapmode" />
+		<plugin_menu location="menu_bar/edit/other/SearchControllerHook" />
+	</plugin_action>
+</plugin>
