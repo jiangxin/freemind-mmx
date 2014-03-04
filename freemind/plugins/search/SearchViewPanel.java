@@ -135,7 +135,7 @@ public class SearchViewPanel extends JDialog implements ListSelectionListener {
 		scorePanel = new JTextArea("");
 		Dimension minimumSize = new Dimension(100, 0);
 		String[] listing = new String[] { "No results" };
-		resultsList = new JList<Object>(listing);
+		resultsList = new JList(listing);
 		resultsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		resultsList.setSelectedIndex(0);
 		resultsList.addListSelectionListener(this);
@@ -383,7 +383,7 @@ public class SearchViewPanel extends JDialog implements ListSelectionListener {
 		return directoryMode;
 	}
 
-	private JList<Object> resultsList;
+	private JList resultsList;
 
 	@Override
 	public void valueChanged(ListSelectionEvent arg0) {
