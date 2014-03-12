@@ -5,7 +5,8 @@ Changes made in FreeMind 1.0.1
 * Fixed persistence of "complete cloning" across cut/paste.
 * Fixed save of notes, when containing tabs
 * Clones can be deactivated by menu
-* Fixed #1178 [Shared map] Nodes are lost when moving them through drag & drop 
+* Fixed #1178 [Shared map] Nodes are lost when moving them through drag & drop
+ 
 ===============================
 Changes made in FreeMind 1.0.0 (final)
 ===============================
