@@ -87,8 +87,6 @@ Source: isxbb.dll; DestDir: {tmp}; Flags: dontcopy
 
 Source: ..\..\..\bin\dist\Freemind.bat;   DestDir: {app}; Flags: promptifolder overwritereadonly
 Source: ..\..\..\bin\dist\FreeMind.exe;   DestDir: {app}; Flags: promptifolder overwritereadonly; 
-Source: ..\..\..\bin\dist\FreeMind32.exe;   DestDir: {app}; Flags: promptifolder overwritereadonly; 
-Source: ..\..\..\bin\dist\FreeMind64.exe;   DestDir: {app}; Flags: promptifolder overwritereadonly; 
 
 Source: ..\..\..\bin\dist\dictionaries.properties; DestDir: {app}; Flags: promptifolder overwritereadonly
 Source: ..\..\..\bin\dist\dictionary_*.ortho; DestDir: {app}; Flags: promptifolder overwritereadonly
@@ -291,7 +289,7 @@ Root: HKCR; Subkey: .mm; ValueType: string; ValueName: ; ValueData: Freemind; Fl
 Root: HKCR; Subkey: Freemind; ValueType: string; ValueName: ; ValueData: Freemind; Flags: uninsdeletekey
 
 ;"My Program File" above is the name for the file type as shown in Explorer.
-Root: HKCR; Subkey: Freemind\DefaultIcon; ValueType: string; ValueName: ; ValueData: {app}\freemind32.exe,1
+Root: HKCR; Subkey: Freemind\DefaultIcon; ValueType: string; ValueName: ; ValueData: {app}\freemind.exe,1
 ;"DefaultIcon" is the registry key that specifies the filename containing the icon to associate with the file type. ",0" tells Explorer to use the first icon from MYPROG.EXE. (",1" would mean the second icon.)
 Root: HKCR; Subkey: Freemind\shell\open\command; ValueType: string; ValueName: ; ValueData: """{app}\freemind.exe"" ""%1"""; Flags: uninsdeletekey
 </echo>
