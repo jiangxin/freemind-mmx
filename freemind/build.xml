@@ -725,7 +725,7 @@
     <target name="installers_chris_mac">
     	<exec dir="." executable="ssh" os="Linux">
     		<arg value="foltin@${macName}"/>
-    		<arg value="export JAVA_HOME=`/usr/libexec/java_home` ; cd /tmp ; rm -rf fm_installers ; mkdir fm_installers ; cd fm_installers ; /opt/local/bin/git clone ${gitRoot} .; cd freemind ; ant post"/>
+    		<arg value="export JAVA_HOME=`/usr/libexec/java_home` ; cd /tmp ; rm -rf fm_installers ; mkdir fm_installers ; cd fm_installers ; /opt/local/bin/git clone ${gitRoot} .; cd freemind ; /opt/local/bin/ant post"/>
     	</exec>
     	<exec dir="." executable="scp" os="Linux">
     		<arg value="foltin@${macName}:/tmp/fm_installers/post/*.dmg"/>
