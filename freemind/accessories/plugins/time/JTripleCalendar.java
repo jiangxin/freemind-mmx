@@ -28,39 +28,46 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import tests.freemind.FreeMindMainMock;
 import freemind.main.Resources;
 import freemind.main.Tools;
 
-/** */
+/** 
+ * Formerly, it has only three calendar widgets at once.
+ * Now, it has 9 in total, but we keep the naming.
+ * */
 public class JTripleCalendar extends JPanel implements PropertyChangeListener {
 
 	private JCalendar calendarWidget;
-	private JLabel leftLabel;
-	private JLabel rightLabel;
-	private JInfoPanel leftPanel;
-	private JInfoPanel rightPanel;
+	/** Contains a mapping info panel -> month distance of the panel to the center.*/
+	private HashMap<JInfoPanel, Integer> mInfoPanels = new HashMap<JTripleCalendar.JInfoPanel, Integer>();
 
 	public JTripleCalendar() {
 		this.setName("JTripleCalendar");
-		GridLayout gridLayout = new GridLayout(3, 1);
+		GridLayout gridLayout = new GridLayout(3, 3,10,10);
 		gridLayout.setHgap(50);
 		setLayout(gridLayout);
-		leftPanel = createInfoPanel();
-		leftPanel.getCalendarWidget().addPropertyChangeListener(this);
-		rightPanel = createInfoPanel();
-		rightPanel.getCalendarWidget().addPropertyChangeListener(this);
-		add(leftPanel);
-		calendarWidget = new JCalendar();
-		calendarWidget.addPropertyChangeListener(this);
-		add(calendarWidget);
-		add(rightPanel);
-
+		for(int row=-1; row <= 1; ++row) {
+			for(int column=-1; column <= 2; ++column) {
+				int monthIndex = 3 * column + row;
+				if (monthIndex != 0) {
+					JInfoPanel infoPanel = createInfoPanel();
+					infoPanel.getCalendarWidget().addPropertyChangeListener(this);
+					mInfoPanels.put(infoPanel, monthIndex);
+					add(infoPanel);
+				} else {
+					calendarWidget = new JCalendar();
+					calendarWidget.addPropertyChangeListener(this);
+					add(calendarWidget);
+					
+				}
+			}
+		}
 	}
 
 	private static class JInfoPanel extends JPanel {
@@ -167,8 +174,9 @@ public class JTripleCalendar extends JPanel implements PropertyChangeListener {
 		} else {
 			if (Tools.safeEquals(evt.getPropertyName(),
 					JDayChooser.DAY_PROPERTY)) {
-				checkForDateChange(evt, leftPanel);
-				checkForDateChange(evt, rightPanel);
+				for(JInfoPanel infoPanel : mInfoPanels.keySet()) {
+					checkForDateChange(evt, infoPanel);
+				}
 			}
 
 		}
@@ -186,10 +194,12 @@ public class JTripleCalendar extends JPanel implements PropertyChangeListener {
 	}
 
 	public void propagateDate(Calendar gregorianCalendar) {
-		gregorianCalendar.add(Calendar.MONTH, -1);
-		leftPanel.setDate(gregorianCalendar);
-		gregorianCalendar.add(Calendar.MONTH, 2);
-		rightPanel.setDate(gregorianCalendar);
+		for(JInfoPanel infoPanel : mInfoPanels.keySet()) {
+			Integer monthDistance = mInfoPanels.get(infoPanel);
+			gregorianCalendar.add(Calendar.MONTH, monthDistance);
+			infoPanel.setDate(gregorianCalendar);
+			gregorianCalendar.add(Calendar.MONTH, -monthDistance);
+		}
 	}
 
 	public Calendar getCalendar() {
