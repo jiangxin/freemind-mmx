@@ -32,6 +32,7 @@ public class XmlActorFactory {
 
 	private MapFeedback mMapFeedback;
 	private ItalicNodeActor mActionActor;
+	private BoldNodeActor mBoldActor;
 
 	public XmlActorFactory(MapFeedback pMapFeedback) {
 		mMapFeedback = pMapFeedback;
@@ -39,10 +40,15 @@ public class XmlActorFactory {
 	
 	public void createActors() {
 		mActionActor = new ItalicNodeActor(mMapFeedback);
+		mBoldActor = new BoldNodeActor(mMapFeedback);
 	}
 	
 	public ItalicNodeActor getActionActor() {
 		return mActionActor;
+	}
+	
+	public BoldNodeActor getBoldActor() {
+		return mBoldActor;
 	}
 
 }

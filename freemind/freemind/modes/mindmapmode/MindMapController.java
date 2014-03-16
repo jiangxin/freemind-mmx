@@ -1642,7 +1642,7 @@ public class MindMapController extends ControllerAdapter implements
 	}
 
 	public void setBold(MindMapNode node, boolean bolded) {
-		bold.setBold(node, bolded);
+		mActorFactory.getBoldActor().setBold(node, bolded);
 	}
 
 	public void setItalic(MindMapNode node, boolean isItalic) {
