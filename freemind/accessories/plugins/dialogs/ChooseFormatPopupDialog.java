@@ -81,13 +81,6 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator,
 			return mController.getController().getDefaultFont();
 		}
 		
-		/* (non-Javadoc)
-		 * @see freemind.modes.MapFeedbackAdapter#getFontThroughMap(java.awt.Font)
-		 */
-		@Override
-		public Font getFontThroughMap(Font pFont) {
-			return mController.getController().getFontThroughMap(pFont);
-		}
 	}
 
 	public static final int CANCEL = -1;

@@ -21,6 +21,7 @@
 package freemind.modes;
 
 import java.awt.Font;
+import java.util.HashMap;
 
 import freemind.controller.MapMouseMotionListener;
 import freemind.controller.MapMouseWheelListener;
@@ -39,6 +40,8 @@ import freemind.view.mindmapview.ViewFeedback;
  * @date 07.02.2014
  */
 public abstract class MapFeedbackAdapter implements MapFeedback, ViewFeedback {
+
+	private HashMap<String, Font> fontMap = new HashMap<String, Font>();
 
 	/**
 	 * 
@@ -148,15 +151,12 @@ public abstract class MapFeedbackAdapter implements MapFeedback, ViewFeedback {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see freemind.modes.MapFeedback#getFontThroughMap(java.awt.Font)
-	 */
 	@Override
-	public Font getFontThroughMap(Font pFont) {
-
-		return null;
+	public Font getFontThroughMap(Font font) {
+		if (!fontMap.containsKey(font.toString())) {
+			fontMap.put(font.toString(), font);
+		}
+		return (Font) fontMap.get(font.toString());
 	}
 
 	/*

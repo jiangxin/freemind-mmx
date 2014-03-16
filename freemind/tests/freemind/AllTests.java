@@ -50,6 +50,7 @@ public class AllTests {
 		suite.addTest(new TestSuite(ExportTests.class));
 		suite.addTest(new TestSuite(LayoutTests.class));
 		suite.addTest(new TestSuite(LastOpenedTests.class));
+		suite.addTest(new TestSuite(StandaloneMapTests.class));
 		// $JUnit-END$
 		return suite;
 	}
