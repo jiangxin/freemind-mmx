@@ -18,44 +18,23 @@
 *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-package freemind.modes;
+package freemind.modes.mindmapmode.actions.xml.actors;
 
-import freemind.modes.mindmapmode.actions.xml.ActionFactory;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
+import freemind.modes.ExtendedMapFeedback;
+import freemind.modes.mindmapmode.actions.NodeActorXml;
 
 /**
- * MapFeedback extended by the xml based node change management.
- * 
  * @author foltin
  * @date 16.03.2014
  */
-public interface ExtendedMapFeedback extends MapFeedback {
-	/**
-	 * @return the action factory that contains the actors definitions.
-	 */
-	ActionFactory getActionFactory();
-
-	boolean doTransaction(String pName, ActionPair pPair);
-
-	
-	/**
-	 * Given a node identifier, this method returns the corresponding node.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if the id is unknown.
-	 */
-	NodeAdapter getNodeFromID(String nodeID);
+public abstract class NodeXmlActorAdapter extends XmlActorAdapter implements NodeActorXml {
 
 	/**
-	 * Calling this method the map-unique identifier of the node is returned
-	 * (and created before, if not present)
+	 * @param pMapFeedback
 	 */
-	String getNodeID(MindMapNode selected);
+	public NodeXmlActorAdapter(ExtendedMapFeedback pMapFeedback) {
+		super(pMapFeedback);
+	}
 
-	/**
-	 * @return
-	 */
-	MindMapNode getSelected();
 
-	
 }

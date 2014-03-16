@@ -31,6 +31,7 @@ public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
 	implements ExtendedMapFeedback {
 
 	private ActionFactory mActionFactory;
+	private MindMapNode mSelectedNode;
 
 	/**
 	 * 
@@ -75,5 +76,13 @@ public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
 		return getMap().getLinkRegistry().registerLinkTarget(selected);
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see freemind.modes.ExtendedMapFeedback#getSelected()
+	 */
+	@Override
+	public MindMapNode getSelected() {
+		return mSelectedNode;
+	}
 
 }

@@ -1858,7 +1858,7 @@ public class MindMapController extends ControllerAdapter implements
 
 	public MindMapNode addNewNode(MindMapNode parent, int index,
 			boolean newNodeIsLeft) {
-		return newChild.addNewNode(parent, index, newNodeIsLeft);
+		return mActorFactory.getNewChildActor().addNewNode(parent, index, newNodeIsLeft);
 	}
 
 	public void deleteNode(MindMapNode selectedNode) {

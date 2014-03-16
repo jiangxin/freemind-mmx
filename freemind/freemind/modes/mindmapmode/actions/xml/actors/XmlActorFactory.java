@@ -33,6 +33,7 @@ public class XmlActorFactory {
 	private ExtendedMapFeedback mMapFeedback;
 	private ItalicNodeActor mActionActor;
 	private BoldNodeActor mBoldActor;
+	private NewChildActor mNewChildActor;
 
 	public XmlActorFactory(ExtendedMapFeedback pMapFeedback) {
 		mMapFeedback = pMapFeedback;
@@ -41,6 +42,7 @@ public class XmlActorFactory {
 	public void createActors() {
 		mActionActor = new ItalicNodeActor(mMapFeedback);
 		mBoldActor = new BoldNodeActor(mMapFeedback);
+		mNewChildActor = new NewChildActor(mMapFeedback);
 	}
 	
 	public ItalicNodeActor getItalicActor() {
@@ -51,4 +53,8 @@ public class XmlActorFactory {
 		return mBoldActor;
 	}
 
+	public NewChildActor getNewChildActor() {
+		return mNewChildActor;
+	}
+	
 }

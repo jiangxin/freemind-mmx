@@ -114,5 +114,7 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		factory.createActors();
 		factory.getBoldActor().setBold(root, true);
 		assertEquals(true, root.isBold());
+		factory.getItalicActor().setItalic(root, true);
+		assertEquals(true, root.isItalic());
 	}
 }

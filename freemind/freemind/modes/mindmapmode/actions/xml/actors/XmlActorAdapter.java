@@ -21,7 +21,6 @@
 package freemind.modes.mindmapmode.actions.xml.actors;
 
 import freemind.modes.ExtendedMapFeedback;
-import freemind.modes.MapFeedback;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
@@ -33,7 +32,7 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
  * @author foltin
  * @date 16.03.2014
  */
-public abstract class XmlActorAdapter implements NodeActorXml {
+public abstract class XmlActorAdapter implements ActorXml {
 
 	protected ExtendedMapFeedback mMapFeedback;
 	private ActorXml mActor;
@@ -84,7 +83,7 @@ public abstract class XmlActorAdapter implements NodeActorXml {
 	 * @return
 	 */
 	protected MindMapNode getSelected() {
-		return getModeController().getSelected();
+		return getMapFeedback().getSelected();
 	}
 
 	/**
