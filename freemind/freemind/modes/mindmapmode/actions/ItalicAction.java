@@ -28,14 +28,9 @@ import javax.swing.JMenuItem;
 
 import freemind.controller.MenuItemSelectedListener;
 import freemind.controller.actions.generated.instance.ItalicNodeAction;
-import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
-import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
-public class ItalicAction extends NodeGeneralAction implements NodeActorXml,
+public class ItalicAction extends NodeGeneralAction implements
 		MenuItemSelectedListener {
 	private final MindMapController modeController;
 
@@ -44,44 +39,7 @@ public class ItalicAction extends NodeGeneralAction implements NodeActorXml,
 	public ItalicAction(MindMapController modeController) {
 		super(modeController, "italic", "images/Italic16.gif");
 		this.modeController = modeController;
-		addActor(this);
-	}
-
-	public void act(XmlAction action) {
-		ItalicNodeAction italicact = (ItalicNodeAction) action;
-		NodeAdapter node = getNodeFromID(italicact.getNode());
-		if (node.isItalic() != italicact.getItalic()) {
-			node.setItalic(italicact.getItalic());
-			this.modeController.nodeChanged(node);
-		}
-	}
-
-	public Class getDoActionClass() {
-		return ItalicNodeAction.class;
-	}
-
-	public ActionPair apply(MindMap model, MindMapNode selected) {
-		// every node is set to the inverse of the focussed node.
-		boolean italic = modeController.getSelected().isItalic();
-		return getActionPair(selected, !italic);
-	}
-
-	private ActionPair getActionPair(MindMapNode selected, boolean italic) {
-		ItalicNodeAction italicAction = toggleItalic(selected, italic);
-		ItalicNodeAction undoItalicAction = toggleItalic(selected,
-				selected.isItalic());
-		return new ActionPair(italicAction, undoItalicAction);
-	}
-
-	private ItalicNodeAction toggleItalic(MindMapNode selected, boolean italic) {
-		ItalicNodeAction italicAction = new ItalicNodeAction();
-		italicAction.setNode(getNodeID(selected));
-		italicAction.setItalic(italic);
-		return italicAction;
-	}
-
-	public void setItalic(MindMapNode node, boolean italic) {
-		execute(getActionPair(node, italic));
+		setDoActionClass(ItalicNodeAction.class);
 	}
 
 	public boolean isSelected(JMenuItem item, Action action) {

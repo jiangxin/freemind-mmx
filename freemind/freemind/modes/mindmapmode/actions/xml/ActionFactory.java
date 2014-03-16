@@ -37,32 +37,30 @@ import freemind.modes.mindmapmode.actions.xml.ActionFilter.FirstActionFilter;
  */
 public class ActionFactory {
 
-	private Controller controller;
 	/**
 	 * This Vector denotes all handler of the action to be called for each
 	 * action.
 	 */
-	private Vector registeredHandler;
+	private Vector<ActionHandler> registeredHandler;
 	/** This set denotes all filters for XmlActions. */
-	private Vector registeredFilters;
+	private Vector<ActionFilter> registeredFilters;
 	/** HashMap of Action class -> actor instance. */
-	private HashMap registeredActors;
+	private HashMap<Class, ActorXml> registeredActors;
 	private UndoActionHandler undoActionHandler;
 	private static java.util.logging.Logger logger = null;
 
 	/**
 	 *
 	 */
-	public ActionFactory(Controller c) {
+	public ActionFactory() {
 		super();
-		this.controller = c;
 		if (logger == null) {
 			logger = freemind.main.Resources.getInstance().getLogger(
 					this.getClass().getName());
 		}
-		registeredHandler = new Vector();
-		registeredFilters = new Vector();
-		registeredActors = new HashMap();
+		registeredHandler = new Vector<ActionHandler>();
+		registeredFilters = new Vector<ActionFilter>();
+		registeredActors = new HashMap<Class, ActorXml>();
 	}
 
 	/**
@@ -92,8 +90,8 @@ public class ActionFactory {
 			} else {
 				/* Insert before FinalActionFilters */
 				int index = 0;
-				for (Iterator it = registeredFilters.iterator(); it.hasNext();) {
-					ActionFilter filter = (ActionFilter) it.next();
+				for (Iterator<ActionFilter> it = registeredFilters.iterator(); it.hasNext();) {
+					ActionFilter filter = it.next();
 					if (filter instanceof FinalActionFilter) {
 						break;
 					}
@@ -115,15 +113,15 @@ public class ActionFactory {
 	}
 
 	private void startTransaction(String name) {
-		for (Iterator i = registeredHandler.iterator(); i.hasNext();) {
-			ActionHandler handler = (ActionHandler) i.next();
+		for (Iterator<ActionHandler> i = registeredHandler.iterator(); i.hasNext();) {
+			ActionHandler handler = i.next();
 			handler.startTransaction(name);
 		}
 	}
 
 	private void endTransaction(String name) {
-		for (Iterator i = registeredHandler.iterator(); i.hasNext();) {
-			ActionHandler handler = (ActionHandler) i.next();
+		for (Iterator<ActionHandler> i = registeredHandler.iterator(); i.hasNext();) {
+			ActionHandler handler = i.next();
 			handler.endTransaction(name);
 		}
 	}
@@ -159,8 +157,8 @@ public class ActionFactory {
 
 		ActionPair filteredPair = pair;
 		// first filter:
-		for (Iterator i = registeredFilters.iterator(); i.hasNext();) {
-			ActionFilter filter = (ActionFilter) i.next();
+		for (Iterator<ActionFilter> i = registeredFilters.iterator(); i.hasNext();) {
+			ActionFilter filter = i.next();
 			filteredPair = filter.filterAction(filteredPair);
 		}
 
@@ -180,12 +178,6 @@ public class ActionFactory {
 
 	/**
 	 */
-	public Controller getController() {
-		return controller;
-	}
-
-	/**
-	 */
 	public void registerActor(ActorXml actor, Class action) {
 		registeredActors.put(action, actor);
 	}
@@ -197,10 +189,10 @@ public class ActionFactory {
 	}
 
 	public ActorXml getActor(XmlAction action) {
-		for (Iterator i = registeredActors.keySet().iterator(); i.hasNext();) {
-			Class actorClass = (Class) i.next();
+		for (Iterator<Class> i = registeredActors.keySet().iterator(); i.hasNext();) {
+			Class actorClass = i.next();
 			if (actorClass.isInstance(action)) {
-				return (ActorXml) registeredActors.get(actorClass);
+				return registeredActors.get(actorClass);
 			}
 		}
 		// Class actionClass = action.getClass();
@@ -211,6 +203,14 @@ public class ActionFactory {
 				+ action.getClass());
 	}
 
+	public ActorXml getActor(Class actionClass) {
+		if (registeredActors.containsKey(actionClass)) {
+			return registeredActors.get(actionClass);
+		}
+		throw new IllegalArgumentException("No actor present for xmlaction"
+				+ actionClass);
+	}
+	
 	public void registerUndoHandler(UndoActionHandler undoActionHandler) {
 		this.undoActionHandler = undoActionHandler;
 	}

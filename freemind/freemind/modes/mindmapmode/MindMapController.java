@@ -213,6 +213,7 @@ import freemind.modes.mindmapmode.actions.UseRichFormattingAction;
 import freemind.modes.mindmapmode.actions.xml.ActionFactory;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.UndoActionHandler;
+import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
 import freemind.modes.mindmapmode.hooks.MindMapHookFactory;
 import freemind.modes.mindmapmode.listeners.MindMapMouseMotionManager;
 import freemind.modes.mindmapmode.listeners.MindMapNodeDropListener;
@@ -512,7 +513,7 @@ public class MindMapController extends ControllerAdapter implements
 			logger = getFrame().getLogger(this.getClass().getName());
 		}
 		// create action factory:
-		actionFactory = new ActionFactory(getController());
+		actionFactory = new ActionFactory();
 		// create compound handler, that evaluates the compound xml actions.
 		compound = new CompoundActionHandler(this);
 		// create node information timer and actions. They don't fire, until
@@ -525,6 +526,9 @@ public class MindMapController extends ControllerAdapter implements
 	}
 
 	protected void init() {
+		logger.info("createXmlActions");
+		mActorFactory = new XmlActorFactory(this);
+		mActorFactory.createActors();
 		logger.info("createIconActions");
 		// create standard actions:
 		createStandardActions();
@@ -1084,6 +1088,7 @@ public class MindMapController extends ControllerAdapter implements
 	private HashSet mPlugins = new HashSet();
 	private Timer mNodeInformationTimer;
 	private NodeInformationTimerAction mNodeInformationTimerAction;
+	private XmlActorFactory mActorFactory;
 
 	public interface NewNodeCreator {
 		MindMapNode createNode(Object userObject, MindMap map);
@@ -1641,7 +1646,7 @@ public class MindMapController extends ControllerAdapter implements
 	}
 
 	public void setItalic(MindMapNode node, boolean isItalic) {
-		italic.setItalic(node, isItalic);
+		mActorFactory.getActionActor().setItalic(node, isItalic);
 	}
 
 	public void setCloud(MindMapNode node, boolean enable) {

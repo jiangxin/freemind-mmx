@@ -33,6 +33,7 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 
 import freemind.controller.actions.generated.instance.CompoundAction;
+import freemind.controller.actions.generated.instance.NodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
@@ -42,6 +43,7 @@ import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.actions.xml.AbstractXmlAction;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
+import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 public class NodeGeneralAction extends AbstractXmlAction {
 	protected final MindMapController modeController;
@@ -49,6 +51,8 @@ public class NodeGeneralAction extends AbstractXmlAction {
 	private freemind.modes.mindmapmode.actions.NodeActorXml actor;
 
 	SingleNodeOperation singleNodeOperation;
+
+	private Class mDoActionClass;
 
 	protected static Logger logger;
 
@@ -95,6 +99,7 @@ public class NodeGeneralAction extends AbstractXmlAction {
 		addActor(actor);
 	}
 
+	// FIXME: REMOVEME!
 	public void addActor(NodeActorXml actor) {
 		this.actor = actor;
 		if (actor != null) {
@@ -129,8 +134,20 @@ public class NodeGeneralAction extends AbstractXmlAction {
 			for (ListIterator it = modeController.getSelecteds().listIterator(); it
 					.hasNext();) {
 				MindMapNodeModel selected = (MindMapNodeModel) it.next();
-				ActionPair pair = actor.apply(this.modeController.getMap(),
-						selected);
+				ActionPair pair;
+				if(mDoActionClass != null) {
+					ActorXml actorXml = getMindMapController().getActionFactory().getActor(mDoActionClass);
+					if (actorXml instanceof NodeActorXml) {
+						NodeActorXml nodeActorXml = (NodeActorXml) actorXml;
+						pair = nodeActorXml.apply(this.modeController.getMap(),
+								selected);
+					} else {
+						throw new IllegalArgumentException("ActorXml " + actorXml + " is not a NodeActorXml.");
+					}
+				} else {
+					pair = actor.apply(this.modeController.getMap(),
+							selected);
+				}
 				if (pair != null) {
 					doAction.addChoice(pair.getDoAction());
 					undo.addAtChoice(0, pair.getUndoAction());
@@ -144,6 +161,7 @@ public class NodeGeneralAction extends AbstractXmlAction {
 
 	}
 
+	// FIXME: REMOVEME!
 	protected void execute(ActionPair pair) {
 		modeController.doTransaction(getShortDescription(), pair);
 	}
@@ -158,17 +176,19 @@ public class NodeGeneralAction extends AbstractXmlAction {
 	public void act(XmlAction action) {
 	}
 
-	/**
-     */
+	// FIXME: REMOVEME!
 	protected NodeAdapter getNodeFromID(String string) {
 		return modeController.getNodeFromID(string);
 	}
 
-	/**
-     */
+	// FIXME: REMOVEME!
 	protected String getNodeID(MindMapNode selected) {
 		// TODO Auto-generated method stub
 		return modeController.getNodeID(selected);
+	}
+	
+	protected void setDoActionClass(Class pDoActionClass) {
+		this.mDoActionClass = pDoActionClass;
 	}
 
 }
