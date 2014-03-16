@@ -22,7 +22,7 @@ package freemind.modes.mindmapmode.actions.xml.actors;
 
 import freemind.controller.actions.generated.instance.ItalicNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.modes.MapFeedback;
+import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
@@ -38,7 +38,7 @@ public class ItalicNodeActor extends XmlActorAdapter {
 	/**
 	 * 
 	 */
-	public ItalicNodeActor(MapFeedback pMapFeedback) {
+	public ItalicNodeActor(ExtendedMapFeedback pMapFeedback) {
 		super(pMapFeedback);
 	}
 

@@ -47,7 +47,6 @@ public abstract class MapFeedbackAdapter implements MapFeedback, ViewFeedback {
 	 * 
 	 */
 	public MapFeedbackAdapter() {
-
 	}
 
 	/*
@@ -261,4 +260,5 @@ public abstract class MapFeedbackAdapter implements MapFeedback, ViewFeedback {
 		return null;
 	}
 
+	
 }

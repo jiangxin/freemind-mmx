@@ -60,6 +60,7 @@ import freemind.modes.XMLElementAdapter;
 import freemind.modes.common.GotoLinkNodeAction;
 import freemind.modes.common.plugins.MapNodePositionHolderBase;
 import freemind.modes.common.plugins.NodeNoteBase;
+import freemind.modes.mindmapmode.actions.xml.ActionFactory;
 import freemind.modes.viewmodes.ViewControllerAdapter;
 import freemind.view.mindmapview.MainView;
 
@@ -482,7 +483,6 @@ public class BrowseController extends ViewControllerAdapter {
 		// TODO Auto-generated method stub
 		
 	}
-	
 
 
 }

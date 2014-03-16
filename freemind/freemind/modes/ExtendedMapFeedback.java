@@ -18,37 +18,39 @@
 *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-package freemind.modes.mindmapmode.actions.xml.actors;
+package freemind.modes;
 
-import freemind.modes.ExtendedMapFeedback;
+import freemind.modes.mindmapmode.actions.xml.ActionFactory;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 /**
- * Creates all XmlActors needed for the MindMapController
+ * MapFeedback extended by the xml based node change management.
  * 
  * @author foltin
  * @date 16.03.2014
  */
-public class XmlActorFactory {
+public interface ExtendedMapFeedback extends MapFeedback {
+	/**
+	 * @return the action factory that contains the actors definitions.
+	 */
+	ActionFactory getActionFactory();
 
-	private ExtendedMapFeedback mMapFeedback;
-	private ItalicNodeActor mActionActor;
-	private BoldNodeActor mBoldActor;
+	boolean doTransaction(String pName, ActionPair pPair);
 
-	public XmlActorFactory(ExtendedMapFeedback pMapFeedback) {
-		mMapFeedback = pMapFeedback;
-	}
 	
-	public void createActors() {
-		mActionActor = new ItalicNodeActor(mMapFeedback);
-		mBoldActor = new BoldNodeActor(mMapFeedback);
-	}
-	
-	public ItalicNodeActor getItalicActor() {
-		return mActionActor;
-	}
-	
-	public BoldNodeActor getBoldActor() {
-		return mBoldActor;
-	}
+	/**
+	 * Given a node identifier, this method returns the corresponding node.
+	 * 
+	 * @throws IllegalArgumentException
+	 *             if the id is unknown.
+	 */
+	NodeAdapter getNodeFromID(String nodeID);
 
+	/**
+	 * Calling this method the map-unique identifier of the node is returned
+	 * (and created before, if not present)
+	 */
+	String getNodeID(MindMapNode selected);
+
+	
 }

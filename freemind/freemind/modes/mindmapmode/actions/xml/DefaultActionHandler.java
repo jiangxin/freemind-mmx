@@ -21,22 +21,19 @@
  */
 
 
-package freemind.modes.mindmapmode.actions;
+package freemind.modes.mindmapmode.actions.xml;
 
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.modes.mindmapmode.actions.xml.ActionFactory;
-import freemind.modes.mindmapmode.actions.xml.ActionHandler;
-import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 /**
  * @author foltin
  * 
  */
-public class ModeControllerActionHandler implements ActionHandler {
+public class DefaultActionHandler implements ActionHandler {
 
 	private ActionFactory factory;
 
-	public ModeControllerActionHandler(ActionFactory factory) {
+	public DefaultActionHandler(ActionFactory factory) {
 		this.factory = factory;
 	}
 

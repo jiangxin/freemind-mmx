@@ -98,4 +98,5 @@ public interface MapFeedback {
 	 * @param pModel
 	 */
 	void invokeHooksRecursively(MindMapNode pNode, MindMap pModel);
+
 }

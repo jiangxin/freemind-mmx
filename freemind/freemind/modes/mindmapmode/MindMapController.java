@@ -125,6 +125,7 @@ import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.ControllerAdapter;
 import freemind.modes.EdgeAdapter;
+import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.FreeMindFileDialog;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindIcon;
@@ -178,7 +179,6 @@ import freemind.modes.mindmapmode.actions.JoinNodesAction;
 import freemind.modes.mindmapmode.actions.MindMapActions;
 import freemind.modes.mindmapmode.actions.MindMapControllerHookAction;
 import freemind.modes.mindmapmode.actions.MindmapAction;
-import freemind.modes.mindmapmode.actions.ModeControllerActionHandler;
 import freemind.modes.mindmapmode.actions.MoveNodeAction;
 import freemind.modes.mindmapmode.actions.NewChildAction;
 import freemind.modes.mindmapmode.actions.NewPreviousSiblingAction;
@@ -212,6 +212,7 @@ import freemind.modes.mindmapmode.actions.UsePlainTextAction;
 import freemind.modes.mindmapmode.actions.UseRichFormattingAction;
 import freemind.modes.mindmapmode.actions.xml.ActionFactory;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
+import freemind.modes.mindmapmode.actions.xml.DefaultActionHandler;
 import freemind.modes.mindmapmode.actions.xml.UndoActionHandler;
 import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
 import freemind.modes.mindmapmode.hooks.MindMapHookFactory;
@@ -224,7 +225,7 @@ import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
 public class MindMapController extends ControllerAdapter implements
-		MindMapActions, MapSourceChangedObserver {
+		MindMapActions, MapSourceChangedObserver, ExtendedMapFeedback {
 
 	public static final String REGEXP_FOR_NUMBERS_IN_STRINGS = "([+\\-]?[0-9]*[.,]?[0-9]+)\\b";
 	private static final String ACCESSORIES_PLUGINS_NODE_NOTE = "accessories.plugins.NodeNote";
@@ -570,7 +571,7 @@ public class MindMapController extends ControllerAdapter implements
 		// the executor must be the first here, because it is executed last
 		// then.
 		getActionFactory().registerHandler(
-				new ModeControllerActionHandler(getActionFactory()));
+				new DefaultActionHandler(getActionFactory()));
 		getActionFactory().registerUndoHandler(
 				new UndoActionHandler(this, undo, redo));
 		// debug:
@@ -1646,7 +1647,7 @@ public class MindMapController extends ControllerAdapter implements
 	}
 
 	public void setItalic(MindMapNode node, boolean isItalic) {
-		mActorFactory.getActionActor().setItalic(node, isItalic);
+		mActorFactory.getItalicActor().setItalic(node, isItalic);
 	}
 
 	public void setCloud(MindMapNode node, boolean enable) {

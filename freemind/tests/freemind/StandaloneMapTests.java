@@ -24,12 +24,14 @@ import java.awt.Font;
 import java.io.StringWriter;
 
 import freemind.main.FreeMind;
+import freemind.modes.ExtendedMapFeedbackAdapter;
 import freemind.modes.MapAdapter;
-import freemind.modes.MapFeedbackAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController.StringReaderCreator;
 import freemind.modes.mindmapmode.MindMapMapModel;
+import freemind.modes.mindmapmode.actions.xml.DefaultActionHandler;
+import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
 
 
 /**
@@ -38,10 +40,21 @@ import freemind.modes.mindmapmode.MindMapMapModel;
  */
 public class StandaloneMapTests extends FreeMindTestBase {
 	/**
+	 * 
+	 */
+	private static final String INITIAL_MAP = "<map>"
+	+ "<node TEXT='ROOT'>"
+	+ "<node TEXT='FormatMe'>"
+	+ "<node TEXT='Child1'/><node TEXT='Child2'/>"
+	+ "</node>"
+	+ "</node>"
+	+ "</map>";
+
+	/**
 	 * @author foltin
 	 * @date 21.02.2014
 	 */
-	private final class DemoMapFeedback extends MapFeedbackAdapter {
+	private final class DemoMapFeedback extends ExtendedMapFeedbackAdapter {
 		MindMap mMap;
 
 		@Override
@@ -64,17 +77,10 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		final MindMapMapModel mMap = new MindMapMapModel(mapFeedback);
 		mapFeedback.mMap = mMap;
 		StringReaderCreator readerCreator = new StringReaderCreator(
-				"<map>"
-				+ "<node TEXT='ROOT'>"
-				+ "<node TEXT='FormatMe'>"
-				+ "<node TEXT='Child1'/><node TEXT='Child2'/>"
-				+ "</node>"
-				+ "</node>"
-				+ "</map>");
+				INITIAL_MAP);
 		MindMapNode root = mMap.loadTree(readerCreator,
 				MapAdapter.sDontAskInstance);
 		mMap.setRoot(root);
-		MindMapNode mDemoNode = (MindMapNode) root.getChildAt(0);
 		StringWriter stringWriter = new StringWriter();
 		mMap.getFilteredXml(stringWriter);
 		String xmlResult = stringWriter.getBuffer().toString();
@@ -92,4 +98,21 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		assertEquals(expected, xmlResult);
 	}
 
+	public void testXmlChangeWithoutModeController() throws Exception {
+		DemoMapFeedback mapFeedback = new DemoMapFeedback();
+		mapFeedback.getActionFactory().registerHandler(
+				new DefaultActionHandler(mapFeedback.getActionFactory()));
+
+		final MindMapMapModel mMap = new MindMapMapModel(mapFeedback);
+		mapFeedback.mMap = mMap;
+		StringReaderCreator readerCreator = new StringReaderCreator(
+				INITIAL_MAP);
+		MindMapNode root = mMap.loadTree(readerCreator,
+				MapAdapter.sDontAskInstance);
+		mMap.setRoot(root);
+		XmlActorFactory factory = new XmlActorFactory(mapFeedback);
+		factory.createActors();
+		factory.getBoldActor().setBold(root, true);
+		assertEquals(true, root.isBold());
+	}
 }

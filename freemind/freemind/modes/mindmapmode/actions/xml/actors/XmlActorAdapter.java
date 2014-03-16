@@ -20,6 +20,7 @@
 
 package freemind.modes.mindmapmode.actions.xml.actors;
 
+import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.MapFeedback;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
@@ -34,13 +35,13 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
  */
 public abstract class XmlActorAdapter implements NodeActorXml {
 
-	protected MapFeedback mMapFeedback;
+	protected ExtendedMapFeedback mMapFeedback;
 	private ActorXml mActor;
 
 	/**
 	 * 
 	 */
-	public XmlActorAdapter(MapFeedback pMapFeedback) {
+	public XmlActorAdapter(ExtendedMapFeedback pMapFeedback) {
 		mMapFeedback = pMapFeedback;
 		addActor(this);
 	}
@@ -58,7 +59,7 @@ public abstract class XmlActorAdapter implements NodeActorXml {
 	/**
 	 * @return the mapFeedback
 	 */
-	public MapFeedback getMapFeedback() {
+	public ExtendedMapFeedback getMapFeedback() {
 		return mMapFeedback;
 	}
 	
@@ -66,7 +67,7 @@ public abstract class XmlActorAdapter implements NodeActorXml {
 	 * @param pActionPair
 	 */
 	protected void execute(ActionPair pActionPair) {
-		getModeController().doTransaction(getDoActionClass().getName(), pActionPair);
+		getMapFeedback().doTransaction(getDoActionClass().getName(), pActionPair);
 		
 	}
 
@@ -75,7 +76,7 @@ public abstract class XmlActorAdapter implements NodeActorXml {
 	 * @return
 	 */
 	protected NodeAdapter getNodeFromID(String pNodeId) {
-		return getModeController().getNodeFromID(pNodeId);
+		return getMapFeedback().getNodeFromID(pNodeId);
 	}
 
 
@@ -91,14 +92,14 @@ public abstract class XmlActorAdapter implements NodeActorXml {
 	 * @return
 	 */
 	protected String getNodeID(MindMapNode pNode) {
-		return getModeController().getNodeID(pNode);
+		return getMapFeedback().getNodeID(pNode);
 	}
 
 	public void addActor(ActorXml actor) {
 		this.mActor = actor;
 		if (actor != null) {
 			// registration:
-			getModeController().getActionFactory().registerActor(actor,
+			getMapFeedback().getActionFactory().registerActor(actor,
 					actor.getDoActionClass());
 		}
 	}

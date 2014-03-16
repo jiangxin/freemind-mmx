@@ -22,7 +22,7 @@ package freemind.modes.mindmapmode.actions.xml.actors;
 
 import freemind.controller.actions.generated.instance.BoldNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.modes.MapFeedback;
+import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
@@ -37,7 +37,7 @@ public class BoldNodeActor extends XmlActorAdapter {
 	/**
 	 * @param pMapFeedback
 	 */
-	public BoldNodeActor(MapFeedback pMapFeedback) {
+	public BoldNodeActor(ExtendedMapFeedback pMapFeedback) {
 		super(pMapFeedback);
 	}
 
