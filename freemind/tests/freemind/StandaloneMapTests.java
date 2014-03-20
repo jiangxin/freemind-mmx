@@ -21,15 +21,22 @@
 package tests.freemind;
 
 import java.awt.Font;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Vector;
 
+import freemind.controller.MindMapNodesSelection;
 import freemind.main.FreeMind;
+import freemind.main.Tools;
 import freemind.modes.ExtendedMapFeedbackAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController.StringReaderCreator;
 import freemind.modes.mindmapmode.MindMapMapModel;
+import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.actions.xml.DefaultActionHandler;
 import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
 
@@ -70,6 +77,22 @@ public class StandaloneMapTests extends FreeMindTestBase {
 
 			return getFontThroughMap(new Font(fontFamily, fontStyle, fontSize));
 		}
+		
+		/* (non-Javadoc)
+		 * @see freemind.modes.ExtendedMapFeedbackAdapter#copy(freemind.modes.MindMapNode, boolean)
+		 */
+		@Override
+		public Transferable copy(MindMapNode pNode, boolean pSaveInvisible) {
+			StringWriter stringWriter = new StringWriter();
+			try {
+				((MindMapNodeModel) pNode).save(stringWriter, getMap()
+						.getLinkRegistry(), pSaveInvisible, true);
+			} catch (IOException e) {
+			}
+			Vector nodeList = Tools.getVectorWithSingleElement(getNodeID(pNode));
+			return new MindMapNodesSelection(stringWriter.toString(), null, null,
+					null, null, null, null, nodeList);
+		}
 	}
 	
 	public void testStandaloneCreation() throws Exception {
@@ -81,9 +104,7 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		MindMapNode root = mMap.loadTree(readerCreator,
 				MapAdapter.sDontAskInstance);
 		mMap.setRoot(root);
-		StringWriter stringWriter = new StringWriter();
-		mMap.getFilteredXml(stringWriter);
-		String xmlResult = stringWriter.getBuffer().toString();
+		String xmlResult = getMapContents(mMap);
 		xmlResult = xmlResult.replaceAll("CREATED=\"[0-9]*\"", "CREATED=\"\"");
 		xmlResult = xmlResult.replaceAll("MODIFIED=\"[0-9]*\"", "MODIFIED=\"\"");
 		String expected = "<map version=\"" + FreeMind.XML_VERSION +  "\">\n"
@@ -96,6 +117,14 @@ public class StandaloneMapTests extends FreeMindTestBase {
 				+ "</node>\n" 
 				+ "</map>\n";
 		assertEquals(expected, xmlResult);
+	}
+
+	protected String getMapContents(final MindMapMapModel mMap)
+			throws IOException {
+		StringWriter stringWriter = new StringWriter();
+		mMap.getFilteredXml(stringWriter);
+		String xmlResult = stringWriter.getBuffer().toString();
+		return xmlResult;
 	}
 
 	public void testXmlChangeWithoutModeController() throws Exception {
@@ -126,7 +155,10 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		} catch (IllegalArgumentException e) {
 			freemind.main.Resources.getInstance().logException(e);
 		}
-		
+		factory.getPasteActor().paste(new StringSelection("bla"), root, false, true);
+		assertEquals(amount+1, root.getChildCount());
+		String xmlResult = getMapContents(mMap);
+		System.out.println(xmlResult);
 		
 	}
 }

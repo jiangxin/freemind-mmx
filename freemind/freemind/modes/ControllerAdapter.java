@@ -635,20 +635,6 @@ public abstract class ControllerAdapter implements ModeController,
 	}
 
 	/**
-	 *
-	 */
-	public void processUnfinishedLinksInHooks(NodeAdapter node) {
-		for (Iterator i = node.childrenUnfolded(); i.hasNext();) {
-			NodeAdapter child = (NodeAdapter) i.next();
-			processUnfinishedLinksInHooks(child);
-		}
-		for (Iterator i = node.getHooks().iterator(); i.hasNext();) {
-			PermanentNodeHook hook = (PermanentNodeHook) i.next();
-			hook.processUnfinishedLinks();
-		}
-	}
-
-	/**
 	 * fc, 24.1.2004: having two methods getSelecteds with different return
 	 * values (linkedlists of models resp. views) is asking for trouble. @see
 	 * MapView

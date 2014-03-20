@@ -24,8 +24,8 @@ import freemind.controller.actions.generated.instance.UndoPasteNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.PasteAction.NodeCoordinate;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
+import freemind.modes.mindmapmode.actions.xml.actors.PasteActor.NodeCoordinate;
 
 /**
  * @author foltin

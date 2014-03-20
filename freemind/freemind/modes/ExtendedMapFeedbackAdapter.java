@@ -20,9 +20,14 @@
 
 package freemind.modes;
 
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
+
 import freemind.modes.mindmapmode.MindMapNodeModel;
-import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
+import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
 import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
 
 /**
@@ -112,5 +117,36 @@ public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
 	@Override
 	public XmlActorFactory getActorFactory() {
 		return mActorFactory;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.ExtendedMapFeedback#copy(freemind.modes.MindMapNode, boolean)
+	 */
+	public Transferable copy(MindMapNode node, boolean saveInvisible) {
+		return new Transferable() {
+			
+			@Override
+			public boolean isDataFlavorSupported(DataFlavor pFlavor) {
+				return false;
+			}
+			
+			@Override
+			public DataFlavor[] getTransferDataFlavors() {
+				return new DataFlavor[] {};
+			}
+			
+			@Override
+			public Object getTransferData(DataFlavor pFlavor)
+					throws UnsupportedFlavorException, IOException {
+				throw new UnsupportedFlavorException(pFlavor);
+			}
+		};
 	}	
+	
+	/* (non-Javadoc)
+	 * @see freemind.modes.ExtendedMapFeedback#setWaitingCursor(boolean)
+	 */
+	@Override
+	public void setWaitingCursor(boolean pWaiting) {
+	}
 }

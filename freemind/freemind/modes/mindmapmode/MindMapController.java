@@ -210,8 +210,8 @@ import freemind.modes.mindmapmode.actions.UnderlinedAction;
 import freemind.modes.mindmapmode.actions.UndoAction;
 import freemind.modes.mindmapmode.actions.UsePlainTextAction;
 import freemind.modes.mindmapmode.actions.UseRichFormattingAction;
-import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
+import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
 import freemind.modes.mindmapmode.actions.xml.DefaultActionHandler;
 import freemind.modes.mindmapmode.actions.xml.UndoActionHandler;
 import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
@@ -1802,6 +1802,7 @@ public class MindMapController extends ControllerAdapter implements
 		fork.setStyle(node, style);
 	}
 
+	@Override
 	public Transferable copy(MindMapNode node, boolean saveInvisible) {
 		StringWriter stringWriter = new StringWriter();
 		try {
@@ -1842,11 +1843,11 @@ public class MindMapController extends ControllerAdapter implements
 						RESOURCE_UNFOLD_ON_PASTE)) {
 			setFolded(target, false);
 		}
-		return paste.paste(t, target, asSibling, isLeft);
+		return mActorFactory.getPasteActor().paste(t, target, asSibling, isLeft);
 	}
 
 	public void paste(MindMapNode node, MindMapNode parent) {
-		paste.paste(node, parent);
+		mActorFactory.getPasteActor().paste(node, parent);
 	}
 
 	public MindMapNode addNew(final MindMapNode target, final int newNodeMode,
@@ -2365,7 +2366,6 @@ public class MindMapController extends ControllerAdapter implements
 
 	public void insertNodeInto(MindMapNode newNode, MindMapNode parent,
 			int index) {
-		// geht auch mit mapFeedback.nodeChanged()
 		setSaved(false);
 		super.insertNodeInto(newNode, parent, index);
 	}
@@ -2568,6 +2568,14 @@ public class MindMapController extends ControllerAdapter implements
 	@Override
 	public void out(String pFormat) {
 		getFrame().out(pFormat);
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.ExtendedMapFeedback#setWaitingCursor(boolean)
+	 */
+	@Override
+	public void setWaitingCursor(boolean pWaiting) {
+		getFrame().setWaitingCursor(pWaiting);
 	}
 	
 }

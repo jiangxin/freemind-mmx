@@ -32,8 +32,8 @@ import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ViewAbstraction;
-import freemind.modes.mindmapmode.actions.PasteAction.NodeCoordinate;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
+import freemind.modes.mindmapmode.actions.xml.actors.PasteActor.NodeCoordinate;
 import freemind.view.mindmapview.NodeView;
 
 /**
@@ -132,12 +132,13 @@ public class DeleteChildActor extends XmlActorAdapter {
 	public void deleteNode(MindMapNode selectedNode) {
 		String newId = getNodeID(selectedNode);
 
-		Transferable copy = getModeController().copy(selectedNode, true);
+		Transferable copy = getExMapFeedback().copy(selectedNode, true);
 		NodeCoordinate coord = new NodeCoordinate(selectedNode,
 				selectedNode.isLeft());
 		// Undo-action
 		PasteNodeAction pasteNodeAction = null;
-		pasteNodeAction = getModeController().paste.getPasteNodeAction(copy,
+		pasteNodeAction = getExMapFeedback().getActorFactory().
+				getPasteActor().getPasteNodeAction(copy,
 				coord, (UndoPasteNodeAction) null);
 
 		DeleteNodeAction deleteAction = getDeleteNodeAction(newId);

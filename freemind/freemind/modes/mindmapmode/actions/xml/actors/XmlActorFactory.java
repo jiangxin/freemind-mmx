@@ -35,6 +35,7 @@ public class XmlActorFactory {
 	private BoldNodeActor mBoldActor;
 	private NewChildActor mNewChildActor;
 	private DeleteChildActor mDeleteChildActor;
+	private PasteActor mPasteActor;
 
 	public XmlActorFactory(ExtendedMapFeedback pMapFeedback) {
 		mMapFeedback = pMapFeedback;
@@ -42,6 +43,7 @@ public class XmlActorFactory {
 		mBoldActor = new BoldNodeActor(mMapFeedback);
 		mNewChildActor = new NewChildActor(mMapFeedback);
 		mDeleteChildActor = new DeleteChildActor(mMapFeedback);
+		mPasteActor = new PasteActor(mMapFeedback);
 	}
 	
 	public ItalicNodeActor getItalicActor() {
@@ -60,4 +62,7 @@ public class XmlActorFactory {
 		return mDeleteChildActor;
 	}
 	
+	public PasteActor getPasteActor() {
+		return mPasteActor;
+	}
 }

@@ -20,8 +20,10 @@
 
 package freemind.modes;
 
-import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
+import java.awt.datatransfer.Transferable;
+
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
+import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
 import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
 
 /**
@@ -82,5 +84,8 @@ public interface ExtendedMapFeedback extends MapFeedback {
 	 */
 	XmlActorFactory getActorFactory();
 
+	Transferable copy(MindMapNode node, boolean saveInvisible);
+
+	void setWaitingCursor(boolean waiting);
 	
 }

@@ -40,9 +40,9 @@ import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.FreeMind;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.PasteAction.NodeCoordinate;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
+import freemind.modes.mindmapmode.actions.xml.actors.PasteActor.NodeCoordinate;
 
 public class CutAction extends AbstractAction implements ActorXml {
 	private String text;
@@ -111,7 +111,7 @@ public class CutAction extends AbstractAction implements ActorXml {
 
 			NodeCoordinate coord = new NodeCoordinate(node, node.isLeft());
 			Transferable copy = mMindMapController.copy(node, true);
-			XmlAction pasteNodeAction = mMindMapController.paste
+			XmlAction pasteNodeAction = mMindMapController.getActorFactory().getPasteActor()
 					.getPasteNodeAction(copy, coord, (UndoPasteNodeAction) null);
 			logger.fine("Undo for cut: "
 					+ mMindMapController.marshall(pasteNodeAction));
