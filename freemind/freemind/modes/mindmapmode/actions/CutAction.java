@@ -59,7 +59,7 @@ public class CutAction extends AbstractAction implements ActorXml {
 		this.mMindMapController = c;
 		this.text = c.getText("cut");
 		setEnabled(false);
-		this.mMindMapController.getActionFactory().registerActor(this,
+		this.mMindMapController.getActionRegistry().registerActor(this,
 				getDoActionClass());
 	}
 
@@ -138,7 +138,7 @@ public class CutAction extends AbstractAction implements ActorXml {
 		CutNodeAction cutAction = (CutNodeAction) action;
 		MindMapNode selectedNode = mMindMapController.getNodeFromID(cutAction
 				.getNode());
-		mMindMapController.deleteChild.deleteWithoutUndo(selectedNode);
+		mMindMapController.getActorFactory().getDeleteChildActor().deleteWithoutUndo(selectedNode);
 	}
 
 	/*

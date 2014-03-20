@@ -64,14 +64,14 @@ public class FormatNewNodes implements ActionHandler, ActionFilter,
 	}
 
 	public void register() {
-		controller.getActionFactory().registerHandler(this);
-		controller.getActionFactory().registerFilter(this);
+		controller.getActionRegistry().registerHandler(this);
+		controller.getActionRegistry().registerFilter(this);
 
 	}
 
 	public void deRegister() {
-		controller.getActionFactory().deregisterHandler(this);
-		controller.getActionFactory().deregisterFilter(this);
+		controller.getActionRegistry().deregisterHandler(this);
+		controller.getActionRegistry().deregisterFilter(this);
 	}
 
 	public void executeAction(XmlAction action) {

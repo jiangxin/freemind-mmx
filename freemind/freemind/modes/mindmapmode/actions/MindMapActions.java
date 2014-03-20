@@ -41,7 +41,7 @@ import freemind.modes.MindMapLink;
 import freemind.modes.MindMapNode;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
-import freemind.modes.mindmapmode.actions.xml.ActionFactory;
+import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
 
 /**
  * This is the central method interface of actions that can be undertaken on
@@ -247,7 +247,7 @@ public interface MindMapActions {
 
 	// end hooks
 
-	ActionFactory getActionFactory();
+	ActionRegistry getActionRegistry();
 
 	// XML Actions:
 	public String marshall(XmlAction action);

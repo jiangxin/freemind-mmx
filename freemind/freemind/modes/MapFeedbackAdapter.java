@@ -60,6 +60,14 @@ public abstract class MapFeedbackAdapter implements MapFeedback, ViewFeedback {
 	public void fireNodePreDeleteEvent(MindMapNode pNode) {
 
 	}
+	
+	/* (non-Javadoc)
+	 * @see freemind.modes.MapFeedback#fireNodePostDeleteEvent(freemind.modes.MindMapNode, freemind.modes.MindMapNode)
+	 */
+	@Override
+	public void fireNodePostDeleteEvent(MindMapNode pNode, MindMapNode pParent) {
+		
+	}
 
 	/* (non-Javadoc)
 	 * @see freemind.modes.MapFeedback#fireRecursiveNodeCreateEvent(freemind.modes.MindMapNode)
@@ -260,5 +268,33 @@ public abstract class MapFeedbackAdapter implements MapFeedback, ViewFeedback {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see freemind.modes.MapFeedback#getViewFeedback()
+	 */
+	@Override
+	public ViewFeedback getViewFeedback() {
+		return this;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.MapFeedback#getViewAbstraction()
+	 */
+	@Override
+	public ViewAbstraction getViewAbstraction() {
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.ViewFeedback#select(freemind.view.mindmapview.NodeView)
+	 */
+	public void select(NodeView node) {
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.view.mindmapview.ViewFeedback#getNodeView(freemind.modes.MindMapNode)
+	 */
+	public NodeView getNodeView(MindMapNode node) {
+		return null;
+	}
 	
 }

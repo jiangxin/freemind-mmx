@@ -60,13 +60,13 @@ public class RevisionPlugin extends PermanentMindMapNodeHookAdapter implements
 		if (alreadyUsed == false) {
 			color = Color.YELLOW;
 			// new register:
-			getMindMapController().getActionFactory().registerHandler(this);
+			getMindMapController().getActionRegistry().registerHandler(this);
 			alreadyUsed = true;
 		}
 	}
 
 	public void shutdownMapHook() {
-		getMindMapController().getActionFactory().deregisterHandler(this);
+		getMindMapController().getActionRegistry().deregisterHandler(this);
 		super.shutdownMapHook();
 	}
 

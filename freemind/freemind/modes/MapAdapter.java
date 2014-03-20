@@ -189,6 +189,14 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 			removeNodes(child);
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap#removeNodeFromParent(freemind.modes.MindMapNode)
+	 */
+	@Override
+	public void removeNodeFromParent(MindMapNode pNode) {
+		super.removeNodeFromParent(pNode);
+	}
 
 	//
 	// Attributes

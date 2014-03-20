@@ -346,4 +346,11 @@ public class MindMapMock implements MindMap {
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see freemind.modes.MindMap#removeNodeFromParent(freemind.modes.MindMapNode)
+	 */
+	@Override
+	public void removeNodeFromParent(MindMapNode pNode) {
+	}
+
 }

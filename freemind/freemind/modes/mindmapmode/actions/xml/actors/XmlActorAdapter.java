@@ -24,9 +24,9 @@ import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.NodeActorXml;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
+import freemind.view.mindmapview.ViewFeedback;
 
 /**
  * @author foltin
@@ -47,7 +47,7 @@ public abstract class XmlActorAdapter implements ActorXml {
 
 	
 	/**
-	 * @deprecated replaced by {@link XmlActorAdapter#getMapFeedback()}
+	 * @deprecated replaced by {@link XmlActorAdapter#getExMapFeedback()}
 	 * @return
 	 */
 	@Deprecated
@@ -58,15 +58,19 @@ public abstract class XmlActorAdapter implements ActorXml {
 	/**
 	 * @return the mapFeedback
 	 */
-	public ExtendedMapFeedback getMapFeedback() {
+	public ExtendedMapFeedback getExMapFeedback() {
 		return mMapFeedback;
+	}
+
+	public ViewFeedback getViewFeedback() {
+		return getExMapFeedback().getViewFeedback();
 	}
 	
 	/**
 	 * @param pActionPair
 	 */
 	protected void execute(ActionPair pActionPair) {
-		getMapFeedback().doTransaction(getDoActionClass().getName(), pActionPair);
+		getExMapFeedback().doTransaction(getDoActionClass().getName(), pActionPair);
 		
 	}
 
@@ -75,7 +79,7 @@ public abstract class XmlActorAdapter implements ActorXml {
 	 * @return
 	 */
 	protected NodeAdapter getNodeFromID(String pNodeId) {
-		return getMapFeedback().getNodeFromID(pNodeId);
+		return getExMapFeedback().getNodeFromID(pNodeId);
 	}
 
 
@@ -83,7 +87,7 @@ public abstract class XmlActorAdapter implements ActorXml {
 	 * @return
 	 */
 	protected MindMapNode getSelected() {
-		return getMapFeedback().getSelected();
+		return getExMapFeedback().getSelected();
 	}
 
 	/**
@@ -91,14 +95,14 @@ public abstract class XmlActorAdapter implements ActorXml {
 	 * @return
 	 */
 	protected String getNodeID(MindMapNode pNode) {
-		return getMapFeedback().getNodeID(pNode);
+		return getExMapFeedback().getNodeID(pNode);
 	}
 
 	public void addActor(ActorXml actor) {
 		this.mActor = actor;
 		if (actor != null) {
 			// registration:
-			getMapFeedback().getActionFactory().registerActor(actor,
+			getExMapFeedback().getActionRegistry().registerActor(actor,
 					actor.getDoActionClass());
 		}
 	}

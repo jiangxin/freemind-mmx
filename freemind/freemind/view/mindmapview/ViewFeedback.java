@@ -111,5 +111,4 @@ public interface ViewFeedback {
 	 */
 	MapMouseWheelListener getMapMouseWheelListener();
 
-
 }

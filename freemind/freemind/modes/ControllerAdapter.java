@@ -34,7 +34,6 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -92,9 +91,13 @@ import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.FreeMindFileDialog.DirectoryResultListener;
 import freemind.modes.common.listeners.MindMapMouseWheelEventHandler;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
+import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
+import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
+import freemind.view.mindmapview.ViewFeedback;
 
 /**
  * Derive from this class to implement the Controller for your mode. Overload
@@ -664,15 +667,9 @@ public abstract class ControllerAdapter implements ModeController,
 		return selecteds;
 	}
 
+	@Override
 	public void select(NodeView node) {
-		if (node == null) {
-			logger.warning("Select with null NodeView called!");
-			return;
-		}
-		getView().scrollNodeToVisible(node);
-		getView().selectAsTheOnlyOneSelected(node);
-		// this level is default
-		getView().setSiblingMaxLevel(node.getModel().getNodeLevel());
+		getView().select(node);
 	}
 
 	public void select(MindMapNode primarySelected, List selecteds) {
@@ -1211,6 +1208,22 @@ public abstract class ControllerAdapter implements ModeController,
 	public MapView getView() {
 		return mView;
 	}
+	
+	/* (non-Javadoc)
+	 * @see freemind.modes.MapFeedback#getViewAbstraction()
+	 */
+	@Override
+	public ViewAbstraction getViewAbstraction() {
+		return getView();
+	}
+	
+	/* (non-Javadoc)
+	 * @see freemind.modes.MapFeedback#getViewFeedback()
+	 */
+	@Override
+	public ViewFeedback getViewFeedback() {
+		return this;
+	}
 
 	public void setView(MapView pView) {
 		mView = pView;
@@ -1560,6 +1573,7 @@ public abstract class ControllerAdapter implements ModeController,
 		centerNode(view);
 	}
 
+	@Override
 	public NodeView getNodeView(MindMapNode node) {
 		return getView().getNodeView(node);
 	}
@@ -1661,5 +1675,7 @@ public abstract class ControllerAdapter implements ModeController,
 	}
 
 
+	
+	
 	
 }

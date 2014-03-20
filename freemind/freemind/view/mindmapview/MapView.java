@@ -75,13 +75,14 @@ import freemind.modes.MindMap;
 import freemind.modes.MindMapArrowLink;
 import freemind.modes.MindMapLink;
 import freemind.modes.MindMapNode;
+import freemind.modes.ViewAbstraction;
 import freemind.preferences.FreemindPropertyListener;
 
 /**
  * This class represents the view of a whole MindMap (in analogy to class
  * JTree).
  */
-public class MapView extends JPanel implements Printable, Autoscroll {
+public class MapView extends JPanel implements ViewAbstraction, Printable, Autoscroll {
 	
 	/**
 	 * Currently, this listener does nothing. But it should move the map
@@ -845,6 +846,19 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		centerNode(getRoot());
 	}
 
+	
+	public void select(NodeView node) {
+		if (node == null) {
+			logger.warning("Select with null NodeView called!");
+			return;
+		}
+		scrollNodeToVisible(node);
+		selectAsTheOnlyOneSelected(node);
+		// this level is default
+		setSiblingMaxLevel(node.getModel().getNodeLevel());
+	}
+
+	
 	/**
 	 * Select the node, resulting in only that one being selected.
 	 */
@@ -1064,6 +1078,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		return getViewFeedback().getNodeDropListener();
 	}
 
+	@Override
 	public NodeView getSelected() {
 		if (selected.size() > 0)
 			return selected.get(0);
@@ -1075,9 +1090,10 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		return selected.get(i);
 	}
 
-	public LinkedList getSelecteds() {
+	@Override
+	public LinkedList<NodeView> getSelecteds() {
 		// return an ArrayList of NodeViews.
-		LinkedList result = new LinkedList();
+		LinkedList<NodeView> result = new LinkedList<NodeView>();
 		for (int i = 0; i < selected.size(); i++) {
 			result.add(getSelected(i));
 		}
@@ -1153,6 +1169,7 @@ public class MapView extends JPanel implements Printable, Autoscroll {
 		return selectedNodes;
 	}
 
+	@Override
 	public boolean isSelected(NodeView n) {
 		if (isPrinting)
 			return false;

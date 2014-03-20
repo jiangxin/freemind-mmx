@@ -124,11 +124,11 @@ public class JumpLastEditLocation extends MindMapNodeHookAdapter {
 		}
 
 		public void register() {
-			controller.getActionFactory().registerHandler(this);
+			controller.getActionRegistry().registerHandler(this);
 		}
 
 		public void deRegister() {
-			controller.getActionFactory().deregisterHandler(this);
+			controller.getActionRegistry().deregisterHandler(this);
 		}
 
 		public void executeAction(XmlAction action) {

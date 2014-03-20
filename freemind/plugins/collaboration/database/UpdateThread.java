@@ -301,12 +301,12 @@ public class UpdateThread extends Thread implements ResultHandler,
 
 	protected void deregisterFilter() {
 		logger.info("Deregistering filter");
-		mController.getActionFactory().deregisterFilter(this);
+		mController.getActionRegistry().deregisterFilter(this);
 	}
 
 	protected void registerFilter() {
 		logger.info("Registering filter");
-		mController.getActionFactory().registerFilter(this);
+		mController.getActionRegistry().registerFilter(this);
 	}
 
 	public void setupTables(String password) throws Exception {

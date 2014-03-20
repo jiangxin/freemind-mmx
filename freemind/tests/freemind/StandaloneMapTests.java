@@ -100,8 +100,8 @@ public class StandaloneMapTests extends FreeMindTestBase {
 
 	public void testXmlChangeWithoutModeController() throws Exception {
 		DemoMapFeedback mapFeedback = new DemoMapFeedback();
-		mapFeedback.getActionFactory().registerHandler(
-				new DefaultActionHandler(mapFeedback.getActionFactory()));
+		mapFeedback.getActionRegistry().registerHandler(
+				new DefaultActionHandler(mapFeedback.getActionRegistry()));
 
 		final MindMapMapModel mMap = new MindMapMapModel(mapFeedback);
 		mapFeedback.mMap = mMap;
@@ -110,11 +110,23 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		MindMapNode root = mMap.loadTree(readerCreator,
 				MapAdapter.sDontAskInstance);
 		mMap.setRoot(root);
-		XmlActorFactory factory = new XmlActorFactory(mapFeedback);
-		factory.createActors();
+		XmlActorFactory factory = mapFeedback.getActorFactory();
 		factory.getBoldActor().setBold(root, true);
 		assertEquals(true, root.isBold());
 		factory.getItalicActor().setItalic(root, true);
 		assertEquals(true, root.isItalic());
+		int amount = root.getChildCount();
+		MindMapNode newNode = factory.getNewChildActor().addNewNode(root, 0, true);
+		assertEquals(amount+1, root.getChildCount());
+		factory.getDeleteChildActor().deleteWithoutUndo(newNode);
+		assertEquals(amount, root.getChildCount());
+		try {
+			factory.getDeleteChildActor().deleteWithoutUndo(root);
+			assertTrue("Must throw.", false);
+		} catch (IllegalArgumentException e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
+		
+		
 	}
 }

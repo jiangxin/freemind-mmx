@@ -33,7 +33,7 @@ public abstract class AbstractActorXml implements ActorXml {
 
 	protected AbstractActorXml(MindMapController mindMapModeController) {
 		this.mindMapModeController = mindMapModeController;
-		mindMapModeController.getActionFactory().registerActor(this,
+		mindMapModeController.getActionRegistry().registerActor(this,
 				getDoActionClass());
 	}
 

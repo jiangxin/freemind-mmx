@@ -20,8 +20,9 @@
 
 package freemind.modes;
 
-import freemind.modes.mindmapmode.actions.xml.ActionFactory;
+import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
+import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
 
 /**
  * MapFeedback extended by the xml based node change management.
@@ -33,7 +34,7 @@ public interface ExtendedMapFeedback extends MapFeedback {
 	/**
 	 * @return the action factory that contains the actors definitions.
 	 */
-	ActionFactory getActionFactory();
+	ActionRegistry getActionRegistry();
 
 	boolean doTransaction(String pName, ActionPair pPair);
 
@@ -56,6 +57,30 @@ public interface ExtendedMapFeedback extends MapFeedback {
 	 * @return
 	 */
 	MindMapNode getSelected();
+
+	/**
+	 * @param pNewNode
+	 * @param pParent
+	 * @param pIndex
+	 */
+	void insertNodeInto(MindMapNode pNewNode, MindMapNode pParent, int pIndex);
+
+	/**
+	 * @param pUserObject is the string/html of the new node
+	 * @param pMap
+	 * @return the new node.
+	 */
+	MindMapNode newNode(Object pUserObject, MindMap pMap);
+
+	/**
+	 * @param pSelectedNode
+	 */
+	void removeNodeFromParent(MindMapNode pSelectedNode);
+
+	/**
+	 * @return the factory used to create all xml actors.
+	 */
+	XmlActorFactory getActorFactory();
 
 	
 }

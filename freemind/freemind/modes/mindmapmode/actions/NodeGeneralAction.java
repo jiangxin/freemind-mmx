@@ -136,7 +136,7 @@ public class NodeGeneralAction extends AbstractXmlAction {
 				MindMapNodeModel selected = (MindMapNodeModel) it.next();
 				ActionPair pair;
 				if(mDoActionClass != null) {
-					ActorXml actorXml = getMindMapController().getActionFactory().getActor(mDoActionClass);
+					ActorXml actorXml = getMindMapController().getActionRegistry().getActor(mDoActionClass);
 					if (actorXml instanceof NodeActorXml) {
 						NodeActorXml nodeActorXml = (NodeActorXml) actorXml;
 						pair = nodeActorXml.apply(this.modeController.getMap(),

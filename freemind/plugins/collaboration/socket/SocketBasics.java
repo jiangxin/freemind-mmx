@@ -405,12 +405,12 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 
 	protected void registerFilter() {
 		logger.info("Registering filter");
-		getMindMapController().getActionFactory().registerFilter(this);
+		getMindMapController().getActionRegistry().registerFilter(this);
 	}
 
 	protected void deregisterFilter() {
 		logger.info("Deregistering filter");
-		getMindMapController().getActionFactory().deregisterFilter(this);
+		getMindMapController().getActionRegistry().deregisterFilter(this);
 	}
 
 	protected void executeTransaction(final ActionPair pair) {

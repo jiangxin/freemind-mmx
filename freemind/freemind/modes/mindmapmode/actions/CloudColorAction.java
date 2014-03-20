@@ -50,7 +50,7 @@ public class CloudColorAction extends MindmapAction implements ActorXml,
 	public CloudColorAction(MindMapController controller) {
 		super("cloud_color", "images/Colors24.gif", controller);
 		this.controller = controller;
-		controller.getActionFactory().registerActor(this, getDoActionClass());
+		controller.getActionRegistry().registerActor(this, getDoActionClass());
 	}
 
 	public void actionPerformed(ActionEvent e) {

@@ -214,5 +214,7 @@ public interface MindMap extends TreeModel {
 
 	void insertNodeInto(MindMapNode pNode,
 			MindMapNode pParentNode, int pIndex);
+	
+	void removeNodeFromParent(MindMapNode node);
 
 }

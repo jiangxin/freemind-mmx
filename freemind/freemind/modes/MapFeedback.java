@@ -23,6 +23,7 @@ package freemind.modes;
 import java.awt.Font;
 
 import freemind.extensions.NodeHook;
+import freemind.view.mindmapview.ViewFeedback;
 
 /**
  * This interface describes the services, the {@link ModeController} provides to 
@@ -37,6 +38,13 @@ public interface MapFeedback {
 	 * NodeLifetimeListener.
 	 */
 	void fireNodePreDeleteEvent(MindMapNode node);
+	
+	/**
+	 * Is issued after a node is deleted. It is issued via
+	 * NodeLifetimeListener.
+	 */
+	void fireNodePostDeleteEvent(MindMapNode node, MindMapNode parent);
+	
 	/**
 	 * @param pNode
 	 */
@@ -99,4 +107,15 @@ public interface MapFeedback {
 	 */
 	void invokeHooksRecursively(MindMapNode pNode, MindMap pModel);
 
+	/**
+	 * @return a ViewAbstraction, if a view is attached, null otherwise.
+	 */
+	ViewAbstraction getViewAbstraction();
+	
+	/**
+	 * @return null, if no feedback is available.
+	 */
+	ViewFeedback getViewFeedback();
+
 }
+

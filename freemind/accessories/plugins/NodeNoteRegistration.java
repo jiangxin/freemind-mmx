@@ -318,7 +318,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 
 	public void register() {
 		logger.fine("Registration of note handler.");
-		controller.getActionFactory().registerActor(this, getDoActionClass());
+		controller.getActionRegistry().registerActor(this, getDoActionClass());
 		// moved to registration:
 		noteViewerComponent = getNoteViewerComponent();
 		// register "leave note" action:
@@ -354,7 +354,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 			noteViewerComponent = null;
 		}
 		logger.fine("Deregistration of note undo handler.");
-		controller.getActionFactory().deregisterActor(getDoActionClass());
+		controller.getActionRegistry().deregisterActor(getDoActionClass());
 	}
 
 	public void showNotesPanel() {

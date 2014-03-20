@@ -56,7 +56,7 @@ public class NewChildActor extends XmlActorAdapter {
 		NewNodeAction addNodeAction = (NewNodeAction) action;
 		NodeAdapter parent = getNodeFromID(addNodeAction.getNode());
 		int index = addNodeAction.getIndex();
-		MindMapNode newNode = getModeController().newNode("", parent.getMap());
+		MindMapNode newNode = getExMapFeedback().newNode("", parent.getMap());
 		newNode.setLeft(addNodeAction.getPosition().equals("left"));
 		String newId = addNodeAction.getNewId();
 		String givenId = getLinkRegistry()
@@ -66,7 +66,7 @@ public class NewChildActor extends XmlActorAdapter {
 					+ "' was not given to the node. It received '" + givenId
 					+ "'.");
 		}
-		getModeController().insertNodeInto(newNode, parent, index);
+		getExMapFeedback().insertNodeInto(newNode, parent, index);
 		// call hooks:
 		for (Iterator i = parent.getActivatedHooks().iterator(); i.hasNext();) {
 			PermanentNodeHook hook = (PermanentNodeHook) i.next();
@@ -76,7 +76,7 @@ public class NewChildActor extends XmlActorAdapter {
 	}
 
 	protected MindMapLinkRegistry getLinkRegistry() {
-		return getMapFeedback().getMap().getLinkRegistry();
+		return getExMapFeedback().getMap().getLinkRegistry();
 	}
 
 	/*
@@ -101,9 +101,9 @@ public class NewChildActor extends XmlActorAdapter {
 		NewNodeAction newNodeAction = getAddNodeAction(parent, index, newId,
 				newNodeIsLeft);
 		// Undo-action
-		DeleteNodeAction deleteAction = getModeController().deleteChild
+		DeleteNodeAction deleteAction = getExMapFeedback().getActorFactory().getDeleteChildActor()
 				.getDeleteNodeAction(newId);
-		getMapFeedback().doTransaction(getMapFeedback().getResourceString("new_child"),
+		getExMapFeedback().doTransaction(getExMapFeedback().getResourceString("new_child"),
 				new ActionPair(newNodeAction, deleteAction));
 		return (MindMapNode) parent.getChildAt(index);
 	}

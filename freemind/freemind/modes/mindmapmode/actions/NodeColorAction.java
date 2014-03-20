@@ -44,7 +44,7 @@ public class NodeColorAction extends MindmapAction implements ActorXml {
 	public NodeColorAction(MindMapController controller) {
 		super("node_color", (String) null, controller);
 		this.controller = controller;
-		controller.getActionFactory().registerActor(this, getDoActionClass());
+		controller.getActionRegistry().registerActor(this, getDoActionClass());
 	}
 
 	public void actionPerformed(ActionEvent e) {

@@ -55,7 +55,7 @@ public class IconAction extends MindmapAction implements ActorXml,
 		this.removeLastIconAction = removeLastIconAction;
 		putValue(Action.SHORT_DESCRIPTION, _icon.getDescription());
 		this.icon = _icon;
-		controller.getActionFactory().registerActor(this, getDoActionClass());
+		controller.getActionRegistry().registerActor(this, getDoActionClass());
 	}
 
 	public void actionPerformed(ActionEvent e) {

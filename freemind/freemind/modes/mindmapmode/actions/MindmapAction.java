@@ -78,7 +78,7 @@ public abstract class MindmapAction extends FreemindAction  {
 
 	public void addActor(ActorXml actor) {
 		// registration:
-		pMindMapController.getActionFactory().registerActor(actor,
+		pMindMapController.getActionRegistry().registerActor(actor,
 				actor.getDoActionClass());
 	}
 

@@ -109,7 +109,7 @@ public class ChangeRootNode extends MindMapNodeHookAdapter {
 		 * @see freemind.extensions.HookRegistration#register()
 		 */
 		public void register() {
-			controller.getActionFactory().registerActor(this,
+			controller.getActionRegistry().registerActor(this,
 					getDoActionClass());
 		}
 
@@ -119,7 +119,7 @@ public class ChangeRootNode extends MindMapNodeHookAdapter {
 		 * @see freemind.extensions.HookRegistration#deRegister()
 		 */
 		public void deRegister() {
-			controller.getActionFactory().deregisterActor(getDoActionClass());
+			controller.getActionRegistry().deregisterActor(getDoActionClass());
 		}
 
 		/*

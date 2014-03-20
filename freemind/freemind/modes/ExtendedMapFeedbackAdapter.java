@@ -1,54 +1,61 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
-*Copyright (C) 2000-2014 Joerg Mueller, Daniel Polansky, Christian Foltin, Dimitri Polivaev and others.
-*
-*See COPYING for Details
-*
-*This program is free software; you can redistribute it and/or
-*modify it under the terms of the GNU General Public License
-*as published by the Free Software Foundation; either version 2
-*of the License, or (at your option) any later version.
-*
-*This program is distributed in the hope that it will be useful,
-*but WITHOUT ANY WARRANTY; without even the implied warranty of
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*GNU General Public License for more details.
-*
-*You should have received a copy of the GNU General Public License
-*along with this program; if not, write to the Free Software
-*Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ *Copyright (C) 2000-2014 Joerg Mueller, Daniel Polansky, Christian Foltin, Dimitri Polivaev and others.
+ *
+ *See COPYING for Details
+ *
+ *This program is free software; you can redistribute it and/or
+ *modify it under the terms of the GNU General Public License
+ *as published by the Free Software Foundation; either version 2
+ *of the License, or (at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program; if not, write to the Free Software
+ *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
 
 package freemind.modes;
 
-import freemind.modes.mindmapmode.actions.xml.ActionFactory;
+import freemind.modes.mindmapmode.MindMapNodeModel;
+import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
+import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
 
 /**
  * @author foltin
  * @date 16.03.2014
  */
 public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
-	implements ExtendedMapFeedback {
+		implements ExtendedMapFeedback {
 
-	private ActionFactory mActionFactory;
+	private ActionRegistry mActionFactory;
 	private MindMapNode mSelectedNode;
+	private XmlActorFactory mActorFactory;
 
 	/**
 	 * 
 	 */
 	public ExtendedMapFeedbackAdapter() {
 		super();
-		mActionFactory = new ActionFactory();
+		mActionFactory = new ActionRegistry();
+		mActorFactory = new XmlActorFactory(this);
+		
 	}
-	
+
 	@Override
-	public ActionFactory getActionFactory() {
+	public ActionRegistry getActionRegistry() {
 		return mActionFactory;
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see freemind.modes.ExtendedMapFeedback#doTransaction(java.lang.String, freemind.modes.mindmapmode.actions.xml.ActionPair)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see freemind.modes.ExtendedMapFeedback#doTransaction(java.lang.String,
+	 * freemind.modes.mindmapmode.actions.xml.ActionPair)
 	 */
 	@Override
 	public boolean doTransaction(String pName, ActionPair pPair) {
@@ -76,8 +83,9 @@ public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
 		return getMap().getLinkRegistry().registerLinkTarget(selected);
 	}
 
-	
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see freemind.modes.ExtendedMapFeedback#getSelected()
 	 */
 	@Override
@@ -85,4 +93,24 @@ public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
 		return mSelectedNode;
 	}
 
+	@Override
+	public void insertNodeInto(MindMapNode pNewNode, MindMapNode pParent,
+			int pIndex) {
+		getMap().insertNodeInto(pNewNode, pParent, pIndex);
+	}
+
+	@Override
+	public MindMapNode newNode(Object pUserObject, MindMap pMap) {
+		return new MindMapNodeModel(pUserObject, pMap);
+	}
+
+	@Override
+	public void removeNodeFromParent(MindMapNode pSelectedNode) {
+		getMap().removeNodeFromParent(pSelectedNode);
+	}
+
+	@Override
+	public XmlActorFactory getActorFactory() {
+		return mActorFactory;
+	}	
 }

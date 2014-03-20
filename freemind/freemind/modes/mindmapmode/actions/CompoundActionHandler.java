@@ -42,7 +42,7 @@ public class CompoundActionHandler extends AbstractAction implements ActorXml {
 
 	public CompoundActionHandler(MindMapController c) {
 		this.c = c;
-		this.c.getActionFactory().registerActor(this, getDoActionClass());
+		this.c.getActionRegistry().registerActor(this, getDoActionClass());
 	}
 
 	/*
@@ -59,7 +59,7 @@ public class CompoundActionHandler extends AbstractAction implements ActorXml {
 			Object obj = actions[i];
 			if (obj instanceof XmlAction) {
 				XmlAction xmlAction = (XmlAction) obj;
-				ActorXml actor = c.getActionFactory().getActor(xmlAction);
+				ActorXml actor = c.getActionRegistry().getActor(xmlAction);
 				actor.act(xmlAction);
 			}
 		}

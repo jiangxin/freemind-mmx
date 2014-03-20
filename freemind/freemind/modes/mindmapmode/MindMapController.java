@@ -210,7 +210,7 @@ import freemind.modes.mindmapmode.actions.UnderlinedAction;
 import freemind.modes.mindmapmode.actions.UndoAction;
 import freemind.modes.mindmapmode.actions.UsePlainTextAction;
 import freemind.modes.mindmapmode.actions.UseRichFormattingAction;
-import freemind.modes.mindmapmode.actions.xml.ActionFactory;
+import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.DefaultActionHandler;
 import freemind.modes.mindmapmode.actions.xml.UndoActionHandler;
@@ -373,7 +373,7 @@ public class MindMapController extends ControllerAdapter implements
 	// for MouseEventHandlers
 	private HashSet mRegisteredMouseWheelEventHandler = new HashSet();
 
-	private ActionFactory actionFactory;
+	private ActionRegistry actionFactory;
 	private Vector hookActions;
 	// Mode mode;
 	private MindMapPopupMenu popupmenu;
@@ -514,7 +514,7 @@ public class MindMapController extends ControllerAdapter implements
 			logger = getFrame().getLogger(this.getClass().getName());
 		}
 		// create action factory:
-		actionFactory = new ActionFactory();
+		actionFactory = new ActionRegistry();
 		// create compound handler, that evaluates the compound xml actions.
 		compound = new CompoundActionHandler(this);
 		// create node information timer and actions. They don't fire, until
@@ -529,7 +529,6 @@ public class MindMapController extends ControllerAdapter implements
 	protected void init() {
 		logger.info("createXmlActions");
 		mActorFactory = new XmlActorFactory(this);
-		mActorFactory.createActors();
 		logger.info("createIconActions");
 		// create standard actions:
 		createStandardActions();
@@ -570,9 +569,9 @@ public class MindMapController extends ControllerAdapter implements
 		// register default action handler:
 		// the executor must be the first here, because it is executed last
 		// then.
-		getActionFactory().registerHandler(
-				new DefaultActionHandler(getActionFactory()));
-		getActionFactory().registerUndoHandler(
+		getActionRegistry().registerHandler(
+				new DefaultActionHandler(getActionRegistry()));
+		getActionRegistry().registerUndoHandler(
 				new UndoActionHandler(this, undo, redo));
 		// debug:
 		// getActionFactory().registerHandler(
@@ -664,10 +663,10 @@ public class MindMapController extends ControllerAdapter implements
 		mRemoveAttributeActor.setInsertAttributeActor(mInsertAttributeActor);
 		mRemoveAttributeActor.setAddAttributeActor(mAddAttributeActor);
 		mInsertAttributeActor.setRemoveAttributeActor(mRemoveAttributeActor);
-		getActionFactory().registerActor(mAddAttributeActor, mAddAttributeActor.getDoActionClass());
-		getActionFactory().registerActor(mSetAttributeActor, mSetAttributeActor.getDoActionClass());
-		getActionFactory().registerActor(mInsertAttributeActor, mInsertAttributeActor.getDoActionClass());
-		getActionFactory().registerActor(mRemoveAttributeActor, mRemoveAttributeActor.getDoActionClass());
+		getActionRegistry().registerActor(mAddAttributeActor, mAddAttributeActor.getDoActionClass());
+		getActionRegistry().registerActor(mSetAttributeActor, mSetAttributeActor.getDoActionClass());
+		getActionRegistry().registerActor(mInsertAttributeActor, mInsertAttributeActor.getDoActionClass());
+		getActionRegistry().registerActor(mRemoveAttributeActor, mRemoveAttributeActor.getDoActionClass());
 	}
 
 	/**
@@ -1862,7 +1861,7 @@ public class MindMapController extends ControllerAdapter implements
 	}
 
 	public void deleteNode(MindMapNode selectedNode) {
-		deleteChild.deleteNode(selectedNode);
+		mActorFactory.getDeleteChildActor().deleteNode(selectedNode);
 	}
 
 	public void toggleFolded() {
@@ -2100,8 +2099,12 @@ public class MindMapController extends ControllerAdapter implements
 		}
 	}
 
-	public ActionFactory getActionFactory() {
+	public ActionRegistry getActionRegistry() {
 		return actionFactory;
+	}
+	
+	public XmlActorFactory getActorFactory() {
+		return mActorFactory;
 	}
 
 	protected class EditLongAction extends MindmapAction {
@@ -2362,6 +2365,7 @@ public class MindMapController extends ControllerAdapter implements
 
 	public void insertNodeInto(MindMapNode newNode, MindMapNode parent,
 			int index) {
+		// geht auch mit mapFeedback.nodeChanged()
 		setSaved(false);
 		super.insertNodeInto(newNode, parent, index);
 	}
@@ -2433,7 +2437,7 @@ public class MindMapController extends ControllerAdapter implements
 		EditNoteToNodeAction doAction = createEditNoteToNodeAction(node, text);
 		EditNoteToNodeAction undoAction = createEditNoteToNodeAction(node,
 				oldNoteText);
-		getActionFactory().doTransaction(ACCESSORIES_PLUGINS_NODE_NOTE,
+		getActionRegistry().doTransaction(ACCESSORIES_PLUGINS_NODE_NOTE,
 				new ActionPair(doAction, undoAction));
 	}
 
@@ -2565,5 +2569,5 @@ public class MindMapController extends ControllerAdapter implements
 	public void out(String pFormat) {
 		getFrame().out(pFormat);
 	}
-
+	
 }

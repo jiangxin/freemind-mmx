@@ -246,13 +246,13 @@ public class ClonePasteAction extends MindMapNodeHookAdapter {
 				sShowIcon = Resources.getInstance().getBoolProperty(
 						FreeMind.RESOURCES_DON_T_SHOW_CLONE_ICONS);
 			}
-			controller.getActionFactory().registerFilter(this);
+			controller.getActionRegistry().registerFilter(this);
 			controller.registerNodeSelectionListener(this, false);
 		}
 
 		public void deRegister() {
 			controller.deregisterNodeSelectionListener(this);
-			controller.getActionFactory().deregisterFilter(this);
+			controller.getActionRegistry().deregisterFilter(this);
 		}
 
 		public boolean isEnabled(JMenuItem pItem, Action pAction) {

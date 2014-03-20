@@ -85,12 +85,12 @@ public class PasteAction extends AbstractAction implements ActorXml {
 		}
 
 		setEnabled(false);
-		this.mMindMapController.getActionFactory().registerActor(this,
+		this.mMindMapController.getActionRegistry().registerActor(this,
 				getDoActionClass());
 
 		// special undo handler for paste.
 		mUndoPasteHandler = new UndoPasteHandler(mMindMapController);
-		this.mMindMapController.getActionFactory().registerActor(
+		this.mMindMapController.getActionRegistry().registerActor(
 				mUndoPasteHandler, UndoPasteNodeAction.class);
 
 	}

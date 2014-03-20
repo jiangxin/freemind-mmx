@@ -91,11 +91,11 @@ public class LogFileViewer extends MindMapHookAdapter implements
 			if (!mPrintActionHandler.containsKey(modeController)) {
 				PrintActionHandler printActionHandler = new freemind.modes.mindmapmode.actions.xml.PrintActionHandler(
 						modeController);
-				modeController.getActionFactory().registerHandler(
+				modeController.getActionRegistry().registerHandler(
 						printActionHandler);
 				mPrintActionHandler.put(modeController, printActionHandler);
 			} else {
-				modeController.getActionFactory()
+				modeController.getActionRegistry()
 						.deregisterHandler(
 								(ActionHandler) mPrintActionHandler
 										.get(modeController));

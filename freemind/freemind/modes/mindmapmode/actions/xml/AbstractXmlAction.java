@@ -75,7 +75,7 @@ public abstract class AbstractXmlAction extends MindmapAction {
 		this.actor = actor;
 		if (actor != null) {
 			// registration:
-			getMindMapController().getActionFactory().registerActor(actor,
+			getMindMapController().getActionRegistry().registerActor(actor,
 					actor.getDoActionClass());
 		}
 	}

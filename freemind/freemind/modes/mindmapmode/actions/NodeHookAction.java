@@ -71,7 +71,7 @@ public class NodeHookAction extends MindmapAction implements HookAction,
 		this.mMindMapController = controller;
 		if (logger == null)
 			logger = controller.getFrame().getLogger(this.getClass().getName());
-		controller.getActionFactory().registerActor(this, getDoActionClass());
+		controller.getActionRegistry().registerActor(this, getDoActionClass());
 	}
 
 	public void actionPerformed(ActionEvent arg0) {

@@ -65,7 +65,7 @@ public class UndoPasteHandler implements ActorXml {
 				NodeCoordinate coordinate = new NodeCoordinate(selectedNode,
 						undoAction.getAsSibling(), undoAction.getIsLeft());
 				MindMapNode targetNode = coordinate.getNode();
-				mMindMapController.deleteChild.deleteWithoutUndo(targetNode);
+				mMindMapController.getActorFactory().getDeleteChildActor().deleteWithoutUndo(targetNode);
 				amount--;
 			}
 		}

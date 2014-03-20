@@ -26,16 +26,17 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
-import freemind.controller.Controller;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.mindmapmode.actions.xml.ActionFilter.FinalActionFilter;
 import freemind.modes.mindmapmode.actions.xml.ActionFilter.FirstActionFilter;
 
 /**
+ * Manages the actors and filters for xml transactions inside FreeMind. 
+ * 
  * @author foltin
  * 
  */
-public class ActionFactory {
+public class ActionRegistry {
 
 	/**
 	 * This Vector denotes all handler of the action to be called for each
@@ -52,7 +53,7 @@ public class ActionFactory {
 	/**
 	 *
 	 */
-	public ActionFactory() {
+	public ActionRegistry() {
 		super();
 		if (logger == null) {
 			logger = freemind.main.Resources.getInstance().getLogger(

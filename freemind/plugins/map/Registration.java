@@ -65,7 +65,7 @@ import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.NodeHookAction;
-import freemind.modes.mindmapmode.actions.xml.ActionFactory;
+import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 import freemind.preferences.FreemindPropertyContributor;
@@ -298,12 +298,12 @@ public class Registration implements HookRegistration, ActorXml,
 
 	public void deRegister() {
 		OptionPanel.removeContributor(mOptionContributor);
-		controller.getActionFactory().deregisterActor(getDoActionClass());
+		controller.getActionRegistry().deregisterActor(getDoActionClass());
 	}
 
 	public void register() {
 		OptionPanel.addContributor(mOptionContributor);
-		controller.getActionFactory().registerActor(this, getDoActionClass());
+		controller.getActionRegistry().registerActor(this, getDoActionClass());
 	}
 
 	public void registerMapNode(MapNodePositionHolder pMapNodePositionHolder) {
@@ -409,7 +409,7 @@ public class Registration implements HookRegistration, ActorXml,
 		PlaceNodeXmlAction undoAction = createPlaceNodeXmlActionAction(node,
 				pHolder.getPosition(), pHolder.getMapCenter(),
 				pHolder.getZoom(), pHolder.getTileSource());
-		ActionFactory actionFactory = controller.getActionFactory();
+		ActionRegistry actionFactory = controller.getActionRegistry();
 		actionFactory.doTransaction(PLUGINS_MAP_NODE_POSITION, new ActionPair(
 				doAction, undoAction));
 	}
