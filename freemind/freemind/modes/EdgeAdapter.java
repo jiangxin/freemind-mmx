@@ -44,6 +44,8 @@ public abstract class EdgeAdapter extends LineAdapter implements MindMapEdge {
 	public final static String EDGESTYLE_BEZIER = "bezier";
 	public final static String EDGESTYLE_SHARP_LINEAR = "sharp_linear";
 	public final static String EDGESTYLE_SHARP_BEZIER = "sharp_bezier";
+	public final static String[] EDGESTYLES = new String[] { EDGESTYLE_LINEAR,
+			EDGESTYLE_BEZIER, EDGESTYLE_SHARP_LINEAR, EDGESTYLE_SHARP_BEZIER };
 	public final static int INT_EDGESTYLE_LINEAR = 0;
 	public final static int INT_EDGESTYLE_BEZIER = 1;
 	public final static int INT_EDGESTYLE_SHARP_LINEAR = 2;

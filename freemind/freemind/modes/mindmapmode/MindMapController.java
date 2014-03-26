@@ -1791,7 +1791,7 @@ public class MindMapController extends ControllerAdapter implements
      */
 
 	public void setEdgeStyle(MindMapNode node, String style) {
-		EdgeStyle_bezier.setEdgeStyle(node, style);
+		getActorFactory().getEdgeStyleActor().setEdgeStyle(node, style);
 	}
 
 	/**

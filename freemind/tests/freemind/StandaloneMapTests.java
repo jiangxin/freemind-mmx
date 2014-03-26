@@ -32,6 +32,7 @@ import javax.swing.tree.TreeNode;
 import freemind.controller.MindMapNodesSelection;
 import freemind.main.FreeMind;
 import freemind.main.Tools;
+import freemind.modes.EdgeAdapter;
 import freemind.modes.ExtendedMapFeedbackAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindIcon;
@@ -156,7 +157,6 @@ public class StandaloneMapTests extends FreeMindTestBase {
 			factory.getDeleteChildActor().deleteWithoutUndo(root);
 			assertTrue("Must throw.", false);
 		} catch (IllegalArgumentException e) {
-			freemind.main.Resources.getInstance().logException(e);
 		}
 		factory.getPasteActor().paste(new StringSelection("bla"), root, false, true);
 		assertEquals(amount+1, root.getChildCount());
@@ -180,6 +180,18 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		assertNotNull(firstChild.getCloud());
 		factory.getCloudActor().setCloud(firstChild, false);
 		assertNull(firstChild.getCloud());
+		try {
+			factory.getEdgeStyleActor().setEdgeStyle(firstChild, "bluber");
+			assertTrue("Must throw.", false);
+		} catch (Exception e) {
+		}
+		factory.getEdgeStyleActor().setEdgeStyle(firstChild, EdgeAdapter.EDGESTYLE_SHARP_BEZIER);
+		assertTrue(firstChild.getEdge().hasStyle());
+		assertEquals(EdgeAdapter.EDGESTYLE_SHARP_BEZIER, firstChild.getEdge().getStyle());
+		factory.getEdgeStyleActor().setEdgeStyle(firstChild, null);
+		assertFalse(firstChild.getEdge().hasStyle());
+		assertEquals(EdgeAdapter.EDGESTYLE_BEZIER, firstChild.getEdge().getStyle());
+		
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);
 		

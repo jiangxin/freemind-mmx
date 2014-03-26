@@ -22,7 +22,6 @@ package freemind.modes.browsemode;
 
 import java.awt.Color;
 
-import freemind.main.FreeMindMain;
 import freemind.main.XMLElement;
 import freemind.modes.EdgeAdapter;
 import freemind.modes.MapFeedback;

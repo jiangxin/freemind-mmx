@@ -134,20 +134,7 @@ public class NodeGeneralAction extends AbstractXmlAction {
 			for (ListIterator it = modeController.getSelecteds().listIterator(); it
 					.hasNext();) {
 				MindMapNodeModel selected = (MindMapNodeModel) it.next();
-				ActionPair pair;
-				if(mDoActionClass != null) {
-					ActorXml actorXml = getMindMapController().getActionRegistry().getActor(mDoActionClass);
-					if (actorXml instanceof NodeActorXml) {
-						NodeActorXml nodeActorXml = (NodeActorXml) actorXml;
-						pair = nodeActorXml.apply(this.modeController.getMap(),
-								selected);
-					} else {
-						throw new IllegalArgumentException("ActorXml " + actorXml + " is not a NodeActorXml.");
-					}
-				} else {
-					pair = actor.apply(this.modeController.getMap(),
-							selected);
-				}
+				ActionPair pair = getActionPair(selected);
 				if (pair != null) {
 					doAction.addChoice(pair.getDoAction());
 					undo.addAtChoice(0, pair.getUndoAction());
@@ -159,6 +146,27 @@ public class NodeGeneralAction extends AbstractXmlAction {
 					new ActionPair(doAction, undo));
 		}
 
+	}
+
+	/**
+	 * Override, if you have a different method to get to an actionpair (see EdgeStyleAction).
+	 */
+	protected ActionPair getActionPair(MindMapNodeModel selected) {
+		ActionPair pair = null;
+		if(mDoActionClass != null) {
+			ActorXml actorXml = getMindMapController().getActionRegistry().getActor(mDoActionClass);
+			if (actorXml instanceof NodeActorXml) {
+				NodeActorXml nodeActorXml = (NodeActorXml) actorXml;
+				pair = nodeActorXml.apply(this.modeController.getMap(),
+						selected);
+			} else {
+				throw new IllegalArgumentException("ActorXml " + actorXml + " is not a NodeActorXml.");
+			}
+		} else {
+			pair = actor.apply(this.modeController.getMap(),
+					selected);
+		}
+		return pair;
 	}
 
 	// FIXME: REMOVEME!
