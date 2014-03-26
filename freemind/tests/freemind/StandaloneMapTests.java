@@ -191,6 +191,11 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		factory.getEdgeStyleActor().setEdgeStyle(firstChild, null);
 		assertFalse(firstChild.getEdge().hasStyle());
 		assertEquals(EdgeAdapter.EDGESTYLE_BEZIER, firstChild.getEdge().getStyle());
+		factory.getEdgeWidthActor().setEdgeWidth(firstChild, 8);
+		assertEquals(8, firstChild.getEdge().getWidth());
+		factory.getEdgeWidthActor().setEdgeWidth(firstChild, EdgeAdapter.WIDTH_THIN);
+		assertEquals(EdgeAdapter.WIDTH_THIN, firstChild.getEdge().getWidth());
+		
 		
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);

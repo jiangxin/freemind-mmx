@@ -28,74 +28,28 @@ import javax.swing.Action;
 import javax.swing.JMenuItem;
 
 import freemind.controller.MenuItemSelectedListener;
-import freemind.controller.actions.generated.instance.EdgeWidthFormatAction;
-import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.modes.EdgeAdapter;
-import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
-public class EdgeWidthAction extends NodeGeneralAction implements NodeActorXml, MenuItemSelectedListener {
+public class EdgeWidthAction extends NodeGeneralAction implements MenuItemSelectedListener {
 	private int mWidth;
 
 	public EdgeWidthAction(MindMapController controller, int width) {
 		super(controller, null, null);
 		this.mWidth = width;
 		setName(getWidthTitle(controller, width));
-		addActor(this);
 	}
 
-	public ActionPair apply(MindMap model, MindMapNode selected) {
-		return getActionPair(selected, mWidth);
+	/* (non-Javadoc)
+	 * @see freemind.modes.mindmapmode.actions.NodeGeneralAction#getActionPair(freemind.modes.mindmapmode.MindMapNodeModel)
+	 */
+	@Override
+	protected ActionPair getActionPair(MindMapNodeModel pSelected) {
+		return getMindMapController().getActorFactory().getEdgeWidthActor().getActionPair(pSelected, mWidth);
 	}
-
-	public Class getDoActionClass() {
-		return EdgeWidthFormatAction.class;
-	}
-
-	public void setEdgeWidth(MindMapNode node, int width) {
-		if (width == getWidth(node)) {
-			return;
-		}
-		modeController.doTransaction(
-				(String) getValue(NAME), getActionPair(node, width));
-
-	}
-
-	private ActionPair getActionPair(MindMapNode selected, int width) {
-		EdgeWidthFormatAction styleAction = createEdgeWidthFormatAction(
-				selected, width);
-		EdgeWidthFormatAction undoStyleAction = createEdgeWidthFormatAction(
-				selected, getWidth(selected));
-		return new ActionPair(styleAction, undoStyleAction);
-	}
-
-	public int getWidth(MindMapNode selected) {
-		return ((EdgeAdapter) selected.getEdge()).getRealWidth();
-	}
-
-	private EdgeWidthFormatAction createEdgeWidthFormatAction(
-			MindMapNode selected, int width) {
-		EdgeWidthFormatAction edgeWidthAction = new EdgeWidthFormatAction();
-		edgeWidthAction.setNode(getNodeID(selected));
-		edgeWidthAction.setWidth(width);
-		return edgeWidthAction;
-	}
-
-	public void act(XmlAction action) {
-		if (action instanceof EdgeWidthFormatAction) {
-			EdgeWidthFormatAction edgeWithAction = (EdgeWidthFormatAction) action;
-			MindMapNode node = getNodeFromID(edgeWithAction.getNode());
-			int width = edgeWithAction.getWidth();
-			EdgeAdapter edge = (EdgeAdapter) node.getEdge();
-			if (edge.getRealWidth() != width) {
-				edge.setWidth(width);
-				modeController.nodeChanged(node);
-			}
-		}
-	}
-
+	
 	private static String getWidthTitle(MindMapController controller, int width) {
 		String returnValue;
 		if (width == EdgeAdapter.WIDTH_PARENT) {

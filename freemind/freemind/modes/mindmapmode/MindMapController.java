@@ -1783,7 +1783,7 @@ public class MindMapController extends ControllerAdapter implements
      */
 
 	public void setEdgeWidth(MindMapNode node, int width) {
-		EdgeWidth_1.setEdgeWidth(node, width);
+		getActorFactory().getEdgeWidthActor().setEdgeWidth(node, width);
 	}
 
 	/**
