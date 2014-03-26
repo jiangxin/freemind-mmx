@@ -195,7 +195,9 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		assertEquals(8, firstChild.getEdge().getWidth());
 		factory.getEdgeWidthActor().setEdgeWidth(firstChild, EdgeAdapter.WIDTH_THIN);
 		assertEquals(EdgeAdapter.WIDTH_THIN, firstChild.getEdge().getWidth());
-		
+		String fontFamilyValue = "Symbol";
+		factory.getFontFamilyActor().setFontFamily(firstChild, fontFamilyValue);
+		assertEquals(fontFamilyValue, firstChild.getFontFamilyName());
 		
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);

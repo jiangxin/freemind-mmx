@@ -23,22 +23,15 @@
 
 package freemind.modes.mindmapmode.actions;
 
-import java.awt.Font;
-
-import freemind.controller.actions.generated.instance.FontNodeAction;
-import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.main.Tools;
-import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
-import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 /**
  * @author foltin
  * 
  */
-public class FontFamilyAction extends NodeGeneralAction implements NodeActorXml {
+public class FontFamilyAction extends NodeGeneralAction  {
 	/** This action is used for all fonts, which have to be set first. */
 	private String actionFont;
 
@@ -46,7 +39,6 @@ public class FontFamilyAction extends NodeGeneralAction implements NodeActorXml 
      */
 	public FontFamilyAction(MindMapController modeController) {
 		super(modeController, "font_family", null, (NodeActorXml) null);
-		addActor(this);
 		// default value:
 		actionFont = modeController.getFrame().getProperty("defaultfont");
 	}
@@ -56,54 +48,11 @@ public class FontFamilyAction extends NodeGeneralAction implements NodeActorXml 
 		super.actionPerformed(null);
 	}
 
-	public ActionPair apply(MindMap model, MindMapNode selected) {
-		return getActionPair(selected, actionFont);
-	}
-
-	public Class getDoActionClass() {
-		return FontNodeAction.class;
-	}
-
-	/**
-     */
-	public void setFontFamily(MindMapNode node, String fontFamilyValue) {
-		modeController.doTransaction(
-				(String) getValue(NAME), getActionPair(node, fontFamilyValue));
-	}
-
-	private ActionPair getActionPair(MindMapNode node, String fontFamilyValue) {
-		FontNodeAction fontFamilyAction = createFontNodeAction(node,
-				fontFamilyValue);
-		FontNodeAction undoFontFamilyAction = createFontNodeAction(node,
-				node.getFontFamilyName());
-		return new ActionPair(fontFamilyAction, undoFontFamilyAction);
-	}
-
-	private FontNodeAction createFontNodeAction(MindMapNode node,
-			String fontValue) {
-		FontNodeAction fontFamilyAction = new FontNodeAction();
-		fontFamilyAction.setNode(getNodeID(node));
-		fontFamilyAction.setFont(fontValue);
-		return fontFamilyAction;
-
-	}
-
-	/**
-     *
-     */
-
-	public void act(XmlAction action) {
-		if (action instanceof FontNodeAction) {
-			FontNodeAction fontFamilyAction = (FontNodeAction) action;
-			MindMapNode node = getNodeFromID(fontFamilyAction.getNode());
-			String fontFamily = fontFamilyAction.getFont();
-			if (!Tools.safeEquals(node.getFontFamilyName(), fontFamily)) {
-				((NodeAdapter) node).establishOwnFont();
-				node.setFont(modeController.getController().getFontThroughMap(
-						new Font(fontFamily, node.getFont().getStyle(), node
-								.getFont().getSize())));
-				modeController.nodeChanged(node);
-			}
-		}
+	/* (non-Javadoc)
+	 * @see freemind.modes.mindmapmode.actions.NodeGeneralAction#getActionPair(freemind.modes.mindmapmode.MindMapNodeModel)
+	 */
+	@Override
+	protected ActionPair getActionPair(MindMapNodeModel pSelected) {
+		return getMindMapController().getActorFactory().getFontFamilyActor().getActionPair(pSelected, actionFont);
 	}
 }

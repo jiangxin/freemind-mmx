@@ -1676,7 +1676,7 @@ public class MindMapController extends ControllerAdapter implements
 	}
 
 	public void setFontFamily(MindMapNode node, String fontFamilyValue) {
-		fontFamily.setFontFamily(node, fontFamilyValue);
+		getActorFactory().getFontFamilyActor().setFontFamily(node, fontFamilyValue);
 	}
 
 	public void setNodeColor(MindMapNode node, Color color) {
