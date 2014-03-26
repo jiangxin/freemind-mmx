@@ -24,8 +24,6 @@
 package freemind.controller.filter.condition;
 
 import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Set;
 
 import javax.swing.JComponent;
@@ -33,6 +31,7 @@ import javax.swing.JLabel;
 
 import freemind.controller.Controller;
 import freemind.main.Resources;
+import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
@@ -47,31 +46,8 @@ public class IconContainedCondition implements Condition {
 	}
 
 	public boolean checkNode(Controller c, MindMapNode node) {
-		return iconFirstIndex(node, iconName) != -1
+		return Tools.iconFirstIndex(node, iconName) != -1
 				|| isStateIconContained(node, iconName);
-	}
-
-	static public int iconFirstIndex(MindMapNode node, String iconName) {
-		List icons = node.getIcons();
-		for (ListIterator i = icons.listIterator(); i.hasNext();) {
-			MindIcon nextIcon = (MindIcon) i.next();
-			if (iconName.equals(nextIcon.getName()))
-				return i.previousIndex();
-		}
-		return -1;
-
-	}
-
-	static public int iconLastIndex(MindMapNode node, String iconName) {
-		List icons = node.getIcons();
-		ListIterator i = icons.listIterator(icons.size());
-		while (i.hasPrevious()) {
-			MindIcon nextIcon = (MindIcon) i.previous();
-			if (iconName.equals(nextIcon.getName()))
-				return i.nextIndex();
-		}
-		return -1;
-
 	}
 
 	private static boolean isStateIconContained(MindMapNode node,

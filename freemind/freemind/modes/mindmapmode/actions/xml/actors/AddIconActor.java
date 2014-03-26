@@ -22,7 +22,7 @@ package freemind.modes.mindmapmode.actions.xml.actors;
 
 import freemind.controller.actions.generated.instance.AddIconAction;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.controller.filter.condition.IconContainedCondition;
+import freemind.main.Tools;
 import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
@@ -89,7 +89,7 @@ public class AddIconActor extends XmlActorAdapter {
 	/**
      */
 	private ActionPair getToggleIconActionPair(MindMapNode node, MindIcon icon) {
-		int iconIndex = IconContainedCondition.iconFirstIndex(node,
+		int iconIndex = Tools.iconFirstIndex(node,
 				icon.getName());
 		if (iconIndex == -1) {
 			return getAddLastIconActionPair(node, icon);
@@ -103,8 +103,8 @@ public class AddIconActor extends XmlActorAdapter {
 	 */
 	private ActionPair getRemoveIconActionPair(MindMapNode node, MindIcon icon,
 			boolean removeFirst) {
-		int iconIndex = removeFirst ? IconContainedCondition.iconFirstIndex(
-				node, icon.getName()) : IconContainedCondition.iconLastIndex(
+		int iconIndex = removeFirst ? Tools.iconFirstIndex(
+				node, icon.getName()) : Tools.iconLastIndex(
 				node, icon.getName());
 		return iconIndex >= 0 ? getRemoveIconActionPair(node, icon, iconIndex)
 				: null;
