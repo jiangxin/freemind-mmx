@@ -36,6 +36,9 @@ public class XmlActorFactory {
 	private NewChildActor mNewChildActor;
 	private DeleteChildActor mDeleteChildActor;
 	private PasteActor mPasteActor;
+	private RemoveAllIconsActor mRemoveAllIconsActor;
+	private AddIconActor mAddIconActor;
+	private RemoveIconActor mRemoveIconActor;
 
 	public XmlActorFactory(ExtendedMapFeedback pMapFeedback) {
 		mMapFeedback = pMapFeedback;
@@ -44,6 +47,9 @@ public class XmlActorFactory {
 		mNewChildActor = new NewChildActor(mMapFeedback);
 		mDeleteChildActor = new DeleteChildActor(mMapFeedback);
 		mPasteActor = new PasteActor(mMapFeedback);
+		mRemoveAllIconsActor = new RemoveAllIconsActor(mMapFeedback);
+		mAddIconActor = new AddIconActor(mMapFeedback);
+		mRemoveIconActor = new RemoveIconActor(mMapFeedback);
 	}
 	
 	public ItalicNodeActor getItalicActor() {
@@ -64,5 +70,17 @@ public class XmlActorFactory {
 	
 	public PasteActor getPasteActor() {
 		return mPasteActor;
+	}
+	
+	public RemoveAllIconsActor getRemoveAllIconsActor() {
+		return mRemoveAllIconsActor;
+	}
+	
+	public AddIconActor getAddIconActor() {
+		return mAddIconActor;
+	}
+	
+	public RemoveIconActor getRemoveIconActor() {
+		return mRemoveIconActor;
 	}
 }

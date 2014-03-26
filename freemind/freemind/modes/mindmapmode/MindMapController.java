@@ -1722,15 +1722,15 @@ public class MindMapController extends ControllerAdapter implements
 	}
 
 	public void addIcon(MindMapNode node, MindIcon icon) {
-		unknownIconAction.addIcon(node, icon);
+		mActorFactory.getAddIconActor().addIcon(node, icon);
 	}
 
 	public void removeAllIcons(MindMapNode node) {
-		removeAllIconsAction.removeAllIcons(node);
+		mActorFactory.getRemoveAllIconsActor().removeAllIcons(node);
 	}
 
 	public int removeLastIcon(MindMapNode node) {
-		return removeLastIconAction.removeLastIcon(node);
+		return mActorFactory.getRemoveIconActor().removeLastIcon(node);
 	}
 
 	/**

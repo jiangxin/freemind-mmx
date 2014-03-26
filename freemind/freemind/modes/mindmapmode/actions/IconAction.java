@@ -31,19 +31,15 @@ import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
 
 import freemind.controller.actions.generated.instance.AddIconAction;
-import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.controller.filter.condition.IconContainedCondition;
 import freemind.main.Tools;
 import freemind.modes.IconInformation;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapNodeModel;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
-import freemind.modes.mindmapmode.actions.xml.ActorXml;
+import freemind.modes.mindmapmode.actions.xml.actors.AddIconActor;
 
-public class IconAction extends MindmapAction implements ActorXml,
-		IconInformation {
+public class IconAction extends MindmapAction implements IconInformation {
 	public MindIcon icon;
 	private final MindMapController modeController;
 	private final RemoveIconAction removeLastIconAction;
@@ -55,7 +51,7 @@ public class IconAction extends MindmapAction implements ActorXml,
 		this.removeLastIconAction = removeLastIconAction;
 		putValue(Action.SHORT_DESCRIPTION, _icon.getDescription());
 		this.icon = _icon;
-		controller.getActionRegistry().registerActor(this, getDoActionClass());
+		
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -87,7 +83,7 @@ public class IconAction extends MindmapAction implements ActorXml,
 		for (ListIterator it = modeController.getSelecteds().listIterator(); it
 				.hasNext();) {
 			MindMapNodeModel selected = (MindMapNodeModel) it.next();
-			addIcon(selected, icon);
+			getAddIconActor().addIcon(selected, icon);
 		}
 	}
 
@@ -95,7 +91,7 @@ public class IconAction extends MindmapAction implements ActorXml,
 		for (ListIterator it = modeController.getSelecteds().listIterator(); it
 				.hasNext();) {
 			MindMapNodeModel selected = (MindMapNodeModel) it.next();
-			removeIcon(selected, icon, removeFirst);
+			getAddIconActor().removeIcon(selected, icon, removeFirst);
 		}
 	}
 
@@ -103,7 +99,7 @@ public class IconAction extends MindmapAction implements ActorXml,
 		for (ListIterator it = modeController.getSelecteds().listIterator(); it
 				.hasNext();) {
 			MindMapNodeModel selected = (MindMapNodeModel) it.next();
-			toggleIcon(selected, icon);
+			getAddIconActor().toggleIcon(selected, icon);
 		}
 	}
 
@@ -117,98 +113,22 @@ public class IconAction extends MindmapAction implements ActorXml,
 		}
 	}
 
-	public void addIcon(MindMapNode node, MindIcon icon) {
-		modeController.doTransaction(
-				(String) getValue(NAME), getAddLastIconActionPair(node, icon));
+	
+
+
+	protected AddIconAction createAddIconAction(MindMapNode node,
+			MindIcon icon, int iconIndex) {
+		return getAddIconActor().createAddIconAction(node, icon, iconIndex);
 	}
 
-	private void toggleIcon(MindMapNode node, MindIcon icon) {
-		modeController.doTransaction(
-				(String) getValue(NAME), getToggleIconActionPair(node, icon));
-	}
-
-	private void removeIcon(MindMapNode node, MindIcon icon, boolean removeFirst) {
-		final ActionPair removeIconActionPair = getRemoveIconActionPair(node,
-				icon, removeFirst);
-		if (removeIconActionPair == null) {
-			return;
-		}
-		modeController.doTransaction(
-				(String) getValue(NAME), removeIconActionPair);
-	}
-
-	/**
-     */
-	private ActionPair getAddLastIconActionPair(MindMapNode node, MindIcon icon) {
-		int iconIndex = MindIcon.LAST;
-		return getAddIconActionPair(node, icon, iconIndex);
-	}
-
-	private ActionPair getAddIconActionPair(MindMapNode node, MindIcon icon,
-			int iconIndex) {
-		AddIconAction doAction = createAddIconAction(node, icon, iconIndex);
-		XmlAction undoAction = removeLastIconAction.createRemoveIconXmlAction(
-				node, iconIndex);
-		return new ActionPair(doAction, undoAction);
-	}
-
-	/**
-     */
-	private ActionPair getToggleIconActionPair(MindMapNode node, MindIcon icon) {
-		int iconIndex = IconContainedCondition.iconFirstIndex(node,
-				icon.getName());
-		if (iconIndex == -1) {
-			return getAddLastIconActionPair(node, icon);
-		} else {
-			return getRemoveIconActionPair(node, icon, iconIndex);
-		}
-	}
-
-	/**
-	 * @param removeFirst
-	 */
-	private ActionPair getRemoveIconActionPair(MindMapNode node, MindIcon icon,
-			boolean removeFirst) {
-		int iconIndex = removeFirst ? IconContainedCondition.iconFirstIndex(
-				node, icon.getName()) : IconContainedCondition.iconLastIndex(
-				node, icon.getName());
-		return iconIndex >= 0 ? getRemoveIconActionPair(node, icon, iconIndex)
-				: null;
-	}
-
-	private ActionPair getRemoveIconActionPair(MindMapNode node, MindIcon icon,
-			int iconIndex) {
-		XmlAction doAction = removeLastIconAction.createRemoveIconXmlAction(
-				node, iconIndex);
-		XmlAction undoAction = createAddIconAction(node, icon, iconIndex);
-		return new ActionPair(doAction, undoAction);
-	}
-
-	public void act(XmlAction action) {
-		if (action instanceof AddIconAction) {
-			AddIconAction iconAction = (AddIconAction) action;
-			MindMapNode node = modeController.getNodeFromID(iconAction
-					.getNode());
-			String iconName = iconAction.getIconName();
-			int position = iconAction.getIconPosition();
-			MindIcon icon = MindIcon.factory(iconName);
-			node.addIcon(icon, position);
-			modeController.nodeChanged(node);
-		}
+	protected AddIconActor getAddIconActor() {
+		return getMindMapController().getActorFactory().getAddIconActor();
 	}
 
 	public Class getDoActionClass() {
 		return AddIconAction.class;
 	}
-
-	public AddIconAction createAddIconAction(MindMapNode node, MindIcon icon,
-			int iconPosition) {
-		AddIconAction action = new AddIconAction();
-		action.setNode(node.getObjectId(modeController));
-		action.setIconName(icon.getName());
-		action.setIconPosition(iconPosition);
-		return action;
-	}
+	
 
 	public MindIcon getMindIcon() {
 		return icon;

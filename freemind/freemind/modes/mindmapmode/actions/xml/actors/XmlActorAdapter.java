@@ -98,13 +98,17 @@ public abstract class XmlActorAdapter implements ActorXml {
 		return getExMapFeedback().getNodeID(pNode);
 	}
 
-	public void addActor(ActorXml actor) {
+	protected void addActor(ActorXml actor) {
 		this.mActor = actor;
 		if (actor != null) {
 			// registration:
 			getExMapFeedback().getActionRegistry().registerActor(actor,
 					actor.getDoActionClass());
 		}
+	}
+	
+	protected XmlActorFactory getXmlActorFactory() {
+		return getExMapFeedback().getActorFactory();
 	}
 	
 }

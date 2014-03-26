@@ -32,6 +32,7 @@ import freemind.main.FreeMind;
 import freemind.main.Tools;
 import freemind.modes.ExtendedMapFeedbackAdapter;
 import freemind.modes.MapAdapter;
+import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController.StringReaderCreator;
@@ -157,6 +158,21 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		}
 		factory.getPasteActor().paste(new StringSelection("bla"), root, false, true);
 		assertEquals(amount+1, root.getChildCount());
+		assertEquals(0, root.getIcons().size());
+		MindIcon icon = MindIcon.factory("attach");
+		factory.getAddIconActor().addIcon(root, icon);
+		assertEquals(1, root.getIcons().size());
+		factory.getRemoveIconActor().removeLastIcon(root);
+		assertEquals(0, root.getIcons().size());
+		factory.getRemoveIconActor().removeLastIcon(root);
+		factory.getAddIconActor().addIcon(root, icon);
+		factory.getAddIconActor().addIcon(root, icon);
+		factory.getAddIconActor().addIcon(root, icon);
+		factory.getAddIconActor().addIcon(root, icon);
+		factory.getAddIconActor().addIcon(root, icon);
+		assertEquals(5, root.getIcons().size());
+		factory.getRemoveAllIconsActor().removeAllIcons(root);
+		assertEquals(0, root.getIcons().size());
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);
 		

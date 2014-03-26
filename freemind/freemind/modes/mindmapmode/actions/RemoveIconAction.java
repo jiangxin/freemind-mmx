@@ -23,29 +23,21 @@
 
 package freemind.modes.mindmapmode.actions;
 
-import java.util.List;
-
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.KeyStroke;
 
-import freemind.controller.actions.generated.instance.AddIconAction;
 import freemind.controller.actions.generated.instance.RemoveIconXmlAction;
-import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Tools;
 import freemind.modes.IconInformation;
-import freemind.modes.MindIcon;
-import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 /**
  * @author foltin
  * 
  */
 public class RemoveIconAction extends NodeGeneralAction implements
-		NodeActorXml, IconInformation {
+		IconInformation {
 
 	private IconAction iconAction;
 
@@ -53,51 +45,10 @@ public class RemoveIconAction extends NodeGeneralAction implements
      */
 	public RemoveIconAction(MindMapController modeController) {
 		super(modeController, "remove_last_icon", "images/remove.png");
-		addActor(this);
+		setDoActionClass(RemoveIconXmlAction.class);
 	}
 
-	public ActionPair apply(MindMap model, MindMapNode selected) {
-		List icons = selected.getIcons();
-		if (icons.size() == 0)
-			return null;
-		AddIconAction undoAction = iconAction.createAddIconAction(selected,
-				(MindIcon) icons.get(icons.size() - 1), MindIcon.LAST);
-		return new ActionPair(
-				createRemoveIconXmlAction(selected, MindIcon.LAST), undoAction);
-	}
-
-	public Class getDoActionClass() {
-		return RemoveIconXmlAction.class;
-	}
-
-	public RemoveIconXmlAction createRemoveIconXmlAction(MindMapNode node,
-			int iconPosition) {
-		RemoveIconXmlAction action = new RemoveIconXmlAction();
-		action.setNode(node.getObjectId(modeController));
-		action.setIconPosition(iconPosition);
-		return action;
-	}
-
-	public int removeLastIcon(MindMapNode node) {
-		modeController.doTransaction(
-				(String) getValue(NAME), apply(modeController.getMap(), node));
-		return node.getIcons().size();
-	}
-
-	/**
-    *
-    */
-
-	public void act(XmlAction action) {
-		if (action instanceof freemind.controller.actions.generated.instance.RemoveIconXmlAction) {
-			freemind.controller.actions.generated.instance.RemoveIconXmlAction removeAction = (freemind.controller.actions.generated.instance.RemoveIconXmlAction) action;
-			MindMapNode node = modeController.getNodeFromID(removeAction
-					.getNode());
-			int position = removeAction.getIconPosition();
-			node.removeIcon(position);
-			modeController.nodeChanged(node);
-		}
-	}
+	
 
 	/**
 	 * @param iconAction
