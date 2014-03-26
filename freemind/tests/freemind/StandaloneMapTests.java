@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Vector;
 
+import javax.swing.tree.TreeNode;
+
 import freemind.controller.MindMapNodesSelection;
 import freemind.main.FreeMind;
 import freemind.main.Tools;
@@ -173,6 +175,11 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		assertEquals(5, root.getIcons().size());
 		factory.getRemoveAllIconsActor().removeAllIcons(root);
 		assertEquals(0, root.getIcons().size());
+		MindMapNode firstChild = (MindMapNode) root.getChildAt(0);
+		factory.getCloudActor().setCloud(firstChild, true);
+		assertNotNull(firstChild.getCloud());
+		factory.getCloudActor().setCloud(firstChild, false);
+		assertNull(firstChild.getCloud());
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);
 		

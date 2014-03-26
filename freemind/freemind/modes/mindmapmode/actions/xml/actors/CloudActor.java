@@ -90,12 +90,13 @@ public class CloudActor extends NodeXmlActorAdapter {
 					if (node.isRoot()) {
 						return;
 					}
-					node.setCloud(new MindMapCloudModel(node,
-							getExMapFeedback()));
+					MindMapCloudModel cloudModel = new MindMapCloudModel(node,
+							getExMapFeedback());
+					node.setCloud(cloudModel);
 					if (nodecloudAction.getColor() != null) {
 						Color color = Tools.xmlToColor(nodecloudAction
 								.getColor());
-						((MindMapCloudModel) node.getCloud()).setColor(color);
+						cloudModel.setColor(color);
 					}
 				} else {
 					node.setCloud(null);

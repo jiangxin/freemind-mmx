@@ -39,6 +39,7 @@ public class XmlActorFactory {
 	private RemoveAllIconsActor mRemoveAllIconsActor;
 	private AddIconActor mAddIconActor;
 	private RemoveIconActor mRemoveIconActor;
+	private CloudActor mCloudActor;
 
 	public XmlActorFactory(ExtendedMapFeedback pMapFeedback) {
 		mMapFeedback = pMapFeedback;
@@ -50,6 +51,7 @@ public class XmlActorFactory {
 		mRemoveAllIconsActor = new RemoveAllIconsActor(mMapFeedback);
 		mAddIconActor = new AddIconActor(mMapFeedback);
 		mRemoveIconActor = new RemoveIconActor(mMapFeedback);
+		mCloudActor = new CloudActor(mMapFeedback);
 	}
 	
 	public ItalicNodeActor getItalicActor() {
@@ -82,5 +84,9 @@ public class XmlActorFactory {
 	
 	public RemoveIconActor getRemoveIconActor() {
 		return mRemoveIconActor;
+	}
+	
+	public CloudActor getCloudActor() {
+		return mCloudActor;
 	}
 }
