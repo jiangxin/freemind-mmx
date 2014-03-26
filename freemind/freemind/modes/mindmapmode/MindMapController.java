@@ -1659,7 +1659,7 @@ public class MindMapController extends ControllerAdapter implements
 
 	// Node editing
 	public void setFontSize(MindMapNode node, String fontSizeValue) {
-		fontSize.setFontSize(node, fontSizeValue);
+		getActorFactory().getFontSizeActor().setFontSize(node, fontSizeValue);
 	}
 
 	/**

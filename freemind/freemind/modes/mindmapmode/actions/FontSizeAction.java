@@ -23,19 +23,15 @@
 
 package freemind.modes.mindmapmode.actions;
 
-import freemind.controller.actions.generated.instance.FontSizeNodeAction;
-import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.main.Tools;
-import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 /**
  * @author foltin
  * 
  */
-public class FontSizeAction extends NodeGeneralAction implements NodeActorXml {
+public class FontSizeAction extends NodeGeneralAction {
 
 	/** This action is used for all sizes, which have to be set first. */
 	private String actionSize;
@@ -44,7 +40,6 @@ public class FontSizeAction extends NodeGeneralAction implements NodeActorXml {
      */
 	public FontSizeAction(MindMapController modeController) {
 		super(modeController, "font_size", null, (NodeActorXml) null);
-		addActor(this);
 		// default value:
 		actionSize = modeController.getFrame().getProperty("defaultfontsize");
 	}
@@ -54,59 +49,11 @@ public class FontSizeAction extends NodeGeneralAction implements NodeActorXml {
 		super.actionPerformed(null);
 	}
 
-	public ActionPair apply(MindMap model, MindMapNode selected) {
-		return getActionPair(selected, actionSize);
-	}
-
-	public Class getDoActionClass() {
-		return FontSizeNodeAction.class;
-	}
-
-	/**
-     */
-	public void setFontSize(MindMapNode node, String fontSizeValue) {
-		if (Tools.safeEquals(fontSizeValue, node.getFontSize())) {
-			return;
-		}
-		modeController.doTransaction(
-				(String) getValue(NAME), getActionPair(node, fontSizeValue));
-
-	}
-
-	private ActionPair getActionPair(MindMapNode node, String fontSizeValue) {
-		FontSizeNodeAction fontSizeAction = createFontSizeNodeAction(node,
-				fontSizeValue);
-		FontSizeNodeAction undoFontSizeAction = createFontSizeNodeAction(node,
-				node.getFontSize());
-		return new ActionPair(fontSizeAction, undoFontSizeAction);
-	}
-
-	private FontSizeNodeAction createFontSizeNodeAction(MindMapNode node,
-			String fontSizeValue) {
-		FontSizeNodeAction fontSizeAction = new FontSizeNodeAction();
-		fontSizeAction.setNode(getNodeID(node));
-		fontSizeAction.setSize(fontSizeValue);
-		return fontSizeAction;
-
-	}
-
-	/**
-     *
-     */
-
-	public void act(XmlAction action) {
-		if (action instanceof FontSizeNodeAction) {
-			FontSizeNodeAction fontSizeAction = (FontSizeNodeAction) action;
-			MindMapNode node = getNodeFromID(fontSizeAction.getNode());
-			try {
-				int size = Integer.valueOf(fontSizeAction.getSize()).intValue();
-				if (!node.getFontSize().equals(fontSizeAction.getSize())) {
-					node.setFontSize(size);
-					modeController.nodeChanged(node);
-				}
-			} catch (NumberFormatException e) {
-				return;
-			}
-		}
+	/* (non-Javadoc)
+	 * @see freemind.modes.mindmapmode.actions.NodeGeneralAction#getActionPair(freemind.modes.mindmapmode.MindMapNodeModel)
+	 */
+	@Override
+	protected ActionPair getActionPair(MindMapNodeModel pSelected) {
+		return getMindMapController().getActorFactory().getFontSizeActor().getActionPair(pSelected, actionSize);
 	}
 }
