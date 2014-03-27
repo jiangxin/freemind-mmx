@@ -2033,7 +2033,7 @@ public class MindMapController extends ControllerAdapter implements
 
 	public void moveNodePosition(MindMapNode node, int parentVGap, int hGap,
 			int shiftY) {
-		moveNodeAction.moveNodeTo(node, parentVGap, hGap, shiftY);
+		getActorFactory().getMoveNodeActor().moveNodeTo(node, parentVGap, hGap, shiftY);
 	}
 
 	// ///////////////////////////////////////////////////////////

@@ -211,7 +211,10 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		String fontSizeValue = "32";
 		factory.getFontSizeActor().setFontSize(firstChild, fontSizeValue);
 		assertEquals(fontSizeValue, firstChild.getFontSize());
-
+		factory.getMoveNodeActor().moveNodeTo(firstChild, 20, 30, 17);
+		assertEquals(20, root.getVGap());
+		assertEquals(30, firstChild.getHGap());
+		assertEquals(17, firstChild.getShiftY());
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);
 

@@ -24,14 +24,9 @@
 package freemind.modes.mindmapmode.actions;
 
 import freemind.controller.actions.generated.instance.MoveNodeXmlAction;
-import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
-import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
-public class MoveNodeAction extends NodeGeneralAction implements NodeActorXml {
+public class MoveNodeAction extends NodeGeneralAction  {
 	private final MindMapController modeController;
 
 	/**
@@ -39,59 +34,8 @@ public class MoveNodeAction extends NodeGeneralAction implements NodeActorXml {
 	public MoveNodeAction(MindMapController modeController) {
 		super(modeController, "reset_node_position", (String) null);
 		this.modeController = modeController;
-		addActor(this);
+		setDoActionClass(MoveNodeXmlAction.class);
 	}
-
-	public void act(XmlAction action) {
-		MoveNodeXmlAction moveAction = (MoveNodeXmlAction) action;
-		NodeAdapter node = getNodeFromID(moveAction.getNode());
-		node.setHGap(moveAction.getHGap());
-		node.setShiftY(moveAction.getShiftY());
-		if (!node.isRoot())
-			node.getParentNode().setVGap(moveAction.getVGap());
-		this.modeController.nodeChanged(node);
-	}
-
-	public Class getDoActionClass() {
-		return MoveNodeXmlAction.class;
-	}
-
-	public ActionPair apply(MindMap model, MindMapNode selected) {
-		// reset position
-		if (selected.isRoot())
-			return null;
-		return getActionPair(selected, NodeAdapter.VGAP, NodeAdapter.HGAP, 0);
-	}
-
-	private ActionPair getActionPair(MindMapNode selected, int parentVGap,
-			int hGap, int shiftY) {
-		MoveNodeXmlAction moveAction = moveNode(selected, parentVGap, hGap,
-				shiftY);
-		MoveNodeXmlAction undoAction = moveNode(selected, selected
-				.getParentNode().getVGap(), selected.getHGap(),
-				selected.getShiftY());
-		return new ActionPair(moveAction, undoAction);
-	}
-
-	private MoveNodeXmlAction moveNode(MindMapNode selected, int parentVGap,
-			int hGap, int shiftY) {
-		MoveNodeXmlAction moveNodeAction = new MoveNodeXmlAction();
-		moveNodeAction.setNode(getNodeID(selected));
-		moveNodeAction.setHGap(hGap);
-		moveNodeAction.setVGap(parentVGap);
-		moveNodeAction.setShiftY(shiftY);
-		return moveNodeAction;
-	}
-
-	public void moveNodeTo(MindMapNode node, int parentVGap, int hGap,
-			int shiftY) {
-		if (parentVGap == node.getParentNode().getVGap()
-				&& hGap == node.getHGap() && shiftY == node.getShiftY()) {
-			return;
-		}
-		modeController.doTransaction(
-				(String) getValue(NAME),
-				getActionPair(node, parentVGap, hGap, shiftY));
-	}
+	
 
 }
