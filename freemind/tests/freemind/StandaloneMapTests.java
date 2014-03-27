@@ -224,7 +224,9 @@ public class StandaloneMapTests extends FreeMindTestBase {
 			assertTrue("Must throw.", false);
 		} catch (Exception e) {
 		}
-
+// underline not implemented
+		factory.getUnderlineActor().setUnderlined(firstChild, true);
+		assertTrue(firstChild.isUnderlined());
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);
 
