@@ -24,6 +24,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.util.ListIterator;
 
 import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
@@ -148,5 +149,17 @@ public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
 	 */
 	@Override
 	public void setWaitingCursor(boolean pWaiting) {
+	}
+	
+	@Override
+	public void nodeStyleChanged(MindMapNode node) {
+		nodeChanged(node);
+		final ListIterator childrenFolded = node.childrenFolded();
+		while (childrenFolded.hasNext()) {
+			MindMapNode child = (MindMapNode) childrenFolded.next();
+			if (!(child.hasStyle() && child.getEdge().hasStyle())) {
+				nodeStyleChanged(child);
+			}
+		}
 	}
 }

@@ -45,6 +45,7 @@ public class XmlActorFactory {
 	private FontFamilyActor mFontFamilyActor;
 	private FontSizeActor mFontSizeActor;
 	private MoveNodeActor mMoveNodeActor;
+	private NodeStyleActor mNodeStyleActor;
 
 	public XmlActorFactory(ExtendedMapFeedback pMapFeedback) {
 		mMapFeedback = pMapFeedback;
@@ -62,6 +63,7 @@ public class XmlActorFactory {
 		mFontFamilyActor = new FontFamilyActor(mMapFeedback);
 		mFontSizeActor = new FontSizeActor(mMapFeedback);
 		mMoveNodeActor = new MoveNodeActor(mMapFeedback);
+		mNodeStyleActor = new NodeStyleActor(mMapFeedback);
 	}
 	
 	public ItalicNodeActor getItalicActor() {
@@ -118,5 +120,9 @@ public class XmlActorFactory {
 	
 	public MoveNodeActor getMoveNodeActor() {
 		return mMoveNodeActor;
+	}
+	
+	public NodeStyleActor getNodeStyleActor() {
+		return mNodeStyleActor;
 	}
 }

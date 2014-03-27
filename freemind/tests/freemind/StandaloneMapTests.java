@@ -203,9 +203,10 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		GraphicsEnvironment ge = null;
 		ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		String[] fontNames = ge.getAvailableFontFamilyNames();
-		if(fontNames.length > 0) {
+		if (fontNames.length > 0) {
 			String fontFamilyValue = fontNames[0];
-			factory.getFontFamilyActor().setFontFamily(firstChild, fontFamilyValue);
+			factory.getFontFamilyActor().setFontFamily(firstChild,
+					fontFamilyValue);
 			assertEquals(fontFamilyValue, firstChild.getFontFamilyName());
 		}
 		String fontSizeValue = "32";
@@ -215,6 +216,15 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		assertEquals(20, root.getVGap());
 		assertEquals(30, firstChild.getHGap());
 		assertEquals(17, firstChild.getShiftY());
+		factory.getNodeStyleActor()
+				.setStyle(firstChild, MindMapNode.STYLE_FORK);
+		assertEquals(MindMapNodeModel.STYLE_FORK, firstChild.getStyle());
+		try {
+			factory.getNodeStyleActor().setStyle(firstChild, "bla");
+			assertTrue("Must throw.", false);
+		} catch (Exception e) {
+		}
+
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);
 

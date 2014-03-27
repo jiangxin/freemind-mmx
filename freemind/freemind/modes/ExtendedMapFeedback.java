@@ -88,4 +88,6 @@ public interface ExtendedMapFeedback extends MapFeedback {
 
 	void setWaitingCursor(boolean waiting);
 	
+	void nodeStyleChanged(MindMapNode pNode);
+	
 }

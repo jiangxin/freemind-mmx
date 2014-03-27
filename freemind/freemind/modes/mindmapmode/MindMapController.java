@@ -1799,7 +1799,7 @@ public class MindMapController extends ControllerAdapter implements
      */
 
 	public void setNodeStyle(MindMapNode node, String style) {
-		fork.setStyle(node, style);
+		getActorFactory().getNodeStyleActor().setStyle(node, style);
 	}
 
 	@Override
