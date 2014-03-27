@@ -33,11 +33,7 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 
 import freemind.controller.actions.generated.instance.CompoundAction;
-import freemind.controller.actions.generated.instance.NodeAction;
-import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Tools;
-import freemind.modes.MindMapNode;
-import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
@@ -47,8 +43,6 @@ import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 public class NodeGeneralAction extends AbstractXmlAction {
 	protected final MindMapController modeController;
-
-	private freemind.modes.mindmapmode.actions.NodeActorXml actor;
 
 	SingleNodeOperation singleNodeOperation;
 
@@ -71,7 +65,6 @@ public class NodeGeneralAction extends AbstractXmlAction {
 		}
 
 		this.singleNodeOperation = null;
-		this.actor = null;
 		if (logger == null) {
 			logger = modeController.getFrame().getLogger(
 					this.getClass().getName());
@@ -97,14 +90,6 @@ public class NodeGeneralAction extends AbstractXmlAction {
 			freemind.modes.mindmapmode.actions.NodeActorXml actor) {
 		this(modeController, textID, iconPath);
 		addActor(actor);
-	}
-
-	// FIXME: REMOVEME!
-	public void addActor(NodeActorXml actor) {
-		this.actor = actor;
-		if (actor != null) {
-			super.addActor(actor);
-		}
 	}
 
 	/**
@@ -163,38 +148,11 @@ public class NodeGeneralAction extends AbstractXmlAction {
 				throw new IllegalArgumentException("ActorXml " + actorXml + " is not a NodeActorXml.");
 			}
 		} else {
-			pair = actor.apply(this.modeController.getMap(),
-					selected);
+			throw new IllegalArgumentException("doActionClass not defined.");
 		}
 		return pair;
 	}
 
-	// FIXME: REMOVEME!
-	protected void execute(ActionPair pair) {
-		modeController.doTransaction(getShortDescription(), pair);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * freemind.controller.actions.FreeMindAction#act(freemind.controller.actions
-	 * .generated.instance.XmlAction)
-	 */
-	public void act(XmlAction action) {
-	}
-
-	// FIXME: REMOVEME!
-	protected NodeAdapter getNodeFromID(String string) {
-		return modeController.getNodeFromID(string);
-	}
-
-	// FIXME: REMOVEME!
-	protected String getNodeID(MindMapNode selected) {
-		// TODO Auto-generated method stub
-		return modeController.getNodeID(selected);
-	}
-	
 	protected void setDoActionClass(Class pDoActionClass) {
 		this.mDoActionClass = pDoActionClass;
 	}
