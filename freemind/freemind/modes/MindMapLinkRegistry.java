@@ -326,8 +326,8 @@ public class MindMapLinkRegistry {
 	}
 
 	/** @return returns all links to this node as {@link MindMapLink} vector. */
-	public Vector getAllLinksIntoMe(MindMapNode target) {
-		Vector returnValue = new Vector();
+	public Vector<MindMapLink> getAllLinksIntoMe(MindMapNode target) {
+		Vector<MindMapLink> returnValue = new Vector<MindMapLink>();
 		String id = getState(target);
 		if (id != null) {
 			Vector vec = getAssignedLinksVector(id);
@@ -338,8 +338,8 @@ public class MindMapLinkRegistry {
 	}
 
 	/** @return returns all links from this node as {@link MindMapLink} vector. */
-	public Vector getAllLinksFromMe(MindMapNode source) {
-		Vector returnValue = new Vector();
+	public Vector<MindMapLink> getAllLinksFromMe(MindMapNode source) {
+		Vector<MindMapLink> returnValue = new Vector<MindMapLink>();
 		Collection vec = (Collection) mSourceToLinks.get(source);
 		if (vec != null) {
 			returnValue.addAll(vec);

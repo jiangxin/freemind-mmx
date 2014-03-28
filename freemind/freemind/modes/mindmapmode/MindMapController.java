@@ -638,7 +638,6 @@ public class MindMapController extends ControllerAdapter implements
 				this);
 		addArrowLinkAction = new AddArrowLinkAction(this);
 		removeArrowLinkAction = new RemoveArrowLinkAction(this, null);
-		addArrowLinkAction.setRemoveAction(removeArrowLinkAction);
 		colorArrowLinkAction = new ColorArrowLinkAction(this, null);
 		changeArrowsInArrowLinkAction = new ChangeArrowsInArrowLinkAction(this,
 				"none", null, null, true, true);
@@ -1738,11 +1737,11 @@ public class MindMapController extends ControllerAdapter implements
      */
 
 	public void addLink(MindMapNode source, MindMapNode target) {
-		addArrowLinkAction.addLink(source, target);
+		getActorFactory().getAddArrowLinkActor().addLink(source, target);
 	}
 
 	public void removeReference(MindMapLink arrowLink) {
-		removeArrowLinkAction.removeReference(arrowLink);
+		getActorFactory().getRemoveArrowLinkActor().removeReference(arrowLink);
 	}
 
 	public void setArrowLinkColor(MindMapLink arrowLink, Color color) {

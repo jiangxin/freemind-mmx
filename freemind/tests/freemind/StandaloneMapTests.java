@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Vector;
 
+import javax.swing.tree.TreeNode;
+
 import freemind.controller.MindMapNodesSelection;
 import freemind.main.FreeMind;
 import freemind.main.Tools;
@@ -36,6 +38,7 @@ import freemind.modes.ExtendedMapFeedbackAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
+import freemind.modes.MindMapLink;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController.StringReaderCreator;
 import freemind.modes.mindmapmode.MindMapMapModel;
@@ -227,6 +230,16 @@ public class StandaloneMapTests extends FreeMindTestBase {
 // underline not implemented
 		factory.getUnderlineActor().setUnderlined(firstChild, true);
 		assertTrue(firstChild.isUnderlined());
+		MindMapNode subChild1 = (MindMapNode) firstChild.getChildAt(0);
+		MindMapNode subChild2 = (MindMapNode) firstChild.getChildAt(1);
+		factory.getAddArrowLinkActor().addLink(subChild1, subChild2);
+		Vector<MindMapLink> mapLinks = mapFeedback.getMap().getLinkRegistry().getAllLinksFromMe(subChild1);
+		assertEquals(1, mapLinks.size());
+		MindMapLink mapLink = mapLinks.firstElement();
+		assertEquals(subChild2, mapLink.getTarget());
+		factory.getRemoveArrowLinkActor().removeReference(mapLink);
+		mapLinks = mapFeedback.getMap().getLinkRegistry().getAllLinksFromMe(subChild1);
+		assertEquals(0, mapLinks.size());
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);
 

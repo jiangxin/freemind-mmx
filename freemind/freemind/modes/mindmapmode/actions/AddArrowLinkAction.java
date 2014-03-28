@@ -26,41 +26,22 @@ package freemind.modes.mindmapmode.actions;
 import java.awt.event.ActionEvent;
 import java.util.List;
 
-import freemind.controller.actions.generated.instance.AddArrowLinkXmlAction;
-import freemind.controller.actions.generated.instance.RemoveArrowLinkXmlAction;
-import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.main.Tools;
-import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.MindMapNode;
-import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
-import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 /**
  * @author foltin
  * 
  */
-public class AddArrowLinkAction extends MindmapAction implements ActorXml {
+public class AddArrowLinkAction extends MindmapAction {
 
 	private final MindMapController modeController;
-
-	private RemoveArrowLinkAction removeAction;
-
-	/**
-	 * @param removeAction
-	 *            The removeAction to set.
-	 */
-	public void setRemoveAction(RemoveArrowLinkAction removeAction) {
-		this.removeAction = removeAction;
-	}
 
 	/**
      */
 	public AddArrowLinkAction(MindMapController modeController) {
 		super("add_link", "images/designer.png", modeController);
 		this.modeController = modeController;
-		addActor(this);
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -73,91 +54,10 @@ public class AddArrowLinkAction extends MindmapAction implements ActorXml {
 			return;
 		}
 		for (int i = 1; i < selecteds.size(); i++) {
-			addLink((MindMapNode) selecteds.get(i),
+			getMindMapController().addLink((MindMapNode) selecteds.get(i),
 					(MindMapNode) selecteds.get(0));
 		}
 	}
 
-	public void act(XmlAction action) {
-		if (action instanceof AddArrowLinkXmlAction) {
-			AddArrowLinkXmlAction arrowAction = (AddArrowLinkXmlAction) action;
-			MindMapNode source = modeController.getNodeFromID(arrowAction
-					.getNode());
-			MindMapNode target = modeController.getNodeFromID(arrowAction
-					.getDestination());
-			String proposedId = arrowAction.getNewId();
-
-			if (getLinkRegistry().getLabel(target) == null) {
-				// call registry to give new label
-				getLinkRegistry().registerLinkTarget(target);
-			}
-			MindMapArrowLinkModel linkModel = new MindMapArrowLinkModel(source,
-					target, modeController);
-			linkModel.setDestinationLabel(getLinkRegistry().getLabel(target));
-			// give label:
-			linkModel.setUniqueId(getLinkRegistry().generateUniqueLinkId(
-					proposedId));
-			// check for other attributes:
-			if (arrowAction.getColor() != null) {
-				linkModel.setColor(Tools.xmlToColor(arrowAction.getColor()));
-			}
-			if (arrowAction.getEndArrow() != null) {
-				linkModel.setEndArrow(arrowAction.getEndArrow());
-			}
-			if (arrowAction.getEndInclination() != null) {
-				linkModel.setEndInclination(Tools.xmlToPoint(arrowAction
-						.getEndInclination()));
-			}
-			if (arrowAction.getStartArrow() != null) {
-				linkModel.setStartArrow(arrowAction.getStartArrow());
-			}
-			if (arrowAction.getStartInclination() != null) {
-				linkModel.setStartInclination(Tools.xmlToPoint(arrowAction
-						.getStartInclination()));
-			}
-			// register link.
-			getLinkRegistry().registerLink(linkModel);
-			modeController.nodeChanged(target);
-			modeController.nodeChanged(source);
-
-		}
-	}
-
-	public Class getDoActionClass() {
-		return AddArrowLinkXmlAction.class;
-	}
-
-	private ActionPair getActionPair(MindMapNode source, MindMapNode target) {
-		AddArrowLinkXmlAction doAction = createAddArrowLinkXmlAction(source,
-				target, getLinkRegistry().generateUniqueLinkId(null));
-		// now, the id is clear:
-		RemoveArrowLinkXmlAction undoAction = removeAction
-				.createRemoveArrowLinkXmlAction(doAction.getNewId());
-		return new ActionPair(doAction, undoAction);
-	}
-
-	public AddArrowLinkXmlAction createAddArrowLinkXmlAction(
-			MindMapNode source, MindMapNode target, String proposedID) {
-		AddArrowLinkXmlAction action = new AddArrowLinkXmlAction();
-		action.setNode(source.getObjectId(modeController));
-		action.setDestination(target.getObjectId(modeController));
-		action.setNewId(proposedID);
-		return action;
-	}
-
-	/**
-	 * Source holds the MindMapArrowLinkModel and points to the id placed in
-	 * target.
-	 */
-	public void addLink(MindMapNode source, MindMapNode target) {
-		modeController.doTransaction(
-				(String) getValue(NAME), getActionPair(source, target));
-	}
-
-	/**
-     */
-	private MindMapLinkRegistry getLinkRegistry() {
-		return modeController.getMap().getLinkRegistry();
-	}
 
 }
