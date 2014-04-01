@@ -1680,7 +1680,7 @@ public class MindMapController extends ControllerAdapter implements
 	}
 
 	public void setNodeBackgroundColor(MindMapNode node, Color color) {
-		nodeBackgroundColor.setNodeBackgroundColor(node, color);
+		getActorFactory().getNodeBackgroundColorActor().setNodeBackgroundColor(node, color);
 	}
 
 	public void blendNodeColor(MindMapNode node) {

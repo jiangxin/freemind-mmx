@@ -263,6 +263,9 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		String newText = "blabla";
 		factory.getEditActor().setNodeText(firstChild, newText);
 		assertEquals(newText, firstChild.getText());
+		Color darkGray = Color.DARK_GRAY;
+		factory.getNodeBackgroundColorActor().setNodeBackgroundColor(firstChild, darkGray);
+		assertEquals(darkGray, firstChild.getBackgroundColor());
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);
 

@@ -29,24 +29,16 @@ import java.awt.event.ActionEvent;
 import java.util.ListIterator;
 
 import freemind.controller.Controller;
-import freemind.controller.actions.generated.instance.NodeBackgroundColorFormatAction;
-import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.main.Tools;
-import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
-import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class NodeBackgroundColorAction extends MindmapAction implements
-		ActorXml {
+public class NodeBackgroundColorAction extends MindmapAction {
 	private final MindMapController controller;
 
 	public NodeBackgroundColorAction(MindMapController controller) {
 		super("node_background_color", (String) null, controller);
 		this.controller = controller;
-		addActor(this);
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -60,7 +52,7 @@ public class NodeBackgroundColorAction extends MindmapAction implements
 		for (ListIterator it = controller.getSelecteds().listIterator(); it
 				.hasNext();) {
 			MindMapNodeModel selected = (MindMapNodeModel) it.next();
-			setNodeBackgroundColor(selected, color);
+			controller.setNodeBackgroundColor(selected, color);
 		}
 	}
 
@@ -83,39 +75,5 @@ public class NodeBackgroundColorAction extends MindmapAction implements
 
 	}
 
-	public void setNodeBackgroundColor(MindMapNode node, Color color) {
-		NodeBackgroundColorFormatAction doAction = createNodeBackgroundColorFormatAction(
-				node, color);
-		NodeBackgroundColorFormatAction undoAction = createNodeBackgroundColorFormatAction(
-				node, node.getBackgroundColor());
-		controller.doTransaction(this.getClass().getName(),
-				new ActionPair(doAction, undoAction));
-	}
-
-	public NodeBackgroundColorFormatAction createNodeBackgroundColorFormatAction(
-			MindMapNode node, Color color) {
-		NodeBackgroundColorFormatAction nodeAction = new NodeBackgroundColorFormatAction();
-		nodeAction.setNode(node.getObjectId(controller));
-		nodeAction.setColor(Tools.colorToXml(color));
-		return nodeAction;
-	}
-
-	public void act(XmlAction action) {
-		if (action instanceof NodeBackgroundColorFormatAction) {
-			NodeBackgroundColorFormatAction nodeColorAction = (NodeBackgroundColorFormatAction) action;
-			Color color = Tools.xmlToColor(nodeColorAction.getColor());
-			MindMapNode node = controller.getNodeFromID(nodeColorAction
-					.getNode());
-			Color oldColor = node.getBackgroundColor();
-			if (!Tools.safeEquals(color, oldColor)) {
-				node.setBackgroundColor(color); // null
-				controller.nodeChanged(node);
-			}
-		}
-	}
-
-	public Class getDoActionClass() {
-		return NodeBackgroundColorFormatAction.class;
-	}
 
 }
