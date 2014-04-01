@@ -182,6 +182,7 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		assertEquals(5, root.getIcons().size());
 		factory.getRemoveAllIconsActor().removeAllIcons(root);
 		assertEquals(0, root.getIcons().size());
+		// cloud
 		MindMapNode firstChild = (MindMapNode) root.getChildAt(0);
 		factory.getCloudActor().setCloud(firstChild, true);
 		assertNotNull(firstChild.getCloud());
@@ -189,6 +190,7 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		assertEquals(Color.CYAN, firstChild.getCloud().getColor());
 		factory.getCloudActor().setCloud(firstChild, false);
 		assertNull(firstChild.getCloud());
+		// edges
 		try {
 			factory.getEdgeStyleActor().setEdgeStyle(firstChild, "bluber");
 			assertTrue("Must throw.", false);
@@ -208,6 +210,8 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		factory.getEdgeWidthActor().setEdgeWidth(firstChild,
 				EdgeAdapter.WIDTH_THIN);
 		assertEquals(EdgeAdapter.WIDTH_THIN, firstChild.getEdge().getWidth());
+		factory.getEdgeColorActor().setEdgeColor(firstChild, Color.GREEN);
+		assertEquals(Color.GREEN, firstChild.getEdge().getColor());
 		GraphicsEnvironment ge = null;
 		ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		String[] fontNames = ge.getAvailableFontFamilyNames();

@@ -1696,7 +1696,7 @@ public class MindMapController extends ControllerAdapter implements
 	}
 
 	public void setEdgeColor(MindMapNode node, Color color) {
-		edgeColor.setEdgeColor(node, color);
+		getActorFactory().getEdgeColorActor().setEdgeColor(node, color);
 	}
 
 	public void applyPattern(MindMapNode node, String patternName) {

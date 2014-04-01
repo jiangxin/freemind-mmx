@@ -28,24 +28,15 @@ import java.awt.event.ActionEvent;
 import java.util.ListIterator;
 
 import freemind.controller.Controller;
-import freemind.controller.actions.generated.instance.EdgeColorFormatAction;
-import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.main.Tools;
-import freemind.modes.EdgeAdapter;
-import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.MindMapEdgeModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
-import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class EdgeColorAction extends MindmapAction implements ActorXml {
+public class EdgeColorAction extends MindmapAction {
 	private final MindMapController controller;
 
 	public EdgeColorAction(MindMapController controller) {
 		super("edge_color", controller);
 		this.controller = controller;
-		addActor(this);
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -58,57 +49,9 @@ public class EdgeColorAction extends MindmapAction implements ActorXml {
 		for (ListIterator it = controller.getSelecteds().listIterator(); it
 				.hasNext();) {
 			MindMapNodeModel selected = (MindMapNodeModel) it.next();
-			setEdgeColor(selected, color);
+			controller.setEdgeColor(selected, color);
 		}
 	}
 
-	public void setEdgeColor(MindMapNode node, Color color) {
-		EdgeColorFormatAction doAction = createEdgeColorFormatAction(node,
-				color);
-		EdgeColorFormatAction undoAction = createEdgeColorFormatAction(node,
-				((EdgeAdapter) node.getEdge()).getRealColor());
-		controller.doTransaction(this.getClass().getName(),
-				new ActionPair(doAction, undoAction));
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * freemind.controller.actions.ActorXml#act(freemind.controller.actions.
-	 * generated.instance.XmlAction)
-	 */
-	public void act(XmlAction action) {
-		if (action instanceof EdgeColorFormatAction) {
-			EdgeColorFormatAction edgeAction = (EdgeColorFormatAction) action;
-			Color color = Tools.xmlToColor(edgeAction.getColor());
-			MindMapNode node = controller.getNodeFromID(edgeAction.getNode());
-			Color oldColor = ((EdgeAdapter) node.getEdge()).getRealColor();
-			if (!Tools.safeEquals(color, oldColor)) {
-				((MindMapEdgeModel) node.getEdge()).setColor(color);
-				controller.nodeChanged(node);
-			}
-		}
-	}
-
-	public EdgeColorFormatAction createEdgeColorFormatAction(MindMapNode node,
-			Color color) {
-		EdgeColorFormatAction edgeAction = new EdgeColorFormatAction();
-		edgeAction.setNode(node.getObjectId(controller));
-		if (color != null) {
-			edgeAction.setColor(Tools.colorToXml(color));
-		}
-		return edgeAction;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see freemind.controller.actions.ActorXml#getDoActionClass()
-	 */
-	public Class getDoActionClass() {
-		return EdgeColorFormatAction.class;
-	}
 
 }
