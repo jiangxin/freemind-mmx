@@ -260,7 +260,9 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		factory.getRemoveArrowLinkActor().removeReference(mapLink);
 		mapLinks = mapFeedback.getMap().getLinkRegistry().getAllLinksFromMe(subChild1);
 		assertEquals(0, mapLinks.size());
-		
+		String newText = "blabla";
+		factory.getEditActor().setNodeText(firstChild, newText);
+		assertEquals(newText, firstChild.getText());
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);
 

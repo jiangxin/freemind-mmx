@@ -30,20 +30,14 @@ import java.awt.event.KeyEvent;
 import java.util.Vector;
 import java.util.regex.Pattern;
 
-import javax.swing.AbstractAction;
 import javax.swing.JOptionPane;
 
 import freemind.common.OptionalDontShowMeAgainDialog;
-import freemind.controller.actions.generated.instance.EditNodeAction;
-import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.FreeMind;
 import freemind.main.HtmlTools;
 import freemind.main.Tools;
 import freemind.modes.MindMapNode;
-import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
-import freemind.modes.mindmapmode.actions.xml.ActorXml;
 import freemind.view.mindmapview.EditNodeBase;
 import freemind.view.mindmapview.EditNodeDialog;
 import freemind.view.mindmapview.EditNodeExternalApplication;
@@ -56,7 +50,7 @@ import freemind.view.mindmapview.NodeView;
 //Node editing
 //
 
-public class EditAction extends MindmapAction implements ActorXml {
+public class EditAction extends MindmapAction {
 	private static final Pattern HTML_HEAD = Pattern.compile(
 			"\\s*<head>.*</head>", Pattern.DOTALL);
 	private final MindMapController mMindMapController;
@@ -65,7 +59,6 @@ public class EditAction extends MindmapAction implements ActorXml {
 	public EditAction(MindMapController modeController) {
 		super("edit_node", modeController);
 		this.mMindMapController = modeController;
-		addActor(this);
 	}
 
 	public void actionPerformed(ActionEvent arg0) {
@@ -73,31 +66,6 @@ public class EditAction extends MindmapAction implements ActorXml {
 		this.mMindMapController.edit(null, false, false);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * freemind.controller.actions.ActorXml#act(freemind.controller.actions.
-	 * generated.instance.XmlAction)
-	 */
-	public void act(XmlAction action) {
-		EditNodeAction editAction = (EditNodeAction) action;
-		NodeAdapter node = this.mMindMapController.getNodeFromID(editAction
-				.getNode());
-		if (!node.toString().equals(editAction.getText())) {
-			node.setUserObject(editAction.getText());
-			this.mMindMapController.nodeChanged(node);
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see freemind.controller.actions.ActorXml#getDoActionClass()
-	 */
-	public Class getDoActionClass() {
-		return EditNodeAction.class;
-	}
 
 	// edit begins with home/end or typing (PN 6.2)
 	public void edit(KeyEvent e, boolean addNew, boolean editLong) {
@@ -238,7 +206,7 @@ public class EditAction extends MindmapAction implements ActorXml {
 						}
 
 						public void ok(String newText) {
-							setNodeText(node.getModel(), newText);
+							mMindMapController.setNodeText(node.getModel(), newText);
 							cancel();
 						}
 
@@ -275,7 +243,7 @@ public class EditAction extends MindmapAction implements ActorXml {
 					}
 
 					public void ok(String newText) {
-						setNodeText(node.getModel(), newText);
+						mMindMapController.setNodeText(node.getModel(), newText);
 						endEdit();
 					}
 
@@ -293,26 +261,6 @@ public class EditAction extends MindmapAction implements ActorXml {
 
 	}
 
-	public void setNodeText(MindMapNode selected, String newText) {
-		String oldText = selected.toString();
-
-		EditNodeAction EditAction = new EditNodeAction();
-		EditAction.setNode(mMindMapController.getNodeID(selected));
-		EditAction.setText(newText);
-
-		EditNodeAction undoEditAction = new EditNodeAction();
-		undoEditAction.setNode(mMindMapController.getNodeID(selected));
-		undoEditAction.setText(oldText);
-
-		mMindMapController.doTransaction(
-				mMindMapController.getText("edit_node"),
-				new ActionPair(EditAction, undoEditAction));
-	}
-
-	private void setHtmlText(final NodeView node, String newText) {
-		final String body = HTML_HEAD.matcher(newText).replaceFirst("");
-		setNodeText(node.getModel(), body);
-	}
 
 	public void stopEditing() {
 		if (mCurrentEditDialog != null) {
@@ -322,4 +270,8 @@ public class EditAction extends MindmapAction implements ActorXml {
 		}
 	}
 
+	private void setHtmlText(final NodeView node, String newText) {
+		final String body = HTML_HEAD.matcher(newText).replaceFirst("");
+		mMindMapController.setNodeText(node.getModel(), body);
+	}
 }

@@ -1771,7 +1771,7 @@ public class MindMapController extends ControllerAdapter implements
 	}
 
 	public void setNodeText(MindMapNode selected, String newText) {
-		edit.setNodeText(selected, newText);
+		getActorFactory().getEditActor().setNodeText(selected, newText);
 	}
 
 	/**
