@@ -22,6 +22,7 @@ package tests.freemind;
 
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
+import java.awt.Point;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.io.IOException;
@@ -38,6 +39,7 @@ import freemind.modes.ExtendedMapFeedbackAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
+import freemind.modes.MindMapArrowLink;
 import freemind.modes.MindMapLink;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController.StringReaderCreator;
@@ -227,7 +229,7 @@ public class StandaloneMapTests extends FreeMindTestBase {
 			assertTrue("Must throw.", false);
 		} catch (Exception e) {
 		}
-// underline not implemented
+		// underline not implemented
 		factory.getUnderlineActor().setUnderlined(firstChild, true);
 		assertTrue(firstChild.isUnderlined());
 		MindMapNode subChild1 = (MindMapNode) firstChild.getChildAt(0);
@@ -235,11 +237,17 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		factory.getAddArrowLinkActor().addLink(subChild1, subChild2);
 		Vector<MindMapLink> mapLinks = mapFeedback.getMap().getLinkRegistry().getAllLinksFromMe(subChild1);
 		assertEquals(1, mapLinks.size());
-		MindMapLink mapLink = mapLinks.firstElement();
+		MindMapArrowLink mapLink = (MindMapArrowLink) mapLinks.firstElement();
 		assertEquals(subChild2, mapLink.getTarget());
+		Point startPoint = new Point(40,50);
+		Point endPoint = new Point(-10,-20);
+		factory.getChangeArrowLinkEndPointsActor().setArrowLinkEndPoints( mapLink, startPoint, endPoint);
+		assertEquals(startPoint, mapLink.getStartInclination());
+		assertEquals(endPoint, mapLink.getEndInclination());
 		factory.getRemoveArrowLinkActor().removeReference(mapLink);
 		mapLinks = mapFeedback.getMap().getLinkRegistry().getAllLinksFromMe(subChild1);
 		assertEquals(0, mapLinks.size());
+		
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);
 

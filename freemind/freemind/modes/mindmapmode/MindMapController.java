@@ -153,7 +153,6 @@ import freemind.modes.mindmapmode.actions.AddAttributeActor;
 import freemind.modes.mindmapmode.actions.AddLocalLinkAction;
 import freemind.modes.mindmapmode.actions.ApplyPatternAction;
 import freemind.modes.mindmapmode.actions.BoldAction;
-import freemind.modes.mindmapmode.actions.ChangeArrowLinkEndPoints;
 import freemind.modes.mindmapmode.actions.ChangeArrowsInArrowLinkAction;
 import freemind.modes.mindmapmode.actions.CloudAction;
 import freemind.modes.mindmapmode.actions.ColorArrowLinkAction;
@@ -485,7 +484,6 @@ public class MindMapController extends ControllerAdapter implements
 	public MoveNodeAction moveNodeAction = null;
 	public ImportExplorerFavoritesAction importExplorerFavorites = null;
 	public ImportFolderStructureAction importFolderStructure = null;
-	public ChangeArrowLinkEndPoints changeArrowLinkEndPoints = null;
 
 	public FindAction find = null;
 	public FindNextAction findNext = null;
@@ -650,7 +648,6 @@ public class MindMapController extends ControllerAdapter implements
 		joinNodes = new JoinNodesAction(this);
 		importExplorerFavorites = new ImportExplorerFavoritesAction(this);
 		importFolderStructure = new ImportFolderStructureAction(this);
-		changeArrowLinkEndPoints = new ChangeArrowLinkEndPoints(this);
 		find = new FindAction(this);
 		findNext = new FindNextAction(this, find);
 		nodeHookAction = new NodeHookAction("no_title", this);
@@ -1760,7 +1757,7 @@ public class MindMapController extends ControllerAdapter implements
 
 	public void setArrowLinkEndPoints(MindMapArrowLink link, Point startPoint,
 			Point endPoint) {
-		changeArrowLinkEndPoints.setArrowLinkEndPoints(link, startPoint,
+		getActorFactory().getChangeArrowLinkEndPointsActor().setArrowLinkEndPoints(link, startPoint,
 				endPoint);
 	}
 
