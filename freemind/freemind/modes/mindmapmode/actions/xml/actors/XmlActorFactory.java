@@ -50,6 +50,7 @@ public class XmlActorFactory {
 	private AddArrowLinkActor mAddArrowLinkActor;
 	private RemoveArrowLinkActor mRemoveArrowLinkActor;
 	private ChangeArrowLinkEndPointsActor mChangeArrowLinkEndPointsActor;
+	private ChangeArrowsInArrowLinkActor mChangeArrowsInArrowLinkActor;
 
 	public XmlActorFactory(ExtendedMapFeedback pMapFeedback) {
 		mMapFeedback = pMapFeedback;
@@ -72,6 +73,7 @@ public class XmlActorFactory {
 		mAddArrowLinkActor = new AddArrowLinkActor(mMapFeedback);
 		mRemoveArrowLinkActor = new RemoveArrowLinkActor(mMapFeedback);
 		mChangeArrowLinkEndPointsActor = new ChangeArrowLinkEndPointsActor(mMapFeedback);
+		mChangeArrowsInArrowLinkActor = new ChangeArrowsInArrowLinkActor(mMapFeedback);
 	}
 	
 	public ItalicNodeActor getItalicActor() {
@@ -148,5 +150,9 @@ public class XmlActorFactory {
 	
 	public ChangeArrowLinkEndPointsActor getChangeArrowLinkEndPointsActor() {
 		return mChangeArrowLinkEndPointsActor;
+	}
+	
+	public ChangeArrowsInArrowLinkActor getChangeArrowsInArrowLinkActor() {
+		return mChangeArrowsInArrowLinkActor;
 	}
 }

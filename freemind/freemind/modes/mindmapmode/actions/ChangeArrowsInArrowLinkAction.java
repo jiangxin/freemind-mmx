@@ -29,18 +29,10 @@ package freemind.modes.mindmapmode.actions;
 
 import java.awt.event.ActionEvent;
 
-import freemind.controller.actions.generated.instance.ArrowLinkArrowXmlAction;
-import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.modes.ArrowLinkAdapter;
-import freemind.modes.MindMapLink;
-import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.mindmapmode.MindMapArrowLinkModel;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
-import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class ChangeArrowsInArrowLinkAction extends MindmapAction implements
-		ActorXml {
+public class ChangeArrowsInArrowLinkAction extends MindmapAction {
 	MindMapArrowLinkModel arrowLink;
 
 	boolean hasStartArrow;
@@ -57,68 +49,11 @@ public class ChangeArrowsInArrowLinkAction extends MindmapAction implements
 		this.arrowLink = arrowLink;
 		this.hasStartArrow = hasStartArrow;
 		this.hasEndArrow = hasEndArrow;
-		addActor(this);
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		changeArrowsOfArrowLink(arrowLink, hasStartArrow, hasEndArrow);
-	}
-
-	public void changeArrowsOfArrowLink(MindMapArrowLinkModel arrowLink,
-			boolean hasStartArrow, boolean hasEndArrow) {
-		controller.doTransaction((String) getValue(NAME),
-				getActionPair(arrowLink, hasStartArrow, hasEndArrow));
-	}
-
-	/**
-     */
-	private ActionPair getActionPair(MindMapArrowLinkModel arrowLink2,
-			boolean hasStartArrow2, boolean hasEndArrow2) {
-		return new ActionPair(createArrowLinkArrowXmlAction(arrowLink2,
-				hasStartArrow2, hasEndArrow2), createArrowLinkArrowXmlAction(
-				arrowLink2, arrowLink2.getStartArrow(),
-				arrowLink2.getEndArrow()));
-	}
-
-	public void act(XmlAction action) {
-		if (action instanceof ArrowLinkArrowXmlAction) {
-			ArrowLinkArrowXmlAction arrowAction = (ArrowLinkArrowXmlAction) action;
-			MindMapLink link = getLinkRegistry().getLinkForId(
-					arrowAction.getId());
-			((ArrowLinkAdapter) link)
-					.setStartArrow(arrowAction.getStartArrow());
-			((ArrowLinkAdapter) link).setEndArrow(arrowAction.getEndArrow());
-			controller.nodeChanged(link.getSource());
-			controller.nodeChanged(link.getTarget());
-		}
-	}
-
-	public Class getDoActionClass() {
-		return ArrowLinkArrowXmlAction.class;
-	}
-
-	private ArrowLinkArrowXmlAction createArrowLinkArrowXmlAction(
-			MindMapArrowLinkModel arrowLink, boolean hasStartArrow,
-			boolean hasEndArrow) {
-		return createArrowLinkArrowXmlAction(arrowLink,
-				(hasStartArrow) ? "Default" : "None", (hasEndArrow) ? "Default"
-						: "None");
-	}
-
-	private ArrowLinkArrowXmlAction createArrowLinkArrowXmlAction(
-			MindMapArrowLinkModel arrowLink, String hasStartArrow,
-			String hasEndArrow) {
-		ArrowLinkArrowXmlAction action = new ArrowLinkArrowXmlAction();
-		action.setStartArrow(hasStartArrow);
-		action.setEndArrow(hasEndArrow);
-		action.setId(arrowLink.getUniqueId());
-		return action;
-	}
-
-	/**
-     */
-	private MindMapLinkRegistry getLinkRegistry() {
-		return controller.getMap().getLinkRegistry();
+		controller.getActorFactory().getChangeArrowsInArrowLinkActor()
+				.changeArrowsOfArrowLink(arrowLink, hasStartArrow, hasEndArrow);
 	}
 
 }

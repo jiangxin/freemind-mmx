@@ -22,7 +22,6 @@ package freemind.modes.mindmapmode;
 
 import java.awt.Point;
 
-import freemind.main.FreeMindMain;
 import freemind.modes.ArrowLinkAdapter;
 import freemind.modes.MapFeedback;
 import freemind.modes.MindMapNode;

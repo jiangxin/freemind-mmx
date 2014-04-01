@@ -75,12 +75,6 @@ public class RemoveArrowLinkActor extends XmlActorAdapter {
 		return RemoveArrowLinkXmlAction.class;
 	}
 
-	/**
-     */
-	private MindMapLinkRegistry getLinkRegistry() {
-		return getExMapFeedback().getMap().getLinkRegistry();
-	}
-
 	public RemoveArrowLinkXmlAction createRemoveArrowLinkXmlAction(String id) {
 		RemoveArrowLinkXmlAction action = new RemoveArrowLinkXmlAction();
 		action.setId(id);

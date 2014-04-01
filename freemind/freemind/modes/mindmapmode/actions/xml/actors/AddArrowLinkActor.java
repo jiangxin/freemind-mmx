@@ -117,10 +117,4 @@ public class AddArrowLinkActor extends XmlActorAdapter {
 		execute(getActionPair(source, target));
 	}
 
-	/**
-     */
-	private MindMapLinkRegistry getLinkRegistry() {
-		return getExMapFeedback().getMap().getLinkRegistry();
-	}
-
 }

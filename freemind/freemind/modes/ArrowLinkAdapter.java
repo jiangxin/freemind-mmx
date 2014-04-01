@@ -29,6 +29,15 @@ import freemind.main.XMLElement;
 public abstract class ArrowLinkAdapter extends LinkAdapter implements
 		MindMapArrowLink {
 
+	/**
+	 * 
+	 */
+	private static final String ARROW_DEFAULT_UP = "DEFAULT";
+	/**
+	 * 
+	 */
+	private static final String ARROW_NONE_UC = "NONE";
+
 	/** the zero is the start point of the line; */
 	protected Point startInclination;
 	/** the zero is the end point of the line; */
@@ -40,8 +49,8 @@ public abstract class ArrowLinkAdapter extends LinkAdapter implements
 	public ArrowLinkAdapter(MindMapNode source, MindMapNode target,
 			MapFeedback pMapFeedback) {
 		super(source, target, pMapFeedback);
-		startArrow = "None";
-		endArrow = "Default";
+		startArrow = ARROW_NONE;
+		endArrow = ARROW_DEFAULT;
 	}
 
 	public Point getStartInclination() {
@@ -73,11 +82,11 @@ public abstract class ArrowLinkAdapter extends LinkAdapter implements
 	}
 
 	public void setStartArrow(String startArrow) {
-		if (startArrow == null || startArrow.toUpperCase().equals("NONE")) {
-			this.startArrow = "None";
+		if (startArrow == null || startArrow.toUpperCase().equals(ARROW_NONE_UC)) {
+			this.startArrow = ARROW_NONE;
 			return;
-		} else if (startArrow.toUpperCase().equals("DEFAULT")) {
-			this.startArrow = "Default";
+		} else if (startArrow.toUpperCase().equals(ARROW_DEFAULT_UP)) {
+			this.startArrow = ARROW_DEFAULT;
 			return;
 		}
 		// dont change:
@@ -85,11 +94,11 @@ public abstract class ArrowLinkAdapter extends LinkAdapter implements
 	}
 
 	public void setEndArrow(String endArrow) {
-		if (endArrow == null || endArrow.toUpperCase().equals("NONE")) {
-			this.endArrow = "None";
+		if (endArrow == null || endArrow.toUpperCase().equals(ARROW_NONE_UC)) {
+			this.endArrow = ARROW_NONE;
 			return;
-		} else if (endArrow.toUpperCase().equals("DEFAULT")) {
-			this.endArrow = "Default";
+		} else if (endArrow.toUpperCase().equals(ARROW_DEFAULT_UP)) {
+			this.endArrow = ARROW_DEFAULT;
 			return;
 		}
 		// dont change:

@@ -27,14 +27,15 @@ import freemind.view.mindmapview.MapView;
 
 public interface MindMapArrowLink extends MindMapLink {
 
-	// public Color getColor();
-	// public String getStyle();
-	// public Stroke getStroke();
-	// public int getWidth();
-	// public String toString();
+	/**
+	 * Means: yes, it has the default arrow 
+	 */
+	public static final String ARROW_DEFAULT = "Default";
+	/**
+	 * Means: no, it hasn't an arrow at this side.
+	 */
+	public static final String ARROW_NONE = "None";
 
-	// public String getDestinationLabel();
-	// public String getReferenceText();
 	/* for arrows: */
 	public Point getStartInclination(); // the zero is the start point of the
 										// line;

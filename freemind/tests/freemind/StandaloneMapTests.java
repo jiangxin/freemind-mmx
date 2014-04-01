@@ -244,6 +244,9 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		factory.getChangeArrowLinkEndPointsActor().setArrowLinkEndPoints( mapLink, startPoint, endPoint);
 		assertEquals(startPoint, mapLink.getStartInclination());
 		assertEquals(endPoint, mapLink.getEndInclination());
+		factory.getChangeArrowsInArrowLinkActor().changeArrowsOfArrowLink(mapLink, true, false);
+		assertEquals(MindMapArrowLink.ARROW_DEFAULT, mapLink.getStartArrow());
+		assertEquals(MindMapArrowLink.ARROW_NONE, mapLink.getEndArrow());
 		factory.getRemoveArrowLinkActor().removeReference(mapLink);
 		mapLinks = mapFeedback.getMap().getLinkRegistry().getAllLinksFromMe(subChild1);
 		assertEquals(0, mapLinks.size());

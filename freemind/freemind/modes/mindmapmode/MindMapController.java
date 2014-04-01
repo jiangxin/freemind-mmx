@@ -1751,7 +1751,7 @@ public class MindMapController extends ControllerAdapter implements
 
 	public void changeArrowsOfArrowLink(MindMapArrowLinkModel arrowLink,
 			boolean hasStartArrow, boolean hasEndArrow) {
-		changeArrowsInArrowLinkAction.changeArrowsOfArrowLink(arrowLink,
+		getActorFactory().getChangeArrowsInArrowLinkActor().changeArrowsOfArrowLink(arrowLink,
 				hasStartArrow, hasEndArrow);
 	}
 

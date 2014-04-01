@@ -96,10 +96,4 @@ public class ChangeArrowLinkEndPointsActor extends XmlActorAdapter {
 		return action;
 	}
 
-	/**
-     */
-	private MindMapLinkRegistry getLinkRegistry() {
-		return getExMapFeedback().getMap().getLinkRegistry();
-	}
-
 }
