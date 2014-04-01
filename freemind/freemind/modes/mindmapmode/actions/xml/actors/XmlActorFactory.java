@@ -51,6 +51,7 @@ public class XmlActorFactory {
 	private RemoveArrowLinkActor mRemoveArrowLinkActor;
 	private ChangeArrowLinkEndPointsActor mChangeArrowLinkEndPointsActor;
 	private ChangeArrowsInArrowLinkActor mChangeArrowsInArrowLinkActor;
+	private CloudColorActor mCloudColorActor;
 
 	public XmlActorFactory(ExtendedMapFeedback pMapFeedback) {
 		mMapFeedback = pMapFeedback;
@@ -74,6 +75,7 @@ public class XmlActorFactory {
 		mRemoveArrowLinkActor = new RemoveArrowLinkActor(mMapFeedback);
 		mChangeArrowLinkEndPointsActor = new ChangeArrowLinkEndPointsActor(mMapFeedback);
 		mChangeArrowsInArrowLinkActor = new ChangeArrowsInArrowLinkActor(mMapFeedback);
+		mCloudColorActor = new CloudColorActor(mMapFeedback);
 	}
 	
 	public ItalicNodeActor getItalicActor() {
@@ -154,5 +156,9 @@ public class XmlActorFactory {
 	
 	public ChangeArrowsInArrowLinkActor getChangeArrowsInArrowLinkActor() {
 		return mChangeArrowsInArrowLinkActor;
+	}
+	
+	public CloudColorActor getCloudColorActor() {
+		return mCloudColorActor;
 	}
 }

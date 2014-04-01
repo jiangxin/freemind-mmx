@@ -20,6 +20,7 @@
 
 package tests.freemind;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
@@ -184,6 +185,8 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		MindMapNode firstChild = (MindMapNode) root.getChildAt(0);
 		factory.getCloudActor().setCloud(firstChild, true);
 		assertNotNull(firstChild.getCloud());
+		factory.getCloudColorActor().setCloudColor(firstChild, Color.CYAN);
+		assertEquals(Color.CYAN, firstChild.getCloud().getColor());
 		factory.getCloudActor().setCloud(firstChild, false);
 		assertNull(firstChild.getCloud());
 		try {

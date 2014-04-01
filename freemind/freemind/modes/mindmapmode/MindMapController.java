@@ -1650,7 +1650,7 @@ public class MindMapController extends ControllerAdapter implements
 	}
 
 	public void setCloudColor(MindMapNode node, Color color) {
-		cloudColor.setCloudColor(node, color);
+		mActorFactory.getCloudColorActor().setCloudColor(node, color);
 	}
 
 	// Node editing
