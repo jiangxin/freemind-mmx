@@ -29,22 +29,15 @@ import java.awt.event.ActionEvent;
 import java.util.ListIterator;
 
 import freemind.controller.Controller;
-import freemind.controller.actions.generated.instance.NodeColorFormatAction;
-import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.main.Tools;
-import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapNodeModel;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
-import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class NodeColorAction extends MindmapAction implements ActorXml {
+public class NodeColorAction extends MindmapAction {
 	private final MindMapController controller;
 
 	public NodeColorAction(MindMapController controller) {
 		super("node_color", (String) null, controller);
 		this.controller = controller;
-		controller.getActionRegistry().registerActor(this, getDoActionClass());
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -58,46 +51,9 @@ public class NodeColorAction extends MindmapAction implements ActorXml {
 		for (ListIterator it = controller.getSelecteds().listIterator(); it
 				.hasNext();) {
 			MindMapNodeModel selected = (MindMapNodeModel) it.next();
-			setNodeColor(selected, color);
+			controller.setNodeColor(selected, color);
 		}
 	}
 
-	public void setNodeColor(MindMapNode node, Color color) {
-		if (Tools.safeEquals(color, node.getColor())) {
-			return;
-		}
-		NodeColorFormatAction doAction = createNodeColorFormatAction(node,
-				color);
-		NodeColorFormatAction undoAction = createNodeColorFormatAction(node,
-				node.getColor());
-		controller.doTransaction(this.getClass().getName(),
-				new ActionPair(doAction, undoAction));
-	}
-
-	public NodeColorFormatAction createNodeColorFormatAction(MindMapNode node,
-			Color color) {
-		NodeColorFormatAction nodeAction = new NodeColorFormatAction();
-		nodeAction.setNode(node.getObjectId(controller));
-		nodeAction.setColor(Tools.colorToXml(color));
-		return nodeAction;
-	}
-
-	public void act(XmlAction action) {
-		if (action instanceof NodeColorFormatAction) {
-			NodeColorFormatAction nodeColorAction = (NodeColorFormatAction) action;
-			Color color = Tools.xmlToColor(nodeColorAction.getColor());
-			MindMapNode node = controller.getNodeFromID(nodeColorAction
-					.getNode());
-			Color oldColor = node.getColor();
-			if (!Tools.safeEquals(color, oldColor)) {
-				node.setColor(color); // null
-				controller.nodeChanged(node);
-			}
-		}
-	}
-
-	public Class getDoActionClass() {
-		return NodeColorFormatAction.class;
-	}
 
 }

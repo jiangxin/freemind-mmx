@@ -266,6 +266,8 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		Color darkGray = Color.DARK_GRAY;
 		factory.getNodeBackgroundColorActor().setNodeBackgroundColor(firstChild, darkGray);
 		assertEquals(darkGray, firstChild.getBackgroundColor());
+		factory.getNodeColorActor().setNodeColor(firstChild, darkGray);
+		assertEquals(darkGray, firstChild.getColor());
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);
 
