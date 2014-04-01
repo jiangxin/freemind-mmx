@@ -235,6 +235,7 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		// underline not implemented
 		factory.getUnderlineActor().setUnderlined(firstChild, true);
 		assertTrue(firstChild.isUnderlined());
+		// arrow links
 		MindMapNode subChild1 = (MindMapNode) firstChild.getChildAt(0);
 		MindMapNode subChild2 = (MindMapNode) firstChild.getChildAt(1);
 		factory.getAddArrowLinkActor().addLink(subChild1, subChild2);
@@ -250,6 +251,8 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		factory.getChangeArrowsInArrowLinkActor().changeArrowsOfArrowLink(mapLink, true, false);
 		assertEquals(MindMapArrowLink.ARROW_DEFAULT, mapLink.getStartArrow());
 		assertEquals(MindMapArrowLink.ARROW_NONE, mapLink.getEndArrow());
+		factory.getColorArrowLinkActor().setArrowLinkColor(mapLink, Color.RED);
+		assertEquals(Color.RED, mapLink.getColor());
 		factory.getRemoveArrowLinkActor().removeReference(mapLink);
 		mapLinks = mapFeedback.getMap().getLinkRegistry().getAllLinksFromMe(subChild1);
 		assertEquals(0, mapLinks.size());

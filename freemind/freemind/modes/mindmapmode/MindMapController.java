@@ -1742,7 +1742,7 @@ public class MindMapController extends ControllerAdapter implements
 	}
 
 	public void setArrowLinkColor(MindMapLink arrowLink, Color color) {
-		colorArrowLinkAction.setArrowLinkColor(arrowLink, color);
+		getActorFactory().getColorArrowLinkActor().setArrowLinkColor(arrowLink, color);
 	}
 
 	/**
