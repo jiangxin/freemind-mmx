@@ -21,7 +21,9 @@
 package freemind.modes;
 
 import java.awt.datatransfer.Transferable;
+import java.util.List;
 
+import freemind.extensions.HookFactory;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
 import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
@@ -59,6 +61,8 @@ public interface ExtendedMapFeedback extends MapFeedback {
 	 * @return
 	 */
 	MindMapNode getSelected();
+	
+	void select(MindMapNode pFocussed, List<MindMapNode> pSelecteds);
 
 	/**
 	 * @param pNewNode
@@ -89,5 +93,7 @@ public interface ExtendedMapFeedback extends MapFeedback {
 	void setWaitingCursor(boolean waiting);
 	
 	void nodeStyleChanged(MindMapNode pNode);
+	
+	HookFactory getHookFactory();
 	
 }

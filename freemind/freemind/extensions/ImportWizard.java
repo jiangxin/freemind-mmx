@@ -33,11 +33,10 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.StringTokenizer;
 import java.util.Vector;
-import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import freemind.main.FreeMindMain;
+import freemind.main.Resources;
 
 /**
  * Converts an unqualified class name to import statements by scanning through
@@ -51,13 +50,12 @@ public class ImportWizard {
 	public final String lookFor = ".xml";
 	/** Stores the list of all classes in the classpath */
 	public Vector CLASS_LIST = new Vector(500);
-	private final FreeMindMain mFrame;
-	private static Logger logger = null;
+	protected static java.util.logging.Logger logger = null;
 
-	public ImportWizard(FreeMindMain frame) {
-		this.mFrame = frame;
+	public ImportWizard() {
 		if (logger == null) {
-			logger = frame.getLogger(this.getClass().getName());
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
 		}
 	}
 
@@ -75,7 +73,7 @@ public class ImportWizard {
 		String classPath = System.getProperty("java.class.path");
 		String classPathSeparator = File.pathSeparator;
 		// add the current dir to find more plugins
-		classPath = mFrame.getFreemindBaseDir() + classPathSeparator
+		classPath = Resources.getInstance().getFreemindBaseDir() + classPathSeparator
 				+ classPath;
 		logger.info("Classpath for plugins:" + classPath);
 		// to remove duplicates

@@ -50,9 +50,9 @@ public class HookDescriptorPluginAction extends HookDescriptorBase {
 	private Vector modes;
 	private PluginAction pluginAction;
 
-	public HookDescriptorPluginAction(FreeMindMain frame, String xmlPluginFile,
+	public HookDescriptorPluginAction(String xmlPluginFile,
 			Plugin pluginBase, PluginAction pluginAction) {
-		super(pluginBase, frame, xmlPluginFile);
+		super(pluginBase, xmlPluginFile);
 		this.pluginAction = pluginAction;
 		if (pluginAction.getName() == null) {
 			pluginAction.setName(pluginAction.getLabel());

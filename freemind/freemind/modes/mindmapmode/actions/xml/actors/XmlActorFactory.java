@@ -57,6 +57,7 @@ public class XmlActorFactory {
 	private EditActor mEditActor;
 	private NodeBackgroundColorActor mNodeBackgroundColorActor;
 	private NodeColorActor mNodeColorActor;
+	private AddHookActor mAddHookActor;
 
 	public XmlActorFactory(ExtendedMapFeedback pMapFeedback) {
 		mMapFeedback = pMapFeedback;
@@ -86,6 +87,7 @@ public class XmlActorFactory {
 		mEditActor = new EditActor(mMapFeedback);
 		mNodeBackgroundColorActor = new NodeBackgroundColorActor(mMapFeedback);
 		mNodeColorActor = new NodeColorActor(mMapFeedback);
+		mAddHookActor = new AddHookActor(mMapFeedback);
 	}
 	
 	public ItalicNodeActor getItalicActor() {
@@ -190,5 +192,9 @@ public class XmlActorFactory {
 	
 	public NodeColorActor getNodeColorActor() {
 		return mNodeColorActor;
+	}
+	
+	public AddHookActor getAddHookActor() {
+		return mAddHookActor;
 	}
 }

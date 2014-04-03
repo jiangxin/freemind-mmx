@@ -24,12 +24,15 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.IOException;
+import java.util.List;
 import java.util.ListIterator;
 
+import freemind.extensions.HookFactory;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
 import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
+import freemind.modes.mindmapmode.hooks.MindMapHookFactory;
 
 /**
  * @author foltin
@@ -41,6 +44,7 @@ public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
 	private ActionRegistry mActionFactory;
 	private MindMapNode mSelectedNode;
 	private XmlActorFactory mActorFactory;
+	private MindMapHookFactory nodeHookFactory;
 
 	/**
 	 * 
@@ -162,4 +166,22 @@ public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
 			}
 		}
 	}
+
+	@Override
+	public HookFactory getHookFactory() {
+		// lazy creation.
+		if (nodeHookFactory == null) {
+			nodeHookFactory = new MindMapHookFactory();
+		}
+		return nodeHookFactory;
+	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.ExtendedMapFeedback#select(freemind.modes.MindMapNode, java.util.List)
+	 */
+	@Override
+	public void select(MindMapNode pFocussed, List<MindMapNode> pSelecteds) {
+		mSelectedNode = pFocussed;
+	}
+
 }

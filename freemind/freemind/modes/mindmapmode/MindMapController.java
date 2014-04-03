@@ -1939,11 +1939,11 @@ public class MindMapController extends ControllerAdapter implements
 
 	public void addHook(MindMapNode focussed, List selecteds, String hookName,
 			Properties pHookProperties) {
-		nodeHookAction.addHook(focussed, selecteds, hookName, pHookProperties);
+		getActorFactory().getAddHookActor().addHook(focussed, selecteds, hookName, pHookProperties);
 	}
 
 	public void removeHook(MindMapNode focussed, List selecteds, String hookName) {
-		nodeHookAction.removeHook(focussed, selecteds, hookName);
+		getActorFactory().getAddHookActor().removeHook(focussed, selecteds, hookName);
 	}
 
 	protected class SetLinkByFileChooserAction extends MindmapAction {
@@ -2058,7 +2058,7 @@ public class MindMapController extends ControllerAdapter implements
 	public HookFactory getHookFactory() {
 		// lazy creation.
 		if (nodeHookFactory == null) {
-			nodeHookFactory = new MindMapHookFactory(getFrame());
+			nodeHookFactory = new MindMapHookFactory();
 		}
 		return nodeHookFactory;
 	}

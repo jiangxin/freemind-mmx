@@ -87,8 +87,16 @@ public class Resources implements TextTranslator {
 		return main.getFreemindDirectory();
 	}
 
+	public String getFreemindBaseDir() {
+		return main.getFreemindBaseDir();
+	}
+	
 	public VersionInformation getFreemindVersion() {
 		return main.getFreemindVersion();
+	}
+	
+	public ClassLoader getFreeMindClassLoader() {
+		return main.getFreeMindClassLoader();
 	}
 
 	public int getIntProperty(String key, int defaultValue) {

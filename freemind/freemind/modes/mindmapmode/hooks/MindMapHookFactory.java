@@ -51,15 +51,12 @@ import freemind.extensions.MindMapHook.PluginBaseClassSearcher;
 import freemind.extensions.ModeControllerHook;
 import freemind.extensions.NodeHook;
 import freemind.main.FreeMindMain;
+import freemind.main.Resources;
 import freemind.modes.mindmapmode.MindMapController;
 
 /**
- * @author christianfoltin
- *
- * @file HookFactory.java
- * @package freemind.modes
- */
-/**
+ * Manages the hook available from the class path.
+
  * @author foltin
  * 
  */
@@ -70,10 +67,8 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 	 */
 	private final static String pluginPrefixRegEx = ".*(accessories(/|\\\\)|)plugins(/|\\\\)[^/\\\\]*";
 
-	private FreeMindMain frame;
-
 	// Logging:
-	private java.util.logging.Logger logger;
+	protected static java.util.logging.Logger logger = null;
 
 	private static HashMap pluginInfo = null;
 
@@ -87,9 +82,11 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 	/**
 	 *
 	 */
-	public MindMapHookFactory(FreeMindMain frame) {
-		this.frame = frame;
-		logger = frame.getLogger(this.getClass().getName());
+	public MindMapHookFactory() {
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
 		allRegistrationInstances = new HashMap();
 	}
 
@@ -147,7 +144,7 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 	 */
 	private void actualizePlugins() {
 		if (importWizard == null) {
-			importWizard = new ImportWizard(frame);
+			importWizard = new ImportWizard();
 			importWizard.CLASS_LIST.clear();
 			importWizard.buildClassList();
 			pluginInfo = new HashMap();
@@ -167,7 +164,7 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 					xmlPluginFile = xmlPluginFile.replace('\\', '/')
 							+ importWizard.lookFor;
 					// this is one of our plugins:
-					URL pluginURL = frame.getFreeMindClassLoader().getResource(
+					URL pluginURL = Resources.getInstance().getFreeMindClassLoader().getResource(
 							xmlPluginFile);
 					// unmarshal xml:
 					Plugin plugin = null;
@@ -189,15 +186,13 @@ public class MindMapHookFactory extends HookFactoryAdapter {
 						if (obj instanceof PluginAction) {
 							PluginAction action = (PluginAction) obj;
 							pluginInfo.put(action.getLabel(),
-									new HookDescriptorPluginAction(frame,
-											xmlPluginFile, plugin, action));
+									new HookDescriptorPluginAction(xmlPluginFile, plugin, action));
 							allPlugins.add(action.getLabel());
 
 						} else if (obj instanceof PluginRegistration) {
 							PluginRegistration registration = (PluginRegistration) obj;
 							allRegistrations
-									.add(new HookDescriptorRegistration(frame,
-											xmlPluginFile, plugin, registration));
+									.add(new HookDescriptorRegistration(xmlPluginFile, plugin, registration));
 							// logger.info("Added registration " +
 							// registration.getClassName() +
 							// " to allRegistrations=" + allRegistrations);

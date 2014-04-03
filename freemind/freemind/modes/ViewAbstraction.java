@@ -21,6 +21,7 @@
 package freemind.modes;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import freemind.view.mindmapview.NodeView;
 
@@ -53,6 +54,5 @@ public interface ViewAbstraction {
 	LinkedList<NodeView> getSelecteds();
 
 	NodeView getSelected();
-
 
 }

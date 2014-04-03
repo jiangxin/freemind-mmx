@@ -26,7 +26,6 @@ import java.util.List;
 
 import freemind.controller.actions.generated.instance.Plugin;
 import freemind.controller.actions.generated.instance.PluginRegistration;
-import freemind.main.FreeMindMain;
 
 /**
  * @author foltin
@@ -36,9 +35,9 @@ public class HookDescriptorRegistration extends HookDescriptorBase {
 
 	private final PluginRegistration mRegistration;
 
-	public HookDescriptorRegistration(FreeMindMain frame, String xmlPluginFile,
+	public HookDescriptorRegistration(String xmlPluginFile,
 			Plugin pluginBase, PluginRegistration pRegistration) {
-		super(pluginBase, frame, xmlPluginFile);
+		super(pluginBase, xmlPluginFile);
 		mRegistration = pRegistration;
 	}
 

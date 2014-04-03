@@ -22,7 +22,9 @@ package tests.freemind;
 
 import java.awt.Container;
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -40,6 +42,7 @@ import freemind.controller.MenuBar;
 import freemind.main.FreeMindMain;
 import freemind.main.FreeMindStarter;
 import freemind.main.Resources;
+import freemind.main.Tools;
 import freemind.view.mindmapview.MapView;
 
 /** */
@@ -182,7 +185,14 @@ public class FreeMindMainMock implements FreeMindMain {
 	}
 
 	public ClassLoader getFreeMindClassLoader() {
-		return this.getClass().getClassLoader();
+		ClassLoader classLoader = this.getClass().getClassLoader();
+		try {
+			return new URLClassLoader(new URL[] { Tools.fileToUrl(new File(
+					getFreemindBaseDir())) }, classLoader);
+		} catch (MalformedURLException e) {
+			freemind.main.Resources.getInstance().logException(e);
+			return classLoader;
+		}
 	}
 
 	public String getFreemindBaseDir() {

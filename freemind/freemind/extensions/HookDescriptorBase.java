@@ -34,6 +34,7 @@ import java.util.Vector;
 import freemind.controller.actions.generated.instance.Plugin;
 import freemind.controller.actions.generated.instance.PluginClasspath;
 import freemind.main.FreeMindMain;
+import freemind.main.Resources;
 import freemind.main.Tools;
 
 /**
@@ -44,11 +45,9 @@ public class HookDescriptorBase {
 	public static final String FREEMIND_BASE_DIR_STRING = "${freemind.base.dir}";
 
 	// Logging:
-	private static java.util.logging.Logger logger = null;
+	protected static java.util.logging.Logger logger = null;
 
 	protected final Plugin pluginBase;
-
-	protected final FreeMindMain frame;
 
 	protected final String mXmlPluginFile;
 
@@ -58,13 +57,13 @@ public class HookDescriptorBase {
 	 * @param xmlPluginFile
 	 */
 	public HookDescriptorBase(final Plugin pluginBase,
-			final FreeMindMain frame, final String xmlPluginFile) {
+			final String xmlPluginFile) {
 		super();
 		this.pluginBase = pluginBase;
-		this.frame = frame;
 		mXmlPluginFile = xmlPluginFile;
 		if (logger == null) {
-			logger = frame.getLogger(this.getClass().getName());
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
 		}
 	}
 
@@ -75,7 +74,7 @@ public class HookDescriptorBase {
 			return string;
 		}
 		if (string.startsWith("%")) {
-			return frame.getController().getResourceString(string.substring(1));
+			return Resources.getInstance().getResourceString(string.substring(1));
 		}
 		return string;
 	}
@@ -85,7 +84,7 @@ public class HookDescriptorBase {
 			return string;
 		}
 		if (string.startsWith("%")) {
-			return frame.getProperty(string.substring(1));
+			return Resources.getInstance().getProperty(string.substring(1));
 		}
 		return string;
 	}
@@ -94,7 +93,7 @@ public class HookDescriptorBase {
 	 * @return the relative/absolute(?) position of the plugin xml file.
 	 */
 	private String getPluginDirectory() {
-		return frame.getFreemindBaseDir() + "/"
+		return Resources.getInstance().getFreemindBaseDir() + "/"
 				+ new File(mXmlPluginFile).getParent();
 	}
 
@@ -167,7 +166,7 @@ public class HookDescriptorBase {
 				urls[j++] = Tools.fileToUrl(file);
 			}
 			ClassLoader loader = new URLClassLoader(urls,
-					frame.getFreeMindClassLoader());
+					Resources.getInstance().getFreeMindClassLoader());
 			classLoaderCache.put(key, loader);
 			return loader;
 		} catch (MalformedURLException e) {

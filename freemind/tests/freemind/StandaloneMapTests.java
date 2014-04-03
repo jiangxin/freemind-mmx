@@ -268,6 +268,25 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		assertEquals(darkGray, firstChild.getBackgroundColor());
 		factory.getNodeColorActor().setNodeColor(firstChild, darkGray);
 		assertEquals(darkGray, firstChild.getColor());
+//		// hooks: currently disabled, as too dependent from MindMapController
+//		mapFeedback.getHookFactory().getPossibleNodeHooks();
+//		factory.getAddHookActor().addHook(firstChild,
+//				Tools.getVectorWithSingleElement(firstChild),
+//				"accessories/plugins/BlinkingNodeHook.properties", null);
+//		int timeout = 10;
+//		Color nodeColor = firstChild.getColor();
+//		boolean found = false;
+//		while(timeout -- > 0) {
+//			if(firstChild.getColor() != nodeColor) {
+//				found = true;
+//				break;
+//			}
+//			Thread.sleep(1000);
+//		}
+//		assertTrue(found);
+//		factory.getAddHookActor().addHook(firstChild,
+//				Tools.getVectorWithSingleElement(firstChild),
+//				"accessories/plugins/BlinkingNodeHook.properties", null);
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);
 
