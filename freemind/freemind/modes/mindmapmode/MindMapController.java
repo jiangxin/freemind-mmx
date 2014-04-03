@@ -224,7 +224,7 @@ import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
 public class MindMapController extends ControllerAdapter implements
-		MindMapActions, MapSourceChangedObserver, ExtendedMapFeedback {
+		MindMapActions, MapSourceChangedObserver {
 
 	public static final String REGEXP_FOR_NUMBERS_IN_STRINGS = "([+\\-]?[0-9]*[.,]?[0-9]+)\\b";
 	private static final String ACCESSORIES_PLUGINS_NODE_NOTE = "accessories.plugins.NodeNote";
@@ -2372,17 +2372,6 @@ public class MindMapController extends ControllerAdapter implements
 		NodeView nodeView = getView().getNodeView(selectedNode);
 		getView().deselect(nodeView);
 		getModel().removeNodeFromParent(selectedNode);
-	}
-
-	public void nodeStyleChanged(MindMapNode node) {
-		nodeChanged(node);
-		final ListIterator childrenFolded = node.childrenFolded();
-		while (childrenFolded.hasNext()) {
-			MindMapNode child = (MindMapNode) childrenFolded.next();
-			if (!(child.hasStyle() && child.getEdge().hasStyle())) {
-				nodeStyleChanged(child);
-			}
-		}
 	}
 
 	public void repaintMap() {

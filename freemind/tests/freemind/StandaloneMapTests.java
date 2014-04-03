@@ -30,13 +30,11 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Vector;
 
-import javax.swing.tree.TreeNode;
-
 import freemind.controller.MindMapNodesSelection;
 import freemind.main.FreeMind;
 import freemind.main.Tools;
 import freemind.modes.EdgeAdapter;
-import freemind.modes.ExtendedMapFeedbackAdapter;
+import freemind.modes.ExtendedMapFeedbackImpl;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
@@ -66,12 +64,17 @@ public class StandaloneMapTests extends FreeMindTestBase {
 	 * @author foltin
 	 * @date 21.02.2014
 	 */
-	private final class DemoMapFeedback extends ExtendedMapFeedbackAdapter {
+	private final class DemoMapFeedback extends ExtendedMapFeedbackImpl {
 		MindMap mMap;
 
 		@Override
 		public MindMap getMap() {
 			return mMap;
+		}
+
+		@Override
+		public MindMapNode newNode(Object pUserObject, MindMap pMap) {
+			return new MindMapNodeModel(pUserObject, pMap);
 		}
 
 		@Override
@@ -269,7 +272,6 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		factory.getNodeColorActor().setNodeColor(firstChild, darkGray);
 		assertEquals(darkGray, firstChild.getColor());
 //		// hooks: currently disabled, as too dependent from MindMapController
-//		mapFeedback.getHookFactory().getPossibleNodeHooks();
 //		factory.getAddHookActor().addHook(firstChild,
 //				Tools.getVectorWithSingleElement(firstChild),
 //				"accessories/plugins/BlinkingNodeHook.properties", null);

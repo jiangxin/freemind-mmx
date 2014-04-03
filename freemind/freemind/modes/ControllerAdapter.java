@@ -91,9 +91,6 @@ import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.FreeMindFileDialog.DirectoryResultListener;
 import freemind.modes.common.listeners.MindMapMouseWheelEventHandler;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
-import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
-import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
 import freemind.view.MapModule;
 import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
@@ -105,7 +102,7 @@ import freemind.view.mindmapview.ViewFeedback;
  * default Actions you may want to use for easy editing of your model. Take
  * MindMapController as a sample.
  */
-public abstract class ControllerAdapter implements ModeController,
+public abstract class ControllerAdapter extends ExtendedMapFeedbackAdapter implements ModeController,
 		DirectoryResultListener {
 
 	// Logging:
@@ -1219,23 +1216,6 @@ public abstract class ControllerAdapter implements ModeController,
 		getController().getMapModuleManager().updateMapModuleName();
 	}
 
-	/**
-	 * @throws {@link IllegalArgumentException} when node isn't found.
-	 */
-	public NodeAdapter getNodeFromID(String nodeID) {
-		NodeAdapter node = (NodeAdapter) getMap().getLinkRegistry()
-				.getTargetForId(nodeID);
-		if (node == null) {
-			throw new IllegalArgumentException("Node belonging to the node id "
-					+ nodeID + " not found in map " + getMap().getFile());
-		}
-		return node;
-	}
-
-	public String getNodeID(MindMapNode selected) {
-		return getMap().getLinkRegistry().registerLinkTarget(selected);
-	}
-
 	public MindMapNode getSelected() {
 		final NodeView selectedView = getSelectedView();
 		if (selectedView != null)
@@ -1562,11 +1542,6 @@ public abstract class ControllerAdapter implements ModeController,
 	@Override
 	public NodeView getNodeView(MindMapNode node) {
 		return getView().getNodeView(node);
-	}
-
-	public void insertNodeInto(MindMapNode newNode, MindMapNode parent,
-			int index) {
-		getModel().insertNodeInto(newNode, parent, index);
 	}
 
 	/*
