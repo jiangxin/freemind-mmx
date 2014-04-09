@@ -20,7 +20,10 @@
 
 package freemind.modes;
 
+import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -28,6 +31,7 @@ import freemind.extensions.HookFactory;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
 import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
+import freemind.modes.mindmapmode.hooks.MindMapHookFactory;
 
 /**
  * @author foltin
@@ -37,28 +41,19 @@ public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
 		implements ExtendedMapFeedback {
 
 
+	protected ActionRegistry mActionRegistry;
+	private MindMapNode mSelectedNode;
+	protected XmlActorFactory mActorFactory;
+	private MindMapHookFactory mNodeHookFactory;
+
 	/**
 	 * 
 	 */
 	public ExtendedMapFeedbackAdapter() {
 		super();
-		
-	}
+		mActionRegistry = new ActionRegistry();
+		mActorFactory = new XmlActorFactory(this);
 
-	@Override
-	public ActionRegistry getActionRegistry() {
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see freemind.modes.ExtendedMapFeedback#doTransaction(java.lang.String,
-	 * freemind.modes.mindmapmode.actions.xml.ActionPair)
-	 */
-	@Override
-	public boolean doTransaction(String pName, ActionPair pPair) {
-		return false;
 	}
 
 	/**
@@ -80,16 +75,6 @@ public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
 		return getMap().getLinkRegistry().registerLinkTarget(selected);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see freemind.modes.ExtendedMapFeedback#getSelected()
-	 */
-	@Override
-	public MindMapNode getSelected() {
-		return null;
-	}
-
 	@Override
 	public void insertNodeInto(MindMapNode pNewNode, MindMapNode pParent,
 			int pIndex) {
@@ -106,18 +91,6 @@ public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
 		getMap().removeNodeFromParent(pSelectedNode);
 	}
 
-	@Override
-	public XmlActorFactory getActorFactory() {
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see freemind.modes.ExtendedMapFeedback#copy(freemind.modes.MindMapNode, boolean)
-	 */
-	public Transferable copy(MindMapNode node, boolean saveInvisible) {
-		return null;
-	}	
-	
 	/* (non-Javadoc)
 	 * @see freemind.modes.ExtendedMapFeedback#setWaitingCursor(boolean)
 	 */
@@ -138,15 +111,60 @@ public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
 	}
 
 	@Override
-	public HookFactory getHookFactory() {
-		return null;
+	public ActionRegistry getActionRegistry() {
+		return mActionRegistry;
 	}
 
-	/* (non-Javadoc)
-	 * @see freemind.modes.ExtendedMapFeedback#select(freemind.modes.MindMapNode, java.util.List)
-	 */
+	@Override
+	public boolean doTransaction(String pName, ActionPair pPair) {
+		return mActionRegistry.doTransaction(pName, pPair);
+	}
+
+	@Override
+	public MindMapNode getSelected() {
+		return mSelectedNode;
+	}
+
+	@Override
+	public XmlActorFactory getActorFactory() {
+		return mActorFactory;
+	}
+
+	public Transferable copy(MindMapNode node, boolean saveInvisible) {
+		return new Transferable() {
+			
+			@Override
+			public boolean isDataFlavorSupported(DataFlavor pFlavor) {
+				return false;
+			}
+			
+			@Override
+			public DataFlavor[] getTransferDataFlavors() {
+				return new DataFlavor[] {};
+			}
+			
+			@Override
+			public Object getTransferData(DataFlavor pFlavor)
+					throws UnsupportedFlavorException, IOException {
+				throw new UnsupportedFlavorException(pFlavor);
+			}
+		};
+	}
+
+	@Override
+	public HookFactory getHookFactory() {
+		// lazy creation.
+		if (mNodeHookFactory == null) {
+			mNodeHookFactory = new MindMapHookFactory();
+			// initialization
+			mNodeHookFactory.getPossibleNodeHooks();
+		}
+		return mNodeHookFactory;
+	}
+
 	@Override
 	public void select(MindMapNode pFocussed, List<MindMapNode> pSelecteds) {
+		mSelectedNode = pFocussed;
 	}
 
 }

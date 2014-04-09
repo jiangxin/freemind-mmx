@@ -34,7 +34,7 @@ import freemind.controller.MindMapNodesSelection;
 import freemind.main.FreeMind;
 import freemind.main.Tools;
 import freemind.modes.EdgeAdapter;
-import freemind.modes.ExtendedMapFeedbackImpl;
+import freemind.modes.ExtendedMapFeedbackAdapter;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
@@ -57,14 +57,17 @@ public class StandaloneMapTests extends FreeMindTestBase {
 	 */
 	private static final String INITIAL_MAP = "<map>" + "<node TEXT='ROOT'>"
 			+ "<node TEXT='FormatMe'>"
-			+ "<node TEXT='Child1'/><node TEXT='Child2'/>" + "</node>"
+			+ "<node TEXT='Child1'/>"
+			+ "<node TEXT='Child2'/>" 
+			+ "<node TEXT='Child3'/>" 
+			+ "</node>"
 			+ "</node>" + "</map>";
 
 	/**
 	 * @author foltin
 	 * @date 21.02.2014
 	 */
-	private final class DemoMapFeedback extends ExtendedMapFeedbackImpl {
+	private final class DemoMapFeedback extends ExtendedMapFeedbackAdapter {
 		MindMap mMap;
 
 		@Override
@@ -128,6 +131,7 @@ public class StandaloneMapTests extends FreeMindTestBase {
 				+ "<node CREATED=\"\" MODIFIED=\"\" POSITION=\"right\" TEXT=\"FormatMe\">\n"
 				+ "<node CREATED=\"\" MODIFIED=\"\" TEXT=\"Child1\"/>\n"
 				+ "<node CREATED=\"\" MODIFIED=\"\" TEXT=\"Child2\"/>\n"
+				+ "<node CREATED=\"\" MODIFIED=\"\" TEXT=\"Child3\"/>\n"
 				+ "</node>\n" + "</node>\n" + "</map>\n";
 		assertEquals(expected, xmlResult);
 	}
@@ -151,6 +155,10 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		MindMapNode root = mMap.loadTree(readerCreator,
 				MapAdapter.sDontAskInstance);
 		mMap.setRoot(root);
+		MindMapNode firstChild = (MindMapNode) root.getChildAt(0);
+		MindMapNode subChild1 = (MindMapNode) firstChild.getChildAt(0);
+		MindMapNode subChild2 = (MindMapNode) firstChild.getChildAt(1);
+		MindMapNode subChild3 = (MindMapNode) firstChild.getChildAt(2);
 		XmlActorFactory factory = mapFeedback.getActorFactory();
 		factory.getBoldActor().setBold(root, true);
 		assertEquals(true, root.isBold());
@@ -186,7 +194,6 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		factory.getRemoveAllIconsActor().removeAllIcons(root);
 		assertEquals(0, root.getIcons().size());
 		// cloud
-		MindMapNode firstChild = (MindMapNode) root.getChildAt(0);
 		factory.getCloudActor().setCloud(firstChild, true);
 		assertNotNull(firstChild.getCloud());
 		factory.getCloudColorActor().setCloudColor(firstChild, Color.CYAN);
@@ -243,8 +250,6 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		factory.getUnderlineActor().setUnderlined(firstChild, true);
 		assertTrue(firstChild.isUnderlined());
 		// arrow links
-		MindMapNode subChild1 = (MindMapNode) firstChild.getChildAt(0);
-		MindMapNode subChild2 = (MindMapNode) firstChild.getChildAt(1);
 		factory.getAddArrowLinkActor().addLink(subChild1, subChild2);
 		Vector<MindMapLink> mapLinks = mapFeedback.getMap().getLinkRegistry().getAllLinksFromMe(subChild1);
 		assertEquals(1, mapLinks.size());
@@ -289,6 +294,13 @@ public class StandaloneMapTests extends FreeMindTestBase {
 //		factory.getAddHookActor().addHook(firstChild,
 //				Tools.getVectorWithSingleElement(firstChild),
 //				"accessories/plugins/BlinkingNodeHook.properties", null);
+		assertEquals(0, firstChild.getIndex(subChild1));
+		factory.getNodeUpActor().moveNodes(subChild1, Tools.getVectorWithSingleElement(subChild1), 1);
+		assertEquals(1, firstChild.getIndex(subChild1));
+		factory.getNodeUpActor().moveNodes(subChild1, Tools.getVectorWithSingleElement(subChild1), -1);
+		assertEquals(0, firstChild.getIndex(subChild1));
+		factory.getNodeUpActor().moveNodes(subChild1, Tools.getVectorWithSingleElement(subChild1), -1);
+		assertEquals(2, firstChild.getIndex(subChild1));
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);
 

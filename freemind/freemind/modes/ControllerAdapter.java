@@ -102,7 +102,7 @@ import freemind.view.mindmapview.ViewFeedback;
  * default Actions you may want to use for easy editing of your model. Take
  * MindMapController as a sample.
  */
-public abstract class ControllerAdapter extends ExtendedMapFeedbackAdapter implements ModeController,
+public abstract class ControllerAdapter implements ModeController,
 		DirectoryResultListener {
 
 	// Logging:
@@ -1544,17 +1544,6 @@ public abstract class ControllerAdapter extends ExtendedMapFeedbackAdapter imple
 		return getView().getNodeView(node);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * freemind.modes.MindMap#insertNodeInto(javax.swing.tree.MutableTreeNode,
-	 * javax.swing.tree.MutableTreeNode)
-	 */
-	public void insertNodeInto(MindMapNode newChild, MindMapNode parent) {
-		insertNodeInto(newChild, parent, parent.getChildCount());
-	}
-
 	public void loadURL() {
 		String link = getSelected().getLink();
 		if (link != null) {
@@ -1635,6 +1624,25 @@ public abstract class ControllerAdapter extends ExtendedMapFeedbackAdapter imple
 		return getController().getMapMouseWheelListener();
 	}
 
+
+	/**
+	 * @throws {@link IllegalArgumentException} when node isn't found.
+	 */
+	@Override
+	public NodeAdapter getNodeFromID(String nodeID) {
+		NodeAdapter node = (NodeAdapter) getMap().getLinkRegistry()
+				.getTargetForId(nodeID);
+		if (node == null) {
+			throw new IllegalArgumentException("Node belonging to the node id "
+					+ nodeID + " not found in map " + getMap().getFile());
+		}
+		return node;
+	}
+
+	@Override
+	public String getNodeID(MindMapNode selected) {
+		return getMap().getLinkRegistry().registerLinkTarget(selected);
+	}
 
 	
 	
