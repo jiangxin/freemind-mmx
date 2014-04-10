@@ -303,6 +303,9 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		assertEquals(2, firstChild.getIndex(subChild1));
 		factory.getToggleFoldedActor().setFolded(firstChild, true);
 		assertTrue(firstChild.isFolded());
+		String link = "http://freemind.sf.net/";
+		factory.getSetLinkActor().setLink(subChild3, link);
+		assertEquals(link, subChild3.getLink());
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);
 

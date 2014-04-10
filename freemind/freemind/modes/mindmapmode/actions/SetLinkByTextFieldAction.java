@@ -31,22 +31,14 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JOptionPane;
 
-import freemind.controller.actions.generated.instance.AddLinkXmlAction;
-import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.modes.MindMapNode;
-import freemind.modes.NodeAdapter;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
-import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class SetLinkByTextFieldAction extends MindmapAction implements
-		ActorXml {
+public class SetLinkByTextFieldAction extends MindmapAction {
 	private final MindMapController controller;
 
 	public SetLinkByTextFieldAction(MindMapController controller) {
 		super("set_link_by_textfield", controller);
 		this.controller = controller;
-		addActor(this);
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -57,38 +49,9 @@ public class SetLinkByTextFieldAction extends MindmapAction implements
 			if (inputValue.equals("")) {
 				inputValue = null; // In case of no entry unset link
 			}
-			setLink(controller.getSelected(), inputValue);
+			controller.setLink(controller.getSelected(), inputValue);
 		}
 	}
 
-	public void setLink(MindMapNode node, String link) {
-		controller.doTransaction((String) getValue(NAME),
-				getActionPair(node, link));
-	}
 
-	public void act(XmlAction action) {
-		if (action instanceof AddLinkXmlAction) {
-			AddLinkXmlAction linkAction = (AddLinkXmlAction) action;
-			NodeAdapter node = controller.getNodeFromID(linkAction.getNode());
-			node.setLink(linkAction.getDestination());
-			controller.nodeChanged(node);
-		}
-	}
-
-	public Class getDoActionClass() {
-		return AddLinkXmlAction.class;
-	}
-
-	private ActionPair getActionPair(MindMapNode node, String link) {
-		return new ActionPair(createAddLinkXmlAction(node, link),
-				createAddLinkXmlAction(node, node.getLink()));
-	}
-
-	private AddLinkXmlAction createAddLinkXmlAction(MindMapNode node,
-			String link) {
-		AddLinkXmlAction action = new AddLinkXmlAction();
-		action.setNode(node.getObjectId(controller));
-		action.setDestination(link);
-		return action;
-	}
 }

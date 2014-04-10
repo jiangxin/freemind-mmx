@@ -61,6 +61,7 @@ public class XmlActorFactory {
 	private NodeUpActor mNodeUpActor;
 	private RevertActor mRevertActor;
 	private ToggleFoldedActor mToggleFoldedActor;
+	private SetLinkActor mSetLinkActor;
 
 	public XmlActorFactory(ExtendedMapFeedback pMapFeedback) {
 		mMapFeedback = pMapFeedback;
@@ -94,6 +95,7 @@ public class XmlActorFactory {
 		mNodeUpActor = new NodeUpActor(mMapFeedback);
 		mRevertActor = new RevertActor(mMapFeedback);
 		mToggleFoldedActor = new ToggleFoldedActor(mMapFeedback);
+		mSetLinkActor = new SetLinkActor(mMapFeedback);
 	}
 	
 	public ItalicNodeActor getItalicActor() {
@@ -214,6 +216,10 @@ public class XmlActorFactory {
 	
 	public ToggleFoldedActor getToggleFoldedActor() {
 		return mToggleFoldedActor;
+	}
+	
+	public SetLinkActor getSetLinkActor() {
+		return mSetLinkActor;
 	}
 	
 }

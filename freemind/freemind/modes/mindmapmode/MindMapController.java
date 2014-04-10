@@ -1758,7 +1758,7 @@ public class MindMapController extends ControllerAdapter implements
 	}
 
 	public void setLink(MindMapNode node, String link) {
-		setLinkByTextField.setLink(node, link);
+		getActorFactory().getSetLinkActor().setLink(node, link);
 	}
 
 	// edit begins with home/end or typing (PN 6.2)
