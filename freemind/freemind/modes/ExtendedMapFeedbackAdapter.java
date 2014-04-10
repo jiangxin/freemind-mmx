@@ -23,11 +23,15 @@ package freemind.modes;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.ListIterator;
 
 import freemind.extensions.HookFactory;
+import freemind.main.XMLParseException;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
 import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
@@ -167,4 +171,17 @@ public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
 		mSelectedNode = pFocussed;
 	}
 
+	/* (non-Javadoc)
+	 * @see freemind.modes.ExtendedMapFeedback#load(java.io.File)
+	 */
+	@Override
+	public MapFeedback load(File pFile) throws FileNotFoundException,
+			IOException, XMLParseException, URISyntaxException {
+		return this;
+	}
+
+	@Override
+	public void close(boolean pForce) {
+		
+	}
 }

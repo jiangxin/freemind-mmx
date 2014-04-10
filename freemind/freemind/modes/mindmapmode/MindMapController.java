@@ -781,23 +781,6 @@ public class MindMapController extends ControllerAdapter implements
 		}
 	}
 	
-	public boolean load(String xmlMapContents, String filePrefix) {
-		try {
-			File tempFile = File.createTempFile(filePrefix,
-					freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION,
-					new File(getFrame().getFreemindDirectory()));
-			FileWriter fw = new FileWriter(tempFile);
-			fw.write(xmlMapContents);
-			fw.close();
-			load(tempFile);
-			return true;
-		} catch (Exception e) {
-			freemind.main.Resources.getInstance().logException(e);
-		}
-		return false;
-	}
-
-	
 	MindMapNode loadTree(final File pFile) throws XMLParseException,
 			IOException {
 		return loadTree(new Tools.FileReaderCreator(pFile));
@@ -2588,5 +2571,12 @@ public class MindMapController extends ControllerAdapter implements
 	public void setWaitingCursor(boolean pWaiting) {
 		getFrame().setWaitingCursor(pWaiting);
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.ExtendedMapFeedback#close(boolean)
+	 */
+	@Override
+	public void close(boolean pForce) {
+		getController().close(pForce);
+	}
 }

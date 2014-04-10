@@ -21,9 +21,14 @@
 package freemind.modes;
 
 import java.awt.datatransfer.Transferable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 import freemind.extensions.HookFactory;
+import freemind.main.XMLParseException;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
 import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
@@ -95,5 +100,19 @@ public interface ExtendedMapFeedback extends MapFeedback {
 	void nodeStyleChanged(MindMapNode pNode);
 	
 	HookFactory getHookFactory();
+
+	/**
+	 * @param pFile loads a file into a new map.
+	 */
+	MapFeedback load(File pFile) throws FileNotFoundException,
+	IOException, XMLParseException, URISyntaxException;
+
+	/**
+	 * Closes the actual map.
+	 * 
+	 * @param pForce
+	 *            true= without save.
+	 */
+	void close(boolean pForce);
 	
 }

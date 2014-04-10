@@ -340,18 +340,18 @@ public class BrowseController extends ViewControllerAdapter {
 
 	public ModeController load(URL url) throws IOException, XMLParseException,
 			URISyntaxException {
-		ModeController newModeController = super.load(url);
+		ModeController newModeController = (ModeController) super.load(url);
 		// decorator pattern.
 		((BrowseToolBar) newModeController.getModeToolBar()).setURLField(url
 				.toString());
 		return newModeController;
 	}
 
-	public ModeController load(File url) throws IOException {
-		ModeController newModeController = super.load(url);
+	public ModeController load(File pFile) throws IOException {
+		ModeController newModeController = (ModeController) super.load(pFile);
 		// decorator pattern.
 		((BrowseToolBar) newModeController.getModeToolBar()).setURLField(Tools
-				.fileToUrl(url).toString());
+				.fileToUrl(pFile).toString());
 		return newModeController;
 	}
 

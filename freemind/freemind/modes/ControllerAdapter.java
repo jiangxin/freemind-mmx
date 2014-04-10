@@ -415,7 +415,7 @@ public abstract class ControllerAdapter implements ModeController,
 	 * You may decide to overload this or take the default and implement the
 	 * functionality in your MapModel (implements MindMap)
 	 */
-	public ModeController load(URL file) throws FileNotFoundException,
+	public MapFeedback load(URL file) throws FileNotFoundException,
 			IOException, XMLParseException, URISyntaxException {
 		String mapDisplayName = getController().getMapModuleManager()
 				.checkIfFileIsAlreadyOpened(file);
@@ -447,7 +447,7 @@ public abstract class ControllerAdapter implements ModeController,
 	 * You may decide to overload this or take the default and implement the
 	 * functionality in your MapModel (implements MindMap)
 	 */
-	public ModeController load(File file) throws FileNotFoundException,
+	public MapFeedback load(File file) throws FileNotFoundException,
 			IOException {
 		try {
 			return load(Tools.fileToUrl(file));
@@ -822,7 +822,7 @@ public abstract class ControllerAdapter implements ModeController,
 				File theFile = selectedFiles[i];
 				try {
 					lastCurrentDir = theFile.getParentFile();
-					ModeController newMC = load(theFile);
+					load(theFile);
 				} catch (Exception ex) {
 					handleLoadingException(ex);
 					break;

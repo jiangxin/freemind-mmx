@@ -22,11 +22,13 @@ package freemind.modes.mindmapmode.actions.xml.actors;
 
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 
 import freemind.controller.actions.generated.instance.RevertXmlAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.main.Resources;
 import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.MindMap;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
@@ -108,11 +110,9 @@ public class RevertActor extends XmlActorAdapter {
 				RevertXmlAction revertAction = (RevertXmlAction) action;
 
 				// close the old map.
-				// FIXME: Remove dependency from ModeController.
-				getModeController().getController().close(true);
+				getExMapFeedback().close(true);
 				if (revertAction.getLocalFileName() != null) {
-					// FIXME: Remove dependency from ModeController.
-					getModeController().load(new File(revertAction
+					getExMapFeedback().load(new File(revertAction
 							.getLocalFileName()));
 				} else {
 					// the map is given by xml. we store it and open it.
@@ -122,8 +122,13 @@ public class RevertActor extends XmlActorAdapter {
 						filePrefix = revertAction.getFilePrefix();
 					}
 					String xmlMap = revertAction.getMap();
-					// FIXME: Remove dependency from ModeController.
-					getModeController().load(xmlMap, filePrefix);
+					File tempFile = File.createTempFile(filePrefix,
+							freemind.main.FreeMindCommon.FREEMIND_FILE_EXTENSION,
+							new File(Resources.getInstance().getFreemindDirectory()));
+					FileWriter fw = new FileWriter(tempFile);
+					fw.write(xmlMap);
+					fw.close();
+					getExMapFeedback().load(tempFile);
 				}
 			} catch (Exception e) {
 				freemind.main.Resources.getInstance().logException(e);
