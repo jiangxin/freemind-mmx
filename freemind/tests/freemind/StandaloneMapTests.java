@@ -301,6 +301,8 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		assertEquals(0, firstChild.getIndex(subChild1));
 		factory.getNodeUpActor().moveNodes(subChild1, Tools.getVectorWithSingleElement(subChild1), -1);
 		assertEquals(2, firstChild.getIndex(subChild1));
+		factory.getToggleFoldedActor().setFolded(firstChild, true);
+		assertTrue(firstChild.isFolded());
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);
 

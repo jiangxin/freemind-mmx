@@ -1862,7 +1862,7 @@ public class MindMapController extends ControllerAdapter implements
 	}
 
 	public void setFolded(MindMapNode node, boolean folded) {
-		toggleFolded.setFolded(node, folded);
+		getActorFactory().getToggleFoldedActor().setFolded(node, folded);
 	}
 
 	public void moveNodes(MindMapNode selected, List selecteds, int direction) {

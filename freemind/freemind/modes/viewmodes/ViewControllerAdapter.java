@@ -128,7 +128,17 @@ public abstract class ViewControllerAdapter extends ControllerAdapter {
 	}
 
 	public void setFolded(MindMapNode node, boolean folded) {
-		_setFolded(node, folded);
+		if (node == null)
+			throw new IllegalArgumentException(
+					"setFolded was called with a null node.");
+		// no root folding, fc, 16.5.2004
+		if (node.isRoot() && folded) {
+			return;
+		}
+		if (node.isFolded() != folded) {
+			node.setFolded(folded);
+			nodeStructureChanged(node);
+		}
 	}
 
 	public void startupController() {

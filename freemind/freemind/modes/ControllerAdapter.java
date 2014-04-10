@@ -1463,23 +1463,6 @@ public abstract class ControllerAdapter implements ModeController,
 				new MindMapMouseWheelEventHandler(this));
 	}
 
-	/**
-	 * Don't call me directly!!! The basic folding method. Without undo.
-	 */
-	public void _setFolded(MindMapNode node, boolean folded) {
-		if (node == null)
-			throw new IllegalArgumentException(
-					"setFolded was called with a null node.");
-		// no root folding, fc, 16.5.2004
-		if (node.isRoot() && folded) {
-			return;
-		}
-		if (node.isFolded() != folded) {
-			node.setFolded(folded);
-			nodeStructureChanged(node);
-		}
-	}
-
 	public String getLinkShortText(MindMapNode node) {
 		String adaptedText = node.getLink();
 		if (adaptedText == null)
