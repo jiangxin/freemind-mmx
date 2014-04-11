@@ -102,11 +102,9 @@ import freemind.view.mindmapview.ViewFeedback;
  * default Actions you may want to use for easy editing of your model. Take
  * MindMapController as a sample.
  */
-public abstract class ControllerAdapter implements ModeController,
+public abstract class ControllerAdapter extends MapFeedbackAdapter implements ModeController,
 		DirectoryResultListener {
 
-	// Logging:
-	private static java.util.logging.Logger logger;
 
 	private Mode mode;
 
@@ -125,9 +123,6 @@ public abstract class ControllerAdapter implements ModeController,
 	 */
 	public ControllerAdapter(Mode mode) {
 		this.setMode(mode);
-		if (logger == null) {
-			logger = getFrame().getLogger(this.getClass().getName());
-		}
 		// for updates of nodes:
 		// FIXME
 		// do not associate each new ControllerAdapter
@@ -681,46 +676,11 @@ public abstract class ControllerAdapter implements ModeController,
 		getView().selectBranch(selected, extend);
 	}
 
-	/**
-	 * This class sortes nodes by ascending depth of their paths to root. This
-	 * is useful to assure that children are cutted <b>before </b> their
-	 * fathers!!!.
-	 * 
-	 * Moreover, it sorts nodes with the same depth according to their position
-	 * relative to each other.
-	 */
-	protected class nodesDepthComparator implements Comparator {
-		public nodesDepthComparator() {
-		}
-
-		/* the < relation. */
-		public int compare(Object p1, Object p2) {
-			MindMapNode n1 = ((MindMapNode) p1);
-			MindMapNode n2 = ((MindMapNode) p2);
-			Object[] path1 = getModel().getPathToRoot(n1);
-			Object[] path2 = getModel().getPathToRoot(n2);
-			int depth = path1.length - path2.length;
-			if (depth > 0)
-				return -1;
-			if (depth < 0)
-				return 1;
-			if (n1.isRoot()) // if n1 is root, n2 is root, too ;)
-				return 0;
-			return n1.getParentNode().getChildPosition(n1)
-					- n2.getParentNode().getChildPosition(n2);
-		}
-	}
-
 	public List getSelectedsByDepth() {
 		// return an ArrayList of MindMapNodes.
 		List result = getSelecteds();
 		sortNodesByDepth(result);
 		return result;
-	}
-
-	public void sortNodesByDepth(List inPlaceList) {
-		Collections.sort(inPlaceList, new nodesDepthComparator());
-		logger.finest("Sort result: " + inPlaceList);
 	}
 
 	/**

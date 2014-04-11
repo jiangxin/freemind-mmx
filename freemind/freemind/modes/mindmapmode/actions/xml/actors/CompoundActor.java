@@ -21,28 +21,26 @@
  */
 
 
-package freemind.modes.mindmapmode.actions;
+package freemind.modes.mindmapmode.actions.xml.actors;
 
 import java.awt.event.ActionEvent;
 
-import javax.swing.AbstractAction;
-
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
 /**
  * @author foltin
  * 
  */
-public class CompoundActionHandler extends AbstractAction implements ActorXml {
+public class CompoundActor extends XmlActorAdapter {
 
-	private MindMapController c;
-
-	public CompoundActionHandler(MindMapController c) {
-		this.c = c;
-		this.c.getActionRegistry().registerActor(this, getDoActionClass());
+	/**
+	 * @param pMapFeedback
+	 */
+	public CompoundActor(ExtendedMapFeedback pMapFeedback) {
+		super(pMapFeedback);
 	}
 
 	/*
@@ -59,7 +57,7 @@ public class CompoundActionHandler extends AbstractAction implements ActorXml {
 			Object obj = actions[i];
 			if (obj instanceof XmlAction) {
 				XmlAction xmlAction = (XmlAction) obj;
-				ActorXml actor = c.getActionRegistry().getActor(xmlAction);
+				ActorXml actor = getExMapFeedback().getActionRegistry().getActor(xmlAction);
 				actor.act(xmlAction);
 			}
 		}
@@ -72,16 +70,6 @@ public class CompoundActionHandler extends AbstractAction implements ActorXml {
 	 */
 	public Class getDoActionClass() {
 		return CompoundAction.class;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-	 */
-	public void actionPerformed(ActionEvent arg0) {
-
 	}
 
 }

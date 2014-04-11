@@ -21,7 +21,10 @@
 package freemind.modes;
 
 import java.awt.Font;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 
 import freemind.controller.MapMouseMotionListener;
 import freemind.controller.MapMouseWheelListener;
@@ -42,11 +45,16 @@ import freemind.view.mindmapview.ViewFeedback;
 public abstract class MapFeedbackAdapter implements MapFeedback, ViewFeedback {
 
 	private HashMap<String, Font> fontMap = new HashMap<String, Font>();
+	protected static java.util.logging.Logger logger = null;
 
 	/**
 	 * 
 	 */
 	public MapFeedbackAdapter() {
+		if (logger == null) {
+			logger = freemind.main.Resources.getInstance().getLogger(
+					this.getClass().getName());
+		}
 	}
 
 	/*
@@ -296,5 +304,42 @@ public abstract class MapFeedbackAdapter implements MapFeedback, ViewFeedback {
 	public NodeView getNodeView(MindMapNode node) {
 		return null;
 	}
+	
+	/**
+	 * This class sortes nodes by ascending depth of their paths to root. This
+	 * is useful to assure that children are cutted <b>before </b> their
+	 * fathers!!!.
+	 * 
+	 * Moreover, it sorts nodes with the same depth according to their position
+	 * relative to each other.
+	 */
+	protected class NodesDepthComparator implements Comparator {
+		public NodesDepthComparator() {
+		}
+
+		/* the < relation. */
+		public int compare(Object p1, Object p2) {
+			MindMapNode n1 = ((MindMapNode) p1);
+			MindMapNode n2 = ((MindMapNode) p2);
+			Object[] path1 = getMap().getPathToRoot(n1);
+			Object[] path2 = getMap().getPathToRoot(n2);
+			int depth = path1.length - path2.length;
+			if (depth > 0)
+				return -1;
+			if (depth < 0)
+				return 1;
+			if (n1.isRoot()) // if n1 is root, n2 is root, too ;)
+				return 0;
+			return n1.getParentNode().getChildPosition(n1)
+					- n2.getParentNode().getChildPosition(n2);
+		}
+	}
+
+	public void sortNodesByDepth(List inPlaceList) {
+		Collections.sort(inPlaceList, new NodesDepthComparator());
+		logger.finest("Sort result: " + inPlaceList);
+	}
+
+
 	
 }

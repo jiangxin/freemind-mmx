@@ -45,6 +45,28 @@ public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
 		implements ExtendedMapFeedback {
 
 
+	/**
+	 * @author foltin
+	 * @date 11.04.2014
+	 */
+	private final class DummyTransferable implements Transferable {
+		@Override
+		public boolean isDataFlavorSupported(DataFlavor pFlavor) {
+			return false;
+		}
+
+		@Override
+		public DataFlavor[] getTransferDataFlavors() {
+			return new DataFlavor[] {};
+		}
+
+		@Override
+		public Object getTransferData(DataFlavor pFlavor)
+				throws UnsupportedFlavorException, IOException {
+			throw new UnsupportedFlavorException(pFlavor);
+		}
+	}
+
 	protected ActionRegistry mActionRegistry;
 	private MindMapNode mSelectedNode;
 	protected XmlActorFactory mActorFactory;
@@ -135,24 +157,15 @@ public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
 	}
 
 	public Transferable copy(MindMapNode node, boolean saveInvisible) {
-		return new Transferable() {
-			
-			@Override
-			public boolean isDataFlavorSupported(DataFlavor pFlavor) {
-				return false;
-			}
-			
-			@Override
-			public DataFlavor[] getTransferDataFlavors() {
-				return new DataFlavor[] {};
-			}
-			
-			@Override
-			public Object getTransferData(DataFlavor pFlavor)
-					throws UnsupportedFlavorException, IOException {
-				throw new UnsupportedFlavorException(pFlavor);
-			}
-		};
+		return new DummyTransferable();
+	}
+	
+	/* (non-Javadoc)
+	 * @see freemind.modes.ExtendedMapFeedback#copy(java.util.List, boolean)
+	 */
+	@Override
+	public Transferable copy(List<MindMapNode> pNodeList, boolean pSaveInvisible) {
+		return new DummyTransferable();
 	}
 
 	@Override

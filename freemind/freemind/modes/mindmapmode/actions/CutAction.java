@@ -25,26 +25,16 @@ package freemind.modes.mindmapmode.actions;
 
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
-import java.util.Iterator;
-import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 import freemind.common.OptionalDontShowMeAgainDialog;
-import freemind.controller.actions.generated.instance.CompoundAction;
-import freemind.controller.actions.generated.instance.CutNodeAction;
-import freemind.controller.actions.generated.instance.UndoPasteNodeAction;
-import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.FreeMind;
-import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.xml.ActionPair;
-import freemind.modes.mindmapmode.actions.xml.ActorXml;
-import freemind.modes.mindmapmode.actions.xml.actors.PasteActor.NodeCoordinate;
 
-public class CutAction extends AbstractAction implements ActorXml {
+public class CutAction extends AbstractAction {
 	private String text;
 	private final MindMapController mMindMapController;
 	private static java.util.logging.Logger logger = null;
@@ -59,8 +49,6 @@ public class CutAction extends AbstractAction implements ActorXml {
 		this.mMindMapController = c;
 		this.text = c.getText("cut");
 		setEnabled(false);
-		this.mMindMapController.getActionRegistry().registerActor(this,
-				getDoActionClass());
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -87,67 +75,5 @@ public class CutAction extends AbstractAction implements ActorXml {
 		mMindMapController.getController().obtainFocusForSelected();
 	}
 
-	public CutNodeAction getCutNodeAction(MindMapNode node) {
-		CutNodeAction cutAction = new CutNodeAction();
-		cutAction.setNode(mMindMapController.getNodeID(node));
-		return cutAction;
-	}
-
-	public Transferable cut(List nodeList) {
-		mMindMapController.sortNodesByDepth(nodeList);
-		Transferable totalCopy = mMindMapController.copy(nodeList, true);
-		// Do-action
-		CompoundAction doAction = new CompoundAction();
-		// Undo-action
-		CompoundAction undo = new CompoundAction();
-		// sort selectedNodes list by depth, in order to guarantee that sons are
-		// deleted first:
-		for (Iterator i = nodeList.iterator(); i.hasNext();) {
-			MindMapNode node = (MindMapNode) i.next();
-			if (node.getParentNode() == null)
-				continue;
-			CutNodeAction cutNodeAction = getCutNodeAction(node);
-			doAction.addChoice(cutNodeAction);
-
-			NodeCoordinate coord = new NodeCoordinate(node, node.isLeft());
-			Transferable copy = mMindMapController.copy(node, true);
-			XmlAction pasteNodeAction = mMindMapController.getActorFactory().getPasteActor()
-					.getPasteNodeAction(copy, coord, (UndoPasteNodeAction) null);
-			logger.fine("Undo for cut: "
-					+ mMindMapController.marshall(pasteNodeAction));
-			// The paste actions are reversed because of the strange
-			// coordinates.
-			undo.addAtChoice(0, pasteNodeAction);
-
-		}
-		if (doAction.sizeChoiceList() > 0) {
-			mMindMapController.doTransaction(text,
-					new ActionPair(doAction, undo));
-		}
-		return totalCopy;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * freemind.controller.actions.ActorXml#act(freemind.controller.actions.
-	 * generated.instance.XmlAction)
-	 */
-	public void act(XmlAction action) {
-		CutNodeAction cutAction = (CutNodeAction) action;
-		MindMapNode selectedNode = mMindMapController.getNodeFromID(cutAction
-				.getNode());
-		mMindMapController.getActorFactory().getDeleteChildActor().deleteWithoutUndo(selectedNode);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see freemind.controller.actions.ActorXml#getDoActionClass()
-	 */
-	public Class getDoActionClass() {
-		return CutNodeAction.class;
-	}
 
 }

@@ -66,6 +66,8 @@ public class XmlActorFactory {
 	private InsertAttributeActor mInsertAttributeActor;
 	private RemoveAttributeActor mRemoveAttributeActor;
 	private SetAttributeActor mSetAttributeActor;
+	private CutActor mCutActor;
+	private CompoundActor mCompoundActor;
 
 	public XmlActorFactory(ExtendedMapFeedback pMapFeedback) {
 		mMapFeedback = pMapFeedback;
@@ -104,6 +106,8 @@ public class XmlActorFactory {
 		mInsertAttributeActor = new InsertAttributeActor(mMapFeedback);
 		mRemoveAttributeActor = new RemoveAttributeActor(mMapFeedback);
 		mSetAttributeActor = new SetAttributeActor(mMapFeedback);
+		mCompoundActor = new CompoundActor(mMapFeedback);
+		mCutActor = new CutActor(mMapFeedback);
 	}
 	
 	public ItalicNodeActor getItalicActor() {
@@ -244,6 +248,14 @@ public class XmlActorFactory {
 	
 	public SetAttributeActor getSetAttributeActor() {
 		return mSetAttributeActor;
+	}
+	
+	public CutActor getCutActor() {
+		return mCutActor;
+	}
+	
+	public CompoundActor getCompoundActor() {
+		return mCompoundActor;
 	}
 	
 }

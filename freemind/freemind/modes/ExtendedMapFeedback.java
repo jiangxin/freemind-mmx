@@ -95,6 +95,13 @@ public interface ExtendedMapFeedback extends MapFeedback {
 
 	Transferable copy(MindMapNode node, boolean saveInvisible);
 
+	/**
+	 * @param pNodeList
+	 * @param pSaveInvisible
+	 * @return a MindMapNode list as Transferable (special FM flavor).
+	 */
+	Transferable copy(List<MindMapNode> pNodeList, boolean pSaveInvisible);
+
 	void setWaitingCursor(boolean waiting);
 	
 	void nodeStyleChanged(MindMapNode pNode);
@@ -114,5 +121,6 @@ public interface ExtendedMapFeedback extends MapFeedback {
 	 *            true= without save.
 	 */
 	void close(boolean pForce);
+
 	
 }

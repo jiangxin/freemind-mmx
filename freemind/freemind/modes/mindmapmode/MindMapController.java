@@ -155,7 +155,6 @@ import freemind.modes.mindmapmode.actions.BoldAction;
 import freemind.modes.mindmapmode.actions.ChangeArrowsInArrowLinkAction;
 import freemind.modes.mindmapmode.actions.CloudAction;
 import freemind.modes.mindmapmode.actions.ColorArrowLinkAction;
-import freemind.modes.mindmapmode.actions.CompoundActionHandler;
 import freemind.modes.mindmapmode.actions.CopyAction;
 import freemind.modes.mindmapmode.actions.CopySingleAction;
 import freemind.modes.mindmapmode.actions.CutAction;
@@ -209,6 +208,7 @@ import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
 import freemind.modes.mindmapmode.actions.xml.DefaultActionHandler;
 import freemind.modes.mindmapmode.actions.xml.UndoActionHandler;
+import freemind.modes.mindmapmode.actions.xml.actors.CompoundActor;
 import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
 import freemind.modes.mindmapmode.hooks.MindMapHookFactory;
 import freemind.modes.mindmapmode.listeners.MindMapMouseMotionManager;
@@ -383,7 +383,7 @@ public class MindMapController extends ControllerAdapter implements
 	/**
 	 * This handler evaluates the compound xml actions. Don't delete it!
 	 */
-	private CompoundActionHandler compound = null;
+	private CompoundActor compound = null;
 
 	public ApplyPatternAction patterns[] = new ApplyPatternAction[0]; // Make
 																		// sure
@@ -506,7 +506,7 @@ public class MindMapController extends ControllerAdapter implements
 		// create action factory:
 		actionFactory = new ActionRegistry();
 		// create compound handler, that evaluates the compound xml actions.
-		compound = new CompoundActionHandler(this);
+		compound = new CompoundActor(this);
 		// create node information timer and actions. They don't fire, until
 		// called to do so.
 		mNodeInformationTimerAction = new NodeInformationTimerAction();
@@ -1795,7 +1795,7 @@ public class MindMapController extends ControllerAdapter implements
 	}
 
 	public Transferable cut(List nodeList) {
-		return cut.cut(nodeList);
+		return getActorFactory().getCutActor().cut(nodeList);
 	}
 
 	public void paste(Transferable t, MindMapNode parent) {

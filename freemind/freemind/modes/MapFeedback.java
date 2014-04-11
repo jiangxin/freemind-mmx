@@ -21,6 +21,7 @@
 package freemind.modes;
 
 import java.awt.Font;
+import java.util.List;
 
 import freemind.extensions.NodeHook;
 import freemind.view.mindmapview.ViewFeedback;
@@ -117,5 +118,7 @@ public interface MapFeedback {
 	 */
 	ViewFeedback getViewFeedback();
 
+	void sortNodesByDepth(List inPlaceList);
+	
 }
 

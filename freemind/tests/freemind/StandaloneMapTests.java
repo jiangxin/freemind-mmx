@@ -322,6 +322,9 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		assertEquals(1, root.getAttributeTableLength());
 		assertEquals("0", root.getAttribute("0name"));
 		assertEquals(null, root.getAttribute("oname"));
+		assertEquals(3, firstChild.getChildCount());
+		factory.getCutActor().cut(Tools.getVectorWithSingleElement(subChild3));
+		assertEquals(2, firstChild.getChildCount());
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);
 
