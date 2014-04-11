@@ -18,34 +18,27 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package freemind.modes.mindmapmode.actions;
+package freemind.modes.mindmapmode.actions.xml.actors;
 
 import freemind.controller.actions.generated.instance.UndoPasteNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.MindMapNode;
-import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.xml.ActorXml;
 import freemind.modes.mindmapmode.actions.xml.actors.PasteActor.NodeCoordinate;
 
 /**
  * @author foltin
  * @date 09.05.2012
  */
-public class UndoPasteHandler implements ActorXml {
+public class UndoPasteActor extends XmlActorAdapter {
 
-	protected static java.util.logging.Logger logger = null;
-	private final MindMapController mMindMapController;
+
 
 	/**
-	 * @param pMindMapController
-	 * 
+	 * @param pMapFeedback
 	 */
-	public UndoPasteHandler(MindMapController pMindMapController) {
-		mMindMapController = pMindMapController;
-		if (logger == null) {
-			logger = freemind.main.Resources.getInstance().getLogger(
-					this.getClass().getName());
-		}
+	public UndoPasteActor(ExtendedMapFeedback pMapFeedback) {
+		super(pMapFeedback);
 	}
 
 	/*
@@ -58,14 +51,13 @@ public class UndoPasteHandler implements ActorXml {
 	public void act(XmlAction pAction) {
 		if (pAction instanceof UndoPasteNodeAction) {
 			UndoPasteNodeAction undoAction = (UndoPasteNodeAction) pAction;
-			MindMapNode selectedNode = mMindMapController
-					.getNodeFromID(undoAction.getNode());
+			MindMapNode selectedNode = getNodeFromID(undoAction.getNode());
 			int amount = undoAction.getNodeAmount();
 			while(amount > 0) {
 				NodeCoordinate coordinate = new NodeCoordinate(selectedNode,
 						undoAction.getAsSibling(), undoAction.getIsLeft());
 				MindMapNode targetNode = coordinate.getNode();
-				mMindMapController.getActorFactory().getDeleteChildActor().deleteWithoutUndo(targetNode);
+				getXmlActorFactory().getDeleteChildActor().deleteWithoutUndo(targetNode);
 				amount--;
 			}
 		}

@@ -32,12 +32,13 @@ import freemind.controller.actions.generated.instance.PasteNodeAction;
 import freemind.controller.actions.generated.instance.UndoPasteNodeAction;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.mindmapmode.actions.xml.actors.UndoPasteActor;
 
 public class PasteAction extends AbstractAction {
 
 	private static java.util.logging.Logger logger;
 	private final MindMapController mMindMapController;
-	private UndoPasteHandler mUndoPasteHandler;
+	private UndoPasteActor mUndoPasteHandler;
 
 	public PasteAction(MindMapController pMindMapController) {
 		super(pMindMapController.getText("paste"), new ImageIcon(
@@ -49,11 +50,6 @@ public class PasteAction extends AbstractAction {
 		}
 
 		setEnabled(false);
-
-		// special undo handler for paste.
-		mUndoPasteHandler = new UndoPasteHandler(mMindMapController);
-		this.mMindMapController.getActionRegistry().registerActor(
-				mUndoPasteHandler, UndoPasteNodeAction.class);
 
 	}
 
