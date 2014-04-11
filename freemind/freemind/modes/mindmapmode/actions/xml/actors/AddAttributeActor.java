@@ -18,41 +18,31 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package freemind.modes.mindmapmode.actions;
+package freemind.modes.mindmapmode.actions.xml.actors;
 
 import freemind.controller.actions.generated.instance.AddAttributeAction;
 import freemind.controller.actions.generated.instance.RemoveAttributeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import freemind.modes.attributes.Attribute;
-import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
-import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class AddAttributeActor implements ActorXml {
-	/**
-	 * 
-	 */
-	private final MindMapController mMindMapController;
-	private RemoveAttributeActor mRemoveAttributeActor;
+public class AddAttributeActor extends XmlActorAdapter {
 
-	/**
-	 * @param pMindMapController
-	 */
-	public AddAttributeActor(MindMapController pMindMapController) {
-		mMindMapController = pMindMapController;
+	public AddAttributeActor(ExtendedMapFeedback pMapFeedback) {
+		super(pMapFeedback);
 	}
 
 	public void act(XmlAction action) {
 		if (action instanceof AddAttributeAction) {
 			AddAttributeAction addAttributeAction = (AddAttributeAction) action;
-			NodeAdapter node = mMindMapController
-					.getNodeFromID(addAttributeAction.getNode());
+			NodeAdapter node = getNodeFromID(addAttributeAction.getNode());
 			Attribute newAttribute = new Attribute(
 					addAttributeAction.getName(), addAttributeAction.getValue());
 			node.addAttribute(newAttribute);
-			mMindMapController.nodeChanged(node);
+			getExMapFeedback().nodeChanged(node);
 		}
 	}
 
@@ -61,10 +51,10 @@ public class AddAttributeActor implements ActorXml {
 	}
 
 	public ActionPair getActionPair(MindMapNode selected, Attribute pAttribute) {
-		AddAttributeAction setAttributeAction = addAttribute(selected,
+		AddAttributeAction setAttributeAction = getAddAttributeAction(selected,
 				pAttribute);
-		RemoveAttributeAction undoAddAttributeAction = mRemoveAttributeActor
-				.removeAttribute(selected, selected.getAttributeTableLength());
+		RemoveAttributeAction undoAddAttributeAction = getXmlActorFactory().getRemoveAttributeActor()
+				.getRemoveAttributeAction(selected, selected.getAttributeTableLength());
 		return new ActionPair(setAttributeAction, undoAddAttributeAction);
 	}
 
@@ -73,21 +63,20 @@ public class AddAttributeActor implements ActorXml {
 	 * @param pAttribute
 	 * @return
 	 */
-	public AddAttributeAction addAttribute(MindMapNode pSelected,
+	public AddAttributeAction getAddAttributeAction(MindMapNode pSelected,
 			Attribute pAttribute) {
 		AddAttributeAction addAttributeAction = new AddAttributeAction();
-		addAttributeAction.setNode(mMindMapController.getNodeID(pSelected));
+		addAttributeAction.setNode(getNodeID(pSelected));
 		addAttributeAction.setName(pAttribute.getName());
 		addAttributeAction.setValue(pAttribute.getValue());
 		return addAttributeAction;
 	}
 
-	/**
-	 * @param pRemoveAttributeActor
-	 */
-	public void setRemoveAttributeActor(
-			RemoveAttributeActor pRemoveAttributeActor) {
-		mRemoveAttributeActor = pRemoveAttributeActor;
+	public int addAttribute(MindMapNode pNode, Attribute pAttribute) {
+		int retValue = pNode.getAttributeTableLength();
+		ActionPair actionPair = getActionPair(pNode, pAttribute);
+		execute(actionPair);
+		return retValue;
 	}
 
 }

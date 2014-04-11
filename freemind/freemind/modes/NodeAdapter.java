@@ -1453,7 +1453,7 @@ public abstract class NodeAdapter implements MindMapNode {
 	@Override
 	public void insertAttribute(int pPosition, Attribute pAttribute) {
 		checkAttributePosition(pPosition);
-		getAttributeVector().set(pPosition, pAttribute);
+		getAttributeVector().add(pPosition, pAttribute);
 	}
 	
 	@Override

@@ -18,40 +18,35 @@
 *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 */
 
-package freemind.modes.mindmapmode.actions;
+package freemind.modes.mindmapmode.actions.xml.actors;
 
 import freemind.controller.actions.generated.instance.SetAttributeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
 import freemind.modes.attributes.Attribute;
-import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
-import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class SetAttributeActor implements ActorXml {
-	/**
-	 * 
-	 */
-	private final MindMapController mMindMapController;
+public class SetAttributeActor extends XmlActorAdapter {
 
 	/**
-	 * @param pMindMapController
+	 * @param pMapFeedback
 	 */
-	public SetAttributeActor(MindMapController pMindMapController) {
-		mMindMapController = pMindMapController;
+	public SetAttributeActor(ExtendedMapFeedback pMapFeedback) {
+		super(pMapFeedback);
 	}
 
 	public void act(XmlAction action) {
 		if (action instanceof SetAttributeAction) {
 			SetAttributeAction setAttributeAction = (SetAttributeAction) action;
-			NodeAdapter node = mMindMapController.getNodeFromID(setAttributeAction.getNode());
+			NodeAdapter node = getNodeFromID(setAttributeAction.getNode());
 			Attribute newAttribute = new Attribute(setAttributeAction.getName(), setAttributeAction.getValue());
 			int position = setAttributeAction.getPosition();
 			node.checkAttributePosition(position);
 			if (!node.getAttribute(position).equals(newAttribute)) {
 				node.setAttribute(position, newAttribute);
-				mMindMapController.nodeChanged(node);
+				getExMapFeedback().nodeChanged(node);
 			}
 		}
 	}
@@ -61,21 +56,26 @@ public class SetAttributeActor implements ActorXml {
 	}
 
 	public ActionPair getActionPair(MindMapNode selected, int pPosition, Attribute pAttribute) {
-		SetAttributeAction setAttributeAction = setAttribute(selected, pPosition, pAttribute);
-		SetAttributeAction undoSetAttributeAction = setAttribute(selected, pPosition, selected.getAttribute(pPosition));
+		SetAttributeAction setAttributeAction = getSetAttributeAction(selected, pPosition, pAttribute);
+		SetAttributeAction undoSetAttributeAction = getSetAttributeAction(selected, pPosition, selected.getAttribute(pPosition));
 		return new ActionPair(setAttributeAction, undoSetAttributeAction);
 	}
-
+	
+	public void setAttribute(MindMapNode pSelected,
+			int pPosition, Attribute pAttribute) {
+		ActionPair actionPair = getActionPair(pSelected, pPosition, pAttribute);
+		execute(actionPair);
+	}
 	/**
 	 * @param pSelected
 	 * @param pPosition
 	 * @param pAttribute
 	 * @return
 	 */
-	private SetAttributeAction setAttribute(MindMapNode pSelected,
+	public SetAttributeAction getSetAttributeAction(MindMapNode pSelected,
 			int pPosition, Attribute pAttribute) {
 		SetAttributeAction setAttributeAction = new SetAttributeAction();
-		setAttributeAction.setNode(mMindMapController.getNodeID(pSelected));
+		setAttributeAction.setNode(getNodeID(pSelected));
 		setAttributeAction.setName(pAttribute.getName());
 		setAttributeAction.setValue(pAttribute.getValue());
 		setAttributeAction.setPosition(pPosition);

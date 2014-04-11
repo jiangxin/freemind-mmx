@@ -41,6 +41,7 @@ import freemind.modes.MindMap;
 import freemind.modes.MindMapArrowLink;
 import freemind.modes.MindMapLink;
 import freemind.modes.MindMapNode;
+import freemind.modes.attributes.Attribute;
 import freemind.modes.mindmapmode.MindMapController.StringReaderCreator;
 import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
@@ -306,6 +307,21 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		String link = "http://freemind.sf.net/";
 		factory.getSetLinkActor().setLink(subChild3, link);
 		assertEquals(link, subChild3.getLink());
+		// attributes
+		factory.getAddAttributeActor().addAttribute(root, new Attribute("name", "value"));
+		assertEquals(1, root.getAttributeTableLength());
+		assertEquals("value", root.getAttribute("name"));
+		factory.getSetAttributeActor().setAttribute(root, 0, new Attribute("oname", "ovalue"));
+		assertEquals(1, root.getAttributeTableLength());
+		assertEquals("ovalue", root.getAttribute("oname"));
+		assertEquals(null, root.getAttribute("name"));
+		factory.getInsertAttributeActor().insertAttribute(root, 0, new Attribute("0name", "0"));
+		assertEquals(2, root.getAttributeTableLength());
+		assertEquals("0", root.getAttribute("0name"));
+		factory.getRemoveAttributeActor().removeAttribute(root, 1);
+		assertEquals(1, root.getAttributeTableLength());
+		assertEquals("0", root.getAttribute("0name"));
+		assertEquals(null, root.getAttribute("oname"));
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);
 

@@ -149,7 +149,6 @@ import freemind.modes.common.actions.FindAction.FindNextAction;
 import freemind.modes.common.actions.NewMapAction;
 import freemind.modes.common.listeners.CommonNodeMouseMotionListener;
 import freemind.modes.mindmapmode.actions.AddArrowLinkAction;
-import freemind.modes.mindmapmode.actions.AddAttributeActor;
 import freemind.modes.mindmapmode.actions.AddLocalLinkAction;
 import freemind.modes.mindmapmode.actions.ApplyPatternAction;
 import freemind.modes.mindmapmode.actions.BoldAction;
@@ -172,7 +171,6 @@ import freemind.modes.mindmapmode.actions.HookAction;
 import freemind.modes.mindmapmode.actions.IconAction;
 import freemind.modes.mindmapmode.actions.ImportExplorerFavoritesAction;
 import freemind.modes.mindmapmode.actions.ImportFolderStructureAction;
-import freemind.modes.mindmapmode.actions.InsertAttributeActor;
 import freemind.modes.mindmapmode.actions.ItalicAction;
 import freemind.modes.mindmapmode.actions.JoinNodesAction;
 import freemind.modes.mindmapmode.actions.MindMapActions;
@@ -195,12 +193,10 @@ import freemind.modes.mindmapmode.actions.PasteAsPlainTextAction;
 import freemind.modes.mindmapmode.actions.RedoAction;
 import freemind.modes.mindmapmode.actions.RemoveAllIconsAction;
 import freemind.modes.mindmapmode.actions.RemoveArrowLinkAction;
-import freemind.modes.mindmapmode.actions.RemoveAttributeActor;
 import freemind.modes.mindmapmode.actions.RemoveIconAction;
 import freemind.modes.mindmapmode.actions.RevertAction;
 import freemind.modes.mindmapmode.actions.SelectAllAction;
 import freemind.modes.mindmapmode.actions.SelectBranchAction;
-import freemind.modes.mindmapmode.actions.SetAttributeActor;
 import freemind.modes.mindmapmode.actions.SetLinkByTextFieldAction;
 import freemind.modes.mindmapmode.actions.SingleNodeOperation;
 import freemind.modes.mindmapmode.actions.ToggleChildrenFoldedAction;
@@ -491,10 +487,6 @@ public class MindMapController extends ControllerAdapter implements
 	public RevertAction revertAction = null;
 	public SelectBranchAction selectBranchAction = null;
 	public SelectAllAction selectAllAction = null;
-	public SetAttributeActor mSetAttributeActor = new SetAttributeActor(this);
-	public InsertAttributeActor mInsertAttributeActor = new InsertAttributeActor(this);
-	public AddAttributeActor mAddAttributeActor = new AddAttributeActor(this);
-	public RemoveAttributeActor mRemoveAttributeActor = new RemoveAttributeActor(this);
 
 	// Extension Actions
 	public Vector iconActions = new Vector(); // fc
@@ -654,15 +646,6 @@ public class MindMapController extends ControllerAdapter implements
 		revertAction = new RevertAction(this);
 		selectBranchAction = new SelectBranchAction(this);
 		selectAllAction = new SelectAllAction(this);
-		// cross injection, as the undo of addAttribute is removeAttribute, etc.
-		mAddAttributeActor.setRemoveAttributeActor(mRemoveAttributeActor);
-		mRemoveAttributeActor.setInsertAttributeActor(mInsertAttributeActor);
-		mRemoveAttributeActor.setAddAttributeActor(mAddAttributeActor);
-		mInsertAttributeActor.setRemoveAttributeActor(mRemoveAttributeActor);
-		getActionRegistry().registerActor(mAddAttributeActor, mAddAttributeActor.getDoActionClass());
-		getActionRegistry().registerActor(mSetAttributeActor, mSetAttributeActor.getDoActionClass());
-		getActionRegistry().registerActor(mInsertAttributeActor, mInsertAttributeActor.getDoActionClass());
-		getActionRegistry().registerActor(mRemoveAttributeActor, mRemoveAttributeActor.getDoActionClass());
 	}
 
 	/**
@@ -2522,8 +2505,7 @@ public class MindMapController extends ControllerAdapter implements
 	@Override
 	public void setAttribute(MindMapNode pNode, int pPosition,
 			Attribute pAttribute) {
-		ActionPair actionPair = mSetAttributeActor.getActionPair(pNode, pPosition, pAttribute);
-		doTransaction("SET_ATTRIBUTE_ACTION", actionPair);
+		getActorFactory().getSetAttributeActor().setAttribute(pNode, pPosition, pAttribute);
 	}
 
 	/* (non-Javadoc)
@@ -2532,8 +2514,7 @@ public class MindMapController extends ControllerAdapter implements
 	@Override
 	public void insertAttribute(MindMapNode pNode, int pPosition,
 			Attribute pAttribute) {
-		ActionPair actionPair = mInsertAttributeActor.getActionPair(pNode, pPosition, pAttribute);
-		doTransaction("INSERT_ATTRIBUTE_ACTION", actionPair);
+		getActorFactory().getInsertAttributeActor().insertAttribute(pNode, pPosition, pAttribute);
 	}
 	
 	/* (non-Javadoc)
@@ -2541,10 +2522,7 @@ public class MindMapController extends ControllerAdapter implements
 	 */
 	@Override
 	public int addAttribute(MindMapNode pNode, Attribute pAttribute) {
-		int retValue = pNode.getAttributeTableLength();
-		ActionPair actionPair = mAddAttributeActor.getActionPair(pNode, pAttribute);
-		doTransaction("ADD_ATTRIBUTE_ACTION", actionPair);
-		return retValue;
+		return getActorFactory().getAddAttributeActor().addAttribute(pNode, pAttribute);
 	}
 
 	/* (non-Javadoc)
@@ -2552,8 +2530,7 @@ public class MindMapController extends ControllerAdapter implements
 	 */
 	@Override
 	public void removeAttribute(MindMapNode pNode, int pPosition) {
-		ActionPair actionPair = mRemoveAttributeActor.getActionPair(pNode, pPosition);
-		doTransaction("REMOVE_ATTRIBUTE_ACTION", actionPair);
+		getActorFactory().getRemoveAttributeActor().removeAttribute(pNode, pPosition);
 	}
 
 	/* (non-Javadoc)

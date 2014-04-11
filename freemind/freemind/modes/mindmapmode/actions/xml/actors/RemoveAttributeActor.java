@@ -18,41 +18,33 @@
  *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-package freemind.modes.mindmapmode.actions;
+package freemind.modes.mindmapmode.actions.xml.actors;
 
 import freemind.controller.actions.generated.instance.NodeAction;
 import freemind.controller.actions.generated.instance.RemoveAttributeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.MindMapNode;
 import freemind.modes.NodeAdapter;
-import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
-import freemind.modes.mindmapmode.actions.xml.ActorXml;
 
-public class RemoveAttributeActor implements ActorXml {
-	/**
-	 * 
-	 */
-	private final MindMapController mMindMapController;
-	private InsertAttributeActor mInsertAttributeActor;
-	private AddAttributeActor mAddAttributeActor;
+public class RemoveAttributeActor extends XmlActorAdapter {
 
 	/**
-	 * @param pMindMapController
+	 * @param pMapFeedback
 	 */
-	public RemoveAttributeActor(MindMapController pMindMapController) {
-		mMindMapController = pMindMapController;
+	public RemoveAttributeActor(ExtendedMapFeedback pMapFeedback) {
+		super(pMapFeedback);
 	}
 
 	public void act(XmlAction action) {
 		if (action instanceof RemoveAttributeAction) {
 			RemoveAttributeAction removeAttributeAction = (RemoveAttributeAction) action;
-			NodeAdapter node = mMindMapController
-					.getNodeFromID(removeAttributeAction.getNode());
+			NodeAdapter node = getNodeFromID(removeAttributeAction.getNode());
 			int position = removeAttributeAction.getPosition();
 			node.checkAttributePosition(position);
 			node.removeAttribute(position);
-			mMindMapController.nodeChanged(node);
+			getExMapFeedback().nodeChanged(node);
 		}
 	}
 
@@ -61,14 +53,14 @@ public class RemoveAttributeActor implements ActorXml {
 	}
 
 	public ActionPair getActionPair(MindMapNode selected, int pPosition) {
-		RemoveAttributeAction setAttributeAction = removeAttribute(selected,
+		RemoveAttributeAction setAttributeAction = getRemoveAttributeAction(selected,
 				pPosition);
 		NodeAction undoRemoveAttributeAction;
 		if (pPosition == selected.getAttributeTableLength() - 1) {
-			undoRemoveAttributeAction = mAddAttributeActor.addAttribute(
+			undoRemoveAttributeAction = getXmlActorFactory().getAddAttributeActor().getAddAttributeAction(
 					selected, selected.getAttribute(pPosition));
 		} else {
-			undoRemoveAttributeAction = mInsertAttributeActor.insertAttribute(
+			undoRemoveAttributeAction = getXmlActorFactory().getInsertAttributeActor().getInsertAttributeAction(
 					selected, pPosition, selected.getAttribute(pPosition));
 		}
 		return new ActionPair(setAttributeAction, undoRemoveAttributeAction);
@@ -80,27 +72,16 @@ public class RemoveAttributeActor implements ActorXml {
 	 *            TODO
 	 * @return
 	 */
-	public RemoveAttributeAction removeAttribute(MindMapNode pSelected,
+	public RemoveAttributeAction getRemoveAttributeAction(MindMapNode pSelected,
 			int pPosition) {
 		RemoveAttributeAction removeAttributeAction = new RemoveAttributeAction();
-		removeAttributeAction.setNode(mMindMapController.getNodeID(pSelected));
+		removeAttributeAction.setNode(getNodeID(pSelected));
 		removeAttributeAction.setPosition(pPosition);
 		return removeAttributeAction;
 	}
-
-	/**
-	 * @param pInsertAttributeActor
-	 */
-	public void setInsertAttributeActor(
-			InsertAttributeActor pInsertAttributeActor) {
-		mInsertAttributeActor = pInsertAttributeActor;
+	
+	public void removeAttribute(MindMapNode pNode, int pPosition) {
+		ActionPair actionPair = getActionPair(pNode, pPosition);
+		execute(actionPair);
 	}
-
-	/**
-	 * @param pAddAttributeActor
-	 */
-	public void setAddAttributeActor(AddAttributeActor pAddAttributeActor) {
-		mAddAttributeActor = pAddAttributeActor;
-	}
-
 }
