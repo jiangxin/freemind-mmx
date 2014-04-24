@@ -2389,35 +2389,6 @@ public class MindMapController extends ControllerAdapter implements
 		setNoteText(pNode, null);
 	}
 
-	public EditNoteToNodeAction createEditNoteToNodeAction(MindMapNode node,
-			String text) {
-		EditNoteToNodeAction nodeAction = new EditNoteToNodeAction();
-		nodeAction.setNode(node.getObjectId(this));
-		if (text != null
-				&& (HtmlTools.htmlToPlain(text).length() != 0 || text
-						.indexOf("<img") >= 0)) {
-			nodeAction.setText(text);
-		} else {
-			nodeAction.setText(null);
-		}
-		return nodeAction;
-	}
-
-	public void setNoteText(MindMapNode node, String text) {
-		String oldNoteText = node.getNoteText();
-		if (Tools.safeEquals(text, oldNoteText)) {
-			// they are equal.
-			return;
-		}
-		logger.fine("Old Note Text:'" + oldNoteText + ", new:'" + text + "'.");
-		logger.fine(Tools.compareText(oldNoteText, text));
-		EditNoteToNodeAction doAction = createEditNoteToNodeAction(node, text);
-		EditNoteToNodeAction undoAction = createEditNoteToNodeAction(node,
-				oldNoteText);
-		getActionRegistry().doTransaction(ACCESSORIES_PLUGINS_NODE_NOTE,
-				new ActionPair(doAction, undoAction));
-	}
-
 	public void registerPlugin(MindMapControllerPlugin pPlugin) {
 		mPlugins.add(pPlugin);
 	}
@@ -2556,4 +2527,13 @@ public class MindMapController extends ControllerAdapter implements
 	public void close(boolean pForce) {
 		getController().close(pForce);
 	}
+
+	/* (non-Javadoc)
+	 * @see freemind.modes.mindmapmode.actions.MindMapActions#setNoteText(freemind.modes.MindMapNode, java.lang.String)
+	 */
+	@Override
+	public void setNoteText(MindMapNode pSelected, String pNewText) {
+		getActorFactory().getChangeNoteTextActor().setNoteText(pSelected, pNewText);
+	}
+
 }

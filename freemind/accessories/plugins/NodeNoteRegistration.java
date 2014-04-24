@@ -50,8 +50,6 @@ import com.lightdev.app.shtm.SHTMLPanel;
 import com.lightdev.app.shtm.TextResources;
 
 import freemind.controller.MenuItemSelectedListener;
-import freemind.controller.actions.generated.instance.EditNoteToNodeAction;
-import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.extensions.HookRegistration;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindCommon;
@@ -64,10 +62,9 @@ import freemind.modes.ModeController.NodeLifetimeListener;
 import freemind.modes.ModeController.NodeSelectionListener;
 import freemind.modes.common.plugins.NodeNoteBase;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.xml.ActorXml;
 import freemind.view.mindmapview.NodeView;
 
-public class NodeNoteRegistration implements HookRegistration, ActorXml,
+public class NodeNoteRegistration implements HookRegistration, 
 		MenuItemSelectedListener {
 	public static final class SimplyHtmlResources implements TextResources {
 		public String getString(String pKey) {
@@ -129,7 +126,7 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 					logger.finest("Making map dirty.");
 					// make map dirty in order to enable automatic save on note
 					// change.
-					getMindMapController().getMap().setSaved(false);
+					getMindMapController().setSaved(false);
 				}
 			}
 		}
@@ -199,9 +196,6 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 			document.addDocumentListener(mNoteDocumentListener);
 		}
 
-		public void onUpdateNodeHook(MindMapNode node) {
-		}
-
 		public void onSaveNode(MindMapNode node) {
 			if (this.node != node) {
 				return;
@@ -228,16 +222,14 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 			// ((noteText==null)?noteText:noteText.replaceAll("\n", "\\\\n")) +
 			// "', Current document: \n'" + documentText.replaceAll("\n",
 			// "\\\\n") + "', empty="+editorContentEmpty);
-			controller.deregisterNodeSelectionListener(this);
 			if (noteViewerComponent.needsSaving()) {
 				if (editorContentEmpty) {
-					changeNoteText(null, node);
+					controller.setNoteText(node, (String) null);
 				} else {
-					changeNoteText(documentText, node);
+					controller.setNoteText(node, documentText);
 				}
 				mLastContentEmpty = editorContentEmpty;
 			}
-			controller.registerNodeSelectionListener(this, false);
 			try {
 				// on inserting tabs, the caret position changes, as they are deleted:
 				if (caretPosition < getDocument().getLength()) {
@@ -255,7 +247,19 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 				setStateIcon(node, true);
 			}
 		}
-
+		
+		public void onUpdateNodeHook(MindMapNode node) {
+			// update display only, if the node is displayed.
+			String newText = node.getNoteText();
+			if (node == controller.getSelected()
+					&& (!Tools.safeEquals(newText, getHtmlEditorPanel()
+							.getDocumentText()))) {
+				getHtmlEditorPanel().setCurrentDocumentContent(
+						newText == null ? "" : newText);
+			}
+			setStateIcon(node, !(newText == null || newText.equals("")));
+		}
+		
 		public void onPreDeleteNode(MindMapNode node) {
 		}
 
@@ -285,8 +289,6 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 
 	private NotesManager mNotesManager;
 
-	private static ImageIcon noteIcon = null;
-
 	private NoteDocumentListener mNoteDocumentListener;
 
 	static Integer sPositionToRecover = null;
@@ -296,6 +298,29 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 	public NodeNoteRegistration(ModeController controller, MindMap map) {
 		this.controller = (MindMapController) controller;
 		logger = controller.getFrame().getLogger(this.getClass().getName());
+	}
+
+	private static ImageIcon noteIcon = null;
+
+	protected void setStateIcon(MindMapNode node, boolean enabled) {
+		// icon
+		if (noteIcon == null) {
+			noteIcon = new ImageIcon(
+					Resources.getInstance().getResource("images/knotes.png"));
+		}
+		boolean showIcon = enabled;
+		if (Resources.getInstance().getBoolProperty(
+				FreeMind.RESOURCES_DON_T_SHOW_NOTE_ICONS)) {
+			showIcon = false;
+		}
+		node.setStateIcon(NodeNoteBase.NODE_NOTE_ICON, (showIcon) ? noteIcon
+				: null);
+		// tooltip, first try.
+		if (!Resources.getInstance().getBoolProperty(
+				FreeMind.RESOURCES_DON_T_SHOW_NOTE_TOOLTIPS)) {
+			controller.setToolTip(node, "nodeNoteText",
+					(enabled) ? node.getNoteText() : null);
+		}
 	}
 
 	public boolean shouldUseSplitPane() {
@@ -317,8 +342,6 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 	};
 
 	public void register() {
-		logger.fine("Registration of note handler.");
-		controller.getActionRegistry().registerActor(this, getDoActionClass());
 		// moved to registration:
 		noteViewerComponent = getNoteViewerComponent();
 		// register "leave note" action:
@@ -353,8 +376,6 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 			hideNotesPanel();
 			noteViewerComponent = null;
 		}
-		logger.fine("Deregistration of note undo handler.");
-		controller.getActionRegistry().deregisterActor(getDoActionClass());
 	}
 
 	public void showNotesPanel() {
@@ -416,61 +437,6 @@ public class NodeNoteRegistration implements HookRegistration, ActorXml,
 		noteViewerComponent.setVisible(false);
 		controller.getFrame().removeSplitPane();
 		mSplitPane = null;
-	}
-
-	protected void setStateIcon(MindMapNode node, boolean enabled) {
-		// icon
-		if (noteIcon == null) {
-			noteIcon = new ImageIcon(
-					controller.getResource("images/knotes.png"));
-		}
-		boolean showIcon = enabled;
-		if (Resources.getInstance().getBoolProperty(
-				FreeMind.RESOURCES_DON_T_SHOW_NOTE_ICONS)) {
-			showIcon = false;
-		}
-		node.setStateIcon(NodeNoteBase.NODE_NOTE_ICON, (showIcon) ? noteIcon
-				: null);
-		// tooltip, first try.
-		if (!Resources.getInstance().getBoolProperty(
-				FreeMind.RESOURCES_DON_T_SHOW_NOTE_TOOLTIPS)) {
-			getMindMapController().setToolTip(node, "nodeNoteText",
-					(enabled) ? node.getNoteText() : null);
-		}
-	}
-
-	public void act(XmlAction action) {
-		if (action instanceof EditNoteToNodeAction) {
-			EditNoteToNodeAction noteTextAction = (EditNoteToNodeAction) action;
-			MindMapNode node = controller.getNodeFromID(noteTextAction
-					.getNode());
-			String newText = noteTextAction.getText();
-			String oldText = node.getNoteText();
-			if (!Tools.safeEquals(newText, oldText)) {
-				node.setNoteText(newText);
-				// update display only, if the node is displayed.
-				if (node == controller.getSelected()
-						&& (!Tools.safeEquals(newText, getHtmlEditorPanel()
-								.getDocumentText()))) {
-					getHtmlEditorPanel().setCurrentDocumentContent(
-							newText == null ? "" : newText);
-				}
-				setStateIcon(node, !(newText == null || newText.equals("")));
-				controller.nodeChanged(node);
-			}
-		}
-	}
-
-	public Class getDoActionClass() {
-		return EditNoteToNodeAction.class;
-	}
-
-	/**
-	 * Set text with undo:
-	 * 
-	 */
-	public void changeNoteText(String text, MindMapNode node) {
-		getMindMapController().setNoteText(node, text);
 	}
 
 	private MindMapController getMindMapController() {

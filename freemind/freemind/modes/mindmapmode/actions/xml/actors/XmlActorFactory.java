@@ -69,6 +69,7 @@ public class XmlActorFactory {
 	private CutActor mCutActor;
 	private CompoundActor mCompoundActor;
 	private UndoPasteActor mUndoPasteActor;
+	private ChangeNoteTextActor mChangeNoteTextActor;
 
 	public XmlActorFactory(ExtendedMapFeedback pMapFeedback) {
 		mMapFeedback = pMapFeedback;
@@ -110,6 +111,7 @@ public class XmlActorFactory {
 		mCompoundActor = new CompoundActor(mMapFeedback);
 		mCutActor = new CutActor(mMapFeedback);
 		mUndoPasteActor = new UndoPasteActor(mMapFeedback);
+		mChangeNoteTextActor = new ChangeNoteTextActor(mMapFeedback);
 	}
 	
 	public ItalicNodeActor getItalicActor() {
@@ -262,6 +264,10 @@ public class XmlActorFactory {
 	
 	public UndoPasteActor getUndoPasteActor() {
 		return mUndoPasteActor;
+	}
+	
+	public ChangeNoteTextActor getChangeNoteTextActor() {
+		return mChangeNoteTextActor;
 	}
 	
 }
