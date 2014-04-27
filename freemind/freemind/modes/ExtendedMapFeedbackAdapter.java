@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Properties;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import freemind.controller.actions.generated.instance.Pattern;
 import freemind.extensions.HookFactory;
 import freemind.main.XMLParseException;
@@ -278,7 +277,7 @@ public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
 
 	@Override
 	public void blendNodeColor(MindMapNode pNode) {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -309,12 +308,12 @@ public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
 
 	@Override
 	public void applyPattern(MindMapNode pNode, String pPatternName) {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
 	public void applyPattern(MindMapNode pNode, Pattern pPattern) {
-		throw new NotImplementedException();
+		throw new UnsupportedOperationException();
 	}
 
 	@Override
