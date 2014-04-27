@@ -36,11 +36,7 @@ public class ToggleFoldedAction extends MindmapAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		toggleFolded();
-	}
-
-	public void toggleFolded() {
-		modeController.getActorFactory().getToggleFoldedActor().toggleFolded(modeController.getSelecteds().listIterator());
+		modeController.toggleFolded();
 	}
 
 

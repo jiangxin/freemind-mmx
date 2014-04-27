@@ -1105,7 +1105,7 @@ public class MapView extends JPanel implements ViewAbstraction, Printable, Autos
 	 * @return an ArrayList of MindMapNode objects. If both ancestor and
 	 *         descendant node are selected, only the ancestor is returned
 	 */
-	public ArrayList /* of MindMapNodes */getSelectedNodesSortedByY() {
+	public ArrayList<MindMapNode> getSelectedNodesSortedByY() {
 		final HashSet selectedNodesSet = new HashSet();
 		for (int i = 0; i < selected.size(); i++) {
 			selectedNodesSet.add(getSelected(i).getModel());

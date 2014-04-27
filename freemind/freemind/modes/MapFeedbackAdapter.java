@@ -219,7 +219,6 @@ public abstract class MapFeedbackAdapter implements MapFeedback, ViewFeedback {
 	@Override
 	public void setFolded(MindMapNode pModel, boolean pB) {
 		
-		
 	}
 
 	@Override
@@ -338,6 +337,14 @@ public abstract class MapFeedbackAdapter implements MapFeedback, ViewFeedback {
 	public void sortNodesByDepth(List inPlaceList) {
 		Collections.sort(inPlaceList, new NodesDepthComparator());
 		logger.finest("Sort result: " + inPlaceList);
+	}
+
+	@Override
+	public void registerMouseWheelEventHandler(MouseWheelEventHandler pHandler) {
+	}
+
+	@Override
+	public void deRegisterMouseWheelEventHandler(MouseWheelEventHandler pHandler) {
 	}
 
 

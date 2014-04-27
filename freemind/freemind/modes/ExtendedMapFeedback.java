@@ -29,6 +29,7 @@ import java.util.List;
 
 import freemind.extensions.HookFactory;
 import freemind.main.XMLParseException;
+import freemind.modes.mindmapmode.actions.MindMapActions;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
 import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
@@ -39,7 +40,7 @@ import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
  * @author foltin
  * @date 16.03.2014
  */
-public interface ExtendedMapFeedback extends MapFeedback {
+public interface ExtendedMapFeedback extends MapFeedback, MindMapActions {
 	/**
 	 * @return the action factory that contains the actors definitions.
 	 */

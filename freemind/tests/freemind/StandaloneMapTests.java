@@ -161,81 +161,81 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		MindMapNode subChild2 = (MindMapNode) firstChild.getChildAt(1);
 		MindMapNode subChild3 = (MindMapNode) firstChild.getChildAt(2);
 		XmlActorFactory factory = mapFeedback.getActorFactory();
-		factory.getBoldActor().setBold(root, true);
+		mapFeedback.setBold(root, true);
 		assertEquals(true, root.isBold());
-		factory.getItalicActor().setItalic(root, true);
+		mapFeedback.setItalic(root, true);
 		assertEquals(true, root.isItalic());
 		int amount = root.getChildCount();
-		MindMapNode newNode = factory.getNewChildActor().addNewNode(root, 0,
+		MindMapNode newNode = mapFeedback.addNewNode(root, 0,
 				true);
 		assertEquals(amount + 1, root.getChildCount());
-		factory.getDeleteChildActor().deleteWithoutUndo(newNode);
+		mapFeedback.deleteNode(newNode);
 		assertEquals(amount, root.getChildCount());
 		try {
-			factory.getDeleteChildActor().deleteWithoutUndo(root);
+			mapFeedback.deleteNode(root);
 			assertTrue("Must throw.", false);
 		} catch (IllegalArgumentException e) {
 		}
-		factory.getPasteActor().paste(new StringSelection("bla"), root, false,
+		mapFeedback.paste(new StringSelection("bla"), root, false,
 				true);
 		assertEquals(amount + 1, root.getChildCount());
 		assertEquals(0, root.getIcons().size());
 		MindIcon icon = MindIcon.factory("attach");
-		factory.getAddIconActor().addIcon(root, icon);
+		mapFeedback.addIcon(root, icon);
 		assertEquals(1, root.getIcons().size());
-		factory.getRemoveIconActor().removeLastIcon(root);
+		mapFeedback.removeLastIcon(root);
 		assertEquals(0, root.getIcons().size());
-		factory.getRemoveIconActor().removeLastIcon(root);
-		factory.getAddIconActor().addIcon(root, icon);
-		factory.getAddIconActor().addIcon(root, icon);
-		factory.getAddIconActor().addIcon(root, icon);
-		factory.getAddIconActor().addIcon(root, icon);
-		factory.getAddIconActor().addIcon(root, icon);
+		mapFeedback.removeLastIcon(root);
+		mapFeedback.addIcon(root, icon);
+		mapFeedback.addIcon(root, icon);
+		mapFeedback.addIcon(root, icon);
+		mapFeedback.addIcon(root, icon);
+		mapFeedback.addIcon(root, icon);
 		assertEquals(5, root.getIcons().size());
-		factory.getRemoveAllIconsActor().removeAllIcons(root);
+		mapFeedback.removeAllIcons(root);
 		assertEquals(0, root.getIcons().size());
 		// cloud
-		factory.getCloudActor().setCloud(firstChild, true);
+		mapFeedback.setCloud(firstChild, true);
 		assertNotNull(firstChild.getCloud());
-		factory.getCloudColorActor().setCloudColor(firstChild, Color.CYAN);
+		mapFeedback.setCloudColor(firstChild, Color.CYAN);
 		assertEquals(Color.CYAN, firstChild.getCloud().getColor());
-		factory.getCloudActor().setCloud(firstChild, false);
+		mapFeedback.setCloud(firstChild, false);
 		assertNull(firstChild.getCloud());
 		// edges
 		try {
-			factory.getEdgeStyleActor().setEdgeStyle(firstChild, "bluber");
+			mapFeedback.setEdgeStyle(firstChild, "bluber");
 			assertTrue("Must throw.", false);
 		} catch (Exception e) {
 		}
-		factory.getEdgeStyleActor().setEdgeStyle(firstChild,
+		mapFeedback.setEdgeStyle(firstChild,
 				EdgeAdapter.EDGESTYLE_SHARP_BEZIER);
 		assertTrue(firstChild.getEdge().hasStyle());
 		assertEquals(EdgeAdapter.EDGESTYLE_SHARP_BEZIER, firstChild.getEdge()
 				.getStyle());
-		factory.getEdgeStyleActor().setEdgeStyle(firstChild, null);
+		mapFeedback.setEdgeStyle(firstChild, null);
 		assertFalse(firstChild.getEdge().hasStyle());
 		assertEquals(EdgeAdapter.EDGESTYLE_BEZIER, firstChild.getEdge()
 				.getStyle());
-		factory.getEdgeWidthActor().setEdgeWidth(firstChild, 8);
+		mapFeedback.setEdgeWidth(firstChild, 8);
 		assertEquals(8, firstChild.getEdge().getWidth());
-		factory.getEdgeWidthActor().setEdgeWidth(firstChild,
+		mapFeedback.setEdgeWidth(firstChild,
 				EdgeAdapter.WIDTH_THIN);
 		assertEquals(EdgeAdapter.WIDTH_THIN, firstChild.getEdge().getWidth());
-		factory.getEdgeColorActor().setEdgeColor(firstChild, Color.GREEN);
+		mapFeedback.setEdgeColor(firstChild, Color.GREEN);
 		assertEquals(Color.GREEN, firstChild.getEdge().getColor());
 		GraphicsEnvironment ge = null;
 		ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 		String[] fontNames = ge.getAvailableFontFamilyNames();
 		if (fontNames.length > 0) {
 			String fontFamilyValue = fontNames[0];
-			factory.getFontFamilyActor().setFontFamily(firstChild,
+			mapFeedback.setFontFamily(firstChild,
 					fontFamilyValue);
 			assertEquals(fontFamilyValue, firstChild.getFontFamilyName());
 		}
 		String fontSizeValue = "32";
-		factory.getFontSizeActor().setFontSize(firstChild, fontSizeValue);
+		mapFeedback.setFontSize(firstChild, fontSizeValue);
 		assertEquals(fontSizeValue, firstChild.getFontSize());
-		factory.getMoveNodeActor().moveNodeTo(firstChild, 20, 30, 17);
+		mapFeedback.moveNodePosition(firstChild, 20, 30, 17);
 		assertEquals(20, root.getVGap());
 		assertEquals(30, firstChild.getHGap());
 		assertEquals(17, firstChild.getShiftY());
@@ -243,42 +243,42 @@ public class StandaloneMapTests extends FreeMindTestBase {
 				.setStyle(firstChild, MindMapNode.STYLE_FORK);
 		assertEquals(MindMapNodeModel.STYLE_FORK, firstChild.getStyle());
 		try {
-			factory.getNodeStyleActor().setStyle(firstChild, "bla");
+			mapFeedback.setNodeStyle(firstChild, "bla");
 			assertTrue("Must throw.", false);
 		} catch (Exception e) {
 		}
 		// underline not implemented
-		factory.getUnderlineActor().setUnderlined(firstChild, true);
-		assertTrue(firstChild.isUnderlined());
+//		mapFeedback.setUnderlined(firstChild, true);
+//		assertTrue(firstChild.isUnderlined());
 		// arrow links
-		factory.getAddArrowLinkActor().addLink(subChild1, subChild2);
+		mapFeedback.addLink(subChild1, subChild2);
 		Vector<MindMapLink> mapLinks = mapFeedback.getMap().getLinkRegistry().getAllLinksFromMe(subChild1);
 		assertEquals(1, mapLinks.size());
 		MindMapArrowLink mapLink = (MindMapArrowLink) mapLinks.firstElement();
 		assertEquals(subChild2, mapLink.getTarget());
 		Point startPoint = new Point(40,50);
 		Point endPoint = new Point(-10,-20);
-		factory.getChangeArrowLinkEndPointsActor().setArrowLinkEndPoints( mapLink, startPoint, endPoint);
+		mapFeedback.setArrowLinkEndPoints( mapLink, startPoint, endPoint);
 		assertEquals(startPoint, mapLink.getStartInclination());
 		assertEquals(endPoint, mapLink.getEndInclination());
-		factory.getChangeArrowsInArrowLinkActor().changeArrowsOfArrowLink(mapLink, true, false);
+		mapFeedback.changeArrowsOfArrowLink(mapLink, true, false);
 		assertEquals(MindMapArrowLink.ARROW_DEFAULT, mapLink.getStartArrow());
 		assertEquals(MindMapArrowLink.ARROW_NONE, mapLink.getEndArrow());
-		factory.getColorArrowLinkActor().setArrowLinkColor(mapLink, Color.RED);
+		mapFeedback.setArrowLinkColor(mapLink, Color.RED);
 		assertEquals(Color.RED, mapLink.getColor());
-		factory.getRemoveArrowLinkActor().removeReference(mapLink);
+		mapFeedback.removeReference(mapLink);
 		mapLinks = mapFeedback.getMap().getLinkRegistry().getAllLinksFromMe(subChild1);
 		assertEquals(0, mapLinks.size());
 		String newText = "blabla";
-		factory.getEditActor().setNodeText(firstChild, newText);
+		mapFeedback.setNodeText(firstChild, newText);
 		assertEquals(newText, firstChild.getText());
 		Color darkGray = Color.DARK_GRAY;
-		factory.getNodeBackgroundColorActor().setNodeBackgroundColor(firstChild, darkGray);
+		mapFeedback.setNodeBackgroundColor(firstChild, darkGray);
 		assertEquals(darkGray, firstChild.getBackgroundColor());
-		factory.getNodeColorActor().setNodeColor(firstChild, darkGray);
+		mapFeedback.setNodeColor(firstChild, darkGray);
 		assertEquals(darkGray, firstChild.getColor());
 //		// hooks: currently disabled, as too dependent from MindMapController
-//		factory.getAddHookActor().addHook(firstChild,
+//		mapFeedback.addHook(firstChild,
 //				Tools.getVectorWithSingleElement(firstChild),
 //				"accessories/plugins/BlinkingNodeHook.properties", null);
 //		int timeout = 10;
@@ -292,43 +292,43 @@ public class StandaloneMapTests extends FreeMindTestBase {
 //			Thread.sleep(1000);
 //		}
 //		assertTrue(found);
-//		factory.getAddHookActor().addHook(firstChild,
+//		mapFeedback.addHook(firstChild,
 //				Tools.getVectorWithSingleElement(firstChild),
 //				"accessories/plugins/BlinkingNodeHook.properties", null);
 		assertEquals(0, firstChild.getIndex(subChild1));
-		factory.getNodeUpActor().moveNodes(subChild1, Tools.getVectorWithSingleElement(subChild1), 1);
+		mapFeedback.moveNodes(subChild1, Tools.getVectorWithSingleElement(subChild1), 1);
 		assertEquals(1, firstChild.getIndex(subChild1));
-		factory.getNodeUpActor().moveNodes(subChild1, Tools.getVectorWithSingleElement(subChild1), -1);
+		mapFeedback.moveNodes(subChild1, Tools.getVectorWithSingleElement(subChild1), -1);
 		assertEquals(0, firstChild.getIndex(subChild1));
-		factory.getNodeUpActor().moveNodes(subChild1, Tools.getVectorWithSingleElement(subChild1), -1);
+		mapFeedback.moveNodes(subChild1, Tools.getVectorWithSingleElement(subChild1), -1);
 		assertEquals(2, firstChild.getIndex(subChild1));
-		factory.getToggleFoldedActor().setFolded(firstChild, true);
+		mapFeedback.setFolded(firstChild, true);
 		assertTrue(firstChild.isFolded());
 		String link = "http://freemind.sf.net/";
-		factory.getSetLinkActor().setLink(subChild3, link);
+		mapFeedback.setLink(subChild3, link);
 		assertEquals(link, subChild3.getLink());
 		// attributes
-		factory.getAddAttributeActor().addAttribute(root, new Attribute("name", "value"));
+		mapFeedback.addAttribute(root, new Attribute("name", "value"));
 		assertEquals(1, root.getAttributeTableLength());
 		assertEquals("value", root.getAttribute("name"));
-		factory.getSetAttributeActor().setAttribute(root, 0, new Attribute("oname", "ovalue"));
+		mapFeedback.setAttribute(root, 0, new Attribute("oname", "ovalue"));
 		assertEquals(1, root.getAttributeTableLength());
 		assertEquals("ovalue", root.getAttribute("oname"));
 		assertEquals(null, root.getAttribute("name"));
-		factory.getInsertAttributeActor().insertAttribute(root, 0, new Attribute("0name", "0"));
+		mapFeedback.insertAttribute(root, 0, new Attribute("0name", "0"));
 		assertEquals(2, root.getAttributeTableLength());
 		assertEquals("0", root.getAttribute("0name"));
-		factory.getRemoveAttributeActor().removeAttribute(root, 1);
+		mapFeedback.removeAttribute(root, 1);
 		assertEquals(1, root.getAttributeTableLength());
 		assertEquals("0", root.getAttribute("0name"));
 		assertEquals(null, root.getAttribute("oname"));
 		// cut
 		assertEquals(3, firstChild.getChildCount());
-		factory.getCutActor().cut(Tools.getVectorWithSingleElement(subChild3));
+		mapFeedback.cut(Tools.getVectorWithSingleElement(subChild3));
 		assertEquals(2, firstChild.getChildCount());
 		// note
 		String htmlText = "<html><body>blaNOTE</body></html>";
-		factory.getChangeNoteTextActor().setNoteText(subChild2, htmlText);
+		mapFeedback.setNoteText(subChild2, htmlText);
 		assertEquals(htmlText, subChild2.getNoteText());
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);

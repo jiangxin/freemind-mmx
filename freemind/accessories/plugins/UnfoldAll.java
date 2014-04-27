@@ -33,8 +33,8 @@ import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.actions.MindMapActions.MouseWheelEventHandler;
 import freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter;
+import freemind.view.mindmapview.ViewFeedback.MouseWheelEventHandler;
 
 /**
  * @author foltin

@@ -85,7 +85,6 @@ import freemind.common.XmlBindingTools;
 import freemind.controller.MenuBar;
 import freemind.controller.MindMapNodesSelection;
 import freemind.controller.StructuredMenuHolder;
-import freemind.controller.actions.generated.instance.EditNoteToNodeAction;
 import freemind.controller.actions.generated.instance.MenuActionBase;
 import freemind.controller.actions.generated.instance.MenuCategoryBase;
 import freemind.controller.actions.generated.instance.MenuCheckedAction;
@@ -119,7 +118,6 @@ import freemind.main.ExampleFileFilter;
 import freemind.main.FixedHTMLWriter;
 import freemind.main.FreeMind;
 import freemind.main.FreeMindCommon;
-import freemind.main.HtmlTools;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
@@ -172,7 +170,6 @@ import freemind.modes.mindmapmode.actions.ImportExplorerFavoritesAction;
 import freemind.modes.mindmapmode.actions.ImportFolderStructureAction;
 import freemind.modes.mindmapmode.actions.ItalicAction;
 import freemind.modes.mindmapmode.actions.JoinNodesAction;
-import freemind.modes.mindmapmode.actions.MindMapActions;
 import freemind.modes.mindmapmode.actions.MindMapControllerHookAction;
 import freemind.modes.mindmapmode.actions.MindmapAction;
 import freemind.modes.mindmapmode.actions.MoveNodeAction;
@@ -220,7 +217,7 @@ import freemind.view.mindmapview.MapView;
 import freemind.view.mindmapview.NodeView;
 
 public class MindMapController extends ControllerAdapter implements
-		ExtendedMapFeedback, MindMapActions, MapSourceChangedObserver {
+		ExtendedMapFeedback, MapSourceChangedObserver {
 
 	public static final String REGEXP_FOR_NUMBERS_IN_STRINGS = "([+\\-]?[0-9]*[.,]?[0-9]+)\\b";
 	private static final String ACCESSORIES_PLUGINS_NODE_NOTE = "accessories.plugins.NodeNote";
@@ -1728,7 +1725,7 @@ public class MindMapController extends ControllerAdapter implements
      *
      */
 
-	public void changeArrowsOfArrowLink(MindMapArrowLinkModel arrowLink,
+	public void changeArrowsOfArrowLink(MindMapArrowLink arrowLink,
 			boolean hasStartArrow, boolean hasEndArrow) {
 		getActorFactory().getChangeArrowsInArrowLinkActor().changeArrowsOfArrowLink(arrowLink,
 				hasStartArrow, hasEndArrow);
@@ -1841,7 +1838,7 @@ public class MindMapController extends ControllerAdapter implements
 	}
 
 	public void toggleFolded() {
-		toggleFolded.toggleFolded();
+		getActorFactory().getToggleFoldedActor().toggleFolded(getSelecteds().listIterator());
 	}
 
 	public void setFolded(MindMapNode node, boolean folded) {
@@ -2370,6 +2367,9 @@ public class MindMapController extends ControllerAdapter implements
 		getView().repaint();
 	}
 
+	/**
+	 * Erases all content of the node as text, colors, fonts, etc.
+	 */
 	public void clearNodeContents(MindMapNode pNode) {
 		Pattern erasePattern = new Pattern();
 		erasePattern.setPatternEdgeColor(new PatternEdgeColor());
@@ -2427,10 +2427,6 @@ public class MindMapController extends ControllerAdapter implements
 		}
 	}
 
-	public void showThisMap() {
-		getController().getMapModuleManager().changeToMapModule(getMapModule());
-	}
-
 	public boolean mapSourceChanged(MindMap pMap) throws Exception {
 		// ask the user, if he wants to reload the map.
 		MapSourceChangeDialog runnable = new MapSourceChangeDialog();
@@ -2442,13 +2438,7 @@ public class MindMapController extends ControllerAdapter implements
 		nodeHookFactory = pNodeHookFactory;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * freemind.modes.mindmapmode.actions.MindMapActions#createModeControllerHook
-	 * (java.lang.String)
-	 */
+	/** Creates and invokes a ModeControllerHook.*/
 	public void createModeControllerHook(String pHookName) {
 		HookFactory hookFactory = getHookFactory();
 		// two different invocation methods:single or selecteds

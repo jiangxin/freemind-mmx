@@ -130,6 +130,9 @@ public class DeleteChildActor extends XmlActorAdapter {
 	}
 
 	public void deleteNode(MindMapNode selectedNode) {
+		if(selectedNode.isRoot()) {
+			throw new IllegalArgumentException("Root node can't be deleted");
+		}
 		String newId = getNodeID(selectedNode);
 
 		Transferable copy = getExMapFeedback().copy(selectedNode, true);

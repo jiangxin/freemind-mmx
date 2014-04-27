@@ -20,6 +20,7 @@
 
 package freemind.modes;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,5 +55,11 @@ public interface ViewAbstraction {
 	LinkedList<NodeView> getSelecteds();
 
 	NodeView getSelected();
+	
+	/**
+	 * @return an ArrayList of MindMapNode objects. If both ancestor and
+	 *         descendant node are selected, only the ancestor is returned
+	 */
+	ArrayList<MindMapNode> getSelectedNodesSortedByY();
 
 }

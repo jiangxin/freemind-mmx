@@ -24,15 +24,10 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseWheelEvent;
 import java.util.List;
 import java.util.Properties;
 
-import javax.jws.soap.SOAPBinding.Use;
-
 import freemind.controller.actions.generated.instance.Pattern;
-import freemind.controller.actions.generated.instance.XmlAction;
-import freemind.extensions.ModeControllerHook;
 import freemind.extensions.NodeHook;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMap;
@@ -40,8 +35,6 @@ import freemind.modes.MindMapArrowLink;
 import freemind.modes.MindMapLink;
 import freemind.modes.MindMapNode;
 import freemind.modes.attributes.Attribute;
-import freemind.modes.mindmapmode.MindMapArrowLinkModel;
-import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
 
 /**
  * This is the central method interface of actions that can be undertaken on
@@ -62,19 +55,6 @@ public interface MindMapActions {
 	public static final int NEW_SIBLING_BEFORE = 4;
 
 	/**
-	 * Call this method, if you changed anything at a node. This method makes
-	 * the map dirty.
-	 */
-	public void nodeChanged(MindMapNode node);
-
-	/**
-	 * This is nodeChanged without making the map dirty.
-	 */
-	public void nodeRefresh(MindMapNode node);
-
-	public void nodeStructureChanged(MindMapNode node);
-
-	/**
 	 * The following modes are present: public final int NEW_CHILD_WITHOUT_FOCUS
 	 * = 1; // old model of insertion public final int NEW_CHILD = 2; public
 	 * final int NEW_SIBLING_BEHIND = 3; public final int NEW_SIBLING_BEFORE =
@@ -85,9 +65,6 @@ public interface MindMapActions {
 	public void setNodeText(MindMapNode selected, String newText);
 
 	public void setNoteText(MindMapNode selected, String newText);
-
-	public MindMapNode addNew(final MindMapNode target, final int newNodeMode,
-			final KeyEvent e);
 
 	/**
 	 * Another variant of addNew. If the index of the new node as a child of
@@ -187,7 +164,7 @@ public interface MindMapActions {
 
 	public void removeReference(MindMapLink arrowLink);
 
-	public void changeArrowsOfArrowLink(MindMapArrowLinkModel arrowLink,
+	public void changeArrowsOfArrowLink(MindMapArrowLink arrowLink,
 			boolean hasStartArrow, boolean hasEndArrow);
 
 	public void setArrowLinkColor(MindMapLink arrowLink, Color color);
@@ -199,16 +176,6 @@ public interface MindMapActions {
 	 * Adds a textual hyperlink to a node (e.g. http:/freemind.sourceforge.net)
 	 */
 	public void setLink(MindMapNode node, String link);
-
-	// public void setUnderlined(MindMapNode node);
-	// public void setNormalFont(MindMapNode node);
-	public void increaseFontSize(MindMapNode node, int increment);
-
-	public void splitNode(MindMapNode node, int caretPosition, String newText);
-
-	public void joinNodes(MindMapNode selectedNode, List selectedNodes);
-
-	public void paste(Transferable t, MindMapNode parent);
 
 	/**
 	 * @param t the content to be pasted
@@ -238,44 +205,15 @@ public interface MindMapActions {
 	 * */
 	NodeHook createNodeHook(String hookName, MindMapNode node);
 	
-	/** Creates and invokes a ModeControllerHook.*/
-	void createModeControllerHook(String hookName);
-
-	void invokeHook(ModeControllerHook hook);
-
 	void invokeHooksRecursively(MindMapNode node, MindMap map);
 
 	// end hooks
-
-	ActionRegistry getActionRegistry();
-
-	// XML Actions:
-	public String marshall(XmlAction action);
-
-	public XmlAction unMarshall(String inputString);
-
-	/** undo in progress? */
-	boolean isUndoAction();
-
-	public MindMapNode getRootNode();
 
 	/**
 	 * Moves the node to a new position.
 	 */
 	public void moveNodePosition(MindMapNode node, int vGap, int hGap,
 			int shiftY);
-
-	public interface MouseWheelEventHandler {
-		/**
-		 * @return true if the event was sucessfully processed and false if the
-		 *         event did not apply.
-		 */
-		boolean handleMouseWheelEvent(MouseWheelEvent e);
-	}
-
-	void registerMouseWheelEventHandler(MouseWheelEventHandler handler);
-
-	void deRegisterMouseWheelEventHandler(MouseWheelEventHandler handler);
 
 	void setAttribute(MindMapNode node, int pPosition, Attribute pAttribute);
 	
@@ -304,14 +242,5 @@ public interface MindMapActions {
 	 * */
 	void removeAttribute(MindMapNode node, int pPosition);
 
-	/**
-	 * Erases all content of the node as text, colors, fonts, etc.
-	 */
-	void clearNodeContents(MindMapNode pNode);
-
-	/**
-	 * Switches the display to the map this controller belongs to.
-	 */
-	void showThisMap();
 
 }

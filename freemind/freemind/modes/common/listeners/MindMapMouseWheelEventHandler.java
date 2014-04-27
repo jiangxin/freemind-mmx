@@ -31,9 +31,9 @@ import java.util.Set;
 import freemind.controller.Controller;
 import freemind.main.FreeMind;
 import freemind.modes.ControllerAdapter;
-import freemind.modes.mindmapmode.actions.MindMapActions.MouseWheelEventHandler;
 import freemind.preferences.FreemindPropertyListener;
 import freemind.view.mindmapview.MapView;
+import freemind.view.mindmapview.ViewFeedback.MouseWheelEventHandler;
 
 /**
  * @author foltin

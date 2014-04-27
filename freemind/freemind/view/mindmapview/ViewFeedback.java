@@ -21,6 +21,7 @@
 package freemind.view.mindmapview;
 
 import java.awt.Font;
+import java.awt.event.MouseWheelEvent;
 
 import freemind.controller.MapMouseMotionListener;
 import freemind.controller.MapMouseWheelListener;
@@ -31,6 +32,13 @@ import freemind.controller.NodeMotionListener;
 import freemind.controller.NodeMouseMotionListener;
 import freemind.modes.MindMapNode;
 
+/**
+ * ViewFeedback is an interface implemented by the ModeController classes
+ * to offer view related methods.
+ * 
+ * @author foltin
+ * @date 25.04.2014
+ */
 public interface ViewFeedback {
 
 	/**
@@ -51,9 +59,9 @@ public interface ViewFeedback {
 
 	/**
 	 * @param pModel
-	 * @param pB
+	 * @param pFold true means, that the node should be folded.
 	 */
-	void setFolded(MindMapNode pModel, boolean pB);
+	void setFolded(MindMapNode pModel, boolean pFold);
 
 	/**
 	 * @param pNewView
@@ -111,4 +119,18 @@ public interface ViewFeedback {
 	 */
 	MapMouseWheelListener getMapMouseWheelListener();
 
+	public interface MouseWheelEventHandler {
+		/**
+		 * @return true if the event was sucessfully processed and false if the
+		 *         event did not apply.
+		 */
+		boolean handleMouseWheelEvent(MouseWheelEvent e);
+	}
+
+	void registerMouseWheelEventHandler(MouseWheelEventHandler handler);
+
+	void deRegisterMouseWheelEventHandler(MouseWheelEventHandler handler);
+
+
+	
 }
