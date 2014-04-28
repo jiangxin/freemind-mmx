@@ -160,7 +160,6 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		MindMapNode subChild1 = (MindMapNode) firstChild.getChildAt(0);
 		MindMapNode subChild2 = (MindMapNode) firstChild.getChildAt(1);
 		MindMapNode subChild3 = (MindMapNode) firstChild.getChildAt(2);
-		XmlActorFactory factory = mapFeedback.getActorFactory();
 		mapFeedback.setBold(root, true);
 		assertEquals(true, root.isBold());
 		mapFeedback.setItalic(root, true);
@@ -239,8 +238,7 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		assertEquals(20, root.getVGap());
 		assertEquals(30, firstChild.getHGap());
 		assertEquals(17, firstChild.getShiftY());
-		factory.getNodeStyleActor()
-				.setStyle(firstChild, MindMapNode.STYLE_FORK);
+		mapFeedback.setNodeStyle(firstChild, MindMapNode.STYLE_FORK);
 		assertEquals(MindMapNodeModel.STYLE_FORK, firstChild.getStyle());
 		try {
 			mapFeedback.setNodeStyle(firstChild, "bla");
