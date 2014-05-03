@@ -46,6 +46,10 @@ public class NodeStyleActor extends XmlActorAdapter {
 	}
 
 	public void setStyle(MindMapNode node, String style) {
+		if(style == null) {
+			execute(getActionPair(node, null));
+			return;
+		}
 		for (int i = 0; i < MindMapNode.NODE_STYLES.length; i++) {
 			String dstyle = MindMapNode.NODE_STYLES[i];
 			if(Tools.safeEquals(style, dstyle)) {

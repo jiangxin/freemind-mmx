@@ -130,15 +130,6 @@ public interface MindMapActions {
 
 	public void removeAllIcons(MindMapNode node);
 
-	/**
-	 * @param patternName
-	 *            is one of the names. They can be received using the patterns
-	 *            list of ApplyPatternActions from the MindMapController. Each
-	 *            action has a getPattern() method and the pattern has a
-	 *            getName() method ...
-	 */
-	public void applyPattern(MindMapNode node, String patternName);
-
 	public void applyPattern(MindMapNode node, Pattern pattern);
 
 	public void setNodeStyle(MindMapNode node, String style);

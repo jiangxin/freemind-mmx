@@ -31,6 +31,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.io.IOException;
+import java.util.Collections;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -45,8 +46,8 @@ import freemind.controller.actions.generated.instance.Pattern;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
+import freemind.modes.ExtendedMapFeedbackAdapter;
 import freemind.modes.MapAdapter;
-import freemind.modes.MapFeedbackAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.StylePatternFactory;
@@ -65,7 +66,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator,
 	 * @author foltin
 	 * @date 21.02.2014
 	 */
-	private final class DemoMapFeedback extends MapFeedbackAdapter {
+	private final class DemoMapFeedback extends ExtendedMapFeedbackAdapter {
 		MindMap mMap;
 
 		@Override
@@ -108,6 +109,8 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator,
 	protected static java.util.logging.Logger logger = null;
 
 	private MindMapNode mNode;
+
+	private DemoMapFeedback mDemoNodeMapFeedback;
 
 	/**
 	 * This constructor is used, if you need the user to enter a pattern
@@ -214,9 +217,9 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator,
 	 */
 	private Component getDemoFrame() {
 		if (mDemoFrame == null) {
-			DemoMapFeedback mapFeedback = new DemoMapFeedback();
-			final MindMapMapModel mMap = new MindMapMapModel(mapFeedback);
-			mapFeedback.mMap = mMap;
+			mDemoNodeMapFeedback = new DemoMapFeedback();
+			final MindMapMapModel mMap = new MindMapMapModel(mDemoNodeMapFeedback);
+			mDemoNodeMapFeedback.mMap = mMap;
 			StringReaderCreator readerCreator = new StringReaderCreator(
 					mController.getText("accessories/plugins/dialogs/ChooseFormatPopupDialog.DemoNode"));
 			try {
@@ -229,7 +232,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator,
 			} catch (IOException e) {
 				freemind.main.Resources.getInstance().logException(e);
 			}
-			mDemoFrame = new MapView(mMap, mapFeedback);
+			mDemoFrame = new MapView(mMap, mDemoNodeMapFeedback);
 			mDemoFrame.centerNode(mDemoFrame.getNodeView(mDemoNode));
 		}
 		return mDemoFrame;
@@ -247,9 +250,10 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator,
 					if(mNode != null) {
 						mDemoNode.setText(mNode.getText());
 					}
-					StylePatternFactory.applyPattern(mResetPattern, mDemoNode, mController);
+					mDemoNodeMapFeedback.select(mDemoNode, Tools.getVectorWithSingleElement(mDemoNode));
+					mDemoNodeMapFeedback.applyPattern(mDemoNode, mResetPattern);
 					Pattern pattern = mStylePatternFrame.getResultPattern();
-					StylePatternFactory.applyPattern(pattern, mDemoNode, mController);
+					mDemoNodeMapFeedback.applyPattern(mDemoNode, pattern);
 					mDemoFrame.getNodeView(mDemoNode).updateAll();
 					mDemoFrame.doLayout();
 				}

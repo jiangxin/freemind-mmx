@@ -377,11 +377,6 @@ public class MindMapController extends ControllerAdapter implements
 
 	private HookFactory nodeHookFactory;
 
-	/**
-	 * This handler evaluates the compound xml actions. Don't delete it!
-	 */
-	private CompoundActor compound = null;
-
 	public ApplyPatternAction patterns[] = new ApplyPatternAction[0]; // Make
 																		// sure
 																		// it is
@@ -492,7 +487,7 @@ public class MindMapController extends ControllerAdapter implements
 
 	private MenuStructure mMenuStructure;
 	private List mRegistrations;
-	private List mPatternsList = new Vector();
+	private List<Pattern> mPatternsList = new Vector<Pattern>();
 	private long mGetEventIfChangedAfterThisTimeInMillies = 0;
 
 	public MindMapController(Mode mode) {
@@ -502,8 +497,6 @@ public class MindMapController extends ControllerAdapter implements
 		}
 		// create action factory:
 		actionFactory = new ActionRegistry();
-		// create compound handler, that evaluates the compound xml actions.
-		compound = new CompoundActor(this);
 		// create node information timer and actions. They don't fire, until
 		// called to do so.
 		mNodeInformationTimerAction = new NodeInformationTimerAction();
@@ -714,6 +707,13 @@ public class MindMapController extends ControllerAdapter implements
 		return reader;
 	}
 
+	/**
+	 * @return the patternsList
+	 */
+	public List<Pattern> getPatternsList() {
+		return mPatternsList;
+	}
+	
 	public boolean isUndoAction() {
 		return undo.isUndoAction() || redo.isUndoAction();
 	}
@@ -1679,18 +1679,14 @@ public class MindMapController extends ControllerAdapter implements
 		for (int i = 0; i < patterns.length; i++) {
 			ApplyPatternAction patternAction = patterns[i];
 			if (patternAction.getPattern().getName().equals(patternName)) {
-				patternAction.applyPattern(node, patternAction.getPattern());
+				StylePatternFactory.applyPattern(node, patternAction.getPattern(), getPatternsList(), getPlugins(), this);
 				break;
 			}
 		}
 	}
 
 	public void applyPattern(MindMapNode node, Pattern pattern) {
-		if (patterns.length > 0) {
-			patterns[0].applyPattern(node, pattern);
-		} else {
-			throw new IllegalArgumentException("No pattern defined.");
-		}
+		StylePatternFactory.applyPattern(node, pattern, getPatternsList(), getPlugins(), this);
 	}
 
 	public void addIcon(MindMapNode node, MindIcon icon) {
@@ -2397,7 +2393,7 @@ public class MindMapController extends ControllerAdapter implements
 		mPlugins.remove(pPlugin);
 	}
 
-	public Set getPlugins() {
+	public Set<MindMapControllerPlugin> getPlugins() {
 		return Collections.unmodifiableSet(mPlugins);
 	}
 

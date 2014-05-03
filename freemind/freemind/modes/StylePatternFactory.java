@@ -29,6 +29,8 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
+import java.util.Set;
 
 import freemind.common.TextTranslator;
 import freemind.common.XmlBindingTools;
@@ -49,6 +51,8 @@ import freemind.controller.actions.generated.instance.PatternPropertyBase;
 import freemind.controller.actions.generated.instance.Patterns;
 import freemind.main.Resources;
 import freemind.main.Tools;
+import freemind.modes.mindmapmode.MindMapController.MindMapControllerPlugin;
+import freemind.modes.mindmapmode.actions.ApplyPatternAction.ExternalPatternAction;
 
 /**
  * This class constructs patterns from files or from nodes and saves them back.
@@ -374,6 +378,7 @@ public class StylePatternFactory {
 		return result;
 	}
 	
+	@Deprecated 
 	public static void applyPattern(Pattern pattern, MindMapNode pNode, MapFeedback pFeedback) {
 		if (pattern.getPatternNodeColor() != null) {
 			pNode.setColor(Tools.xmlToColor(pattern
@@ -468,6 +473,124 @@ public class StylePatternFactory {
 				((EdgeAdapter) pNode.getEdge()).setWidth(Tools.edgeWidthStringToInt(patternEdgeWidth.getValue()));
 			} else {
 				((EdgeAdapter) pNode.getEdge()).setWidth(EdgeAdapter.DEFAULT_WIDTH);
+			}
+		}
+	}
+	
+	public static void applyPattern(MindMapNode node, Pattern pattern, 
+			List<Pattern> pPatternList, Set<MindMapControllerPlugin> pPlugins, ExtendedMapFeedback pMapFeedback) {
+		if (pattern.getPatternNodeText() != null) {
+			if (pattern.getPatternNodeText().getValue() != null) {
+				pMapFeedback.setNodeText(node, pattern.getPatternNodeText()
+						.getValue());
+			} else {
+				// clear text:
+				pMapFeedback.setNodeText(node, "");
+			}
+		}
+		if (pattern.getPatternNodeColor() != null) {
+			pMapFeedback.setNodeColor(node,
+					Tools.xmlToColor(pattern.getPatternNodeColor().getValue()));
+		}
+		if (pattern.getPatternNodeBackgroundColor() != null) {
+			pMapFeedback.setNodeBackgroundColor(node, Tools.xmlToColor(pattern
+					.getPatternNodeBackgroundColor().getValue()));
+		}
+		// Perhaps already fixed?:
+		// FIXME: fc, 3.1.2004: setting the style to "null" causes strange
+		// behaviour.
+		// see
+		// https://sourceforge.net/tracker/?func=detail&atid=107118&aid=1094623&group_id=7118
+		if (pattern.getPatternNodeStyle() != null) {
+			pMapFeedback.setNodeStyle(node, pattern.getPatternNodeStyle()
+					.getValue());
+		}
+		if (pattern.getPatternIcon() != null) {
+			String iconName = pattern.getPatternIcon().getValue();
+			if (iconName == null) {
+				while (pMapFeedback.removeLastIcon(node) > 0) {
+				}
+			} else {
+				// check if icon is already present:
+				List icons = node.getIcons();
+				boolean found = false;
+				for (Iterator iterator = icons.iterator(); iterator.hasNext();) {
+					MindIcon icon = (MindIcon) iterator.next();
+					if (icon.getName() != null
+							&& icon.getName().equals(iconName)) {
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					pMapFeedback.addIcon(node, MindIcon.factory(iconName));
+				}
+			}
+		} // fc, 28.9.2003
+		if (pattern.getPatternNodeFontName() != null) {
+			String nodeFontFamily = pattern.getPatternNodeFontName().getValue();
+			if (nodeFontFamily == null) {
+				nodeFontFamily = pMapFeedback.getDefaultFont().getFamily();
+			}
+			pMapFeedback.setFontFamily(node, nodeFontFamily);
+		}
+		if (pattern.getPatternNodeFontSize() != null) {
+			String nodeFontSize = pattern.getPatternNodeFontSize().getValue();
+			if (nodeFontSize == null) {
+				nodeFontSize = "" + pMapFeedback.getDefaultFont().getSize();
+			}
+			pMapFeedback.setFontSize(node, String.valueOf(nodeFontSize));
+		}
+		if (pattern.getPatternNodeFontItalic() != null) {
+			pMapFeedback.setItalic(node, "true".equals(pattern
+					.getPatternNodeFontItalic().getValue()));
+		}
+		if (pattern.getPatternNodeFontBold() != null) {
+			pMapFeedback.setBold(node,
+					"true".equals(pattern.getPatternNodeFontBold().getValue()));
+		}
+
+		if (pattern.getPatternEdgeColor() != null) {
+			pMapFeedback.setEdgeColor(node,
+					Tools.xmlToColor(pattern.getPatternEdgeColor().getValue()));
+		}
+		if (pattern.getPatternEdgeStyle() != null) {
+			pMapFeedback.setEdgeStyle(node, pattern.getPatternEdgeStyle()
+					.getValue());
+		}
+		PatternEdgeWidth patternEdgeWidth = pattern.getPatternEdgeWidth();
+		if (patternEdgeWidth != null) {
+			if (patternEdgeWidth.getValue() != null) {
+				pMapFeedback
+						.setEdgeWidth(node, Tools
+								.edgeWidthStringToInt(patternEdgeWidth
+										.getValue()));
+			} else {
+				pMapFeedback.setEdgeWidth(node, EdgeAdapter.DEFAULT_WIDTH);
+			}
+		}
+
+		if (pattern.getPatternChild() != null
+				&& pattern.getPatternChild().getValue() != null) {
+			// find children among all patterns:
+			String searchedPatternName = pattern.getPatternChild().getValue();
+			for (Iterator it = pPatternList.iterator(); it
+					.hasNext();) {
+				Pattern otherPattern = (Pattern) it.next();
+				if (otherPattern.getName().equals(searchedPatternName)) {
+					for (ListIterator j = node.childrenUnfolded(); j.hasNext();) {
+						NodeAdapter child = (NodeAdapter) j.next();
+						applyPattern(child, otherPattern, pPatternList, pPlugins, pMapFeedback);
+					}
+					break;
+				}
+			}
+		}
+		for (Iterator i = pPlugins.iterator(); i.hasNext();) {
+			MindMapControllerPlugin plugin = (MindMapControllerPlugin) i.next();
+			if (plugin instanceof ExternalPatternAction) {
+				ExternalPatternAction externalAction = (ExternalPatternAction) plugin;
+				externalAction.act(node, pattern);
 			}
 		}
 	}

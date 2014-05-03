@@ -31,6 +31,7 @@ import java.io.StringWriter;
 import java.util.Vector;
 
 import freemind.controller.MindMapNodesSelection;
+import freemind.controller.actions.generated.instance.Pattern;
 import freemind.main.FreeMind;
 import freemind.main.Tools;
 import freemind.modes.EdgeAdapter;
@@ -41,12 +42,12 @@ import freemind.modes.MindMap;
 import freemind.modes.MindMapArrowLink;
 import freemind.modes.MindMapLink;
 import freemind.modes.MindMapNode;
+import freemind.modes.StylePatternFactory;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.mindmapmode.MindMapController.StringReaderCreator;
 import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.actions.xml.DefaultActionHandler;
-import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
 
 /**
  * @author foltin
@@ -147,9 +148,6 @@ public class StandaloneMapTests extends FreeMindTestBase {
 
 	public void testXmlChangeWithoutModeController() throws Exception {
 		DemoMapFeedback mapFeedback = new DemoMapFeedback();
-		mapFeedback.getActionRegistry().registerHandler(
-				new DefaultActionHandler(mapFeedback.getActionRegistry()));
-
 		final MindMapMapModel mMap = new MindMapMapModel(mapFeedback);
 		mapFeedback.mMap = mMap;
 		StringReaderCreator readerCreator = new StringReaderCreator(INITIAL_MAP);
@@ -169,6 +167,7 @@ public class StandaloneMapTests extends FreeMindTestBase {
 				true);
 		assertEquals(amount + 1, root.getChildCount());
 		mapFeedback.deleteNode(newNode);
+		newNode = null;
 		assertEquals(amount, root.getChildCount());
 		try {
 			mapFeedback.deleteNode(root);
@@ -240,6 +239,9 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		assertEquals(17, firstChild.getShiftY());
 		mapFeedback.setNodeStyle(firstChild, MindMapNode.STYLE_FORK);
 		assertEquals(MindMapNodeModel.STYLE_FORK, firstChild.getStyle());
+		assertTrue(firstChild.hasStyle());
+		mapFeedback.setNodeStyle(firstChild, null);
+		assertFalse(firstChild.hasStyle());
 		try {
 			mapFeedback.setNodeStyle(firstChild, "bla");
 			assertTrue("Must throw.", false);
@@ -324,10 +326,19 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		assertEquals(3, firstChild.getChildCount());
 		mapFeedback.cut(Tools.getVectorWithSingleElement(subChild3));
 		assertEquals(2, firstChild.getChildCount());
+		subChild3=null;
 		// note
 		String htmlText = "<html><body>blaNOTE</body></html>";
 		mapFeedback.setNoteText(subChild2, htmlText);
 		assertEquals(htmlText, subChild2.getNoteText());
+		// patterns
+		mapFeedback.setNodeColor(subChild1, Color.MAGENTA);
+		Pattern p = StylePatternFactory.createPatternFromNode(subChild1);
+		assertNotNull(p.getPatternNodeColor());
+		assertEquals(Tools.colorToXml(Color.MAGENTA), p.getPatternNodeColor().getValue());
+		mapFeedback.applyPattern(subChild2, p);
+		assertEquals(Color.MAGENTA, subChild2.getColor());
+		
 		String xmlResult = getMapContents(mMap);
 		System.out.println(xmlResult);
 

@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Properties;
@@ -40,6 +41,8 @@ import freemind.main.XMLParseException;
 import freemind.modes.attributes.Attribute;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 import freemind.modes.mindmapmode.actions.xml.ActionRegistry;
+import freemind.modes.mindmapmode.actions.xml.DefaultActionHandler;
+import freemind.modes.mindmapmode.actions.xml.UndoActionHandler;
 import freemind.modes.mindmapmode.actions.xml.actors.XmlActorFactory;
 import freemind.modes.mindmapmode.hooks.MindMapHookFactory;
 
@@ -85,7 +88,8 @@ public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
 		super();
 		mActionRegistry = new ActionRegistry();
 		mActorFactory = new XmlActorFactory(this);
-
+		getActionRegistry().registerHandler(
+				new DefaultActionHandler(getActionRegistry()));
 	}
 
 	/**
@@ -307,13 +311,8 @@ public abstract class ExtendedMapFeedbackAdapter extends MapFeedbackAdapter
 	}
 
 	@Override
-	public void applyPattern(MindMapNode pNode, String pPatternName) {
-		throw new UnsupportedOperationException();
-	}
-
-	@Override
 	public void applyPattern(MindMapNode pNode, Pattern pPattern) {
-		throw new UnsupportedOperationException();
+		StylePatternFactory.applyPattern(pNode, pPattern, Collections.EMPTY_LIST, Collections.EMPTY_SET, this);
 	}
 
 	@Override
