@@ -591,6 +591,21 @@
 			</classpath>
 		</java>
 	</target>
+	
+	<target name="runServer" depends="dist" description="Starts a map server on the command line">
+		<java classname="plugins.collaboration.socket.StandaloneMindMapMaster"
+          fork="yes"
+          dir="${dist}" failonerror="false">
+			<classpath>
+				<pathelement location="${FM.jar}"/>
+				<pathelement location="${jibxjar}"/>
+				<pathelement location="${spellLib}"/>
+				<pathelement path="${jibxruntimelibs}"/>
+				<pathelement path="${dist}/plugins/collaboration/socket/socket_plugin.jar"/>
+			</classpath>
+		</java>
+	</target>
+
 	<target name="runSharingScenario" depends="dist">
 		<delete file="${freemind_socket}" quiet="true"/>
 		<antcall target="_run">
