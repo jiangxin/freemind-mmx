@@ -90,7 +90,7 @@ public abstract class CommunicationBase extends TerminateableThread {
 		try {
 			printCommand("Send", pCommand);
 			final String marshalledText = Tools.marshall(pCommand);
-			logger.info(getName() + " :Sending " + marshalledText);
+			logger.fine(getName() + " :Sending " + marshalledText);
 			String text = Tools.compress(marshalledText);
 			// split into pieces, as the writeUTF method is only able to send
 			// 65535 bytes...

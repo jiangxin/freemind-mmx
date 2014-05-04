@@ -34,6 +34,7 @@ import freemind.controller.NodeKeyListener;
 import freemind.controller.NodeMotionListener;
 import freemind.controller.NodeMouseMotionListener;
 import freemind.extensions.NodeHook;
+import freemind.extensions.PermanentNodeHookSubstituteUnknown;
 import freemind.main.Resources;
 import freemind.view.mindmapview.NodeView;
 import freemind.view.mindmapview.ViewFeedback;
@@ -102,7 +103,9 @@ public abstract class MapFeedbackAdapter implements MapFeedback, ViewFeedback {
 	 */
 	@Override
 	public void nodeChanged(MindMapNode pNode) {
-
+		if(getMap() != null) {
+			getMap().setSaved(false);
+		}
 	}
 
 	/*
@@ -198,8 +201,7 @@ public abstract class MapFeedbackAdapter implements MapFeedback, ViewFeedback {
 	 */
 	@Override
 	public NodeHook createNodeHook(String pLoadName, MindMapNode pNode) {
-
-		return null;
+		return new PermanentNodeHookSubstituteUnknown(pLoadName);
 	}
 
 	/*

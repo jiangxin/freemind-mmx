@@ -1,22 +1,22 @@
 /*FreeMind - A Program for creating and viewing Mindmaps
-*Copyright (C) 2000-2014 Christian Foltin, Joerg Mueller, Daniel Polansky, Dimitri Polivaev and others.
-*
-*See COPYING for Details
-*
-*This program is free software; you can redistribute it and/or
-*modify it under the terms of the GNU General Public License
-*as published by the Free Software Foundation; either version 2
-*of the License, or (at your option) any later version.
-*
-*This program is distributed in the hope that it will be useful,
-*but WITHOUT ANY WARRANTY; without even the implied warranty of
-*MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*GNU General Public License for more details.
-*
-*You should have received a copy of the GNU General Public License
-*along with this program; if not, write to the Free Software
-*Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-*/
+ *Copyright (C) 2000-2014 Christian Foltin, Joerg Mueller, Daniel Polansky, Dimitri Polivaev and others.
+ *
+ *See COPYING for Details
+ *
+ *This program is free software; you can redistribute it and/or
+ *modify it under the terms of the GNU General Public License
+ *as published by the Free Software Foundation; either version 2
+ *of the License, or (at your option) any later version.
+ *
+ *This program is distributed in the hope that it will be useful,
+ *but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *GNU General Public License for more details.
+ *
+ *You should have received a copy of the GNU General Public License
+ *along with this program; if not, write to the Free Software
+ *Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ */
 
 package plugins.collaboration.socket;
 
@@ -25,17 +25,16 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.Vector;
 
 import tests.freemind.FreeMindMainMock;
 import freemind.controller.actions.generated.instance.CollaborationUserInformation;
+import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.ExtendedMapFeedbackImpl;
 import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.MindMapController.StringReaderCreator;
 import freemind.modes.mindmapmode.MindMapMapModel;
 
 /**
@@ -47,23 +46,25 @@ public class StandaloneMindMapMaster extends SocketMaster {
 	private ServerSocket mServer;
 	private MasterThread mListener;
 	private String mLockMutex = "";
-	private static final String INITIAL_MAP = "<map>" + "<node ID='ROOT_ID' TEXT='ROOT'>"
-			+ "</node>" + "</map>";
 	private ExtendedMapFeedbackImpl mMapFeedback;
 	private FreeMindMainMock mFreeMindMain;
-	
+	private MindMapMapModel mMap;
+	private File mFile;
+
 	private class MasterThread extends TerminateableThread {
 
 		private static final long TIME_BETWEEN_USER_INFORMATION_IN_MILLIES = 5000;
+		private static final long TIME_BETWEEN_SAVE_ACTIONS_IN_MILLIES = 60000;
 		private static final long TIME_FOR_ORPHANED_LOCK = 5000;
 		private long mLastTimeUserInformationSent = 0;
 		private ServerCommunication mCommunication;
+		private long mLastSaveAction = 0;
 
 		/**
 		 * @param pName
 		 */
 		public MasterThread() {
-			super("Master");
+			super("StandaloneMaster");
 		}
 
 		/*
@@ -80,7 +81,7 @@ public class StandaloneMindMapMaster extends SocketMaster {
 				mCommunication = new ServerCommunication(
 						StandaloneMindMapMaster.this, client, mMapFeedback);
 				mCommunication.start();
-				synchronized (mConnections ) {
+				synchronized (mConnections) {
 					mConnections.addElement(mCommunication);
 				}
 			} catch (SocketTimeoutException e) {
@@ -94,9 +95,12 @@ public class StandaloneMindMapMaster extends SocketMaster {
 						try {
 							final ServerCommunication connection = (ServerCommunication) mConnections
 									.elementAt(i);
-							/* to each server, the IP address is chosen that belongs to this connection.
-							 * E.g. if the connection is routed over one of several network interfaces,
-							 * the address of this interface is reported.
+							/*
+							 * to each server, the IP address is chosen that
+							 * belongs to this connection. E.g. if the
+							 * connection is routed over one of several network
+							 * interfaces, the address of this interface is
+							 * reported.
 							 */
 							userInfo.setMasterIp(connection.getIpToSocket());
 							connection.send(userInfo);
@@ -114,44 +118,63 @@ public class StandaloneMindMapMaster extends SocketMaster {
 							+ mLockUserName);
 					clearLock();
 				}
+				// regular save action:
+				if (!mLockEnabled && now - mLastSaveAction > TIME_BETWEEN_SAVE_ACTIONS_IN_MILLIES) {
+					logger.fine("Checking map " + mFile + " for save action needed.");
+					mLastSaveAction = now;
+					if(!mMap.isSaved()) {
+						// save map:
+						logger.info("Saving map " + mFile + " now.");
+						mMap.save(mFile);
+					} else {
+						logger.fine("No save necessary.");
+					}
+				}
 			}
 			return true;
 		}
 	}
-	
-	/* (non-Javadoc)
-	 * @see freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter#getMindMapController()
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * freemind.modes.mindmapmode.hooks.MindMapNodeHookAdapter#getMindMapController
+	 * ()
 	 */
 	@Override
 	public MindMapController getMindMapController() {
 		throw new IllegalArgumentException("No controller here.");
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#getMapFeedback()
 	 */
 	@Override
 	protected ExtendedMapFeedback getMapFeedback() {
 		return mMapFeedback;
 	}
-	
+
 	/**
-	 * @param pFreeMindMain 
-	 * @param pPassword 
-	 * @param pPort 
-	 * @throws IOException 
-	 * @throws XMLParseException 
+	 * @param pFreeMindMain
+	 * @param pPassword
+	 * @param pPort
+	 * @throws IOException
+	 * @throws XMLParseException
 	 * 
 	 */
-	public StandaloneMindMapMaster(FreeMindMainMock pFreeMindMain, String pPassword, int pPort) throws XMLParseException, IOException {
+	public StandaloneMindMapMaster(FreeMindMainMock pFreeMindMain, File pFile,
+			String pPassword, int pPort) throws XMLParseException, IOException {
 		mFreeMindMain = pFreeMindMain;
+		mFile = pFile;
 		mPassword = pPassword;
 		mMapFeedback = new ExtendedMapFeedbackImpl();
-		final MindMapMapModel mMap = new MindMapMapModel(mMapFeedback);
+		mMap = new MindMapMapModel(mMapFeedback);
 		mMapFeedback.setMap(mMap);
-		mMap.setFile(new File("/tmp/bla.mm"));
-		StringReaderCreator readerCreator = new StringReaderCreator(INITIAL_MAP);
-		MindMapNode root = mMap.loadTree(readerCreator,
+		mMap.setFile(pFile);
+		MindMapNode root = mMap.loadTree(new Tools.FileReaderCreator(pFile),
 				MapAdapter.sDontAskInstance);
 		mMap.setRoot(root);
 		logger.info("Start server...");
@@ -172,21 +195,24 @@ public class StandaloneMindMapMaster extends SocketMaster {
 
 	/**
 	 * @param args
-	 * @throws IOException 
-	 * @throws XMLParseException 
+	 * @throws IOException
+	 * @throws XMLParseException
 	 */
-	public static void main(String[] args) throws XMLParseException, IOException {
-		StandaloneMindMapMaster master = new StandaloneMindMapMaster(new FreeMindMainMock(), "aa", 9001);
-		
+	public static void main(String[] args) throws XMLParseException,
+			IOException {
+		StandaloneMindMapMaster master = new StandaloneMindMapMaster(
+				new FreeMindMainMock(), new File("/tmp/bla.mm"), "aa", 9001);
+
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see plugins.collaboration.socket.SocketMaster#setTitle()
 	 */
 	@Override
 	protected void setTitle() {
 		logger.info("Set title to " + getUsers());
 	}
-
 
 }
