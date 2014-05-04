@@ -20,19 +20,14 @@
 package freemind.modes;
 
 import java.awt.Font;
-import java.io.IOException;
-import java.io.Reader;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Vector;
 
 import freemind.extensions.PermanentNodeHook;
 import freemind.extensions.PermanentNodeHookSubstituteUnknown;
-import freemind.main.FreeMind;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
-import freemind.main.XMLParseException;
-import freemind.modes.ModeController.ReaderCreator;
 import freemind.modes.attributes.Attribute;
 
 public class XMLElementAdapter extends XMLElement {

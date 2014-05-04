@@ -38,6 +38,8 @@ import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapMapModel;
 
 /**
+ * Background server for map serving without gui. Single map instance.
+ * 
  * @author foltin
  * @date 03.05.2014
  */
@@ -174,9 +176,12 @@ public class StandaloneMindMapMaster extends SocketMaster {
 		mMap = new MindMapMapModel(mMapFeedback);
 		mMapFeedback.setMap(mMap);
 		mMap.setFile(pFile);
+		logger.info("Loading " + pFile);
 		MindMapNode root = mMap.loadTree(new Tools.FileReaderCreator(pFile),
 				MapAdapter.sDontAskInstance);
 		mMap.setRoot(root);
+		mMapFeedback.invokeHooksRecursively(root, mMap);
+		logger.info("Loading " + pFile + ". Done.");
 		logger.info("Start server...");
 		try {
 			mServer = new ServerSocket(pPort);

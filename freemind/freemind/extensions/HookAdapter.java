@@ -26,6 +26,7 @@ package freemind.extensions;
 import java.net.URL;
 import java.util.Properties;
 
+import freemind.modes.MapFeedback;
 import freemind.modes.ModeController;
 
 /**
@@ -48,6 +49,7 @@ public class HookAdapter implements MindMapHook {
 	 * plugin_registration/isBaseClass attribute.
 	 */
 	private PluginBaseClassSearcher baseClass;
+	protected MapFeedback mapFeedback;
 
 	/**
 	 */
@@ -110,8 +112,11 @@ public class HookAdapter implements MindMapHook {
 
 	/**
 	 */
-	public void setController(ModeController controller) {
-		this.controller = controller;
+	public void setController(MapFeedback controller) {
+		this.mapFeedback = controller;
+		if (controller instanceof ModeController) {
+			this.controller = (ModeController) controller;
+		}
 	}
 
 	/*

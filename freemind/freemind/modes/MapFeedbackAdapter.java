@@ -24,6 +24,7 @@ import java.awt.Font;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import freemind.controller.MapMouseMotionListener;
@@ -34,6 +35,7 @@ import freemind.controller.NodeKeyListener;
 import freemind.controller.NodeMotionListener;
 import freemind.controller.NodeMouseMotionListener;
 import freemind.extensions.NodeHook;
+import freemind.extensions.PermanentNodeHook;
 import freemind.extensions.PermanentNodeHookSubstituteUnknown;
 import freemind.main.Resources;
 import freemind.view.mindmapview.NodeView;
@@ -201,7 +203,10 @@ public abstract class MapFeedbackAdapter implements MapFeedback, ViewFeedback {
 	 */
 	@Override
 	public NodeHook createNodeHook(String pLoadName, MindMapNode pNode) {
-		return new PermanentNodeHookSubstituteUnknown(pLoadName);
+		PermanentNodeHookSubstituteUnknown hook = new PermanentNodeHookSubstituteUnknown(pLoadName);
+		hook.setMap(getMap());
+		pNode.addHook(hook);
+		return hook;
 	}
 
 	/*
@@ -213,6 +218,16 @@ public abstract class MapFeedbackAdapter implements MapFeedback, ViewFeedback {
 	 */
 	@Override
 	public void invokeHooksRecursively(MindMapNode pNode, MindMap pModel) {
+		for (Iterator i = pNode.childrenUnfolded(); i.hasNext();) {
+			NodeAdapter child = (NodeAdapter) i.next();
+			invokeHooksRecursively(child, getMap());
+		}
+		for (Iterator i = pNode.getHooks().iterator(); i.hasNext();) {
+			PermanentNodeHook hook = (PermanentNodeHook) i.next();
+			hook.setController(this);
+			hook.setMap(getMap());
+			pNode.invokeHook(hook);
+		}
 
 	}
 

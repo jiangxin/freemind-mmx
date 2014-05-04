@@ -608,24 +608,6 @@ public abstract class ControllerAdapter extends MapFeedbackAdapter implements Mo
 		}
 	}
 
-	
-
-	/**
-     *
-     */
-	public void invokeHooksRecursively(MindMapNode pNode, MindMap map) {
-		for (Iterator i = pNode.childrenUnfolded(); i.hasNext();) {
-			NodeAdapter child = (NodeAdapter) i.next();
-			invokeHooksRecursively(child, map);
-		}
-		for (Iterator i = pNode.getHooks().iterator(); i.hasNext();) {
-			PermanentNodeHook hook = (PermanentNodeHook) i.next();
-			hook.setController(this);
-			hook.setMap(map);
-			pNode.invokeHook(hook);
-		}
-	}
-
 	/**
 	 * fc, 24.1.2004: having two methods getSelecteds with different return
 	 * values (linkedlists of models resp. views) is asking for trouble. @see

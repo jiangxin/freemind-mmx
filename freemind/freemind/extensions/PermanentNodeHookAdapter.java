@@ -181,15 +181,16 @@ public class PermanentNodeHookAdapter extends NodeHookAdapter implements
 	/**
 	 */
 	protected void saveNameValuePairs(HashMap nameValuePairs, XMLElement xml) {
-		XMLElement child = new XMLElement();
-		child.setName(PARAMETERS);
-		for (Iterator i = nameValuePairs.keySet().iterator(); i.hasNext();) {
-			String key = (String) i.next();
-			Object value = nameValuePairs.get(key);
-			child.setAttribute(key, value);
+		if(!nameValuePairs.isEmpty()) {
+			XMLElement child = new XMLElement();
+			child.setName(PARAMETERS);
+			for (Iterator i = nameValuePairs.keySet().iterator(); i.hasNext();) {
+				String key = (String) i.next();
+				Object value = nameValuePairs.get(key);
+				child.setAttribute(key, value);
+			}
+			xml.addChild(child);
 		}
-		xml.addChild(child);
-
 	}
 
 	public void onRemoveChildren(MindMapNode oldChildNode, MindMapNode oldDad) {
