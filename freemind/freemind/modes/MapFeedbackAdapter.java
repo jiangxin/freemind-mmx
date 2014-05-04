@@ -144,7 +144,23 @@ public abstract class MapFeedbackAdapter implements MapFeedback, ViewFeedback {
 	public String getProperty(String pResourceId) {
 		return Resources.getInstance().getProperty(pResourceId);
 	}
+	
+	/* (non-Javadoc)
+	 * @see freemind.modes.MapFeedback#getIntProperty(java.lang.String, int)
+	 */
+	@Override
+	public int getIntProperty(String pKey, int pDefaultValue) {
+		return Resources.getInstance().getIntProperty(pKey, pDefaultValue);
+	}
 
+	/* (non-Javadoc)
+	 * @see freemind.modes.MapFeedback#setProperty(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void setProperty(String pProperty, String pValue) {
+		Resources.getInstance().getProperties().setProperty(pProperty, pValue);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

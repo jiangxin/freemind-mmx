@@ -40,7 +40,7 @@ import freemind.controller.actions.generated.instance.CollaborationWelcome;
 import freemind.controller.actions.generated.instance.CollaborationWhoAreYou;
 import freemind.controller.actions.generated.instance.CollaborationWrongCredentials;
 import freemind.main.Tools;
-import freemind.modes.mindmapmode.MindMapController;
+import freemind.modes.ExtendedMapFeedback;
 
 /**
  * This class handles the communication from the master to a single client. It
@@ -50,10 +50,10 @@ import freemind.modes.mindmapmode.MindMapController;
  * @date 13.09.2012
  */
 public class ServerCommunication extends CommunicationBase {
-	protected MindMapMaster mMindMapMaster = null;
+	protected SocketMaster mMindMapMaster = null;
 
-	public ServerCommunication(MindMapMaster pSocketStarter, Socket pClient,
-			MindMapController pMindMapController) throws Exception {
+	public ServerCommunication(SocketMaster pSocketStarter, Socket pClient,
+			ExtendedMapFeedback pMindMapController) throws Exception {
 		super("Client Communication", pClient, pMindMapController,
 				new DataOutputStream(pClient.getOutputStream()),
 				new DataInputStream(pClient.getInputStream()));

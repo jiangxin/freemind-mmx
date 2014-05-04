@@ -49,22 +49,11 @@ import freemind.view.mindmapview.NodeView;
  * @author foltin
  * 
  */
-public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
+public class MindMapMaster extends SocketMaster implements PermanentNodeHook,
 		DontSaveMarker {
 
-	/**
-	 * 
-	 */
-	public static final int SOCKET_TIMEOUT_IN_MILLIES = 500;
 	MasterThread mListener = null;
 	ServerSocket mServer;
-	Vector mConnections = new Vector();
-	protected boolean mLockEnabled = false;
-	private String mLockMutex = "";
-	private int mPort;
-	private String mLockId;
-	private long mLockedAt;
-	private String mLockUserName;
 	private boolean mMasterStarted;
 
 	private class MasterThread extends TerminateableThread {
@@ -134,14 +123,9 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 
 	}
 
-	public synchronized void removeConnection(ServerCommunication client) {
-		synchronized (mConnections) {
-			mConnections.remove(client);
-		}
-		// correct the map title, as we probably don't have clients anymore
-		setTitle();
-	}
-
+	/* (non-Javadoc)
+	 * @see plugins.collaboration.socket.SocketMaster#removeConnection(plugins.collaboration.socket.ServerCommunication)
+	 */
 	protected void setTitle() {
 		getMindMapController().getController().setTitle();
 	}
@@ -299,123 +283,6 @@ public class MindMapMaster extends SocketBasics implements PermanentNodeHook,
 	public void onViewRemovedHook(NodeView pNodeView) {
 	}
 
-	public Integer getRole() {
-		return ROLE_MASTER;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see plugins.collaboration.socket.SocketBasics#getPort()
-	 */
-	public int getPort() {
-		return mPort;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see plugins.collaboration.socket.SocketBasics#lock()
-	 */
-	protected String lock(String pUserName) throws UnableToGetLockException,
-			InterruptedException {
-		synchronized (mLockMutex) {
-			if (mLockEnabled) {
-				throw new UnableToGetLockException();
-			}
-			mLockEnabled = true;
-			String lockId = "Lock_" + Math.random();
-			mLockId = lockId;
-			mLockedAt = System.currentTimeMillis();
-			mLockUserName = pUserName;
-			logger.info("New lock " + lockId + " by " + mLockUserName);
-			return lockId;
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * plugins.collaboration.socket.SocketBasics#sendCommand(java.lang.String,
-	 * java.lang.String, java.lang.String)
-	 */
-	protected void broadcastCommand(String pDoAction, String pUndoAction,
-			String pLockId) throws Exception {
-		synchronized (mConnections) {
-			for (int i = 0; i < mConnections.size(); i++) {
-				((ServerCommunication) mConnections.elementAt(i)).sendCommand(
-						pDoAction, pUndoAction, pLockId);
-			}
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see plugins.collaboration.socket.SocketBasics#unlock()
-	 */
-	protected void unlock() {
-		synchronized (mLockMutex) {
-			if (!mLockEnabled) {
-				throw new IllegalStateException();
-			}
-			logger.fine("Release lock " + mLockId + " held by " + mLockUserName);
-			clearLock();
-		}
-	}
-
-	public void clearLock() {
-		mLockEnabled = false;
-		mLockId = "none";
-		mLockUserName = null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see plugins.collaboration.socket.SocketBasics#shutdown()
-	 */
-	public void shutdown() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public String getLockId() {
-		synchronized (mLockMutex) {
-			if (!mLockEnabled) {
-				throw new IllegalStateException();
-			}
-			return mLockId;
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see plugins.collaboration.socket.SocketBasics#getUsers()
-	 */
-	public String getUsers() {
-		StringBuffer users = new StringBuffer(Tools.getUserName());
-		synchronized (mConnections) {
-			for (int i = 0; i < mConnections.size(); i++) {
-				users.append(',');
-				users.append(' ');
-				users.append(((ServerCommunication) mConnections.elementAt(i))
-						.getName());
-			}
-		}
-		return users.toString();
-	}
-
-	public CollaborationUserInformation getMasterInformation() {
-		CollaborationUserInformation userInfo = new CollaborationUserInformation();
-		userInfo.setUserIds(getUsers());
-		userInfo.setMasterHostname(Tools.getHostName());
-		userInfo.setMasterPort(getPort());
-		userInfo.setMasterIp(Tools.getHostIpAsString());
-		return userInfo;
-	}
 	public void processUnfinishedLinks() {
 	}
 

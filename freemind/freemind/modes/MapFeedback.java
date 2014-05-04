@@ -75,6 +75,16 @@ public interface MapFeedback {
 	 * @return the setting of freemind.properties resp. auto.properties.
 	 */
 	String getProperty(String pResourceId);
+
+	int getIntProperty(String key, int defaultValue);
+
+	
+	/**
+	 * @param pProperty
+	 * @param pValue
+	 */
+	void setProperty(String pProperty, String pValue);
+
 	/**
 	 * Show the message to the user.
 	 * @param pFormat

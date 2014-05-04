@@ -31,6 +31,7 @@ import freemind.controller.actions.generated.instance.CollaborationActionBase;
 import freemind.controller.actions.generated.instance.CollaborationTransaction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Tools;
+import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
@@ -49,21 +50,21 @@ public abstract class CommunicationBase extends TerminateableThread {
 	/**
 	 * @param pName
 	 * @param pClient
-	 * @param pController
+	 * @param pMindMapController
 	 * @param pOut
 	 * @param pIn
 	 */
 	public CommunicationBase(String pName, Socket pClient,
-			MindMapController pController, DataOutputStream pOut,
+			ExtendedMapFeedback pMindMapController, DataOutputStream pOut,
 			DataInputStream pIn) {
 		super(pName);
 		mSocket = pClient;
-		mController = pController;
+		mController = pMindMapController;
 		out = pOut;
 		in = pIn;
 	}
 
-	protected MindMapController mController;
+	protected ExtendedMapFeedback mController;
 	protected DataOutputStream out;
 	protected DataInputStream in;
 	protected static final int ROUNDTRIP_ROUNDS = 200;
@@ -89,7 +90,7 @@ public abstract class CommunicationBase extends TerminateableThread {
 		try {
 			printCommand("Send", pCommand);
 			final String marshalledText = Tools.marshall(pCommand);
-			logger.fine(getName() + " :Sending " + marshalledText);
+			logger.info(getName() + " :Sending " + marshalledText);
 			String text = Tools.compress(marshalledText);
 			// split into pieces, as the writeUTF method is only able to send
 			// 65535 bytes...
@@ -153,7 +154,10 @@ public abstract class CommunicationBase extends TerminateableThread {
 		mCounter--;
 		if (mCounter <= 0) {
 			mCounter = 10;
-			mController.getController().setTitle();
+			if (mController instanceof MindMapController) {
+				MindMapController mindMapController = (MindMapController) mController;
+				mindMapController.getController().setTitle();
+			}
 		}
 		return didSomething;
 	}
@@ -166,7 +170,7 @@ public abstract class CommunicationBase extends TerminateableThread {
 			CollaborationActionBase pCommand) {
 		if (pCommand instanceof CollaborationTransaction) {
 			CollaborationTransaction trans = (CollaborationTransaction) pCommand;
-			XmlAction doAction = mController.unMarshall(trans.getDoAction());
+			XmlAction doAction = Tools.unMarshall(trans.getDoAction());
 			String out = pDirection + ": " + Tools.printXmlAction(doAction)
 					+ " (Id: " + trans.getId() + ")";
 			logger.info(out);
@@ -212,8 +216,8 @@ public abstract class CommunicationBase extends TerminateableThread {
 	}
 
 	public ActionPair getActionPair(CollaborationTransaction trans) {
-		return new ActionPair(mController.unMarshall(trans.getDoAction()),
-				mController.unMarshall(trans.getUndoAction()));
+		return new ActionPair(Tools.unMarshall(trans.getDoAction()),
+				Tools.unMarshall(trans.getUndoAction()));
 	}
 
 	public String getIpToSocket() {

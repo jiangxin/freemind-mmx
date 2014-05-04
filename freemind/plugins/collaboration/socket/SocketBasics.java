@@ -40,8 +40,8 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.WindowConstants;
 
-import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.builder.ButtonBarBuilder;
+import com.jgoodies.forms.builder.DefaultFormBuilder;
 import com.jgoodies.forms.layout.FormLayout;
 
 import freemind.common.NumberProperty;
@@ -55,6 +55,7 @@ import freemind.controller.actions.generated.instance.HookNodeAction;
 import freemind.controller.actions.generated.instance.XmlAction;
 import freemind.main.Resources;
 import freemind.main.Tools;
+import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
@@ -104,8 +105,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 			+ ".connection_exception";
 	protected static final String SOCKET_CREATION_EXCEPTION_MESSAGE = SOCKET_BASICS_CLASS
 			+ ".socket_creation_exception";;
-
-	protected static java.util.logging.Logger logger = null;
+	public static final int SOCKET_TIMEOUT_IN_MILLIES = 500;
 
 	protected String mPassword;
 	protected boolean mFilterEnabled = true;
@@ -116,6 +116,10 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 		mUserName = Tools.getUserName();
 	}
 
+	protected ExtendedMapFeedback getMapFeedback() {
+		return getMindMapController();
+	}
+	
 	/**
 	 * @return ROLE_MASTER OR ROLE_SLAVE
 	 */
@@ -146,7 +150,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	}
 
 	protected void setPortProperty(final NumberProperty portProperty) {
-		getMindMapController().getFrame().setProperty(PORT_PROPERTY,
+		getMapFeedback().setProperty(PORT_PROPERTY,
 				portProperty.getValue());
 	}
 
@@ -155,7 +159,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 				PORT_DESCRIPTION, PORT, 1024, 32767, 1);
 		// fill values:
 		portProperty.setValue(""
-				+ getMindMapController().getFrame().getIntProperty(
+				+ getMapFeedback().getIntProperty(
 						PORT_PROPERTY, 9001));
 		return portProperty;
 	}
@@ -173,6 +177,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 		private boolean mSuccess = false;
 		private JButton mOkButton;
 		private FormDialogValidator mFormDialogValidator;
+		protected static java.util.logging.Logger logger = null;
 
 		public boolean isSuccess() {
 			return mSuccess;
@@ -180,6 +185,10 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 
 		public FormDialog(MindMapController pController) {
 			super(pController.getFrame().getJFrame());
+			if (logger == null) {
+				logger = freemind.main.Resources.getInstance().getLogger(
+						this.getClass().getName());
+			}
 			mController2 = pController;
 		}
 
@@ -276,7 +285,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 
 	public String getMapTitle(String pOldTitle, MapModule pMapModule,
 			MindMap pModel) {
-		if (pMapModule.getModeController() != getMindMapController()) {
+		if (pMapModule.getModeController() != getMapFeedback()) {
 			return pOldTitle;
 		}
 		CollaborationUserInformation userInfo = getMasterInformation();
@@ -341,8 +350,8 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 		if (visit(pPair.getDoAction(), MindMapMaster.MASTER_HOOK_LABEL)) {
 			return pPair;
 		}
-		String doAction = getMindMapController().marshall(pPair.getDoAction());
-		String undoAction = getMindMapController().marshall(
+		String doAction = Tools.marshall(pPair.getDoAction());
+		String undoAction = Tools.marshall(
 				pPair.getUndoAction());
 		logger.info("Require lock for command: " + doAction);
 		try {
@@ -405,26 +414,22 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 
 	protected void registerFilter() {
 		logger.info("Registering filter");
-		getMindMapController().getActionRegistry().registerFilter(this);
+		getMapFeedback().getActionRegistry().registerFilter(this);
 	}
 
 	protected void deregisterFilter() {
 		logger.info("Deregistering filter");
-		getMindMapController().getActionRegistry().deregisterFilter(this);
+		getMapFeedback().getActionRegistry().deregisterFilter(this);
 	}
 
 	protected void executeTransaction(final ActionPair pair) {
 		mFilterEnabled = false;
 		try {
-			getMindMapController().doTransaction("update", pair);
+			getMapFeedback().doTransaction("update", pair);
 		} finally {
 			mFilterEnabled = true;
 		}
 	}
 
-	/**
-	 * Closes the connection.
-	 */
-	public abstract void shutdown();
 
 }

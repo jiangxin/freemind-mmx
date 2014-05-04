@@ -9,6 +9,7 @@ Changes made in FreeMind 1.1.0 Alpha 2
 * Format dialog has example nodes that demonstrate the changes.
 * New search&replace dialog shows tooltips of the node and note text.
 * Enhanced the calendar widget to show 12 month at once.
+* New feature: standalone map server for one map instance created.
 
 ===============================
 Changes made in FreeMind 1.1.0 Alpha 1

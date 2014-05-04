@@ -123,5 +123,6 @@ public interface ExtendedMapFeedback extends MapFeedback, MindMapActions {
 	 */
 	void close(boolean pForce);
 
+
 	
 }

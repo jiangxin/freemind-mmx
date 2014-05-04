@@ -247,6 +247,7 @@ public class ClientCommunication extends CommunicationBase {
 			MindMapController newModeController = (MindMapController) getMindMapController()
 					.getMode().createModeController();
 			MapAdapter newModel = new MindMapMapModel(newModeController);
+			newModeController.setModel(newModel);
 			HashMap IDToTarget = new HashMap();
 			StringReader reader = new StringReader(map);
 			MindMapNodeModel rootNode = (MindMapNodeModel) newModel
@@ -290,7 +291,10 @@ public class ClientCommunication extends CommunicationBase {
 	 * @return
 	 */
 	private MindMapController getMindMapController() {
-		return mController;
+		if (mController instanceof MindMapController) {
+			return (MindMapController) mController;
+		}
+		return null;
 	}
 
 	/*
