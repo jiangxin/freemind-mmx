@@ -55,6 +55,7 @@ import freemind.modes.ExtendedMapFeedback;
  * @date 13.09.2012
  */
 public class ServerCommunication extends CommunicationBase {
+	public static final String SERVER_VERSION = "2.0";
 	protected SocketMaster mMindMapMaster = null;
 
 	public ServerCommunication(SocketMaster pSocketStarter, Socket pClient,
@@ -64,6 +65,7 @@ public class ServerCommunication extends CommunicationBase {
 				new DataInputStream(pClient.getInputStream()));
 		mMindMapMaster = pSocketStarter;
 		CollaborationWhoAreYou commandWho = new CollaborationWhoAreYou();
+		commandWho.setServerVersion(SERVER_VERSION);
 		send(commandWho);
 		setCurrentState(STATE_WAIT_FOR_GET_OFFERS);
 	}

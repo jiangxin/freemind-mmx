@@ -174,6 +174,8 @@ public class FreeMind extends JFrame implements FreeMindMain, ActionListener {
 
 	public static final String RESOURCES_DON_T_SHOW_NOTE_ICONS = "resources_don_t_show_note_icons";
 
+	public static final String RESOURCES_USE_COLLABORATION_SERVER_WITH_DIFFERENT_VERSION = "resources_use_collaboration_server_with_different_version";
+	
 	public static final String RESOURCES_REMOVE_NOTES_WITHOUT_QUESTION = "resources_remove_notes_without_question";
 
 	public static final String RESOURCES_SAVE_FOLDING_STATE = "resources_save_folding_state";

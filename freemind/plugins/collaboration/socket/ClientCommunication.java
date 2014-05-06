@@ -43,6 +43,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
@@ -50,6 +51,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import plugins.collaboration.socket.SocketBasics.UnableToGetLockException;
+import freemind.common.OptionalDontShowMeAgainDialog;
+import freemind.common.TextTranslator;
 import freemind.controller.actions.generated.instance.CollaborationActionBase;
 import freemind.controller.actions.generated.instance.CollaborationGetOffers;
 import freemind.controller.actions.generated.instance.CollaborationGoodbye;
@@ -65,6 +68,7 @@ import freemind.controller.actions.generated.instance.CollaborationWhoAreYou;
 import freemind.controller.actions.generated.instance.CollaborationWrongCredentials;
 import freemind.controller.actions.generated.instance.CollaborationWrongMap;
 import freemind.extensions.PermanentNodeHook;
+import freemind.main.FreeMind;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MapAdapter;
@@ -131,6 +135,33 @@ public class ClientCommunication extends CommunicationBase {
 			if (getCurrentState() != STATE_WAIT_FOR_WHO_ARE_YOU) {
 				printWrongState(pCommand);
 			}
+			// check server version:
+			String serverVersion = ((CollaborationWhoAreYou) pCommand).getServerVersion();
+			if(!Tools.safeEquals(ServerCommunication.SERVER_VERSION, serverVersion)) {
+				String errorMessage = Resources.getInstance().format(
+						"Collaboration_wrong_server_version",
+						new Object[] { ServerCommunication.SERVER_VERSION,
+								serverVersion });
+				int showResult = new OptionalDontShowMeAgainDialog(getMindMapController()
+						.getFrame().getJFrame(), getMindMapController().getSelectedView(),
+						errorMessage, getController().getResourceString("confirmation"), new TextTranslator() {
+							
+							@Override
+							public String getText(String pKey) {
+								return pKey;
+							}
+						},
+						new OptionalDontShowMeAgainDialog.StandardPropertyHandler(
+								getMindMapController().getController(),
+								FreeMind.RESOURCES_USE_COLLABORATION_SERVER_WITH_DIFFERENT_VERSION),
+						OptionalDontShowMeAgainDialog.BOTH_OK_AND_CANCEL_OPTIONS_ARE_STORED)
+						.show().getResult();
+				if (showResult != JOptionPane.OK_OPTION) {
+					terminateSocket();
+					return;
+				}
+			}
+
 			// send hello:
 			CollaborationGetOffers getOffersCommand = new CollaborationGetOffers();
 			getOffersCommand.setUserId(Tools.getUserName());
@@ -159,7 +190,7 @@ public class ClientCommunication extends CommunicationBase {
 			mapChooserDialog.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent event) {
 					mapChooserDialog.dispose();
-					terminateSocket();
+					terminateSocketWithGoodbye();
 				}
 			});
 			// the action title is changed by the following method, thus we create
@@ -170,7 +201,7 @@ public class ClientCommunication extends CommunicationBase {
 				public void actionPerformed(ActionEvent pE) {
 					logger.info("Map choosing action canceled.");
 					mapChooserDialog.dispose();
-					terminateSocket();
+					terminateSocketWithGoodbye();
 				}};
 			Tools.addEscapeActionToDialog(mapChooserDialog, cancelAction);
 			final JList<String> mapList = new JList<String>();
@@ -306,6 +337,10 @@ public class ClientCommunication extends CommunicationBase {
 
 	public void terminateSocket() {
 		mReceivedGoodbye = true;
+		terminateSocketWithGoodbye();
+	}
+
+	public void terminateSocketWithGoodbye() {
 		if (mSocketConnectionHook != null) {
 			// first deregister, as otherwise, the toggle hook command is tried
 			// to

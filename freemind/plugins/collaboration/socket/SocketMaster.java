@@ -50,7 +50,10 @@ public abstract class SocketMaster extends SocketBasics {
 	
 	public synchronized void removeConnection(ServerCommunication client) {
 		synchronized (mConnections) {
-			mConnections.get(client.getController()).mConnections.remove(client);
+			ExtendedMapFeedback controller = client.getController();
+			if(mConnections.containsKey(controller)) {
+				mConnections.get(controller).mConnections.remove(client);
+			}
 		}
 		// correct the map title, as we probably don't have clients anymore
 		setTitle();
