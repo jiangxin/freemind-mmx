@@ -65,6 +65,7 @@ import freemind.controller.actions.generated.instance.CollaborationWhoAreYou;
 import freemind.controller.actions.generated.instance.CollaborationWrongCredentials;
 import freemind.controller.actions.generated.instance.CollaborationWrongMap;
 import freemind.extensions.PermanentNodeHook;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.modes.MapAdapter;
 import freemind.modes.NodeAdapter;
@@ -147,7 +148,12 @@ public class ClientCommunication extends CommunicationBase {
 			final JDialog mapChooserDialog = new JDialog(getMindMapController().getFrame().getJFrame(),
 					false);
 			mapChooserDialog.getContentPane().setLayout(new GridBagLayout());
-			mapChooserDialog.setTitle(getMindMapController().getResourceString("MapChooserDialog_title"));
+			String mapTitle = Resources.getInstance().format(
+					"MapChooserDialog_title",
+					new Object[] { mSocket.getInetAddress().getHostAddress(),
+							new Integer(mSocket.getPort()) });
+
+			mapChooserDialog.setTitle(mapTitle);
 			mapChooserDialog
 					.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 			mapChooserDialog.addWindowListener(new WindowAdapter() {
@@ -167,9 +173,9 @@ public class ClientCommunication extends CommunicationBase {
 					terminateSocket();
 				}};
 			Tools.addEscapeActionToDialog(mapChooserDialog, cancelAction);
-			final JList mapList = new JList();
+			final JList<String> mapList = new JList<String>();
 			mapList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			mapList.setModel(new AbstractListModel() {
+			mapList.setModel(new AbstractListModel<String>() {
 				
 				@Override
 				public int getSize() {
@@ -177,7 +183,7 @@ public class ClientCommunication extends CommunicationBase {
 				}
 				
 				@Override
-				public Object getElementAt(int pIndex) {
+				public String getElementAt(int pIndex) {
 					return collOffers.getCollaborationMapOffer(pIndex).getMap();
 				}});
 			AbstractAction okAction = new AbstractAction() {
