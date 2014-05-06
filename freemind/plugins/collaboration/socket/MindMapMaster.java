@@ -23,15 +23,18 @@
 
 package plugins.collaboration.socket;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.Iterator;
 import java.util.Vector;
 
 import javax.swing.SwingUtilities;
 
+import plugins.collaboration.socket.SocketMaster.SessionData;
 import freemind.common.NumberProperty;
 import freemind.common.StringProperty;
 import freemind.controller.actions.generated.instance.CollaborationGoodbye;
@@ -41,6 +44,8 @@ import freemind.extensions.PermanentNodeHook;
 import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
+import freemind.modes.ExtendedMapFeedback;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.view.mindmapview.NodeView;
@@ -83,39 +88,44 @@ public class MindMapMaster extends SocketMaster implements PermanentNodeHook,
 				ServerCommunication c = new ServerCommunication(
 						MindMapMaster.this, client, getMindMapController());
 				c.start();
-				synchronized (mConnections) {
-					mConnections.addElement(c);
-				}
 			} catch (SocketTimeoutException e) {
 			}
 			final long now = System.currentTimeMillis();
-			if (now - mLastTimeUserInformationSent > TIME_BETWEEN_USER_INFORMATION_IN_MILLIES) {
-				mLastTimeUserInformationSent = now;
-				CollaborationUserInformation userInfo = getMasterInformation();
-				synchronized (mConnections) {
-					for (int i = 0; i < mConnections.size(); i++) {
-						try {
-							final ServerCommunication connection = (ServerCommunication) mConnections
-									.elementAt(i);
-							/* to each server, the IP address is chosen that belongs to this connection.
-							 * E.g. if the connection is routed over one of several network interfaces,
-							 * the address of this interface is reported.
-							 */
-							userInfo.setMasterIp(connection.getIpToSocket());
-							connection.send(userInfo);
-						} catch (Exception e) {
-							freemind.main.Resources.getInstance().logException(
-									e);
+			for (Iterator it = mFileMap.keySet().iterator(); it.hasNext();) {
+				String mapName = (String) it.next();
+				ExtendedMapFeedback extendedMapFeedback = mFileMap.get(mapName);
+				SessionData sessionData = getSessionData(extendedMapFeedback);
+				if (now - mLastTimeUserInformationSent > TIME_BETWEEN_USER_INFORMATION_IN_MILLIES) {
+					mLastTimeUserInformationSent = now;
+					CollaborationUserInformation userInfo = getMasterInformation(extendedMapFeedback);
+					synchronized (sessionData.mConnections) {
+						for (int i = 0; i < sessionData.mConnections.size(); i++) {
+							try {
+								final ServerCommunication connection = sessionData.mConnections
+										.elementAt(i);
+								/*
+								 * to each server, the IP address is chosen that
+								 * belongs to this connection. E.g. if the
+								 * connection is routed over one of several network
+								 * interfaces, the address of this interface is
+								 * reported.
+								 */
+								userInfo.setMasterIp(connection.getIpToSocket());
+								connection.send(userInfo);
+							} catch (Exception e) {
+								freemind.main.Resources.getInstance().logException(
+										e);
+							}
 						}
 					}
 				}
-			}
-			// timeout such that lock can't be held forever
-			synchronized (mLockMutex) {
-				if (mLockEnabled && now - mLockedAt > TIME_FOR_ORPHANED_LOCK) {
-					logger.warning("Release lock " + mLockId + " held by "
-							+ mLockUserName);
-					clearLock();
+				// timeout such that lock can't be held forever
+				synchronized (sessionData.mLockMutex) {
+					if (sessionData.mLockEnabled && now - sessionData.mLockedAt > TIME_FOR_ORPHANED_LOCK) {
+						logger.warning("Release lock " + sessionData.mLockId + " held by "
+								+ sessionData.mLockUserName);
+						clearLock(extendedMapFeedback);
+					}
 				}
 			}
 			return true;
@@ -214,7 +224,7 @@ public class MindMapMaster extends SocketMaster implements PermanentNodeHook,
 	public void shutdownMapHook() {
 		deregisterFilter();
 		if (mListener != null) {
-			signalEndOfSession();
+			signalEndOfSession(getMapFeedback());
 			mListener.commitSuicide();
 		}
 		try {
@@ -229,14 +239,16 @@ public class MindMapMaster extends SocketMaster implements PermanentNodeHook,
 	}
 
 	/**
+	 * @param pMapFeedback 
 	 * 
 	 */
-	private void signalEndOfSession() {
+	private void signalEndOfSession(ExtendedMapFeedback pMapFeedback) {
 		CollaborationGoodbye goodbye = new CollaborationGoodbye();
 		goodbye.setUserId(Tools.getUserName());
-		synchronized (mConnections) {
-			for (int i = 0; i < mConnections.size(); i++) {
-				final ServerCommunication serverCommunication = (ServerCommunication) mConnections
+		SessionData sessionData = getSessionData(pMapFeedback);
+		synchronized (sessionData.mConnections) {
+			for (int i = 0; i < sessionData.mConnections.size(); i++) {
+				final ServerCommunication serverCommunication = sessionData.mConnections
 						.elementAt(i);
 				try {
 					serverCommunication.send(goodbye);
@@ -246,7 +258,7 @@ public class MindMapMaster extends SocketMaster implements PermanentNodeHook,
 					freemind.main.Resources.getInstance().logException(e);
 				}
 			}
-			mConnections.clear();
+			sessionData.mConnections.clear();
 		}
 	}
 

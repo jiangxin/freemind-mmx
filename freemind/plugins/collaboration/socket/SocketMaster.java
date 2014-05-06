@@ -20,10 +20,13 @@
 
 package plugins.collaboration.socket;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 import freemind.controller.actions.generated.instance.CollaborationUserInformation;
 import freemind.main.Tools;
+import freemind.modes.ExtendedMapFeedback;
+import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 /**
  * @author foltin
@@ -31,18 +34,23 @@ import freemind.main.Tools;
  */
 public abstract class SocketMaster extends SocketBasics {
 
-	Vector mConnections = new Vector();
-	protected boolean mLockEnabled = false;
-	protected String mLockMutex = "";
+	static final class SessionData {
+		boolean mLockEnabled = false;
+		String mLockId;
+		long mLockedAt;
+		String mLockUserName;
+		Vector<ServerCommunication> mConnections = new Vector<ServerCommunication>();
+		public String mLockMutex = new String();
+	}
+	
+	protected HashMap<ExtendedMapFeedback, SessionData> mConnections = new HashMap<ExtendedMapFeedback, SocketMaster.SessionData>();
 	protected int mPort;
-	protected String mLockId;
-	protected long mLockedAt;
-	protected String mLockUserName;
+	protected HashMap<String, ExtendedMapFeedback> mFileMap;
 
 	
 	public synchronized void removeConnection(ServerCommunication client) {
 		synchronized (mConnections) {
-			mConnections.remove(client);
+			mConnections.get(client.getController()).mConnections.remove(client);
 		}
 		// correct the map title, as we probably don't have clients anymore
 		setTitle();
@@ -71,20 +79,31 @@ public abstract class SocketMaster extends SocketBasics {
 	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#lock()
 	 */
-	protected String lock(String pUserName) throws UnableToGetLockException,
+	protected String lock(String pUserName, ExtendedMapFeedback pController) throws UnableToGetLockException,
 			InterruptedException {
-		synchronized (mLockMutex) {
-			if (mLockEnabled) {
+		SessionData sessionData = getSessionData(pController);
+		synchronized (sessionData.mLockMutex) {
+			if (sessionData.mLockEnabled) {
 				throw new UnableToGetLockException();
 			}
-			mLockEnabled = true;
+			sessionData.mLockEnabled = true;
 			String lockId = "Lock_" + Math.random();
-			mLockId = lockId;
-			mLockedAt = System.currentTimeMillis();
-			mLockUserName = pUserName;
-			logger.info("New lock " + lockId + " by " + mLockUserName);
+			sessionData.mLockId = lockId;
+			sessionData.mLockedAt = System.currentTimeMillis();
+			sessionData.mLockUserName = pUserName;
+			logger.info("New lock " + lockId + " by " + sessionData.mLockUserName);
 			return lockId;
 		}
+	}
+
+	/**
+	 * @param pController
+	 */
+	protected SessionData getSessionData(ExtendedMapFeedback pController) {
+		if(mConnections.containsKey(pController)) {
+			return mConnections.get(pController);
+		}
+		throw new IllegalArgumentException("Session for " + pController + " not present.");
 	}
 
 	/*
@@ -95,10 +114,11 @@ public abstract class SocketMaster extends SocketBasics {
 	 * java.lang.String, java.lang.String)
 	 */
 	protected void broadcastCommand(String pDoAction, String pUndoAction,
-			String pLockId) throws Exception {
-		synchronized (mConnections) {
-			for (int i = 0; i < mConnections.size(); i++) {
-				((ServerCommunication) mConnections.elementAt(i)).sendCommand(
+			String pLockId, ExtendedMapFeedback pController) throws Exception {
+		SessionData sessionData = getSessionData(pController);
+		synchronized (sessionData.mConnections) {
+			for (int i = 0; i < sessionData.mConnections.size(); i++) {
+				((ServerCommunication) sessionData.mConnections.elementAt(i)).sendCommand(
 						pDoAction, pUndoAction, pLockId);
 			}
 		}
@@ -109,28 +129,31 @@ public abstract class SocketMaster extends SocketBasics {
 	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#unlock()
 	 */
-	protected void unlock() {
-		synchronized (mLockMutex) {
-			if (!mLockEnabled) {
+	protected void unlock(ExtendedMapFeedback pController) {
+		SessionData sessionData = getSessionData(pController);
+		synchronized (sessionData.mLockMutex) {
+			if (!sessionData.mLockEnabled) {
 				throw new IllegalStateException();
 			}
-			logger.fine("Release lock " + mLockId + " held by " + mLockUserName);
-			clearLock();
+			logger.fine("Release lock " + sessionData.mLockId + " held by " + sessionData.mLockUserName);
+			clearLock(pController);
 		}
 	}
 
-	public void clearLock() {
-		mLockEnabled = false;
-		mLockId = "none";
-		mLockUserName = null;
+	public void clearLock(ExtendedMapFeedback pController) {
+		SessionData sessionData = getSessionData(pController);
+		sessionData.mLockEnabled = false;
+		sessionData.mLockId = "none";
+		sessionData.mLockUserName = null;
 	}
 
-	public String getLockId() {
-		synchronized (mLockMutex) {
-			if (!mLockEnabled) {
+	public String getLockId(ExtendedMapFeedback pController) {
+		SessionData sessionData = getSessionData(pController);
+		synchronized (sessionData.mLockMutex) {
+			if (!sessionData.mLockEnabled) {
 				throw new IllegalStateException();
 			}
-			return mLockId;
+			return sessionData.mLockId;
 		}
 	}
 
@@ -139,26 +162,56 @@ public abstract class SocketMaster extends SocketBasics {
 	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#getUsers()
 	 */
-	public String getUsers() {
+	public String getUsers(ExtendedMapFeedback pController) {
+		SessionData sessionData = getSessionData(pController);
 		StringBuffer users = new StringBuffer(Tools.getUserName());
-		synchronized (mConnections) {
-			for (int i = 0; i < mConnections.size(); i++) {
+		synchronized (sessionData.mConnections) {
+			for (int i = 0; i < sessionData.mConnections.size(); i++) {
 				users.append(',');
 				users.append(' ');
-				users.append(((ServerCommunication) mConnections.elementAt(i))
-						.getName());
+				users.append(sessionData.mConnections.elementAt(i).getName());
 			}
 		}
 		return users.toString();
 	}
-
-	public CollaborationUserInformation getMasterInformation() {
+	
+	protected void executeTransaction(final ActionPair pair, ExtendedMapFeedback pController) {
+		SessionData sessionData = getSessionData(pController);
+		mFilterEnabled = false;
+		try {
+			pController.doTransaction("update", pair);
+		} finally {
+			mFilterEnabled = true;
+		}
+	}
+	
+	public CollaborationUserInformation getMasterInformation(ExtendedMapFeedback pController) {
 		CollaborationUserInformation userInfo = new CollaborationUserInformation();
-		userInfo.setUserIds(getUsers());
+		userInfo.setUserIds(getUsers(pController));
 		userInfo.setMasterHostname(Tools.getHostName());
 		userInfo.setMasterPort(getPort());
 		userInfo.setMasterIp(Tools.getHostIpAsString());
 		return userInfo;
 	}
+
+	/**
+	 * @return the fileMap
+	 */
+	public HashMap<String, ExtendedMapFeedback> getFileMap() {
+		return mFileMap;
+	}
+
+	/**
+	 * @param pServerCommunication
+	 * @param pController
+	 */
+	public  void addConnection(ServerCommunication pServerCommunication,
+			ExtendedMapFeedback pController) {
+		synchronized (mConnections) {
+			mConnections.get(pController).mConnections.addElement(pServerCommunication);
+		}		
+	}
+
+
 	
 }

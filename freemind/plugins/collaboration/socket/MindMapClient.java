@@ -35,6 +35,7 @@ import freemind.common.StringProperty;
 import freemind.controller.actions.generated.instance.CollaborationUserInformation;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.Resources;
+import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.mindmapmode.MindMapController;
 
 /**
@@ -142,7 +143,7 @@ public class MindMapClient extends SocketBasics {
 	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#lock()
 	 */
-	protected String lock(String pUserName) throws UnableToGetLockException,
+	protected String lock(String pUserName, ExtendedMapFeedback pController) throws UnableToGetLockException,
 			InterruptedException {
 		return null;
 	}
@@ -155,7 +156,7 @@ public class MindMapClient extends SocketBasics {
 	 * java.lang.String)
 	 */
 	protected void broadcastCommand(String pDoAction, String pUndoAction,
-			String pLockId) throws Exception {
+			String pLockId, ExtendedMapFeedback pController) throws Exception {
 	}
 
 	/*
@@ -163,7 +164,7 @@ public class MindMapClient extends SocketBasics {
 	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#unlock()
 	 */
-	protected void unlock() {
+	protected void unlock(ExtendedMapFeedback pController) {
 	}
 
 	/*
@@ -179,7 +180,7 @@ public class MindMapClient extends SocketBasics {
 	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#getMasterInformation()
 	 */
-	public CollaborationUserInformation getMasterInformation() {
+	public CollaborationUserInformation getMasterInformation(ExtendedMapFeedback pController) {
 		return null;
 	}
 

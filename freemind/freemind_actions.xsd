@@ -798,6 +798,17 @@
 	  <xs:complexType>
 		<xs:complexContent>
 			<xs:extension base="collaboration_action_base">
+				<xs:attribute name="server_version" use="optional" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+	<xs:element name="collaboration_get_offers">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="collaboration_action_base">
+				<xs:attribute name="user_id" use="required" type="xs:string"/>
+				<xs:attribute name="password" use="required" type="xs:string"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
@@ -806,8 +817,23 @@
 	  <xs:complexType>
 		<xs:complexContent>
 			<xs:extension base="collaboration_action_base">
-				<xs:attribute name="user_id" use="required" type="xs:string"/>
-				<xs:attribute name="password" use="required" type="xs:string"/>
+				<xs:attribute name="map" use="required" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+	<xs:element name="collaboration_map_offer">
+		<xs:complexType>
+		      <xs:attribute name="map" use="required" type="xs:string"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="collaboration_offers">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="collaboration_action_base">
+				<xs:sequence>
+					<xs:element ref="collaboration_map_offer" maxOccurs="unbounded" minOccurs="0"/>
+				</xs:sequence>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>
@@ -843,6 +869,15 @@
 	</xs:element>
 
 	<xs:element name="collaboration_wrong_credentials">
+	  <xs:complexType>
+		<xs:complexContent>
+			<xs:extension base="collaboration_action_base">
+			</xs:extension>
+		</xs:complexContent>
+	  </xs:complexType>
+	</xs:element>
+
+	<xs:element name="collaboration_wrong_map">
 	  <xs:complexType>
 		<xs:complexContent>
 			<xs:extension base="collaboration_action_base">

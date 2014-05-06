@@ -288,7 +288,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 		if (pMapModule.getModeController() != getMapFeedback()) {
 			return pOldTitle;
 		}
-		CollaborationUserInformation userInfo = getMasterInformation();
+		CollaborationUserInformation userInfo = getMasterInformation(getMapFeedback());
 		if (userInfo == null) {
 			return pOldTitle;
 		}
@@ -302,7 +302,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 								userInfo.getUserIds() });
 	}
 
-	public abstract CollaborationUserInformation getMasterInformation();
+	public abstract CollaborationUserInformation getMasterInformation(ExtendedMapFeedback pController);
 
 	public String getPassword() {
 		return mPassword;
@@ -355,12 +355,12 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 				pPair.getUndoAction());
 		logger.info("Require lock for command: " + doAction);
 		try {
-			String lockId = lock(getUserName());
+			String lockId = lock(getUserName(), getMapFeedback());
 			/*
 			 * Blocking broadcast call: Client: send to master (who broadcasts
 			 * the command afterwards), Master: send to all clients.
 			 */
-			broadcastCommand(doAction, undoAction, lockId);
+			broadcastCommand(doAction, undoAction, lockId, getMapFeedback());
 		} catch (UnableToGetLockException e) {
 			freemind.main.Resources.getInstance().logException(e);
 			return getEmptyActionPair();
@@ -368,7 +368,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 			freemind.main.Resources.getInstance().logException(e);
 			return getEmptyActionPair();
 		} finally {
-			unlock();
+			unlock(getMapFeedback());
 		}
 		return pPair;
 	}
@@ -384,11 +384,12 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	/**
 	 * @param pUserName
 	 *            the user the lock belongs to.
+	 * @param pController TODO
 	 * @return The id associated with this lock.
 	 * @throws UnableToGetLockException
 	 * @throws InterruptedException
 	 */
-	protected abstract String lock(String pUserName)
+	protected abstract String lock(String pUserName, ExtendedMapFeedback pController)
 			throws UnableToGetLockException, InterruptedException;
 
 	/**
@@ -401,16 +402,18 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 	/**
 	 * Should send the command to the master, or, if the master itself, sends it
 	 * to the clients.
+	 * @param pController TODO
 	 * 
 	 * @throws Exception
 	 */
 	protected abstract void broadcastCommand(String pDoAction,
-			String pUndoAction, String pLockId) throws Exception;
+			String pUndoAction, String pLockId, ExtendedMapFeedback pController) throws Exception;
 
 	/**
 	 * Unlocks the previous lock
+	 * @param pController TODO
 	 */
-	protected abstract void unlock();
+	protected abstract void unlock(ExtendedMapFeedback pController);
 
 	protected void registerFilter() {
 		logger.info("Registering filter");
@@ -422,7 +425,7 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 		getMapFeedback().getActionRegistry().deregisterFilter(this);
 	}
 
-	protected void executeTransaction(final ActionPair pair) {
+	protected void executeTransaction(final ActionPair pair, ExtendedMapFeedback pController) {
 		mFilterEnabled = false;
 		try {
 			getMapFeedback().doTransaction("update", pair);

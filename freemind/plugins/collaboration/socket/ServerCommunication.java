@@ -27,11 +27,15 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.Socket;
+import java.util.Iterator;
 
 import plugins.collaboration.socket.SocketBasics.UnableToGetLockException;
 import freemind.controller.actions.generated.instance.CollaborationActionBase;
+import freemind.controller.actions.generated.instance.CollaborationGetOffers;
 import freemind.controller.actions.generated.instance.CollaborationGoodbye;
 import freemind.controller.actions.generated.instance.CollaborationHello;
+import freemind.controller.actions.generated.instance.CollaborationMapOffer;
+import freemind.controller.actions.generated.instance.CollaborationOffers;
 import freemind.controller.actions.generated.instance.CollaborationReceiveLock;
 import freemind.controller.actions.generated.instance.CollaborationRequireLock;
 import freemind.controller.actions.generated.instance.CollaborationTransaction;
@@ -39,12 +43,13 @@ import freemind.controller.actions.generated.instance.CollaborationUnableToLock;
 import freemind.controller.actions.generated.instance.CollaborationWelcome;
 import freemind.controller.actions.generated.instance.CollaborationWhoAreYou;
 import freemind.controller.actions.generated.instance.CollaborationWrongCredentials;
+import freemind.controller.actions.generated.instance.CollaborationWrongMap;
 import freemind.main.Tools;
 import freemind.modes.ExtendedMapFeedback;
 
 /**
  * This class handles the communication from the master to a single client. It
- * is thus instanciated for each client (by the MindMapMaster).
+ * is thus instantiated for each client (by the MindMapMaster).
  * 
  * @author foltin
  * @date 13.09.2012
@@ -60,7 +65,7 @@ public class ServerCommunication extends CommunicationBase {
 		mMindMapMaster = pSocketStarter;
 		CollaborationWhoAreYou commandWho = new CollaborationWhoAreYou();
 		send(commandWho);
-		setCurrentState(STATE_WAIT_FOR_HELLO);
+		setCurrentState(STATE_WAIT_FOR_GET_OFFERS);
 	}
 
 	public void processCommand(CollaborationActionBase pCommand)
@@ -72,27 +77,27 @@ public class ServerCommunication extends CommunicationBase {
 			return;
 		}
 		boolean commandHandled = false;
-		if (pCommand instanceof CollaborationHello) {
-			// here, we are strict in checking the state, as not the whole world
-			// should get access to the map!
-			if (getCurrentState() != STATE_WAIT_FOR_HELLO) {
+		if (pCommand instanceof CollaborationGetOffers) {
+			if (getCurrentState() != STATE_WAIT_FOR_GET_OFFERS) {
 				printWrongState(pCommand);
 			} else {
-				CollaborationHello commandHello = (CollaborationHello) pCommand;
-				setName(commandHello.getUserId());
+				CollaborationGetOffers commandGetOffers = (CollaborationGetOffers) pCommand;
+				commandHandled = true;
+				setName(commandGetOffers.getUserId());
 				// verify password:
 				if (mMindMapMaster.getPassword().equals(
-						commandHello.getPassword())) {
-					// send map:
-					CollaborationWelcome welcomeCommand = new CollaborationWelcome();
-					logger.info("Store map in welcome command...");
-					StringWriter writer = new StringWriter();
-					mController.getMap().getXml(writer);
-					welcomeCommand.setMap(writer.toString());
-					welcomeCommand.setFilename(mController.getMap().getFile()
-							.getName());
-					send(welcomeCommand);
-					setCurrentState(STATE_IDLE);
+						commandGetOffers.getPassword())) {
+					CollaborationOffers commandOffers = new CollaborationOffers();
+					mMindMapMaster.getFileMap();
+					for (Iterator it = mMindMapMaster.getFileMap().keySet().iterator(); it
+							.hasNext();) {
+						String fileName = (String) it.next();
+						CollaborationMapOffer offer = new CollaborationMapOffer();
+						offer.setMap(fileName);
+						commandOffers.addCollaborationMapOffer(offer);
+					}
+					send(commandOffers);
+					setCurrentState(STATE_WAIT_FOR_HELLO);
 				} else {
 					// Send error message
 					CollaborationWrongCredentials wrongMessage = new CollaborationWrongCredentials();
@@ -102,6 +107,40 @@ public class ServerCommunication extends CommunicationBase {
 						terminateSocket();
 					}
 				}
+			}
+		}
+		// FIXME: Security check here!
+		if (pCommand instanceof CollaborationHello) {
+			// here, we are strict in checking the state, as not the whole world
+			// should get access to the map!
+			if (getCurrentState() != STATE_WAIT_FOR_HELLO) {
+				printWrongState(pCommand);
+			} else {
+				CollaborationHello commandHello = (CollaborationHello) pCommand;
+				// get map:
+				String map = commandHello.getMap();
+				if(!mMindMapMaster.getFileMap().containsKey(map)) {
+					// Send error message
+					CollaborationWrongMap wrongMessage = new CollaborationWrongMap();
+					try {
+						send(wrongMessage);
+					} finally {
+						terminateSocket();
+					}
+				}
+				logger.info("Map " + map + " requested.");
+				mController = mMindMapMaster.getFileMap().get(map);
+				mMindMapMaster.addConnection(this, mController);
+				// send map:
+				CollaborationWelcome welcomeCommand = new CollaborationWelcome();
+				logger.info("Store map in welcome command...");
+				StringWriter writer = new StringWriter();
+				mController.getMap().getXml(writer);
+				welcomeCommand.setMap(writer.toString());
+				welcomeCommand.setFilename(mController.getMap().getFile()
+						.getName());
+				send(welcomeCommand);
+				setCurrentState(STATE_IDLE);
 				commandHandled = true;
 			}
 		}
@@ -113,17 +152,17 @@ public class ServerCommunication extends CommunicationBase {
 				CollaborationTransaction trans = (CollaborationTransaction) pCommand;
 				try {
 					if (!Tools
-							.safeEquals(mMindMapMaster.getLockId(), trans.getId())) {
+							.safeEquals(mMindMapMaster.getLockId(getController()), trans.getId())) {
 						logger.severe("Wrong transaction id received. Expected: "
-								+ mMindMapMaster.getLockId() + ", received: "
+								+ mMindMapMaster.getLockId(getController()) + ", received: "
 								+ trans.getId());
 					} else {
 						mMindMapMaster.broadcastCommand(trans.getDoAction(),
-								trans.getUndoAction(), trans.getId());
-						mMindMapMaster.executeTransaction(getActionPair(trans));
+								trans.getUndoAction(), trans.getId(), getController());
+						mMindMapMaster.executeTransaction(getActionPair(trans), getController());
 					}
 				} finally {
-					mMindMapMaster.unlock();
+					mMindMapMaster.unlock(getController());
 					setCurrentState(STATE_IDLE);
 					commandHandled = true;
 				}
@@ -134,7 +173,7 @@ public class ServerCommunication extends CommunicationBase {
 				printWrongState(pCommand);
 			}
 			try {
-				String lockId = mMindMapMaster.lock(this.getName());
+				String lockId = mMindMapMaster.lock(this.getName(), getController());
 				logger.info("Got lock for " + getName());
 				CollaborationReceiveLock lockCommand = new CollaborationReceiveLock();
 				lockCommand.setId(lockId);

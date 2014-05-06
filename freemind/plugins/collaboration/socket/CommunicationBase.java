@@ -73,9 +73,11 @@ public abstract class CommunicationBase extends TerminateableThread {
 	protected static final int STATE_WAIT_FOR_HELLO = 1;
 	protected static final int STATE_WAIT_FOR_COMMAND = 2;
 	protected static final int STATE_WAIT_FOR_WHO_ARE_YOU = 3;
-	protected static final int STATE_WAIT_FOR_WELCOME = 4;
-	protected static final int STATE_WAIT_FOR_LOCK = 5;
-	protected static final int STATE_LOCK_RECEIVED = 6;
+	protected static final int STATE_WAIT_FOR_GET_OFFERS = 4;
+	protected static final int STATE_WAIT_FOR_OFFER = 5;
+	protected static final int STATE_WAIT_FOR_WELCOME = 6;
+	protected static final int STATE_WAIT_FOR_LOCK = 7;
+	protected static final int STATE_LOCK_RECEIVED = 8;
 	private static final int MAX_STRING_LENGTH_TO_SEND = 65500;
 
 	private int mCurrentState = STATE_IDLE;
@@ -249,8 +251,28 @@ public abstract class CommunicationBase extends TerminateableThread {
 			return "STATE_WAIT_FOR_LOCK";
 		case STATE_LOCK_RECEIVED:
 			return "STATE_LOCK_RECEIVED";
+		case STATE_WAIT_FOR_OFFER:
+			return "STATE_WAIT_FOR_OFFER";
+		case STATE_WAIT_FOR_GET_OFFERS:
+			return "STATE_WAIT_FOR_GET_OFFERS";
 		}
 		return "UNKNOWN: " + pCurrentState;
 	}
+	
+	/**
+	 * @param pNewModeController
+	 */
+	protected void setController(ExtendedMapFeedback pNewModeController) {
+		mController = pNewModeController;
+	}
+	
+	/**
+	 * @return the controller
+	 */
+	public ExtendedMapFeedback getController() {
+		return mController;
+	}
+
+
 
 }

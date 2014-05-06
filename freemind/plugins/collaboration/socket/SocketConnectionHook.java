@@ -30,6 +30,7 @@ import freemind.controller.actions.generated.instance.CollaborationUserInformati
 import freemind.extensions.DontSaveMarker;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.XMLElement;
+import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.MindMapNode;
 import freemind.view.mindmapview.NodeView;
 
@@ -123,7 +124,7 @@ public class SocketConnectionHook extends SocketBasics implements
 	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#lock()
 	 */
-	protected String lock(String pUserName) throws UnableToGetLockException,
+	protected String lock(String pUserName, ExtendedMapFeedback pController) throws UnableToGetLockException,
 			InterruptedException {
 		return mClientCommunication.sendLockRequest();
 	}
@@ -136,7 +137,7 @@ public class SocketConnectionHook extends SocketBasics implements
 	 * String, java.lang.String, java.lang.String)
 	 */
 	protected void broadcastCommand(String pDoAction, String pUndoAction,
-			String pLockId) throws Exception {
+			String pLockId, ExtendedMapFeedback pController) throws Exception {
 		mClientCommunication.sendCommand(pDoAction, pUndoAction, pLockId);
 	}
 
@@ -145,7 +146,7 @@ public class SocketConnectionHook extends SocketBasics implements
 	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#unlock()
 	 */
-	protected void unlock() {
+	protected void unlock(ExtendedMapFeedback pController) {
 	}
 
 	/**
@@ -174,7 +175,7 @@ public class SocketConnectionHook extends SocketBasics implements
 	 * 
 	 * @see plugins.collaboration.socket.SocketBasics#getMasterInformation()
 	 */
-	public CollaborationUserInformation getMasterInformation() {
+	public CollaborationUserInformation getMasterInformation(ExtendedMapFeedback pController) {
 		return mClientCommunication.getUserInfo();
 	}
 

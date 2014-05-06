@@ -20,6 +20,13 @@
 
 package plugins.collaboration.socket;
 
+import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -30,10 +37,24 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import javax.swing.AbstractAction;
+import javax.swing.AbstractListModel;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.WindowConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import plugins.collaboration.socket.SocketBasics.UnableToGetLockException;
 import freemind.controller.actions.generated.instance.CollaborationActionBase;
+import freemind.controller.actions.generated.instance.CollaborationGetOffers;
 import freemind.controller.actions.generated.instance.CollaborationGoodbye;
 import freemind.controller.actions.generated.instance.CollaborationHello;
+import freemind.controller.actions.generated.instance.CollaborationOffers;
 import freemind.controller.actions.generated.instance.CollaborationReceiveLock;
 import freemind.controller.actions.generated.instance.CollaborationRequireLock;
 import freemind.controller.actions.generated.instance.CollaborationTransaction;
@@ -42,6 +63,7 @@ import freemind.controller.actions.generated.instance.CollaborationUserInformati
 import freemind.controller.actions.generated.instance.CollaborationWelcome;
 import freemind.controller.actions.generated.instance.CollaborationWhoAreYou;
 import freemind.controller.actions.generated.instance.CollaborationWrongCredentials;
+import freemind.controller.actions.generated.instance.CollaborationWrongMap;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.Tools;
 import freemind.modes.MapAdapter;
@@ -109,11 +131,98 @@ public class ClientCommunication extends CommunicationBase {
 				printWrongState(pCommand);
 			}
 			// send hello:
-			CollaborationHello helloCommand = new CollaborationHello();
-			helloCommand.setUserId(Tools.getUserName());
-			helloCommand.setPassword(mPassword);
-			send(helloCommand);
-			setCurrentState(STATE_WAIT_FOR_WELCOME);
+			CollaborationGetOffers getOffersCommand = new CollaborationGetOffers();
+			getOffersCommand.setUserId(Tools.getUserName());
+			getOffersCommand.setPassword(mPassword);
+			send(getOffersCommand);
+			setCurrentState(STATE_WAIT_FOR_OFFER);
+			commandHandled = true;
+		}
+		if (pCommand instanceof CollaborationOffers) {
+			if (getCurrentState() != STATE_WAIT_FOR_OFFER) {
+				printWrongState(pCommand);
+			}
+			final CollaborationOffers collOffers = (CollaborationOffers) pCommand;
+			// now, we have a bundle of different maps to offer to the user
+			final JDialog mapChooserDialog = new JDialog(getMindMapController().getFrame().getJFrame(),
+					false);
+			mapChooserDialog.getContentPane().setLayout(new GridBagLayout());
+			mapChooserDialog.setTitle(getMindMapController().getResourceString("MapChooserDialog_title"));
+			mapChooserDialog
+					.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+			mapChooserDialog.addWindowListener(new WindowAdapter() {
+				public void windowClosing(WindowEvent event) {
+					mapChooserDialog.dispose();
+					terminateSocket();
+				}
+			});
+			// the action title is changed by the following method, thus we create
+			// another close action.
+			AbstractAction cancelAction = new AbstractAction() {
+
+				@Override
+				public void actionPerformed(ActionEvent pE) {
+					logger.info("Map choosing action canceled.");
+					mapChooserDialog.dispose();
+					terminateSocket();
+				}};
+			Tools.addEscapeActionToDialog(mapChooserDialog, cancelAction);
+			final JList mapList = new JList();
+			mapList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			mapList.setModel(new AbstractListModel() {
+				
+				@Override
+				public int getSize() {
+					return collOffers.getListCollaborationMapOfferList().size();
+				}
+				
+				@Override
+				public Object getElementAt(int pIndex) {
+					return collOffers.getCollaborationMapOffer(pIndex).getMap();
+				}});
+			AbstractAction okAction = new AbstractAction() {
+				
+				@Override
+				public void actionPerformed(ActionEvent pE) {
+					int selection = mapList.getSelectedIndex();
+					if(selection < 0) {
+						return;
+					}
+					// user has chosen the map:
+					logger.info("Map choosing action. selected index " + selection);
+					mapChooserDialog.setVisible(false);
+					// send hello:
+					CollaborationHello helloCommand = new CollaborationHello();
+					helloCommand.setMap(collOffers.getCollaborationMapOffer(selection).getMap());
+					send(helloCommand);
+					setCurrentState(STATE_WAIT_FOR_WELCOME);
+				}};
+			mapChooserDialog.getContentPane().add(
+					new JScrollPane(mapList),
+					new GridBagConstraints(0, 0, 2, 1, 10.0, 4.0,
+							GridBagConstraints.WEST, GridBagConstraints.BOTH,
+							new Insets(5, 5, 0, 0), 0, 10));
+			JButton okButton = new JButton(
+					getController().getResourceString("ExtendedFindDialog.ok"));
+			Tools.setLabelAndMnemonic(okButton, null);
+			okButton.addActionListener(okAction);
+			mapChooserDialog.getContentPane().add(
+					okButton,
+					new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0,
+							GridBagConstraints.WEST, GridBagConstraints.BOTH,
+							new Insets(5, 5, 0, 0), 0, 0));
+			JButton cancelButton = new JButton(
+					getController().getResourceString("ExtendedFindDialog.cancel"));
+			Tools.setLabelAndMnemonic(cancelButton, null);
+			cancelButton.addActionListener(cancelAction);
+			mapChooserDialog.getContentPane().add(
+					cancelButton,
+					new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0,
+							GridBagConstraints.WEST, GridBagConstraints.BOTH,
+							new Insets(5, 5, 0, 0), 0, 0));
+			mapChooserDialog.getRootPane().setDefaultButton(okButton);
+			mapChooserDialog.pack();
+			mapChooserDialog.setVisible(true);
 			commandHandled = true;
 		}
 		if (pCommand instanceof CollaborationWelcome) {
@@ -126,7 +235,7 @@ public class ClientCommunication extends CommunicationBase {
 			commandHandled = true;
 		}
 		if (pCommand instanceof CollaborationWrongCredentials) {
-			if (getCurrentState() != STATE_WAIT_FOR_WELCOME) {
+			if (getCurrentState() != STATE_WAIT_FOR_OFFER) {
 				printWrongState(pCommand);
 			}
 			// Over and out.
@@ -134,6 +243,17 @@ public class ClientCommunication extends CommunicationBase {
 			// Display error message!
 			getMindMapController().getController().errorMessage(
 					getMindMapController().getText("socket_wrong_password"));
+			commandHandled = true;
+		}
+		if (pCommand instanceof CollaborationWrongMap) {
+			if (getCurrentState() != STATE_WAIT_FOR_WELCOME) {
+				printWrongState(pCommand);
+			}
+			// Over and out.
+			terminateSocket();
+			// Display error message!
+			getMindMapController().getController().errorMessage(
+					getMindMapController().getText("socket_wrong_map"));
 			commandHandled = true;
 		}
 		if (pCommand instanceof CollaborationTransaction) {
@@ -150,7 +270,7 @@ public class ClientCommunication extends CommunicationBase {
 				}
 				if (mSocketConnectionHook != null) {
 					mSocketConnectionHook
-							.executeTransaction(getActionPair(trans));
+							.executeTransaction(getActionPair(trans), getController());
 				}
 			}
 			commandHandled = true;
@@ -278,13 +398,6 @@ public class ClientCommunication extends CommunicationBase {
 				}
 			}
 		}
-	}
-
-	/**
-	 * @param pNewModeController
-	 */
-	private void setController(MindMapController pNewModeController) {
-		mController = pNewModeController;
 	}
 
 	/**

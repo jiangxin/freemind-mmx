@@ -21,11 +21,15 @@
 package plugins.collaboration.socket;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.HashMap;
+import java.util.Iterator;
 
+import plugins.collaboration.socket.SocketMaster.SessionData;
 import tests.freemind.FreeMindMainMock;
 import freemind.controller.actions.generated.instance.CollaborationUserInformation;
 import freemind.main.Tools;
@@ -33,6 +37,7 @@ import freemind.main.XMLParseException;
 import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.ExtendedMapFeedbackImpl;
 import freemind.modes.MapAdapter;
+import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapMapModel;
@@ -47,11 +52,7 @@ public class StandaloneMindMapMaster extends SocketMaster {
 
 	private ServerSocket mServer;
 	private MasterThread mListener;
-	private String mLockMutex = "";
-	private ExtendedMapFeedbackImpl mMapFeedback;
 	private FreeMindMainMock mFreeMindMain;
-	private MindMapMapModel mMap;
-	private File mFile;
 
 	private class MasterThread extends TerminateableThread {
 
@@ -59,7 +60,6 @@ public class StandaloneMindMapMaster extends SocketMaster {
 		private static final long TIME_BETWEEN_SAVE_ACTIONS_IN_MILLIES = 60000;
 		private static final long TIME_FOR_ORPHANED_LOCK = 5000;
 		private long mLastTimeUserInformationSent = 0;
-		private ServerCommunication mCommunication;
 		private long mLastSaveAction = 0;
 
 		/**
@@ -80,56 +80,60 @@ public class StandaloneMindMapMaster extends SocketMaster {
 				Socket client = mServer.accept();
 				logger.info("Received new client.");
 				client.setSoTimeout(SOCKET_TIMEOUT_IN_MILLIES);
-				mCommunication = new ServerCommunication(
-						StandaloneMindMapMaster.this, client, mMapFeedback);
-				mCommunication.start();
-				synchronized (mConnections) {
-					mConnections.addElement(mCommunication);
-				}
+				ServerCommunication communication = new ServerCommunication(
+						StandaloneMindMapMaster.this, client, null);
+				communication.start(); 
 			} catch (SocketTimeoutException e) {
 			}
 			final long now = System.currentTimeMillis();
-			if (now - mLastTimeUserInformationSent > TIME_BETWEEN_USER_INFORMATION_IN_MILLIES) {
-				mLastTimeUserInformationSent = now;
-				CollaborationUserInformation userInfo = getMasterInformation();
-				synchronized (mConnections) {
-					for (int i = 0; i < mConnections.size(); i++) {
-						try {
-							final ServerCommunication connection = (ServerCommunication) mConnections
-									.elementAt(i);
-							/*
-							 * to each server, the IP address is chosen that
-							 * belongs to this connection. E.g. if the
-							 * connection is routed over one of several network
-							 * interfaces, the address of this interface is
-							 * reported.
-							 */
-							userInfo.setMasterIp(connection.getIpToSocket());
-							connection.send(userInfo);
-						} catch (Exception e) {
-							freemind.main.Resources.getInstance().logException(
-									e);
+			for (Iterator it = mFileMap.keySet().iterator(); it.hasNext();) {
+				String mapName = (String) it.next();
+				ExtendedMapFeedback extendedMapFeedback = mFileMap.get(mapName);
+				SessionData sessionData = getSessionData(extendedMapFeedback);
+				if (now - mLastTimeUserInformationSent > TIME_BETWEEN_USER_INFORMATION_IN_MILLIES) {
+					mLastTimeUserInformationSent = now;
+					CollaborationUserInformation userInfo = getMasterInformation(extendedMapFeedback);
+					synchronized (sessionData.mConnections) {
+						for (int i = 0; i < sessionData.mConnections.size(); i++) {
+							try {
+								final ServerCommunication connection = sessionData.mConnections
+										.elementAt(i);
+								/*
+								 * to each server, the IP address is chosen that
+								 * belongs to this connection. E.g. if the
+								 * connection is routed over one of several network
+								 * interfaces, the address of this interface is
+								 * reported.
+								 */
+								userInfo.setMasterIp(connection.getIpToSocket());
+								connection.send(userInfo);
+							} catch (Exception e) {
+								freemind.main.Resources.getInstance().logException(
+										e);
+							}
 						}
 					}
 				}
-			}
-			// timeout such that lock can't be held forever
-			synchronized (mLockMutex) {
-				if (mLockEnabled && now - mLockedAt > TIME_FOR_ORPHANED_LOCK) {
-					logger.warning("Release lock " + mLockId + " held by "
-							+ mLockUserName);
-					clearLock();
-				}
-				// regular save action:
-				if (!mLockEnabled && now - mLastSaveAction > TIME_BETWEEN_SAVE_ACTIONS_IN_MILLIES) {
-					logger.fine("Checking map " + mFile + " for save action needed.");
-					mLastSaveAction = now;
-					if(!mMap.isSaved()) {
-						// save map:
-						logger.info("Saving map " + mFile + " now.");
-						mMap.save(mFile);
-					} else {
-						logger.fine("No save necessary.");
+				// timeout such that lock can't be held forever
+				synchronized (sessionData.mLockMutex) {
+					if (sessionData.mLockEnabled && now - sessionData.mLockedAt > TIME_FOR_ORPHANED_LOCK) {
+						logger.warning("Release lock " + sessionData.mLockId + " held by "
+								+ sessionData.mLockUserName);
+						clearLock(extendedMapFeedback);
+					}
+					// regular save action:
+					if (!sessionData.mLockEnabled && now - mLastSaveAction > TIME_BETWEEN_SAVE_ACTIONS_IN_MILLIES) {
+						MindMap map = extendedMapFeedback.getMap();
+						File file = map.getFile();
+						logger.fine("Checking map " + file + " for save action needed.");
+						mLastSaveAction = now;
+						if(!map.isSaved()) {
+							// save map:
+							logger.info("Saving map " + file + " now.");
+							map.save(file);
+						} else {
+							logger.fine("No save necessary.");
+						}
 					}
 				}
 			}
@@ -156,7 +160,7 @@ public class StandaloneMindMapMaster extends SocketMaster {
 	 */
 	@Override
 	protected ExtendedMapFeedback getMapFeedback() {
-		return mMapFeedback;
+		throw new IllegalArgumentException("No controller here.");
 	}
 
 	/**
@@ -167,21 +171,35 @@ public class StandaloneMindMapMaster extends SocketMaster {
 	 * @throws XMLParseException
 	 * 
 	 */
-	public StandaloneMindMapMaster(FreeMindMainMock pFreeMindMain, File pFile,
+	public StandaloneMindMapMaster(FreeMindMainMock pFreeMindMain, File pFilePath,
 			String pPassword, int pPort) throws XMLParseException, IOException {
 		mFreeMindMain = pFreeMindMain;
-		mFile = pFile;
+		String[] fileList = pFilePath.list(new FilenameFilter() {
+
+			@Override
+			public boolean accept(File pDir, String pName) {
+				return pName.endsWith(".mm");
+			}});
+		mFileMap = new HashMap<String, ExtendedMapFeedback>();
+		for (int i = 0; i < fileList.length; i++) {
+			String fileName = fileList[i];
+			ExtendedMapFeedbackImpl mapFeedback = new ExtendedMapFeedbackImpl();
+			mFileMap.put(fileName, mapFeedback);
+			mConnections.put(mapFeedback, new SessionData());
+
+			MindMapMapModel map = new MindMapMapModel(mapFeedback);
+			mapFeedback.setMap(map); 
+			File file = new File(pFilePath, fileName);
+			map.setFile(file);
+			logger.info("Loading " + fileName);
+			MindMapNode root = map.loadTree(new Tools.FileReaderCreator(file),
+					MapAdapter.sDontAskInstance);
+			map.setRoot(root);
+			mapFeedback.invokeHooksRecursively(root, map);
+			mapFeedback.getActionRegistry().registerFilter(this);
+			logger.info("Loading " + fileName + ". Done.");
+		}
 		mPassword = pPassword;
-		mMapFeedback = new ExtendedMapFeedbackImpl();
-		mMap = new MindMapMapModel(mMapFeedback);
-		mMapFeedback.setMap(mMap);
-		mMap.setFile(pFile);
-		logger.info("Loading " + pFile);
-		MindMapNode root = mMap.loadTree(new Tools.FileReaderCreator(pFile),
-				MapAdapter.sDontAskInstance);
-		mMap.setRoot(root);
-		mMapFeedback.invokeHooksRecursively(root, mMap);
-		logger.info("Loading " + pFile + ". Done.");
 		logger.info("Start server...");
 		try {
 			mServer = new ServerSocket(pPort);
@@ -190,11 +208,9 @@ public class StandaloneMindMapMaster extends SocketMaster {
 			mListener.start();
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
-			// FIXME: Restart or what should be done here?
 			System.exit(1);
 			return;
 		}
-		registerFilter();
 		logger.info("Starting server. Done.");
 	}
 
@@ -206,7 +222,7 @@ public class StandaloneMindMapMaster extends SocketMaster {
 	public static void main(String[] args) throws XMLParseException,
 			IOException {
 		StandaloneMindMapMaster master = new StandaloneMindMapMaster(
-				new FreeMindMainMock(), new File("/tmp/bla.mm"), "aa", 9001);
+				new FreeMindMainMock(), new File("/tmp/"), "aa", 9001);
 
 	}
 
@@ -217,7 +233,6 @@ public class StandaloneMindMapMaster extends SocketMaster {
 	 */
 	@Override
 	protected void setTitle() {
-		logger.info("Set title to " + getUsers());
 	}
-
+	
 }
