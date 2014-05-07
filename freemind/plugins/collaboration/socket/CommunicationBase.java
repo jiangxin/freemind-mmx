@@ -44,6 +44,10 @@ public abstract class CommunicationBase extends TerminateableThread {
 	/**
 	 * 
 	 */
+	private static final int TIMEOUT_FOR_READ_ERROR_IN_MS = 30000;
+	/**
+	 * 
+	 */
 	private static final String STRING_CONTINUATION_SUFFIX = "<cont>";
 	protected Socket mSocket;
 
@@ -111,11 +115,43 @@ public abstract class CommunicationBase extends TerminateableThread {
 		return false;
 	}
 
+	boolean mConnectionErrorOccuredEarlier = false;
+	long mFirstErrorOnConnection = 0l;
+	boolean mTerminateSent = false;
+	
 	public boolean processAction() throws Exception {
 		boolean didSomething = false;
 		try {
 			// Non blocking!!
-			String text = in.readUTF();
+			String text="";
+			try {
+				text = in.readUTF();
+				mConnectionErrorOccuredEarlier = false;
+			} catch (java.io.EOFException e) {
+				freemind.main.Resources.getInstance().logException(e);
+				if(mConnectionErrorOccuredEarlier) {
+					// already lost earlier. check time
+					if(System.currentTimeMillis() - mFirstErrorOnConnection > TIMEOUT_FOR_READ_ERROR_IN_MS) {
+						if (!mTerminateSent) {
+							new Thread(new Runnable() {
+								public void run() {
+									// 30sec. nothing. break
+									try {
+										terminateSocket();
+									} catch (IOException e) {
+										freemind.main.Resources.getInstance().logException(e);
+									}
+								}
+							}).start();
+							mTerminateSent = true;
+							return false;
+						}
+					}
+				} else {
+					mConnectionErrorOccuredEarlier = true;
+					mFirstErrorOnConnection = System.currentTimeMillis();
+				}
+			}
 			if (text.endsWith(STRING_CONTINUATION_SUFFIX)) {
 				mCurrentCommand.append(text.substring(0, text.length()
 						- STRING_CONTINUATION_SUFFIX.length()));
@@ -185,6 +221,8 @@ public abstract class CommunicationBase extends TerminateableThread {
 
 	int mCounter = 1;
 
+	public abstract void terminateSocket() throws IOException;
+	
 	public abstract void processCommand(CollaborationActionBase command)
 			throws Exception;
 

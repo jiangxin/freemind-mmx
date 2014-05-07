@@ -51,7 +51,7 @@ import freemind.modes.mindmapmode.MindMapMapModel;
 public class StandaloneMindMapMaster extends SocketMaster {
 
 	private ServerSocket mServer;
-	private MasterThread mListener;
+	private MasterThread mMasterThread;
 	private FreeMindMainMock mFreeMindMain;
 
 	private class MasterThread extends TerminateableThread {
@@ -204,8 +204,8 @@ public class StandaloneMindMapMaster extends SocketMaster {
 		try {
 			mServer = new ServerSocket(pPort);
 			mServer.setSoTimeout(SOCKET_TIMEOUT_IN_MILLIES);
-			mListener = new MasterThread();
-			mListener.start();
+			mMasterThread = new MasterThread();
+			mMasterThread.start();
 		} catch (Exception e) {
 			freemind.main.Resources.getInstance().logException(e);
 			System.exit(1);
@@ -233,6 +233,15 @@ public class StandaloneMindMapMaster extends SocketMaster {
 	 */
 	@Override
 	protected void setTitle() {
+	}
+	
+	public void terminate() {
+		mMasterThread.commitSuicide();
+		try {
+			mServer.close();
+		} catch (IOException e) {
+			freemind.main.Resources.getInstance().logException(e);
+		}
 	}
 	
 }
