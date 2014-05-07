@@ -20,7 +20,6 @@
 
 package plugins.collaboration.socket;
 
-import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -41,14 +40,11 @@ import javax.swing.AbstractAction;
 import javax.swing.AbstractListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 
 import plugins.collaboration.socket.SocketBasics.UnableToGetLockException;
 import freemind.common.OptionalDontShowMeAgainDialog;
@@ -204,9 +200,9 @@ public class ClientCommunication extends CommunicationBase {
 					terminateSocketWithGoodbye();
 				}};
 			Tools.addEscapeActionToDialog(mapChooserDialog, cancelAction);
-			final JList<String> mapList = new JList<String>();
+			final JList mapList = new JList();
 			mapList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			mapList.setModel(new AbstractListModel<String>() {
+			mapList.setModel(new AbstractListModel() {
 				
 				@Override
 				public int getSize() {
@@ -214,7 +210,7 @@ public class ClientCommunication extends CommunicationBase {
 				}
 				
 				@Override
-				public String getElementAt(int pIndex) {
+				public Object getElementAt(int pIndex) {
 					return collOffers.getCollaborationMapOffer(pIndex).getMap();
 				}});
 			AbstractAction okAction = new AbstractAction() {
