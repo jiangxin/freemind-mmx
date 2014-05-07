@@ -28,13 +28,11 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
 import plugins.collaboration.socket.CommunicationBase;
 import plugins.collaboration.socket.MindMapMaster;
-import plugins.collaboration.socket.SocketConnectionHook;
 import plugins.collaboration.socket.StandaloneMindMapMaster;
 import freemind.controller.actions.generated.instance.CollaborationActionBase;
 import freemind.controller.actions.generated.instance.CollaborationGetOffers;
@@ -43,6 +41,7 @@ import freemind.controller.actions.generated.instance.CollaborationHello;
 import freemind.controller.actions.generated.instance.CollaborationMapOffer;
 import freemind.controller.actions.generated.instance.CollaborationOffers;
 import freemind.controller.actions.generated.instance.CollaborationReceiveLock;
+import freemind.controller.actions.generated.instance.CollaborationRequireLock;
 import freemind.controller.actions.generated.instance.CollaborationTransaction;
 import freemind.controller.actions.generated.instance.CollaborationUnableToLock;
 import freemind.controller.actions.generated.instance.CollaborationUserInformation;
@@ -50,14 +49,12 @@ import freemind.controller.actions.generated.instance.CollaborationWelcome;
 import freemind.controller.actions.generated.instance.CollaborationWhoAreYou;
 import freemind.controller.actions.generated.instance.CollaborationWrongCredentials;
 import freemind.controller.actions.generated.instance.CollaborationWrongMap;
-import freemind.extensions.NodeHookAdapter;
-import freemind.extensions.PermanentNodeHook;
+import freemind.controller.actions.generated.instance.EditNoteToNodeAction;
 import freemind.main.Tools;
 import freemind.modes.ExtendedMapFeedback;
 import freemind.modes.ExtendedMapFeedbackImpl;
 import freemind.modes.MapAdapter;
 import freemind.modes.NodeAdapter;
-import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 
@@ -82,9 +79,9 @@ public class CollaborationTestClient extends CommunicationBase {
 	 */
 	private static final int PORT = 9001;
 
-	private static final String INITIAL_MAP = "<map>" + "<node TEXT='ROOT'>"
-			+ "<node TEXT='FormatMe'>" + "<node TEXT='Child1'/>"
-			+ "<node TEXT='Child2'/>" + "<node TEXT='Child3'/>" + "</node>"
+	private static final String INITIAL_MAP = "<map>" + "<node ID='1' TEXT='ROOT'>"
+			+ "<node ID='2' TEXT='FormatMe'>" + "<node ID='3' TEXT='Child1'/>"
+			+ "<node ID='4' TEXT='Child2'/>" + "<node ID='5' TEXT='Child3'/>" + "</node>"
 			+ "</node>" + "</map>";
 
 	/**
@@ -104,21 +101,44 @@ public class CollaborationTestClient extends CommunicationBase {
 
 		Socket socket = new Socket("localhost", PORT);
 		socket.setSoTimeout(MindMapMaster.SOCKET_TIMEOUT_IN_MILLIES);
+		ExtendedMapFeedbackImpl mapFeedback = new ExtendedMapFeedbackImpl();
 		CollaborationTestClient testClient = new CollaborationTestClient(
-				"TestClient", socket, new ExtendedMapFeedbackImpl(),
-				new DataOutputStream(socket.getOutputStream()),
-				new DataInputStream(socket.getInputStream()));
+				"TestClient", socket, mapFeedback, new DataOutputStream(
+						socket.getOutputStream()), new DataInputStream(
+						socket.getInputStream()));
 		testClient.start();
-		while(testClient.getCurrentState() != STATE_IDLE) {
+		while (testClient.getCurrentState() != STATE_IDLE) {
+			Thread.sleep(100);
+		}
+		CollaborationRequireLock rl = new CollaborationRequireLock();
+		testClient.setCurrentState(STATE_WAIT_FOR_LOCK);
+		testClient.send(rl);
+		while (testClient.getCurrentState() != STATE_LOCK_RECEIVED) {
+			Thread.sleep(100);
+		}
+		EditNoteToNodeAction action = mapFeedback
+				.getActorFactory()
+				.getChangeNoteTextActor()
+				.createEditNoteToNodeAction(mapFeedback.getMap().getRootNode(),
+						"blubber");
+		CollaborationTransaction t = new CollaborationTransaction();
+		String marshall = Tools.marshall(action);
+		t.setDoAction(marshall);
+		t.setId(testClient.mLockId);
+		t.setUndoAction(marshall);
+		testClient.send(t);
+		while (testClient.getCurrentState() != STATE_IDLE) {
 			Thread.sleep(100);
 		}
 		testClient.terminateSocket();
 		master.terminate();
-		
+
 		System.exit(0);
 	}
 
 	private static FreeMindMainMock sFreeMindMain;
+
+	private String mLockId;
 
 	/**
 	 * @param pName
@@ -206,7 +226,9 @@ public class CollaborationTestClient extends CommunicationBase {
 				printWrongState(pCommand);
 			}
 			CollaborationWelcome collWelcome = (CollaborationWelcome) pCommand;
-			createNewMap(collWelcome.getMap());
+			String map = collWelcome.getMap();
+			logger.info("Received map: " + map);
+			createNewMap(map);
 			setCurrentState(STATE_IDLE);
 			commandHandled = true;
 		}
@@ -232,6 +254,8 @@ public class CollaborationTestClient extends CommunicationBase {
 		}
 		if (pCommand instanceof CollaborationTransaction) {
 			CollaborationTransaction trans = (CollaborationTransaction) pCommand;
+			logger.info("Transaction received: " + trans.getDoAction());
+			setCurrentState(STATE_IDLE);
 			commandHandled = true;
 		}
 		if (pCommand instanceof CollaborationReceiveLock) {
@@ -239,6 +263,8 @@ public class CollaborationTestClient extends CommunicationBase {
 				printWrongState(pCommand);
 			}
 			CollaborationReceiveLock lockReceived = (CollaborationReceiveLock) pCommand;
+			mLockId = lockReceived.getId();
+			logger.info("Lock received: " + mLockId);
 			setCurrentState(STATE_LOCK_RECEIVED);
 			commandHandled = true;
 		}
