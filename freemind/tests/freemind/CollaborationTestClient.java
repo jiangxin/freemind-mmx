@@ -155,10 +155,9 @@ public abstract class CollaborationTestClient extends CommunicationBase {
 			if (getCurrentState() != STATE_WAIT_FOR_WELCOME) {
 				printWrongState(pCommand);
 			}
+			reactOnWrongMap();
 			// Over and out.
 			terminateSocket();
-			// Display error message!
-			logger.severe("Wrong map");
 			commandHandled = true;
 		}
 		if (pCommand instanceof CollaborationTransaction) {
@@ -183,6 +182,11 @@ public abstract class CollaborationTestClient extends CommunicationBase {
 			logger.warning("Received unknown message of type "
 					+ pCommand.getClass());
 		}
+	}
+
+	public void reactOnWrongMap() {
+		// Display error message!
+		logger.severe("Wrong map");
 	}
 
 

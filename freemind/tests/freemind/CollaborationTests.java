@@ -203,7 +203,7 @@ public class CollaborationTests extends FreeMindTestBase {
 		CollaborationTestClient testClient = new CreateNewMapClient(
 				"TestClient", socket, mapFeedback, new DataOutputStream(
 						socket.getOutputStream()), new DataInputStream(
-								socket.getInputStream()));
+								socket.getInputStream()), PUBLISHED_MAP_NAME);
 		// create map in memory and read it:
 		testClient.createNewMap(INITIAL_MAP);
 		// run
@@ -220,12 +220,48 @@ public class CollaborationTests extends FreeMindTestBase {
 		
 	}
 	
+	public void testPublishExistingMapWrongName() throws Exception {
+		StandaloneMindMapMaster master = new StandaloneMindMapMaster(
+				getFrame(), new File(PATHNAME), PASSWORD, PORT);
+		
+		Socket socket = new Socket("localhost", PORT);
+		socket.setSoTimeout(MindMapMaster.SOCKET_TIMEOUT_IN_MILLIES);
+		ExtendedMapFeedbackImpl mapFeedback = new ExtendedMapFeedbackImpl();
+		CreateNewMapClient testClient = new CreateNewMapClient(
+				"TestClient", socket, mapFeedback, new DataOutputStream(
+						socket.getOutputStream()), new DataInputStream(
+								socket.getInputStream()), "../file_at_wrong_position.mm") {
+
+			public void reactOnWrongMap() {
+				super.reactOnWrongMap();
+				mWrongMap  = true;
+			};
+		};
+		// create map in memory and read it:
+		testClient.createNewMap(INITIAL_MAP);
+		// run
+		testClient.start();
+		// error should occur.
+		int timeout = 50;
+		while (!testClient.mWrongMap && --timeout>0) {
+			Thread.sleep(100);
+		}
+		assertTrue("wrong map sent", testClient.mWrongMap);
+		testClient.terminateSocket();
+		master.terminate();
+		
+	}
+	
 	public class CreateNewMapClient extends CollaborationTestClient {
+
+		public boolean mWrongMap = false;
+		private String mPublishMapName;
 
 		public CreateNewMapClient(String pName, Socket pClient,
 				ExtendedMapFeedback pMindMapController, DataOutputStream pOut,
-				DataInputStream pIn) {
+				DataInputStream pIn, String pPublishMapName) {
 			super(pName, pClient, pMindMapController, pOut, pIn);
+			mPublishMapName = pPublishMapName;
 		}
 
 		public void reactOnWhoAreYou(CollaborationWhoAreYou whoAre) {
@@ -234,7 +270,7 @@ public class CollaborationTests extends FreeMindTestBase {
 			publishCommand.setUserId(Tools.getUserName());
 			publishCommand.setPassword(PASSWORD);
 			MindMap map = mController.getMap();
-			publishCommand.setMapName(PUBLISHED_MAP_NAME);
+			publishCommand.setMapName(mPublishMapName);
 			StringWriter writer = new StringWriter();
 			try {
 				map.getXml(writer);

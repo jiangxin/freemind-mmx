@@ -124,9 +124,16 @@ public class ServerCommunication extends CommunicationBase {
 				// verify password:
 				if (mMindMapMaster.getPassword().equals(
 						commandPublish.getPassword())) {
-					// check for unique name
 					String map = commandPublish.getMapName();
-					if(mMindMapMaster.getFileMap().containsKey(map)) {
+					File baseFile = mMindMapMaster.getBaseFile();
+					File file = new File(baseFile, map);
+					// check for correct name
+					boolean notCorrectName = false;
+					if(map.contains("/") || map.contains("\\")) {
+						notCorrectName = true;
+					}
+					// check for unique name
+					if(mMindMapMaster.getFileMap().containsKey(map) || notCorrectName) {
 						// Send error message
 						CollaborationWrongMap wrongMessage = new CollaborationWrongMap();
 						try {
@@ -137,13 +144,13 @@ public class ServerCommunication extends CommunicationBase {
 					}
 					logger.info("New map " + map + " published.");
 					// create new controller and load map
-					File baseFile = mMindMapMaster.getBaseFile();
+					
 					ExtendedMapFeedback mapFeedback = mMindMapMaster.createMapOnServer(
 							map,
 							new Tools.StringReaderCreator(commandPublish
 									.getMap()), baseFile);
 					// save:
-					mapFeedback.getMap().save(new File(baseFile, map));
+					mapFeedback.getMap().save(file);
 					// publish map to others? No other could be present, so don't send a map.
 					setCurrentState(STATE_IDLE);
 				} else {
