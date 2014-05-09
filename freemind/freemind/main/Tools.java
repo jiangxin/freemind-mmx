@@ -114,10 +114,10 @@ import freemind.common.UnicodeReader;
 import freemind.common.XmlBindingTools;
 import freemind.controller.actions.generated.instance.CompoundAction;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.main.Tools.ReaderCreator;
 import freemind.modes.EdgeAdapter;
 import freemind.modes.MindIcon;
 import freemind.modes.MindMapNode;
-import freemind.modes.ModeController.ReaderCreator;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.view.mindmapview.NodeView;
 
@@ -1440,7 +1440,7 @@ public class Tools {
 		}
 	}
 
-	public static class FileReaderCreator implements ReaderCreator {
+	public static class FileReaderCreator implements Tools.ReaderCreator {
 		private final File mFile;
 	
 		public FileReaderCreator(File pFile) {
@@ -1454,6 +1454,27 @@ public class Tools {
 		public String toString() {
 			return mFile.getName();
 		}
+	}
+
+	public static class StringReaderCreator implements Tools.ReaderCreator {
+	
+		private final String mString;
+	
+		public StringReaderCreator(String pString) {
+			mString = pString;
+		}
+	
+		public Reader createReader() throws FileNotFoundException {
+			return new StringReader(mString);
+		}
+	
+		public String toString() {
+			return mString;
+		}
+	}
+
+	public static interface ReaderCreator {
+		Reader createReader() throws FileNotFoundException;
 	}
 
 	/**

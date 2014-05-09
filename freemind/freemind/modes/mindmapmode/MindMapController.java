@@ -766,24 +766,7 @@ public class MindMapController extends ControllerAdapter implements
 		return loadTree(new Tools.FileReaderCreator(pFile));
 	}
 
-	public static class StringReaderCreator implements ReaderCreator {
-
-		private final String mString;
-
-		public StringReaderCreator(String pString) {
-			mString = pString;
-		}
-
-		public Reader createReader() throws FileNotFoundException {
-			return new StringReader(mString);
-		}
-
-		public String toString() {
-			return mString;
-		}
-	}
-
-	public MindMapNode loadTree(ReaderCreator pReaderCreator)
+	public MindMapNode loadTree(Tools.ReaderCreator pReaderCreator)
 			throws XMLParseException, IOException {
 		return getMap().loadTree(pReaderCreator, new AskUserBeforeUpdateCallback() {
 			

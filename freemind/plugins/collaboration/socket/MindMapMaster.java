@@ -304,4 +304,12 @@ public class MindMapMaster extends SocketMaster implements PermanentNodeHook,
 	public void saveHtml(Writer pFileout) {
 	}
 
+	/* (non-Javadoc)
+	 * @see plugins.collaboration.socket.SocketMaster#getBaseFile()
+	 */
+	@Override
+	protected File getBaseFile() {
+		throw new IllegalArgumentException("No base file here.");
+	}
+
 }

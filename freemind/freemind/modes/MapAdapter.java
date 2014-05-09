@@ -50,8 +50,8 @@ import freemind.controller.filter.util.SortedMapListModel;
 import freemind.main.FreeMind;
 import freemind.main.Resources;
 import freemind.main.Tools;
+import freemind.main.Tools.ReaderCreator;
 import freemind.main.XMLParseException;
-import freemind.modes.ModeController.ReaderCreator;
 
 public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 	public static final String MAP_INITIAL_START = "<map version=\"";
@@ -576,7 +576,7 @@ public abstract class MapAdapter extends DefaultTreeModel implements MindMap {
 	}
 	
 	@Override
-	public MindMapNode loadTree(ReaderCreator pReaderCreator,
+	public MindMapNode loadTree(Tools.ReaderCreator pReaderCreator,
 			AskUserBeforeUpdateCallback pAskUserBeforeUpdateCallback) throws XMLParseException, IOException {
 		int versionInfoLength;
 		versionInfoLength = EXPECTED_START_STRINGS[0].length();

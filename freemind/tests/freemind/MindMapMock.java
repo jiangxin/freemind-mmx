@@ -41,6 +41,8 @@ import freemind.controller.filter.Filter;
 import freemind.controller.filter.util.SortedListModel;
 import freemind.controller.filter.util.SortedMapListModel;
 import freemind.extensions.NodeHook;
+import freemind.main.Tools;
+import freemind.main.Tools.ReaderCreator;
 import freemind.main.XMLParseException;
 import freemind.modes.ArrowLinkAdapter;
 import freemind.modes.ArrowLinkTarget;
@@ -51,7 +53,6 @@ import freemind.modes.MapFeedbackAdapter;
 import freemind.modes.MindMap;
 import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.MindMapNode;
-import freemind.modes.ModeController.ReaderCreator;
 import freemind.modes.NodeAdapter;
 
 /** */
@@ -267,7 +268,7 @@ public class MindMapMock implements MindMap {
 	 * @see freemind.modes.MindMap#loadTree(freemind.modes.ModeController.ReaderCreator, freemind.modes.MapAdapter.AskUserBeforeUpdateCallback)
 	 */
 	@Override
-	public MindMapNode loadTree(ReaderCreator pReaderCreator, AskUserBeforeUpdateCallback pAskUserBeforeUpdateCallback) throws XMLParseException,
+	public MindMapNode loadTree(Tools.ReaderCreator pReaderCreator, AskUserBeforeUpdateCallback pAskUserBeforeUpdateCallback) throws XMLParseException,
 			IOException {
 		return null;
 	}

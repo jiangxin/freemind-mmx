@@ -31,6 +31,7 @@ import java.util.Vector;
 import freemind.controller.actions.generated.instance.Pattern;
 import freemind.main.FreeMind;
 import freemind.main.Tools;
+import freemind.main.Tools.StringReaderCreator;
 import freemind.modes.EdgeAdapter;
 import freemind.modes.ExtendedMapFeedbackImpl;
 import freemind.modes.MapAdapter;
@@ -40,7 +41,6 @@ import freemind.modes.MindMapLink;
 import freemind.modes.MindMapNode;
 import freemind.modes.StylePatternFactory;
 import freemind.modes.attributes.Attribute;
-import freemind.modes.mindmapmode.MindMapController.StringReaderCreator;
 import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 
@@ -64,7 +64,7 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		ExtendedMapFeedbackImpl mapFeedback = new ExtendedMapFeedbackImpl();
 		final MindMapMapModel mMap = new MindMapMapModel(mapFeedback);
 		mapFeedback.setMap(mMap);
-		StringReaderCreator readerCreator = new StringReaderCreator(INITIAL_MAP);
+		Tools.StringReaderCreator readerCreator = new Tools.StringReaderCreator(INITIAL_MAP);
 		MindMapNode root = mMap.loadTree(readerCreator,
 				MapAdapter.sDontAskInstance);
 		mMap.setRoot(root);
@@ -97,7 +97,7 @@ public class StandaloneMapTests extends FreeMindTestBase {
 		ExtendedMapFeedbackImpl mapFeedback = new ExtendedMapFeedbackImpl();
 		final MindMapMapModel mMap = new MindMapMapModel(mapFeedback);
 		mapFeedback.setMap(mMap);
-		StringReaderCreator readerCreator = new StringReaderCreator(INITIAL_MAP);
+		Tools.StringReaderCreator readerCreator = new Tools.StringReaderCreator(INITIAL_MAP);
 		MindMapNode root = mMap.loadTree(readerCreator,
 				MapAdapter.sDontAskInstance);
 		mMap.setRoot(root);

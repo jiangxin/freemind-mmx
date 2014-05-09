@@ -62,7 +62,6 @@ import freemind.modes.MapAdapter;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
 import freemind.modes.NodeAdapter;
-import freemind.modes.mindmapmode.MindMapController;
 import freemind.modes.mindmapmode.MindMapNodeModel;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
@@ -270,7 +269,7 @@ public class PasteActor extends XmlActorAdapter {
 				// logger.info("Pasting " + mapContent);
 				try {
 					MindMapNode node = getExMapFeedback().getMap().loadTree(
-									new MindMapController.StringReaderCreator(
+									new Tools.StringReaderCreator(
 											mapContent), MapAdapter.sDontAskInstance);
 					for (ListIterator i = node.childrenUnfolded(); i.hasNext();) {
 						MindMapNodeModel importNode = (MindMapNodeModel) i

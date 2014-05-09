@@ -24,6 +24,7 @@ package plugins.collaboration.socket;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.net.Socket;
@@ -36,6 +37,7 @@ import freemind.controller.actions.generated.instance.CollaborationGoodbye;
 import freemind.controller.actions.generated.instance.CollaborationHello;
 import freemind.controller.actions.generated.instance.CollaborationMapOffer;
 import freemind.controller.actions.generated.instance.CollaborationOffers;
+import freemind.controller.actions.generated.instance.CollaborationPublishNewMap;
 import freemind.controller.actions.generated.instance.CollaborationReceiveLock;
 import freemind.controller.actions.generated.instance.CollaborationRequireLock;
 import freemind.controller.actions.generated.instance.CollaborationTransaction;
@@ -110,6 +112,50 @@ public class ServerCommunication extends CommunicationBase {
 					}
 				}
 			}
+		}
+		if(pCommand instanceof CollaborationPublishNewMap) {
+			CollaborationPublishNewMap commandPublish = (CollaborationPublishNewMap) pCommand;
+			if (getCurrentState() != STATE_WAIT_FOR_GET_OFFERS) {
+				printWrongState(pCommand);
+			} else {
+				// we got a new map to be published on the server
+				commandHandled = true;
+				setName(commandPublish.getUserId());
+				// verify password:
+				if (mMindMapMaster.getPassword().equals(
+						commandPublish.getPassword())) {
+					// check for unique name
+					String map = commandPublish.getMapName();
+					if(mMindMapMaster.getFileMap().containsKey(map)) {
+						// Send error message
+						CollaborationWrongMap wrongMessage = new CollaborationWrongMap();
+						try {
+							send(wrongMessage);
+						} finally {
+							terminateSocket();
+						}
+					}
+					logger.info("New map " + map + " published.");
+					// create new controller and load map
+					File baseFile = mMindMapMaster.getBaseFile();
+					ExtendedMapFeedback mapFeedback = mMindMapMaster.createMapOnServer(
+							map,
+							new Tools.StringReaderCreator(commandPublish
+									.getMap()), baseFile);
+					// save:
+					mapFeedback.getMap().save(new File(baseFile, map));
+					// publish map to others? No other could be present, so don't send a map.
+					setCurrentState(STATE_IDLE);
+				} else {
+					// Send error message
+					CollaborationWrongCredentials wrongMessage = new CollaborationWrongCredentials();
+					try {
+						send(wrongMessage);
+					} finally {
+						terminateSocket();
+					}
+				}
+			}			
 		}
 		// FIXME: Security check here!
 		if (pCommand instanceof CollaborationHello) {

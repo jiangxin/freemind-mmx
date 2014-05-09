@@ -45,6 +45,7 @@ import freemind.common.TextTranslator;
 import freemind.controller.actions.generated.instance.Pattern;
 import freemind.controller.actions.generated.instance.WindowConfigurationStorage;
 import freemind.main.Tools;
+import freemind.main.Tools.StringReaderCreator;
 import freemind.main.XMLParseException;
 import freemind.modes.ExtendedMapFeedbackAdapter;
 import freemind.modes.MapAdapter;
@@ -52,7 +53,6 @@ import freemind.modes.MindMap;
 import freemind.modes.MindMapNode;
 import freemind.modes.StylePatternFactory;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.MindMapController.StringReaderCreator;
 import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.dialogs.StylePatternFrame;
 import freemind.modes.mindmapmode.dialogs.StylePatternFrame.StylePatternFrameType;
@@ -220,7 +220,7 @@ public class ChooseFormatPopupDialog extends JDialog implements TextTranslator,
 			mDemoNodeMapFeedback = new DemoMapFeedback();
 			final MindMapMapModel mMap = new MindMapMapModel(mDemoNodeMapFeedback);
 			mDemoNodeMapFeedback.mMap = mMap;
-			StringReaderCreator readerCreator = new StringReaderCreator(
+			Tools.StringReaderCreator readerCreator = new Tools.StringReaderCreator(
 					mController.getText("accessories/plugins/dialogs/ChooseFormatPopupDialog.DemoNode"));
 			try {
 				MindMapNode root = mMap.loadTree(readerCreator,

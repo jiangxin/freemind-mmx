@@ -33,8 +33,9 @@ import javax.swing.tree.TreeNode;
 
 import freemind.controller.filter.Filter;
 import freemind.controller.filter.util.SortedListModel;
+import freemind.main.Tools;
+import freemind.main.Tools.ReaderCreator;
 import freemind.main.XMLParseException;
-import freemind.modes.ModeController.ReaderCreator;
 
 public interface MindMap extends TreeModel {
 
@@ -204,7 +205,7 @@ public interface MindMap extends TreeModel {
 
 	ArrowLinkTarget createArrowLinkTarget(NodeAdapter source, NodeAdapter target);
 
-	public abstract MindMapNode loadTree(ReaderCreator pReaderCreator, AskUserBeforeUpdateCallback pAskUserBeforeUpdateCallback)
+	public abstract MindMapNode loadTree(Tools.ReaderCreator pReaderCreator, AskUserBeforeUpdateCallback pAskUserBeforeUpdateCallback)
 			throws XMLParseException, IOException;
 
 	public abstract MindMapNode createNodeTreeFromXml(Reader pReader, HashMap pIDToTarget)

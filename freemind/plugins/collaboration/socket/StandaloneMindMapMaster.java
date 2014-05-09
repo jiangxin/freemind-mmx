@@ -53,6 +53,7 @@ public class StandaloneMindMapMaster extends SocketMaster {
 	private ServerSocket mServer;
 	private MasterThread mMasterThread;
 	private FreeMindMainMock mFreeMindMain;
+	private File mBaseFilePath;
 
 	private class MasterThread extends TerminateableThread {
 
@@ -174,6 +175,7 @@ public class StandaloneMindMapMaster extends SocketMaster {
 	public StandaloneMindMapMaster(FreeMindMainMock pFreeMindMain, File pFilePath,
 			String pPassword, int pPort) throws XMLParseException, IOException {
 		mFreeMindMain = pFreeMindMain;
+		mBaseFilePath = pFilePath;
 		String[] fileList = pFilePath.list(new FilenameFilter() {
 
 			@Override
@@ -183,20 +185,10 @@ public class StandaloneMindMapMaster extends SocketMaster {
 		mFileMap = new HashMap<String, ExtendedMapFeedback>();
 		for (int i = 0; i < fileList.length; i++) {
 			String fileName = fileList[i];
-			ExtendedMapFeedbackImpl mapFeedback = new ExtendedMapFeedbackImpl();
-			mFileMap.put(fileName, mapFeedback);
-			mConnections.put(mapFeedback, new SessionData());
-
-			MindMapMapModel map = new MindMapMapModel(mapFeedback);
-			mapFeedback.setMap(map); 
 			File file = new File(pFilePath, fileName);
-			map.setFile(file);
 			logger.info("Loading " + fileName);
-			MindMapNode root = map.loadTree(new Tools.FileReaderCreator(file),
-					MapAdapter.sDontAskInstance);
-			map.setRoot(root);
-			mapFeedback.invokeHooksRecursively(root, map);
-			mapFeedback.getActionRegistry().registerFilter(this);
+			Tools.FileReaderCreator readerCreator = new Tools.FileReaderCreator(file);
+			createMapOnServer(fileName, readerCreator, file);
 			logger.info("Loading " + fileName + ". Done.");
 		}
 		mPassword = pPassword;
@@ -214,6 +206,11 @@ public class StandaloneMindMapMaster extends SocketMaster {
 		logger.info("Starting server. Done.");
 	}
 
+	@Override
+	protected File getBaseFile() {
+		return mBaseFilePath;
+	}
+	
 	/**
 	 * @param args
 	 * @throws IOException

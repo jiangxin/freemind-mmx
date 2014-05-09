@@ -20,12 +20,18 @@
 
 package plugins.collaboration.socket;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Vector;
 
 import freemind.controller.actions.generated.instance.CollaborationUserInformation;
 import freemind.main.Tools;
 import freemind.modes.ExtendedMapFeedback;
+import freemind.modes.ExtendedMapFeedbackImpl;
+import freemind.modes.MapAdapter;
+import freemind.modes.MindMapNode;
+import freemind.modes.mindmapmode.MindMapMapModel;
 import freemind.modes.mindmapmode.actions.xml.ActionPair;
 
 /**
@@ -63,6 +69,11 @@ public abstract class SocketMaster extends SocketBasics {
 	 * Updates the title of the dialog or display, is called, when changes occur.
 	 */
 	protected abstract void setTitle();
+	
+	/**
+	 * @return the path to where all maps are stored.
+	 */
+	protected abstract File getBaseFile();
 
 	public Integer getRole() {
 		return ROLE_MASTER;
@@ -214,6 +225,27 @@ public abstract class SocketMaster extends SocketBasics {
 			mConnections.get(pController).mConnections.addElement(pServerCommunication);
 		}		
 	}
+
+	public ExtendedMapFeedback createMapOnServer(String fileName,
+			Tools.ReaderCreator readerCreator, File pFile) throws IOException {
+		ExtendedMapFeedbackImpl mapFeedback = new ExtendedMapFeedbackImpl();
+		mFileMap.put(fileName, mapFeedback);
+		synchronized (mConnections) {
+			mConnections.put(mapFeedback, new SessionData());
+		}
+
+		MindMapMapModel map = new MindMapMapModel(mapFeedback);
+		mapFeedback.setMap(map); 
+		MindMapNode root = map.loadTree(readerCreator,
+				MapAdapter.sDontAskInstance);
+		map.setRoot(root);
+		mapFeedback.invokeHooksRecursively(root, map);
+		mapFeedback.getActionRegistry().registerFilter(this);
+		map.setFile(pFile);
+		
+		return mapFeedback;
+	}
+
 
 
 	

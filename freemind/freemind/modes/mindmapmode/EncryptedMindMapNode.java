@@ -30,6 +30,7 @@ import javax.swing.ImageIcon;
 import javax.swing.tree.MutableTreeNode;
 
 import freemind.main.HtmlTools;
+import freemind.main.Tools;
 import freemind.main.Tools.SingleDesEncrypter;
 import freemind.main.XMLElement;
 import freemind.modes.MapAdapter;
@@ -145,7 +146,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 	private MindMapNode getNodeFromXml(String childXml) throws IOException {
 		// the loadTree method performs an automatical version update.
 		MindMapNode node = getMap().loadTree(
-				new MindMapController.StringReaderCreator(childXml), MapAdapter.sDontAskInstance);
+				new Tools.StringReaderCreator(childXml), MapAdapter.sDontAskInstance);
 		return node;
 	}
 

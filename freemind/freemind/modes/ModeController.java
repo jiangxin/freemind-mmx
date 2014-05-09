@@ -26,7 +26,6 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.Reader;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
@@ -75,10 +74,6 @@ public interface ModeController extends TextTranslator, MapFeedback,
 	 * Opens a link in * the opened map * another map * another file.
 	 */
 	void loadURL(String relative);
-
-	public interface ReaderCreator {
-		Reader createReader() throws FileNotFoundException;
-	}
 
 	boolean save(File file);
 

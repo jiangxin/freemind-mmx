@@ -73,15 +73,15 @@ public abstract class CommunicationBase extends TerminateableThread {
 	protected DataInputStream in;
 	protected static final int ROUNDTRIP_ROUNDS = 200;
 	protected static final int ROUNDTRIP_TIMEOUT = 20000;
-	protected static final int STATE_IDLE = 0;
-	protected static final int STATE_WAIT_FOR_HELLO = 1;
-	protected static final int STATE_WAIT_FOR_COMMAND = 2;
-	protected static final int STATE_WAIT_FOR_WHO_ARE_YOU = 3;
-	protected static final int STATE_WAIT_FOR_GET_OFFERS = 4;
-	protected static final int STATE_WAIT_FOR_OFFER = 5;
-	protected static final int STATE_WAIT_FOR_WELCOME = 6;
-	protected static final int STATE_WAIT_FOR_LOCK = 7;
-	protected static final int STATE_LOCK_RECEIVED = 8;
+	public static final int STATE_IDLE = 0;
+	public static final int STATE_WAIT_FOR_HELLO = 1;
+	public static final int STATE_WAIT_FOR_COMMAND = 2;
+	public static final int STATE_WAIT_FOR_WHO_ARE_YOU = 3;
+	public static final int STATE_WAIT_FOR_GET_OFFERS = 4;
+	public static final int STATE_WAIT_FOR_OFFER = 5;
+	public static final int STATE_WAIT_FOR_WELCOME = 6;
+	public static final int STATE_WAIT_FOR_LOCK = 7;
+	public static final int STATE_LOCK_RECEIVED = 8;
 	private static final int MAX_STRING_LENGTH_TO_SEND = 65500;
 
 	private int mCurrentState = STATE_IDLE;
@@ -226,13 +226,13 @@ public abstract class CommunicationBase extends TerminateableThread {
 	public abstract void processCommand(CollaborationActionBase command)
 			throws Exception;
 
-	protected int getCurrentState() {
+	public int getCurrentState() {
 		synchronized (mCurrentStateMutex) {
 			return mCurrentState;
 		}
 	}
 
-	protected void setCurrentState(int pCurrentState) {
+	public void setCurrentState(int pCurrentState) {
 		synchronized (mCurrentStateMutex) {
 			mCurrentState = pCurrentState;
 		}

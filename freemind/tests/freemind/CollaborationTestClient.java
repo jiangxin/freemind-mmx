@@ -62,83 +62,10 @@ import freemind.modes.mindmapmode.MindMapNodeModel;
  * @author foltin
  * @date 07.05.2014
  */
-public class CollaborationTestClient extends CommunicationBase {
+public abstract class CollaborationTestClient extends CommunicationBase {
 
-	/**
-	 * 
-	 */
-	private static final String FILE = "bla.mm";
 
-	/**
-	 * 
-	 */
-	private static final String PATHNAME = "/tmp/";
-
-	/**
-	 * 
-	 */
-	private static final int PORT = 9001;
-
-	private static final String INITIAL_MAP = "<map>" + "<node ID='1' TEXT='ROOT'>"
-			+ "<node ID='2' TEXT='FormatMe'>" + "<node ID='3' TEXT='Child1'/>"
-			+ "<node ID='4' TEXT='Child2'/>" + "<node ID='5' TEXT='Child3'/>" + "</node>"
-			+ "</node>" + "</map>";
-
-	/**
-	 * 
-	 */
-	private static final String PASSWORD = "aa";
-
-	public static void main(String[] args) throws UnknownHostException,
-			IOException, InterruptedException {
-		sFreeMindMain = new FreeMindMainMock();
-		PrintWriter writer = new PrintWriter(PATHNAME + FILE, "UTF-8");
-		writer.println(INITIAL_MAP);
-		writer.close();
-
-		StandaloneMindMapMaster master = new StandaloneMindMapMaster(
-				sFreeMindMain, new File(PATHNAME), PASSWORD, PORT);
-
-		Socket socket = new Socket("localhost", PORT);
-		socket.setSoTimeout(MindMapMaster.SOCKET_TIMEOUT_IN_MILLIES);
-		ExtendedMapFeedbackImpl mapFeedback = new ExtendedMapFeedbackImpl();
-		CollaborationTestClient testClient = new CollaborationTestClient(
-				"TestClient", socket, mapFeedback, new DataOutputStream(
-						socket.getOutputStream()), new DataInputStream(
-						socket.getInputStream()));
-		testClient.start();
-		while (testClient.getCurrentState() != STATE_IDLE) {
-			Thread.sleep(100);
-		}
-		CollaborationRequireLock rl = new CollaborationRequireLock();
-		testClient.setCurrentState(STATE_WAIT_FOR_LOCK);
-		testClient.send(rl);
-		while (testClient.getCurrentState() != STATE_LOCK_RECEIVED) {
-			Thread.sleep(100);
-		}
-		EditNoteToNodeAction action = mapFeedback
-				.getActorFactory()
-				.getChangeNoteTextActor()
-				.createEditNoteToNodeAction(mapFeedback.getMap().getRootNode(),
-						"blubber");
-		CollaborationTransaction t = new CollaborationTransaction();
-		String marshall = Tools.marshall(action);
-		t.setDoAction(marshall);
-		t.setId(testClient.mLockId);
-		t.setUndoAction(marshall);
-		testClient.send(t);
-		while (testClient.getCurrentState() != STATE_IDLE) {
-			Thread.sleep(100);
-		}
-		testClient.terminateSocket();
-		master.terminate();
-
-		System.exit(0);
-	}
-
-	private static FreeMindMainMock sFreeMindMain;
-
-	private String mLockId;
+	String mLockId;
 
 	/**
 	 * @param pName
@@ -194,13 +121,8 @@ public class CollaborationTestClient extends CommunicationBase {
 				printWrongState(pCommand);
 			}
 			// check server version:
-
-			// send hello:
-			CollaborationGetOffers getOffersCommand = new CollaborationGetOffers();
-			getOffersCommand.setUserId(Tools.getUserName());
-			getOffersCommand.setPassword(PASSWORD);
-			send(getOffersCommand);
-			setCurrentState(STATE_WAIT_FOR_OFFER);
+			CollaborationWhoAreYou whoAre = (CollaborationWhoAreYou) pCommand;
+			reactOnWhoAreYou(whoAre);
 			commandHandled = true;
 		}
 		if (pCommand instanceof CollaborationOffers) {
@@ -208,17 +130,7 @@ public class CollaborationTestClient extends CommunicationBase {
 				printWrongState(pCommand);
 			}
 			final CollaborationOffers collOffers = (CollaborationOffers) pCommand;
-			// now, we have a bundle of different maps to offer to the user
-			for (Iterator it = collOffers.getListCollaborationMapOfferList()
-					.iterator(); it.hasNext();) {
-				CollaborationMapOffer offer = (CollaborationMapOffer) it.next();
-				System.out.println("Map: " + offer.getMap());
-			}
-			// send hello:
-			CollaborationHello helloCommand = new CollaborationHello();
-			helloCommand.setMap(FILE);
-			send(helloCommand);
-			setCurrentState(STATE_WAIT_FOR_WELCOME);
+			reactOnOffers(collOffers);
 			commandHandled = true;
 		}
 		if (pCommand instanceof CollaborationWelcome) {
@@ -226,10 +138,7 @@ public class CollaborationTestClient extends CommunicationBase {
 				printWrongState(pCommand);
 			}
 			CollaborationWelcome collWelcome = (CollaborationWelcome) pCommand;
-			String map = collWelcome.getMap();
-			logger.info("Received map: " + map);
-			createNewMap(map);
-			setCurrentState(STATE_IDLE);
+			reactOnWelcome(collWelcome);
 			commandHandled = true;
 		}
 		if (pCommand instanceof CollaborationWrongCredentials) {
@@ -254,8 +163,7 @@ public class CollaborationTestClient extends CommunicationBase {
 		}
 		if (pCommand instanceof CollaborationTransaction) {
 			CollaborationTransaction trans = (CollaborationTransaction) pCommand;
-			logger.info("Transaction received: " + trans.getDoAction());
-			setCurrentState(STATE_IDLE);
+			reactOnTransaction(trans);
 			commandHandled = true;
 		}
 		if (pCommand instanceof CollaborationReceiveLock) {
@@ -263,9 +171,7 @@ public class CollaborationTestClient extends CommunicationBase {
 				printWrongState(pCommand);
 			}
 			CollaborationReceiveLock lockReceived = (CollaborationReceiveLock) pCommand;
-			mLockId = lockReceived.getId();
-			logger.info("Lock received: " + mLockId);
-			setCurrentState(STATE_LOCK_RECEIVED);
+			reactOnReceiveLock(lockReceived);
 			commandHandled = true;
 		}
 		if (pCommand instanceof CollaborationUnableToLock) {
@@ -279,6 +185,7 @@ public class CollaborationTestClient extends CommunicationBase {
 		}
 	}
 
+
 	void createNewMap(String map) throws IOException {
 		MapAdapter newModel = new MindMapMapModel(mController);
 		((ExtendedMapFeedbackImpl) mController).setMap(newModel);
@@ -291,5 +198,17 @@ public class CollaborationTestClient extends CommunicationBase {
 		rootNode.setMap(newModel);
 		mController.invokeHooksRecursively((NodeAdapter) rootNode, newModel);
 	}
+	
+	public abstract void reactOnReceiveLock(
+			CollaborationReceiveLock lockReceived);
+
+	public abstract void reactOnTransaction(CollaborationTransaction trans);
+
+	public abstract void reactOnWelcome(CollaborationWelcome collWelcome)
+			throws IOException;
+
+	public abstract void reactOnOffers(final CollaborationOffers collOffers);
+
+	public abstract void reactOnWhoAreYou(CollaborationWhoAreYou whoAre);
 
 }
