@@ -161,15 +161,11 @@ public class CollaborationTests extends FreeMindTestBase {
 						socket.getOutputStream()), new DataInputStream(
 						socket.getInputStream()));
 		testClient.start();
-		while (testClient.getCurrentState() != CollaborationTestClient.STATE_IDLE) {
-			Thread.sleep(100);
-		}
+		waitForState(testClient, CollaborationTestClient.STATE_IDLE);
 		CollaborationRequireLock rl = new CollaborationRequireLock();
 		testClient.setCurrentState(CollaborationTestClient.STATE_WAIT_FOR_LOCK);
 		testClient.send(rl);
-		while (testClient.getCurrentState() != CollaborationTestClient.STATE_LOCK_RECEIVED) {
-			Thread.sleep(100);
-		}
+		waitForState(testClient, CollaborationTestClient.STATE_LOCK_RECEIVED);
 		EditNoteToNodeAction action = mapFeedback
 				.getActorFactory()
 				.getChangeNoteTextActor()
@@ -181,13 +177,20 @@ public class CollaborationTests extends FreeMindTestBase {
 		t.setId(testClient.mLockId);
 		t.setUndoAction(marshall);
 		testClient.send(t);
-		while (testClient.getCurrentState() != CollaborationTestClient.STATE_IDLE) {
-			Thread.sleep(100);
-		}
+		waitForState(testClient, CollaborationTestClient.STATE_IDLE);
 		// TODO: Wait on save.
 		testClient.terminateSocket();
 		master.terminate();
 
+	}
+
+	public void waitForState(CollaborationTestClient testClient, int stateIdle)
+			throws InterruptedException {
+		int timeout = 60;
+		while (--timeout>0 && testClient.getCurrentState() != stateIdle) {
+			Thread.sleep(100);
+		}
+		assertEquals(stateIdle, testClient.getCurrentState());
 	}
 
 	public void testPublishExistingMapStartup() throws Exception {
@@ -208,14 +211,14 @@ public class CollaborationTests extends FreeMindTestBase {
 		testClient.createNewMap(INITIAL_MAP);
 		// run
 		testClient.start();
-		while (testClient.getCurrentState() != CollaborationTestClient.STATE_IDLE) {
-			Thread.sleep(100);
-		}
+		waitForState(testClient, CollaborationTestClient.STATE_IDLE);
 		testClient.terminateSocket();
 		// wait for save of the server
-		while(!fileToBeCreated.exists()) {
+		int timeout = 60;
+		while(--timeout > 0 && !fileToBeCreated.exists()) {
 			Thread.sleep(100);
 		}
+		assertTrue(fileToBeCreated.exists());
 		master.terminate();
 		
 	}
@@ -249,7 +252,7 @@ public class CollaborationTests extends FreeMindTestBase {
 		assertTrue("wrong map sent", testClient.mWrongMap);
 		testClient.terminateSocket();
 		master.terminate();
-		
+
 	}
 	
 	public class CreateNewMapClient extends CollaborationTestClient {
