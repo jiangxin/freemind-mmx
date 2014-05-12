@@ -29,18 +29,13 @@ import java.net.SocketTimeoutException;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import plugins.collaboration.socket.SocketMaster.SessionData;
 import tests.freemind.FreeMindMainMock;
 import freemind.controller.actions.generated.instance.CollaborationUserInformation;
 import freemind.main.Tools;
 import freemind.main.XMLParseException;
 import freemind.modes.ExtendedMapFeedback;
-import freemind.modes.ExtendedMapFeedbackImpl;
-import freemind.modes.MapAdapter;
 import freemind.modes.MindMap;
-import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
-import freemind.modes.mindmapmode.MindMapMapModel;
 
 /**
  * Background server for map serving without gui. Single map instance.
@@ -68,6 +63,28 @@ public class StandaloneMindMapMaster extends SocketMaster {
 		 */
 		public MasterThread() {
 			super("StandaloneMaster");
+			// save maps on exit!
+			Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			    public void run() {
+			    	System.out.println("Automatic save on exit starts...");
+			    	for (Iterator it = mFileMap.keySet().iterator(); it.hasNext();) {
+			    		String mapName = (String) it.next();
+			    		ExtendedMapFeedback extendedMapFeedback = mFileMap.get(mapName);
+			    		MindMap map = extendedMapFeedback.getMap();
+			    		File file = map.getFile();
+			    		System.out.println("Looking for map " + file + " to be saved...");
+			    		if(!map.isSaved()) {
+			    			try {
+			    				// save map:
+								map.save(file);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+			    		}
+			    	}
+			    }
+			}));
+
 		}
 
 		/*
