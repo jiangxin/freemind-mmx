@@ -93,7 +93,23 @@ public class CollaborationTests extends FreeMindTestBase {
 	 */
 	private static final String PASSWORD = "aa";
 
+	private StandaloneMindMapMaster mMaster;
+
+	/* (non-Javadoc)
+	 * @see junit.framework.TestCase#tearDown()
+	 */
+	@Override
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		if(mMaster != null) {
+			mMaster.terminate();
+		}
+	}
+	
 	public class NormalTestClient extends CollaborationTestClient  {
+		public boolean mTransactionReceived = false;
+		private CollaborationTransaction mTransactionPaket;
+
 		public NormalTestClient(String pName, Socket pClient,
 				ExtendedMapFeedback pMindMapController, DataOutputStream pOut,
 				DataInputStream pIn) {
@@ -140,6 +156,8 @@ public class CollaborationTests extends FreeMindTestBase {
 		public void reactOnTransaction(CollaborationTransaction trans) {
 			logger.info("Transaction received: " + trans.getDoAction());
 			setCurrentState(STATE_IDLE);
+			mTransactionReceived = true;
+			mTransactionPaket = trans;
 		}
 		
 
@@ -150,7 +168,7 @@ public class CollaborationTests extends FreeMindTestBase {
 		writer.println(INITIAL_MAP);
 		writer.close();
 
-		StandaloneMindMapMaster master = new StandaloneMindMapMaster(
+		mMaster = new StandaloneMindMapMaster(
 				getFrame(), new File(PATHNAME), PASSWORD, PORT);
 
 		Socket socket = new Socket("localhost", PORT);
@@ -180,10 +198,57 @@ public class CollaborationTests extends FreeMindTestBase {
 		waitForState(testClient, CollaborationTestClient.STATE_IDLE);
 		// TODO: Wait on save.
 		testClient.terminateSocket();
-		master.terminate();
 
 	}
 
+	public void testNormalStartupWithTwoClients() throws Exception {
+		PrintWriter writer = new PrintWriter(PATHNAME + FILE, "UTF-8");
+		writer.println(INITIAL_MAP);
+		writer.close();
+		
+		mMaster = new StandaloneMindMapMaster(
+				getFrame(), new File(PATHNAME), PASSWORD, PORT);
+		
+		Socket socket = new Socket("localhost", PORT);
+		socket.setSoTimeout(MindMapMaster.SOCKET_TIMEOUT_IN_MILLIES);
+		ExtendedMapFeedbackImpl mapFeedback = new ExtendedMapFeedbackImpl();
+		CollaborationTestClient testClient = new NormalTestClient(
+				"TestClient", socket, mapFeedback, new DataOutputStream(
+						socket.getOutputStream()), new DataInputStream(
+								socket.getInputStream()));
+		testClient.start();
+		waitForState(testClient, CollaborationTestClient.STATE_IDLE);
+		Socket socket2 = new Socket("localhost", PORT);
+		socket2.setSoTimeout(MindMapMaster.SOCKET_TIMEOUT_IN_MILLIES);
+		ExtendedMapFeedbackImpl mapFeedback2 = new ExtendedMapFeedbackImpl();
+		NormalTestClient testClient2 = new NormalTestClient(
+				"TestClient", socket2, mapFeedback2, new DataOutputStream(
+						socket2.getOutputStream()), new DataInputStream(
+								socket2.getInputStream()));
+		testClient2.start();
+		waitForState(testClient2, CollaborationTestClient.STATE_IDLE);
+		CollaborationRequireLock rl = new CollaborationRequireLock();
+		testClient.setCurrentState(CollaborationTestClient.STATE_WAIT_FOR_LOCK);
+		testClient.send(rl);
+		waitForState(testClient, CollaborationTestClient.STATE_LOCK_RECEIVED);
+		EditNoteToNodeAction action = mapFeedback
+				.getActorFactory()
+				.getChangeNoteTextActor()
+				.createEditNoteToNodeAction(mapFeedback.getMap().getRootNode(),
+						"blubber");
+		CollaborationTransaction t = new CollaborationTransaction();
+		String marshall = Tools.marshall(action);
+		t.setDoAction(marshall);
+		t.setId(testClient.mLockId);
+		t.setUndoAction(marshall);
+		testClient.send(t);
+		waitForState(testClient, CollaborationTestClient.STATE_IDLE);
+		assertTrue("transaction received", testClient2.mTransactionReceived);
+		assertEquals("Correct class", testClient.mLockId, testClient2.mTransactionPaket.getId());
+		testClient.terminateSocket();
+		
+	}
+	
 	public void waitForState(CollaborationTestClient testClient, int stateIdle)
 			throws InterruptedException {
 		int timeout = 60;
@@ -197,7 +262,7 @@ public class CollaborationTests extends FreeMindTestBase {
 		File fileToBeCreated = new File(PATHNAME, PUBLISHED_MAP_NAME);
 		fileToBeCreated.delete();
 		assertFalse(fileToBeCreated.exists());
-		StandaloneMindMapMaster master = new StandaloneMindMapMaster(
+		mMaster = new StandaloneMindMapMaster(
 				getFrame(), new File(PATHNAME), PASSWORD, PORT);
 		
 		Socket socket = new Socket("localhost", PORT);
@@ -219,12 +284,11 @@ public class CollaborationTests extends FreeMindTestBase {
 			Thread.sleep(100);
 		}
 		assertTrue(fileToBeCreated.exists());
-		master.terminate();
 		
 	}
 	
 	public void testPublishExistingMapWrongName() throws Exception {
-		StandaloneMindMapMaster master = new StandaloneMindMapMaster(
+		mMaster = new StandaloneMindMapMaster(
 				getFrame(), new File(PATHNAME), PASSWORD, PORT);
 		
 		Socket socket = new Socket("localhost", PORT);
@@ -251,7 +315,6 @@ public class CollaborationTests extends FreeMindTestBase {
 		}
 		assertTrue("wrong map sent", testClient.mWrongMap);
 		testClient.terminateSocket();
-		master.terminate();
 
 	}
 	
