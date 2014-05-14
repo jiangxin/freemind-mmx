@@ -235,8 +235,15 @@ public class StandaloneMindMapMaster extends SocketMaster {
 	 */
 	public static void main(String[] args) throws XMLParseException,
 			IOException {
+		String path;
+		if(args.length > 0) {
+			path = args[0];
+		} else {
+			path = "/tmp/";
+		}
+		System.out.println("Using path '" + path + "'");
 		StandaloneMindMapMaster master = new StandaloneMindMapMaster(
-				new FreeMindMainMock(), new File("/tmp/"), "aa", 9001);
+				new FreeMindMainMock(), new File(path), "aa", 9001);
 
 	}
 

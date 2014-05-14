@@ -1,16 +1,18 @@
 <project name="freemind" default="dist" basedir=".">
-    <!-- read version number from java source:  -->
-    <loadfile property="ver" srcfile="freemind/main/FreeMind.java">
-      <filterchain>
-        <tokenfilter>
-          <filetokenizer/>
-          <replaceregex pattern='.*new VersionInformation\("(.*?)".*' replace="\1" flags="s" />
-        </tokenfilter>
-      	<!-- Replace spaces by underscores. -->
-      	<tokenfilter><replaceregex pattern=" " replace="_" flags="g"/></tokenfilter>
-      </filterchain>
-    </loadfile>
-	
+	<!-- read version number from java source:  -->
+	<loadfile property="ver" srcfile="freemind/main/FreeMind.java">
+		<filterchain>
+			<tokenfilter>
+				<filetokenizer/>
+				<replaceregex pattern='.*new VersionInformation\("(.*?)".*' replace="\1" flags="s" />
+			</tokenfilter>
+			<!-- Replace spaces by underscores. -->
+			<tokenfilter>
+				<replaceregex pattern=" " replace="_" flags="g"/>
+			</tokenfilter>
+		</filterchain>
+	</loadfile>
+
 	<property name="freemind.buildnumber.file" value="version.properties"/>
 	<property name="freemind.installer_year" value="2009"/>
 	<property name="src" location="."/>
@@ -59,31 +61,33 @@
 
 	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:${formsLib}:${simplyHtml}:${spellLib}:${xsltLib}:${xsltLib2}:${xsltLib3}:${xsltLib4}"/>
 	<path id="jars.path">
-	  <fileset dir="${src}">
-	    <include name="**/*.jar" />
-	  </fileset>
+		<fileset dir="${src}">
+			<include name="**/*.jar" />
+		</fileset>
 	</path>
 
-	  <target name="xmlbind.checkStatusOfGeneration">
-	    <uptodate property="xmlbind.isUpToDate"
+	<target name="xmlbind.checkStatusOfGeneration">
+		<uptodate property="xmlbind.isUpToDate"
 	              srcfile="freemind_actions.xsd"
 	              targetfile="${jibxjar}"/>
-	  </target>
+	</target>
 
 	<!-- - - - - - - - - - - - - - - - - - 
           target: init                      
          - - - - - - - - - - - - - - - - - -->
-    <target name="init">
+	<target name="init">
 		<buildnumber file="${freemind.buildnumber.file}"/>
-		<loadproperties srcfile="${freemind.buildnumber.file}"></loadproperties>
+		<loadproperties srcfile="${freemind.buildnumber.file}">
+		</loadproperties>
 		<property name="version" value="${ver}_${build.number}"/>
-    	<property environment="env" />
+		<property environment="env" />
 		<echo>FreeMind Version = ${ver}, build ${build.number}.</echo>
-    		<echo>Checking for duplicate Resource strings</echo>
-    		<exec os="Linux" executable="${src}/check_for_duplicate_resources.sh"></exec>
-    </target>
+		<echo>Checking for duplicate Resource strings</echo>
+		<exec os="Linux" executable="${src}/check_for_duplicate_resources.sh">
+		</exec>
+	</target>
 
-	
+
 	<!-- =================================
           target: gen
          ================================= -->
@@ -100,7 +104,8 @@
 	       		target="${java_target_version}">
 			<include name="de/foltin/**" />
 		</javac>
-		<java fork="true" classpath="binding/run" classname="de.foltin.CompileXsdStart"></java>
+		<java fork="true" classpath="binding/run" classname="de.foltin.CompileXsdStart">
+		</java>
 		<delete dir="binding/run"  quiet="true"/>
 		<!-- Special file for String encoding. -->
 		<mkdir dir="binding/src/de/foltin"/>
@@ -158,13 +163,14 @@
 			 >
 			<exclude name="${gen.dir}/**" />
 			<exclude name="accessories/plugins/**" />
-		<!-- Currently, JUnit tests are only supported inside eclipse due to
+			<!-- Currently, JUnit tests are only supported inside eclipse due to
 		     classpath problems of the plugins. -->
 			<exclude name="tests/**" />
 			<exclude name="plugins/**" />
 		</javac>
 		<!-- Starter should work with java 1.1, too as it checks the java version.-->
-		<delete failonerror="false" file="${build}/freemind/main/FreeMindStarter.class"></delete>
+		<delete failonerror="false" file="${build}/freemind/main/FreeMindStarter.class">
+		</delete>
 		<javac includeantruntime="false" 	srcdir="${src}" destdir="${build}" classpath="${classpath}"	debug="${debug}" source="1.3" target="1.1">
 			<include name="freemind/main/FreeMindStarter.java"/>
 		</javac>
@@ -180,7 +186,8 @@
 		    	source="${java_source_version}"
 	       		target="${java_target_version}"
 		>
-			<classpath refid="jars.path"></classpath>
+			<classpath refid="jars.path">
+			</classpath>
 			<exclude name="${gen.dir}/**" />
 			<exclude name="plugins/collaboration/jabber/**" />
 		</javac>
@@ -190,40 +197,43 @@
 	<!-- ================================= 
           target: test              
          ================================= -->
-    <target name="test" depends="build_tests" description="Carries out all unit tests">
-	<delete dir="${test.reports}" />
-     	<mkdir dir="${test.reports}" />
-     	<junit printsummary="withOutAndErr"  fork="yes" haltonfailure="yes">
-		<classpath refid="jars.path"></classpath>
-		<classpath path="${testbuild}"></classpath>
-		<classpath path="${src}"></classpath>
- 		<formatter type="xml" />
-		<batchtest todir="${test.reports}" >
-			<fileset dir="${src}"> 
-				<include name="tests/**/AllTests.java" />
-     			</fileset>
- 		</batchtest>
-     	</junit>
-    </target>
+	<target name="test" depends="build_tests" description="Carries out all unit tests">
+		<delete dir="${test.reports}" />
+		<mkdir dir="${test.reports}" />
+		<junit printsummary="withOutAndErr"  fork="yes" haltonfailure="yes">
+			<classpath refid="jars.path">
+			</classpath>
+			<classpath path="${testbuild}">
+			</classpath>
+			<classpath path="${src}">
+			</classpath>
+			<formatter type="xml" />
+			<batchtest todir="${test.reports}" >
+				<fileset dir="${src}">
+					<include name="tests/**/AllTests.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
 
-	
+
 	<target name="dist" depends="jar, browser">
 		<copy todir="${dist}">
 			<fileset dir="${src}">
-				  <include name="freemind.bat"/>
-				  <include name="freemindw.bat"/>
-				  <include name="freemind.sh"/>
-				  <include name="license"/>
-				  <include name="patterns.xml"/>
-				  <include name="dictionaries.properties"/>
-				  <include name="dictionary_??.ortho"/>
+				<include name="freemind.bat"/>
+				<include name="freemindw.bat"/>
+				<include name="freemind.sh"/>
+				<include name="license"/>
+				<include name="patterns.xml"/>
+				<include name="dictionaries.properties"/>
+				<include name="dictionary_??.ortho"/>
 			</fileset>
 		</copy>
 		<chmod file="${dist}/freemind.sh" perm="u+rx"/>
 		<copy todir="${dist}">
 			<fileset dir="${src}/windows-launcher">
-			  <include name="FreeMind.exe"/>
-			  <include name="FreeMind64.exe"/>
+				<include name="FreeMind.exe"/>
+				<include name="FreeMind64.exe"/>
 			</fileset>
 		</copy>
 		<mkdir dir="${dist}/doc" />
@@ -273,7 +283,7 @@
 	</target>
 
 	<target name="dist_icon">
-<!--		<copy file="${src}/windows-launcher/Freemind_light_bulb.exe"
+		<!--		<copy file="${src}/windows-launcher/Freemind_light_bulb.exe"
 			tofile="${dist}/Freemind.exe" overwrite="true"/> -->
 	</target>
 
@@ -283,7 +293,7 @@
 		<taskdef name="bundleapp"
 		             classname="com.oracle.appbundler.AppBundlerTask"   
 		             classpath="${src}/lib/${appbundler.jar}" />
-		
+
 		<bundleapp outputdirectory="${dist_macos}"
 		            name="FreeMind"
 		            displayname="FreeMind"
@@ -354,7 +364,7 @@
 			  tofile="${dist_macos_info}"/>
 		<!-- Done. -->
 	</target>
-	
+
 	<!-- installs the application directly on this mac. -->
 	<target name="install_macos" if="isMacOs" depends="dist">
 		<!-- Remove old application -->
@@ -364,10 +374,10 @@
 			<arg path="/Applications"/>
 		</exec>
 	</target>
-	
+
 	<target name="post" depends="dist,browser">
 		<mkdir dir="${post}" />
-<!--		<tar tarfile="${post}/freemind-bin.tar"
+		<!--		<tar tarfile="${post}/freemind-bin.tar"
 			basedir="${dist}"
 			longfile="gnu"
 			excludes="doc/javadoc/,plugins/**" />
@@ -394,7 +404,7 @@
 		<zip destfile="${post}/freemind-bin-max-${ver}.zip"
 			basedir="${dist}"
 			excludes="doc/javadoc/" />
-	<!--	<zip destfile="${post}/freemind-src-${ver}.zip"
+		<!--	<zip destfile="${post}/freemind-src-${ver}.zip"
 			basedir="${src_base_for_post}"
 			includes="freemind/**,.classpath,.project" /> -->
 		<zip destfile="${post}/freemind-browser-${ver}.zip"
@@ -410,27 +420,27 @@
 
 		<copy todir="${dist_macos}" verbose="true">
 			<fileset dir="../admin/installer/mac/dmg/">
-			    <include name=".VolumeIcon.icns"/>
+				<include name=".VolumeIcon.icns"/>
 			</fileset>
 			<fileset dir="../admin/installer/mac/QuickLook/build/Debug/">
-			    <include name="**"/>
+				<include name="**"/>
 			</fileset>
 		</copy>
 		<chmod perm="ugo+rx" file="${dist_macos}/FreemindQL.qlgenerator/Contents/MacOS/FreemindQL" verbose="true"/>
 		<exec executable="cp">
-		  <arg value="../admin/installer/mac/dmg/.DS_Store"/>
-		  <arg value="${dist_macos}"/>
+			<arg value="../admin/installer/mac/dmg/.DS_Store"/>
+			<arg value="${dist_macos}"/>
 		</exec>
 		<exec executable="ln">
-		  <arg line="-s /Library/QuickLook"/>
-		  <arg value="${dist_macos}"/>
+			<arg line="-s /Library/QuickLook"/>
+			<arg value="${dist_macos}"/>
 		</exec>
 		<exec executable="ln">
-		  <arg line="-s /Applications"/>
-		  <arg value="${dist_macos}"/>
+			<arg line="-s /Applications"/>
+			<arg value="${dist_macos}"/>
 		</exec>
 
-<!--		<delete file="${dist_macos_contents}/MacOS/JavaApplicationStub"/>
+		<!--		<delete file="${dist_macos_contents}/MacOS/JavaApplicationStub"/>
 		<exec executable="ln">
 		  <arg line="-s /System/Library/Frameworks/JavaVM.framework/Resources/MacOS/JavaApplicationStub"/>
 		  <arg value="${dist_macos_contents}/MacOS/JavaApplicationStub"/>
@@ -446,13 +456,13 @@
 		</exec>
 
 		<exec executable="rm">
-		  <arg value="${dist_macos}/QuickLook"/>
+			<arg value="${dist_macos}/QuickLook"/>
 		</exec>
 		<exec executable="rm">
-		  <arg value="${dist_macos}/Applications"/>
+			<arg value="${dist_macos}/Applications"/>
 		</exec>
 
-		
+
 	</target>
 
 	<target name="jar" depends="build">
@@ -571,10 +581,10 @@
 
 	<target name="run" depends="dist">
 		<antcall target="_run">
-	    		<param name="spawn" value="false"/>
-		</antcall>	
+			<param name="spawn" value="false"/>
+		</antcall>
 	</target>
-	
+
 	<target name="_run">
 		<!-- failonerror is false here, as we want to
 		     make runWithoutPreferences safe. -->
@@ -591,61 +601,74 @@
 			</classpath>
 		</java>
 	</target>
-	
+
+	<condition property="params.set">
+		<isset property="path"/>
+	</condition>
+
 	<target name="runServer" depends="dist" description="Starts a map server on the command line">
-		<java classname="plugins.collaboration.socket.StandaloneMindMapMaster"
-          fork="yes"
-          dir="${dist}" failonerror="false">
+		<fail unless="params.set">
+		        Must specify the parameter 'path', e.g. using ant -Dpath=/tmp runServer
+	        </fail>
+		<java classname="plugins.collaboration.socket.StandaloneMindMapMaster" fork="yes" dir="${dist}" failonerror="false">
 			<classpath>
-				<pathelement location="${FM.jar}"/>
-				<pathelement location="${jibxjar}"/>
-				<pathelement location="${spellLib}"/>
-				<pathelement path="${jibxruntimelibs}"/>
-				<pathelement path="${dist}/plugins/collaboration/socket/socket_plugin.jar"/>
+				<pathelement location="${FM.jar}" />
+				<pathelement location="${jibxjar}" />
+				<pathelement location="${spellLib}" />
+				<pathelement path="${jibxruntimelibs}" />
+				<pathelement path="${dist}/plugins/collaboration/socket/socket_plugin.jar" />
 			</classpath>
+			<arg path="${path}"/>
 		</java>
 	</target>
 
 	<target name="runSharingScenario" depends="dist">
-		<delete file="${freemind_socket}" quiet="true"/>
+		<delete file="${freemind_socket}" quiet="true" />
 		<antcall target="_run">
-	    		<param name="spawn" value="true"/>
-		</antcall>	
+			<param name="spawn" value="true"/>
+		</antcall>
 		<!-- Wait for the socket file to appear: -->
 		<waitfor maxwait="30" maxwaitunit="second">
-		        <available file="${freemind_socket}"/>
+			<available file="${freemind_socket}"/>
 		</waitfor>
 		<sleep milliseconds="500"/>
 		<!-- Remove it such that a second instance appears: -->
 		<delete file="${freemind_socket}" quiet="true"/>
 		<antcall target="_run">
-	    		<param name="spawn" value="true"/>
-		</antcall>	
+			<param name="spawn" value="true"/>
+		</antcall>
 	</target>
 
 	<!-- =================================
           target: runWithoutPreferences
          ================================= -->
-    <target name="runWithoutPreferences" description="Starts the application moving the current preferences temporarily away.">
-    	<rename dest="${user.home}/.freemind_bak" src="${user.home}/.freemind"/>
-    	<mkdir dir="${user.home}/.freemind"/>
-     	<antcall target="run"></antcall>
-    	<exec dir="${user.home}/.freemind" executable="cat" os="Linux" failifexecutionfails="no" failonerror="false">
+	<target name="runWithoutPreferences" description="Starts the application moving the current preferences temporarily away.">
+		<rename dest="${user.home}/.freemind_bak" src="${user.home}/.freemind"/>
+		<mkdir dir="${user.home}/.freemind"/>
+		<antcall target="run">
+		</antcall>
+		<exec dir="${user.home}/.freemind" executable="cat" os="Linux" failifexecutionfails="no" failonerror="false">
 			<arg value="auto.properties"/>
-    	</exec>
-    	<delete dir="${user.home}/.freemind" failonerror="false"></delete>
-        <rename src="${user.home}/.freemind_bak" dest="${user.home}/.freemind" replace="yes"></rename>
-    </target>
+		</exec>
+		<delete dir="${user.home}/.freemind" failonerror="false">
+		</delete>
+		<rename src="${user.home}/.freemind_bak" dest="${user.home}/.freemind" replace="yes">
+		</rename>
+	</target>
 
 
 	<property name="log_file" location="${user.home}/.freemind/log.0"/>
 
 	<target name="runmac" depends="dist" description="Starts the application under Mac (using the open method).">
-		<move file="${log_file}" tofile="${log_file}.bak" failonerror="false"></move>
+		<move file="${log_file}" tofile="${log_file}.bak" failonerror="false">
+		</move>
 		<exec dir="." executable="open" os="Mac OS X">
 			<arg path="${dist_macos_app}"/>
 		</exec>
-		<waitfor><available file="${log_file}"></available></waitfor>
+		<waitfor>
+			<available file="${log_file}">
+			</available>
+		</waitfor>
 		<exec dir="." executable="tail" os="Mac OS X">
 			<arg line="-f ${log_file}"/>
 		</exec>
@@ -669,139 +692,146 @@
 	<!-- - - - - - - - - - - - - - - - - -
           target: all
          - - - - - - - - - - - - - - - - - -->
-    <target name="all">
-    	<antcall target="post"></antcall>
+	<target name="all">
+		<antcall target="post">
+		</antcall>
 
-    </target>
+	</target>
 
 	<!-- =================================
           target: installers for everybody
          ================================= -->
-    <target name="installers_all" depends="" description="--> Creates all installers.">
+	<target name="installers_all" depends="" description="--> Creates all installers.">
 
-    	<property name="InnoSetup" location="D:/Programme/Inno Setup 5/ISCC.exe" />
-<!--
+		<property name="InnoSetup" location="D:/Programme/Inno Setup 5/ISCC.exe" />
+		<!--
     	<property name="InnoSetup" location="/home/foltin/.wine/drive_c/Programme/Inno Setup 5/ISCC.exe" />
 -->
-        <property name="inst.dir" location="../tmp/fm_installer"/>
-        <property name="inst.dest.dir" location="../installers"/>
-    	<delete dir="${inst.dest.dir}" failonerror="false"/>
-<!--
+		<property name="inst.dir" location="../tmp/fm_installer"/>
+		<property name="inst.dest.dir" location="../installers"/>
+		<delete dir="${inst.dest.dir}" failonerror="false"/>
+		<!--
     	<delete dir="${inst.dir}" failonerror="false"/>
 -->
-    	<mkdir dir="${inst.dest.dir}"/>
-    	<mkdir dir="${inst.dir}"/>
-    	<exec dir="." executable="git">
-    		<arg value="clone"/>
-    		<arg value="${gitRoot}"/>
-    		<arg value="${inst.dir}/"/>
-    	</exec>            
-    	<ant dir="${inst.dir}/freemind" target="clean" ></ant>
-    	<ant dir="${inst.dir}/freemind" target="post" ></ant>
-    	<copy todir="${inst.dest.dir}">
-    		<fileset dir="${inst.dir}/post">
-			    <include name="*"/>
+		<mkdir dir="${inst.dest.dir}"/>
+		<mkdir dir="${inst.dir}"/>
+		<exec dir="." executable="git">
+			<arg value="clone"/>
+			<arg value="${gitRoot}"/>
+			<arg value="${inst.dir}/"/>
+		</exec>
+		<ant dir="${inst.dir}/freemind" target="clean" >
+		</ant>
+		<ant dir="${inst.dir}/freemind" target="post" >
+		</ant>
+		<copy todir="${inst.dest.dir}">
+			<fileset dir="${inst.dir}/post">
+				<include name="*"/>
 			</fileset>
 		</copy>
-    	<exec dir="${inst.dir}/admin/installer/windows/" executable="${InnoSetup}" osfamily="Windows">
+		<exec dir="${inst.dir}/admin/installer/windows/" executable="${InnoSetup}" osfamily="Windows">
 			<arg value="Freemind.iss"/>
-    	</exec>
-    	<exec dir="${inst.dir}/admin/installer/windows/" executable="wine" os="Linux">
+		</exec>
+		<exec dir="${inst.dir}/admin/installer/windows/" executable="wine" os="Linux">
 			<arg value="${InnoSetup}"/>
 			<arg value="Freemind.iss"/>
-    	</exec>
-    	<copy todir="${inst.dest.dir}">
-    		<fileset dir="${inst.dir}/admin/installer/windows/Output/">
-			    <include name="*.exe"/>
+		</exec>
+		<copy todir="${inst.dest.dir}">
+			<fileset dir="${inst.dir}/admin/installer/windows/Output/">
+				<include name="*.exe"/>
 			</fileset>
 		</copy>
-    	<!--
+		<!--
     	<delete dir="${inst.dir}" failonerror="false"/>
     	-->
-    </target>
+	</target>
 
 	<!-- - - - - - - - - - - - - - - - - - 
           target: create_windows_installer                      
          - - - - - - - - - - - - - - - - - -->
-    <target name="create_windows_installer">
-    	<ant dir="${inst.windows.installer}" target="${inst.windows.variant}"></ant>
-    	<exec dir="${inst.windows.installer}" executable="wine" os="Linux">
+	<target name="create_windows_installer">
+		<ant dir="${inst.windows.installer}" target="${inst.windows.variant}">
+		</ant>
+		<exec dir="${inst.windows.installer}" executable="wine" os="Linux">
 			<arg value="/home/foltin/.wine/drive_c/Programme/Inno Setup 5/ISCC.exe"/>
 			<arg value="Freemind.iss"/>
-    	</exec>
-    	<exec dir="${inst.windows.installer}" executable="wine" os="Mac OS X">
+		</exec>
+		<exec dir="${inst.windows.installer}" executable="wine" os="Mac OS X">
 			<arg value="/Users/foltin/.wine/drive_c/Programme/Inno Setup 5/ISCC.exe"/>
 			<arg value="Freemind.iss"/>
-    	</exec>
-    </target>
-	
+		</exec>
+	</target>
+
 	<!-- - - - - - - - - - - - - - - - - - 
           target: installers_chris_mac                      
          - - - - - - - - - - - - - - - - - -->
-    <target name="installers_chris_mac">
-    	<exec dir="." executable="ssh" os="Linux">
-    		<arg value="foltin@${macName}"/>
-    		<arg value="export JAVA_HOME=`/usr/libexec/java_home` ; cd /tmp ; rm -rf fm_installers ; mkdir fm_installers ; cd fm_installers ; /opt/local/bin/git clone -b ${branch} ${gitRoot} .; cd freemind ; /opt/local/bin/ant post"/>
-    	</exec>
-    	<exec dir="." executable="scp" os="Linux">
-    		<arg value="foltin@${macName}:/tmp/fm_installers/post/*.dmg"/>
-    		<arg value="${inst.dest.dir}/"/>
-    	</exec>            
-    </target>
+	<target name="installers_chris_mac">
+		<exec dir="." executable="ssh" os="Linux">
+			<arg value="foltin@${macName}"/>
+			<arg value="export JAVA_HOME=`/usr/libexec/java_home` ; cd /tmp ; rm -rf fm_installers ; mkdir fm_installers ; cd fm_installers ; /opt/local/bin/git clone -b ${branch} ${gitRoot} .; cd freemind ; /opt/local/bin/ant post"/>
+		</exec>
+		<exec dir="." executable="scp" os="Linux">
+			<arg value="foltin@${macName}:/tmp/fm_installers/post/*.dmg"/>
+			<arg value="${inst.dest.dir}/"/>
+		</exec>
+	</target>
 
-	
+
 	<!-- =================================
           target: installers, for Chris' computers
          ================================= -->
-    <target name="installers_chris" depends="" description="--> Creates all installers. This is a task that only works on Chris laptops. But it should be informative to others who want to build the installers">
-    	<property name="gitRoot" value="git://git.code.sf.net/p/freemind/code"/>
-	<property name="macName" value="mahler.local"/>
-	<property name="branch" value="1.1.0"/>
+	<target name="installers_chris" depends="" description="--> Creates all installers. This is a task that only works on Chris laptops. But it should be informative to others who want to build the installers">
+		<property name="gitRoot" value="git://git.code.sf.net/p/freemind/code"/>
+		<property name="macName" value="mahler.local"/>
+		<property name="branch" value="1.1.0"/>
 
-        <property name="inst.dir" location="/tmp/fm_installer"/>
-        <property name="inst.dest.dir" location="../installers"/>
-    	<property name="inst.windows.installer" location="${inst.dir}/admin/installer/windows"/>
-    	<mkdir dir="${inst.dest.dir}"/>
-    	<delete dir="${inst.dir}" failonerror="false"/>
-    	<mkdir dir="${inst.dir}"/>
-    	<exec dir="." executable="git">
-    		<arg value="clone"/>
-    		<arg value="-b"/>
-    		<arg value="${branch}"/>
-    		<arg value="${gitRoot}"/>
-    		<arg value="${inst.dir}/"/>
-    	</exec>            
-	<copy todir="${inst.dir}/freemind" file="${freemind.buildnumber.file}"></copy>
-    	<ant dir="${inst.dir}/freemind" target="post" inheritall="false"></ant>
-    	<copy todir="${inst.dest.dir}">
-    		<fileset dir="${inst.dir}/post">
-		    <include name="*"/>
-		</fileset>
-	</copy>
-    	<copy todir="${inst.windows.installer}">
-    		<fileset dir="../admin/installer/windows/">
-			    <include name="jre_installer.exe"/>
-			    <include name="jre/**"/>
-			</fileset>
-		</copy> 
-    	<property name="freemind.version" value="${ver}"/>  
-    	<antcall target="create_windows_installer">
-    		<param name="inst.windows.variant" value="installer"/>
-    	</antcall>
-    	<antcall target="create_windows_installer">
-    		<param name="inst.windows.variant" value="installer_min"/>
-    	</antcall>
-    	<antcall target="create_windows_installer">
-    		<param name="inst.windows.variant" value="installer_java_installer_embedded"/>
-    	</antcall>
-    	<copy todir="${inst.dest.dir}">
-    		<fileset dir="${inst.windows.installer}/Output/">
-			    <include name="*.exe"/>
+		<property name="inst.dir" location="/tmp/fm_installer"/>
+		<property name="inst.dest.dir" location="../installers"/>
+		<property name="inst.windows.installer" location="${inst.dir}/admin/installer/windows"/>
+		<mkdir dir="${inst.dest.dir}"/>
+		<delete dir="${inst.dir}" failonerror="false"/>
+		<mkdir dir="${inst.dir}"/>
+		<exec dir="." executable="git">
+			<arg value="clone"/>
+			<arg value="-b"/>
+			<arg value="${branch}"/>
+			<arg value="${gitRoot}"/>
+			<arg value="${inst.dir}/"/>
+		</exec>
+		<copy todir="${inst.dir}/freemind" file="${freemind.buildnumber.file}">
+		</copy>
+		<ant dir="${inst.dir}/freemind" target="post" inheritall="false">
+		</ant>
+		<copy todir="${inst.dest.dir}">
+			<fileset dir="${inst.dir}/post">
+				<include name="*"/>
 			</fileset>
 		</copy>
-     	<antcall target="installers_chris_mac"></antcall> 
-    	<delete dir="${inst.dir}" failonerror="false"/>
-    </target>
+		<copy todir="${inst.windows.installer}">
+			<fileset dir="../admin/installer/windows/">
+				<include name="jre_installer.exe"/>
+				<include name="jre/**"/>
+			</fileset>
+		</copy>
+		<property name="freemind.version" value="${ver}"/>
+		<antcall target="create_windows_installer">
+			<param name="inst.windows.variant" value="installer"/>
+		</antcall>
+		<antcall target="create_windows_installer">
+			<param name="inst.windows.variant" value="installer_min"/>
+		</antcall>
+		<antcall target="create_windows_installer">
+			<param name="inst.windows.variant" value="installer_java_installer_embedded"/>
+		</antcall>
+		<copy todir="${inst.dest.dir}">
+			<fileset dir="${inst.windows.installer}/Output/">
+				<include name="*.exe"/>
+			</fileset>
+		</copy>
+		<antcall target="installers_chris_mac">
+		</antcall>
+		<delete dir="${inst.dir}" failonerror="false"/>
+	</target>
 
 </project>
 
