@@ -39,7 +39,6 @@ import freemind.modes.MindMap;
 import freemind.modes.MindMapLinkRegistry;
 import freemind.modes.MindMapNode;
 import freemind.modes.ModeController;
-import freemind.modes.XMLElementAdapter;
 
 public class EncryptedMindMapNode extends MindMapNodeModel {
 
@@ -151,7 +150,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 	}
 
 	private MindMapMapModel getMindMapMapModel() {
-		return ((MindMapMapModel) getMapFeedback());
+		return  (MindMapMapModel) getMapFeedback().getMap();
 	}
 
 	/**
@@ -199,9 +198,16 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 	}
 
 	public void encrypt() {
-		// FIXME: Sync.
-		setFolded(true);
-		setAccessible(false);
+		if(isDecrypted) {
+			try {
+				generateEncryptedContent();
+				isDecrypted = false;
+				setFolded(true);
+				setAccessible(false);
+			} catch (IOException e) {
+				freemind.main.Resources.getInstance().logException(e);
+			}
+		}
 	}
 
 	public int getChildCount() {
@@ -307,12 +313,7 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 								+ this.getText()
 								+ ", but it is not accessible.");
 			}
-			setStoringEncryptedContent(true);
-			try {
-				generateEncryptedContent(registry);
-			} finally {
-				setStoringEncryptedContent(false);
-			}
+			generateEncryptedContent();
 		}
 		boolean oldIsVisible = isAccessible();
 		setAccessible(false);
@@ -328,12 +329,17 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 	/**
 	 * @throws IOException
 	 */
-	private void generateEncryptedContent(MindMapLinkRegistry registry)
+	private void generateEncryptedContent()
 			throws IOException {
-		StringWriter sWriter = new StringWriter();
-		getMindMapMapModel().getXml(sWriter, true, this);
-		StringBuffer childXml = sWriter.getBuffer();
-		encryptedContent = encryptXml(childXml);
+		setStoringEncryptedContent(true);
+		try {
+			StringWriter sWriter = new StringWriter();
+			getMindMapMapModel().getXml(sWriter, true, this);
+			StringBuffer childXml = sWriter.getBuffer();
+			encryptedContent = encryptXml(childXml);
+		} finally {
+			setStoringEncryptedContent(false);
+		}
 	}
 
 	/**

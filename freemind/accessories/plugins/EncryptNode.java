@@ -222,6 +222,7 @@ public class EncryptNode extends MindMapNodeHookAdapter {
 				doPasswordCheckAndDecryptNode(encNode);
 			}
 			mindMapController.nodeStructureChanged(encNode);
+			mindMapController.nodeChanged(encNode);
 			final MapView mapView = mindMapController.getView();
 			mapView.selectAsTheOnlyOneSelected(mapView.getNodeView(encNode));
 			encNode.setShuttingDown(false);
