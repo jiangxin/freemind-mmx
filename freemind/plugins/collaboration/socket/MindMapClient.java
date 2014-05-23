@@ -23,6 +23,8 @@
 
 package plugins.collaboration.socket;
 
+import java.io.IOException;
+import java.io.StringWriter;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
@@ -30,12 +32,17 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
+
 import freemind.common.NumberProperty;
 import freemind.common.StringProperty;
+import freemind.controller.actions.generated.instance.CollaborationPublishNewMap;
 import freemind.controller.actions.generated.instance.CollaborationUserInformation;
 import freemind.extensions.PermanentNodeHook;
 import freemind.main.Resources;
+import freemind.main.Tools;
 import freemind.modes.ExtendedMapFeedback;
+import freemind.modes.MindMap;
 import freemind.modes.mindmapmode.MindMapController;
 
 /**
@@ -48,7 +55,16 @@ public class MindMapClient extends SocketBasics {
 
 	public void startupMapHook() {
 		super.startupMapHook();
+		String callType = getProperties().getProperty("callType");
+		boolean publishType = Tools.safeEquals(callType, "publish");
 		MindMapController controller = getMindMapController();
+		if(publishType && controller.getMap().getFile()==null) {
+			JOptionPane.showMessageDialog(
+					controller.getViewAbstraction().getSelected(),
+					controller.getResourceString("map_not_saved"),
+					"FreeMind", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
 		StringProperty passwordProperty = new StringProperty(
 				PASSWORD_DESCRIPTION, PASSWORD);
 		StringProperty hostProperty = new StringProperty(HOST_DESCRIPTION, HOST);
@@ -80,14 +96,46 @@ public class MindMapClient extends SocketBasics {
 			controller.getFrame().setProperty(HOST_PROPERTY,
 					hostProperty.getValue());
 			mPassword = passwordProperty.getValue();
-			logger.info("Starting client thread...");
 			int port = portProperty.getIntValue();
 			Socket serverConnection = new Socket(hostProperty.getValue(), port);
 			serverConnection
-					.setSoTimeout(MindMapMaster.SOCKET_TIMEOUT_IN_MILLIES);
-			ClientCommunication clientCommunication = new ClientCommunication(
-					"Client Communication", serverConnection,
-					getMindMapController(), mPassword);
+			.setSoTimeout(MindMapMaster.SOCKET_TIMEOUT_IN_MILLIES);
+			ClientCommunication clientCommunication;
+			// determine type: join or publish
+			if(publishType) {
+				logger.info("Starting client thread and publish map...");
+				clientCommunication = new ClientCommunication(
+						"Client Communication", serverConnection,
+						getMindMapController(), mPassword) {
+					protected void reactOnWhoAreYou() {
+						// send hello:
+						CollaborationPublishNewMap publishCommand = new CollaborationPublishNewMap();
+						publishCommand.setUserId(Tools.getUserName());
+						publishCommand.setPassword(mPassword);
+						MindMap map = mController.getMap();
+						publishCommand.setMapName(map.getFile().getName());
+						StringWriter writer = new StringWriter();
+						try {
+							map.getXml(writer);
+						} catch (IOException e) {
+							freemind.main.Resources.getInstance().logException(e);
+							return;
+						}
+						publishCommand.setMap(writer.toString());
+						// add hook to current map:
+						toggleHook();
+						registerClientCommunicationAtHook();
+						// now publish
+						send(publishCommand);
+						setCurrentState(STATE_IDLE);
+					};
+				};
+			} else {
+				logger.info("Starting client thread...");
+				clientCommunication = new ClientCommunication(
+						"Client Communication", serverConnection,
+						getMindMapController(), mPassword);
+			}
 			clientCommunication.start();
 		} catch (UnknownHostException e) {
 			freemind.main.Resources.getInstance().logException(e);

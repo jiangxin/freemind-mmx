@@ -176,7 +176,10 @@ public class SocketConnectionHook extends SocketBasics implements
 	 * @see plugins.collaboration.socket.SocketBasics#getMasterInformation()
 	 */
 	public CollaborationUserInformation getMasterInformation(ExtendedMapFeedback pController) {
-		return mClientCommunication.getUserInfo();
+		if(mClientCommunication != null) {
+			return mClientCommunication.getUserInfo();
+		}
+		return new CollaborationUserInformation();
 	}
 
 	/* (non-Javadoc)

@@ -49,16 +49,16 @@ public abstract class SocketMaster extends SocketBasics {
 		public String mLockMutex = new String();
 	}
 	
-	protected HashMap<ExtendedMapFeedback, SessionData> mConnections = new HashMap<ExtendedMapFeedback, SocketMaster.SessionData>();
+	protected HashMap<ExtendedMapFeedback, SessionData> mSessions = new HashMap<ExtendedMapFeedback, SocketMaster.SessionData>();
 	protected int mPort;
 	protected HashMap<String, ExtendedMapFeedback> mFileMap;
 
 	
 	public synchronized void removeConnection(ServerCommunication client) {
-		synchronized (mConnections) {
+		synchronized (mSessions) {
 			ExtendedMapFeedback controller = client.getController();
-			if(mConnections.containsKey(controller)) {
-				mConnections.get(controller).mConnections.remove(client);
+			if(mSessions.containsKey(controller)) {
+				mSessions.get(controller).mConnections.remove(client);
 			}
 		}
 		// correct the map title, as we probably don't have clients anymore
@@ -114,8 +114,8 @@ public abstract class SocketMaster extends SocketBasics {
 	 * @param pController
 	 */
 	protected SessionData getSessionData(ExtendedMapFeedback pController) {
-		if(mConnections.containsKey(pController)) {
-			return mConnections.get(pController);
+		if(mSessions.containsKey(pController)) {
+			return mSessions.get(pController);
 		}
 		throw new IllegalArgumentException("Session for " + pController + " not present.");
 	}
@@ -221,18 +221,14 @@ public abstract class SocketMaster extends SocketBasics {
 	 */
 	public  void addConnection(ServerCommunication pServerCommunication,
 			ExtendedMapFeedback pController) {
-		synchronized (mConnections) {
-			mConnections.get(pController).mConnections.addElement(pServerCommunication);
+		synchronized (mSessions) {
+			mSessions.get(pController).mConnections.addElement(pServerCommunication);
 		}		
 	}
 
 	public ExtendedMapFeedback createMapOnServer(String fileName,
 			Tools.ReaderCreator readerCreator, File pFile) throws IOException {
 		ExtendedMapFeedbackImpl mapFeedback = new ExtendedMapFeedbackImpl();
-		mFileMap.put(fileName, mapFeedback);
-		synchronized (mConnections) {
-			mConnections.put(mapFeedback, new SessionData());
-		}
 
 		MindMapMapModel map = new MindMapMapModel(mapFeedback);
 		mapFeedback.setMap(map); 
@@ -243,6 +239,10 @@ public abstract class SocketMaster extends SocketBasics {
 		mapFeedback.getActionRegistry().registerFilter(this);
 		map.setFile(pFile);
 		
+		synchronized (mSessions) {
+			mFileMap.put(fileName, mapFeedback);
+			mSessions.put(mapFeedback, new SessionData());
+		}
 		return mapFeedback;
 	}
 

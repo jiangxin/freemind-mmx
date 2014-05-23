@@ -21,9 +21,20 @@
 		label="plugins/collaboration/socket/socket_slave_starter_plugin" 
 		class_name="plugins.collaboration.socket.MindMapClient"
 		isSelectable="true">
-        <plugin_property value="menu" name="callType"/>
+        	<plugin_property name="callType" value="join"/>
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/extras/first/collaboration/socket_slave"/>
+	</plugin_action>
+	<plugin_action 
+		documentation="%plugins/collaboration/socket/socket_publish_map_plugin.description" 
+		name="%plugins/collaboration/socket/socket_publish_map_plugin.name" 
+		base="freemind.extensions.NodeHookAdapter" 
+		label="plugins/collaboration/socket/socket_publish_map_plugin" 
+		class_name="plugins.collaboration.socket.MindMapClient"
+		isSelectable="true">
+        	<plugin_property name="callType" value="publish"/>
+		<plugin_mode class_name="freemind.modes.mindmapmode"/>
+		<plugin_menu location="menu_bar/extras/first/collaboration/socket_slave_publish"/>
 	</plugin_action>
 	<plugin_action 
 		documentation="NONE" 
@@ -32,7 +43,6 @@
 		label="plugins/collaboration/socket/socket_slave_plugin" 
 		class_name="plugins.collaboration.socket.SocketConnectionHook"
 		instanciation="OnceForRoot" isSelectable="false">
-        <plugin_property value="java" name="callType"/>
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<!--  no menu location as this is internal -->
 	</plugin_action>

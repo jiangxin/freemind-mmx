@@ -104,53 +104,55 @@ public class StandaloneMindMapMaster extends SocketMaster {
 			} catch (SocketTimeoutException e) {
 			}
 			final long now = System.currentTimeMillis();
-			for (Iterator it = mFileMap.keySet().iterator(); it.hasNext();) {
-				String mapName = (String) it.next();
-				ExtendedMapFeedback extendedMapFeedback = mFileMap.get(mapName);
-				SessionData sessionData = getSessionData(extendedMapFeedback);
-				if (now - mLastTimeUserInformationSent > TIME_BETWEEN_USER_INFORMATION_IN_MILLIES) {
-					mLastTimeUserInformationSent = now;
-					CollaborationUserInformation userInfo = getMasterInformation(extendedMapFeedback);
-					synchronized (sessionData.mConnections) {
-						for (int i = 0; i < sessionData.mConnections.size(); i++) {
-							try {
-								final ServerCommunication connection = sessionData.mConnections
-										.elementAt(i);
-								/*
-								 * to each server, the IP address is chosen that
-								 * belongs to this connection. E.g. if the
-								 * connection is routed over one of several network
-								 * interfaces, the address of this interface is
-								 * reported.
-								 */
-								userInfo.setMasterIp(connection.getIpToSocket());
-								connection.send(userInfo);
-							} catch (Exception e) {
-								freemind.main.Resources.getInstance().logException(
-										e);
+			synchronized (mSessions) {
+				for (Iterator it = mFileMap.keySet().iterator(); it.hasNext();) {
+					String mapName = (String) it.next();
+					ExtendedMapFeedback extendedMapFeedback = mFileMap.get(mapName);
+					SessionData sessionData = getSessionData(extendedMapFeedback);
+					if (now - mLastTimeUserInformationSent > TIME_BETWEEN_USER_INFORMATION_IN_MILLIES) {
+						mLastTimeUserInformationSent = now;
+						CollaborationUserInformation userInfo = getMasterInformation(extendedMapFeedback);
+						synchronized (sessionData.mConnections) {
+							for (int i = 0; i < sessionData.mConnections.size(); i++) {
+								try {
+									final ServerCommunication connection = sessionData.mConnections
+											.elementAt(i);
+									/*
+									 * to each server, the IP address is chosen that
+									 * belongs to this connection. E.g. if the
+									 * connection is routed over one of several network
+									 * interfaces, the address of this interface is
+									 * reported.
+									 */
+									userInfo.setMasterIp(connection.getIpToSocket());
+									connection.send(userInfo);
+								} catch (Exception e) {
+									freemind.main.Resources.getInstance().logException(
+											e);
+								}
 							}
 						}
 					}
-				}
-				// timeout such that lock can't be held forever
-				synchronized (sessionData.mLockMutex) {
-					if (sessionData.mLockEnabled && now - sessionData.mLockedAt > TIME_FOR_ORPHANED_LOCK) {
-						logger.warning("Release lock " + sessionData.mLockId + " held by "
-								+ sessionData.mLockUserName);
-						clearLock(extendedMapFeedback);
-					}
-					// regular save action:
-					if (!sessionData.mLockEnabled && now - mLastSaveAction > TIME_BETWEEN_SAVE_ACTIONS_IN_MILLIES) {
-						MindMap map = extendedMapFeedback.getMap();
-						File file = map.getFile();
-						logger.fine("Checking map " + file + " for save action needed.");
-						mLastSaveAction = now;
-						if(!map.isSaved()) {
-							// save map:
-							logger.info("Saving map " + file + " now.");
-							map.save(file);
-						} else {
-							logger.fine("No save necessary.");
+					// timeout such that lock can't be held forever
+					synchronized (sessionData.mLockMutex) {
+						if (sessionData.mLockEnabled && now - sessionData.mLockedAt > TIME_FOR_ORPHANED_LOCK) {
+							logger.warning("Release lock " + sessionData.mLockId + " held by "
+									+ sessionData.mLockUserName);
+							clearLock(extendedMapFeedback);
+						}
+						// regular save action:
+						if (!sessionData.mLockEnabled && now - mLastSaveAction > TIME_BETWEEN_SAVE_ACTIONS_IN_MILLIES) {
+							MindMap map = extendedMapFeedback.getMap();
+							File file = map.getFile();
+							logger.fine("Checking map " + file + " for save action needed.");
+							mLastSaveAction = now;
+							if(!map.isSaved()) {
+								// save map:
+								logger.info("Saving map " + file + " now.");
+								map.save(file);
+							} else {
+								logger.fine("No save necessary.");
+							}
 						}
 					}
 				}

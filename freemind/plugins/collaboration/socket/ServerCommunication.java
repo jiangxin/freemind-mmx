@@ -145,14 +145,15 @@ public class ServerCommunication extends CommunicationBase {
 					logger.info("New map " + map + " published.");
 					// create new controller and load map
 					
-					ExtendedMapFeedback mapFeedback = mMindMapMaster.createMapOnServer(
+					mController = mMindMapMaster.createMapOnServer(
 							map,
 							new Tools.StringReaderCreator(commandPublish
 									.getMap()), baseFile);
 					// save:
-					mapFeedback.getMap().save(file);
+					mController.getMap().save(file);
 					// publish map to others? No other could be present, so don't send a map.
 					setCurrentState(STATE_IDLE);
+					mMindMapMaster.addConnection(this, mController);
 				} else {
 					// Send error message
 					CollaborationWrongCredentials wrongMessage = new CollaborationWrongCredentials();

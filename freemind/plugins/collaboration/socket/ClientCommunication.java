@@ -158,12 +158,7 @@ public class ClientCommunication extends CommunicationBase {
 				}
 			}
 
-			// send hello:
-			CollaborationGetOffers getOffersCommand = new CollaborationGetOffers();
-			getOffersCommand.setUserId(Tools.getUserName());
-			getOffersCommand.setPassword(mPassword);
-			send(getOffersCommand);
-			setCurrentState(STATE_WAIT_FOR_OFFER);
+			reactOnWhoAreYou();
 			commandHandled = true;
 		}
 		if (pCommand instanceof CollaborationOffers) {
@@ -331,6 +326,15 @@ public class ClientCommunication extends CommunicationBase {
 		}
 	}
 
+	protected void reactOnWhoAreYou() {
+		// send hello:
+		CollaborationGetOffers getOffersCommand = new CollaborationGetOffers();
+		getOffersCommand.setUserId(Tools.getUserName());
+		getOffersCommand.setPassword(mPassword);
+		send(getOffersCommand);
+		setCurrentState(STATE_WAIT_FOR_OFFER);
+	}
+
 	public void terminateSocket() {
 		mReceivedGoodbye = true;
 		terminateSocketWithGoodbye();
@@ -418,21 +422,25 @@ public class ClientCommunication extends CommunicationBase {
 			setController(newModeController);
 			// add new hook
 			toggleHook();
-			// tell him about this thread.
-			Collection activatedHooks = getMindMapController().getRootNode()
-					.getActivatedHooks();
-			for (Iterator it = activatedHooks.iterator(); it.hasNext();) {
-				PermanentNodeHook hook = (PermanentNodeHook) it.next();
-				if (hook instanceof SocketConnectionHook) {
-					SocketConnectionHook connHook = null;
-					connHook = (SocketConnectionHook) hook;
-					// Tell the hook about me
-					connHook.setClientCommunication(this);
-					/* register as listener, as I am a slave. */
-					connHook.registerFilter();
-					this.mSocketConnectionHook = connHook;
-					break;
-				}
+			registerClientCommunicationAtHook();
+		}
+	}
+
+	protected void registerClientCommunicationAtHook() {
+		// tell him about this thread.
+		Collection activatedHooks = getMindMapController().getRootNode()
+				.getActivatedHooks();
+		for (Iterator it = activatedHooks.iterator(); it.hasNext();) {
+			PermanentNodeHook hook = (PermanentNodeHook) it.next();
+			if (hook instanceof SocketConnectionHook) {
+				SocketConnectionHook connHook = null;
+				connHook = (SocketConnectionHook) hook;
+				// Tell the hook about me
+				connHook.setClientCommunication(this);
+				/* register as listener, as I am a slave. */
+				connHook.registerFilter();
+				this.mSocketConnectionHook = connHook;
+				break;
 			}
 		}
 	}
