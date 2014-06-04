@@ -273,7 +273,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 		menuHolder.updateMenus(menu, "main/");
 		dialog.setJMenuBar(menu);
 
-		calendar = new JTripleCalendar();
+		calendar = new JTripleCalendar(4);
 		Container contentPane = dialog.getContentPane();
 		contentPane.setLayout(new GridBagLayout());
 		GridBagConstraints gb1 = new GridBagConstraints();
