@@ -236,7 +236,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
 	}
 
 	/**
-	 * Initilizes the locale specific names for the days of the week.
+	 * Initializes the locale specific names for the days of the week.
 	 */
 	protected void init() {
 		JButton testButton = new JButton();

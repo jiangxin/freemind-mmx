@@ -198,7 +198,7 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
 		monthYearPanel.add(yearChooser, BorderLayout.CENTER);
 		monthYearPanel.setBorder(BorderFactory.createEmptyBorder());
 
-		dayChooser = new JDayChooser(weekOfYearVisible);
+		dayChooser = createJDayChooser(weekOfYearVisible);
 		dayChooser.addPropertyChangeListener(this);
 		monthChooser.setDayChooser(dayChooser);
 		monthChooser.addPropertyChangeListener(this);
@@ -218,6 +218,10 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
 		initialized = true;
 
 		setCalendar(calendar);
+	}
+
+	protected JDayChooser createJDayChooser(boolean weekOfYearVisible) {
+		return new JDayChooser(weekOfYearVisible);
 	}
 
 	/**
@@ -299,6 +303,7 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
 	 *            the property change event
 	 */
 	public void propertyChange(PropertyChangeEvent evt) {
+//		System.out.println("Property change in " +this.getClass().getSimpleName() + " of type " + evt.getPropertyName());
 		if (calendar != null) {
 			Calendar c = (Calendar) calendar.clone();
 
