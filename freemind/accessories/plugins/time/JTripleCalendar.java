@@ -202,6 +202,7 @@ public class JTripleCalendar extends JPanel implements PropertyChangeListener {
 	
 	public void propertyChange(PropertyChangeEvent evt) {
 		if(mIgnoreChangeEvent) {
+			System.out.println("Ignoring event " + evt.getPropertyName());
 			return;
 		}
 		try {

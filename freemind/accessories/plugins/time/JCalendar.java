@@ -386,7 +386,9 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
 			dayChooser.setDay(c.get(Calendar.DATE));
 		}
 
-		firePropertyChange("calendar", oldCalendar, calendar);
+		// fc, 25.6.2014: always fire the change event (formerly, there was oldCalendar, but sometimes, 
+		// they are equal.
+		firePropertyChange("calendar", null, calendar);
 	}
 
 	/**
