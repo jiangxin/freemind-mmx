@@ -60,13 +60,13 @@ public class JTripleCalendar extends JPanel implements PropertyChangeListener {
 		mCurrentDate = GregorianCalendar.getInstance();
 		this.setName("JTripleCalendar");
 		mGridLayout = new GridBagLayout();
-//		gridLayout.setHgap(50);
 		setLayout(mGridLayout);
 		int monthIndex = 0;
 		for(int row=0; row < AMOUNT_OF_ROWS; ++row) {
 			for(int column=0; column < AMOUNT_OF_COLUMNS; ++column) {
 				JSwitchableCalendar infoPanel = createInfoPanel();
-				infoPanel.getCalendarWidget().addPropertyChangeListener(this);
+				infoPanel.addPropertyChangeListener(this);
+//				infoPanel.getCalendarWidget().addPropertyChangeListener(this);
 				mInfoPanels.put(infoPanel, monthIndex);
 				GridBagConstraints constraints = getConstraints(row, column);
 				add(infoPanel, constraints);
@@ -79,6 +79,7 @@ public class JTripleCalendar extends JPanel implements PropertyChangeListener {
 				monthIndex++;
 			}
 		}
+		propagateDate(mCurrentDate);
 	}
 
 	protected GridBagConstraints getConstraints(int row, int column) {
@@ -89,7 +90,7 @@ public class JTripleCalendar extends JPanel implements PropertyChangeListener {
 	/**
 	 * A calendar widget that can be switched on/off (activated/deactivated).
 	 */
-	private static class JSwitchableCalendar extends JCalendar {
+	private class JSwitchableCalendar extends JCalendar {
 
 		public void setDate(Calendar calendar) {
 			int year = calendar.get(Calendar.YEAR);
@@ -143,6 +144,17 @@ public class JTripleCalendar extends JPanel implements PropertyChangeListener {
 
 					super.setEnabled(true);
 				}
+
+				/* (non-Javadoc)
+				 * @see accessories.plugins.time.JDayChooser#setMonthAndYear(int, int, java.util.GregorianCalendar)
+				 */
+				@Override
+				protected void setMonthAndYear(int pMonth, int pYear,
+						GregorianCalendar gregorianCalendar) {
+					mIgnoreChangeEvent = true;
+					super.setMonthAndYear(pMonth, pYear, gregorianCalendar);
+					mIgnoreChangeEvent = false;
+				}
 			};
 		};
 	
@@ -192,71 +204,81 @@ public class JTripleCalendar extends JPanel implements PropertyChangeListener {
 		if(mIgnoreChangeEvent) {
 			return;
 		}
-		Object source = evt.getSource();
-//		System.out.println("Property change in " +this.getClass().getSimpleName() + " of source " + source + " of type " + evt.getPropertyName());
-		JDayChooser currentCalWidget = mCurrentlyActivePanel.getCalendarWidget();
-		if (source == currentCalWidget) {
-			// on the calendar itself, there was probably only a different day clicked
+		try {
+			mIgnoreChangeEvent = true;
+			Object source = evt.getSource();
+			System.out.println("Property change in " +this.getClass().getSimpleName() + " of source " + source + " of type " + evt.getPropertyName());
 			Calendar gregorianCalendar = (Calendar) mCurrentlyActivePanel
 					.getCalendar().clone();
-			// test for the same month/year as before:
-//			System.out.println("Comparing new date " + gregorianCalendar.getTime() + " with hidden panel time " + mCurrentDate.getTime());
-			int dist = mCurrentDate.get(Calendar.MONTH)- gregorianCalendar
-					.get(Calendar.MONTH) +
-					12*( mCurrentDate.get(Calendar.YEAR) - gregorianCalendar
-							.get(Calendar.YEAR));
-			if (dist==0	) {
-				propagateDate(gregorianCalendar);
-			} else {
-				// different month/year selected. Test, if present on the screen:
-				int newIndex = mCurrentMonthPosition -dist;
-				if(newIndex< 0 || newIndex >= AMOUNT_OF_COLUMNS*AMOUNT_OF_ROWS) {
-					// not on the screen, just adjust the rest:
+			if (source == mCurrentlyActivePanel) {
+				// on the calendar itself, there was probably only a different day clicked
+				// test for the same month/year as before:
+				System.out.println("Comparing new date " + gregorianCalendar.getTime() + " with active panel time " + mCurrentDate.getTime());
+				int dist = mCurrentDate.get(Calendar.MONTH)- gregorianCalendar
+						.get(Calendar.MONTH) +
+						12*( mCurrentDate.get(Calendar.YEAR) - gregorianCalendar
+								.get(Calendar.YEAR));
+				if (dist==0	) {
 					propagateDate(gregorianCalendar);
 				} else {
-					// move to a different position on the screen:
+					// different month/year selected. Test, if present on the screen:
+					int newIndex = mCurrentMonthPosition -dist;
+					if(newIndex< 0 || newIndex >= AMOUNT_OF_COLUMNS*AMOUNT_OF_ROWS) {
+						// not on the screen, just adjust the rest:
+						propagateDate(gregorianCalendar);
+					} else {
+						// move to a different position on the screen:
+						for(JSwitchableCalendar infoPanel : mInfoPanels.keySet()) {
+							if(mInfoPanels.get(infoPanel) == newIndex) {
+								exchangeCalendars(infoPanel, gregorianCalendar.get(Calendar.DAY_OF_MONTH));
+								break;
+							}
+						}
+						
+					}
+				}
+			} else {
+				if (Tools.safeEquals(evt.getPropertyName(),
+						JDayChooser.DAY_PROPERTY)) {
 					for(JSwitchableCalendar infoPanel : mInfoPanels.keySet()) {
-						if(mInfoPanels.get(infoPanel) == newIndex) {
-							exchangeCalendars(infoPanel, gregorianCalendar.get(Calendar.DAY_OF_MONTH));
+						if (source == infoPanel.getCalendarWidget()) {
+							int newDayOfMonth = ((Integer) evt.getNewValue()).intValue();
+							exchangeCalendars(infoPanel, newDayOfMonth);
 							break;
 						}
 					}
+				} else if (Tools.safeEquals(evt.getPropertyName(), "calendar") ) {
+					for(JSwitchableCalendar infoPanel : mInfoPanels.keySet()) {
+						if (source == infoPanel) {
+							int newDayOfMonth = ((Calendar) evt.getNewValue()).get(Calendar.DAY_OF_MONTH);
+							exchangeCalendars(infoPanel, newDayOfMonth);
+							break;
+						}
+					}
+//				} else if (Tools.safeEquals(evt.getPropertyName(), "calendar")&&evt.getSource()==mCurrentlyActivePanel) {
+//					propagateDate(gregorianCalendar);
 					
 				}
 			}
-		} else {
-			if (Tools.safeEquals(evt.getPropertyName(),
-					JDayChooser.DAY_PROPERTY)) {
-				for(JSwitchableCalendar infoPanel : mInfoPanels.keySet()) {
-					if (source == infoPanel.getCalendarWidget()) {
-						int newDayOfMonth = ((Integer) evt.getNewValue()).intValue();
-						exchangeCalendars(infoPanel, newDayOfMonth);
-						break;
-					}
-				}
-			}
-		}
-//		System.out.println("Setting current date from " + mCurrentDate.getTime() + " to " + mCurrentlyActivePanel.getCalendar().getTime());
-		mCurrentDate = mCurrentlyActivePanel.getCalendar();
-	}
-
-	protected void exchangeCalendars(JSwitchableCalendar infoPanel, int newDayOfMonth) {
-		try {
-			mIgnoreChangeEvent = true;
-			Calendar gregorianCalendar = (Calendar) infoPanel.getCalendar()
-					.clone();
-			gregorianCalendar.set(Calendar.DAY_OF_MONTH,
-					newDayOfMonth);
-			mCurrentlyActivePanel.setEnabled(false);
-			mCurrentlyActivePanel = infoPanel;
-			mCurrentMonthPosition = mInfoPanels.get(infoPanel);
-			infoPanel.setEnabled(true);
-			infoPanel.setCalendar(gregorianCalendar);
-			propagateDate(gregorianCalendar);
-			infoPanel.getCalendarWidget().setFocus();
+	//		System.out.println("Setting current date from " + mCurrentDate.getTime() + " to " + mCurrentlyActivePanel.getCalendar().getTime());
+			mCurrentDate = mCurrentlyActivePanel.getCalendar();
 		} finally {
 			mIgnoreChangeEvent = false;
 		}
+	}
+
+	protected void exchangeCalendars(JSwitchableCalendar infoPanel, int newDayOfMonth) {
+		Calendar gregorianCalendar = (Calendar) infoPanel.getCalendar()
+				.clone();
+		gregorianCalendar.set(Calendar.DAY_OF_MONTH,
+				newDayOfMonth);
+		mCurrentlyActivePanel.setEnabled(false);
+		mCurrentlyActivePanel = infoPanel;
+		mCurrentMonthPosition = mInfoPanels.get(infoPanel);
+		infoPanel.setEnabled(true);
+		infoPanel.setCalendar(gregorianCalendar);
+		propagateDate(gregorianCalendar);
+		infoPanel.getCalendarWidget().setFocus();
 	}
 
 	public void propagateDate(Calendar gregorianCalendar) {

@@ -295,6 +295,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
 		return dayChooser.isWeekOfYearVisible();
 	}
 
+	private boolean doingPropertyChanges = false;
+	
 	/**
 	 * JCalendar is a PropertyChangeListener, for its day, month and year
 	 * chooser.
@@ -303,25 +305,33 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
 	 *            the property change event
 	 */
 	public void propertyChange(PropertyChangeEvent evt) {
-//		System.out.println("Property change in " +this.getClass().getSimpleName() + " of type " + evt.getPropertyName());
-		if (calendar != null) {
-			Calendar c = (Calendar) calendar.clone();
+		if(doingPropertyChanges) {
+			return;
+		}
+		doingPropertyChanges = true;
+		try {
+			//		System.out.println("Property change in " +this.getClass().getSimpleName() + " of type " + evt.getPropertyName());
+			if (calendar != null) {
+				Calendar c = (Calendar) calendar.clone();
 
-			if (evt.getPropertyName().equals(JDayChooser.DAY_PROPERTY)) {
-				c.set(Calendar.DAY_OF_MONTH,
-						((Integer) evt.getNewValue()).intValue());
-				setCalendar(c, false);
-			} else if (evt.getPropertyName().equals(
-					JMonthChooser.MONTH_PROPERTY)) {
-				c.set(Calendar.MONTH, ((Integer) evt.getNewValue()).intValue());
-				setCalendar(c, false);
-			} else if (evt.getPropertyName().equals(JYearChooser.YEAR_PROPERTY)) {
-				c.set(Calendar.YEAR, ((Integer) evt.getNewValue()).intValue());
-				setCalendar(c, false);
-			} else if (evt.getPropertyName().equals(DATE_PROPERTY)) {
-				c.setTime((Date) evt.getNewValue());
-				setCalendar(c, true);
+				if (evt.getPropertyName().equals(JDayChooser.DAY_PROPERTY)) {
+					c.set(Calendar.DAY_OF_MONTH,
+							((Integer) evt.getNewValue()).intValue());
+					setCalendar(c, false);
+				} else if (evt.getPropertyName().equals(
+						JMonthChooser.MONTH_PROPERTY)) {
+					c.set(Calendar.MONTH, ((Integer) evt.getNewValue()).intValue());
+					setCalendar(c, false);
+				} else if (evt.getPropertyName().equals(JYearChooser.YEAR_PROPERTY)) {
+					c.set(Calendar.YEAR, ((Integer) evt.getNewValue()).intValue());
+					setCalendar(c, false);
+				} else if (evt.getPropertyName().equals(DATE_PROPERTY)) {
+					c.setTime((Date) evt.getNewValue());
+					setCalendar(c, true);
+				}
 			}
+		} finally {
+			doingPropertyChanges = false;
 		}
 	}
 

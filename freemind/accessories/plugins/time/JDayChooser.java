@@ -695,11 +695,15 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener,
 			int month = tempCalendar.get(Calendar.MONTH);
 			int year = tempCalendar.get(Calendar.YEAR);
 			int day = tempCalendar.get(Calendar.DAY_OF_MONTH);
-			yearChooser.setYear(year);
-			monthChooser.setMonth(month);
+			setMonthAndYear(month, year, tempCalendar);
 			this.setDay(day);
 		}
 		setFocus();
+	}
+
+	protected void setMonthAndYear(int month, int year, GregorianCalendar pCalendar) {
+		yearChooser.setYear(year);
+		monthChooser.setMonth(month);
 	}
 
 	private int diffMonth(int pMonthDiff) {
