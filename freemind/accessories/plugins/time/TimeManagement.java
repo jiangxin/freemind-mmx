@@ -202,6 +202,8 @@ public class TimeManagement extends MindMapHookAdapter implements
 
 	private static Calendar lastDate = null;
 
+	private static int lastActivePosition = 5;
+
 	private JTripleCalendar calendar;
 
 	private JDialog dialog;
@@ -273,7 +275,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 		menuHolder.updateMenus(menu, "main/");
 		dialog.setJMenuBar(menu);
 
-		calendar = new JTripleCalendar(4);
+		calendar = new JTripleCalendar(lastActivePosition, lastDate);
 		Container contentPane = dialog.getContentPane();
 		contentPane.setLayout(new GridBagLayout());
 		GridBagConstraints gb1 = new GridBagConstraints();
@@ -290,10 +292,6 @@ public class TimeManagement extends MindMapHookAdapter implements
 			gb2.gridwidth = 4;
 			gb2.fill = GridBagConstraints.HORIZONTAL;
 			contentPane.add(getTimePanel(), gb2);
-		}
-		if (lastDate != null) {
-			logger.info("Setting date to " + lastDate);
-			calendar.setCalendar(lastDate);
 		}
 		dialog.pack();
 		// focus fix after startup.
@@ -432,6 +430,7 @@ public class TimeManagement extends MindMapHookAdapter implements
 		dialog.setVisible(false);
 		dialog.dispose();
 		lastDate = getCalendar();
+		lastActivePosition = calendar.getCurrentMonthPosition();
 		sCurrentlyOpenTimeManagement = null;
 	}
 
