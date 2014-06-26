@@ -21,6 +21,7 @@
 package accessories.plugins.time;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -35,6 +36,7 @@ import java.util.HashMap;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 
 import tests.freemind.FreeMindMainMock;
 import freemind.main.Resources;
@@ -85,12 +87,21 @@ public class JTripleCalendar extends JPanel implements PropertyChangeListener {
 				}
 				monthIndex++;
 			}
+			if(column < AMOUNT_OF_COLUMNS-1) {
+				GridBagConstraints constraints = new GridBagConstraints(2*column+1, 0, 1, AMOUNT_OF_ROWS, 
+						1, 1, GridBagConstraints.CENTER, GridBagConstraints.VERTICAL, 
+						new Insets(0, 0, 0, 10), 0, 0);
+				JSeparator sep = new JSeparator();
+				sep.setPreferredSize(new Dimension(5,2));
+				sep.setOrientation(JSeparator.VERTICAL);
+				add(sep, constraints);
+			}
 		}
 		propagateDate(mCurrentDate);
 	}
 
 	protected GridBagConstraints getConstraints(int row, int column) {
-		GridBagConstraints constraints = new GridBagConstraints(column, row, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 10), 50, 10);
+		GridBagConstraints constraints = new GridBagConstraints(2*column, row, 1, 1, 1, 1, GridBagConstraints.CENTER, GridBagConstraints.NONE, new Insets(0, 0, 0, 10), 50, 10);
 		return constraints;
 	}
 
