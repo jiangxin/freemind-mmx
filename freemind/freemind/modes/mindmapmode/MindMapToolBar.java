@@ -21,6 +21,7 @@
 package freemind.modes.mindmapmode;
 
 import java.awt.Component;
+import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Vector;
@@ -33,6 +34,8 @@ import freemind.controller.Controller;
 import freemind.controller.FreeMindToolBar;
 import freemind.controller.StructuredMenuHolder;
 import freemind.controller.ZoomListener;
+import freemind.main.FreeMind;
+import freemind.main.FreeMindMain;
 import freemind.main.Tools;
 
 public class MindMapToolBar extends FreeMindToolBar implements ZoomListener {
@@ -86,6 +89,7 @@ public class MindMapToolBar extends FreeMindToolBar implements ZoomListener {
 		iconToolBarScrollPane = new JAutoScrollBarPane(iconToolBar);
 		iconToolBar.setOrientation(JToolBar.VERTICAL);
 		iconToolBar.setRollover(true);
+		iconToolBar.setLayout(new GridLayout(0, getController().getIntProperty(FreeMind.ICON_BAR_COLUMN_AMOUNT, 1))); 
 		iconToolBarScrollPane.getVerticalScrollBar().setUnitIncrement(100);
 		fontsListener = new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {

@@ -774,6 +774,7 @@ public class OptionPanel implements TextTranslator {
 		controls.add(new SeparatorProperty("icon_properties"));
 		controls.add(new StringProperty("icon_order_description",
 				MindIcon.PROPERTY_STRING_ICONS_LIST));
+		controls.add(new NumberProperty(null, FreeMind.ICON_BAR_COLUMN_AMOUNT, 1, 10, 1));
 		/***********************************************************************
 		 * Keystrokes
 		 * ****************************************************************

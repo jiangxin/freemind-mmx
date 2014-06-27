@@ -10,6 +10,7 @@ Changes made in FreeMind 1.1.0 Alpha 2
 * New search&replace dialog shows tooltips of the node and note text.
 * Enhanced the calendar widget to show 12 month at once.
 * New feature: standalone map server created.
+* new feature: icon toolbar can have multiple columns (see properties->appearance).
 
 ===============================
 Changes made in FreeMind 1.1.0 Alpha 1
