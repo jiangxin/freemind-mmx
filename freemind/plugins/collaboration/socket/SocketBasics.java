@@ -22,31 +22,11 @@
 
 package plugins.collaboration.socket;
 
-import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.WindowConstants;
-
-import com.jgoodies.forms.builder.ButtonBarBuilder;
-import com.jgoodies.forms.builder.DefaultFormBuilder;
-import com.jgoodies.forms.layout.FormLayout;
 
 import freemind.common.NumberProperty;
-import freemind.common.PropertyBean;
-import freemind.common.PropertyControl;
 import freemind.controller.Controller;
 import freemind.controller.MapModuleManager.MapTitleContributor;
 import freemind.controller.actions.generated.instance.CollaborationUserInformation;
@@ -162,125 +142,6 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 				+ getMapFeedback().getIntProperty(
 						PORT_PROPERTY, 9001));
 		return portProperty;
-	}
-
-	public static abstract class FormDialogValidator {
-		/**
-		 * @return true, if ok should be enabled.
-		 */
-		public abstract boolean isValid();
-	}
-
-	public static class FormDialog extends JDialog implements
-			PropertyChangeListener {
-		private final MindMapController mController2;
-		private boolean mSuccess = false;
-		private JButton mOkButton;
-		private FormDialogValidator mFormDialogValidator;
-		protected static java.util.logging.Logger logger = null;
-
-		public boolean isSuccess() {
-			return mSuccess;
-		}
-
-		public FormDialog(MindMapController pController) {
-			super(pController.getFrame().getJFrame());
-			if (logger == null) {
-				logger = freemind.main.Resources.getInstance().getLogger(
-						this.getClass().getName());
-			}
-			mController2 = pController;
-		}
-
-		public void setUp(Vector controls) {
-			setUp(controls, new FormDialogValidator() {
-
-				public boolean isValid() {
-					return true;
-				}
-			});
-		}
-
-		public void setUp(Vector controls, FormDialogValidator pValidator) {
-			mFormDialogValidator = pValidator;
-			setModal(true);
-			getContentPane().setLayout(new BorderLayout());
-			FormLayout formLayout = new FormLayout(
-					"right:max(40dlu;p), 4dlu, 80dlu, 7dlu", "");
-			DefaultFormBuilder builder = new DefaultFormBuilder(formLayout);
-			builder.setDefaultDialogBorder();
-			for (Iterator it = controls.iterator(); it.hasNext();) {
-				PropertyControl prop = (PropertyControl) it.next();
-				prop.layout(builder, mController2);
-				PropertyBean bean = (PropertyBean) prop;
-				bean.addPropertyChangeListener(this);
-			}
-			getContentPane().add(builder.getPanel(), BorderLayout.CENTER);
-			JButton cancelButton = new JButton();
-			Tools.setLabelAndMnemonic(cancelButton, getText("cancel"));
-			cancelButton.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent arg0) {
-					closeWindow();
-				}
-
-			});
-			mOkButton = new JButton();
-			Tools.setLabelAndMnemonic(mOkButton, getText("ok"));
-			mOkButton.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent arg0) {
-					mSuccess = true;
-					closeWindow();
-				}
-
-			});
-			getRootPane().setDefaultButton(mOkButton);
-			getContentPane().add(
-					new ButtonBarBuilder().addGlue().addButton(cancelButton).addButton(mOkButton).build(),
-					BorderLayout.SOUTH);
-			setTitle(getText("enter_password_dialog"));
-			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-			addWindowListener(new WindowAdapter() {
-				public void windowClosing(WindowEvent event) {
-					closeWindow();
-				}
-			});
-			Action action = new AbstractAction() {
-
-				public void actionPerformed(ActionEvent arg0) {
-					closeWindow();
-				}
-			};
-			Action actionSuccess = new AbstractAction() {
-
-				public void actionPerformed(ActionEvent arg0) {
-					mSuccess = true;
-					closeWindow();
-				}
-			};
-			Tools.addEscapeActionToDialog(this, action);
-			Tools.addKeyActionToDialog(this, actionSuccess, "ENTER",
-					"ok_dialog");
-
-			pack();
-			setVisible(true);
-
-		}
-
-		private void closeWindow() {
-			setVisible(false);
-		}
-
-		String getText(String text) {
-			return mController2.getText(text);
-		}
-
-		public void propertyChange(PropertyChangeEvent pEvt) {
-			logger.finest("Property change " + pEvt);
-			mOkButton.setEnabled(mFormDialogValidator.isValid());
-		}
-
 	}
 
 	public abstract int getPort();

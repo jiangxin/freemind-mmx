@@ -30,6 +30,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Vector;
 
+import plugins.collaboration.socket.FormDialog;
+import plugins.collaboration.socket.FormDialog.FormDialogValidator;
 import freemind.common.NumberProperty;
 import freemind.common.StringProperty;
 import freemind.extensions.DontSaveMarker;

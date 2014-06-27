@@ -29,6 +29,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
 
+import plugins.collaboration.socket.FormDialog;
 import freemind.common.NumberProperty;
 import freemind.common.StringProperty;
 import freemind.extensions.PermanentNodeHook;

@@ -201,7 +201,6 @@ public class StandaloneMindMapMaster extends SocketMaster {
 			public boolean accept(File pDir, String pName) {
 				return pName.endsWith(".mm");
 			}});
-		mFileMap = new HashMap<String, ExtendedMapFeedback>();
 		for (int i = 0; i < fileList.length; i++) {
 			String fileName = fileList[i];
 			File file = new File(pFilePath, fileName);

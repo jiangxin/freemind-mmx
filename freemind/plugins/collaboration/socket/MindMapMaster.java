@@ -34,7 +34,7 @@ import java.util.Vector;
 
 import javax.swing.SwingUtilities;
 
-import plugins.collaboration.socket.SocketMaster.SessionData;
+import plugins.collaboration.socket.FormDialog.FormDialogValidator;
 import freemind.common.NumberProperty;
 import freemind.common.StringProperty;
 import freemind.controller.actions.generated.instance.CollaborationGoodbye;
@@ -45,7 +45,7 @@ import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.ExtendedMapFeedback;
-import freemind.modes.MindMap;
+import freemind.modes.ExtendedMapFeedbackImpl;
 import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.view.mindmapview.NodeView;
@@ -149,6 +149,9 @@ public class MindMapMaster extends SocketMaster implements PermanentNodeHook,
 			// we were already here, so
 			return;
 		}
+		if(mapFeedback.getMap().getFile() == null) {
+			getController().out(getController().getText("map_not_saved"));
+		}
 		MindMapController controller = getMindMapController();
 		final StringProperty passwordProperty = new StringProperty(
 				PASSWORD_DESCRIPTION, PASSWORD);
@@ -196,6 +199,7 @@ public class MindMapMaster extends SocketMaster implements PermanentNodeHook,
 			switchMeOff();
 			return;
 		}
+		addSession(mapFeedback.getMap().getFile().getName(), (ExtendedMapFeedback) mapFeedback);
 		registerFilter();
 		logger.info("Starting server. Done.");
 		setTitle();

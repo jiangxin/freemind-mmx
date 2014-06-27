@@ -51,7 +51,7 @@ public abstract class SocketMaster extends SocketBasics {
 	
 	protected HashMap<ExtendedMapFeedback, SessionData> mSessions = new HashMap<ExtendedMapFeedback, SocketMaster.SessionData>();
 	protected int mPort;
-	protected HashMap<String, ExtendedMapFeedback> mFileMap;
+	protected HashMap<String, ExtendedMapFeedback> mFileMap = new HashMap<String, ExtendedMapFeedback>();
 
 	
 	public synchronized void removeConnection(ServerCommunication client) {
@@ -239,11 +239,16 @@ public abstract class SocketMaster extends SocketBasics {
 		mapFeedback.getActionRegistry().registerFilter(this);
 		map.setFile(pFile);
 		
+		addSession(fileName, mapFeedback);
+		return mapFeedback;
+	}
+
+	protected void addSession(String fileName,
+			ExtendedMapFeedback mapFeedback) {
 		synchronized (mSessions) {
 			mFileMap.put(fileName, mapFeedback);
 			mSessions.put(mapFeedback, new SessionData());
 		}
-		return mapFeedback;
 	}
 
 
