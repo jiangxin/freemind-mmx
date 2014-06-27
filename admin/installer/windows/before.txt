@@ -1,6 +1,6 @@
 PLEASE NOTE
 
-FreeMind requires Java 1.4 or higher
+FreeMind requires Java 1.6 or higher
 
 If Java is not installed, please abort the installation and download the JRE - Java Runtime Environment from 
 
