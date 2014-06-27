@@ -197,7 +197,8 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements
 				bean.addPropertyChangeListener(this);
 			}
 			getContentPane().add(builder.getPanel(), BorderLayout.CENTER);
-			JButton cancelButton = new JButton(getText("Cancel"));
+			JButton cancelButton = new JButton();
+			Tools.setLabelAndMnemonic(cancelButton, getText("cancel"));
 			cancelButton.addActionListener(new ActionListener() {
 
 				public void actionPerformed(ActionEvent arg0) {
@@ -205,7 +206,8 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements
 				}
 
 			});
-			mOkButton = new JButton(getText("OK"));
+			mOkButton = new JButton();
+			Tools.setLabelAndMnemonic(mOkButton, getText("ok"));
 			mOkButton.addActionListener(new ActionListener() {
 
 				public void actionPerformed(ActionEvent arg0) {
@@ -218,7 +220,7 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements
 			getContentPane().add(
 					new ButtonBarBuilder().addGlue().addButton(cancelButton).addButton(mOkButton).build(),
 					BorderLayout.SOUTH);
-			setTitle("Enter Password Dialog");
+			setTitle(getText("enter_password_dialog"));
 			setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 			addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent event) {
@@ -252,7 +254,7 @@ public abstract class DatabaseBasics extends MindMapNodeHookAdapter implements
 		}
 
 		String getText(String text) {
-			return text;
+			return mController2.getText(text);
 		}
 
 		public void propertyChange(PropertyChangeEvent pEvt) {
