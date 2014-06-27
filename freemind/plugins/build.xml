@@ -24,6 +24,8 @@
 				    <exclude name="build_jabber.xml"/>
 					<!-- Database is outdated. It is replaced by Socket -->
 				    <exclude name="build_database.xml"/>
+					<!-- The search plugin wasn't maintenanced  -->
+				    <exclude name="build_search.xml"/>
 				</fileset>
 			</subant>
 		</sequential>
