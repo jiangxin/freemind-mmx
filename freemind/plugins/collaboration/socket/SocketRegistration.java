@@ -63,12 +63,16 @@ public class SocketRegistration implements HookRegistration,
 		logger.fine(this + " is asked for " + pAction + ".");
 		if (pAction instanceof NodeHookAction) {
 			NodeHookAction action = (NodeHookAction) pAction;
-			if (action.getHookName().equals(
-					MindMapMaster.LABEL)) {
+			if (action.getHookName().equals(MindMapMaster.LABEL)) {
 				return isMaster();
 			}
-			if(action.getHookName().equals(MindMapClient.SLAVE_STARTER_LABEL)) {
+			if (action.getHookName().equals(MindMapClient.SLAVE_STARTER_LABEL)) {
 				return isSlave();
+			}
+			if (action.getHookName().equals(MindMapClient.SLAVE_PUBLISH_LABEL)) {
+				// the publish map item is not selected. It would be nice to get
+				// the information, though.
+				return false;
 			}
 		}
 		return false;
@@ -105,11 +109,19 @@ public class SocketRegistration implements HookRegistration,
 		logger.fine(this + " is asked for " + pAction + ".");
 		if (pAction instanceof NodeHookAction) {
 			NodeHookAction action = (NodeHookAction) pAction;
-			if (action.getHookName().equals(
-					MindMapMaster.LABEL)) {
+			if (action.getHookName().equals(MindMapMaster.LABEL)) {
 				return !isSlave();
 			}
+			// not available, if a master is active.
+			if (action.getHookName().equals(MindMapClient.SLAVE_STARTER_LABEL)) {
+				return !isMaster();
+			}
+			if (action.getHookName().equals(MindMapClient.SLAVE_PUBLISH_LABEL)) {
+				// this is for the publish map command. Only available, if
+				// neither nor.
+				return !isSlave() && !isMaster();
+			}
 		}
-		return !isMaster();
+		throw new IllegalArgumentException("Unknown action: " + pAction);
 	}
 }

@@ -57,6 +57,8 @@ public abstract class SocketBasics extends MindMapNodeHookAdapter implements
 			+ "socket_slave_plugin";
 	public final static String SLAVE_STARTER_LABEL = PLUGINS_COLLABORATION_SOCKET
 			+ "socket_slave_starter_plugin";
+	public final static String SLAVE_PUBLISH_LABEL = PLUGINS_COLLABORATION_SOCKET
+			+ "socket_publish_map_plugin";
 	protected static final Integer ROLE_MASTER = Integer.valueOf(0);
 	protected static final Integer ROLE_SLAVE = Integer.valueOf(1);
 	private static final String PORT_PROPERTY = "plugins.collaboration.socket.port";
