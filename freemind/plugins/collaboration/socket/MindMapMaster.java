@@ -57,6 +57,8 @@ import freemind.view.mindmapview.NodeView;
 public class MindMapMaster extends SocketMaster implements PermanentNodeHook,
 		DontSaveMarker {
 
+	public static final String LABEL = "plugins/collaboration/socket/socket_master_plugin";
+	
 	MasterThread mListener = null;
 	ServerSocket mServer;
 	private boolean mMasterStarted;
@@ -86,7 +88,7 @@ public class MindMapMaster extends SocketMaster implements PermanentNodeHook,
 				logger.info("Received new client.");
 				client.setSoTimeout(SOCKET_TIMEOUT_IN_MILLIES);
 				ServerCommunication c = new ServerCommunication(
-						MindMapMaster.this, client, getMindMapController());
+						MindMapMaster.this, client, getMindMapController(), true);
 				c.start();
 			} catch (SocketTimeoutException e) {
 			}

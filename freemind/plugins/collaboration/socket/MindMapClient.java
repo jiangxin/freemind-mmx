@@ -32,8 +32,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Vector;
 
-import javax.swing.JOptionPane;
-
 import freemind.common.NumberProperty;
 import freemind.common.StringProperty;
 import freemind.controller.actions.generated.instance.CollaborationPublishNewMap;
@@ -56,13 +54,10 @@ public class MindMapClient extends SocketBasics {
 	public void startupMapHook() {
 		super.startupMapHook();
 		String callType = getProperties().getProperty("callType");
-		boolean publishType = Tools.safeEquals(callType, "publish");
+		boolean isOfPublishType = Tools.safeEquals(callType, "publish");
 		MindMapController controller = getMindMapController();
-		if(publishType && controller.getMap().getFile()==null) {
-			JOptionPane.showMessageDialog(
-					controller.getViewAbstraction().getSelected(),
-					controller.getResourceString("map_not_saved"),
-					"FreeMind", JOptionPane.ERROR_MESSAGE);
+		if(isOfPublishType && controller.getMap().getFile()==null) {
+			controller.out(controller.getResourceString("map_not_saved"));
 			return;
 		}
 		StringProperty passwordProperty = new StringProperty(
@@ -102,18 +97,19 @@ public class MindMapClient extends SocketBasics {
 			.setSoTimeout(MindMapMaster.SOCKET_TIMEOUT_IN_MILLIES);
 			ClientCommunication clientCommunication;
 			// determine type: join or publish
-			if(publishType) {
+			if(isOfPublishType) {
 				logger.info("Starting client thread and publish map...");
 				clientCommunication = new ClientCommunication(
-						"Client Communication", serverConnection,
+						"Client Communication (publish)", serverConnection,
 						getMindMapController(), mPassword) {
 					protected void reactOnWhoAreYou() {
-						// send hello:
+						// send publish command
 						CollaborationPublishNewMap publishCommand = new CollaborationPublishNewMap();
 						publishCommand.setUserId(Tools.getUserName());
 						publishCommand.setPassword(mPassword);
 						MindMap map = mController.getMap();
 						publishCommand.setMapName(map.getFile().getName());
+						// de-serialize the map:
 						StringWriter writer = new StringWriter();
 						try {
 							map.getXml(writer);
@@ -133,7 +129,7 @@ public class MindMapClient extends SocketBasics {
 			} else {
 				logger.info("Starting client thread...");
 				clientCommunication = new ClientCommunication(
-						"Client Communication", serverConnection,
+						"Client Communication (share map)", serverConnection,
 						getMindMapController(), mPassword);
 			}
 			clientCommunication.start();

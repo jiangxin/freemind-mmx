@@ -846,6 +846,9 @@
 				<xs:sequence>
 					<xs:element ref="collaboration_map_offer" maxOccurs="unbounded" minOccurs="0"/>
 				</xs:sequence>
+				<!-- It makes a difference if the server has only one map, 
+					or it is a single-map-server. In the first case, the creation of new maps isn't possible. -->
+				<xs:attribute name="is_single_offer" use="required" type="xs:boolean" default="false"/>
 			</xs:extension>
 		</xs:complexContent>
 	  </xs:complexType>

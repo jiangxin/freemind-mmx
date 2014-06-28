@@ -31,7 +31,7 @@
 		base="freemind.extensions.NodeHookAdapter" 
 		label="plugins/collaboration/socket/socket_publish_map_plugin" 
 		class_name="plugins.collaboration.socket.MindMapClient"
-		isSelectable="true">
+		isSelectable="false">
         	<plugin_property name="callType" value="publish"/>
 		<plugin_mode class_name="freemind.modes.mindmapmode"/>
 		<plugin_menu location="menu_bar/extras/first/collaboration/socket_slave_publish"/>

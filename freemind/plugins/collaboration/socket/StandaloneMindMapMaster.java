@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.HashMap;
 import java.util.Iterator;
 
 import tests.freemind.FreeMindMainMock;
@@ -99,7 +98,7 @@ public class StandaloneMindMapMaster extends SocketMaster {
 				logger.info("Received new client.");
 				client.setSoTimeout(SOCKET_TIMEOUT_IN_MILLIES);
 				ServerCommunication communication = new ServerCommunication(
-						StandaloneMindMapMaster.this, client, null);
+						StandaloneMindMapMaster.this, client, null, false);
 				communication.start(); 
 			} catch (SocketTimeoutException e) {
 			}

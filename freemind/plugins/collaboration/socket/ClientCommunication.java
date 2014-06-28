@@ -166,91 +166,107 @@ public class ClientCommunication extends CommunicationBase {
 				printWrongState(pCommand);
 			}
 			final CollaborationOffers collOffers = (CollaborationOffers) pCommand;
-			// now, we have a bundle of different maps to offer to the user
-			final JDialog mapChooserDialog = new JDialog(getMindMapController().getFrame().getJFrame(),
-					false);
-			mapChooserDialog.getContentPane().setLayout(new GridBagLayout());
-			String mapTitle = Resources.getInstance().format(
-					"MapChooserDialog_title",
-					new Object[] { mSocket.getInetAddress().getHostAddress(),
-							new Integer(mSocket.getPort()) });
-
-			mapChooserDialog.setTitle(mapTitle);
-			mapChooserDialog
-					.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-			mapChooserDialog.addWindowListener(new WindowAdapter() {
-				public void windowClosing(WindowEvent event) {
-					mapChooserDialog.dispose();
-					terminateSocketWithGoodbye();
+			if(collOffers.getIsSingleOffer()) {
+				// we directly choose the one and only offer:
+				int size = collOffers.getListCollaborationMapOfferList().size();
+				if(size != 1) {
+					logger.severe("Collaboration offers with " + size + " offers. Expected exactly one.");
+					terminateSocket();
+					return;
 				}
-			});
-			// the action title is changed by the following method, thus we create
-			// another close action.
-			AbstractAction cancelAction = new AbstractAction() {
-
-				@Override
-				public void actionPerformed(ActionEvent pE) {
-					logger.info("Map choosing action canceled.");
-					mapChooserDialog.dispose();
-					terminateSocketWithGoodbye();
-				}};
-			Tools.addEscapeActionToDialog(mapChooserDialog, cancelAction);
-			final JList mapList = new JList();
-			mapList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			mapList.setModel(new AbstractListModel() {
+				// send hello:
+				CollaborationHello helloCommand = new CollaborationHello();
+				helloCommand.setMap(collOffers.getCollaborationMapOffer(0).getMap());
+				send(helloCommand);
+				setCurrentState(STATE_WAIT_FOR_WELCOME);
 				
-				@Override
-				public int getSize() {
-					return collOffers.getListCollaborationMapOfferList().size();
-				}
-				
-				@Override
-				public Object getElementAt(int pIndex) {
-					return collOffers.getCollaborationMapOffer(pIndex).getMap();
-				}});
-			AbstractAction okAction = new AbstractAction() {
-				
-				@Override
-				public void actionPerformed(ActionEvent pE) {
-					int selection = mapList.getSelectedIndex();
-					if(selection < 0) {
-						return;
+			} else {
+				// now, we have a bundle of different maps to offer to the user
+				final JDialog mapChooserDialog = new JDialog(getMindMapController().getFrame().getJFrame(),
+						false);
+				mapChooserDialog.getContentPane().setLayout(new GridBagLayout());
+				String mapTitle = Resources.getInstance().format(
+						"MapChooserDialog_title",
+						new Object[] { mSocket.getInetAddress().getHostAddress(),
+								new Integer(mSocket.getPort()) });
+	
+				mapChooserDialog.setTitle(mapTitle);
+				mapChooserDialog
+						.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+				mapChooserDialog.addWindowListener(new WindowAdapter() {
+					public void windowClosing(WindowEvent event) {
+						mapChooserDialog.dispose();
+						terminateSocketWithGoodbye();
 					}
-					// user has chosen the map:
-					logger.info("Map choosing action. selected index " + selection);
-					mapChooserDialog.setVisible(false);
-					// send hello:
-					CollaborationHello helloCommand = new CollaborationHello();
-					helloCommand.setMap(collOffers.getCollaborationMapOffer(selection).getMap());
-					send(helloCommand);
-					setCurrentState(STATE_WAIT_FOR_WELCOME);
-				}};
-			mapChooserDialog.getContentPane().add(
-					new JScrollPane(mapList),
-					new GridBagConstraints(0, 0, 2, 1, 10.0, 4.0,
-							GridBagConstraints.WEST, GridBagConstraints.BOTH,
-							new Insets(5, 5, 0, 0), 0, 10));
-			JButton okButton = new JButton(
-					getController().getResourceString("ExtendedFindDialog.ok"));
-			Tools.setLabelAndMnemonic(okButton, null);
-			okButton.addActionListener(okAction);
-			mapChooserDialog.getContentPane().add(
-					okButton,
-					new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0,
-							GridBagConstraints.WEST, GridBagConstraints.BOTH,
-							new Insets(5, 5, 0, 0), 0, 0));
-			JButton cancelButton = new JButton(
-					getController().getResourceString("ExtendedFindDialog.cancel"));
-			Tools.setLabelAndMnemonic(cancelButton, null);
-			cancelButton.addActionListener(cancelAction);
-			mapChooserDialog.getContentPane().add(
-					cancelButton,
-					new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0,
-							GridBagConstraints.WEST, GridBagConstraints.BOTH,
-							new Insets(5, 5, 0, 0), 0, 0));
-			mapChooserDialog.getRootPane().setDefaultButton(okButton);
-			mapChooserDialog.pack();
-			mapChooserDialog.setVisible(true);
+				});
+				// the action title is changed by the following method, thus we create
+				// another close action.
+				AbstractAction cancelAction = new AbstractAction() {
+	
+					@Override
+					public void actionPerformed(ActionEvent pE) {
+						logger.info("Map choosing action canceled.");
+						mapChooserDialog.dispose();
+						terminateSocketWithGoodbye();
+					}};
+				Tools.addEscapeActionToDialog(mapChooserDialog, cancelAction);
+				final JList mapList = new JList();
+				mapList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+				mapList.setModel(new AbstractListModel() {
+					
+					@Override
+					public int getSize() {
+						return collOffers.getListCollaborationMapOfferList().size();
+					}
+					
+					@Override
+					public Object getElementAt(int pIndex) {
+						return collOffers.getCollaborationMapOffer(pIndex).getMap();
+					}});
+				AbstractAction okAction = new AbstractAction() {
+					
+					@Override
+					public void actionPerformed(ActionEvent pE) {
+						int selection = mapList.getSelectedIndex();
+						if(selection < 0) {
+							return;
+						}
+						// user has chosen the map:
+						logger.info("Map choosing action. selected index " + selection);
+						mapChooserDialog.setVisible(false);
+						// send hello:
+						CollaborationHello helloCommand = new CollaborationHello();
+						helloCommand.setMap(collOffers.getCollaborationMapOffer(selection).getMap());
+						send(helloCommand);
+						setCurrentState(STATE_WAIT_FOR_WELCOME);
+					}};
+				mapChooserDialog.getContentPane().add(
+						new JScrollPane(mapList),
+						new GridBagConstraints(0, 0, 2, 1, 10.0, 4.0,
+								GridBagConstraints.WEST, GridBagConstraints.BOTH,
+								new Insets(5, 5, 0, 0), 0, 10));
+				JButton okButton = new JButton(
+						getController().getResourceString("ExtendedFindDialog.ok"));
+				Tools.setLabelAndMnemonic(okButton, null);
+				okButton.addActionListener(okAction);
+				mapChooserDialog.getContentPane().add(
+						okButton,
+						new GridBagConstraints(0, 1, 1, 1, 1.0, 1.0,
+								GridBagConstraints.WEST, GridBagConstraints.BOTH,
+								new Insets(5, 5, 0, 0), 0, 0));
+				JButton cancelButton = new JButton(
+						getController().getResourceString("ExtendedFindDialog.cancel"));
+				Tools.setLabelAndMnemonic(cancelButton, null);
+				cancelButton.addActionListener(cancelAction);
+				mapChooserDialog.getContentPane().add(
+						cancelButton,
+						new GridBagConstraints(1, 1, 1, 1, 1.0, 1.0,
+								GridBagConstraints.WEST, GridBagConstraints.BOTH,
+								new Insets(5, 5, 0, 0), 0, 0));
+				mapChooserDialog.getRootPane().setDefaultButton(okButton);
+				mapChooserDialog.pack();
+				mapChooserDialog.setVisible(true);
+			}
 			commandHandled = true;
 		}
 		if (pCommand instanceof CollaborationWelcome) {

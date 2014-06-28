@@ -64,11 +64,14 @@ public class SocketRegistration implements HookRegistration,
 		if (pAction instanceof NodeHookAction) {
 			NodeHookAction action = (NodeHookAction) pAction;
 			if (action.getHookName().equals(
-					MindMapClient.SLAVE_STARTER_LABEL)) {
+					MindMapMaster.LABEL)) {
+				return isMaster();
+			}
+			if(action.getHookName().equals(MindMapClient.SLAVE_STARTER_LABEL)) {
 				return isSlave();
 			}
 		}
-		return isMaster();
+		return false;
 	}
 
 	private boolean isMaster() {
@@ -103,10 +106,10 @@ public class SocketRegistration implements HookRegistration,
 		if (pAction instanceof NodeHookAction) {
 			NodeHookAction action = (NodeHookAction) pAction;
 			if (action.getHookName().equals(
-					MindMapClient.SLAVE_STARTER_LABEL)) {
-				return !isMaster();
+					MindMapMaster.LABEL)) {
+				return !isSlave();
 			}
 		}
-		return !isSlave();
+		return !isMaster();
 	}
 }

@@ -51,21 +51,23 @@ import freemind.modes.ExtendedMapFeedback;
 
 /**
  * This class handles the communication from the master to a single client. It
- * is thus instantiated for each client (by the MindMapMaster).
+ * is thus instantiated for each master (e.g. by the MindMapMaster).
  * 
  * @author foltin
  * @date 13.09.2012
  */
 public class ServerCommunication extends CommunicationBase {
-	public static final String SERVER_VERSION = "2.0";
+	public static final String SERVER_VERSION = "2.1";
 	protected SocketMaster mMindMapMaster = null;
+	private boolean mIsSingleMapServer;
 
 	public ServerCommunication(SocketMaster pSocketStarter, Socket pClient,
-			ExtendedMapFeedback pMindMapController) throws Exception {
-		super("Client Communication", pClient, pMindMapController,
+			ExtendedMapFeedback pMindMapController, boolean isSingleMapServer) throws Exception {
+		super("Server Communication", pClient, pMindMapController,
 				new DataOutputStream(pClient.getOutputStream()),
 				new DataInputStream(pClient.getInputStream()));
 		mMindMapMaster = pSocketStarter;
+		mIsSingleMapServer = isSingleMapServer;
 		CollaborationWhoAreYou commandWho = new CollaborationWhoAreYou();
 		commandWho.setServerVersion(SERVER_VERSION);
 		send(commandWho);
@@ -92,7 +94,7 @@ public class ServerCommunication extends CommunicationBase {
 				if (mMindMapMaster.getPassword().equals(
 						commandGetOffers.getPassword())) {
 					CollaborationOffers commandOffers = new CollaborationOffers();
-					mMindMapMaster.getFileMap();
+					commandOffers.setIsSingleOffer(mIsSingleMapServer);
 					for (Iterator it = mMindMapMaster.getFileMap().keySet().iterator(); it
 							.hasNext();) {
 						String fileName = (String) it.next();
@@ -115,7 +117,7 @@ public class ServerCommunication extends CommunicationBase {
 		}
 		if(pCommand instanceof CollaborationPublishNewMap) {
 			CollaborationPublishNewMap commandPublish = (CollaborationPublishNewMap) pCommand;
-			if (getCurrentState() != STATE_WAIT_FOR_GET_OFFERS) {
+			if (getCurrentState() != STATE_WAIT_FOR_GET_OFFERS || mIsSingleMapServer) {
 				printWrongState(pCommand);
 			} else {
 				// we got a new map to be published on the server

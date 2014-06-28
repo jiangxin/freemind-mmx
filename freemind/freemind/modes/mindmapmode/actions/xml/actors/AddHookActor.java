@@ -32,6 +32,7 @@ import freemind.controller.actions.generated.instance.HookNodeAction;
 import freemind.controller.actions.generated.instance.NodeChildParameter;
 import freemind.controller.actions.generated.instance.NodeListMember;
 import freemind.controller.actions.generated.instance.XmlAction;
+import freemind.extensions.DontSaveMarker;
 import freemind.extensions.HookFactory;
 import freemind.extensions.HookInstanciationMethod;
 import freemind.extensions.NodeHook;
@@ -120,30 +121,32 @@ public class AddHookActor extends XmlActorAdapter {
 					PermanentNodeHook hook = (PermanentNodeHook) j.next();
 					if (hook.getName().equals(hookName)) {
 						XMLElement child = new XMLElement();
-						hook.save(child);
-						if (child.countChildren() == 1) {
-							XMLElement parameters = (XMLElement) child
-									.getChildren().firstElement();
-							if (Tools.safeEquals(parameters.getName(),
-									PermanentNodeHookAdapter.PARAMETERS)) {
-								// standard save mechanism
-								for (Iterator it = parameters
-										.enumerateAttributeNames(); it
-										.hasNext();) {
-									String name = (String) it.next();
-									NodeChildParameter nodeHookChild = new NodeChildParameter();
-									nodeHookChild.setKey(name);
-									nodeHookChild.setValue(parameters
-											.getStringAttribute(name));
-									hookNodeAction
-											.addNodeChildParameter(nodeHookChild);
+						if(!(hook instanceof DontSaveMarker)) {
+							hook.save(child);
+							if (child.countChildren() == 1) {
+								XMLElement parameters = (XMLElement) child
+										.getChildren().firstElement();
+								if (Tools.safeEquals(parameters.getName(),
+										PermanentNodeHookAdapter.PARAMETERS)) {
+									// standard save mechanism
+									for (Iterator it = parameters
+											.enumerateAttributeNames(); it
+											.hasNext();) {
+										String name = (String) it.next();
+										NodeChildParameter nodeHookChild = new NodeChildParameter();
+										nodeHookChild.setKey(name);
+										nodeHookChild.setValue(parameters
+												.getStringAttribute(name));
+										hookNodeAction
+												.addNodeChildParameter(nodeHookChild);
+									}
+	
+								} else {
+									logger.warning("Unusual save mechanism, implement me.");
 								}
-
 							} else {
 								logger.warning("Unusual save mechanism, implement me.");
 							}
-						} else {
-							logger.warning("Unusual save mechanism, implement me.");
 						}
 						/*
 						 * fc, 30.7.2004: we have to break. otherwise the
