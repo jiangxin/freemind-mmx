@@ -307,7 +307,8 @@ public class FreeMindMapController extends JMapController implements
 		private boolean mIsEditOfExistingNode;
 
 		private MapEditTextFieldControl(NodeView pNodeView,
-				MindMapNode pNewNode, MindMapNode pTargetNode, boolean pIsEditOfExistingNode) {
+				MindMapNode pNewNode, MindMapNode pTargetNode,
+				boolean pIsEditOfExistingNode) {
 			mNodeView = pNodeView;
 			mNewNode = pNewNode;
 			mTargetNode = pTargetNode;
@@ -510,10 +511,14 @@ public class FreeMindMapController extends JMapController implements
 		public boolean destinationQuadrantCheck(Coordinate cursorPosition,
 				Coordinate pointPosition, boolean alternative) {
 			int mapZoomMax = getMaxZoom();
-			int x1 = OsmMercator.LonToX(cursorPosition.getLon(), mapZoomMax);
-			int y1 = OsmMercator.LatToY(cursorPosition.getLat(), mapZoomMax);
-			int x2 = OsmMercator.LonToX(pointPosition.getLon(), mapZoomMax);
-			int y2 = OsmMercator.LatToY(pointPosition.getLat(), mapZoomMax);
+			int x1 = (int) OsmMercator.LonToX(cursorPosition.getLon(),
+					mapZoomMax);
+			int y1 = (int) OsmMercator.LatToY(cursorPosition.getLat(),
+					mapZoomMax);
+			int x2 = (int) OsmMercator.LonToX(pointPosition.getLon(),
+					mapZoomMax);
+			int y2 = (int) OsmMercator.LatToY(pointPosition.getLat(),
+					mapZoomMax);
 			return destinationQuadrantCheck(x1, y1, x2, y2, alternative);
 		}
 
@@ -624,8 +629,8 @@ public class FreeMindMapController extends JMapController implements
 				PositionHolder posHolder = (PositionHolder) getPositionHolderVector()
 						.get(getPositionHolderIndex() + 1);
 				getMap().setCursorPosition(posHolder.getCoordinate());
-				map.setDisplayPositionByLatLon(posHolder.lat, posHolder.lon,
-						posHolder.zoom);
+				map.setDisplayPosition(new Coordinate(posHolder.lat,
+						posHolder.lon), posHolder.zoom);
 				setPositionHolderIndex(getPositionHolderIndex() + 1);
 			}
 		}
@@ -653,8 +658,8 @@ public class FreeMindMapController extends JMapController implements
 				PositionHolder posHolder = (PositionHolder) getPositionHolderVector()
 						.get(getPositionHolderIndex() - 1);
 				getMap().setCursorPosition(posHolder.getCoordinate());
-				map.setDisplayPositionByLatLon(posHolder.lat, posHolder.lon,
-						posHolder.zoom);
+				map.setDisplayPosition(new Coordinate(posHolder.lat,
+						posHolder.lon), posHolder.zoom);
 				setPositionHolderIndex(getPositionHolderIndex() - 1);
 			}
 		}
@@ -959,7 +964,8 @@ public class FreeMindMapController extends JMapController implements
 						.hasNext();) {
 					Result result = (Result) it.next();
 					addNode(mMindMapController.getSelected(),
-							result.getContent(), result.getLat(), result.getLon());
+							result.getContent(), result.getLat(),
+							result.getLon());
 				}
 			}
 		}
@@ -1009,8 +1015,8 @@ public class FreeMindMapController extends JMapController implements
 			if (getMap().getZoom() >= zoom) {
 				zoom += CURSOR_MAXIMAL_ZOOM_HANDBREAK;
 			}
-			map.setDisplayPositionByLatLon(cursorPosition.getLat(),
-					cursorPosition.getLon(), zoom);
+			map.setDisplayPosition(new Coordinate(cursorPosition.getLat(),
+					cursorPosition.getLon()), zoom);
 		}
 
 	}
@@ -1033,8 +1039,9 @@ public class FreeMindMapController extends JMapController implements
 			if (zoom > getMaxZoom()) {
 				zoom = getMaxZoom();
 			}
-			map.setDisplayPositionByLatLon(mapCenter.getLat(),
-					mapCenter.getLon(), zoom);
+			map.setDisplayPosition(
+					new Coordinate(mapCenter.getLat(), mapCenter.getLon()),
+					zoom);
 		}
 
 	}
@@ -1240,7 +1247,7 @@ public class FreeMindMapController extends JMapController implements
 		Action gotoSearch = new GotoSearch();
 		Action hideFoldedNodes = new HideFoldedNodes();
 		Action newNodeAction = new NewNodeAction();
-//		Action newNodeReverseLookupAction = new NewNodeReverseLookupAction();
+		// Action newNodeReverseLookupAction = new NewNodeReverseLookupAction();
 		Action maxmimalZoomToCursorAction = new MaxmimalZoomToCursorAction();
 		Action copyLinkToClipboardAction = new CopyLinkToClipboardAction();
 		Action copyCoordinatesToClipboardAction = new CopyCoordinatesToClipboardAction();
@@ -1335,8 +1342,8 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.addAction(newNodeAction, "popup/newNode");
 		// currently disabled, as the reverse functionality from
 		// nominatim doesn't convince me.
-//		menuHolder.addAction(newNodeReverseLookupAction,
-//				"popup/newNodeReverseLookup");
+		// menuHolder.addAction(newNodeReverseLookupAction,
+		// "popup/newNodeReverseLookup");
 		menuHolder.addAction(placeAction, "popup/place");
 		menuHolder.addSeparator("popup/");
 		menuHolder.addAction(maxmimalZoomToCursorAction,
@@ -1374,7 +1381,7 @@ public class FreeMindMapController extends JMapController implements
 		menuHolder.updateMenus(getSearchPopupMenu(), "searchPopup/");
 
 		mMapDialog.addKeyListener(this);
-//		Tools.addFocusPrintTimer();
+		// Tools.addFocusPrintTimer();
 	}
 
 	public void addAccelerator(JMenuItem menuItem, String key) {
@@ -1454,9 +1461,9 @@ public class FreeMindMapController extends JMapController implements
 			MapNodePositionHolder hook = MapNodePositionHolder.getHook(node);
 
 			if (hook != null) {
-				int x = OsmMercator.LonToX(hook.getPosition().getLon(),
+				int x = (int) OsmMercator.LonToX(hook.getPosition().getLon(),
 						mapZoomMax);
-				int y = OsmMercator.LatToY(hook.getPosition().getLat(),
+				int y = (int) OsmMercator.LatToY(hook.getPosition().getLat(),
 						mapZoomMax);
 				x_max = Math.max(x_max, x);
 				y_max = Math.max(y_max, y);
@@ -1506,8 +1513,9 @@ public class FreeMindMapController extends JMapController implements
 			logger.fine("Set display position to " + mapCenter
 					+ " and cursor to " + position + " and zoom " + zoom
 					+ " where max zoom is " + getMaxZoom());
-			map.setDisplayPositionByLatLon(mapCenter.getLat(),
-					mapCenter.getLon(), zoom);
+			map.setDisplayPosition(
+					new Coordinate(mapCenter.getLat(), mapCenter.getLon()),
+					zoom);
 		}
 		setCursorPosition(position);
 	}
@@ -1521,8 +1529,9 @@ public class FreeMindMapController extends JMapController implements
 		// is the cursor now visible and the zoom correct? if not, display it
 		// directly.
 		if (map.getMapPosition(position, true) == null) {
-			map.setDisplayPositionByLatLon(position.getLat(),
-					position.getLon(), map.getZoom());
+			map.setDisplayPosition(
+					new Coordinate(position.getLat(), position.getLon()),
+					map.getZoom());
 		}
 		storeMapPosition(position);
 		for (Iterator it = mCursorPositionListeners.iterator(); it.hasNext();) {
@@ -2138,8 +2147,8 @@ public class FreeMindMapController extends JMapController implements
 	 * @param pPlace
 	 */
 	public void setCursorPosition(Place pPlace) {
-		map.setDisplayPositionByLatLon(pPlace.getLat(), pPlace.getLon(),
-				map.getZoom());
+		map.setDisplayPosition(
+				new Coordinate(pPlace.getLat(), pPlace.getLon()), map.getZoom());
 		Coordinate cursorPosition = new Coordinate(pPlace.getLat(),
 				pPlace.getLon());
 		setCursorPosition(cursorPosition);
@@ -2218,16 +2227,16 @@ public class FreeMindMapController extends JMapController implements
 		String result = "unknown";
 		Searchresults results = new Searchresults();
 		// special case: lat lon[;lat2 lon2;...]
-		if(pText.matches("[ 0-9eE.,;\\-]+")) {
+		if (pText.matches("[ 0-9eE.,;\\-]+")) {
 			String regex = " *([0-9eE.,\\-]+) +([0-9eE.,\\-]+) *";
 			Pattern pattern = Pattern.compile(regex);
-			boolean reverseLookupErrorOccured = !Resources.getInstance().getBoolProperty(
-					DO_REVERSE_LOOKUP_ON_LAT_LON_SEARCH);
+			boolean reverseLookupErrorOccured = !Resources.getInstance()
+					.getBoolProperty(DO_REVERSE_LOOKUP_ON_LAT_LON_SEARCH);
 			String[] coords = pText.split(";");
 			for (int i = 0; i < coords.length; i++) {
 				String coord = coords[i];
 				Matcher matcher = pattern.matcher(coord);
-				if(matcher.matches()) {
+				if (matcher.matches()) {
 					double lat = Double.parseDouble(matcher.group(1));
 					double lon = Double.parseDouble(matcher.group(2));
 					Place place = new Place();
@@ -2245,13 +2254,13 @@ public class FreeMindMapController extends JMapController implements
 							reverseLookupErrorOccured = true;
 						}
 					}
-					if(place.getDisplayName() == null) {
+					if (place.getDisplayName() == null) {
 						place.setDisplayName(coord);
 					}
 					place.setOsmType("node");
 					place.setLat(lat);
 					place.setLon(lon);
-					
+
 					results.addPlace(place);
 				}
 			}

@@ -200,6 +200,16 @@ final class JCursorMapViewer extends JMapViewer {
 	public void setDrawRectangular(boolean pDrawRectangular) {
 		mDrawRectangular = pDrawRectangular;
 	}
+
+	/**
+	 * @param pMapCenterLatitude
+	 * @param pMapCenterLongitude
+	 * @param pZoom
+	 */
+	public void setDisplayPositionByLatLon(double pMapCenterLatitude,
+			double pMapCenterLongitude, int pZoom) {
+		super.setDisplayPosition(new Coordinate(pMapCenterLatitude, pMapCenterLongitude), pZoom);
+	}
 	
 	
 }

@@ -262,8 +262,8 @@ public class Registration implements HookRegistration, ActorXml,
 			mTileController.setTileSource(tileSource);
 		}
 		int tileSize = mTileSource.getTileSize();
-		int exactx = OsmMercator.LonToX(pPosition.getLon(), pZoom);
-		int exacty = OsmMercator.LatToY(pPosition.getLat(), pZoom);
+		int exactx = (int) OsmMercator.LonToX(pPosition.getLon(), pZoom);
+		int exacty = (int) OsmMercator.LatToY(pPosition.getLat(), pZoom);
 		int x = exactx / tileSize;
 		int y = exacty / tileSize;
 		// determine other surrounding tiles that are close to the exact

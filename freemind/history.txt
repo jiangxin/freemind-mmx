@@ -12,6 +12,7 @@ Changes made in FreeMind 1.1.0 Alpha 2
 * New feature: standalone map server created.
 * new feature: icon toolbar can have multiple columns (see properties->appearance).
 * fix for "Encrypted nodes can't be saved".
+* Update to JMapViewer 1.03
 
 ===============================
 Changes made in FreeMind 1.1.0 Alpha 1
