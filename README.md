@@ -28,15 +28,32 @@ Because it scratch my personal itch.
   be modified and will create an unecessary commit in version control
   system.
 
+## VCS (Version Control System) I used for Freemind-MMX
+
+Freemind was hosted in a CVS repository at the early age, and when I start
+to hack Freemind-MMX, I used SVN, and all may hacks are in SVN feature
+branches.
+
+In the early 2009, I started to use Mercurial/Hg + MQ to maintain
+FreeMind-MMX.
+
+In 2010, FreeMind-MMX migrated to Git, and the patches are managed using
+Topgit finally.
+
 ## Build FreeMind-MMX
 
 Source code is hosted on GitHub:
 
 * <http://github.com/jiangxin/freemind-mmx>
 
-Before your build FreeMind-MMX from source code, you should
-install JDK and Quilt. Quilt is a patch management tool.
+There are many branches in this repo:
 
+* Branches start with 't/' are topic branches managed by Topgit.
+* "tgmaster" is the base where all topic branches patched against.
+* "master" branch are created from "tgmaster" branch and applied patches
+  using git-quiltimport command.
+
+Before build FreeMind-MMX from source code, you should install JDK.
 Then get souce code of FreeMind-MMX by cloning this repo:
 
 1. Clone freemind-mmx repo:
@@ -44,26 +61,9 @@ Then get souce code of FreeMind-MMX by cloning this repo:
         $ git clone git://github.com/jiangxin/freemind-mmx.git
         $ cd freemind-mmx
 
-2. Update FreeMind upstream source code in submodule 'upstream'
+2. Checkout the master branch, and build
 
-        $ git submodule init
-        $ git submodule update
-
-## Build for Debian/Ubuntu
-
-Debian is my favorite Linus distribution. Build a FreeMind-MMX debian
-package is simple:
-
-    $ dpkg-buildpackage -b -rfakeroot
-
-## Build for other platform
-
-1. Apply patches on FreeMind upstream source code.
-
-        $ make -f debian/rules patch
-        $ cd upstream/freemind
-
-2. Build FreeMind-MMX
-
+        $ git checkout master
+        $ cd freemind
         $ ant dist
         $ ant post
