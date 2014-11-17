@@ -562,7 +562,7 @@ public class OptionPanel implements TextTranslator {
 
 		controls.add(new BooleanProperty(
 				"resources_save_folding_state.tooltip",
-				FreeMind.RESOURCES_SAVE_FOLDING_STATE)); // true
+				FreeMind.RESOURCES_SAVE_FOLDING_STATE)); // false
 		controls.add(new BooleanProperty(
 				"save_only_intrisically_needed_ids.tooltip",
 				FreeMindCommon.SAVE_ONLY_INTRISICALLY_NEEDED_IDS)); // false

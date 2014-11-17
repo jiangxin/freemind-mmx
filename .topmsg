@@ -1,0 +1,6 @@
+From: Jiang Xin <jiangxin@moon.ossxp.com>
+Subject: [PATCH] custom_settings such as ignore folding state
+
+Set longer autosave time interval, and ignore folding state by default.
+
+Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
