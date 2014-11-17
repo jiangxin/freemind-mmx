@@ -1,0 +1,6 @@
+From: Jiang Xin <jiangxin@moon.ossxp.com>
+Subject: [PATCH] Show MMX patch version
+
+Show MMX patched version number on splash screen and about dialog.
+
+Signed-off-by: Jiang Xin <worldhello.net@gmail.com>

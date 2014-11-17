@@ -167,6 +167,10 @@ public class FreeMindSplashModern extends JFrame implements IFreeMindSplash {
 						.intValue() / 2);
 				g2.setColor(new Color(0x4d, 0x63, 0xb4));
 				g2.drawString(freemindVersion, xCoordinate, yCoordinate);
+                // OSSXP.COM: Splash screen, show oem version.
+                yCoordinate += (int)(g2.getFontMetrics().getHeight());
+                xCoordinate = (int)(getSize().getWidth()/2 - g2.getFontMetrics().stringWidth(FreeMind.HACKEDVERSION)/2);
+                g2.drawString(FreeMind.HACKEDVERSION, xCoordinate , yCoordinate);
 				// Draw progress bar
 				String progressString = (String) getClientProperty("progressString");
 				if (progressString != null) {
