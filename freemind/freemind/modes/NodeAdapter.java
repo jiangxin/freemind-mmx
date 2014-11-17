@@ -57,6 +57,7 @@ import freemind.main.FreeMind;
 import freemind.main.FreeMindCommon;
 import freemind.main.FreeMindMain;
 import freemind.main.HtmlTools;
+import freemind.main.Resources;
 import freemind.main.Tools;
 import freemind.main.XMLElement;
 import freemind.modes.attributes.Attribute;
@@ -1098,11 +1099,44 @@ public abstract class NodeAdapter implements MindMapNode {
 		return controller.getNodeID(this);
 	}
 
+	/**
+	 * @param writer
+	 * @param registry
+	 * @param managed_attr =0|1|2
+	 *         0 (default): save to .mm  file. (do not save certain attributes, such as node's fold status)
+	 *         1          : save to .mmx file. (only save auxiliary attributes, such as node's fold status)
+	 *         2          : all-in-one .mm file. the default behavior of vanilla freemind.
+	 * @return
+	 */
 	public XMLElement save(Writer writer, MindMapLinkRegistry registry,
 			boolean saveInvisible, boolean saveChildren) throws IOException {
+		return save(writer, registry, saveInvisible, saveChildren, 0);
+	}
+
+	public XMLElement save(Writer writer, MindMapLinkRegistry registry,
+			boolean saveInvisible, boolean saveChildren, int managed_attr) throws IOException {
 		// pre save event to save all contents of the node:
 		getModeController().firePreSaveEvent(this);
 		XMLElement node = new XMLElement();
+
+		// OSSXP.COM: new line before 'TEXT' attribute.
+		node.addtoEmAttlist("TEXT");
+		// OSSXP.COM: according to the managed_attr parameter, save or not save certain keys of this NODE.
+		switch (managed_attr)
+		{
+		case 0:
+			// Save this node to .mm file without certain attributes.
+			if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file") && Resources.getInstance().getBoolProperty("wh_separate_attr_created")) node.addtoBlackAttlist("CREATED");
+			if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file") && Resources.getInstance().getBoolProperty("wh_separate_attr_modified")) node.addtoBlackAttlist("MODIFIED");
+			break;
+		case 1:
+			// Save this node to .mmx file. Only save certain attributes.
+			node.addtoWhiteAttlist("ID");
+			if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file") && Resources.getInstance().getBoolProperty("wh_separate_attr_folded")) node.addtoWhiteAttlist("FOLDED");
+			if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file") && Resources.getInstance().getBoolProperty("wh_separate_attr_created")) node.addtoWhiteAttlist("CREATED");
+			if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file") && Resources.getInstance().getBoolProperty("wh_separate_attr_modified")) node.addtoWhiteAttlist("MODIFIED");
+			break;
+		}
 
 		// if (!isNodeClassToBeSaved()) {
 		node.setName(XMLElementAdapter.XML_NODE);
@@ -1112,7 +1146,10 @@ public abstract class NodeAdapter implements MindMapNode {
 		// }
 
 		/** fc, 12.6.2005: XML must not contain any zero characters. */
-		String text = this.toString().replace('\0', ' ');
+		// OSSXP.COM: not save TEXT attributes in .mmx file
+		if( node.isInWhiteAttlist("TEXT"))
+		{
+		String text = HtmlTools.makeValidXml(this.toString());
 		if (!HtmlTools.isHtmlNode(text)) {
 			node.setAttribute(XMLElementAdapter.XML_NODE_TEXT, text);
 		} else {
@@ -1135,6 +1172,7 @@ public abstract class NodeAdapter implements MindMapNode {
 			node.addChild(htmlElement);
 
 		}
+		}
 		// save additional info:
 		if (getAdditionalInfo() != null) {
 			node.setAttribute(XMLElementAdapter.XML_NODE_ENCRYPTED_CONTENT,
@@ -1142,16 +1180,27 @@ public abstract class NodeAdapter implements MindMapNode {
 		}
 		// ((MindMapEdgeModel)getEdge()).save(doc,node);
 
+		// OSSXP.COM: not save EDGE in .mmx
+		if( node.isInWhiteAttlist("EDGE"))
+		{
 		XMLElement edge = (getEdge()).save();
 		if (edge != null) {
 			node.addChild(edge);
 		}
+		}
 
+		// OSSXP.COM: not save CLOUD in .mmx
+		if( node.isInWhiteAttlist("CLOUD"))
+		{
 		if (getCloud() != null) {
 			XMLElement cloud = (getCloud()).save();
 			node.addChild(cloud);
 		}
+		}
 
+		// OSSXP.COM: not save ARROWLINK in .mmx
+		if( node.isInWhiteAttlist("ARROWLINK"))
+		{
 		Vector linkVector = registry.getAllLinksFromMe(this);
 		for (int i = 0; i < linkVector.size(); ++i) {
 			if (linkVector.get(i) instanceof ArrowLinkAdapter) {
@@ -1170,9 +1219,27 @@ public abstract class NodeAdapter implements MindMapNode {
 				node.addChild(arrowLinkTargetElement);
 			}
 		}
+		}
 
-		if (isFolded()) {
-			node.setAttribute("FOLDED", "true");
+		// OSSXP.COM: set FOLDED status of all nodes in .mm file to "true". Preserve orignal status in .mmx file.
+		switch (managed_attr)
+		{
+		case 0:
+			// Save this node to .mm file without certain attributes.
+			if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file") && Resources.getInstance().getBoolProperty("wh_separate_attr_folded")) {
+				if (!isRoot() && !isLeaf()) {
+					node.setAttribute("FOLDED","true");
+				}
+				break;
+			}
+		case 1:
+		case 2:
+		default:
+			if (isFolded()) {
+				node.setAttribute("FOLDED","true");
+			} else {
+				node.setAttribute("FOLDED","false");
+			}
 		}
 
 		// fc, 17.12.2003: Remove the left/right bug.
@@ -1234,6 +1301,9 @@ public abstract class NodeAdapter implements MindMapNode {
 									.getLastModifiedAt()));
 		}
 		// font
+		// OSSXP.COM: not save FONT in .mmx
+		if( node.isInWhiteAttlist("FONT"))
+		{
 		if (font != null) {
 			XMLElement fontElement = new XMLElement();
 			fontElement.setName("font");
@@ -1256,6 +1326,10 @@ public abstract class NodeAdapter implements MindMapNode {
 			}
 			node.addChild(fontElement);
 		}
+		}
+		// OSSXP.COM: not save ICON in .mmx
+		if( node.isInWhiteAttlist("ICON"))
+		{
 		for (int i = 0; i < getIcons().size(); ++i) {
 			XMLElement iconElement = new XMLElement();
 			iconElement.setName("icon");
@@ -1263,7 +1337,11 @@ public abstract class NodeAdapter implements MindMapNode {
 					((MindIcon) getIcons().get(i)).getName());
 			node.addChild(iconElement);
 		}
+		}
 
+		// OSSXP.COM: not save HOOK in .mmx
+		if( node.isInWhiteAttlist("HOOK"))
+		{
 		for (Iterator i = getActivatedHooks().iterator(); i.hasNext();) {
 			PermanentNodeHook permHook = (PermanentNodeHook) i.next();
 			if (permHook instanceof DontSaveMarker) {
@@ -1274,12 +1352,17 @@ public abstract class NodeAdapter implements MindMapNode {
 			permHook.save(hookElement);
 			node.addChild(hookElement);
 		}
+		}
 
+		// OSSXP.COM: not save ATTRIBUTE in .mmx
+		if( node.isInWhiteAttlist("ATTRIBUTE"))
+		{
 		attributes.save(node);
+		}
 		if (saveChildren && childrenUnfolded().hasNext()) {
 			node.writeWithoutClosingTag(writer);
 			// recursive
-			saveChildren(writer, registry, this, saveInvisible);
+			saveChildren(writer, registry, this, saveInvisible, managed_attr);
 			node.writeClosingTag(writer);
 		} else {
 			node.write(writer);
@@ -1296,14 +1379,21 @@ public abstract class NodeAdapter implements MindMapNode {
 		return map.getModeController();
 	}
 
+	// OSSXP.COM: PARAM managed_attr, controls whether or not save certain attrs (such as nodes's folded status) in .mm files.
 	private void saveChildren(Writer writer, MindMapLinkRegistry registry,
 			NodeAdapter node, boolean saveHidden) throws IOException {
+			saveChildren(writer, registry, node, saveHidden, 0);
+	}
+
+	private void saveChildren(Writer writer, MindMapLinkRegistry registry,
+			NodeAdapter node, boolean saveHidden,
+			int managed_attr) throws IOException {
 		for (ListIterator e = node.childrenUnfolded(); e.hasNext();) {
 			NodeAdapter child = (NodeAdapter) e.next();
 			if (saveHidden || child.isVisible())
-				child.save(writer, registry, saveHidden, true);
+				child.save(writer, registry, saveHidden, true, managed_attr);
 			else
-				saveChildren(writer, registry, child, saveHidden);
+				saveChildren(writer, registry, child, saveHidden, managed_attr);
 		}
 	}
 

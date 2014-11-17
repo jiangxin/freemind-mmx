@@ -284,7 +284,26 @@ public class MindMapMapModel extends MapAdapter {
 			}
 			BufferedWriter fileout = new BufferedWriter(new OutputStreamWriter(
 					new FileOutputStream(file), FreeMind.DEFAULT_CHARSET));
-			getXml(fileout);
+			// OSSXP.COM: save tree into .mm file, without some attrs(such as node fold status).
+			getXml(fileout, true, 0);
+
+			if(Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file"))
+			{
+				// OSSXP.COM: save variable attrs(such as node fold status) into .mmx file...
+				String ext = Tools.getExtension(file.getName());
+				String mmxFileName = "";
+				if(!ext.equals("mm"))
+				{
+					mmxFileName = "." + file.getName()+".mmx";
+				}
+				else
+				{
+					mmxFileName = "." + Tools.removeExtension(file.getName()) + ".mmx";
+				}
+				File mmxfile = new File(file.getParent(), mmxFileName);
+				BufferedWriter mmxfileout = new BufferedWriter( new OutputStreamWriter( new FileOutputStream(mmxfile), FreeMind.DEFAULT_CHARSET ) );
+				getXml(mmxfileout, true, 1);
+			}
 
 			if (!isInternal) {
 				setFile(file);
@@ -311,10 +330,16 @@ public class MindMapMapModel extends MapAdapter {
 	 * writes the content of the map to a writer.
 	 * 
 	 * @throws IOException
+	 * @param managed_attr =0|1|2
+	 *         0 (default): save to .mm  file. (do not save certain attributes, such as node's fold status)
+	 *         1          : save to .mmx file. (only save auxiliary attributes, such as node's fold status)
+	 *         2          : all-in-one .mm file. the default behavior of vanilla freemind.
 	 */
-	public void getXml(Writer fileout, boolean saveInvisible)
+	public void getXml(Writer fileout, boolean saveInvisible, int managed_attr)
 			throws IOException {
-		getXml(fileout, saveInvisible, getRootNode());
+		// OSSXP.COM: write xml declare.
+		fileout.write("<?xml version=\"1.0\" encoding=\"" + FreeMind.DEFAULT_CHARSET + "\"?>\n");
+		getXml(fileout, saveInvisible, getRootNode(), managed_attr);
 	}
 
 	/**
@@ -323,23 +348,40 @@ public class MindMapMapModel extends MapAdapter {
 	 * @throws IOException
 	 */
 	public void getXml(Writer fileout, boolean saveInvisible,
-			MindMapNode pRootNode) throws IOException {
+			MindMapNode pRootNode, int managed_attr) throws IOException {
 		fileout.write("<map ");
 		fileout.write("version=\"" + FreeMind.XML_VERSION + "\"");
 		fileout.write(">\n");
-		fileout.write("<!-- To view this file, download free mind mapping software FreeMind from http://freemind.sourceforge.net -->\n");
-		getRegistry().save(fileout);
-		pRootNode.save(fileout, this.getLinkRegistry(), saveInvisible, true);
+		// OSSXP.COM: add notice for this hacked version.
+		fileout.write("<!-- This file is saved using a hacked version of FreeMind. visit: http://freemind-mmx.sourceforge.net -->\n");
+		fileout.write("<!-- Orignal FreeMind, can download from http://freemind.sourceforge.net -->\n");
+		switch (managed_attr)
+		{
+		case 0:
+			fileout.write("<!-- This .mm file is CVS/SVN friendly, some atts are saved in .mmx file. (from ossxp.com) -->\n");
+			break;
+		case 1:
+			fileout.write("<!-- This .mmx files store some extra mm file attributes, which should not check in to CVS/SVN ! -->\n");
+			break;
+		case 2:
+		default:
+			break;
+		}
+		if(managed_attr != 1) {
+			getRegistry().save(fileout);
+		}
+		// OSSXP.COM: managed_attr control whether or not save nodes' fold status into .mm file.
+		pRootNode.save(fileout, this.getLinkRegistry(), saveInvisible, true, managed_attr);
 		fileout.write("</map>\n");
 		fileout.close();
 	}
 
 	public void getXml(Writer fileout) throws IOException {
-		getXml(fileout, true);
+		getXml(fileout, true, 0);
 	}
 
 	public void getFilteredXml(Writer fileout) throws IOException {
-		getXml(fileout, false);
+		getXml(fileout, false, 0);
 	}
 
 	/**

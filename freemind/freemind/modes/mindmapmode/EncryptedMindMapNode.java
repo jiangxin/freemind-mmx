@@ -331,7 +331,8 @@ public class EncryptedMindMapNode extends MindMapNodeModel {
 	private void generateEncryptedContent(MindMapLinkRegistry registry)
 			throws IOException {
 		StringWriter sWriter = new StringWriter();
-		getMindMapMapModel().getXml(sWriter, true, this);
+        // OSSXP.COM: save all attributes or partial?
+        getMindMapMapModel().getXml(sWriter, true, this, 0);
 		StringBuffer childXml = sWriter.getBuffer();
 		encryptedContent = encryptXml(childXml);
 	}

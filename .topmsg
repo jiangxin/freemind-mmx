@@ -1,4 +1,6 @@
 From: Jiang Xin <jiangxin@moon.ossxp.com>
-Subject: [PATCH] Encode mm file in UTF-8 format
+Subject: [PATCH] Save extra mmx file
+
+When save mindmap file, some fields save to a extra file, named .<filename>.mmx
 
 Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
