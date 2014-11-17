@@ -1,0 +1,9 @@
+From: Jiang Xin <jiangxin@moon.ossxp.com>
+Subject: [PATCH] Setting dialog for my hackings
+
+Setting dialog for my hackings, such as:
+
+* Unicode output,
+* Save extra attributes in other XML file.
+
+Signed-off-by: Jiang Xin <worldhello.net@gmail.com>
