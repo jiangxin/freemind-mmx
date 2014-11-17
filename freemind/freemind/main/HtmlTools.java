@@ -323,7 +323,7 @@ public class HtmlTools {
 		for (int i = 0; i < text.length(); ++i) {
 			myChar = text.charAt(i);
 			intValue = (int) text.charAt(i);
-			boolean outOfRange = intValue < 32  || intValue > 126;
+			boolean outOfRange = intValue < 32  || !Resources.getInstance().getBoolProperty("wh_nonascii_in_utf8") && intValue > 126;
 			if(pPreserveNewlines && myChar == '\n') {
 				outOfRange = false;
 			}

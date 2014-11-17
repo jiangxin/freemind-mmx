@@ -182,7 +182,7 @@ public class MindMapMapModel extends MapAdapter {
 		// Returns success of the operation.
 		try {
 			BufferedWriter fileout = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(file)));
+					new FileOutputStream(file), FreeMind.DEFAULT_CHARSET));
 			rootNodeOfBranch.saveTXT(fileout,/* depth= */0);
 			fileout.close();
 			return true;
@@ -283,7 +283,7 @@ public class MindMapMapModel extends MapAdapter {
 				timerForAutomaticSaving.cancel();
 			}
 			BufferedWriter fileout = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(file)));
+					new FileOutputStream(file), FreeMind.DEFAULT_CHARSET));
 			getXml(fileout);
 
 			if (!isInternal) {
@@ -474,10 +474,30 @@ public class MindMapMapModel extends MapAdapter {
 	public MindMapNodeModel loadTree(ReaderCreator pReaderCreator,
 			boolean pAskUserBeforeUpdate) throws XMLParseException, IOException {
 		int versionInfoLength;
-		versionInfoLength = EXPECTED_START_STRINGS[0].length();
+		versionInfoLength = 0;
 		// reading the start of the file:
-		StringBuffer buffer = readFileStart(pReaderCreator.createReader(),
-				versionInfoLength);
+		// OSSXP.COM:
+		//     because we add a xml declare, the mm file now begin with "<xml",
+		//     so direct match mmap version will failed.
+		//     search "<map" and store matched line into buffer.
+		BufferedReader in=null;
+		String buffer = null;
+		try {
+			// get the file start into the memory:
+			in = new BufferedReader(pReaderCreator.createReader());
+			while ((buffer = in.readLine()) != null) {
+				// buffer contains line start with "<map", stop matching.
+				if (buffer.substring(0,4).equals("<map"))
+				{
+					break;
+				}
+			}
+			in.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			buffer = "";
+		}
+
 		// the resulting file is accessed by the reader:
 		Reader reader = null;
 		for (int i = 0; i < EXPECTED_START_STRINGS.length; i++) {
