@@ -157,7 +157,7 @@ public class FreeMind extends JFrame implements FreeMindMain {
 	protected static final VersionInformation VERSION = new VersionInformation("1.0.1");
 
 	// OSSXP.COM: show mmx hacked version
-	public static final String HACKEDVERSION = "(MMX Hack <REVISION>, from ossxp.com)";
+	public static final String HACKEDVERSION = "(MMX Hack v19, 2005-2009, by Jiang Xin)";
 
 	public static final String XML_VERSION = "1.0.1";
 

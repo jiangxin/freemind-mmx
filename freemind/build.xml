@@ -4,7 +4,7 @@
       <filterchain>
         <tokenfilter>
           <filetokenizer/>
-          <replaceregex pattern='.*new VersionInformation\("(.*?)".*HACKEDVERSION.*Hack [rv]?(.*?),.*' replace="\1-\2_mmx" flags="s" />
+          <replaceregex pattern='.*new VersionInformation\("(.*?)".*HACKEDVERSION.*Hack [rv]?([0-9\.]*).*' replace="\1-\2_mmx" flags="s" />
         </tokenfilter>
       	<!-- Replace spaces by underscores. -->
       	<tokenfilter><replaceregex pattern=" " replace="_" flags="g"/></tokenfilter>
