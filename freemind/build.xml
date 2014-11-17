@@ -56,8 +56,9 @@
 	<property name="xsltLib2" location="lib/serializer.jar"/>
 	<property name="xsltLib3" location="lib/xml-apis.jar"/>
 	<property name="xsltLib4" location="lib/xercesImpl.jar"/>
+	<property name="saxonLib" location="lib/saxon.jar"/>
 
-	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:${formsLib}:${simplyHtml}:${spellLib}:${xsltLib}:${xsltLib2}:${xsltLib3}:${xsltLib4}"/>
+	<property name="classpath" value="${jibxruntimelibs}:${jibxjar}:${formsLib}:${simplyHtml}:${spellLib}:${xsltLib}:${xsltLib2}:${xsltLib3}:${xsltLib4}:${saxonLib}"/>
 	<path id="jars.path">
 	  <fileset dir="${src}">
 	    <include name="**/*.jar" />
@@ -224,6 +225,7 @@
 		<copy todir="${dist}">
 			<fileset dir="${src}/windows-launcher">
 			  <include name="FreeMind.exe"/>
+			  <include name="FreeMind.vanilla.exe"/>
 			  <include name="FreeMind64.exe"/>
 			</fileset>
 		</copy>
@@ -253,6 +255,7 @@
 				<include name="xercesImpl.jar"/>
 				<include name="forms-1.0.5.jar"/>
 				<include name="bindings.jar"/>
+				<include name="saxon.jar"/>
 				<include name="jibx/jibx-run.jar"/>
 				<include name="jibx/xpp3.jar"/>
 				<include name="SimplyHTML/gnu-regexp-1.1.4.jar"/>
@@ -463,7 +466,7 @@
 			<attribute name="Built-Number" value="${build.number}" />
 			<attribute name="Created-By" value="Joerg Mueller, Daniel Polansky, Christian Foltin, Dimitry Polivaev, and others." />
 			<attribute name="Main-Class" value="freemind.main.FreeMindStarter" />
-			<attribute name="Class-Path" value="freemind.jar .. commons-lang-2.0.jar forms-1.0.5.jar jibx/jibx-run.jar jibx/xpp3.jar jibx-run.jar xpp3.jar bindings.jar jortho.jar xalan.jar serializer.jar xml-apis.jar xercesImpl.jar SimplyHTML/gnu-regexp-1.1.4.jar gnu-regexp-1.1.4.jar SimplyHTML/SimplyHTML.jar SimplyHTML.jar"/>
+			<attribute name="Class-Path" value="freemind.jar .. commons-lang-2.0.jar forms-1.0.5.jar jibx/jibx-run.jar jibx/xpp3.jar jibx-run.jar xpp3.jar bindings.jar jortho.jar xalan.jar saxon.jar serializer.jar xml-apis.jar xercesImpl.jar SimplyHTML/gnu-regexp-1.1.4.jar gnu-regexp-1.1.4.jar SimplyHTML/SimplyHTML.jar SimplyHTML.jar"/>
 		</manifest>
 		<jar jarfile="${FM.jar}"
 		     manifest="${temp.manifest.file}"
@@ -482,7 +485,8 @@
 				<include name="patterns_updater.xslt"/>
 				<include name="Resources*"/>
 				<include name="mindmap_menus.xml"/>
-				<include name="**/freemind_version_updater.xslt"/>
+				<include name="freemind/**/freemind_version_updater.xslt"/>
+				<include name="freemind/**/freemind_join_mm_mmx.xslt"/>
 				<include name="dictionar*"/>
 			</fileset>
 		</jar>

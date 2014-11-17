@@ -1,0 +1,6 @@
+From: Jiang Xin <jiangxin@moon.ossxp.com>
+Subject: [PATCH] Load with .mmx file when open new mindmap
+
+When load mindmap, join <filename>.mm file with .<filename>.mmx.
+
+Signed-off-by: Jiang Xin <worldhello.net@gmail.com>

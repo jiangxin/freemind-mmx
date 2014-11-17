@@ -444,6 +444,10 @@ public class MindMapMapModel extends MapAdapter {
 		public String toString() {
 			return mString;
 		}
+
+		public File getFile() {
+			return null;
+		}
 	}
 
 	private static class FileReaderCreator implements ReaderCreator {
@@ -460,10 +464,15 @@ public class MindMapMapModel extends MapAdapter {
 		public String toString() {
 			return mFile.getName();
 		}
+
+		public File getFile() {
+			return mFile;
+		}
 	}
 
 	public interface ReaderCreator {
 		Reader createReader() throws FileNotFoundException;
+		File   getFile();
 	}
 
 	MindMapNodeModel loadTree(ReaderCreator pReaderCreator)
@@ -480,6 +489,9 @@ public class MindMapMapModel extends MapAdapter {
 				versionInfoLength);
 		// the resulting file is accessed by the reader:
 		Reader reader = null;
+		// OSSXP.COM: We need filename when do Tool.getActualReader,
+		//            for we need join .mm file with .mmx file.
+		File file = pReaderCreator.getFile();
 		for (int i = 0; i < EXPECTED_START_STRINGS.length; i++) {
 			versionInfoLength = EXPECTED_START_STRINGS[i].length();
 			String mapStart = "";
@@ -488,7 +500,10 @@ public class MindMapMapModel extends MapAdapter {
 			}
 			if (mapStart.startsWith(EXPECTED_START_STRINGS[i])) {
 				// actual version:
-				reader = Tools.getActualReader(pReaderCreator.createReader());
+				if (file != null)
+					reader = Tools.getActualReader(file, getFrame());
+				else
+					reader = Tools.getActualReader(pReaderCreator.createReader());
 				break;
 			}
 		}
@@ -518,7 +533,11 @@ public class MindMapMapModel extends MapAdapter {
 				this.getModeController()
 						.getFrame()
 						.out("Error on conversion. Continue without conversion. Some elements may be lost!");
-				reader = Tools.getActualReader(pReaderCreator.createReader());
+
+				if (file != null)
+						reader = Tools.getActualReader(file, getFrame());
+				else
+						reader = Tools.getActualReader(pReaderCreator.createReader());
 			}
 		}
 		try {
