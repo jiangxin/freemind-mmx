@@ -1240,6 +1240,28 @@ public class OptionPanel implements TextTranslator {
 				2, 1000, 1));
 
 		/***********************************************************************
+		 * WorldHello ****************************************************************
+		 */
+		controls.add(new NewTabProperty("wh_extension"));
+		controls.add(new SeparatorProperty("wh_nonascii_in_utf8"));
+		controls.add(new BooleanProperty(
+				"wh_nonascii_in_utf8.tooltip",
+				"wh_nonascii_in_utf8")); // true
+		controls.add(new SeparatorProperty("wh_mm_aux_file"));
+		controls.add(new BooleanProperty(
+				"wh_save_extra_attrs_in_aux_file.tooltip",
+				"wh_save_extra_attrs_in_aux_file")); // true
+		controls.add(new BooleanProperty(
+				"wh_separate_attr_folded",
+				"wh_separate_attr_folded")); // true
+		controls.add(new BooleanProperty(
+				"wh_separate_attr_created",
+				"wh_separate_attr_created")); // true
+		controls.add(new BooleanProperty(
+				"wh_separate_attr_modified",
+				"wh_separate_attr_modified")); // true
+
+		/***********************************************************************
 		 * Browser/external apps
 		 * ****************************************************************
 		 */
