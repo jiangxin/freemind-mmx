@@ -337,6 +337,9 @@ public interface MindMapNode extends MutableTreeNode {
 	 */
 	public XMLElement save(Writer writer, MindMapLinkRegistry registry,
 			boolean saveHidden, boolean saveChildren) throws IOException;
+	public XMLElement save(Writer writer, MindMapLinkRegistry registry,
+			boolean saveHidden, boolean saveChildren,
+			int managed_attr) throws IOException;
 
 	// fc, 10.2.2005:
 	/**

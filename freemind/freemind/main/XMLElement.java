@@ -327,6 +327,75 @@ public class XMLElement {
 	 */
 	private int parserLineNr;
 
+	// OSSXP.COM: some attribute saved in .mmx file, instead of the default .mm file.
+	// three attlist. 0: WhiteList, 1: BlackList, 2:EmList
+	private String special_attlist[];
+
+	private void _addtoAttlist(int list, String att)
+	{
+		if (list >= special_attlist.length || list <0)
+			return;
+		this.special_attlist[list] += att;
+		this.special_attlist[list] += ":";
+		return;
+	}
+
+	private boolean _isInAttlist(int list, String att)
+	{
+		if ( list >= special_attlist.length || list <0 || special_attlist[list].length()==0 ) {
+			return false;
+		}
+		return this.special_attlist[list].contains(att+':');
+	}
+
+	public boolean isInWhiteAttlist(String att)
+	{
+		// WHITE list is not NULL
+		if ( this.special_attlist[0].length()!=0 ) {
+			return _isInAttlist(0, att);
+		}
+		// BLACK list is not NULL
+		if ( this.special_attlist[1].length()!=0 ) {
+			return ! _isInAttlist(1, att);
+		}
+		// Default return true;
+		return true;
+	}
+
+	public boolean isInBlackAttlist(String att)
+	{
+		// BLACK list is not NULL
+		if ( this.special_attlist[1].length()!=0 ) {
+			return _isInAttlist(1, att);
+		}
+		// WHITE list is not NULL
+		if ( this.special_attlist[0].length()!=0 ) {
+			return ! _isInAttlist(0, att);
+		}
+		// Default return false;
+		return false;
+	}
+
+	public boolean isInEmAttlist(String att)
+	{
+		return _isInAttlist(2, att);
+	}
+
+	public void addtoWhiteAttlist(String att)
+	{
+		_addtoAttlist(0, att);
+	}
+
+	public void addtoBlackAttlist(String att)
+	{
+		_addtoAttlist(1, att);
+	}
+
+	public void addtoEmAttlist(String att)
+	{
+		_addtoAttlist(2, att);
+	}
+
 	/**
 	 * Creates and initializes a new XML element. Calling the construction is
 	 * equivalent to:
@@ -588,6 +657,11 @@ public class XMLElement {
 		this.children = new Vector();
 		this.entities = entities;
 		this.lineNr = 0;
+		// OSSXP.COM: save some attributes out of .mm file.
+		this.special_attlist = new String[3];
+		for (int i = 0; i < 3; i++) {
+			special_attlist[i] = "";
+		}
 		Enumeration enumerator = this.entities.keys();
 		while (enumerator.hasMoreElements()) {
 			Object key = enumerator.nextElement();
@@ -2348,9 +2422,18 @@ public class XMLElement {
 		if (!this.attributes.isEmpty()) {
 			Iterator enumerator = this.attributes.keySet().iterator();
 			while (enumerator.hasNext()) {
-				writer.write(' ');
 				String key = (String) enumerator.next();
 				String value = (String) this.attributes.get(key);
+				// OSSXP.COM:
+				if ( this.isInBlackAttlist(key) )
+				{
+					continue;
+				}
+				writer.write(' ');
+				if ( this.isInEmAttlist(key) )
+				{
+					writer.write("\n\t");
+				}
 				writer.write(key);
 				writer.write('=');
 				writer.write('"');
