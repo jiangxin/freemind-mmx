@@ -96,6 +96,9 @@ import freemind.view.mindmapview.MapView;
 
 public class FreeMind extends JFrame implements FreeMindMain {
 
+	// OSSXP.COM: set output character set to utf-8.
+	public static final String DEFAULT_CHARSET = "UTF-8";
+
 	public static final String J_SPLIT_PANE_SPLIT_TYPE = "JSplitPane.SPLIT_TYPE";
 
 	public static final String VERTICAL_SPLIT_BELOW = "vertical_split_below";

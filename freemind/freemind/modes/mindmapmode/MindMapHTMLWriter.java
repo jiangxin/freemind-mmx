@@ -93,7 +93,7 @@ class MindMapHTMLWriter {
 		for (int i = 0; i < len; ++i) {
 			myChar = text.charAt(i);
 			intValue = (int) text.charAt(i);
-			if (intValue >= 128) {
+			if (!Resources.getInstance().getBoolProperty("wh_nonascii_in_utf8") && intValue >= 128) {
 				result.append(convertSpecialChar(myChar));
 			} else {
 				spaceOccured = false;

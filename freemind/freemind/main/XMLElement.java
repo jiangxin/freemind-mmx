@@ -2285,7 +2285,8 @@ public class XMLElement {
 	public String toString() {
 		try {
 			ByteArrayOutputStream out = new ByteArrayOutputStream();
-			OutputStreamWriter writer = new OutputStreamWriter(out);
+			// OSSXP.COM: Encode output to default_charset(UTF-8).
+			OutputStreamWriter writer = new OutputStreamWriter(out, FreeMind.DEFAULT_CHARSET);
 			this.write(writer);
 			writer.flush();
 			return new String(out.toByteArray());
@@ -2455,7 +2456,8 @@ public class XMLElement {
 				break;
 			default:
 				int unicode = (int) ch;
-				if ((unicode < 32) || (unicode > 126)) {
+				// OSSXP.COM: do not convert Chinese characters into &#blahblah;
+				if (!Resources.getInstance().getBoolProperty("wh_nonascii_in_utf8") && (unicode > 126) || (unicode < 32)) {
 					writer.write('&');
 					writer.write('#');
 					writer.write('x');
