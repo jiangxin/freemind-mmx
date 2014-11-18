@@ -1,6 +1,7 @@
 # FreeMind Hacking
 
-FreeMind is my favorite notebook. Everyday I write and search using FreeMind.
+FreeMind is an open source [mind-mapping](http://en.wikipedia.org/wiki/Mind_map)
+software, and it's my favorite notebook. ;-)
 
 ## What is FreeMind?
 
@@ -9,52 +10,66 @@ References:
 * [FreeMind Offical site](http://freemind.sourceforge.net/)
 * [Online PPT from ossxp.com (in Chinese)](http://www.ossxp.com/HelpCenter/00000_OSSXP/AboutUs_Slide/1010%20开源小礼物)
 
-## Why Hacked FreeMind?
+## Why comes FreeMind-MMX?
 
 Because it scratch my personal itch.
 
-* Chinese characters in output \*.mm file are *NOT* in UTF-8, but encoded
-  as XML entities, such as &#xxx;. So the source code of documents can
-  not be easily recognized;
+* FreeMind saves mind map in a XML file with extension ".mm".  Chinese
+  characters in it are encoded as XML entities, such as "\&#xxx;", but
+  *NOT* in UTF-8, which makes FreeMind document larger and hard to see
+  differences between two revisions.
 
-* and it's hard to compare between different revisions either.
+* All my documents are stored in a version control system (CVS and SVN
+  before 2008, and Hg and Git latter).  But I find FreeMind's XML files
+  are not version control friendly.  When I expand or collapse a node of
+  mind map, FreeMind shows file has been modified and needs to be saved.
+  This is because FreeMind records too many attributes for node including
+  folded status, created time, modified time in the result XML file.
+  Thus may make many unecessary commits to version control system.
 
-* In FreeMind output documents (\*.mm) , there are some mutable status
-  infomations. They are not version control friendly.
+I named my hacking of FreeMind as FreeMind-MMX, because when it saving
+mind map, there are two files instead of one.  One output file (with extension
+".mm") is a XML file, which store text contents and all necessary node
+attributes, and another one is a hidden ".mmx" file, which is also a XML
+file, but only stores auxiliary node attributes (such as folded, created
+time and modified time).
 
-  For example: status of node (folded or unfolded) is saved in FOLDED
-  attribute. If user does not change the contents of the node, only
-  change the folding status of nodes, the output file (.mm file) will
-  be modified and will create an unecessary commit in version control
-  system.
+## Download
 
-## VCS (Version Control System) I used for Freemind-MMX
+FreeMind was hosted in a CVS repository at the early age.  when I started
+to hack, I used SVN (using vendor branch model) to manage my
+customizations, and all may hacks are in SVN feature branches.  At that
+time, to share my contributions, there are not many choices like today.
+So I host it on sourceforge.net.  Now I only use the download services
+of Source Forge, and I will upload the binaries if I still remember the
+password of source forge.
 
-Freemind was hosted in a CVS repository at the early age, and when I start
-to hack Freemind-MMX, I used SVN, and all may hacks are in SVN feature
-branches.
+* Download binaries from: [Download from SourceForge](https://sourceforge.net/projects/freemind-mmx/files/FreeMind-MMX/)
+
+## Source Code
 
 In the early 2009, I started to use Mercurial/Hg + MQ to maintain
-FreeMind-MMX.
+FreeMind-MMX.  And since 2010, I became a fun of Git, I wrote a book for
+Git in Chinese and became contributors for Git. So FreeMind-MMX
+migrated again, and my customizations are managed using Topgit finally.
+That's why you should download FreeMind-MMX here:
 
-In 2010, FreeMind-MMX migrated to Git, and the patches are managed using
-Topgit finally.
-
-## Build FreeMind-MMX
-
-Source code is hosted on GitHub:
-
-* <http://github.com/jiangxin/freemind-mmx>
+* [FreeMind-MMX on GitHub](https://github.com/jiangxin/freemind-mmx>)
 
 There are many branches in this repo:
 
 * Branches start with 't/' are topic branches managed by Topgit.
-* "tgmaster" is the base where all topic branches patched against.
+* "tgmaster" branch is the base where all topic branches patched against.
 * "master" branch are created from "tgmaster" branch and applied patches
-  using git-quiltimport command.
+  using git-quiltimport command.  This branch will be rewind when patches
+  are changed or upstream is updated.
+
+## Build FreeMind-MMX from source
 
 Before build FreeMind-MMX from source code, you should install JDK.
-Then get souce code of FreeMind-MMX by cloning this repo:
+Be sure to export a valid `JAVA_HOME`.
+
+Then clone FreeMind-MMX from GitHub, and build.
 
 1. Clone freemind-mmx repo:
 
@@ -67,3 +82,5 @@ Then get souce code of FreeMind-MMX by cloning this repo:
         $ cd freemind
         $ ant dist
         $ ant post
+
+3. Find build results in ../post directory, and click to install.
