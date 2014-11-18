@@ -206,6 +206,7 @@ ${freedir}/lib/xalan.jar:\
 ${freedir}/lib/serializer.jar:\
 ${freedir}/lib/xml-apis.jar:\
 ${freedir}/lib/xercesImpl.jar:\
+${freedir}/lib/saxon.jar:\
 ${freedir}"
 if [ "${JAVA_TYPE}" = "sun" ]
 then

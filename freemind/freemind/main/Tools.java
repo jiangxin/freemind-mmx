@@ -113,6 +113,12 @@ import freemind.modes.MindMapNode;
 import freemind.modes.mindmapmode.MindMapController;
 import freemind.view.mindmapview.NodeView;
 
+//OSSXP.COM: classes for .mm and .mmx join.
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.dom.DOMSource;
+import org.w3c.dom.Document;
+
 /**
  * @author foltin
  * 
@@ -1126,6 +1132,119 @@ public class Tools {
 	public static Reader getActualReader(Reader pReader)
 			throws FileNotFoundException {
 		return new BufferedReader(pReader);
+	}
+
+	/*
+	 * OSSXP.COM: hacked FreeMind saved two seperate files, .mm and .mmx file.
+	 * Join them in runtime using XSLT TransformerFactory.
+	 * TODO: Improvement needed. the joining stage may very slow, so disable it.
+	 */
+	public static Reader getActualReader(File file, FreeMindMain frame) throws IOException {
+	    if (!Resources.getInstance().getBoolProperty("wh_save_extra_attrs_in_aux_file"))
+	    {
+	        return getActualReaderXml(file);
+	    }
+	    // load .mmx file...
+	    String ext = Tools.getExtension(file.getName());
+	    String mmxFileName = "";
+
+	    // OSSXP.COM: can disable join .mm with .mmx here.
+	    // if(true) return getActualReaderXml(file);
+
+	    if(!ext.equals("mm"))
+	    {
+	        mmxFileName = "." + file.getName()+".mmx";
+	    }
+	    else
+	    {
+	        mmxFileName = "." + Tools.removeExtension(file.getName()) + ".mmx";
+	    }
+	    File mmxfile = new File(file.getParent(), mmxFileName);
+
+	    if (!mmxfile.exists())
+	    {
+	        return getActualReaderXml(file);
+	    }
+
+	    URL updaterUrl = null;
+	    InputStream inputStream = null;
+	    Source xsltSource = null;
+	    StringWriter buffwriter = null;
+	    Result result = null;
+	    TransformerFactory tf = null;
+	    Transformer transformer = null;
+	    String mmxFileFullName = mmxfile.toURI().toString();
+	    try {
+	        // try to convert map with xslt:
+	        updaterUrl = frame.getResource(
+	                "freemind/modes/mindmapmode/freemind_join_mm_mmx.xslt");
+	        if (updaterUrl == null) {
+	            throw new IllegalArgumentException(
+	                    "freemind_join_mm_mmx.xslt not found.");
+	        }
+	        inputStream = updaterUrl.openStream();
+	        xsltSource = new StreamSource(inputStream);
+	        // get output:
+	        buffwriter = new StringWriter();
+	        result = new StreamResult(buffwriter);
+	        /* OSSXP.COM: create an instance of TransformerFactory.
+	         * the default xslt engine (com.sun.org.apache.xalan.internal.xsltc.trax...)
+	         * may not support 'key()' in freemind_join_mm_mmx.xslt.
+	         * Use saxon implement. */
+	        System.setProperty("javax.xml.transform.TransformerFactory",
+	                           "com.icl.saxon.TransformerFactoryImpl");
+	        tf = TransformerFactory.newInstance();
+	        transformer = tf.newTransformer(xsltSource);
+	        transformer.setParameter("mmx_file", mmxFileFullName);
+	        transformer.transform(new StreamSource(file), result);
+
+	    } catch (Exception ex) {
+	        ex.printStackTrace();
+	        // exception: we take the file itself:
+	        return getActualReaderXml(file);
+	    } finally {
+	        if (inputStream != null) {
+	            inputStream.close();
+	        }
+	        if (buffwriter != null) {
+	            buffwriter.close();
+	        }
+	        inputStream = null;
+	        xsltSource = null;
+	        updaterUrl = null;
+	        result = null;
+	        transformer = null;
+	        tf = null;
+	    }
+	    return new StringReader(buffwriter.getBuffer().toString());
+	}
+
+	/*
+	 * OSSXP.COM: In this hacked version, .mm file is a true XML file.
+	 * load XML file using DOM.
+	 */
+	private static Reader getActualReaderXml(File file) throws IOException {
+	    try
+	    {
+	        TransformerFactory tf = TransformerFactory.newInstance();
+	        Transformer transformer = tf.newTransformer();
+	        DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+	        DocumentBuilder domBuilder = domFactory.newDocumentBuilder();
+
+	        Document doc = domBuilder.parse(file);
+	        Source src = new DOMSource(doc);
+	        StringWriter buffwriter = new StringWriter();
+	        StreamResult result = new StreamResult(buffwriter);
+	        transformer.transform(src, result);
+
+	        return new StringReader(buffwriter.toString());
+	    }
+	    catch(Exception exp)
+	    {
+	        exp.printStackTrace();
+	    }
+
+	    return new BufferedReader(new FileReader(file));
 	}
 
 	/**
